@@ -20,12 +20,18 @@
 package tests
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
+
+	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestDf1ParserSerializer(t *testing.T) {
-	//t.Skip("Still a WIP")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/df1/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(
+		t,
+		"assets/testing/protocols/df1/ParserSerializerTestsuite.xml",
+		df1IO.Df1ParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+	)
 }

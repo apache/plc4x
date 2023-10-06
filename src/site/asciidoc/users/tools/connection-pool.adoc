@@ -19,6 +19,8 @@
 
 == Connection Pool
 
+NOTE: The plc4j-connection-pool module has been discontinued and has been removed from PLC4X stating with version 0.11.0
+
 There are situations where you don't want to carry around connections in your code.
 
 For example if you have a microservice application, you might have multiple services accessing PLC data.

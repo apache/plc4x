@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetLightingCommand is the corresponding interface of BACnetLightingCommand
 type BACnetLightingCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLightningOperation returns LightningOperation (property field)
@@ -102,7 +106,7 @@ func NewBACnetLightingCommand(lightningOperation BACnetLightingOperationTagged, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLightingCommand(structType interface{}) BACnetLightingCommand {
+func CastBACnetLightingCommand(structType any) BACnetLightingCommand {
 	if casted, ok := structType.(BACnetLightingCommand); ok {
 		return casted
 	}
@@ -116,51 +120,53 @@ func (m *_BACnetLightingCommand) GetTypeName() string {
 	return "BACnetLightingCommand"
 }
 
-func (m *_BACnetLightingCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLightingCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (lightningOperation)
-	lengthInBits += m.LightningOperation.GetLengthInBits()
+	lengthInBits += m.LightningOperation.GetLengthInBits(ctx)
 
 	// Optional Field (targetLevel)
 	if m.TargetLevel != nil {
-		lengthInBits += m.TargetLevel.GetLengthInBits()
+		lengthInBits += m.TargetLevel.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (rampRate)
 	if m.RampRate != nil {
-		lengthInBits += m.RampRate.GetLengthInBits()
+		lengthInBits += m.RampRate.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (stepIncrement)
 	if m.StepIncrement != nil {
-		lengthInBits += m.StepIncrement.GetLengthInBits()
+		lengthInBits += m.StepIncrement.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (fadeTime)
 	if m.FadeTime != nil {
-		lengthInBits += m.FadeTime.GetLengthInBits()
+		lengthInBits += m.FadeTime.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (priority)
 	if m.Priority != nil {
-		lengthInBits += m.Priority.GetLengthInBits()
+		lengthInBits += m.Priority.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetLightingCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
+func BACnetLightingCommandParse(ctx context.Context, theBytes []byte) (BACnetLightingCommand, error) {
+	return BACnetLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLightingCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLightingCommand")
 	}
@@ -171,7 +177,7 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
 	}
-	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lightningOperationErr != nil {
 		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetLightingCommand")
 	}
@@ -187,10 +193,10 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("targetLevel"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for targetLevel")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'targetLevel' field of BACnetLightingCommand")
@@ -209,10 +215,10 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("rampRate"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rampRate")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'rampRate' field of BACnetLightingCommand")
@@ -231,10 +237,10 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("stepIncrement"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for stepIncrement")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'stepIncrement' field of BACnetLightingCommand")
@@ -253,10 +259,10 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("fadeTime"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for fadeTime")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'fadeTime' field of BACnetLightingCommand")
@@ -275,10 +281,10 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for priority")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetLightingCommand")
@@ -305,9 +311,19 @@ func BACnetLightingCommandParse(readBuffer utils.ReadBuffer) (BACnetLightingComm
 	}, nil
 }
 
-func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLightingCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLightingCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetLightingCommand"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetLightingCommand")
 	}
@@ -316,7 +332,7 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 	if pushErr := writeBuffer.PushContext("lightningOperation"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for lightningOperation")
 	}
-	_lightningOperationErr := writeBuffer.WriteSerializable(m.GetLightningOperation())
+	_lightningOperationErr := writeBuffer.WriteSerializable(ctx, m.GetLightningOperation())
 	if popErr := writeBuffer.PopContext("lightningOperation"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for lightningOperation")
 	}
@@ -331,7 +347,7 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for targetLevel")
 		}
 		targetLevel = m.GetTargetLevel()
-		_targetLevelErr := writeBuffer.WriteSerializable(targetLevel)
+		_targetLevelErr := writeBuffer.WriteSerializable(ctx, targetLevel)
 		if popErr := writeBuffer.PopContext("targetLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for targetLevel")
 		}
@@ -347,7 +363,7 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for rampRate")
 		}
 		rampRate = m.GetRampRate()
-		_rampRateErr := writeBuffer.WriteSerializable(rampRate)
+		_rampRateErr := writeBuffer.WriteSerializable(ctx, rampRate)
 		if popErr := writeBuffer.PopContext("rampRate"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for rampRate")
 		}
@@ -363,7 +379,7 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for stepIncrement")
 		}
 		stepIncrement = m.GetStepIncrement()
-		_stepIncrementErr := writeBuffer.WriteSerializable(stepIncrement)
+		_stepIncrementErr := writeBuffer.WriteSerializable(ctx, stepIncrement)
 		if popErr := writeBuffer.PopContext("stepIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for stepIncrement")
 		}
@@ -379,7 +395,7 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for fadeTime")
 		}
 		fadeTime = m.GetFadeTime()
-		_fadeTimeErr := writeBuffer.WriteSerializable(fadeTime)
+		_fadeTimeErr := writeBuffer.WriteSerializable(ctx, fadeTime)
 		if popErr := writeBuffer.PopContext("fadeTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fadeTime")
 		}
@@ -395,7 +411,7 @@ func (m *_BACnetLightingCommand) Serialize(writeBuffer utils.WriteBuffer) error 
 			return errors.Wrap(pushErr, "Error pushing for priority")
 		}
 		priority = m.GetPriority()
-		_priorityErr := writeBuffer.WriteSerializable(priority)
+		_priorityErr := writeBuffer.WriteSerializable(ctx, priority)
 		if popErr := writeBuffer.PopContext("priority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for priority")
 		}
@@ -419,7 +435,7 @@ func (m *_BACnetLightingCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

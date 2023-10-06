@@ -19,10 +19,13 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type Message interface {
-	GetLengthInBytes() uint16
-	GetLengthInBits() uint16
-	Serialize(io utils.WriteBuffer) error
+	fmt.Stringer
+	utils.Serializable
+	utils.LengthAware
 }

@@ -18,11 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -30,12 +26,11 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLINT extends PlcIECValue<Long> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static Long minValue = Long.MIN_VALUE;
-    static Long maxValue = Long.MAX_VALUE;
+    static final Long minValue = Long.MIN_VALUE;
+    static final Long maxValue = Long.MAX_VALUE;
 
     public static PlcLINT of(Object value) {
         if (value instanceof Boolean) {
@@ -88,7 +83,7 @@ public class PlcLINT extends PlcIECValue<Long> {
 
     public PlcLINT(Float value) {
         if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -96,7 +91,7 @@ public class PlcLINT extends PlcIECValue<Long> {
 
     public PlcLINT(Double value) {
         if ((value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = false;
@@ -104,7 +99,7 @@ public class PlcLINT extends PlcIECValue<Long> {
 
     public PlcLINT(BigInteger value) {
         if ((value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = true;
@@ -112,7 +107,7 @@ public class PlcLINT extends PlcIECValue<Long> {
 
     public PlcLINT(BigDecimal value) {
         if ((value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.longValue();
         this.isNullable = true;
@@ -123,12 +118,11 @@ public class PlcLINT extends PlcIECValue<Long> {
             this.value = Long.parseLong(value.trim());
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLINT(@JsonProperty("value") long value) {
+    public PlcLINT(long value) {
         this.value = value;
         this.isNullable = false;
     }
@@ -139,132 +133,110 @@ public class PlcLINT extends PlcIECValue<Long> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isBoolean() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean getBoolean() {
         return (value != null) && !value.equals(0L);
     }
 
     @Override
-    @JsonIgnore
     public boolean isByte() {
         return (value != null) && (value <= Byte.MAX_VALUE) && (value >= Byte.MIN_VALUE);
     }
 
     @Override
-    @JsonIgnore
     public byte getByte() {
         return value.byteValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isShort() {
         return (value != null) && (value <= Short.MAX_VALUE) && (value >= Short.MIN_VALUE);
     }
 
     @Override
-    @JsonIgnore
     public short getShort() {
         return value.shortValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isInteger() {
         return (value != null) && (value <= Integer.MAX_VALUE) && (value >= Integer.MIN_VALUE);
     }
 
     @Override
-    @JsonIgnore
     public int getInteger() {
         return value.intValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isLong() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public long getLong() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger() {
         return BigInteger.valueOf(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isFloat() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public float getFloat() {
         return value.floatValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDouble() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public double getDouble() {
         return value.doubleValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigDecimal() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal() {
         return BigDecimal.valueOf(getDouble());
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return Long.toString(value);
     }
 
-    @JsonIgnore
     public byte[] getBytes() {
         return new byte[]{
             (byte) ((value >> 56) & 0xff),

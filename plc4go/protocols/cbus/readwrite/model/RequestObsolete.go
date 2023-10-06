@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // RequestObsolete is the corresponding interface of RequestObsolete
 type RequestObsolete interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -99,6 +103,8 @@ func (m *_RequestObsolete) GetAlpha() Alpha {
 ///////////////////////
 
 func (m *_RequestObsolete) GetCalDataDecoded() CALData {
+	ctx := context.Background()
+	_ = ctx
 	alpha := m.Alpha
 	_ = alpha
 	return CastCALData(m.GetCalData())
@@ -121,7 +127,7 @@ func NewRequestObsolete(calData CALData, alpha Alpha, peekedByte RequestType, st
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestObsolete(structType interface{}) RequestObsolete {
+func CastRequestObsolete(structType any) RequestObsolete {
 	if casted, ok := structType.(RequestObsolete); ok {
 		return casted
 	}
@@ -135,33 +141,35 @@ func (m *_RequestObsolete) GetTypeName() string {
 	return "RequestObsolete"
 }
 
-func (m *_RequestObsolete) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestObsolete) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestObsolete) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Manual Field (calData)
-	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
+		lengthInBits += m.Alpha.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_RequestObsolete) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestObsolete) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
+func RequestObsoleteParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestObsolete, error) {
+	return RequestObsoleteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("RequestObsolete"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestObsolete")
 	}
@@ -169,7 +177,7 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 	_ = currentPos
 
 	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer)
+	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
 	}
@@ -190,10 +198,10 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of RequestObsolete")
@@ -221,21 +229,33 @@ func RequestObsoleteParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) 
 	return _child, nil
 }
 
-func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestObsolete) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestObsolete) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("RequestObsolete"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for RequestObsolete")
 		}
 
 		// Manual Field (calData)
-		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
+		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
 		if _calDataErr != nil {
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
 		}
 		// Virtual field
-		if _calDataDecodedErr := writeBuffer.WriteVirtual("calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
+		calDataDecoded := m.GetCalDataDecoded()
+		_ = calDataDecoded
+		if _calDataDecodedErr := writeBuffer.WriteVirtual(ctx, "calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
@@ -246,7 +266,7 @@ func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(alpha)
+			_alphaErr := writeBuffer.WriteSerializable(ctx, alpha)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for alpha")
 			}
@@ -260,7 +280,7 @@ func (m *_RequestObsolete) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestObsolete) isRequestObsolete() bool {
@@ -272,7 +292,7 @@ func (m *_RequestObsolete) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -18,44 +18,53 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.*;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
 
     private final PlcBrowser browser;
 
-    private final LinkedHashMap<String, String> queries;
+    private final LinkedHashMap<String, PlcQuery> queries;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseRequest(@JsonProperty("browser") PlcBrowser browser,
-                                   @JsonProperty("queries") LinkedHashMap<String, String> queries) {
+    public DefaultPlcBrowseRequest(PlcBrowser browser,
+                                   LinkedHashMap<String, PlcQuery> queries) {
         this.browser = browser;
         this.queries = queries;
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<PlcBrowseResponse> execute() {
         return browser.browse(this);
     }
 
-    @JsonIgnore
+    @Override
+    public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
+        return browser.browseWithInterceptor(this, interceptor);
+    }
+
     public PlcBrowser getBrowser() {
         return browser;
     }
 
-    @JsonIgnore
-    public Map<String, String> getQueries() {
-        return queries;
+    @Override
+    public LinkedHashSet<String> getQueryNames() {
+        return new LinkedHashSet<>(queries.keySet());
+    }
+
+    @Override
+    public PlcQuery getQuery(String name) {
+        return queries.get(name);
     }
 
     @Override
@@ -67,23 +76,29 @@ public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
     public static class Builder implements PlcBrowseRequest.Builder {
 
         private final PlcBrowser browser;
+        private final PlcTagHandler tagHandler;
+        private final LinkedHashMap<String, Supplier<PlcQuery>> queries;
 
-        private final LinkedHashMap<String, String> queries;
-
-        public Builder(PlcBrowser browser) {
+        public Builder(PlcBrowser browser, PlcTagHandler tagHandler) {
             this.browser = browser;
+            this.tagHandler = tagHandler;
             queries = new LinkedHashMap<>();
         }
 
         @Override
         public Builder addQuery(String name, String query) {
-            queries.put(name, query);
+            if (queries.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate query definition '" + name + "'");
+            }
+            queries.put(name, () -> tagHandler.parseQuery(query));
             return this;
         }
 
         @Override
         public PlcBrowseRequest build() {
-            return new DefaultPlcBrowseRequest(browser, queries);
+            LinkedHashMap<String, PlcQuery> parsedQueries = new LinkedHashMap<>();
+            queries.forEach((name, tagQuery) -> parsedQueries.put(name, tagQuery.get()));
+            return new DefaultPlcBrowseRequest(browser, parsedQueries);
         }
 
     }

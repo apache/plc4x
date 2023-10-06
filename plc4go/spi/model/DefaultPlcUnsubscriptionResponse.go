@@ -19,5 +19,20 @@
 
 package model
 
+import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
+var _ apiModel.PlcUnsubscriptionResponse = &DefaultPlcUnsubscriptionResponse{}
+
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionResponse
 type DefaultPlcUnsubscriptionResponse struct {
+	request apiModel.PlcUnsubscriptionRequest `ignore:"true"`
+	none    string
+}
+
+func (d *DefaultPlcUnsubscriptionResponse) GetRequest() apiModel.PlcUnsubscriptionRequest {
+	return d.request
+}
+
+func NewDefaultPlcUnsubscriptionResponse(request apiModel.PlcUnsubscriptionRequest) *DefaultPlcUnsubscriptionResponse {
+	return &DefaultPlcUnsubscriptionResponse{request: request}
 }

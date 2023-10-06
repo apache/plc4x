@@ -28,4 +28,13 @@ public interface UdpTransportConfiguration extends TransportConfiguration {
         return NO_DEFAULT_PORT;
     }
 
+    /**
+     * Most transports don't care about the local port, but some do.
+     * This option allows forcing a local port number to be used.
+     * @return local port number
+     */
+    default int getLocalPort() {
+        return NO_DEFAULT_PORT;
+    }
+
 }

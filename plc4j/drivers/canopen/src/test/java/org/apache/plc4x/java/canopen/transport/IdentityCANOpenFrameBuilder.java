@@ -29,7 +29,7 @@ import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 
 /**
- * A frame builder which simply re-constructs {@link CANOpenFrame} from its fields.
+ * A frame builder which simply re-constructs {@link CANOpenFrame} from its tags.
  *
  * This type is used to declare wire format of data on CAN bus.
  */

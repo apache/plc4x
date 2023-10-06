@@ -20,17 +20,19 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestManualS7Driver(t *testing.T) {
 	t.Skip()
-
 	/*
 		Test program code on the PLC with the test-data.
 		Located in "main"
@@ -67,10 +69,14 @@ func TestManualS7Driver(t *testing.T) {
 	*/
 
 	connectionString := "s7://192.168.23.30"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(s7.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
-	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
+	driverManager.RegisterDriver(s7.NewDriver(optionsForTesting...))
+	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
+	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 
 	test.AddTestCase("%DB4:0.0:BOOL", true)
 	test.AddTestCase("%DB4:1:BYTE", []bool{false, false, true, false, true, false, true, false})

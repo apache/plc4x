@@ -26,7 +26,7 @@ import org.apache.plc4x.java.bacnetip.ede.layouts.EdeLayout;
 import org.apache.plc4x.java.bacnetip.ede.layouts.EdeLayoutFactory;
 import org.apache.plc4x.java.bacnetip.ede.model.Datapoint;
 import org.apache.plc4x.java.bacnetip.ede.model.EdeModel;
-import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+import org.apache.plc4x.java.bacnetip.tag.BacNetIpTag;
 
 import java.io.*;
 import java.nio.file.FileVisitResult;
@@ -39,7 +39,7 @@ import java.util.*;
 public class EdeParser {
 
     public EdeModel parseDirectory(File edeDirectory) {
-        Map<BacNetIpField, Datapoint> datapoints = new HashMap<>();
+        Map<BacNetIpTag, Datapoint> datapoints = new HashMap<>();
         List<File> edeFiles = findAllEdeFiles(edeDirectory);
         try {
             for (File edeFile : edeFiles) {
@@ -61,11 +61,11 @@ public class EdeParser {
     private List<File> findAllEdeFiles(File curDir) {
         List<File> edeFiles = new LinkedList<>();
         try {
-            Files.walkFileTree(curDir.toPath(), new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(curDir.toPath(), new SimpleFileVisitor<>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
                     final File file = path.toFile();
-                    if(file.isFile()) {
+                    if (file.isFile()) {
                         // If the name starts with "edeDataText" this is probably an EDE file.
                         if (file.getName().startsWith("edeDataText")) {
                             String suffix = file.getName().substring("edeDataText".length());
@@ -87,7 +87,7 @@ public class EdeParser {
         return edeFiles;
     }
 
-    private Map<BacNetIpField, Datapoint> parseFileDatapoints(File edeFile) {
+    private Map<BacNetIpTag, Datapoint> parseFileDatapoints(File edeFile) {
         try {
             Reader in = new FileReader(edeFile);
             final CSVParser parser = CSVFormat.newFormat(';').parse(in);
@@ -111,7 +111,7 @@ public class EdeParser {
             // Get the column names.
             final CSVRecord columnNames = iterator.next();
 
-            Map<BacNetIpField, Datapoint> datapoints = new HashMap<>();
+            Map<BacNetIpTag, Datapoint> datapoints = new HashMap<>();
             // Process the content.
             iterator.forEachRemaining(record -> {
                 Long deviceInstance = safeCastLong(record, edeLayout.getDeviceInstancePos());
@@ -120,7 +120,7 @@ public class EdeParser {
                 if((deviceInstance == null) || (objectType == null) || (objectInstance == null)) {
                     return;
                 }
-                BacNetIpField address = new BacNetIpField(deviceInstance, objectType, objectInstance);
+                BacNetIpTag address = new BacNetIpTag(deviceInstance, objectType, objectInstance);
                 String keyName = safeString(record, edeLayout.getKeyNamePos());
                 String objectName = safeString(record, edeLayout.getObjectNamePos());
                 String description = safeString(record, edeLayout.getDescriptionPos());

@@ -26,8 +26,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.plc4x.java.PlcDriverManager;
+
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -40,10 +41,10 @@ public class PollLoop {
 
     private final AtomicBoolean doCollect = new AtomicBoolean(false);
 
-    private String connectionString;
-    private String plcType;
-    private List<String> variables;
-    private int samplingRate;
+    private final String connectionString;
+    private final String plcType;
+    private final List<String> variables;
+    private final int samplingRate;
 
     final static String PLC4JTYPE_SIEMENS = "Siemens S7";
 
@@ -62,9 +63,9 @@ public class PollLoop {
      */
     public class Collector extends Thread {
 
-        String connectionString;
-        String plcType;
-        int samplingRate;
+        final String connectionString;
+        final String plcType;
+        final int samplingRate;
 
         int incrementalSleepTime;
 
@@ -92,8 +93,8 @@ public class PollLoop {
                 // Create a new read request
                 // variables names are the same as the actual variable read
                 PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                for (int i = 0; i < variables.size(); i++) {
-                    builder.addItem(variables.get(i), variables.get(i));
+                for (String variable : variables) {
+                    builder.addTagAddress(variable, variable);
                 }
                 PlcReadRequest readRequest = builder.build();
 
@@ -157,7 +158,7 @@ public class PollLoop {
             }
 
             try {
-                plcConnection = new PlcDriverManager().getConnection(connectionString);
+                plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(connectionString);
                 // in osgi/karaf uses this instead
 //                switch (plcType) {
 //                    case PLC4JTYPE_SIEMENS:
@@ -200,23 +201,23 @@ public class PollLoop {
         collector.start();
     }
 
-    public static Object[] response2Event(PlcReadResponse response, List<String> fieldNames) {
-        // field names are returned in sorted order we do not want that
-        Object[] event = new Object[fieldNames.size() + 1];
+    public static Object[] response2Event(PlcReadResponse response, List<String> tagNames) {
+        // tag names are returned in sorted order we do not want that
+        Object[] event = new Object[tagNames.size() + 1];
 
         event[0] = System.currentTimeMillis();
 
-        for (int i = 0; i < fieldNames.size(); i++) {
-            if (response.getResponseCode(fieldNames.get(i)) == PlcResponseCode.OK) {
-                PlcValue value = response.getPlcValue(fieldNames.get(i));
+        for (int i = 0; i < tagNames.size(); i++) {
+            if (response.getResponseCode(tagNames.get(i)) == PlcResponseCode.OK) {
+                PlcValue value = response.getPlcValue(tagNames.get(i));
                 event[i + 1] = value.toString();
             }
 
             // Something went wrong, to output an error message instead.
             else {
                 System.out.println(
-                    "Error[" + fieldNames.get(i) + "]: " + response
-                        .getResponseCode(fieldNames.get(i))
+                    "Error[" + tagNames.get(i) + "]: " + response
+                        .getResponseCode(tagNames.get(i))
                         .name());
             }
         }

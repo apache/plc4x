@@ -19,7 +19,11 @@
 
 package utils
 
+import "context"
+
 type Serializable interface {
 	// Serialize serializes this type
-	Serialize(writeBuffer WriteBuffer) error
+	Serialize() ([]byte, error)
+	// SerializeWithWriteBuffer serializes this type with a custom buffer
+	SerializeWithWriteBuffer(ctx context.Context, writeBuffer WriteBuffer) error
 }

@@ -18,10 +18,9 @@
  */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 import org.junit.jupiter.api.Disabled;
-
-import java.util.Arrays;
 
 @Disabled("Manual Test")
 public class ManualModbusDriverTest extends ManualTest {
@@ -66,39 +65,36 @@ public class ManualModbusDriverTest extends ManualTest {
      */
 
     public ManualModbusDriverTest(String connectionString) {
-        super(connectionString);
+        super(connectionString, true);
     }
 
     public static void main(String[] args) throws Exception {
-        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://192.168.23.30");
-        test.addTestCase("holding-register:1:BOOL", true); // 0001
-        test.addTestCase("holding-register:2:BYTE", Arrays.asList(false, false, true, false, true, false, true, false)); // 2A
-        test.addTestCase("holding-register:3:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false)); // A5B8
-        test.addTestCase("holding-register:4:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8
-        test.addTestCase("holding-register:6:LWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false, true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8 FCDE 88B8
-        test.addTestCase("holding-register:10:SINT", -42); // D6
-        test.addTestCase("holding-register:11:USINT", 42); // 2A
-        test.addTestCase("holding-register:12:INT", -2424); // F688
-        test.addTestCase("holding-register:13:UINT", 42424); // A5B8
-        test.addTestCase("holding-register:14:DINT", -242442424); // F18C 9F48
-        test.addTestCase("holding-register:16:UDINT", 4242442424L);// FCDE 88B8
-        test.addTestCase("holding-register:18:LINT", -4242442424242424242L);// C51F D117 B2FB B64E
-        test.addTestCase("holding-register:22:ULINT", 4242442424242424242L);// 3AE0 2EE8 4D04 49B2
-        test.addTestCase("holding-register:26:REAL", 3.141593F);// 4049 0FDC
-        test.addTestCase("holding-register:28:LREAL", 2.71828182846D); // 4005 BF0A 8B14 5FCF
-        //test.addTestCase("holding-register:32:TIME", "PT1.234S"); // 04D2
-        //test.addTestCase("holding-register::LTIME", "PT24015H23M12.034002044S");
-        //test.addTestCase("holding-register::DATE", "1998-03-28");
-        //test.addTestCase("holding-register::TIME_OF_DAY", "15:36:30.123");
-        //test.addTestCase("holding-register::TOD", "16:17:18.123");
-        //test.addTestCase("holding-register::DATE_AND_TIME", "1996-05-06T15:36:30");
-        //test.addTestCase("holding-register::DT", "1992-03-29T00:00");
-        //test.addTestCase("holding-register::LDATE_AND_TIME", "1978-03-28T15:36:30");
-        //test.addTestCase("holding-register::LDT", "1978-03-28T15:36:30");
-        //test.addTestCase("holding-register::CHAR", "H");
-        //test.addTestCase("holding-register::WCHAR", "w");
-        //test.addTestCase("holding-register::STRING(10)", "hurz");
-        //test.addTestCase("holding-register::WSTRING(10)", "wolf");
+        // ! See modbus-pal-project.xmpp for a config made to be used by this test
+        // Tested with ModbusPal
+        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://127.0.0.1");
+        test.addTestCase("holding-register:1000:BOOL", new PlcBOOL(true)); // 0001 # 1
+        test.addTestCase("holding-register:1001:BYTE", new PlcBYTE(42)); // 2A # 42
+        test.addTestCase("holding-register:1002:WORD", new PlcWORD(42424)); // A5B8 # 42424
+        test.addTestCase("holding-register:1003:DWORD", new PlcDWORD(4242442424L)); // FCDE 88B8 # 64734 35000
+        test.addTestCase("holding-register:1005:LWORD", new PlcLWORD(4242442424242424242L)); // 3AE0 2EE8 4D04 49B2 # 15072 12008 19716 18866
+        test.addTestCase("holding-register:1009:SINT", new PlcSINT(-42)); // D6 # 214
+        test.addTestCase("holding-register:1010:USINT", new PlcUSINT(42)); // 2A # 42
+        test.addTestCase("holding-register:1011:INT", new PlcINT(-2424)); // F688 # 63112
+        test.addTestCase("holding-register:1012:UINT", new PlcUINT(42424)); // A5B8 # 42424
+        test.addTestCase("holding-register:1013:DINT", new PlcDINT(-242442424)); // F18C 9F48 # 61836 40776
+        test.addTestCase("holding-register:1015:UDINT", new PlcUDINT(4242442424L));// FCDE 88B8 # 64734 35000
+        test.addTestCase("holding-register:1017:LINT", new PlcLINT(-4242442424242424242L));// C51F D117 B2FB B64E # 50463 53527 45819 46670
+        test.addTestCase("holding-register:1021:ULINT", new PlcULINT(4242442424242424242L));// 3AE0 2EE8 4D04 49B2 # 15072 12008 19716 18866
+        test.addTestCase("holding-register:1025:REAL", new PlcREAL(3.141593F));// 4049 0FDC # 16457 4060
+        test.addTestCase("holding-register:1027:LREAL", new PlcLREAL(2.71828182846D)); // 4005 BF0A 8B14 5FCF # 16389 48906 35604 24527
+// TODO: These datatypes are not yet fully implemented
+//        test.addTestCase("holding-register:1031:STRING", new PlcSTRING("hurz")); // 6875 727A # 26741 29306
+//        test.addTestCase("holding-register:1033:WSTRING", new PlcWSTRING("wolf")); // 0068 0075 0072 007A # 104 117 114 122
+//        test.addTestCase("holding-register:1037:TIME", new PlcTIME(Duration.parse("PT1.234S"))); // 04D2 # 1234
+//        test.addTestCase("holding-register::LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
+//        test.addTestCase("holding-register::DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
+//        test.addTestCase("holding-register::TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+//        test.addTestCase("holding-register::DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         test.run();
     }
 

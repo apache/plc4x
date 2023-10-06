@@ -25,6 +25,6 @@ jobs:
     triggerConfig: (SCHEDULED,100)
     sources:
       - LABJACK_PI
-    fields:
+    tags:
       test1: 'readholdingregisters:49100[2]'
 

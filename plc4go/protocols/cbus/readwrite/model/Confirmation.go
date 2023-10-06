@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // Confirmation is the corresponding interface of Confirmation
 type Confirmation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetAlpha returns Alpha (property field)
@@ -82,6 +86,8 @@ func (m *_Confirmation) GetConfirmationType() ConfirmationType {
 ///////////////////////
 
 func (m *_Confirmation) GetIsSuccess() bool {
+	ctx := context.Background()
+	_ = ctx
 	secondAlpha := m.SecondAlpha
 	_ = secondAlpha
 	return bool(bool((m.GetConfirmationType()) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
@@ -98,7 +104,7 @@ func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType Confirmati
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmation(structType interface{}) Confirmation {
+func CastConfirmation(structType any) Confirmation {
 	if casted, ok := structType.(Confirmation); ok {
 		return casted
 	}
@@ -112,19 +118,15 @@ func (m *_Confirmation) GetTypeName() string {
 	return "Confirmation"
 }
 
-func (m *_Confirmation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_Confirmation) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_Confirmation) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (alpha)
-	lengthInBits += m.Alpha.GetLengthInBits()
+	lengthInBits += m.Alpha.GetLengthInBits(ctx)
 
 	// Optional Field (secondAlpha)
 	if m.SecondAlpha != nil {
-		lengthInBits += m.SecondAlpha.GetLengthInBits()
+		lengthInBits += m.SecondAlpha.GetLengthInBits(ctx)
 	}
 
 	// Simple field (confirmationType)
@@ -135,13 +137,19 @@ func (m *_Confirmation) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_Confirmation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_Confirmation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
+func ConfirmationParse(ctx context.Context, theBytes []byte) (Confirmation, error) {
+	return ConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("Confirmation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Confirmation")
 	}
@@ -152,7 +160,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 	}
-	_alpha, _alphaErr := AlphaParse(readBuffer)
+	_alpha, _alphaErr := AlphaParseWithBuffer(ctx, readBuffer)
 	if _alphaErr != nil {
 		return nil, errors.Wrap(_alphaErr, "Error parsing 'alpha' field of Confirmation")
 	}
@@ -168,10 +176,10 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 		if pullErr := readBuffer.PullContext("secondAlpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for secondAlpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'secondAlpha' field of Confirmation")
@@ -187,7 +195,7 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	if pullErr := readBuffer.PullContext("confirmationType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for confirmationType")
 	}
-	_confirmationType, _confirmationTypeErr := ConfirmationTypeParse(readBuffer)
+	_confirmationType, _confirmationTypeErr := ConfirmationTypeParseWithBuffer(ctx, readBuffer)
 	if _confirmationTypeErr != nil {
 		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field of Confirmation")
 	}
@@ -213,9 +221,19 @@ func ConfirmationParse(readBuffer utils.ReadBuffer) (Confirmation, error) {
 	}, nil
 }
 
-func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_Confirmation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_Confirmation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("Confirmation"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for Confirmation")
 	}
@@ -224,7 +242,7 @@ func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("alpha"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for alpha")
 	}
-	_alphaErr := writeBuffer.WriteSerializable(m.GetAlpha())
+	_alphaErr := writeBuffer.WriteSerializable(ctx, m.GetAlpha())
 	if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for alpha")
 	}
@@ -239,7 +257,7 @@ func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for secondAlpha")
 		}
 		secondAlpha = m.GetSecondAlpha()
-		_secondAlphaErr := writeBuffer.WriteSerializable(secondAlpha)
+		_secondAlphaErr := writeBuffer.WriteSerializable(ctx, secondAlpha)
 		if popErr := writeBuffer.PopContext("secondAlpha"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for secondAlpha")
 		}
@@ -252,7 +270,7 @@ func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("confirmationType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for confirmationType")
 	}
-	_confirmationTypeErr := writeBuffer.WriteSerializable(m.GetConfirmationType())
+	_confirmationTypeErr := writeBuffer.WriteSerializable(ctx, m.GetConfirmationType())
 	if popErr := writeBuffer.PopContext("confirmationType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for confirmationType")
 	}
@@ -260,7 +278,9 @@ func (m *_Confirmation) Serialize(writeBuffer utils.WriteBuffer) error {
 		return errors.Wrap(_confirmationTypeErr, "Error serializing 'confirmationType' field")
 	}
 	// Virtual field
-	if _isSuccessErr := writeBuffer.WriteVirtual("isSuccess", m.GetIsSuccess()); _isSuccessErr != nil {
+	isSuccess := m.GetIsSuccess()
+	_ = isSuccess
+	if _isSuccessErr := writeBuffer.WriteVirtual(ctx, "isSuccess", m.GetIsSuccess()); _isSuccessErr != nil {
 		return errors.Wrap(_isSuccessErr, "Error serializing 'isSuccess' field")
 	}
 
@@ -279,7 +299,7 @@ func (m *_Confirmation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

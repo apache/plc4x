@@ -21,15 +21,18 @@ package ui
 
 import (
 	"fmt"
-	plc4x_config "github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	"net/url"
+	"runtime/debug"
+	"strings"
+	"time"
+
+	plc4xConfig "github.com/apache/plc4x/plc4go/pkg/api/config"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
 	"github.com/pkg/errors"
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"net/url"
-	"strings"
-	"time"
 )
 
 const rootCommandIndicator = "rootCommand"
@@ -52,7 +55,7 @@ var rootCommand = Command{
 					if !driver.SupportsDiscovery() {
 						return errors.Errorf("%s doesn't support discovery", driverId)
 					}
-					return driver.Discover(func(event model.PlcDiscoveryItem) {
+					return driver.Discover(func(event apiModel.PlcDiscoveryItem) {
 						_, _ = fmt.Fprintf(messageOutput, "%v\n", event)
 					})
 				} else {
@@ -70,7 +73,7 @@ var rootCommand = Command{
 			Name:        "connect",
 			Description: "Connects to a device",
 			action: func(_ Command, connectionString string) error {
-				log.Info().Msgf("connect connectionString [%s]", connectionString)
+				log.Info().Str("connectionString", connectionString).Msg("connect connectionString")
 				connectionUrl, err := url.Parse(connectionString)
 				if err != nil {
 					return errors.Wrapf(err, "can't parse connection url %s", connectionString)
@@ -84,7 +87,7 @@ var rootCommand = Command{
 				if err := connectionResult.GetErr(); err != nil {
 					return errors.Wrapf(err, "%s can't connect to", connectionUrl.Host)
 				}
-				log.Info().Msgf("%s connected", connectionId)
+				log.Info().Str("connectionId", connectionId).Msg("connected")
 				connections[connectionId] = connectionResult.GetConnection()
 				connectionsChanged()
 				return nil
@@ -111,7 +114,7 @@ var rootCommand = Command{
 					return errors.Errorf("%s not connected", connectionString)
 				} else {
 					closeResult := <-connection.Close()
-					log.Info().Msgf("%s disconnected", connectionString)
+					log.Info().Str("connectionString", connectionString).Msg("connectionString disconnected")
 					delete(connections, connectionString)
 					connectionsChanged()
 					if err := closeResult.GetErr(); err != nil {
@@ -158,7 +161,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					readRequest, err := connection.ReadRequestBuilder().
-						AddQuery("readField", split[1]).
+						AddTagAddress("readField", split[1]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't read", connectionsString)
@@ -167,7 +170,7 @@ var rootCommand = Command{
 					if err := readRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't read", connectionsString)
 					}
-					plc4xBrowserLog.Debug().Msgf("read took %f seconds", time.Now().Sub(start).Seconds())
+					plc4xBrowserLog.Debug().TimeDiff("runtime", time.Now(), start).Msg("read took runtime")
 					if err := readRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error reading", connectionsString)
 					}
@@ -222,7 +225,7 @@ var rootCommand = Command{
 				} else {
 					start := time.Now()
 					writeRequest, err := connection.WriteRequestBuilder().
-						AddQuery("writeField", split[1], split[2]).
+						AddTagAddress("writeField", split[1], split[2]).
 						Build()
 					if err != nil {
 						return errors.Wrapf(err, "%s can't write", connectionsString)
@@ -231,7 +234,7 @@ var rootCommand = Command{
 					if err := writeRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't write", connectionsString)
 					}
-					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					plc4xBrowserLog.Debug().TimeDiff("runtime", time.Now(), start).Msg("write took runtime")
 					if err := writeRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error writing", connectionsString)
 					}
@@ -291,15 +294,16 @@ var rootCommand = Command{
 					if err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
-						numberOfMessagesReceived++
-						messageReceived(numberOfMessagesReceived, time.Now(), result)
+					browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
+						// TODO: Disabled for now ... not quite sure what this is for ...
+						//numberOfMessagesReceived++
+						//messageReceived(numberOfMessagesReceived, time.Now(), result)
 						return true
 					})
 					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't browse", connectionsString)
 					}
-					plc4xBrowserLog.Debug().Msgf("write took %f seconds", time.Now().Sub(start).Seconds())
+					plc4xBrowserLog.Debug().TimeDiff("runtime", time.Now(), start).Msg("write took runtime")
 					if err := browseRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s error browse", connectionsString)
 					}
@@ -369,8 +373,8 @@ var rootCommand = Command{
 					return errors.Errorf("%s not connected", connectionsString)
 				} else {
 					subscriptionRequest, err := connection.SubscriptionRequestBuilder().
-						AddEventQuery("subscriptionField", split[1]).
-						AddPreRegisteredConsumer("subscriptionField", func(event model.PlcSubscriptionEvent) {
+						AddEventTagAddress("subscriptionField", split[1]).
+						AddPreRegisteredConsumer("subscriptionField", func(event apiModel.PlcSubscriptionEvent) {
 							numberOfMessagesReceived++
 							messageReceived(numberOfMessagesReceived, time.Now(), event)
 						}).
@@ -382,7 +386,7 @@ var rootCommand = Command{
 					if err := subscriptionRequestResult.GetErr(); err != nil {
 						return errors.Wrapf(err, "%s can't subscribe", connectionsString)
 					}
-					log.Info().Msgf("subscription result\n%s", subscriptionRequestResult.GetResponse())
+					log.Info().Stringer("response", subscriptionRequestResult.GetResponse()).Msg("subscription result")
 				}
 				return nil
 			},
@@ -460,7 +464,7 @@ var rootCommand = Command{
 							Name:        "on",
 							Description: "trace on",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerWorkers = true
+								plc4xConfig.TraceTransactionManagerWorkers = true
 								return nil
 							},
 						},
@@ -468,7 +472,7 @@ var rootCommand = Command{
 							Name:        "off",
 							Description: "trace off",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerWorkers = false
+								plc4xConfig.TraceTransactionManagerWorkers = false
 								return nil
 							},
 						},
@@ -482,7 +486,7 @@ var rootCommand = Command{
 							Name:        "on",
 							Description: "trace on",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerTransactions = true
+								plc4xConfig.TraceTransactionManagerTransactions = true
 								return nil
 							},
 						},
@@ -490,7 +494,7 @@ var rootCommand = Command{
 							Name:        "off",
 							Description: "trace off",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceTransactionManagerTransactions = false
+								plc4xConfig.TraceTransactionManagerTransactions = false
 								return nil
 							},
 						},
@@ -504,7 +508,7 @@ var rootCommand = Command{
 							Name:        "on",
 							Description: "trace on",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceDefaultMessageCodecWorker = true
+								plc4xConfig.TraceDefaultMessageCodecWorker = true
 								return nil
 							},
 						},
@@ -512,7 +516,7 @@ var rootCommand = Command{
 							Name:        "off",
 							Description: "trace off",
 							action: func(_ Command, _ string) error {
-								plc4x_config.TraceDefaultMessageCodecWorker = false
+								plc4xConfig.TraceDefaultMessageCodecWorker = false
 								return nil
 							},
 						},
@@ -700,7 +704,10 @@ func (c Command) acceptsCurrentText(currentCommandText string) bool {
 	hasThePrefix := strings.HasPrefix(currentCommandText, c.Name)
 	hasNoMatchingAlternative := !strings.HasPrefix(currentCommandText, c.Name+"-")
 	accepts := hasThePrefix && hasNoMatchingAlternative
-	plc4xBrowserLog.Debug().Msgf("%s accepts %t", c, accepts)
+	plc4xBrowserLog.Debug().
+		Stringer("c", c).
+		Bool("accepts", accepts).
+		Msg("c accepts")
 	return accepts
 }
 
@@ -740,8 +747,22 @@ func Execute(commandText string) error {
 	return err
 }
 
-func (c Command) Execute(commandText string) error {
-	plc4xBrowserLog.Debug().Msgf("%s executes %s", c, commandText)
+func (c Command) Execute(commandText string) (err error) {
+	defer func() {
+		if recoveredErr := recover(); recoveredErr != nil {
+			if log.Debug().Enabled() {
+				log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+			err = errors.Errorf("panic occurred: %v.", recoveredErr)
+		}
+	}()
+	plc4xBrowserLog.Debug().
+		Stringer("c", c).
+		Str("commandText", commandText).
+		Msg("%s executes %s")
 	if !c.acceptsCurrentText(commandText) {
 		return errors.Errorf("%s doesn't understand %s", c.Name, commandText)
 	}
@@ -749,7 +770,10 @@ func (c Command) Execute(commandText string) error {
 		prepareForSubCommandForSubCommand := c.prepareForSubCommand(commandText)
 		for _, command := range c.subCommands {
 			if command.acceptsCurrentText(prepareForSubCommandForSubCommand) {
-				plc4xBrowserLog.Debug().Msgf("%s delegates to sub %s", c, command)
+				plc4xBrowserLog.Debug().
+					Stringer("c", c).
+					Stringer("command", command).
+					Msg("c delegates to sub command")
 				return command.Execute(prepareForSubCommandForSubCommand)
 			}
 		}
@@ -758,7 +782,10 @@ func (c Command) Execute(commandText string) error {
 		if c.action == nil {
 			return NotDirectlyExecutable
 		}
-		plc4xBrowserLog.Debug().Msgf("%s executes %s directly", c, commandText)
+		plc4xBrowserLog.Debug().
+			Stringer("c", c).
+			Str("commandText", commandText).
+			Msg("c executes commandText directly")
 		preparedForParameters := c.prepareForParameters(commandText)
 		return c.action(c, preparedForParameters)
 	}

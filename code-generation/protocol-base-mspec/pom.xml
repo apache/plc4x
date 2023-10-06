@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
@@ -44,6 +44,29 @@
             <goals>
               <goal>antlr4</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!--
+       This is an experiment to get things working for VSCode (IntelliJ and Maven pick them up automatically)
+       If this causes problems with IntelliJ, Eclipse or Maven we should probably come up with some other solution.
+       It might also help people using Eclipse.
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-plc4x-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/antlr4/</source>
+              </sources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -68,6 +91,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
 
     <!-- Testing -->
     <dependency>
@@ -85,12 +112,6 @@
       <artifactId>hamcrest-library</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
 
 </project>

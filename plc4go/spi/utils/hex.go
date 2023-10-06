@@ -48,12 +48,12 @@ const pipeWidth = 1
 var DebugHex bool
 
 // Dump dumps a 56 char wide hex string
-func Dump(data []byte) string {
-	return DumpFixedWidth(data, DefaultWidth)
+func Dump(data []byte, highlights ...int) string {
+	return DumpFixedWidth(data, DefaultWidth, highlights...)
 }
 
 // DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth
-func DumpFixedWidth(data []byte, desiredCharWidth int) string {
+func DumpFixedWidth(data []byte, desiredCharWidth int, highlights ...int) string {
 	if data == nil || len(data) < 1 {
 		return ""
 	}
@@ -61,14 +61,23 @@ func DumpFixedWidth(data []byte, desiredCharWidth int) string {
 	data = append(data[:0:0], data...)
 	hexString := ""
 	maxBytesPerRow, indexWidth := calculateBytesPerRowAndIndexWidth(len(data), desiredCharWidth)
-
+	highlightsSet := map[int]struct{}{}
+	for _, highlight := range highlights {
+		highlightsSet[highlight] = struct{}{}
+	}
 	for byteIndex, rowIndex := 0, 0; byteIndex < len(data); byteIndex, rowIndex = byteIndex+maxBytesPerRow, rowIndex+1 {
 		indexString := fmt.Sprintf("%0*d|", indexWidth, byteIndex)
 		hexString += indexString
 		for columnIndex := 0; columnIndex < maxBytesPerRow; columnIndex++ {
 			absoluteIndex := byteIndex + columnIndex
 			if absoluteIndex < len(data) {
+				if _, ok := highlightsSet[absoluteIndex]; ok {
+					hexString += "\033[0;31m"
+				}
 				hexString += fmt.Sprintf("%02x ", data[absoluteIndex])
+				if _, ok := highlightsSet[absoluteIndex]; ok {
+					hexString += "\033[0m"
+				}
 			} else {
 				// align with empty byte representation
 				hexString += strings.Repeat(" ", byteWidth)
@@ -88,14 +97,40 @@ func DumpFixedWidth(data []byte, desiredCharWidth int) string {
 	return hexString[:len(hexString)-1]
 }
 
+// DiffHex produces a hex diff AsciiBox of two byte arrays
+func DiffHex(expectedBytes, actualBytes []byte) AsciiBox {
+	numBytes := int(math.Min(float64(len(expectedBytes)), float64(len(actualBytes))))
+	brokenAt := -1
+	var diffIndexes []int
+	for i := 0; i < numBytes; i++ {
+		if expectedBytes[i] != actualBytes[i] {
+			if brokenAt < 0 {
+				brokenAt = i
+			}
+			diffIndexes = append(diffIndexes, i)
+		}
+	}
+	expectedHex := DumpFixedWidth(expectedBytes, 46, diffIndexes...)
+	actialHex := DumpFixedWidth(actualBytes, 46, diffIndexes...)
+	return AsciiBoxWriterDefault.BoxSideBySide(AsciiBoxWriterDefault.BoxString("expected", expectedHex, 0), AsciiBoxWriterDefault.BoxString("actual", actialHex, 0))
+
+}
+
 func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (int, int) {
 	if DebugHex {
-		log.Debug().Msgf("Calculating max row and index for %d number of bytes and a desired string width of %d", numberOfBytes, desiredStringWidth)
+		log.Debug().
+			Int("numberOfBytes", numberOfBytes).
+			Int("desiredStringWidth", desiredStringWidth).
+			Msg("Calculating max row and index for numberOfBytes number of bytes and a desired string width of desiredStringWidth")
 	}
 	indexDigits := int(math.Log10(float64(numberOfBytes))) + 1
 	requiredIndexWidth := indexDigits + pipeWidth
 	if DebugHex {
-		log.Debug().Msgf("index width %d for indexDigits %d for bytes %d", requiredIndexWidth, indexDigits, numberOfBytes)
+		log.Debug().
+			Int("requiredIndexWidth", requiredIndexWidth).
+			Int("indexDigits", indexDigits).
+			Int("numberOfBytes", numberOfBytes).
+			Msg("index width requiredIndexWidth for indexDigits for numberOfBytes")
 	}
 	// strings get quoted by 2 chars
 	const quoteRune = 1
@@ -103,17 +138,24 @@ func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (i
 	// 0 00  '.'
 	availableSpace := requiredIndexWidth + byteWidth + quoteRune + potentialStringRenderRune + quoteRune
 	if DebugHex {
-		log.Debug().Msgf("calculated %d minimal width for number of bytes %d", availableSpace, numberOfBytes)
+		log.Debug().
+			Int("availableSpace", availableSpace).
+			Int("numberOfBytes", numberOfBytes).
+			Msg("calculated availableSpace minimal width for number of bytes numberOfBytes")
 	}
 	if desiredStringWidth >= availableSpace {
 		availableSpace = desiredStringWidth
 	} else {
 		if DebugHex {
-			log.Debug().Msgf("Overflow by %d runes", desiredStringWidth-availableSpace)
+			log.Debug().
+				Int("n", desiredStringWidth-availableSpace).
+				Msg("Overflow by n runes")
 		}
 	}
 	if DebugHex {
-		log.Debug().Msgf("Actual space %d", availableSpace)
+		log.Debug().
+			Int("availableSpace", availableSpace).
+			Msg("Actual space")
 	}
 
 	z := float64(availableSpace)
@@ -125,7 +167,10 @@ func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (i
 	// x = (z - (y + b + x * 1 + b)) / a == x = (-2 * b - y + z)/(a + 1) and a + 1!=0 and a!=0
 	x := ((-2 * b) - y + z) / (a + 1)
 	if DebugHex {
-		log.Debug().Msgf("Calculated number of bytes per row %f in int %d", x, int(x))
+		log.Debug().
+			Float64("x", x).
+			Int("xInt", int(x)).
+			Msg("Calculated number of bytes per row x in int xInt")
 	}
 	return int(x), indexDigits
 }
@@ -142,7 +187,7 @@ func maskString(data []byte) string {
 	return string(data)
 }
 
-func toBytes(anything interface{}) ([]byte, error) {
+func toBytes(anything any) ([]byte, error) {
 	var buffer bytes.Buffer
 	err := gob.NewEncoder(&buffer).Encode(anything)
 	if err != nil {

@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -58,7 +59,7 @@ plc4c_s7_read_write_cotp_packet plc4c_s7_read_write_cotp_packet_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4c_spi_read_buffer* readBuffer, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
+plc4c_return_code plc4c_s7_read_write_cotp_packet_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint16_t cotpLen, plc4c_s7_read_write_cotp_packet** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -127,7 +128,7 @@ if( tpduCode == 0xE0 ) { /* COTPPacketConnectionRequest */
 
   // Simple Field (protocolClass)
   plc4c_s7_read_write_cotp_protocol_class protocolClass;
-  _res = plc4c_s7_read_write_cotp_protocol_class_parse(readBuffer, (void*) &protocolClass);
+  _res = plc4c_s7_read_write_cotp_protocol_class_parse(ctx, readBuffer, (void*) &protocolClass);
   if(_res != OK) {
     return _res;
   }
@@ -156,7 +157,7 @@ if( tpduCode == 0xD0 ) { /* COTPPacketConnectionResponse */
 
   // Simple Field (protocolClass)
   plc4c_s7_read_write_cotp_protocol_class protocolClass;
-  _res = plc4c_s7_read_write_cotp_protocol_class_parse(readBuffer, (void*) &protocolClass);
+  _res = plc4c_s7_read_write_cotp_protocol_class_parse(ctx, readBuffer, (void*) &protocolClass);
   if(_res != OK) {
     return _res;
   }
@@ -185,7 +186,7 @@ if( tpduCode == 0x80 ) { /* COTPPacketDisconnectRequest */
 
   // Simple Field (protocolClass)
   plc4c_s7_read_write_cotp_protocol_class protocolClass;
-  _res = plc4c_s7_read_write_cotp_protocol_class_parse(readBuffer, (void*) &protocolClass);
+  _res = plc4c_s7_read_write_cotp_protocol_class_parse(ctx, readBuffer, (void*) &protocolClass);
   if(_res != OK) {
     return _res;
   }
@@ -244,7 +245,7 @@ if( tpduCode == 0x70 ) { /* COTPPacketTpduError */
     uint8_t parametersEndPos = plc4c_spi_read_get_pos(readBuffer) + _parametersLength;
     while(plc4c_spi_read_get_pos(readBuffer) < parametersEndPos) {
       plc4c_s7_read_write_cotp_parameter* _value = NULL;
-      _res = plc4c_s7_read_write_cotp_parameter_parse(readBuffer, (((headerLength) + (1))) - ((plc4c_spi_read_get_pos(readBuffer) - startPos)), (void*) &_value);
+      _res = plc4c_s7_read_write_cotp_parameter_parse(ctx, readBuffer, (((headerLength) + (1))) - ((plc4c_spi_read_get_pos(readBuffer) - startPos)), (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -256,7 +257,7 @@ if( tpduCode == 0x70 ) { /* COTPPacketTpduError */
   // Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_s7_message* payload = NULL;
   if(((plc4c_spi_read_get_pos(readBuffer) - startPos)) < (cotpLen)) {
-    _res = plc4c_s7_read_write_s7_message_parse(readBuffer, &payload);
+    _res = plc4c_s7_read_write_s7_message_parse(ctx, readBuffer, &payload);
     if(_res != OK) {
       return _res;
     }
@@ -268,11 +269,11 @@ if( tpduCode == 0x70 ) { /* COTPPacketTpduError */
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_packet* _message) {
+plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_cotp_packet* _message) {
   plc4c_return_code _res = OK;
 
   // Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_cotp_packet_length_in_bytes(_message)) - ((((((((_message->payload) != (NULL))) ? plc4c_s7_read_write_s7_message_length_in_bytes(_message->payload) : 0))) + (1))));
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (plc4c_s7_read_write_cotp_packet_length_in_bytes(ctx, _message)) - ((((((((_message->payload) != (NULL))) ? plc4c_s7_read_write_s7_message_length_in_bytes(ctx, _message->payload) : 0))) + (1))));
   if(_res != OK) {
     return _res;
   }
@@ -313,7 +314,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   }
 
   // Simple Field (protocolClass)
-  _res = plc4c_s7_read_write_cotp_protocol_class_serialize(writeBuffer, &_message->cotp_packet_connection_request_protocol_class);
+  _res = plc4c_s7_read_write_cotp_protocol_class_serialize(ctx, writeBuffer, &_message->cotp_packet_connection_request_protocol_class);
   if(_res != OK) {
     return _res;
   }
@@ -335,7 +336,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   }
 
   // Simple Field (protocolClass)
-  _res = plc4c_s7_read_write_cotp_protocol_class_serialize(writeBuffer, &_message->cotp_packet_connection_response_protocol_class);
+  _res = plc4c_s7_read_write_cotp_protocol_class_serialize(ctx, writeBuffer, &_message->cotp_packet_connection_response_protocol_class);
   if(_res != OK) {
     return _res;
   }
@@ -357,7 +358,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   }
 
   // Simple Field (protocolClass)
-  _res = plc4c_s7_read_write_cotp_protocol_class_serialize(writeBuffer, &_message->cotp_packet_disconnect_request_protocol_class);
+  _res = plc4c_s7_read_write_cotp_protocol_class_serialize(ctx, writeBuffer, &_message->cotp_packet_disconnect_request_protocol_class);
   if(_res != OK) {
     return _res;
   }
@@ -402,9 +403,8 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->parameters);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_cotp_parameter* _value = (plc4c_s7_read_write_cotp_parameter*) plc4c_utils_list_get_value(_message->parameters, curItem);
-      _res = plc4c_s7_read_write_cotp_parameter_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_cotp_parameter_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -413,7 +413,7 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    _res = plc4c_s7_read_write_s7_message_serialize(writeBuffer, _message->payload);
+    _res = plc4c_s7_read_write_s7_message_serialize(ctx, writeBuffer, _message->payload);
     if(_res != OK) {
       return _res;
     }
@@ -422,11 +422,11 @@ plc4c_return_code plc4c_s7_read_write_cotp_packet_serialize(plc4c_spi_write_buff
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4c_s7_read_write_cotp_packet* _message) {
-  return plc4c_s7_read_write_cotp_packet_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_cotp_packet_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_cotp_packet* _message) {
+  return plc4c_s7_read_write_cotp_packet_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp_packet* _message) {
+uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_cotp_packet* _message) {
   uint16_t lengthInBits = 0;
 
   // Implicit Field (headerLength)
@@ -459,7 +459,7 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
 
 
   // Simple field (protocolClass)
-  lengthInBits += plc4c_s7_read_write_cotp_protocol_class_length_in_bits(&_message->cotp_packet_connection_request_protocol_class);
+  lengthInBits += plc4c_s7_read_write_cotp_protocol_class_length_in_bits(ctx, &_message->cotp_packet_connection_request_protocol_class);
 
       break;
     }
@@ -474,7 +474,7 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
 
 
   // Simple field (protocolClass)
-  lengthInBits += plc4c_s7_read_write_cotp_protocol_class_length_in_bits(&_message->cotp_packet_connection_response_protocol_class);
+  lengthInBits += plc4c_s7_read_write_cotp_protocol_class_length_in_bits(ctx, &_message->cotp_packet_connection_response_protocol_class);
 
       break;
     }
@@ -489,7 +489,7 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
 
 
   // Simple field (protocolClass)
-  lengthInBits += plc4c_s7_read_write_cotp_protocol_class_length_in_bits(&_message->cotp_packet_disconnect_request_protocol_class);
+  lengthInBits += plc4c_s7_read_write_cotp_protocol_class_length_in_bits(ctx, &_message->cotp_packet_disconnect_request_protocol_class);
 
       break;
     }
@@ -519,16 +519,16 @@ uint16_t plc4c_s7_read_write_cotp_packet_length_in_bits(plc4c_s7_read_write_cotp
 
   // Array field
   if(_message->parameters != NULL) {
-    plc4c_list_element* curElement = _message->parameters->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_cotp_parameter_length_in_bits((plc4c_s7_read_write_cotp_parameter*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->parameters);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->parameters, curItem);
+      lengthInBits += plc4c_s7_read_write_cotp_parameter_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_cotp_parameter*) curElement);
     }
   }
 
   // Optional Field (payload)
   if(_message->payload != NULL) {
-    lengthInBits += plc4c_s7_read_write_s7_message_length_in_bits(_message->payload);
+    lengthInBits += plc4c_s7_read_write_s7_message_length_in_bits(ctx, _message->payload);
   }
 
   return lengthInBits;

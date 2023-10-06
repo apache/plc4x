@@ -21,32 +21,46 @@ package simulated
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"runtime/debug"
 	"strconv"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Reader struct {
 	device  *Device
 	options map[string][]string
-	tracer  *spi.Tracer
+	tracer  tracer.Tracer
+
+	log zerolog.Logger
 }
 
-func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) Reader {
-	return Reader{
+func NewReader(device *Device, readerOptions map[string][]string, tracer tracer.Tracer, _options ...options.WithOption) *Reader {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	return &Reader{
 		device:  device,
-		options: options,
+		options: readerOptions,
 		tracer:  tracer,
+
+		log: customLogger,
 	}
 }
 
-func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
-	// TODO: handle ctx
-	ch := make(chan model.PlcReadRequestResult)
+func (r *Reader) Read(_ context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult {
+	ch := make(chan apiModel.PlcReadRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			}
+		}()
 		var txId string
 		if r.tracer != nil {
 			txId = r.tracer.AddTransactionalStartTrace("read", "started")
@@ -62,22 +76,22 @@ func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-ch
 		}
 
 		// Process the request
-		responseCodes := make(map[string]model.PlcResponseCode)
-		responseValues := make(map[string]values.PlcValue)
-		for _, fieldName := range readRequest.GetFieldNames() {
-			field := readRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+		responseCodes := make(map[string]apiModel.PlcResponseCode)
+		responseValues := make(map[string]apiValues.PlcValue)
+		for _, tagName := range readRequest.GetTagNames() {
+			tag := readRequest.GetTag(tagName)
+			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
-				responseValues[fieldName] = nil
+				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
+				responseValues[tagName] = nil
 			} else {
-				value := r.device.Get(simulatedField)
+				value := r.device.Get(simulatedTagVar)
 				if value == nil {
-					responseCodes[fieldName] = model.PlcResponseCode_NOT_FOUND
-					responseValues[fieldName] = nil
+					responseCodes[tagName] = apiModel.PlcResponseCode_NOT_FOUND
+					responseValues[tagName] = nil
 				} else {
-					responseCodes[fieldName] = model.PlcResponseCode_OK
-					responseValues[fieldName] = *value
+					responseCodes[tagName] = apiModel.PlcResponseCode_OK
+					responseValues[tagName] = *value
 				}
 			}
 		}
@@ -86,11 +100,11 @@ func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-ch
 			r.tracer.AddTransactionalTrace(txId, "read", "success")
 		}
 		// Emit the response
-		ch <- &model2.DefaultPlcReadRequestResult{
-			Request:  readRequest,
-			Response: model2.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
-			Err:      nil,
-		}
+		ch <- spiModel.NewDefaultPlcReadRequestResult(
+			readRequest,
+			spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, responseValues),
+			nil,
+		)
 	}()
 	return ch
 }

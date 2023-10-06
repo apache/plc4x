@@ -19,9 +19,12 @@
 
 package model
 
+import "fmt"
+
 // PlcConnectionMetadata Information about connection capabilities.
 // This includes connection and driver specific metadata.
 type PlcConnectionMetadata interface {
+	fmt.Stringer
 	// GetConnectionAttributes Gives access to a map of additional information the driver might be able to provide.
 	GetConnectionAttributes() map[string]string
 	// CanRead Indicates that the connection supports reading.

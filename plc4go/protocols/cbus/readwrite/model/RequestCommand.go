@@ -20,9 +20,11 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -33,6 +35,7 @@ const RequestCommand_INITIATOR byte = 0x5C
 
 // RequestCommand is the corresponding interface of RequestCommand
 type RequestCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -112,12 +115,16 @@ func (m *_RequestCommand) GetAlpha() Alpha {
 ///////////////////////
 
 func (m *_RequestCommand) GetCbusCommandDecoded() CBusCommand {
+	ctx := context.Background()
+	_ = ctx
 	alpha := m.Alpha
 	_ = alpha
 	return CastCBusCommand(m.GetCbusCommand())
 }
 
 func (m *_RequestCommand) GetChksumDecoded() Checksum {
+	ctx := context.Background()
+	_ = ctx
 	alpha := m.Alpha
 	_ = alpha
 	return CastChecksum(m.GetChksum())
@@ -154,7 +161,7 @@ func NewRequestCommand(cbusCommand CBusCommand, chksum Checksum, alpha Alpha, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestCommand(structType interface{}) RequestCommand {
+func CastRequestCommand(structType any) RequestCommand {
 	if casted, ok := structType.(RequestCommand); ok {
 		return casted
 	}
@@ -168,41 +175,43 @@ func (m *_RequestCommand) GetTypeName() string {
 	return "RequestCommand"
 }
 
-func (m *_RequestCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (initiator)
 	lengthInBits += 8
 
 	// Manual Field (cbusCommand)
-	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCbusCommand().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (chksum)
-	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() interface{} { return int32((int32(16))) }, func() interface{} { return int32((int32(0))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf((m.CBusOptions.GetSrchk()), func() any { return int32((int32(16))) }, func() any { return int32((int32(0))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
+		lengthInBits += m.Alpha.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_RequestCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
+func RequestCommandParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestCommand, error) {
+	return RequestCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("RequestCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestCommand")
 	}
@@ -219,7 +228,7 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 	}
 
 	// Manual Field (cbusCommand)
-	_cbusCommand, _cbusCommandErr := ReadCBusCommand(readBuffer, cBusOptions, cBusOptions.GetSrchk())
+	_cbusCommand, _cbusCommandErr := ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())
 	if _cbusCommandErr != nil {
 		return nil, errors.Wrap(_cbusCommandErr, "Error parsing 'cbusCommand' field of RequestCommand")
 	}
@@ -234,7 +243,7 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 	_ = cbusCommandDecoded
 
 	// Manual Field (chksum)
-	_chksum, _chksumErr := ReadAndValidateChecksum(readBuffer, cbusCommand, cBusOptions.GetSrchk())
+	_chksum, _chksumErr := ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())
 	if _chksumErr != nil {
 		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of RequestCommand")
 	}
@@ -255,10 +264,10 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of RequestCommand")
@@ -287,9 +296,19 @@ func RequestCommandParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (
 	return _child, nil
 }
 
-func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestCommand) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("RequestCommand"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for RequestCommand")
@@ -302,22 +321,26 @@ func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 
 		// Manual Field (cbusCommand)
-		_cbusCommandErr := WriteCBusCommand(writeBuffer, m.GetCbusCommand())
+		_cbusCommandErr := WriteCBusCommand(ctx, writeBuffer, m.GetCbusCommand())
 		if _cbusCommandErr != nil {
 			return errors.Wrap(_cbusCommandErr, "Error serializing 'cbusCommand' field")
 		}
 		// Virtual field
-		if _cbusCommandDecodedErr := writeBuffer.WriteVirtual("cbusCommandDecoded", m.GetCbusCommandDecoded()); _cbusCommandDecodedErr != nil {
+		cbusCommandDecoded := m.GetCbusCommandDecoded()
+		_ = cbusCommandDecoded
+		if _cbusCommandDecodedErr := writeBuffer.WriteVirtual(ctx, "cbusCommandDecoded", m.GetCbusCommandDecoded()); _cbusCommandDecodedErr != nil {
 			return errors.Wrap(_cbusCommandDecodedErr, "Error serializing 'cbusCommandDecoded' field")
 		}
 
 		// Manual Field (chksum)
-		_chksumErr := CalculateChecksum(writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
+		_chksumErr := CalculateChecksum(ctx, writeBuffer, m.GetCbusCommand(), m.CBusOptions.GetSrchk())
 		if _chksumErr != nil {
 			return errors.Wrap(_chksumErr, "Error serializing 'chksum' field")
 		}
 		// Virtual field
-		if _chksumDecodedErr := writeBuffer.WriteVirtual("chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
+		chksumDecoded := m.GetChksumDecoded()
+		_ = chksumDecoded
+		if _chksumDecodedErr := writeBuffer.WriteVirtual(ctx, "chksumDecoded", m.GetChksumDecoded()); _chksumDecodedErr != nil {
 			return errors.Wrap(_chksumDecodedErr, "Error serializing 'chksumDecoded' field")
 		}
 
@@ -328,7 +351,7 @@ func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(alpha)
+			_alphaErr := writeBuffer.WriteSerializable(ctx, alpha)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for alpha")
 			}
@@ -342,7 +365,7 @@ func (m *_RequestCommand) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestCommand) isRequestCommand() bool {
@@ -354,7 +377,7 @@ func (m *_RequestCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <artifactId>plc4x-protocols</artifactId>
@@ -43,10 +43,12 @@
     <module>eip</module>
     <module>firmata</module>
     <module>genericcan</module>
+    <module>iec-60870</module>
     <module>knxnetip</module>
     <module>modbus</module>
     <module>mqtt</module>
     <module>opcua</module>
+    <module>open-protocol</module>
     <module>plc4x</module>
     <module>plc4x-api</module>
     <module>profinet</module>

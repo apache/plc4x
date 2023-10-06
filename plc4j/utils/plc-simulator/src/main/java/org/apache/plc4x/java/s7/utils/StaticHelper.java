@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.utils;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -124,7 +125,7 @@ public class StaticHelper {
             // This is the total length of the string on the PLC (Not necessarily the number of characters read)
             short totalStringLength = io.readShort(8);
             // Read the full size of the string.
-            String str = io.readString(stringLength * 8, (String) encoding);
+            String str = io.readString(stringLength * 8, WithOption.WithEncoding((String) encoding));
             // Cut off the parts that don't belong to it.
             return str.substring(0, totalStringLength);
         } catch (ParseException e) {
@@ -139,7 +140,7 @@ public class StaticHelper {
 
     public static String parseS7Char(ReadBuffer io, Object encoding) throws ParseException {
         // Read the full size of the string.
-        return io.readString(8, (String) encoding);
+        return io.readString(8, WithOption.WithEncoding((String) encoding));
     }
 
     public static void serializeS7Char(WriteBuffer io, PlcValue value, Object encoding) {

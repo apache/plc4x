@@ -18,6 +18,9 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 public interface WithReaderWriterArgs extends WithReaderArgs, WithWriterArgs {
 
     static WithReaderWriterArgs WithRenderAsList(boolean renderAsList) {
@@ -28,6 +31,30 @@ public interface WithReaderWriterArgs extends WithReaderArgs, WithWriterArgs {
         return (withAdditionalStringRepresentation) () -> stringRepresentation;
     }
 
+    static WithReaderWriterArgs WithEncoding(String encoding) {
+        return (withEncoding) () -> encoding;
+    }
+
+    static WithReaderWriterArgs WithNullBytesHex(String nullBytesHex) {
+        return (withNullBytesHex) () -> nullBytesHex;
+    }
+
+    default Optional<String> extractNullBytesHex(WithReaderArgs... readerArgs) {
+        return extractNullBytesHex(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default Optional<String> extractNullBytesHex(WithWriterArgs... writerArgs) {
+        return extractNullBytesHex(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+    default Optional<String> extractNullBytesHex(WithReaderWriterArgs... readerWriterArgs) {
+        for (WithReaderWriterArgs arg : readerWriterArgs) {
+            if (arg instanceof withNullBytesHex) {
+                return Optional.of(((withNullBytesHex) arg).nullBytesHex());
+            }
+        }
+        return Optional.empty();
+    }
+
 }
 
 interface withRenderAsList extends WithReaderWriterArgs {
@@ -36,4 +63,13 @@ interface withRenderAsList extends WithReaderWriterArgs {
 
 interface withAdditionalStringRepresentation extends WithReaderWriterArgs {
     String stringRepresentation();
+}
+
+interface withEncoding extends WithReaderWriterArgs {
+    String encoding();
+}
+
+interface withNullBytesHex extends WithReaderWriterArgs {
+
+    String nullBytesHex();
 }

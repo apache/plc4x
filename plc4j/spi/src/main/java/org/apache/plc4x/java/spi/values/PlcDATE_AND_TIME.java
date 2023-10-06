@@ -18,19 +18,15 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME of(Object value) {
@@ -43,20 +39,68 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
+    public static PlcDATE_AND_TIME ofSecondsSinceEpoch(long secondsSinceEpoch) {
+        return new PlcDATE_AND_TIME(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC));
+    }
+
+    public static PlcDATE_AND_TIME ofSegments(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
+        return new PlcDATE_AND_TIME(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds));
+    }
+
+    public PlcDATE_AND_TIME(LocalDateTime value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE_AND_TIME(@JsonProperty("value") Long value) {
-        super(LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(value), ZoneId.of("UTC")), true);
+    public PlcDATE_AND_TIME(long secondsSinceEpoch) {
+        super(LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0,
+            ZoneOffset.UTC), true);
+    }
+
+    public PlcDATE_AND_TIME(int year, int month, int day, int hour, int minutes, int seconds, int nanoseconds) {
+        super(LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.DATE_AND_TIME;
+    }
+
+    public long getSecondsSinceEpoch() {
+        Instant instant = getDateTime().toInstant(ZoneOffset.of(ZoneOffset.UTC.getId()));
+        return instant.getEpochSecond();
+    }
+
+    public int getYear() {
+        return value.getYear();
+    }
+
+    public int getMonth() {
+        return value.getMonthValue();
+    }
+
+    public int getDay() {
+        return value.getDayOfMonth();
+    }
+
+    public int getDayOfWeek() {
+        return value.getDayOfWeek().getValue();
+    }
+
+    public int getHour() {
+        return value.getHour();
+    }
+
+    public int getMinutes() {
+        return value.getMinute();
+    }
+
+    public int getSeconds() {
+        return value.getSecond();
+    }
+
+    public int getNanoseconds() {
+        return value.getNano();
     }
 
     @Override
@@ -71,55 +115,46 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime() {
         return value.toLocalTime();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDate() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate() {
         return value.toLocalDate();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDateTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDateTime getDateTime() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }
@@ -127,7 +162,9 @@ public class PlcDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value.toString();
-        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
+        writeBuffer.writeString(getClass().getSimpleName(),
+            valueString.getBytes(StandardCharsets.UTF_8).length*8,
+            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
 
 }

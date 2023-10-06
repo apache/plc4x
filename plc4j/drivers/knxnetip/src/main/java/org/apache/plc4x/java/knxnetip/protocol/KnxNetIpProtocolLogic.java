@@ -29,7 +29,7 @@ import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.ets.model.EtsModel;
 import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.field.KnxNetIpField;
+import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
@@ -44,7 +44,7 @@ import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionField;
+import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.apache.plc4x.java.spi.values.PlcStruct;
@@ -238,7 +238,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
             .check(p -> p instanceof DisconnectResponse)
             .unwrap(p -> (DisconnectResponse) p)
             .handle(disconnectResponse -> {
-                // In general we should probably check if the disconnect was successful, but in
+                // In general, we should probably check if the disconnect was successful, but in
                 // the end we couldn't do much if the disconnect would fail.
                 final String gatewayName = knxNetIpDriverContext.getGatewayName();
                 final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
@@ -252,23 +252,50 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     }
 
     @Override
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
+
+        // We're using the connection-state-request as Ping operation as that's
+        // what the protocol generally uses anyway.
+        ConnectionStateRequest connectionStateRequest =
+            new ConnectionStateRequest(
+                knxNetIpDriverContext.getCommunicationChannelId(),
+                new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
+                    knxNetIpDriverContext.getLocalIPAddress(),
+                    knxNetIpDriverContext.getLocalPort()));
+        context.sendRequest(connectionStateRequest)
+            .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
+            .check(p -> p instanceof ConnectionStateResponse)
+            .unwrap(p -> (ConnectionStateResponse) p)
+            .handle(connectionStateResponse -> {
+                if(connectionStateResponse.getStatus() == Status.NO_ERROR) {
+                    future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
+                } else {
+                    future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.REMOTE_ERROR));
+                }
+            });
+
+        return future;
+    }
+
+    @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
-        // As the KNX driver is using the SingleFieldOptimizer, each request here will have
+        // As the KNX driver is using the SingleTagOptimizer, each request here will have
         // only one item.
-        final Optional<String> first = request.getFieldNames().stream().findFirst();
+        final Optional<String> first = request.getTagNames().stream().findFirst();
         if (first.isPresent()) {
-            String fieldName = first.get();
-            final KnxNetIpField field = (KnxNetIpField) request.getField(fieldName);
-            byte[] destinationAddress = toKnxAddressData(field);
+            String tagName = first.get();
+            final KnxNetIpTag tag = (KnxNetIpTag) request.getTag(tagName);
+            byte[] destinationAddress = toKnxAddressData(tag);
             if (sequenceCounter.get() == Short.MAX_VALUE) {
                 sequenceCounter.set(0);
             }
 
             // Convert the PlcValue to byte data.
-            final PlcValue value = request.getPlcValue(fieldName);
+            final PlcValue value = request.getPlcValue(tagName);
             byte dataFirstByte = 0;
             byte[] data = null;
             final EtsModel etsModel = knxNetIpDriverContext.getEtsModel();
@@ -345,11 +372,9 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     new ArrayList<>(0),
                     new LDataExtended(false, false, CEMIPriority.LOW, false, false,
                         true, (byte) 6, (byte) 0, knxNetIpDriverContext.getClientKnxAddress(), destinationAddress,
-                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data, (short) -1), (short) -1)
-                    ),
-                    -1
-                ),
-                -1
+                        new ApduDataContainer(true, (byte) 0, new ApduDataGroupValueWrite(dataFirstByte, data))
+                    )
+                )
             );
 
             // Start a new request-transaction (Is ended in the response-handler)
@@ -375,7 +400,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     }
                     // Prepare the response.
                     PlcWriteResponse response = new DefaultPlcWriteResponse(request,
-                        Collections.singletonMap(fieldName, responseCode));
+                        Collections.singletonMap(tagName, responseCode));
 
                     future.complete(response);
 
@@ -526,13 +551,13 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
         Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-        for (String fieldName : subscriptionRequest.getFieldNames()) {
-            final DefaultPlcSubscriptionField field = (DefaultPlcSubscriptionField) subscriptionRequest.getField(fieldName);
-            if (!(field.getPlcField() instanceof KnxNetIpField)) {
-                values.put(fieldName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
+        for (String tagName : subscriptionRequest.getTagNames()) {
+            final DefaultPlcSubscriptionTag tag = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
+            if (!(tag.getTag() instanceof KnxNetIpTag)) {
+                values.put(tagName, new ResponseItem<>(PlcResponseCode.INVALID_ADDRESS, null));
             } else {
-                values.put(fieldName, new ResponseItem<>(PlcResponseCode.OK,
-                    new KnxNetIpSubscriptionHandle(this, (KnxNetIpField) field.getPlcField())));
+                values.put(tagName, new ResponseItem<>(PlcResponseCode.OK,
+                    new KnxNetIpSubscriptionHandle(this, (KnxNetIpTag) tag.getTag())));
             }
         }
         return CompletableFuture.completedFuture(
@@ -568,7 +593,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 if (handle instanceof KnxNetIpSubscriptionHandle) {
                     KnxNetIpSubscriptionHandle subscriptionHandle = (KnxNetIpSubscriptionHandle) handle;
                     // Check if the subscription matches this current event.
-                    if (subscriptionHandle.getField().matchesGroupAddress(groupAddress)) {
+                    if (subscriptionHandle.getTag().matchesGroupAddress(groupAddress)) {
                         consumer.accept(event);
                     }
                 }
@@ -576,25 +601,25 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         }
     }
 
-    protected byte[] toKnxAddressData(KnxNetIpField field) {
+    protected byte[] toKnxAddressData(KnxNetIpTag tag) {
         WriteBufferByteBased address = new WriteBufferByteBased(2);
         try {
             switch (knxNetIpDriverContext.getGroupAddressType()) {
                 case 3:
-                    address.writeUnsignedShort(5, Short.parseShort(field.getMainGroup()));
-                    address.writeUnsignedByte(3, Byte.parseByte(field.getMiddleGroup()));
-                    address.writeUnsignedShort(8, Short.parseShort(field.getSubGroup()));
+                    address.writeUnsignedShort(5, Short.parseShort(tag.getMainGroup()));
+                    address.writeUnsignedByte(3, Byte.parseByte(tag.getMiddleGroup()));
+                    address.writeUnsignedShort(8, Short.parseShort(tag.getSubGroup()));
                     break;
                 case 2:
-                    address.writeUnsignedShort(5, Short.parseShort(field.getMainGroup()));
-                    address.writeUnsignedShort(11, Short.parseShort(field.getSubGroup()));
+                    address.writeUnsignedShort(5, Short.parseShort(tag.getMainGroup()));
+                    address.writeUnsignedShort(11, Short.parseShort(tag.getSubGroup()));
                     break;
                 case 1:
-                    address.writeUnsignedShort(16, Short.parseShort(field.getSubGroup()));
+                    address.writeUnsignedShort(16, Short.parseShort(tag.getSubGroup()));
                     break;
             }
         } catch (Exception e) {
-            throw new PlcRuntimeException("Error converting field into knx address data.", e);
+            throw new PlcRuntimeException("Error converting tag into knx address data.", e);
         }
         return address.getData();
     }

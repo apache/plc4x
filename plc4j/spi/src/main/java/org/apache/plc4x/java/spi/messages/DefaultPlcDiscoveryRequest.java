@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -28,32 +27,27 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcDiscoveryRequest implements PlcDiscoveryRequest, Serializable {
 
     private final PlcDiscoverer discoverer;
 
     private final LinkedHashMap<String, String> queries;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcDiscoveryRequest(@JsonProperty("discoverer") PlcDiscoverer discoverer,
-                                      @JsonProperty("queries") LinkedHashMap<String, String> queries) {
+    public DefaultPlcDiscoveryRequest(PlcDiscoverer discoverer,
+                                      LinkedHashMap<String, String> queries) {
         this.discoverer = discoverer;
         this.queries = queries;
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<? extends PlcDiscoveryResponse> execute() {
         return discoverer.discover(this);
     }
 
-    @JsonIgnore
     public PlcDiscoverer getDiscoverer() {
         return discoverer;
     }
 
-    @JsonIgnore
     public Map<String, String> getQueries() {
         return queries;
     }

@@ -45,7 +45,7 @@ public class PlcDriverManagerTest {
      */
     @Test
     public void getExistingDriverTest() throws PlcException {
-        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("api-mock://some-cool-url");
+        MockPlcConnection mockConnection = (MockPlcConnection) new DefaultPlcDriverManager().getConnection("api-mock://some-cool-url");
 
         assertThat(mockConnection.getAuthentication(), nullValue());
         assertThat(mockConnection.isConnected(), is(true));
@@ -60,7 +60,7 @@ public class PlcDriverManagerTest {
     public void getExistingDriverWithAuthenticationTest() throws PlcException {
         PlcUsernamePasswordAuthentication authentication =
             new PlcUsernamePasswordAuthentication("user", "pass");
-        MockPlcConnection mockConnection = (MockPlcConnection) new PlcDriverManager().getConnection("api-mock://some-cool-url", authentication);
+        MockPlcConnection mockConnection = (MockPlcConnection) new DefaultPlcDriverManager().getConnection("api-mock://some-cool-url", authentication);
 
         assertThat(mockConnection.getAuthentication(), notNullValue());
         assertThat(mockConnection.getAuthentication(), instanceOf(PlcUsernamePasswordAuthentication.class));
@@ -75,7 +75,7 @@ public class PlcDriverManagerTest {
     @Test
     public void getNotExistingDriverTest() {
         assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("non-existing-protocol://some-cool-url"));
+            () -> new DefaultPlcDriverManager().getConnection("non-existing-protocol://some-cool-url"));
     }
 
     /**
@@ -86,7 +86,7 @@ public class PlcDriverManagerTest {
     @Test
     public void getInvalidUriTest() throws PlcConnectionException {
         assertThrows(PlcConnectionException.class,
-            () -> new PlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"));
+            () -> new DefaultPlcDriverManager().getConnection("The quick brown fox jumps over the lazy dog"));
     }
 
     /**
@@ -108,7 +108,7 @@ public class PlcDriverManagerTest {
 
         // expect exception
         assertThrows(IllegalStateException.class,
-            () -> new PlcDriverManager(fakeClassLoader).getConnection("api-mock://some-cool-url"));
+            () -> new DefaultPlcDriverManager(fakeClassLoader).getConnection("api-mock://some-cool-url"));
     }
 
 }

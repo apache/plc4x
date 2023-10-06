@@ -18,38 +18,38 @@
  */
 package org.apache.plc4x.java.canopen.protocol;
 
-import org.apache.plc4x.java.canopen.field.CANOpenSubscriptionField;
+import org.apache.plc4x.java.canopen.tag.CANOpenSubscriptionTag;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
 public class CANOpenSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private final String name;
-    private final CANOpenSubscriptionField field;
+    private final CANOpenSubscriptionTag tag;
 
-    public CANOpenSubscriptionHandle(PlcSubscriber subscriber, String name, CANOpenSubscriptionField field) {
+    public CANOpenSubscriptionHandle(PlcSubscriber subscriber, String name, CANOpenSubscriptionTag tag) {
         super(subscriber);
         this.name = name;
-        this.field = field;
+        this.tag = tag;
     }
 
     public boolean matches(CANOpenService service, int identifier) {
-        if (field.getService() != service) {
+        if (tag.getService() != service) {
             return false;
         }
-        return field.isWildcard() || field.getNodeId() == identifier;
+        return tag.isWildcard() || tag.getNodeId() == identifier;
     }
 
     public String getName() {
         return name;
     }
 
-    public CANOpenSubscriptionField getField() {
-        return field;
+    public CANOpenSubscriptionTag getTag() {
+        return tag;
     }
 
     public String toString() {
-        return "CANopenSubscriptionHandle [service=" + field.getService() + ", node=" + intAndHex(field.getNodeId()) + ", cob=" + intAndHex(field.getService().getMin() + field.getNodeId()) + "]";
+        return "CANopenSubscriptionHandle [service=" + tag.getService() + ", node=" + intAndHex(tag.getNodeId()) + ", cob=" + intAndHex(tag.getService().getMin() + tag.getNodeId()) + "]";
     }
 
     private static String intAndHex(int val) {

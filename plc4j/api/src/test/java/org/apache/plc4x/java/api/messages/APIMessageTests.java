@@ -120,7 +120,7 @@ public class APIMessageTests {
     @Category(FastTests.class)
     public void plcReadRequestSize() {
         MockField field = new MockField("mock:/DATA");
-        PlcReadRequest plcReadRequest = PlcReadRequest.builder().addItem(Byte.class, field, (byte) 1).build(Byte.class);
+        PlcReadRequest plcReadRequest = PlcReadRequest.builder().addField(Byte.class, field, (byte) 1).build(Byte.class);
         assertThat("Expected one request item", plcReadRequest.getRequestItems(), hasSize(1));
         assertThat("Expected one request item", plcReadRequest.getNumberOfItems(), equalTo(1));
     }
@@ -133,7 +133,7 @@ public class APIMessageTests {
         assertThat("Expected request items to be zero", plcReadRequest.getNumberOfItems(), equalTo(0));
         MockField field = new MockField("mock:/DATA");
         PlcReadRequestItem<Byte> readRequestItem = new PlcReadRequestItem<>(Byte.class, field, (byte) 1);
-        plcReadRequest.addItem(readRequestItem);
+        plcReadRequest.addField(readRequestItem);
         assertThat("Expected one request item", plcReadRequest.getRequestItems(), hasSize(1));
         assertThat("Expected one request item", plcReadRequest.getNumberOfItems(), equalTo(1));
     }

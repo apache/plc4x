@@ -20,57 +20,70 @@
 package simulated
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
+	"context"
+	"github.com/rs/zerolog"
 	"math/rand"
+
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 type Device struct {
 	Name  string
-	State map[SimulatedField]*values.PlcValue
+	State map[simulatedTag]*apiValues.PlcValue
+
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
-func NewDevice(name string) *Device {
+func NewDevice(name string, _options ...options.WithOption) *Device {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Device{
-		Name:  name,
-		State: make(map[SimulatedField]*values.PlcValue),
+		Name:           name,
+		State:          make(map[simulatedTag]*apiValues.PlcValue),
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
 	}
 }
 
-func (t *Device) Get(field SimulatedField) *values.PlcValue {
-	switch field.FieldType {
-	case FieldState:
-		return t.State[field]
-	case FieldRandom:
-		return t.getRandomValue(field)
+func (d *Device) Get(tag simulatedTag) *apiValues.PlcValue {
+	switch tag.TagType {
+	case TagState:
+		return d.State[tag]
+	case TagRandom:
+		return d.getRandomValue(tag)
 	}
 	return nil
 }
 
-func (t *Device) Set(field SimulatedField, value *values.PlcValue) {
-	switch field.FieldType {
-	case FieldState:
-		t.State[field] = value
+func (d *Device) Set(tag simulatedTag, value *apiValues.PlcValue) {
+	switch tag.TagType {
+	case TagState:
+		d.State[tag] = value
 		break
-	case FieldRandom:
-		// TODO: Doesn't really make any sense to write a random
+	case TagRandom:
+		// TODO: Doesn'd really make any sense to write a random
 		break
-	case FieldStdOut:
-		log.Debug().Msgf("TEST PLC STDOUT [%s]: %s", field.Name, (*value).GetString())
+	case TagStdOut:
+		d.log.Debug().
+			Str("name", tag.Name).
+			Stringer("value", *value).
+			Msg("TEST PLC STDOUT [%s]: %s")
 		break
 	}
 }
 
-func (t *Device) getRandomValue(field SimulatedField) *values.PlcValue {
-	size := field.GetDataTypeSize().DataTypeSize()
-	data := make([]byte, uint16(size)*field.Quantity)
+func (d *Device) getRandomValue(tag simulatedTag) *apiValues.PlcValue {
+	size := tag.GetDataTypeSize().DataTypeSize()
+	data := make([]byte, uint16(size)*tag.Quantity)
 	rand.Read(data)
-	readBuffer := utils.NewReadBufferByteBased(data)
-	plcValue, err := model.DataItemParse(readBuffer, field.DataTypeSize.String(), field.Quantity)
+	ctxForModel := options.GetLoggerContextForModel(context.TODO(), d.log, options.WithPassLoggerToModel(d.passLogToModel))
+	plcValue, err := readWriteModel.DataItemParse(ctxForModel, data, tag.DataTypeSize.String(), tag.Quantity)
 	if err != nil {
-		panic("Unable to parse random bytes")
+		d.log.Err(err).Msg("Unable to parse random bytes")
+		return nil
 	}
 	return &plcValue
 }

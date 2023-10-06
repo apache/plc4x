@@ -19,10 +19,7 @@
 package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithReaderWriterArgs;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +71,11 @@ public class DataWriterEnumDefault<T, I> implements DataWriterEnum<T> {
     @Override
     public void popContext(String logicalName, WithWriterArgs... writerArgs) {
         dataWriter.popContext(logicalName, writerArgs);
+    }
+
+    @Override
+    public WriteBuffer getWriteBuffer() {
+        return dataWriter.getWriteBuffer();
     }
 
 }

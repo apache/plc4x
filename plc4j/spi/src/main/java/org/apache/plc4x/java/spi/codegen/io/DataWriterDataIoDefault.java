@@ -64,4 +64,9 @@ public class DataWriterDataIoDefault implements DataWriterComplex<PlcValue> {
         }
     }
 
+    @Override
+    public WriteBuffer getWriteBuffer() {
+        return writeBuffer;
+    }
+
 }

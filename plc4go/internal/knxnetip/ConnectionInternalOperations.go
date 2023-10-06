@@ -21,12 +21,12 @@ package knxnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"reflect"
 	"time"
 
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
+	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -55,8 +55,8 @@ func (m *Connection) sendGatewaySearchRequest(ctx context.Context) (driverModel.
 	)
 	searchRequest := driverModel.NewSearchRequest(discoveryEndpoint)
 
-	result := make(chan driverModel.SearchResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.SearchResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, searchRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.SearchResponseExactly)
@@ -69,7 +69,7 @@ func (m *Connection) sendGatewaySearchRequest(ctx context.Context) (driverModel.
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -113,8 +113,8 @@ func (m *Connection) sendGatewayConnectionRequest(ctx context.Context) (driverMo
 		driverModel.NewConnectionRequestInformationTunnelConnection(driverModel.KnxLayer_TUNNEL_LINK_LAYER),
 	)
 
-	result := make(chan driverModel.ConnectionResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ConnectionResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, connectionRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.ConnectionResponseExactly)
@@ -127,7 +127,7 @@ func (m *Connection) sendGatewayConnectionRequest(ctx context.Context) (driverMo
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -163,8 +163,8 @@ func (m *Connection) sendGatewayDisconnectionRequest(ctx context.Context) (drive
 		),
 	)
 
-	result := make(chan driverModel.DisconnectResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.DisconnectResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, disconnectRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.DisconnectResponseExactly)
@@ -177,7 +177,7 @@ func (m *Connection) sendGatewayDisconnectionRequest(ctx context.Context) (drive
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -211,8 +211,8 @@ func (m *Connection) sendConnectionStateRequest(ctx context.Context) (driverMode
 			driverModel.HostProtocolCode_IPV4_UDP,
 			localAddr, uint16(localAddress.Port)))
 
-	result := make(chan driverModel.ConnectionStateResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ConnectionStateResponse, 1)
+	errorResult := make(chan error, 1)
 	err = m.messageCodec.SendRequest(ctx, connectionStateRequest,
 		func(message spi.Message) bool {
 			_, ok := message.(driverModel.ConnectionStateResponseExactly)
@@ -225,7 +225,7 @@ func (m *Connection) sendConnectionStateRequest(ctx context.Context) (driverMode
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -270,8 +270,8 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataGroupValueResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataGroupValueResponse, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, groupAddressReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -309,7 +309,7 @@ func (m *Connection) sendGroupAddressReadRequest(ctx context.Context, groupAddre
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -354,8 +354,8 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 		0,
 	)
 
-	result := make(chan driverModel.ApduControlConnect)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduControlConnect, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, deviceConnectionRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -371,7 +371,8 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 				return false
 			}
 			// Check if the address matches
-			if ByteArrayToKnxAddress(lDataFrameExt.GetDestinationAddress()) != targetAddress {
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			if ByteArrayToKnxAddress(ctxForModel, lDataFrameExt.GetDestinationAddress()) != targetAddress {
 				return false
 			}
 			apduControlContainer, ok := lDataFrameExt.GetApdu().(driverModel.ApduControlContainerExactly)
@@ -399,7 +400,7 @@ func (m *Connection) sendDeviceConnectionRequest(ctx context.Context, targetAddr
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -444,8 +445,8 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 		0,
 	)
 
-	result := make(chan driverModel.ApduControlDisconnect)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduControlDisconnect, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, deviceDisconnectionRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -460,7 +461,8 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 			if !ok {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 			// Check if the address matches
 			if curTargetAddress != targetAddress {
 				return false
@@ -490,7 +492,7 @@ func (m *Connection) sendDeviceDisconnectionRequest(ctx context.Context, targetA
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -532,7 +534,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 				driverModel.NewKnxAddress(0, 0, 0), KnxAddressToByteArray(targetAddress),
 				driverModel.NewApduDataContainer(
 					driverModel.NewApduDataOther(
-						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, utils.ByteArrayToUint8Array(buildingKey), 0),
+						driverModel.NewApduDataExtAuthorizeRequest(authenticationLevel, buildingKey, 0),
 						0,
 					),
 					true,
@@ -550,8 +552,8 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataExtAuthorizeResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataExtAuthorizeResponse, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, deviceAuthenticationRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -578,7 +580,8 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 			if !ok {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 			// Check if the addresses match
 			if curTargetAddress != m.ClientKnxAddress {
 				return false
@@ -614,7 +617,7 @@ func (m *Connection) sendDeviceAuthentication(ctx context.Context, targetAddress
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -661,8 +664,8 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataDeviceDescriptorResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataDeviceDescriptorResponse, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, deviceDescriptorReadRequest, func(message spi.Message) bool {
 		tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
 		if !ok || tunnelingRequest.GetTunnelingRequestDataBlock().GetCommunicationChannelId() != m.CommunicationChannelId {
@@ -715,7 +718,7 @@ func (m *Connection) sendDeviceDeviceDescriptorReadRequest(ctx context.Context, 
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+		if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 			m.handleTimeout()
 		}
 		errorResult <- errors.Wrap(err, "got error processing request")
@@ -769,8 +772,8 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataExtPropertyValueResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataExtPropertyValueResponse, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -831,7 +834,7 @@ func (m *Connection) sendDevicePropertyReadRequest(ctx context.Context, targetAd
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -885,8 +888,8 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataExtPropertyDescriptionResponse, 1)
+	errorResult := make(chan error, 1)
 	err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -946,7 +949,7 @@ func (m *Connection) sendDevicePropertyDescriptionReadRequest(ctx context.Contex
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrapf(err, "got error processing request")
@@ -998,8 +1001,8 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 		0,
 	)
 
-	result := make(chan driverModel.ApduDataMemoryResponse)
-	errorResult := make(chan error)
+	result := make(chan driverModel.ApduDataMemoryResponse, 1)
+	errorResult := make(chan error, 1)
 	if err := m.messageCodec.SendRequest(ctx, propertyReadRequest,
 		func(message spi.Message) bool {
 			tunnelingRequest, ok := message.(driverModel.TunnelingRequestExactly)
@@ -1057,7 +1060,7 @@ func (m *Connection) sendDeviceMemoryReadRequest(ctx context.Context, targetAddr
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			errorResult <- errors.Wrap(err, "got error processing request")
@@ -1118,7 +1121,8 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 			if dataFrameExt.GetSourceAddress() != m.ClientKnxAddress {
 				return false
 			}
-			curTargetAddress := ByteArrayToKnxAddress(dataFrameExt.GetDestinationAddress())
+			ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+			curTargetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrameExt.GetDestinationAddress())
 			if curTargetAddress != targetAddress {
 				return false
 			}
@@ -1139,7 +1143,7 @@ func (m *Connection) sendDeviceAck(ctx context.Context, targetAddress driverMode
 		},
 		func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				m.handleTimeout()
 			}
 			callback(errors.Wrap(err, "got error processing request"))

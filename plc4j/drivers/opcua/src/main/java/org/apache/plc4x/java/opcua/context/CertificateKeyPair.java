@@ -28,16 +28,22 @@ public class CertificateKeyPair {
     private final X509Certificate certificate;
     private final byte[] thumbprint;
 
-    public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) throws Exception{
+    public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) throws Exception {
         this.keyPair = keyPair;
         this.certificate = certificate;
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
         this.thumbprint = messageDigest.digest(this.certificate.getEncoded());
     }
 
-    public KeyPair getKeyPair() { return keyPair; }
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
 
-    public X509Certificate getCertificate() { return certificate; }
+    public X509Certificate getCertificate() {
+        return certificate;
+    }
 
-    public byte[] getThumbPrint() { return thumbprint; }
+    public byte[] getThumbPrint() {
+        return thumbprint;
+    }
 }

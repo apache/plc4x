@@ -1,0 +1,162 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Architecture of PLC4X Connections
+
+=== Simple case
+
+In this simple case, an application asks the DriverManager to forward a connection creation to the corresponding Driver implementation, which then creates both a Connection and a MessageCodec instance. The Connection is the logical link between the connection state and the MessageCodec.
+A MessageCodec uses a TransportInstance to communicate with the target device.
+
+[plantuml, target=no-restrictions-simple, format=png]
+....
+
+package Connection1 {
+Plc4xConnection1 : s7:tcp://192.168.23.30
+TcpPort1 : local-ip          192.168.23.200
+TcpPort1 : local-port      48479
+TcpPort1 : remote-ip     192.168.23.30
+TcpPort1 : remote-port 102
+}
+
+package Connection2 {
+Plc4xConnection2 : s7:tcp://192.168.23.30
+TcpPort2 : local-ip          192.168.23.200
+TcpPort2 : local-port      34555
+TcpPort2 : remote-ip     192.168.23.30
+TcpPort2 : remote-port 102
+}
+
+S7Device : local-ip     192.168.23.30
+S7Device : local-port 102
+
+Plc4xConnection1 -> TcpPort1
+Plc4xConnection2 -> TcpPort2
+TcpPort1 -> S7Device : tcp
+TcpPort2 -> S7Device : tcp
+
+....
+
+[plantuml, target=no-restrictions, format=png]
+....
+
+package "Application" {
+  [APP]
+}
+
+package "PLC4X" {
+    [Connection]
+    [ReaderWriter]
+    [MessageCodec]
+    [Transport]
+    [TransportInstance]
+    [Driver]
+}
+
+package "PLC" {
+    [Device]
+}
+
+APP -> Connection : n:1
+Connection - MessageCodec : 1:1
+Connection -- Driver : n:1
+Connection -- ReaderWriter : 1:1
+MessageCodec -- TransportInstance : 1:1
+Transport - TransportInstance : 1:1
+MessageCodec - Driver : n:1
+TransportInstance -> Device : 1:1
+
+note top of [Connection] : logical
+
+....
+
+=== Problems
+
+Serial transports based on RS475 and UDP Transports currently don't allow sharing. That means only one connection instance can have access to one RS485 or one shared local UDP Port (Multiple UDP transport instances with different local ports however are possible). As soon as one connection is established and a second connection would try to access this, this would result in errors.
+
+However, multiple devices could be attached to the same RS458 port (Modbus RTU and Modbus ASCII explicitly supports this, however using different devices using different protocols over the same port is not possible) and in BACnet connecting to multiple remote BACnet devices would require one local UDP port to be used by multiple connections.
+
+=== Protocols requiring us to use a fixed port on a non-broadcast address
+
+Some protocols, such as BACnet require remotes to send data to a fixed udp port on a non-broadcast address. This causes problems as soon as we want to connect to multiple BACnet devices from the same host as only one instance can get access to that port.
+
+[plantuml, target=shared-local-port-simple, format=png]
+....
+
+package Connection1 {
+Plc4xConnection1 : bacnet:udp://192.168.23.30
+UdpPort1 : local-ip          192.168.23.200
+UdpPort1 : local-port      47808
+UdpPort1 : remote-ip     192.168.23.30
+UdpPort1 : remote-port 47808
+}
+
+package Connection2 #red {
+Plc4xConnection2 : bacnet:udp://192.168.23.20
+UdpPort2 : local-ip          192.168.23.200
+UdpPort2 : local-port      47808
+UdpPort2 : remote-ip     192.168.23.20
+UdpPort2 : remote-port 47808
+}
+note right of UdpPort2: This local port is already owned by Connection1
+
+BACnetDevice : local-ip     192.168.23.30
+BACnetDevice : local-port 102
+
+Plc4xConnection1 -> UdpPort1
+Plc4xConnection2 -> UdpPort2
+UdpPort1 -> BACnetDevice : udp
+UdpPort2 -> BACnetDevice : udp
+
+....
+
+[plantuml, target=shared-local-port, format=png]
+....
+
+package "Application" {
+  [APP]
+}
+
+package "PLC4X" {
+    [Connection]
+    [ReaderWriter]
+    [MessageCodec]
+    [Transport]
+    [TransportInstance]
+    [Driver]
+}
+
+package "PLC" {
+    [Device]
+}
+
+APP -> Connection : n:1
+Connection - MessageCodec : n:1
+Connection -- Driver : n:1
+Connection -- ReaderWriter : 1:1
+MessageCodec -- TransportInstance : 1:1
+Transport - TransportInstance : 1:1
+MessageCodec - Driver : n:1
+TransportInstance -> Device : 1:n
+
+note top of [Connection] : logical
+
+....
+
+=== Protocols only allowing one connection at a time
+
+

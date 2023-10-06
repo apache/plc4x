@@ -26,7 +26,7 @@ import com.influxdb.client.write.Point;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
@@ -48,7 +48,7 @@ public class HelloInflux {
 
     private static final Logger logger = LoggerFactory.getLogger(HelloInflux.class);
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HelloInflux(File configFile) {
         Configurations configs = new Configurations();
@@ -66,7 +66,7 @@ public class HelloInflux {
             PlcConnection plcConnection = connectToPlc();
 
             final PlcSubscriptionRequest subscriptionRequest =
-                plcConnection.subscriptionRequestBuilder().addChangeOfStateField("query",
+                plcConnection.subscriptionRequestBuilder().addChangeOfStateTagAddress("query",
                     configuration.getString("plc.query")).build();
             final PlcSubscriptionResponse subscriptionResponse =
                 subscriptionRequest.execute().get(10, TimeUnit.SECONDS);
@@ -75,14 +75,14 @@ public class HelloInflux {
                 final Point point = Point.measurement(configuration.getString("influx.measurement"))
                     .time(plcSubscriptionEvent.getTimestamp().toEpochMilli(), WritePrecision.MS);
                 final Map<String, ResponseItem<PlcValue>> values = internalEvent.getValues();
-                values.forEach((fieldName, fieldResponsePair) -> {
-                    final PlcResponseCode responseCode = fieldResponsePair.getCode();
-                    final PlcValue plcValue = fieldResponsePair.getValue();
+                values.forEach((tagName, tagResponsePair) -> {
+                    final PlcResponseCode responseCode = tagResponsePair.getCode();
+                    final PlcValue plcValue = tagResponsePair.getValue();
                     if(responseCode == PlcResponseCode.OK) {
                         PlcStruct structValue = (PlcStruct) plcValue;
                         for (String key : structValue.getKeys()) {
                             PlcValue subValue = structValue.getValue(key);
-                            registerFields(point, key, subValue);
+                            registerTags(point, key, subValue);
                         }
                     }
                 });
@@ -96,7 +96,7 @@ public class HelloInflux {
         }
     }
 
-    private void registerFields(Point point, String contextName, PlcValue plcValue) {
+    private void registerTags(Point point, String contextName, PlcValue plcValue) {
         if (contextName.equals("address")) {
             point.addTag(contextName, plcValue.getString());
         } else {
@@ -128,7 +128,7 @@ public class HelloInflux {
                 PlcStruct structValue = (PlcStruct) plcValue;
                 for (String key : structValue.getKeys()) {
                     PlcValue subValue = structValue.getValue(key);
-                    registerFields(point, contextName + "-" + key, subValue);
+                    registerTags(point, contextName + "-" + key, subValue);
                 }
             }
         }
@@ -141,7 +141,7 @@ public class HelloInflux {
 
     private PlcConnection connectToPlc() throws PlcException {
         final PlcConnection connection =
-            new PlcDriverManager().getConnection(configuration.getString("plc.connectionString"));
+            new DefaultPlcDriverManager().getConnection(configuration.getString("plc.connectionString"));
         connection.connect();
         return connection;
     }

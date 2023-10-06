@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 public class TcpTransport implements Transport, HasConfiguration<TcpTransportConfiguration> {
 
     private static final Pattern TRANSPORT_TCP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?.*");
 
     private TcpTransportConfiguration configuration;
 
@@ -53,8 +53,8 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
     @Override
     public ChannelFactory createChannelFactory(String transportConfig) {
         final Matcher matcher = TRANSPORT_TCP_PATTERN.matcher(transportConfig);
-        if(!matcher.matches()) {
-            throw new PlcRuntimeException("Invalid url for TCP transport");
+        if (!matcher.matches()) {
+            throw new PlcRuntimeException("Invalid url for TCP transport: " + transportConfig);
         }
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");
@@ -62,7 +62,7 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
 
         // If the port wasn't specified, try to get a default port from the configuration.
         int port;
-        if(portString != null) {
+        if (portString != null) {
             port = Integer.parseInt(portString);
         } else if ((configuration != null) &&
             (configuration.getDefaultPort() != TcpTransportConfiguration.NO_DEFAULT_PORT)) {

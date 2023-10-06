@@ -28,6 +28,7 @@ import (
 type Expectation interface {
 	fmt.Stringer
 	GetContext() context.Context
+	GetCreationTime() time.Time
 	GetExpiration() time.Time
 	GetAcceptsMessage() AcceptsMessage
 	GetHandleMessage() HandleMessage
@@ -43,14 +44,16 @@ type HandleMessage func(message Message) error
 // HandleError Function for handling the message, returns an error if anything goes wrong
 type HandleError func(err error) error
 
+// MessageCodec handles sending and retrieving of messages
 type MessageCodec interface {
+	// Deprecated: use ConnectWithContext
 	// Connect connects this codec
 	Connect() error
 	// ConnectWithContext connects this codec with the supplied context
 	ConnectWithContext(ctx context.Context) error
 	// Disconnect disconnects this codec
 	Disconnect() error
-	// IsRunning returns tur if the codec (workers are running)
+	// IsRunning returns true if the codec (workers are running)
 	IsRunning() bool
 
 	// Send is sending a given message

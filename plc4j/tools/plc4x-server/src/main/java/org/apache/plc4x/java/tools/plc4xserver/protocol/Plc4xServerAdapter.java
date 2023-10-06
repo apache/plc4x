@@ -21,6 +21,7 @@ package org.apache.plc4x.java.tools.plc4xserver.protocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -28,14 +29,13 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.readwrite.*;
-import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -43,12 +43,12 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
 
     private final Logger logger = LoggerFactory.getLogger(Plc4xServerAdapter.class);
 
-    private final PooledDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final AtomicInteger connectionIdGenerator;
     private final ConcurrentHashMap<Integer, String> connectionUrls;
 
     public Plc4xServerAdapter() {
-        driverManager = new PooledDriverManager();
+        connectionManager = CachedPlcConnectionManager.getBuilder().build();
         connectionIdGenerator = new AtomicInteger(1);
         connectionUrls = new ConcurrentHashMap<>();
     }
@@ -60,7 +60,7 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
             switch (plc4xMessage.getRequestType()) {
                 case CONNECT_REQUEST: {
                     Plc4xConnectRequest request = (Plc4xConnectRequest) plc4xMessage;
-                    try (final PlcConnection ignored = driverManager.getConnection(request.getConnectionString())) {
+                    try (final PlcConnection ignored = connectionManager.getConnection(request.getConnectionString())) {
                         //connection.ping().get();
                         final int connectionId = connectionIdGenerator.getAndIncrement();
                         connectionUrls.put(connectionId, request.getConnectionString());
@@ -77,11 +77,11 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                 case READ_REQUEST: {
                     final Plc4xReadRequest request = (Plc4xReadRequest) plc4xMessage;
                     String connectionUrl = connectionUrls.get(request.getConnectionId());
-                    try (final PlcConnection connection = driverManager.getConnection(connectionUrl)) {
-                        // Build a read request for all fields in the request.
+                    try (final PlcConnection connection = connectionManager.getConnection(connectionUrl)) {
+                        // Build a read request for all tags in the request.
                         final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                        for (Plc4xFieldRequest requestField : request.getFields()) {
-                            builder.addItem(requestField.getField().getName(), requestField.getField().getFieldQuery());
+                        for (Plc4xTagRequest requestTag : request.getTags()) {
+                            builder.addTagAddress(requestTag.getTag().getName(), requestTag.getTag().getTagQuery());
                         }
                         final PlcReadRequest rr = builder.build();
 
@@ -90,15 +90,15 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         final PlcReadResponse apiReadResponse = rr.execute().get();
 
                         // Create the response.
-                        List<Plc4xFieldValueResponse> fields = new ArrayList<>(apiReadResponse.getFieldNames().size());
-                        for (Plc4xFieldRequest plc4xRequestField : request.getFields()) {
-                            final PlcResponseCode responseCode = apiReadResponse.getResponseCode(plc4xRequestField.getField().getName());
+                        List<Plc4xTagValueResponse> tags = new ArrayList<>(apiReadResponse.getTagNames().size());
+                        for (Plc4xTagRequest plc4xRequestTag : request.getTags()) {
+                            final PlcResponseCode responseCode = apiReadResponse.getResponseCode(plc4xRequestTag.getTag().getName());
                             Plc4xResponseCode resCode;
                             Plc4xValueType valueType;
                             PlcValue value;
                             if(responseCode == PlcResponseCode.OK) {
                                 resCode = Plc4xResponseCode.OK;
-                                value = apiReadResponse.getPlcValue(plc4xRequestField.getField().getName());
+                                value = apiReadResponse.getPlcValue(plc4xRequestTag.getTag().getName());
                                 final String valueTypeName = value.getClass().getSimpleName();
                                 // Cut off the "Plc" prefix to get the name of the PlcValueType.
                                 valueType = Plc4xValueType.valueOf(valueTypeName.substring(3));
@@ -107,11 +107,11 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                                 value = null;
                                 valueType = Plc4xValueType.NULL;
                             }
-                            fields.add(new Plc4xFieldValueResponse(
-                                plc4xRequestField.getField(), resCode, valueType, value));
+                            tags.add(new Plc4xTagValueResponse(
+                                plc4xRequestTag.getTag(), resCode, valueType, value));
                         }
                         Plc4xReadResponse response = new Plc4xReadResponse(
-                            request.getRequestId(), request.getConnectionId(), Plc4xResponseCode.OK, fields);
+                            request.getRequestId(), request.getConnectionId(), Plc4xResponseCode.OK, tags);
 
                         // Send the response.
                         ctx.writeAndFlush(response);
@@ -128,12 +128,12 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                 case WRITE_REQUEST:
                     final Plc4xWriteRequest plc4xWriteRequest = (Plc4xWriteRequest) plc4xMessage;
                     String connectionUrl = connectionUrls.get(plc4xWriteRequest.getConnectionId());
-                    try (final PlcConnection connection = driverManager.getConnection(connectionUrl)) {
-                        // Build a write request for all fields in the request.
+                    try (final PlcConnection connection = connectionManager.getConnection(connectionUrl)) {
+                        // Build a write request for all tags in the request.
                         final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-                        for (Plc4xFieldValueRequest plc4xRequestField : plc4xWriteRequest.getFields()) {
-                            builder.addItem(plc4xRequestField.getField().getName(),
-                                plc4xRequestField.getField().getFieldQuery(), plc4xRequestField.getValue().getObject());
+                        for (Plc4xTagValueRequest plc4xRequestTag : plc4xWriteRequest.getTags()) {
+                            builder.addTagAddress(plc4xRequestTag.getTag().getName(),
+                                plc4xRequestTag.getTag().getTagQuery(), plc4xRequestTag.getValue().getObject());
                         }
                         final PlcWriteRequest apiWriteRequest = builder.build();
 
@@ -142,22 +142,22 @@ public class Plc4xServerAdapter extends ChannelInboundHandlerAdapter {
                         final PlcWriteResponse apiWriteResponse = apiWriteRequest.execute().get();
 
                         // Create the response.
-                        List<Plc4xFieldResponse> plc4xFields =
-                            new ArrayList<>(apiWriteResponse.getFieldNames().size());
-                        for (Plc4xFieldValueRequest plc4xRequestField : plc4xWriteRequest.getFields()) {
+                        List<Plc4xTagResponse> plc4xTags =
+                            new ArrayList<>(apiWriteResponse.getTagNames().size());
+                        for (Plc4xTagValueRequest plc4xRequestTag : plc4xWriteRequest.getTags()) {
                             final PlcResponseCode apiResponseCode =
-                                apiWriteResponse.getResponseCode(plc4xRequestField.getField().getName());
+                                apiWriteResponse.getResponseCode(plc4xRequestTag.getTag().getName());
                             Plc4xResponseCode resCode;
                             if(apiResponseCode == PlcResponseCode.OK) {
                                 resCode = Plc4xResponseCode.OK;
                             } else {
                                 resCode = Plc4xResponseCode.INVALID_ADDRESS;
                             }
-                            plc4xFields.add(new Plc4xFieldResponse(plc4xRequestField.getField(), resCode));
+                            plc4xTags.add(new Plc4xTagResponse(plc4xRequestTag.getTag(), resCode));
                         }
                         Plc4xWriteResponse plc4xWriteResponse = new Plc4xWriteResponse(
                             plc4xWriteRequest.getRequestId(), plc4xWriteRequest.getConnectionId(),
-                            Plc4xResponseCode.OK, plc4xFields);
+                            Plc4xResponseCode.OK, plc4xTags);
 
                         // Send the response.
                         ctx.writeAndFlush(plc4xWriteResponse);

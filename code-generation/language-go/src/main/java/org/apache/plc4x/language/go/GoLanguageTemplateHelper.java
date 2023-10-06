@@ -20,11 +20,9 @@ package org.apache.plc4x.language.go;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.text.CaseUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultVstringTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -46,9 +44,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
-    public SortedSet<String> requiredImports = new TreeSet<>();
+    public final SortedSet<String> requiredImports = new TreeSet<>();
 
-    public SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
+    public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
     public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
         super(thisType, protocolName, flavorName, types);
@@ -59,9 +57,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String.join("", languageFlavorName.split("\\-"));
     }
 
+    public String getSanitizedPackageName() {
+        String sanitizedName = getProtocolName().replaceAll("-", "");
+        sanitizedName = sanitizedName.replaceAll("\\.", "/");
+        sanitizedName = sanitizedName.toLowerCase();
+        return sanitizedName;
+    }
+
     // TODO: check if protocol name can be enforced to only contain valid chars
     public String getSanitizedProtocolName() {
-        return getProtocolName().replaceAll("-", "");
+        String sanitizedName = getProtocolName().replaceAll("-", "");
+        sanitizedName = CaseUtils.toCamelCase(sanitizedName, false, '.');
+        return sanitizedName;
     }
 
     public String packageName(String languageFlavorName) {
@@ -85,7 +92,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         TypedField typedField = field.asTypedField().orElseThrow();
         String encoding = null;
         Optional<Term> encodingAttribute = field.getAttribute("encoding");
-        if(encodingAttribute.isPresent()) {
+        if (encodingAttribute.isPresent()) {
             encoding = encodingAttribute.get().toString();
         }
         return getLanguageTypeNameForTypeReference(typedField.getType(), encoding);
@@ -112,6 +119,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         if (typeReference.isNonSimpleTypeReference()) {
             return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
+        }
+        if (typeReference instanceof ByteOrderTypeReference) {
+            return "binary.byteOrder";
         }
         SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
@@ -172,7 +182,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 emitRequiredImport("time");
                 return "time.Time";
             default:
-                throw new RuntimeException("Unsupported simple type");
+                throw new FreemarkerException("Unsupported simple type");
         }
     }
 
@@ -360,23 +370,34 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 }
                 return "readBuffer.ReadBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ")";
             case STRING: {
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                String encoding = "UTF-8";
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
-                String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), \"" + encoding + "\")";
             }
             case VSTRING: {
+                String encoding = "UTF-8";
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral(encoding));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
-                String encoding = ((StringLiteral) encodingTerm).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, null, false, false);
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" + encoding + "\")";
+                if (vstringTypeReference.getLengthExpression().isTernaryTerm()) {
+                    lengthExpression = "(" + lengthExpression + ").(uint32)";
+                } else {
+                    lengthExpression = "uint32(" + lengthExpression + ")";
+                }
+                return "readBuffer.ReadString(\"" + logicalName + "\", " + lengthExpression + ", \"" + encoding + "\")";
             }
             case TIME:
             case DATE:
@@ -408,7 +429,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (valueTerm instanceof StringLiteral) {
             return getWriteBufferWriteMethodCall(logicalName, simpleTypeReference, "\"" + ((StringLiteral) valueTerm).getValue() + "\"", field, writerArgs);
         }
-        throw new RuntimeException("Outputting " + valueTerm.toString() + " not implemented yet. Please continue defining other types in the GoLanguageHelper.getWriteBufferWriteMethodCall.");
+        throw new FreemarkerException("Outputting " + valueTerm.toString() + " not implemented yet. Please continue defining other types in the GoLanguageHelper.getWriteBufferWriteMethodCall.");
     }
 
     public String getWriteBufferWriteMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String fieldName, TypedField field, String... writerArgs) {
@@ -463,25 +484,36 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                String encoding = encodingTerm.asLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
-                    .asStringLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
+                String encoding = "UTF-8";
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+                }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
-                String encoding = encodingTerm.asLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a literal"))
-                    .asStringLiteral()
-                    .orElseThrow(() -> new RuntimeException("Encoding must be a quoted string value")).getValue();
+                String encoding = "UTF-8";
+                if (field != null) {
+                    final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
+                    encoding = encodingTerm.asLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a literal"))
+                        .asStringLiteral()
+                        .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
+                }
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
+                if (vstringTypeReference.getLengthExpression().isTernaryTerm()) {
+                    lengthExpression = "(" + lengthExpression + ").(uint32)";
+                } else {
+                    lengthExpression = "uint32(" + lengthExpression + ")";
+                }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
+                return "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", \"" +
                     encoding + "\", " + fieldName + writerArgsString + ")";
             }
             case DATE:
@@ -573,6 +605,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         Tracer tracer = Tracer.start("castExpression");
         if (typeReference instanceof SimpleTypeReference) {
             return tracer.dive("simpleTypeRef") + getLanguageTypeNameForTypeReference(typeReference);
+        } else if (typeReference instanceof ByteOrderTypeReference) {
+            return tracer.dive("byteOrderTypeRef") + "binary.ByteOrder";
         } else if (typeReference != null) {
             return tracer.dive("anyTypeRef") + "Cast" + getLanguageTypeNameForTypeReference(typeReference);
         } else {
@@ -594,7 +628,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if (term instanceof TernaryTerm) {
             return toTernaryTermExpression(field, fieldType, (TernaryTerm) term, parserArguments, serializerArguments, serialize, tracer);
         } else {
-            throw new RuntimeException("Unsupported Term type " + term.getClass().getName());
+            throw new FreemarkerException("Unsupported Term type " + term.getClass().getName());
         }
     }
 
@@ -606,14 +640,20 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             Term c = ternaryTerm.getC();
             String castExpressionForTypeReference = getCastExpressionForTypeReference(fieldType);
             String inlineIf = "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
-            if (fieldType.isNonSimpleTypeReference()) {
-                return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
+                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
+                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
+            if (fieldType != null) {
+                if (fieldType instanceof ByteOrderTypeReference) {
+                    return tracer.dive("byteordertypereference") + "(" + inlineIf + ").(binary.ByteOrder)";
+                }
+                if (fieldType.isNonSimpleTypeReference()) {
+                    return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
+                }
+                return tracer + inlineIf + ".(" + castExpressionForTypeReference + ")";
             }
-            return tracer + inlineIf + ".(" + castExpressionForTypeReference + ")";
+            return tracer + inlineIf;
         } else {
-            throw new RuntimeException("Unsupported ternary operation type " + ternaryTerm.getOperation());
+            throw new FreemarkerException("Unsupported ternary operation type " + ternaryTerm.getOperation());
         }
     }
 
@@ -684,7 +724,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 tracer = tracer.dive("case ()");
                 return tracer + "(" + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) + ")";
             default:
-                throw new RuntimeException("Unsupported unary operation type " + unaryTerm.getOperation());
+                throw new FreemarkerException("Unsupported unary operation type " + unaryTerm.getOperation());
         }
     }
 
@@ -712,9 +752,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return tracer + "\"" + ((StringLiteral) term).getValue() + "\"";
         } else if (term instanceof VariableLiteral) {
             tracer = tracer.dive("variable literal instanceOf");
+            VariableLiteral variableLiteral = (VariableLiteral) term;
+            if ("curPos".equals(((VariableLiteral) term).getName())) {
+                return "(positionAware.GetPos() - startPos)";
+            } else if ("BIG_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
+                return "binary.BigEndian";
+            } else if ("LITTLE_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
+                return "binary.LittleEndian";
+            }
             return tracer + toVariableExpression(field, fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
         } else {
-            throw new RuntimeException("Unsupported Literal type " + term.getClass().getName());
+            throw new FreemarkerException("Unsupported Literal type " + term.getClass().getName());
         }
     }
 
@@ -732,6 +780,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             return toLengthInBitsVariableExpression(typeReference, serialize, tracer);
         } else if ("_value".equals(variableLiteralName)) {
             return toValueVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
+        }
+        if ("_lastItem".equals(variableLiteralName)) {
+            return toLastItemVariableExpression(typeReference, serialize, tracer);
         }
         if ("length".equals(variableLiteral.getChild().map(VariableLiteral::getName).orElse(""))) {
             return toLengthVariableExpression(field, variableLiteral, serialize, tracer);
@@ -825,7 +876,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     tracer = tracer.dive("complex");
                     ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) typeDefinition;
                     String childProperty = variableLiteral.getChild()
-                        .orElseThrow(() -> new RuntimeException("complex needs a child"))
+                        .orElseThrow(() -> new FreemarkerException("complex needs a child"))
                         .getName();
                     final Optional<Field> matchingDiscriminatorField = complexTypeDefinition.getFields().stream()
                         .filter(curField -> (curField instanceof DiscriminatorField) && ((DiscriminatorField) curField).getName().equals(childProperty))
@@ -842,7 +893,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         variableAccess = "Get" + capitalize(variableLiteralName) + "()";
                     }
                     return tracer + (serialize ? "m.Get" + capitalize(variableLiteralName) + "()" : variableAccess) +
-                        "." + capitalize(variableLiteral.getChild().orElseThrow(() -> new RuntimeException("enum needs a child")).getName()) + "()";
+                        "." + capitalize(variableLiteral.getChild().orElseThrow(() -> new FreemarkerException("enum needs a child")).getName()) + "()";
                 }
             }
             // TODO: is this really meant to fall through?
@@ -874,15 +925,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
-        }/*
+        }
         if ((parserArguments != null) && parserArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("parser argument");
-            return tracer + "m." + capitalize(variableLiteralName) +
+            return tracer + variableLiteralName +
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
-        }*/
+        }
         String indexCall = "";
         if (variableLiteral.getIndex().isPresent()) {
             tracer = tracer.dive("indexCall");
@@ -926,7 +977,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toCeilVariableExpression(Field field, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("ceil");
-        Term va = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("CEIL needs at least one arg"))
+        Term va = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("CEIL needs at least one arg"))
             .stream().findFirst().orElseThrow(IllegalStateException::new);
         // The Ceil function expects 64 bit floating point values.
         TypeReference tr = new DefaultFloatTypeReference(SimpleTypeReference.SimpleBaseType.FLOAT, 64);
@@ -937,12 +988,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toArraySizeInBytesVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("array size in bytes");
         VariableLiteral va = variableLiteral.getArgs()
-            .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs at least one arg"))
+            .orElseThrow(() -> new FreemarkerException("ARRAY_SIZE_IN_BYTES needs at least one arg"))
             .stream().findFirst().orElseThrow(IllegalStateException::new)
             .asLiteral()
-            .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs a literal"))
+            .orElseThrow(() -> new FreemarkerException("ARRAY_SIZE_IN_BYTES needs a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("ARRAY_SIZE_IN_BYTES needs a variable literal"));
+            .orElseThrow(() -> new FreemarkerException("ARRAY_SIZE_IN_BYTES needs a variable literal"));
         // "io" and "m" are always available in every parser.
         boolean isSerializerArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || "m".equals(va.getName()) || "element".equals(va.getName());
         if (!isSerializerArg && serializerArguments != null) {
@@ -965,12 +1016,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toCountVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("count");
         VariableLiteral countLiteral = variableLiteral.getArgs()
-            .orElseThrow(() -> new RuntimeException("Count needs at least one arg"))
+            .orElseThrow(() -> new FreemarkerException("Count needs at least one arg"))
             .get(0)
             .asLiteral()
-            .orElseThrow(() -> new RuntimeException("Count needs a literal"))
+            .orElseThrow(() -> new FreemarkerException("Count needs a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("Count needs a variable literal"));
+            .orElseThrow(() -> new FreemarkerException("Count needs a variable literal"));
         return tracer + (typeReference instanceof SimpleTypeReference ? getCastExpressionForTypeReference(typeReference) : "") + "(len(" +
             toVariableExpression(field, typeReference, countLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess) +
             "))";
@@ -979,12 +1030,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toStrLenVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("str-len");
         VariableLiteral countLiteral = variableLiteral.getArgs()
-            .orElseThrow(() -> new RuntimeException("Str-len needs at least one arg"))
+            .orElseThrow(() -> new FreemarkerException("Str-len needs at least one arg"))
             .get(0)
             .asLiteral()
-            .orElseThrow(() -> new RuntimeException("Str-len needs a literal"))
+            .orElseThrow(() -> new FreemarkerException("Str-len needs a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("Str-len needs a variable literal"));
+            .orElseThrow(() -> new FreemarkerException("Str-len needs a variable literal"));
         return tracer + (typeReference instanceof SimpleTypeReference ? getCastExpressionForTypeReference(typeReference) : "") + "(len(" +
             toVariableExpression(field, typeReference, countLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess) +
             "))";
@@ -993,17 +1044,17 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     private String toStaticCallVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("STATIC_CALL");
         StringBuilder sb = new StringBuilder();
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A STATIC_CALL expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A STATIC_CALL expression needs arguments"));
         if (arguments.size() < 1) {
-            throw new RuntimeException("A STATIC_CALL expression expects at least one argument.");
+            throw new FreemarkerException("A STATIC_CALL expression expects at least one argument.");
         }
         // Get the class and method name
         String staticCall = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
+            .orElseThrow(() -> new FreemarkerException("Expecting the first argument of a 'STATIC_CALL' to be a StringLiteral")).
             getValue();
-        sb.append(capitalize(staticCall)).append("(");
+        sb.append(capitalize(staticCall)).append("(").append("ctx, ");
         for (int i = 1; i < arguments.size(); i++) {
             Term arg = arguments.get(i);
             if (i > 1) {
@@ -1049,7 +1100,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         case "encoding":
                             final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                             if (!(encodingTerm instanceof StringLiteral)) {
-                                throw new RuntimeException("Encoding must be a quoted string value");
+                                throw new FreemarkerException("Encoding must be a quoted string value");
                             }
                             String encoding = ((StringLiteral) encodingTerm).getValue();
                             sb.append("\"").append(encoding).append("\"");
@@ -1071,7 +1122,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 tracer = tracer.dive("BinaryTerm");
                 sb.append(toBinaryTermExpression(field, typeReference, (BinaryTerm) arg, parserArguments, serializerArguments, serialize, tracer));
             } else {
-                throw new RuntimeException(arg.getClass().getName());
+                throw new FreemarkerException(arg.getClass().getName());
             }
         }
         sb.append(")");
@@ -1080,18 +1131,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toCastVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("CAST");
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A Cast expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A Cast expression needs arguments"));
         if (arguments.size() != 2) {
-            throw new RuntimeException("A CAST expression expects exactly two arguments.");
+            throw new FreemarkerException("A CAST expression expects exactly two arguments.");
         }
         VariableLiteral firstArgument = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a Variable literal"));
+            .orElseThrow(() -> new FreemarkerException("First argument should be a Variable literal"));
         StringLiteral typeLiteral = arguments.get(1).asLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"))
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"));
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"));
         final TypeDefinition typeDefinition = getTypeDefinitions().get(typeLiteral.getValue());
         StringBuilder sb = new StringBuilder();
         if (typeDefinition.isComplexTypeDefinition()) {
@@ -1117,9 +1168,14 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toEnumVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("enum");
-        VariableLiteral child = variableLiteral.getChild().orElseThrow(() -> new RuntimeException("Enum should have a child"));
+        VariableLiteral child = variableLiteral.getChild().orElseThrow(() -> new FreemarkerException("Enum should have a child"));
         return tracer + variableLiteral.getName() + "_" + child.getName() +
             child.getChild().map(childChild -> "." + toVariableExpression(field, typeReference, childChild, parserArguments, serializerArguments, false, suppressPointerAccess, true)).orElse("");
+    }
+
+    private String toLastItemVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
+        tracer = tracer.dive("lastItem");
+        return tracer + "utils.GetLastItemFromContext(ctx)";
     }
 
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {
@@ -1136,12 +1192,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLengthInBitsVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBits");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBits" + (serialize ? "())" : "()");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBits" + (serialize ? "(ctx))" : "(ctx)");
     }
 
     private String toLengthInBytesVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBytes");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBytes" + (serialize ? "())" : "()");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBytes" + (serialize ? "(ctx))" : "(ctx)");
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, List<Argument> parserArguments) {
@@ -1361,9 +1417,27 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "_";
     }
 
-    public boolean needsVariable(ArrayField field, String variableName, boolean serialization) {
+    public boolean needsVariable(Field field, String variableName, boolean serialization) {
         if (!serialization) {
-            if (field.getLoopExpression().contains(variableName)) {
+            if (field instanceof ArrayField) {
+                ArrayField arrayField = (ArrayField) field;
+                if (arrayField.getLoopExpression().contains(variableName)) {
+                    return true;
+                }
+            }
+        }
+        if (field instanceof VirtualField) {
+            VirtualField virtualField = (VirtualField) field;
+            if (virtualField.getValueExpression().contains(variableName)) {
+                return true;
+            }
+        }
+        if (field instanceof PaddingField) {
+            PaddingField paddingField = (PaddingField) field;
+            if (paddingField.getPaddingCondition().contains(variableName)) {
+                return true;
+            }
+            if (paddingField.getPaddingValue().contains(variableName)) {
                 return true;
             }
         }
@@ -1540,4 +1614,26 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         String cleanedString = dummyTracer.removeTraces(str);
         return extractedTrace + StringUtils.capitalize(cleanedString);
     }
+
+    public String getEndiannessOptions(boolean read, boolean separatorPrefix) {
+        return getEndiannessOptions(read, separatorPrefix, Collections.emptyList());
+    }
+
+    public String getEndiannessOptions(boolean read, boolean separatorPrefix, List<Argument> parserArguments) {
+        Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
+        if (byteOrder.isPresent()) {
+            emitRequiredImport("encoding/binary");
+            if (read) {
+                return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForReadBufferByteBased(" +
+                    toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
+                    ")";
+            } else {
+                return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForByteBasedBuffer(" +
+                    toSerializationExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
+                    ")";
+            }
+        }
+        return "";
+    }
+
 }

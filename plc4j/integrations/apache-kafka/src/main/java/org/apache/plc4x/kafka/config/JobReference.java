@@ -38,7 +38,6 @@ public class JobReference extends AbstractConfig{
     }
 
     public void validate() {
-        return;
     }
 
     public String getName() {
@@ -60,8 +59,6 @@ public class JobReference extends AbstractConfig{
 
     @Override
     public String toString() {
-        StringBuilder query = new StringBuilder();
-        query.append("\t\t" + name + "." + Constants.TOPIC_CONFIG + "=" + topic + ",\n");
-        return query.toString();
+        return "\t\t" + name + "." + Constants.TOPIC_CONFIG + "=" + topic + ",\n";
     }
 }

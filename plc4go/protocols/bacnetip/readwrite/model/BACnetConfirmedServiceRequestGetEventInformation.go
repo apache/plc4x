@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetConfirmedServiceRequestGetEventInformation is the corresponding interface of BACnetConfirmedServiceRequestGetEventInformation
 type BACnetConfirmedServiceRequestGetEventInformation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -85,7 +89,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLastReceivedObjec
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestGetEventInformation factory function for _BACnetConfirmedServiceRequestGetEventInformation
-func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestGetEventInformation {
+func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestGetEventInformation {
 	_result := &_BACnetConfirmedServiceRequestGetEventInformation{
 		LastReceivedObjectIdentifier:   lastReceivedObjectIdentifier,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -95,7 +99,7 @@ func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdent
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEventInformation(structType interface{}) BACnetConfirmedServiceRequestGetEventInformation {
+func CastBACnetConfirmedServiceRequestGetEventInformation(structType any) BACnetConfirmedServiceRequestGetEventInformation {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEventInformation); ok {
 		return casted
 	}
@@ -109,28 +113,30 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetTypeName() string
 	return "BACnetConfirmedServiceRequestGetEventInformation"
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Optional Field (lastReceivedObjectIdentifier)
 	if m.LastReceivedObjectIdentifier != nil {
-		lengthInBits += m.LastReceivedObjectIdentifier.GetLengthInBits()
+		lengthInBits += m.LastReceivedObjectIdentifier.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestGetEventInformation, error) {
+func BACnetConfirmedServiceRequestGetEventInformationParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {
+	return BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestGetEventInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestGetEventInformation")
 	}
@@ -144,10 +150,10 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 		if pullErr := readBuffer.PullContext("lastReceivedObjectIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for lastReceivedObjectIdentifier")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'lastReceivedObjectIdentifier' field of BACnetConfirmedServiceRequestGetEventInformation")
@@ -174,9 +180,19 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(readBuffer utils.Read
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEventInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestGetEventInformation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestGetEventInformation")
@@ -189,7 +205,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffe
 				return errors.Wrap(pushErr, "Error pushing for lastReceivedObjectIdentifier")
 			}
 			lastReceivedObjectIdentifier = m.GetLastReceivedObjectIdentifier()
-			_lastReceivedObjectIdentifierErr := writeBuffer.WriteSerializable(lastReceivedObjectIdentifier)
+			_lastReceivedObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, lastReceivedObjectIdentifier)
 			if popErr := writeBuffer.PopContext("lastReceivedObjectIdentifier"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lastReceivedObjectIdentifier")
 			}
@@ -203,7 +219,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) Serialize(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEventInformation) isBACnetConfirmedServiceRequestGetEventInformation() bool {
@@ -215,7 +231,7 @@ func (m *_BACnetConfirmedServiceRequestGetEventInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

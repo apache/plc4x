@@ -16,7 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
+from dataclasses import dataclass
+from enum import Enum, auto
 from typing import Generator
 
 
@@ -33,3 +34,29 @@ class GenericGenerator(Generator):
 
     def __exit__(self, *args):
         pass
+
+
+class ByteOrder(Enum):
+    """
+    Specifies the byte order for a message
+    """
+
+    LITTLE_ENDIAN = auto()
+    BIG_ENDIAN = auto()
+
+    def __new__(cls, value):
+        obj = object.__new__(cls)
+        obj._value_ = value
+        return obj
+
+    @staticmethod
+    def get_short_name(order):
+        if order == ByteOrder.LITTLE_ENDIAN:
+            return "little"
+        elif order == ByteOrder.BIG_ENDIAN:
+            return "big"
+
+
+@dataclass
+class ByteOrderAware:
+    byte_order: ByteOrder

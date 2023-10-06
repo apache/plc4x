@@ -18,15 +18,10 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -35,22 +30,19 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest, PlcRequest, Serializable {
 
     private final PlcSubscriber subscriber;
 
     private final List<PlcSubscriptionHandle> plcSubscriptionHandles;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcUnsubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
-                                           @JsonProperty("internalPlcSubscriptionHandles") List<PlcSubscriptionHandle> plcSubscriptionHandles) {
+    public DefaultPlcUnsubscriptionRequest(PlcSubscriber subscriber,
+                                           List<PlcSubscriptionHandle> plcSubscriptionHandles) {
         this.subscriber = subscriber;
         this.plcSubscriptionHandles = plcSubscriptionHandles;
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<PlcUnsubscriptionResponse> execute() {
         return subscriber.unsubscribe(this);
     }
@@ -76,7 +68,7 @@ public class DefaultPlcUnsubscriptionRequest implements PlcUnsubscriptionRequest
     public static class Builder implements PlcUnsubscriptionRequest.Builder {
 
         private final PlcSubscriber subscriber;
-        private List<PlcSubscriptionHandle> plcSubscriptionHandles;
+        private final List<PlcSubscriptionHandle> plcSubscriptionHandles;
 
         public Builder(PlcSubscriber subscriber) {
             this.subscriber = subscriber;

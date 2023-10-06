@@ -24,6 +24,7 @@ type ControllerType int
 const (
 	ControllerType_UNKNOWN = -0x1
 	ControllerType_ANY     = 0x0
+	ControllerType_S7_200  = 0x5
 	ControllerType_S7_300  = 0x1
 	ControllerType_S7_400  = 0x2
 	ControllerType_S7_1200 = 0x3

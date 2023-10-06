@@ -40,9 +40,15 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -74,17 +80,19 @@ public class EtsParser {
                 File knxMasterFile = new File(tempDir.toFile(), "knx_master.xml");
                 // If the file contains: <KNX xmlns="http://knx.org/xml/project/21"> it's an ETS6 file
                 // In all other cases, we'll treat it as ETS5
-                Scanner scanner = new Scanner(knxMasterFile);
                 String etsSchemaVersion = null;
-                while (scanner.hasNextLine()) {
-                    final String curLine = scanner.nextLine();
-                    if(curLine.contains("http://knx.org/xml/project/")) {
-                        etsSchemaVersion = curLine.substring(curLine.indexOf("http://knx.org/xml/project/") + "http://knx.org/xml/project/".length());
-                        etsSchemaVersion = etsSchemaVersion.substring(0, etsSchemaVersion.indexOf("\""));
-                        break;
+                try(Scanner scanner = new Scanner(knxMasterFile)) {
+                    while (scanner.hasNextLine()) {
+                        final String curLine = scanner.nextLine();
+                        if(curLine.contains("http://knx.org/xml/project/")) {
+                            etsSchemaVersion = curLine.substring(curLine.indexOf("http://knx.org/xml/project/") + "http://knx.org/xml/project/".length());
+                            etsSchemaVersion = etsSchemaVersion.substring(0, etsSchemaVersion.indexOf("\""));
+                            break;
+                        }
                     }
                 }
-                EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();
+                // 21 = ETS6, 22 = ETS6.1
+                EtsFileHandler fileHandler = ("21".equals(etsSchemaVersion) || "22".equals(etsSchemaVersion)) ? new Ets6FileHandler() : new Ets5FileHandler();
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // File containing the information on the type of encoding used for group addresses.
@@ -104,17 +112,28 @@ public class EtsParser {
                     File tempFile = new File(tempDir.toFile(), projectNumber + ".zip");
 
                     // Unzip the archive inside the archive.
+                    //noinspection CommentedOutCode
                     try (ZipFile projectZipFile = fileHandler.getProjectFiles(tempFile, password)) {
                         final FileHeader compressedProjectFileHeader = projectZipFile.getFileHeader("project.xml");
                         if (compressedProjectFileHeader == null) {
                             throw new PlcRuntimeException(String.format("Error accessing project header file: Project file 'project.xml' inside '%s.zip'.", projectNumber));
                         }
                         projectHeaderDoc = builder.parse(projectZipFile.getInputStream(compressedProjectFileHeader));
+
+                        // TODO: Leave this in, as it helps debug problems, wen a new ETS version comes out.
+                        // Print the document content to the console.
+                        //System.out.println("Project Header Doc:");
+                        //printDocument(projectHeaderDoc);
+
                         FileHeader projectFileFileHeader = projectZipFile.getFileHeader("0.xml");
                         if (projectFileFileHeader == null) {
                             throw new PlcRuntimeException("Error accessing project file.");
                         }
                         projectDoc = builder.parse(projectZipFile.getInputStream(projectFileFileHeader));
+
+                        // TODO: Leave this in, as it helps debug problems, wen a new ETS version comes out.
+                        //System.out.println("Project Doc:");
+                        //printDocument(projectDoc);
                     }
                 } else {
                     projectHeaderDoc = builder.parse(zipFile.getInputStream(projectFileHeader));
@@ -252,6 +271,21 @@ public class EtsParser {
         }
         
         throw new PlcRuntimeException("Error determining project number.");
+    }
+
+    @SuppressWarnings("All")
+    public void printDocument(Document doc) {
+        try {
+            DOMSource domSource = new DOMSource(doc);
+            StringWriter writer = new StringWriter();
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.transform(domSource, result);
+            System.out.println(writer.toString());
+        } catch(TransformerException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

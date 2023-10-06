@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.configuration;
 import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
@@ -33,7 +34,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("local-slot")
     @IntDefaultValue(1)
     public int localSlot = 1;
-    
+
     @ConfigurationParameter("local-tsap")
     @IntDefaultValue(0)
     public int localTsap = 0;
@@ -45,6 +46,15 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("remote-slot")
     @IntDefaultValue(0)
     public int remoteSlot = 0;
+
+    @ConfigurationParameter("remote-rack2")
+    @IntDefaultValue(0)
+    public int remoteRack2 = 0;
+
+    @ConfigurationParameter("remote-slot2")
+    @IntDefaultValue(0)
+    public int remoteSlot2 = 0;
+
 
     @ConfigurationParameter("remote-tsap")
     @IntDefaultValue(0)
@@ -64,6 +74,23 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
 
     @ConfigurationParameter("controller-type")
     public String controllerType;
+
+    @ConfigurationParameter("read-timeout")
+    @IntDefaultValue(8)
+    public int readTimeout = 8;
+
+    @ConfigurationParameter("ping")
+    @BooleanDefaultValue(false)
+    public boolean ping = false;
+
+    @ConfigurationParameter("ping-time")
+    @IntDefaultValue(-1)
+    public int pingTime = -1;
+
+    @ConfigurationParameter("retry-time")
+    @IntDefaultValue(4)
+    public int retryTime = 4;
+
 
     public int getLocalRack() {
         return localRack;
@@ -88,7 +115,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setLocalTsap(int localTsap) {
         this.localTsap = localTsap;
     }
-    
+
     public int getRemoteRack() {
         return remoteRack;
     }
@@ -105,6 +132,22 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.remoteSlot = remoteSlot;
     }
 
+    public int getRemoteRack2() {
+        return remoteRack2;
+    }
+
+    public void setRemoteRack2(int remoteRack2) {
+        this.remoteRack2 = remoteRack2;
+    }
+
+    public int getRemoteSlot2() {
+        return remoteSlot2;
+    }
+
+    public void setRemoteSlot2(int remoteSlot2) {
+        this.remoteSlot2 = remoteSlot2;
+    }
+
     public int getRemoteTsap() {
         return remoteTsap;
     }
@@ -112,7 +155,7 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     public void setRemoteTsap(int remoteTsap) {
         this.remoteTsap = remoteTsap;
     }
-    
+
     public int getPduSize() {
         return pduSize;
     }
@@ -145,8 +188,42 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.controllerType = controllerType;
     }
 
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeOut) {
+        this.readTimeout = readTimeOut;
+    }
+
+    public boolean getPing() {
+        return ping;
+    }
+
+    public void setPing(boolean ping) {
+        this.ping = ping;
+    }
+
+    public int getPingTime() {
+        return pingTime;
+    }
+
+    public void setPingTime(int pingTime) {
+        this.pingTime = pingTime;
+    }
+
+    public int getRetryTime() {
+        return pingTime;
+    }
+
+    public void setRetryTime(int retryTime) {
+        this.retryTime = retryTime;
+    }
+
+
     /**
      * Per default port for the S7 protocol is 102.
+     *
      * @return 102
      */
     @Override
@@ -162,12 +239,19 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
             ", local-tsap=" + localTsap +
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
+            ", remote-rack2=" + remoteRack2 +
+            ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
-            ", controllerType='" + controllerType + '\'' +
+            ", controllerType=" + controllerType +
+            ", readTimeOut=" + readTimeout +
+            ", ping=" + ping +
+            ", pingTime=" + pingTime +
+            ", retryTime=" + retryTime +
             '}';
     }
 
 }
+

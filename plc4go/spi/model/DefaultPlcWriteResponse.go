@@ -20,33 +20,51 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
+
+var _ apiModel.PlcWriteResponse = &DefaultPlcWriteResponse{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteResponse
 type DefaultPlcWriteResponse struct {
-	DefaultResponse
-	request model.PlcWriteRequest
+	request       apiModel.PlcWriteRequest
+	responseCodes map[string]apiModel.PlcResponseCode
 }
 
-func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse {
+func NewDefaultPlcWriteResponse(request apiModel.PlcWriteRequest, responseCodes map[string]apiModel.PlcResponseCode) apiModel.PlcWriteResponse {
 	return &DefaultPlcWriteResponse{
-		DefaultResponse: NewDefaultResponse(responseCodes),
-		request:         request,
+		request:       request,
+		responseCodes: responseCodes,
 	}
 }
 
-func (m *DefaultPlcWriteResponse) GetFieldNames() []string {
-	var fieldNames []string
-	// We take the field names from the request to keep order as map is not ordered
-	for _, name := range m.request.GetFieldNames() {
-		if _, ok := m.responseCodes[name]; ok {
-			fieldNames = append(fieldNames, name)
+func (d *DefaultPlcWriteResponse) IsAPlcMessage() bool {
+	return true
+}
+
+func (d *DefaultPlcWriteResponse) GetTagNames() []string {
+	if d.request == nil {
+		// Safety guard
+		return nil
+	}
+	var tagNames []string
+	// We take the tag names from the request to keep order as map is not ordered
+	for _, name := range d.request.GetTagNames() {
+		if _, ok := d.responseCodes[name]; ok {
+			tagNames = append(tagNames, name)
 		}
 	}
-	return fieldNames
+	return tagNames
 }
 
-func (m *DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
-	return m.request
+func (d *DefaultPlcWriteResponse) GetRequest() apiModel.PlcWriteRequest {
+	return d.request
+}
+
+func (d *DefaultPlcWriteResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
+	code, ok := d.responseCodes[name]
+	if !ok {
+		return apiModel.PlcResponseCode_NOT_FOUND
+	}
+	return code
 }

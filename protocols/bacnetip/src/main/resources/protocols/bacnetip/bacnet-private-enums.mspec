@@ -488,33 +488,63 @@
 ]
 
 // Attention: No proprietary extension allowed
-[enum uint 3 MaxSegmentsAccepted
-    ['0x0' UNSPECIFIED              ]
-    ['0x1' NUM_SEGMENTS_02          ]
-    ['0x2' NUM_SEGMENTS_04          ]
-    ['0x3' NUM_SEGMENTS_08          ]
-    ['0x4' NUM_SEGMENTS_16          ]
-    ['0x5' NUM_SEGMENTS_32          ]
-    ['0x6' NUM_SEGMENTS_64          ]
-    ['0x7' MORE_THAN_64_SEGMENTS    ]
+[enum uint 3 MaxSegmentsAccepted(uint 8 maxSegments)
+    ['0x0' UNSPECIFIED              ['255']]
+    ['0x1' NUM_SEGMENTS_02          [  '2']]
+    ['0x2' NUM_SEGMENTS_04          [  '4']]
+    ['0x3' NUM_SEGMENTS_08          [  '8']]
+    ['0x4' NUM_SEGMENTS_16          [ '16']]
+    ['0x5' NUM_SEGMENTS_32          [ '32']]
+    ['0x6' NUM_SEGMENTS_64          [ '64']]
+    ['0x7' MORE_THAN_64_SEGMENTS    ['255']]
 ]
 
 // Attention: No proprietary extension allowed
-[enum uint 4 MaxApduLengthAccepted
-    ['0x0' MINIMUM_MESSAGE_SIZE     ] // 50 octets
-    ['0x1' NUM_OCTETS_128           ]
-    ['0x2' NUM_OCTETS_206           ] // fits in a LonTalk frame
-    ['0x3' NUM_OCTETS_480           ] // fits in an ARCNET frame
-    ['0x4' NUM_OCTETS_1024          ]
-    ['0x5' NUM_OCTETS_1476          ] // fits in an Ethernet frame
-    ['0x6' RESERVED_BY_ASHRAE_01    ]
-    ['0x7' RESERVED_BY_ASHRAE_02    ]
-    ['0x8' RESERVED_BY_ASHRAE_03    ]
-    ['0x9' RESERVED_BY_ASHRAE_04    ]
-    ['0xA' RESERVED_BY_ASHRAE_05    ]
-    ['0xB' RESERVED_BY_ASHRAE_06    ]
-    ['0xC' RESERVED_BY_ASHRAE_07    ]
-    ['0xD' RESERVED_BY_ASHRAE_08    ]
-    ['0xE' RESERVED_BY_ASHRAE_09    ]
-    ['0xF' RESERVED_BY_ASHRAE_10    ]
+[enum uint 4 MaxApduLengthAccepted(uint 16 numberOfOctets)
+    ['0x0' MINIMUM_MESSAGE_SIZE     [  '50']] // 50 octets
+    ['0x1' NUM_OCTETS_128           [ '128']]
+    ['0x2' NUM_OCTETS_206           [ '206']] // fits in a LonTalk frame
+    ['0x3' NUM_OCTETS_480           [ '480']] // fits in an ARCNET frame
+    ['0x4' NUM_OCTETS_1024          ['1024']]
+    ['0x5' NUM_OCTETS_1476          ['1476']] // fits in an Ethernet frame
+    ['0x6' RESERVED_BY_ASHRAE_01    [   '0']]
+    ['0x7' RESERVED_BY_ASHRAE_02    [   '0']]
+    ['0x8' RESERVED_BY_ASHRAE_03    [   '0']]
+    ['0x9' RESERVED_BY_ASHRAE_04    [   '0']]
+    ['0xA' RESERVED_BY_ASHRAE_05    [   '0']]
+    ['0xB' RESERVED_BY_ASHRAE_06    [   '0']]
+    ['0xC' RESERVED_BY_ASHRAE_07    [   '0']]
+    ['0xD' RESERVED_BY_ASHRAE_08    [   '0']]
+    ['0xE' RESERVED_BY_ASHRAE_09    [   '0']]
+    ['0xF' RESERVED_BY_ASHRAE_10    [   '0']]
+]
+
+// Attention: No proprietary extension allowed
+[enum uint 8 SecurityResponseCode
+    ['0x00' SUCCESS                         ]
+    ['0x01' ACCESS_DENIED                   ]
+    ['0x02' BAD_DESTINATION_ADDRESS         ]
+    ['0x03' BAD_DESTINATION_DEVICE_ID       ]
+    ['0x04' BAD_SIGNATURE                   ]
+    ['0x05' BAD_SOURCE_ADDRESS              ]
+    ['0x06' BAD_TIMESTAMP                   ]
+    ['0x07' CANNOT_USE_KEY                  ]
+    ['0x08' CANNOT_VERIFY_MESSAGE_ID        ]
+    ['0x09' CORRECT_KEY_REVISION            ]
+    ['0x0A' DESTINATION_DEVICE_ID_REQUIRED  ]
+    ['0x0B' DUPLICATE_MESSAGE               ]
+    ['0x0C' ENCRYPTION_NOT_CONFIGURED       ]
+    ['0x0D' ENCRYPTION_REQUIRED             ]
+    ['0x0E' INCORRECT_KEY                   ]
+    ['0x0F' INVALID_KEY_DATA                ]
+    ['0x10' KEY_UPDATE_IN_PROGRESS          ]
+    ['0x11' MALFORMED_MESSAGE               ]
+    ['0x12' NOT_KEY_SERVER                  ]
+    ['0x13' SECURITY_NOT_CONFIGURED         ]
+    ['0x14' SOURCE_SECURITY_REQUIRED        ]
+    ['0x15' TOO_MANY_KEYS                   ]
+    ['0x16' UNKNOWN_AUTHENTICATION_TYPE     ]
+    ['0x17' UNKNOWN_KEY                     ]
+    ['0x18' UNKNOWN_KEY_REVISION            ]
+    ['0x19' UNKNOWN_SOURCE_MESSAGE          ]
 ]

@@ -30,6 +30,14 @@ As we have encountered exactly the same problem for about every integration modu
 This tool automatically handles all of the tasks mentioned above.
 
 === Getting started with the `Scraper`
+The Scraper can be found in the Maven module
+```
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-scraper</artifactId>
+  <version>${current.version}</version>
+</dependency>
+```
 
 In general, you need 3 parts to work with the `Scraper`:
 
@@ -86,10 +94,10 @@ This creates a new `job` with a given name which is executed based on the inform
 
 As mentioned above, we currently only support a time-scheduled collection.
 
-This genrally just requires one parameter: The number of `milliseconds` between each collection.
+This generally requires just one parameter: The number of `milliseconds` between each collection.
 
 ----
-SCHEDULED:1000
+(SCHEDULED,1000)
 ----
 
 Above would schedule a collection every 1000ms - so once every second.
@@ -122,7 +130,7 @@ jobBuilder.build();
 
 This configures the finished job and attaches that to the overall `Scraper` configuration of the scraper configuration.
 
-As soon as we're done configuring jobs, we need to create the `Scraper` configuration by calling the `buiold` method on the `builder`:
+As soon as we're done configuring jobs, we need to create the `Scraper` configuration by calling the `build` method on the `builder`:
 
 ----
 ScraperConfigurationTriggeredImpl scraperConfig = builder.build();

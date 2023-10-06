@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 #include <plc4c/utils/list.h>
@@ -43,12 +44,12 @@ typedef struct plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet;
 // Create an empty NULL-struct
 plc4c_s7_read_write_tpkt_packet plc4c_s7_read_write_tpkt_packet_null();
 
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_tpkt_packet** message);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_tpkt_packet** message);
 
-plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_tpkt_packet* message);
+plc4c_return_code plc4c_s7_read_write_tpkt_packet_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_tpkt_packet* message);
 
-uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4c_s7_read_write_tpkt_packet* message);
+uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_tpkt_packet* message);
 
-uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bits(plc4c_s7_read_write_tpkt_packet* message);
+uint16_t plc4c_s7_read_write_tpkt_packet_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_tpkt_packet* message);
 
 #endif  // PLC4C_S7_READ_WRITE_TPKT_PACKET_H_

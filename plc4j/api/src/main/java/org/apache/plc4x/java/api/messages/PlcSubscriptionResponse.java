@@ -22,15 +22,15 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 
 import java.util.Collection;
 
-public interface PlcSubscriptionResponse extends PlcSubscriptionFieldResponse {
+public interface PlcSubscriptionResponse extends PlcSubscriptionTagResponse {
 
     @Override
     PlcSubscriptionRequest getRequest();
 
     /**
-     * Returns a {@link PlcSubscriptionHandle} associated with a {@code name} from {@link PlcSubscriptionRequest#getField(String)}
+     * Returns a {@link PlcSubscriptionHandle} associated with a {@code name} from {@link PlcSubscriptionRequest#getTag(String)}
      *
-     * @param name the field name which a {@link PlcSubscriptionHandle} is required to
+     * @param name the tag name which a {@link PlcSubscriptionHandle} is required to
      * @return a {@link PlcSubscriptionHandle}
      */
     PlcSubscriptionHandle getSubscriptionHandle(String name);

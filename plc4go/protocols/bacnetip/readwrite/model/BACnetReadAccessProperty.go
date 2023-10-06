@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetReadAccessProperty is the corresponding interface of BACnetReadAccessProperty
 type BACnetReadAccessProperty interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -84,7 +88,7 @@ func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessProperty(structType interface{}) BACnetReadAccessProperty {
+func CastBACnetReadAccessProperty(structType any) BACnetReadAccessProperty {
 	if casted, ok := structType.(BACnetReadAccessProperty); ok {
 		return casted
 	}
@@ -98,36 +102,38 @@ func (m *_BACnetReadAccessProperty) GetTypeName() string {
 	return "BACnetReadAccessProperty"
 }
 
-func (m *_BACnetReadAccessProperty) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetReadAccessProperty) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetReadAccessProperty) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += m.ArrayIndex.GetLengthInBits()
+		lengthInBits += m.ArrayIndex.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (readResult)
 	if m.ReadResult != nil {
-		lengthInBits += m.ReadResult.GetLengthInBits()
+		lengthInBits += m.ReadResult.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetReadAccessProperty) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetReadAccessProperty) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
+func BACnetReadAccessPropertyParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
+	return BACnetReadAccessPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func BACnetReadAccessPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetReadAccessProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetReadAccessProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessProperty")
 	}
@@ -138,7 +144,7 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetReadAccessProperty")
 	}
@@ -154,10 +160,10 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetReadAccessProperty")
@@ -176,10 +182,10 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for readResult")
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParse(readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetReadAccessPropertyReadResultParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'readResult' field of BACnetReadAccessProperty")
@@ -204,9 +210,19 @@ func BACnetReadAccessPropertyParse(readBuffer utils.ReadBuffer, objectTypeArgume
 	}, nil
 }
 
-func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetReadAccessProperty) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetReadAccessProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetReadAccessProperty"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessProperty")
 	}
@@ -215,7 +231,7 @@ func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) err
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.GetPropertyIdentifier())
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -230,7 +246,7 @@ func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) err
 			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.GetArrayIndex()
-		_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
+		_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
@@ -246,7 +262,7 @@ func (m *_BACnetReadAccessProperty) Serialize(writeBuffer utils.WriteBuffer) err
 			return errors.Wrap(pushErr, "Error pushing for readResult")
 		}
 		readResult = m.GetReadResult()
-		_readResultErr := writeBuffer.WriteSerializable(readResult)
+		_readResultErr := writeBuffer.WriteSerializable(ctx, readResult)
 		if popErr := writeBuffer.PopContext("readResult"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for readResult")
 		}
@@ -280,7 +296,7 @@ func (m *_BACnetReadAccessProperty) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

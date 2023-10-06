@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,11 @@ public class DataReaderEnumDefault<T, I> implements DataReaderEnum<T> {
     @Override
     public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
         dataReader.closeContext(logicalName, readerArgs);
+    }
+
+    @Override
+    public ReadBuffer getReadBuffer() {
+        return dataReader.getReadBuffer();
     }
 
 }

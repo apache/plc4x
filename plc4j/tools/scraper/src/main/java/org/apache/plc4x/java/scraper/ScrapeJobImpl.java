@@ -36,13 +36,13 @@ public class ScrapeJobImpl implements ScrapeJob {
     private final String name;
     private final long scrapeRate;
     private final Map<String, String> connections;
-    private final Map<String, String> fields;
+    private final Map<String, String> tags;
 
-    public ScrapeJobImpl(String name, long scrapeRate, Map<String, String> connections, Map<String, String> fields) {
+    public ScrapeJobImpl(String name, long scrapeRate, Map<String, String> connections, Map<String, String> tags) {
         this.name = name;
         this.scrapeRate = scrapeRate;
         this.connections = connections;
-        this.fields = fields;
+        this.tags = tags;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ScrapeJobImpl implements ScrapeJob {
     }
 
     @Override
-    public Map<String, String> getFields() {
-        return fields;
+    public Map<String, String> getTags() {
+        return tags;
     }
 }

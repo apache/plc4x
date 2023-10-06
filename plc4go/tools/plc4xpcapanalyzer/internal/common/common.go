@@ -21,7 +21,7 @@ package common
 
 import (
 	"fmt"
-	"github.com/google/gopacket"
+	"github.com/gopacket/gopacket"
 	"github.com/pkg/errors"
 	"net"
 	"time"

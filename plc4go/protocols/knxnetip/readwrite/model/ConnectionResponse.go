@@ -20,8 +20,12 @@
 package model
 
 import (
+	"context"
+	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +33,7 @@ import (
 
 // ConnectionResponse is the corresponding interface of ConnectionResponse
 type ConnectionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	KnxNetIpMessage
@@ -118,7 +123,7 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionResponse(structType interface{}) ConnectionResponse {
+func CastConnectionResponse(structType any) ConnectionResponse {
 	if casted, ok := structType.(ConnectionResponse); ok {
 		return casted
 	}
@@ -132,12 +137,8 @@ func (m *_ConnectionResponse) GetTypeName() string {
 	return "ConnectionResponse"
 }
 
-func (m *_ConnectionResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ConnectionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ConnectionResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -147,24 +148,30 @@ func (m *_ConnectionResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (hpaiDataEndpoint)
 	if m.HpaiDataEndpoint != nil {
-		lengthInBits += m.HpaiDataEndpoint.GetLengthInBits()
+		lengthInBits += m.HpaiDataEndpoint.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (connectionResponseDataBlock)
 	if m.ConnectionResponseDataBlock != nil {
-		lengthInBits += m.ConnectionResponseDataBlock.GetLengthInBits()
+		lengthInBits += m.ConnectionResponseDataBlock.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_ConnectionResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ConnectionResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
+func ConnectionResponseParse(ctx context.Context, theBytes []byte) (ConnectionResponse, error) {
+	return ConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+}
+
+func ConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionResponse")
 	}
@@ -182,7 +189,7 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := StatusParse(readBuffer)
+	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ConnectionResponse")
 	}
@@ -198,10 +205,10 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
 		}
-		_val, _err := HPAIDataEndpointParse(readBuffer)
+		_val, _err := HPAIDataEndpointParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field of ConnectionResponse")
@@ -220,10 +227,10 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for connectionResponseDataBlock")
 		}
-		_val, _err := ConnectionResponseDataBlockParse(readBuffer)
+		_val, _err := ConnectionResponseDataBlockParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field of ConnectionResponse")
@@ -251,9 +258,19 @@ func ConnectionResponseParse(readBuffer utils.ReadBuffer) (ConnectionResponse, e
 	return _child, nil
 }
 
-func (m *_ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionResponse) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("ConnectionResponse"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ConnectionResponse")
@@ -270,7 +287,7 @@ func (m *_ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for status")
 		}
-		_statusErr := writeBuffer.WriteSerializable(m.GetStatus())
+		_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
 		if popErr := writeBuffer.PopContext("status"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for status")
 		}
@@ -285,7 +302,7 @@ func (m *_ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
 			}
 			hpaiDataEndpoint = m.GetHpaiDataEndpoint()
-			_hpaiDataEndpointErr := writeBuffer.WriteSerializable(hpaiDataEndpoint)
+			_hpaiDataEndpointErr := writeBuffer.WriteSerializable(ctx, hpaiDataEndpoint)
 			if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
 			}
@@ -301,7 +318,7 @@ func (m *_ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for connectionResponseDataBlock")
 			}
 			connectionResponseDataBlock = m.GetConnectionResponseDataBlock()
-			_connectionResponseDataBlockErr := writeBuffer.WriteSerializable(connectionResponseDataBlock)
+			_connectionResponseDataBlockErr := writeBuffer.WriteSerializable(ctx, connectionResponseDataBlock)
 			if popErr := writeBuffer.PopContext("connectionResponseDataBlock"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for connectionResponseDataBlock")
 			}
@@ -315,7 +332,7 @@ func (m *_ConnectionResponse) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ConnectionResponse) isConnectionResponse() bool {
@@ -327,7 +344,7 @@ func (m *_ConnectionResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

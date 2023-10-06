@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -29,42 +30,62 @@
 // (The order is identical to the enum constants, so we can use the
 // enum constant to directly access a given type's discriminator values)
 const plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_write_s7_payload_user_data_item_discriminators[] = {
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_push */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x00, .cpuSubfunction = 0x01, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_push */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x00, .cpuSubfunction = 0x05, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_request */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_request */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x04, .cpuSubfunction = 0x04, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_response */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x08, .cpuSubfunction = 0x01, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_response */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x08, .cpuSubfunction = 0x04, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_error_response */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x08, .cpuSubfunction = 0x05, .dataLength = 0x00 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response */
+   .cpuFunctionGroup = 0x02, .cpuFunctionType = 0x08, .cpuSubfunction = 0x05, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_diagnostic_message */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x03, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x03, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm8 */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x05, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x05, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_notify */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x06, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x06, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_ack_ind */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x0c, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x0c, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_sq */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x11, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x11, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_s */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x12, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x12, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_alarm_sc */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x13, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x13, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_notify8 */
-   .cpuFunctionType = 0x00, .cpuSubfunction = 0x16, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x00, .cpuSubfunction = 0x16, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_no_data_request */
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = 0x00 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x01, .dataLength = -1 },
-  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x02, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x01, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request */
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x04, .cpuSubfunction = 0x02, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x00 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x00 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_sys_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x02 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x02 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x05 },
-  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x0b, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x02, .dataLength = 0x05 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_request */
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x04, .cpuSubfunction = 0x0b, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_error_response */
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x0b, .dataLength = 0x00 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x0b, .dataLength = -1 },
-  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query */
-   .cpuFunctionType = 0x04, .cpuSubfunction = 0x13, .dataLength = -1 },
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x0b, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_request */
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x04, .cpuSubfunction = 0x13, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response */
-   .cpuFunctionType = 0x08, .cpuSubfunction = 0x13, .dataLength = -1 }
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x13, .dataLength = -1 }
 
 };
 
@@ -82,37 +103,29 @@ plc4c_s7_read_write_s7_payload_user_data_item plc4c_s7_read_write_s7_payload_use
 
 
 // Constant values.
-static const uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const = 28;
-uint16_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_ACK_REQUEST_FUNCTION_ID_const = 0x09;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_ACK_REQUEST_FUNCTION_ID() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_ACK_REQUEST_FUNCTION_ID_const;
 }
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID_const = 0x00;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_FUNCTION_ID_const = 0x00;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_FUNCTION_ID() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_FUNCTION_ID_const;
 }
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ_const = 0x01;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_NUMBER_MESSAGE_OBJ_const = 0x01;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_NUMBER_MESSAGE_OBJ() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_NUMBER_MESSAGE_OBJ_const;
 }
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC_const = 0x12;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_VARIABLE_SPEC_const = 0x12;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_VARIABLE_SPEC() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_VARIABLE_SPEC_const;
 }
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const = 0x08;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH_const;
-}
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID_const = 0x00;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID_const;
-}
-static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const = 0x01;
-uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ() {
-  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ_const;
+static const uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_LENGTH_const = 0x08;
+uint8_t PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_LENGTH() {
+  return PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_LENGTH_const;
 }
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionType, uint8_t cpuSubfunction, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t cpuFunctionGroup, uint8_t cpuFunctionType, uint8_t cpuSubfunction, plc4c_s7_read_write_s7_payload_user_data_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -124,7 +137,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Simple Field (returnCode)
   plc4c_s7_read_write_data_transport_error_code returnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &returnCode);
+  _res = plc4c_s7_read_write_data_transport_error_code_parse(ctx, readBuffer, (void*) &returnCode);
   if(_res != OK) {
     return _res;
   }
@@ -132,21 +145,226 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4c_spi_
 
   // Simple Field (transportSize)
   plc4c_s7_read_write_data_transport_size transportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &transportSize);
+  _res = plc4c_s7_read_write_data_transport_size_parse(ctx, readBuffer, (void*) &transportSize);
   if(_res != OK) {
     return _res;
   }
   (*_message)->transport_size = transportSize;
 
-  // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+  // Simple Field (dataLength)
   uint16_t dataLength = 0;
   _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
+  (*_message)->data_length = dataLength;
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadDiagnosticMessage */
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCyclicServicesPush */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_push;
+
+  // Simple Field (itemsCount)
+  uint16_t itemsCount = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &itemsCount);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_push_items_count = itemsCount;
+
+
+  // Array field (items)
+  plc4c_list* items = NULL;
+  plc4c_utils_list_create(&items);
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
+  {
+    // Count array
+    uint16_t itemCount = (uint16_t) itemsCount;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_value_type* _value = NULL;
+      _res = plc4c_s7_read_write_associated_value_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(items, _value);
+    }
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_push_items = items;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x05 ) ) { /* S7PayloadUserDataItemCyclicServicesChangeDrivenPush */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_push;
+
+  // Simple Field (itemsCount)
+  uint16_t itemsCount = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &itemsCount);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_change_driven_push_items_count = itemsCount;
+
+
+  // Array field (items)
+  plc4c_list* items = NULL;
+  plc4c_utils_list_create(&items);
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
+  {
+    // Count array
+    uint16_t itemCount = (uint16_t) itemsCount;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_query_value_type* _value = NULL;
+      _res = plc4c_s7_read_write_associated_query_value_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(items, _value);
+    }
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_change_driven_push_items = items;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCyclicServicesSubscribeRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_request;
+
+  // Simple Field (itemsCount)
+  uint16_t itemsCount = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &itemsCount);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_subscribe_request_items_count = itemsCount;
+
+
+  // Simple Field (timeBase)
+  plc4c_s7_read_write_time_base timeBase;
+  _res = plc4c_s7_read_write_time_base_parse(ctx, readBuffer, (void*) &timeBase);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_subscribe_request_time_base = timeBase;
+
+
+  // Simple Field (timeFactor)
+  uint8_t timeFactor = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &timeFactor);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_subscribe_request_time_factor = timeFactor;
+
+
+  // Array field (item)
+  plc4c_list* item = NULL;
+  plc4c_utils_list_create(&item);
+  if(item == NULL) {
+    return NO_MEMORY;
+  }
+  {
+    // Count array
+    uint16_t itemCount = (uint16_t) itemsCount;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_cyc_service_item_type* _value = NULL;
+      _res = plc4c_s7_read_write_cyc_service_item_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(item, _value);
+    }
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_subscribe_request_item = item;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x04 ) ) { /* S7PayloadUserDataItemCyclicServicesUnsubscribeRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_request;
+
+  // Simple Field (function)
+  uint8_t function = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &function);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_unsubscribe_request_function = function;
+
+
+  // Simple Field (jobId)
+  uint8_t jobId = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &jobId);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_unsubscribe_request_job_id = jobId;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCyclicServicesSubscribeResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_response;
+
+  // Simple Field (itemsCount)
+  uint16_t itemsCount = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &itemsCount);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_subscribe_response_items_count = itemsCount;
+
+
+  // Array field (items)
+  plc4c_list* items = NULL;
+  plc4c_utils_list_create(&items);
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
+  {
+    // Count array
+    uint16_t itemCount = (uint16_t) itemsCount;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_value_type* _value = NULL;
+      _res = plc4c_s7_read_write_associated_value_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(items, _value);
+    }
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_subscribe_response_items = items;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x04 ) ) { /* S7PayloadUserDataItemCyclicServicesUnsubscribeResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_response;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x05 ) && ( dataLength == 0x00 ) ) { /* S7PayloadUserDataItemCyclicServicesErrorResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_error_response;
+  } else 
+if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x05 ) ) { /* S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response;
+
+  // Simple Field (itemsCount)
+  uint16_t itemsCount = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &itemsCount);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items_count = itemsCount;
+
+
+  // Array field (items)
+  plc4c_list* items = NULL;
+  plc4c_utils_list_create(&items);
+  if(items == NULL) {
+    return NO_MEMORY;
+  }
+  {
+    // Count array
+    uint16_t itemCount = (uint16_t) itemsCount;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_query_value_type* _value = NULL;
+      _res = plc4c_s7_read_write_associated_query_value_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(items, _value);
+    }
+  }
+  (*_message)->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items = items;
+  } else 
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadDiagnosticMessage */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message;
 
   // Simple Field (EventId)
@@ -205,95 +423,98 @@ if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadDi
 
   // Simple Field (TimeStamp)
   plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(readBuffer, (void*) &TimeStamp);
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_diagnostic_message_time_stamp = TimeStamp;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x05 ) ) { /* S7PayloadAlarm8 */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x05 ) ) { /* S7PayloadAlarm8 */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_alarm8_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x06 ) ) { /* S7PayloadNotify */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x06 ) ) { /* S7PayloadNotify */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_notify_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x0c ) ) { /* S7PayloadAlarmAckInd */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x0c ) ) { /* S7PayloadAlarmAckInd */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_ack_ind;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_ack_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_ack_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_ack_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_alarm_ack_ind_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x11 ) ) { /* S7PayloadAlarmSQ */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x11 ) ) { /* S7PayloadAlarmSQ */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sq;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_alarm_sq_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x12 ) ) { /* S7PayloadAlarmS */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x12 ) ) { /* S7PayloadAlarmS */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_s;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_alarm_s_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadAlarmSC */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadAlarmSC */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sc;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_alarm_sc_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x16 ) ) { /* S7PayloadNotify8 */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x16 ) ) { /* S7PayloadNotify8 */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify8;
 
   // Simple Field (alarmMessage)
   plc4c_s7_read_write_alarm_message_push_type* alarmMessage;
-  _res = plc4c_s7_read_write_alarm_message_push_type_parse(readBuffer, (void*) &alarmMessage);
+  _res = plc4c_s7_read_write_alarm_message_push_type_parse(ctx, readBuffer, (void*) &alarmMessage);
   if(_res != OK) {
     return _res;
   }
   (*_message)->s7_payload_notify8_alarm_message = alarmMessage;
   } else 
-if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCpuFunctionReadSzlRequest */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) && ( dataLength == 0x00 ) ) { /* S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_no_data_request;
+  } else 
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCpuFunctionReadSzlRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request;
 
   // Simple Field (szlId)
   plc4c_s7_read_write_szl_id* szlId;
-  _res = plc4c_s7_read_write_szl_id_parse(readBuffer, (void*) &szlId);
+  _res = plc4c_s7_read_write_szl_id_parse(ctx, readBuffer, (void*) &szlId);
   if(_res != OK) {
     return _res;
   }
@@ -308,46 +529,8 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
   }
   (*_message)->s7_payload_user_data_item_cpu_function_read_szl_request_szl_index = szlIndex;
   } else 
-if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCpuFunctionReadSzlResponse */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemCpuFunctionReadSzlResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response;
-
-  // Simple Field (szlId)
-  plc4c_s7_read_write_szl_id* szlId;
-  _res = plc4c_s7_read_write_szl_id_parse(readBuffer, (void*) &szlId);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id = szlId;
-
-
-  // Simple Field (szlIndex)
-  uint16_t szlIndex = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &szlIndex);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->s7_payload_user_data_item_cpu_function_read_szl_response_szl_index = szlIndex;
-
-
-  // Const Field (szlItemLength)
-  uint16_t szlItemLength = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &szlItemLength);
-  if(_res != OK) {
-    return _res;
-  }
-  if(szlItemLength != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH()) {
-    return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH + " but got " + szlItemLength);
-  }
-
-
-  // Implicit Field (szlItemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  uint16_t szlItemCount = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &szlItemCount);
-  if(_res != OK) {
-    return _res;
-  }
-
 
   // Array field (items)
   plc4c_list* items = NULL;
@@ -357,11 +540,10 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
   }
   {
     // Count array
-    uint16_t itemCount = (uint16_t) szlItemCount;
+    uint16_t itemCount = (uint16_t) dataLength;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
-      plc4c_s7_read_write_szl_data_tree_item* _value = NULL;
-      _res = plc4c_s7_read_write_szl_data_tree_item_parse(readBuffer, (void*) &_value);
+      char* _value = malloc(sizeof(char));
+      _res = plc4c_spi_read_char(readBuffer, (char*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -370,8 +552,8 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUs
   }
   (*_message)->s7_payload_user_data_item_cpu_function_read_szl_response_items = items;
   } else 
-if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscription */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription;
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request;
 
   // Simple Field (Subscription)
   uint8_t Subscription = 0;
@@ -379,7 +561,7 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUs
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_subscription = Subscription;
+  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_subscription = Subscription;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -401,19 +583,19 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUs
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_magic_key = magicKey;
+  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_magic_key = magicKey;
 
 
   // Optional Field (Alarmtype) (Can be skipped, if a given expression evaluates to false)
   plc4c_s7_read_write_alarm_state_type* Alarmtype = NULL;
   if((Subscription) >= (128)) {
-    _res = plc4c_s7_read_write_alarm_state_type_parse(readBuffer, &Alarmtype);
+    _res = plc4c_s7_read_write_alarm_state_type_parse(ctx, readBuffer, &Alarmtype);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype = Alarmtype;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype = Alarmtype;
   } else {
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype = NULL;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype = NULL;
   }
 
 
@@ -429,15 +611,15 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUs
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_reserve = Reserve;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve = Reserve;
   } else {
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_reserve = NULL;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve = NULL;
   }
   } else 
-if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength == 0x00 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength == 0x00 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_response;
   } else 
-if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength == 0x02 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength == 0x02 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_sys_response;
 
   // Simple Field (result)
@@ -457,7 +639,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength ==
   }
   (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_sys_response_reserved01 = reserved01;
   } else 
-if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength == 0x05 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength == 0x05 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response;
 
   // Simple Field (result)
@@ -480,7 +662,7 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength ==
 
   // Simple Field (alarmType)
   plc4c_s7_read_write_alarm_type alarmType;
-  _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
+  _res = plc4c_s7_read_write_alarm_type_parse(ctx, readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
@@ -504,16 +686,19 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x02 ) && ( dataLength ==
   }
   (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_reserved03 = reserved03;
   } else 
-if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmAck */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack;
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmAckRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_request;
 
-  // Simple Field (functionId)
+  // Const Field (functionId)
   uint8_t functionId = 0;
   _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &functionId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_ack_function_id = functionId;
+  if(functionId != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_ACK_REQUEST_FUNCTION_ID()) {
+    return PARSE_ERROR;
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_ACK_REQUEST_FUNCTION_ID + " but got " + functionId);
+  }
 
 
   // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -534,18 +719,20 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_alarm_message_object_ack_type* _value = NULL;
-      _res = plc4c_s7_read_write_alarm_message_object_ack_type_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_alarm_message_object_ack_type_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
       plc4c_utils_list_insert_head_value(messageObjects, _value);
     }
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects = messageObjects;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects = messageObjects;
   } else 
-if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmAckResponse */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) && ( dataLength == 0x00 ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_error_response;
+  } else 
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmAckResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_response;
 
   // Simple Field (functionId)
@@ -575,7 +762,6 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       uint8_t* _value = malloc(sizeof(uint8_t));
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _value);
       if(_res != OK) {
@@ -586,8 +772,8 @@ if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x0b ) ) { /* S7PayloadUs
   }
   (*_message)->s7_payload_user_data_item_cpu_function_alarm_ack_response_message_objects = messageObjects;
   } else 
-if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmQuery */
-    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query;
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmQueryRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_request;
 
   // Const Field (functionId)
   uint8_t functionId = 0;
@@ -595,9 +781,9 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
   if(_res != OK) {
     return _res;
   }
-  if(functionId != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID()) {
+  if(functionId != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_FUNCTION_ID()) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID + " but got " + functionId);
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_FUNCTION_ID + " but got " + functionId);
   }
 
 
@@ -607,9 +793,9 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
   if(_res != OK) {
     return _res;
   }
-  if(numberMessageObj != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ()) {
+  if(numberMessageObj != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_NUMBER_MESSAGE_OBJ()) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ + " but got " + numberMessageObj);
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_NUMBER_MESSAGE_OBJ + " but got " + numberMessageObj);
   }
 
 
@@ -619,9 +805,9 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
   if(_res != OK) {
     return _res;
   }
-  if(variableSpec != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC()) {
+  if(variableSpec != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_VARIABLE_SPEC()) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC + " but got " + variableSpec);
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_VARIABLE_SPEC + " but got " + variableSpec);
   }
 
 
@@ -631,19 +817,19 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
   if(_res != OK) {
     return _res;
   }
-  if(length != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH()) {
+  if(length != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_LENGTH()) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH + " but got " + length);
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_LENGTH + " but got " + length);
   }
 
 
   // Simple Field (syntaxId)
   plc4c_s7_read_write_syntax_id_type syntaxId;
-  _res = plc4c_s7_read_write_syntax_id_type_parse(readBuffer, (void*) &syntaxId);
+  _res = plc4c_s7_read_write_syntax_id_type_parse(ctx, readBuffer, (void*) &syntaxId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id = syntaxId;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_request_syntax_id = syntaxId;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -661,11 +847,11 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (queryType)
   plc4c_s7_read_write_query_type queryType;
-  _res = plc4c_s7_read_write_query_type_parse(readBuffer, (void*) &queryType);
+  _res = plc4c_s7_read_write_query_type_parse(ctx, readBuffer, (void*) &queryType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_query_type = queryType;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_request_query_type = queryType;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -683,96 +869,208 @@ if( ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUs
 
   // Simple Field (alarmType)
   plc4c_s7_read_write_alarm_type alarmType;
-  _res = plc4c_s7_read_write_alarm_type_parse(readBuffer, (void*) &alarmType);
+  _res = plc4c_s7_read_write_alarm_type_parse(ctx, readBuffer, (void*) &alarmType);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type = alarmType;
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_request_alarm_type = alarmType;
   } else 
-if( ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmQueryResponse */
+if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x13 ) ) { /* S7PayloadUserDataItemCpuFunctionAlarmQueryResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response;
 
-  // Const Field (functionId)
-  uint8_t functionId = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &functionId);
-  if(_res != OK) {
-    return _res;
+  // Array field (items)
+  plc4c_list* items = NULL;
+  plc4c_utils_list_create(&items);
+  if(items == NULL) {
+    return NO_MEMORY;
   }
-  if(functionId != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID()) {
-    return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID + " but got " + functionId);
-  }
-
-
-  // Const Field (numberMessageObj)
-  uint8_t numberMessageObj = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &numberMessageObj);
-  if(_res != OK) {
-    return _res;
-  }
-  if(numberMessageObj != PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ()) {
-    return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ + " but got " + numberMessageObj);
-  }
-
-
-  // Simple Field (pudicfReturnCode)
-  plc4c_s7_read_write_data_transport_error_code pudicfReturnCode;
-  _res = plc4c_s7_read_write_data_transport_error_code_parse(readBuffer, (void*) &pudicfReturnCode);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code = pudicfReturnCode;
-
-
-  // Simple Field (pudicftransportSize)
-  plc4c_s7_read_write_data_transport_size pudicftransportSize;
-  _res = plc4c_s7_read_write_data_transport_size_parse(readBuffer, (void*) &pudicftransportSize);
-  if(_res != OK) {
-    return _res;
-  }
-  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size = pudicftransportSize;
-
-
-  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
   {
-    uint8_t _reserved = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
-    if(_res != OK) {
-      return _res;
-    }
-    if(_reserved != 0x00) {
-      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+    // Count array
+    uint16_t itemCount = (uint16_t) dataLength;
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      char* _value = malloc(sizeof(char));
+      _res = plc4c_spi_read_char(readBuffer, (char*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+      plc4c_utils_list_insert_head_value(items, _value);
     }
   }
+  (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_items = items;
   }
 
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (returnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->return_code);
+  _res = plc4c_s7_read_write_data_transport_error_code_serialize(ctx, writeBuffer, &_message->return_code);
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (transportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->transport_size);
+  _res = plc4c_s7_read_write_data_transport_size_serialize(ctx, writeBuffer, &_message->transport_size);
   if(_res != OK) {
     return _res;
   }
 
-  // Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(_message)) - (4));
+  // Simple Field (dataLength)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->data_length);
   if(_res != OK) {
     return _res;
   }
 
   // Switch Field (Depending on the current type, serialize the subtype elements)
   switch(_message->_type) {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_push: {
+
+  // Simple Field (itemsCount)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_user_data_item_cyclic_services_push_items_count);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Array field (items)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_push_items);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_value_type* _value = (plc4c_s7_read_write_associated_value_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_push_items, curItem);
+      _res = plc4c_s7_read_write_associated_value_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_push: {
+
+  // Simple Field (itemsCount)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_user_data_item_cyclic_services_change_driven_push_items_count);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Array field (items)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_change_driven_push_items);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_query_value_type* _value = (plc4c_s7_read_write_associated_query_value_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_change_driven_push_items, curItem);
+      _res = plc4c_s7_read_write_associated_query_value_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_request: {
+
+  // Simple Field (itemsCount)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_user_data_item_cyclic_services_subscribe_request_items_count);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (timeBase)
+  _res = plc4c_s7_read_write_time_base_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cyclic_services_subscribe_request_time_base);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (timeFactor)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cyclic_services_subscribe_request_time_factor);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Array field (item)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_subscribe_request_item);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_cyc_service_item_type* _value = (plc4c_s7_read_write_cyc_service_item_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_subscribe_request_item, curItem);
+      _res = plc4c_s7_read_write_cyc_service_item_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_request: {
+
+  // Simple Field (function)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cyclic_services_unsubscribe_request_function);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (jobId)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cyclic_services_unsubscribe_request_job_id);
+  if(_res != OK) {
+    return _res;
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_response: {
+
+  // Simple Field (itemsCount)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_user_data_item_cyclic_services_subscribe_response_items_count);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Array field (items)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_subscribe_response_items);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_value_type* _value = (plc4c_s7_read_write_associated_value_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_subscribe_response_items, curItem);
+      _res = plc4c_s7_read_write_associated_value_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_response: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_error_response: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response: {
+
+  // Simple Field (itemsCount)
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items_count);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Array field (items)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_s7_read_write_associated_query_value_type* _value = (plc4c_s7_read_write_associated_query_value_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items, curItem);
+      _res = plc4c_s7_read_write_associated_query_value_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
+      if(_res != OK) {
+        return _res;
+      }
+    }
+  }
+
+      break;
+    }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message: {
 
   // Simple Field (EventId)
@@ -812,7 +1110,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (TimeStamp)
-  _res = plc4c_s7_read_write_date_and_time_serialize(writeBuffer, _message->s7_payload_diagnostic_message_time_stamp);
+  _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_diagnostic_message_time_stamp);
   if(_res != OK) {
     return _res;
   }
@@ -822,7 +1120,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm8_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm8_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -832,7 +1130,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_notify_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_notify_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -842,7 +1140,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_ack_ind: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_ack_push_type_serialize(writeBuffer, _message->s7_payload_alarm_ack_ind_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_ack_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_ack_ind_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -852,7 +1150,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sq: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm_sq_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_sq_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -862,7 +1160,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_s: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm_s_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_s_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -872,7 +1170,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sc: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_alarm_sc_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_alarm_sc_alarm_message);
   if(_res != OK) {
     return _res;
   }
@@ -882,17 +1180,21 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify8: {
 
   // Simple Field (alarmMessage)
-  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(writeBuffer, _message->s7_payload_notify8_alarm_message);
+  _res = plc4c_s7_read_write_alarm_message_push_type_serialize(ctx, writeBuffer, _message->s7_payload_notify8_alarm_message);
   if(_res != OK) {
     return _res;
   }
 
       break;
     }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_no_data_request: {
+
+      break;
+    }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request: {
 
   // Simple Field (szlId)
-  _res = plc4c_s7_read_write_szl_id_serialize(writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
+  _res = plc4c_s7_read_write_szl_id_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
   if(_res != OK) {
     return _res;
   }
@@ -907,46 +1209,21 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
 
-  // Simple Field (szlId)
-  _res = plc4c_s7_read_write_szl_id_serialize(writeBuffer, _message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id);
-  if(_res != OK) {
-    return _res;
-  }
-
-  // Simple Field (szlIndex)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_index);
-  if(_res != OK) {
-    return _res;
-  }
-
-  // Const Field (szlItemLength)
-  plc4c_spi_write_unsigned_short(writeBuffer, 16, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_READ_SZL_RESPONSE_SZL_ITEM_LENGTH());
-
-  // Implicit Field (szlItemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, plc4c_spi_evaluation_helper_count(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items));
-  if(_res != OK) {
-    return _res;
-  }
-
   // Array field (items)
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
-      plc4c_s7_read_write_szl_data_tree_item* _value = (plc4c_s7_read_write_szl_data_tree_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items, curItem);
-      _res = plc4c_s7_read_write_szl_data_tree_item_serialize(writeBuffer, (void*) _value);
-      if(_res != OK) {
-        return _res;
-      }
+      char* _value = (char*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items, curItem);
+      plc4c_spi_write_char(writeBuffer, *_value);
     }
   }
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription: {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request: {
 
   // Simple Field (Subscription)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_msg_subscription_subscription);
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_msg_subscription_request_subscription);
   if(_res != OK) {
     return _res;
   }
@@ -958,22 +1235,22 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (magicKey)
-  _res = plc4c_spi_write_string(writeBuffer, 64, "UTF-8", _message->s7_payload_user_data_item_cpu_function_msg_subscription_magic_key);
+  _res = plc4c_spi_write_string(writeBuffer, 64, "UTF-8", _message->s7_payload_user_data_item_cpu_function_msg_subscription_request_magic_key);
   if(_res != OK) {
     return _res;
   }
 
   // Optional Field (Alarmtype)
-  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype != NULL) {
-    _res = plc4c_s7_read_write_alarm_state_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
+  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype != NULL) {
+    _res = plc4c_s7_read_write_alarm_state_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype);
     if(_res != OK) {
       return _res;
     }
   }
 
   // Optional Field (Reserve)
-  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_reserve != NULL) {
-    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message->s7_payload_user_data_item_cpu_function_msg_subscription_reserve);
+  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve != NULL) {
+    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve);
     if(_res != OK) {
       return _res;
     }
@@ -1016,7 +1293,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (alarmType)
-  _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
+  _res = plc4c_s7_read_write_alarm_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
   if(_res != OK) {
     return _res;
   }
@@ -1035,32 +1312,32 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack: {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_request: {
 
-  // Simple Field (functionId)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_alarm_ack_function_id);
-  if(_res != OK) {
-    return _res;
-  }
+  // Const Field (functionId)
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_ACK_REQUEST_FUNCTION_ID());
 
   // Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects));
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_spi_evaluation_helper_count(_message->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects));
   if(_res != OK) {
     return _res;
   }
 
   // Array field (messageObjects)
   {
-    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects);
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
-      plc4c_s7_read_write_alarm_message_object_ack_type* _value = (plc4c_s7_read_write_alarm_message_object_ack_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects, curItem);
-      _res = plc4c_s7_read_write_alarm_message_object_ack_type_serialize(writeBuffer, (void*) _value);
+      plc4c_s7_read_write_alarm_message_object_ack_type* _value = (plc4c_s7_read_write_alarm_message_object_ack_type*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects, curItem);
+      _res = plc4c_s7_read_write_alarm_message_object_ack_type_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
     }
   }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_error_response: {
 
       break;
     }
@@ -1082,7 +1359,6 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_response_message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       uint8_t* _value = (uint8_t*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_response_message_objects, curItem);
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_value);
     }
@@ -1090,22 +1366,22 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query: {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_request: {
 
   // Const Field (functionId)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_FUNCTION_ID());
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_FUNCTION_ID());
 
   // Const Field (numberMessageObj)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_NUMBER_MESSAGE_OBJ());
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_NUMBER_MESSAGE_OBJ());
 
   // Const Field (variableSpec)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_VARIABLE_SPEC());
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_VARIABLE_SPEC());
 
   // Const Field (length)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_LENGTH());
+  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_REQUEST_LENGTH());
 
   // Simple Field (syntaxId)
-  _res = plc4c_s7_read_write_syntax_id_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
+  _res = plc4c_s7_read_write_syntax_id_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_request_syntax_id);
   if(_res != OK) {
     return _res;
   }
@@ -1117,7 +1393,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (queryType)
-  _res = plc4c_s7_read_write_query_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
+  _res = plc4c_s7_read_write_query_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_request_query_type);
   if(_res != OK) {
     return _res;
   }
@@ -1129,7 +1405,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   }
 
   // Simple Field (alarmType)
-  _res = plc4c_s7_read_write_alarm_type_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
+  _res = plc4c_s7_read_write_alarm_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_request_alarm_type);
   if(_res != OK) {
     return _res;
   }
@@ -1138,28 +1414,13 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response: {
 
-  // Const Field (functionId)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_FUNCTION_ID());
-
-  // Const Field (numberMessageObj)
-  plc4c_spi_write_unsigned_byte(writeBuffer, 8, PLC4C_S7_READ_WRITE_S7_PAYLOAD_USER_DATA_ITEM_CPU_FUNCTION_ALARM_QUERY_RESPONSE_NUMBER_MESSAGE_OBJ());
-
-  // Simple Field (pudicfReturnCode)
-  _res = plc4c_s7_read_write_data_transport_error_code_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
-  if(_res != OK) {
-    return _res;
-  }
-
-  // Simple Field (pudicftransportSize)
-  _res = plc4c_s7_read_write_data_transport_size_serialize(writeBuffer, &_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
-  if(_res != OK) {
-    return _res;
-  }
-
-  // Reserved Field
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
-  if(_res != OK) {
-    return _res;
+  // Array field (items)
+  {
+    uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_query_response_items);
+    for(int curItem = 0; curItem < itemCount; curItem++) {
+      char* _value = (char*) plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_query_response_items, curItem);
+      plc4c_spi_write_char(writeBuffer, *_value);
+    }
   }
 
       break;
@@ -1169,24 +1430,136 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4c_
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
-  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+  return plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_read_write_s7_payload_user_data_item* _message) {
+uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_payload_user_data_item* _message) {
   uint16_t lengthInBits = 0;
 
   // Simple field (returnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->return_code);
+  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(ctx, &_message->return_code);
 
   // Simple field (transportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->transport_size);
+  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->transport_size);
 
-  // Implicit Field (dataLength)
+  // Simple field (dataLength)
   lengthInBits += 16;
 
   // Depending on the current type, add the length of sub-type elements ...
   switch(_message->_type) {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_push: {
+
+  // Simple field (itemsCount)
+  lengthInBits += 16;
+
+
+  // Array field
+  if(_message->s7_payload_user_data_item_cyclic_services_push_items != NULL) {
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_push_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_push_items, curItem);
+      lengthInBits += plc4c_s7_read_write_associated_value_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_associated_value_type*) curElement);
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_push: {
+
+  // Simple field (itemsCount)
+  lengthInBits += 16;
+
+
+  // Array field
+  if(_message->s7_payload_user_data_item_cyclic_services_change_driven_push_items != NULL) {
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_change_driven_push_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_change_driven_push_items, curItem);
+      lengthInBits += plc4c_s7_read_write_associated_query_value_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_associated_query_value_type*) curElement);
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_request: {
+
+  // Simple field (itemsCount)
+  lengthInBits += 16;
+
+
+  // Simple field (timeBase)
+  lengthInBits += plc4c_s7_read_write_time_base_length_in_bits(ctx, &_message->s7_payload_user_data_item_cyclic_services_subscribe_request_time_base);
+
+
+  // Simple field (timeFactor)
+  lengthInBits += 8;
+
+
+  // Array field
+  if(_message->s7_payload_user_data_item_cyclic_services_subscribe_request_item != NULL) {
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_subscribe_request_item);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_subscribe_request_item, curItem);
+      lengthInBits += plc4c_s7_read_write_cyc_service_item_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_cyc_service_item_type*) curElement);
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_request: {
+
+  // Simple field (function)
+  lengthInBits += 8;
+
+
+  // Simple field (jobId)
+  lengthInBits += 8;
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_subscribe_response: {
+
+  // Simple field (itemsCount)
+  lengthInBits += 16;
+
+
+  // Array field
+  if(_message->s7_payload_user_data_item_cyclic_services_subscribe_response_items != NULL) {
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_subscribe_response_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_subscribe_response_items, curItem);
+      lengthInBits += plc4c_s7_read_write_associated_value_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_associated_value_type*) curElement);
+    }
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_unsubscribe_response: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_error_response: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response: {
+
+  // Simple field (itemsCount)
+  lengthInBits += 16;
+
+
+  // Array field
+  if(_message->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items != NULL) {
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cyclic_services_change_driven_subscribe_response_items, curItem);
+      lengthInBits += plc4c_s7_read_write_associated_query_value_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_associated_query_value_type*) curElement);
+    }
+  }
+
+      break;
+    }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message: {
 
   // Simple field (EventId)
@@ -1214,63 +1587,67 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (TimeStamp)
-  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(_message->s7_payload_diagnostic_message_time_stamp);
+  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_diagnostic_message_time_stamp);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm8_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm8_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_notify_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_notify_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_ack_ind: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_ack_push_type_length_in_bits(_message->s7_payload_alarm_ack_ind_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_ack_push_type_length_in_bits(ctx, _message->s7_payload_alarm_ack_ind_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sq: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm_sq_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm_sq_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_s: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm_s_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm_s_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm_sc: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_alarm_sc_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_alarm_sc_alarm_message);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_notify8: {
 
   // Simple field (alarmMessage)
-  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(_message->s7_payload_notify8_alarm_message);
+  lengthInBits += plc4c_s7_read_write_alarm_message_push_type_length_in_bits(ctx, _message->s7_payload_notify8_alarm_message);
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_no_data_request: {
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_request: {
 
   // Simple field (szlId)
-  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(_message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
+  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(ctx, _message->s7_payload_user_data_item_cpu_function_read_szl_request_szl_id);
 
 
   // Simple field (szlIndex)
@@ -1280,34 +1657,12 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_read_szl_response: {
 
-  // Simple field (szlId)
-  lengthInBits += plc4c_s7_read_write_szl_id_length_in_bits(_message->s7_payload_user_data_item_cpu_function_read_szl_response_szl_id);
-
-
-  // Simple field (szlIndex)
-  lengthInBits += 16;
-
-
-  // Const Field (szlItemLength)
-  lengthInBits += 16;
-
-
-  // Implicit Field (szlItemCount)
-  lengthInBits += 16;
-
-
   // Array field
-  if(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_read_szl_response_items->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_szl_data_tree_item_length_in_bits((plc4c_s7_read_write_szl_data_tree_item*) curElement->value);
-      curElement = curElement->next;
-    }
-  }
+  lengthInBits += 8 * plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_read_szl_response_items);
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription: {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request: {
 
   // Simple field (Subscription)
   lengthInBits += 8;
@@ -1322,13 +1677,13 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Optional Field (Alarmtype)
-  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype != NULL) {
-    lengthInBits += plc4c_s7_read_write_alarm_state_type_length_in_bits(_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarmtype);
+  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype != NULL) {
+    lengthInBits += plc4c_s7_read_write_alarm_state_type_length_in_bits(ctx, _message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype);
   }
 
 
   // Optional Field (Reserve)
-  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_reserve != NULL) {
+  if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve != NULL) {
     lengthInBits += 8;
   }
 
@@ -1360,7 +1715,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (alarmType)
-  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
+  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_alarm_response_alarm_type);
 
 
   // Simple field (reserved02)
@@ -1372,9 +1727,9 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack: {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_request: {
 
-  // Simple field (functionId)
+  // Const Field (functionId)
   lengthInBits += 8;
 
 
@@ -1383,13 +1738,17 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Array field
-  if(_message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_user_data_item_cpu_function_alarm_ack_message_objects->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_alarm_message_object_ack_type_length_in_bits((plc4c_s7_read_write_alarm_message_object_ack_type*) curElement->value);
-      curElement = curElement->next;
+  if(_message->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects != NULL) {
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_item_cpu_function_alarm_ack_request_message_objects, curItem);
+      lengthInBits += plc4c_s7_read_write_alarm_message_object_ack_type_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_alarm_message_object_ack_type*) curElement);
     }
   }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_error_response: {
 
       break;
     }
@@ -1408,7 +1767,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
       break;
     }
-    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query: {
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_request: {
 
   // Const Field (functionId)
   lengthInBits += 8;
@@ -1427,7 +1786,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (syntaxId)
-  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_syntax_id);
+  lengthInBits += plc4c_s7_read_write_syntax_id_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_request_syntax_id);
 
 
   // Reserved Field (reserved)
@@ -1435,7 +1794,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (queryType)
-  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_query_type);
+  lengthInBits += plc4c_s7_read_write_query_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_request_query_type);
 
 
   // Reserved Field (reserved)
@@ -1443,30 +1802,14 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4c_s7_r
 
 
   // Simple field (alarmType)
-  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_alarm_type);
+  lengthInBits += plc4c_s7_read_write_alarm_type_length_in_bits(ctx, &_message->s7_payload_user_data_item_cpu_function_alarm_query_request_alarm_type);
 
       break;
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response: {
 
-  // Const Field (functionId)
-  lengthInBits += 8;
-
-
-  // Const Field (numberMessageObj)
-  lengthInBits += 8;
-
-
-  // Simple field (pudicfReturnCode)
-  lengthInBits += plc4c_s7_read_write_data_transport_error_code_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicf_return_code);
-
-
-  // Simple field (pudicftransportSize)
-  lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(&_message->s7_payload_user_data_item_cpu_function_alarm_query_response_pudicftransport_size);
-
-
-  // Reserved Field (reserved)
-  lengthInBits += 8;
+  // Array field
+  lengthInBits += 8 * plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_query_response_items);
 
       break;
     }

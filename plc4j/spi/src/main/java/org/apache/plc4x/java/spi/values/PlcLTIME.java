@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
@@ -32,7 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLTIME extends PlcSimpleValue<Duration> {
 
     public static PlcLTIME of(Object value) {
@@ -42,30 +38,42 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         } else if(value instanceof Long) {
             return new PlcLTIME(Duration.of((long) value, ChronoUnit.NANOS));
+        } else if(value instanceof BigInteger) {
+            // TODO: Not 100% correct, we're loosing precision here
+            return new PlcLTIME(Duration.of(((BigInteger) value).longValue(), ChronoUnit.NANOS));
         }
         throw new PlcRuntimeException("Invalid value type");
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLTIME(@JsonProperty("value") Duration value) {
+    public static PlcLTIME ofNanoseconds(long nanoseconds) {
+        return new PlcLTIME(Duration.ofNanos(nanoseconds));
+    }
+
+    public static PlcLTIME ofNanoseconds(BigInteger nanoseconds) {
+        // TODO: Not 100% correct, we're loosing precision here
+        return new PlcLTIME(Duration.ofNanos(nanoseconds.longValue()));
+    }
+
+    public PlcLTIME(Duration value) {
         super(value, true);
     }
 
-    public PlcLTIME(@JsonProperty("value") Integer value) {
-        super(Duration.of((long) value, ChronoUnit.NANOS), true);
+    public PlcLTIME(long nanoseconds) {
+        super(Duration.ofNanos(nanoseconds), true);
     }
 
-    public PlcLTIME(@JsonProperty("value") Long value) {
-        super(Duration.of(value, ChronoUnit.NANOS), true);
-    }
-
-    public PlcLTIME(@JsonProperty("value") BigInteger value) {
-        super(Duration.of(value.longValue(), ChronoUnit.NANOS), true);
+    public PlcLTIME(BigInteger nanoseconds) {
+        // TODO: Not 100% correct, we're loosing precision here
+        super(Duration.ofNanos(nanoseconds.longValue()), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.LTIME;
+    }
+
+    public long getNanoseconds() {
+        return value.toNanos();
     }
 
     @Override
@@ -84,7 +92,6 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
@@ -115,13 +122,11 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }
@@ -129,7 +134,9 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value.toString();
-        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
+        writeBuffer.writeString(getClass().getSimpleName(),
+            valueString.getBytes(StandardCharsets.UTF_8).length*8,
+            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
 
 }

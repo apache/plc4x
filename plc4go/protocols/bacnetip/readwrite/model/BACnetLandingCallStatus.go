@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetLandingCallStatus is the corresponding interface of BACnetLandingCallStatus
 type BACnetLandingCallStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFloorNumber returns FloorNumber (property field)
@@ -81,7 +85,7 @@ func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, com
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingCallStatus(structType interface{}) BACnetLandingCallStatus {
+func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {
 	if casted, ok := structType.(BACnetLandingCallStatus); ok {
 		return casted
 	}
@@ -95,34 +99,36 @@ func (m *_BACnetLandingCallStatus) GetTypeName() string {
 	return "BACnetLandingCallStatus"
 }
 
-func (m *_BACnetLandingCallStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLandingCallStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLandingCallStatus) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (floorNumber)
-	lengthInBits += m.FloorNumber.GetLengthInBits()
+	lengthInBits += m.FloorNumber.GetLengthInBits(ctx)
 
 	// Simple field (command)
-	lengthInBits += m.Command.GetLengthInBits()
+	lengthInBits += m.Command.GetLengthInBits(ctx)
 
 	// Optional Field (floorText)
 	if m.FloorText != nil {
-		lengthInBits += m.FloorText.GetLengthInBits()
+		lengthInBits += m.FloorText.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetLandingCallStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLandingCallStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+func BACnetLandingCallStatusParse(ctx context.Context, theBytes []byte) (BACnetLandingCallStatus, error) {
+	return BACnetLandingCallStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatus")
 	}
@@ -133,7 +139,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
 	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _floorNumberErr != nil {
 		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingCallStatus")
 	}
@@ -146,7 +152,7 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := BACnetLandingCallStatusCommandParse(readBuffer)
+	_command, _commandErr := BACnetLandingCallStatusCommandParseWithBuffer(ctx, readBuffer)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetLandingCallStatus")
 	}
@@ -162,10 +168,10 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 		if pullErr := readBuffer.PullContext("floorText"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for floorText")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetLandingCallStatus")
@@ -189,9 +195,19 @@ func BACnetLandingCallStatusParse(readBuffer utils.ReadBuffer) (BACnetLandingCal
 	}, nil
 }
 
-func (m *_BACnetLandingCallStatus) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingCallStatus) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLandingCallStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetLandingCallStatus"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetLandingCallStatus")
 	}
@@ -200,7 +216,7 @@ func (m *_BACnetLandingCallStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 	if pushErr := writeBuffer.PushContext("floorNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for floorNumber")
 	}
-	_floorNumberErr := writeBuffer.WriteSerializable(m.GetFloorNumber())
+	_floorNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFloorNumber())
 	if popErr := writeBuffer.PopContext("floorNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for floorNumber")
 	}
@@ -212,7 +228,7 @@ func (m *_BACnetLandingCallStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 	if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for command")
 	}
-	_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
+	_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
 	if popErr := writeBuffer.PopContext("command"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for command")
 	}
@@ -227,7 +243,7 @@ func (m *_BACnetLandingCallStatus) Serialize(writeBuffer utils.WriteBuffer) erro
 			return errors.Wrap(pushErr, "Error pushing for floorText")
 		}
 		floorText = m.GetFloorText()
-		_floorTextErr := writeBuffer.WriteSerializable(floorText)
+		_floorTextErr := writeBuffer.WriteSerializable(ctx, floorText)
 		if popErr := writeBuffer.PopContext("floorText"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for floorText")
 		}
@@ -251,7 +267,7 @@ func (m *_BACnetLandingCallStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

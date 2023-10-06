@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // ListOfCovNotificationsValue is the corresponding interface of ListOfCovNotificationsValue
 type ListOfCovNotificationsValue interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -91,7 +95,7 @@ func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierT
 }
 
 // Deprecated: use the interface for direct cast
-func CastListOfCovNotificationsValue(structType interface{}) ListOfCovNotificationsValue {
+func CastListOfCovNotificationsValue(structType any) ListOfCovNotificationsValue {
 	if casted, ok := structType.(ListOfCovNotificationsValue); ok {
 		return casted
 	}
@@ -105,39 +109,41 @@ func (m *_ListOfCovNotificationsValue) GetTypeName() string {
 	return "ListOfCovNotificationsValue"
 }
 
-func (m *_ListOfCovNotificationsValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ListOfCovNotificationsValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ListOfCovNotificationsValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (propertyIdentifier)
-	lengthInBits += m.PropertyIdentifier.GetLengthInBits()
+	lengthInBits += m.PropertyIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (arrayIndex)
 	if m.ArrayIndex != nil {
-		lengthInBits += m.ArrayIndex.GetLengthInBits()
+		lengthInBits += m.ArrayIndex.GetLengthInBits(ctx)
 	}
 
 	// Simple field (propertyValue)
-	lengthInBits += m.PropertyValue.GetLengthInBits()
+	lengthInBits += m.PropertyValue.GetLengthInBits(ctx)
 
 	// Optional Field (timeOfChange)
 	if m.TimeOfChange != nil {
-		lengthInBits += m.TimeOfChange.GetLengthInBits()
+		lengthInBits += m.TimeOfChange.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_ListOfCovNotificationsValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ListOfCovNotificationsValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
+func ListOfCovNotificationsValueParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
+	return ListOfCovNotificationsValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+}
+
+func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (ListOfCovNotificationsValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("ListOfCovNotificationsValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListOfCovNotificationsValue")
 	}
@@ -148,7 +154,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
 	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _propertyIdentifierErr != nil {
 		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of ListOfCovNotificationsValue")
 	}
@@ -164,10 +170,10 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of ListOfCovNotificationsValue")
@@ -183,7 +189,7 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
 	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParse(readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+	_propertyValue, _propertyValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifier.GetValue()), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 	if _propertyValueErr != nil {
 		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of ListOfCovNotificationsValue")
 	}
@@ -199,10 +205,10 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 		if pullErr := readBuffer.PullContext("timeOfChange"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for timeOfChange")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_TIME)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_TIME)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'timeOfChange' field of ListOfCovNotificationsValue")
@@ -228,9 +234,19 @@ func ListOfCovNotificationsValueParse(readBuffer utils.ReadBuffer, objectTypeArg
 	}, nil
 }
 
-func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_ListOfCovNotificationsValue) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_ListOfCovNotificationsValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("ListOfCovNotificationsValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ListOfCovNotificationsValue")
 	}
@@ -239,7 +255,7 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("propertyIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyIdentifier")
 	}
-	_propertyIdentifierErr := writeBuffer.WriteSerializable(m.GetPropertyIdentifier())
+	_propertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyIdentifier())
 	if popErr := writeBuffer.PopContext("propertyIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyIdentifier")
 	}
@@ -254,7 +270,7 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for arrayIndex")
 		}
 		arrayIndex = m.GetArrayIndex()
-		_arrayIndexErr := writeBuffer.WriteSerializable(arrayIndex)
+		_arrayIndexErr := writeBuffer.WriteSerializable(ctx, arrayIndex)
 		if popErr := writeBuffer.PopContext("arrayIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for arrayIndex")
 		}
@@ -267,7 +283,7 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("propertyValue"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyValue")
 	}
-	_propertyValueErr := writeBuffer.WriteSerializable(m.GetPropertyValue())
+	_propertyValueErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyValue())
 	if popErr := writeBuffer.PopContext("propertyValue"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyValue")
 	}
@@ -282,7 +298,7 @@ func (m *_ListOfCovNotificationsValue) Serialize(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for timeOfChange")
 		}
 		timeOfChange = m.GetTimeOfChange()
-		_timeOfChangeErr := writeBuffer.WriteSerializable(timeOfChange)
+		_timeOfChangeErr := writeBuffer.WriteSerializable(ctx, timeOfChange)
 		if popErr := writeBuffer.PopContext("timeOfChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeOfChange")
 		}
@@ -316,7 +332,7 @@ func (m *_ListOfCovNotificationsValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -23,20 +23,28 @@ import (
 	"context"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
+	"runtime/debug"
 )
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser
 type DefaultBrowserRequirements interface {
-	BrowseField(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool, fieldName string, field apiModel.PlcField) (apiModel.PlcResponseCode, []apiModel.PlcBrowseFoundField)
+	BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem)
 }
 
 type DefaultBrowser interface {
 	spi.PlcBrowser
 }
 
-func NewDefaultBrowser(defaultBrowserRequirements DefaultBrowserRequirements) DefaultBrowser {
-	return &defaultBrowser{defaultBrowserRequirements}
+func NewDefaultBrowser(defaultBrowserRequirements DefaultBrowserRequirements, _options ...options.WithOption) DefaultBrowser {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	return &defaultBrowser{
+		DefaultBrowserRequirements: defaultBrowserRequirements,
+
+		log: customLogger,
+	}
 }
 
 ///////////////////////////////////////
@@ -47,6 +55,8 @@ func NewDefaultBrowser(defaultBrowserRequirements DefaultBrowserRequirements) De
 
 type defaultBrowser struct {
 	DefaultBrowserRequirements
+
+	log zerolog.Logger
 }
 
 //
@@ -56,30 +66,34 @@ type defaultBrowser struct {
 ///////////////////////////////////////
 
 func (m *defaultBrowser) Browse(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithContext(ctx, browseRequest)
-}
-
-func (m *defaultBrowser) BrowseWithContext(ctx context.Context, browseRequest apiModel.PlcBrowseRequest) <-chan apiModel.PlcBrowseRequestResult {
-	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseEvent) bool {
+	return m.BrowseWithInterceptor(ctx, browseRequest, func(result apiModel.PlcBrowseItem) bool {
 		return true
 	})
 }
 
-func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseEvent) bool) <-chan apiModel.PlcBrowseRequestResult {
-	result := make(chan apiModel.PlcBrowseRequestResult)
+func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
+	result := make(chan apiModel.PlcBrowseRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}
-		results := map[string][]apiModel.PlcBrowseFoundField{}
-		for _, fieldName := range browseRequest.GetFieldNames() {
-			field := browseRequest.GetField(fieldName)
-			responseCodes[fieldName], results[fieldName] = m.BrowseField(ctx, browseRequest, interceptor, fieldName, field)
+		results := map[string][]apiModel.PlcBrowseItem{}
+		for _, queryName := range browseRequest.GetQueryNames() {
+			query := browseRequest.GetQuery(queryName)
+			responseCodes[queryName], results[queryName] = m.BrowseQuery(ctx, interceptor, queryName, query)
 		}
-		browseResponse := model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
-		result <- &model.DefaultPlcBrowseRequestResult{
-			Request:  browseRequest,
-			Response: &browseResponse,
-			Err:      nil,
-		}
+		browseResponse := spiModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
+		result <- spiModel.NewDefaultPlcBrowseRequestResult(
+			browseRequest,
+			browseResponse,
+			nil,
+		)
 	}()
 	return result
 }

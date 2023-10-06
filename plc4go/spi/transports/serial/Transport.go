@@ -20,36 +20,41 @@
 package serial
 
 import (
-	"bufio"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/jacobsa/go-serial/serial"
-	"github.com/pkg/errors"
-	"io"
 	"net"
 	"net/url"
 	"strconv"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Transport struct {
+	log zerolog.Logger
 }
 
-func NewTransport() *Transport {
-	return &Transport{}
+func NewTransport(_options ...options.WithOption) *Transport {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	return &Transport{
+		log: customLogger,
+	}
 }
 
-func (m Transport) GetTransportCode() string {
+func (m *Transport) GetTransportCode() string {
 	return "serial"
 }
 
-func (m Transport) GetTransportName() string {
+func (m *Transport) GetTransportName() string {
 	return "Serial Transport"
 }
 
-func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
-	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil)
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
+	return m.CreateTransportInstanceForLocalAddress(transportUrl, options, nil, _options...)
 }
 
-func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, options map[string][]string, _ *net.UDPAddr, _options ...options.WithOption) (transports.TransportInstance, error) {
 	var serialPortName = transportUrl.Path
 
 	var baudRate = uint(115200)
@@ -72,81 +77,14 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 		}
 	}
 
-	return NewTransportInstance(serialPortName, baudRate, connectTimeout, &m), nil
+	return NewTransportInstance(serialPortName, baudRate, connectTimeout, m, _options...), nil
 }
 
-type TransportInstance struct {
-	transports.DefaultBufferedTransportInstance
-	SerialPortName string
-	BaudRate       uint
-	ConnectTimeout uint32
-	transport      *Transport
-	serialPort     io.ReadWriteCloser
-	reader         *bufio.Reader
-}
-
-func NewTransportInstance(serialPortName string, baudRate uint, connectTimeout uint32, transport *Transport) *TransportInstance {
-	transportInstance := &TransportInstance{
-		SerialPortName: serialPortName,
-		BaudRate:       baudRate,
-		ConnectTimeout: connectTimeout,
-		transport:      transport,
-	}
-	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
-	return transportInstance
-}
-
-func (m *TransportInstance) Connect() error {
-	var err error
-	config := serial.OpenOptions{PortName: m.SerialPortName, BaudRate: m.BaudRate, DataBits: 8, StopBits: 1, MinimumReadSize: 0, InterCharacterTimeout: 100 /*, RTSCTSFlowControl: true*/}
-	m.serialPort, err = serial.Open(config)
-	if err != nil {
-		return errors.Wrap(err, "error connecting to serial port")
-	}
-	// Add a logging layer ...
-	/*logFile, err := ioutil.TempFile(os.TempDir(), "transport-logger")
-	if err != nil {
-		log.Error().Msg("Error creating file for logging transport requests")
-	} else {
-		fileLogger := zerolog.New(logFile).With().Logger()
-		m.serialPort = utils.NewTransportLogger(m.serialPort, utils.WithLogger(fileLogger))
-		log.Trace().Msgf("Logging Transport to file %s", logFile.Name())
-	}*/
-	m.reader = bufio.NewReader(m.serialPort)
-
+func (m *Transport) Close() error {
+	m.log.Trace().Msg("Closing")
 	return nil
 }
 
-func (m *TransportInstance) Close() error {
-	if m.serialPort == nil {
-		return nil
-	}
-	err := m.serialPort.Close()
-	if err != nil {
-		return errors.Wrap(err, "error closing serial port")
-	}
-	m.serialPort = nil
-	return nil
-}
-
-func (m *TransportInstance) IsConnected() bool {
-	return m.serialPort != nil
-}
-
-func (m *TransportInstance) Write(data []uint8) error {
-	if m.serialPort == nil {
-		return errors.New("error writing to transport. No writer available")
-	}
-	num, err := m.serialPort.Write(data)
-	if err != nil {
-		return errors.Wrap(err, "error writing")
-	}
-	if num != len(data) {
-		return errors.New("error writing: not all bytes written")
-	}
-	return nil
-}
-
-func (m *TransportInstance) GetReader() *bufio.Reader {
-	return m.reader
+func (m *Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }

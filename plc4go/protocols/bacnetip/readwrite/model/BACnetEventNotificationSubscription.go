@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetEventNotificationSubscription is the corresponding interface of BACnetEventNotificationSubscription
 type BACnetEventNotificationSubscription interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRecipient returns Recipient (property field)
@@ -88,7 +92,7 @@ func NewBACnetEventNotificationSubscription(recipient BACnetRecipientEnclosed, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventNotificationSubscription(structType interface{}) BACnetEventNotificationSubscription {
+func CastBACnetEventNotificationSubscription(structType any) BACnetEventNotificationSubscription {
 	if casted, ok := structType.(BACnetEventNotificationSubscription); ok {
 		return casted
 	}
@@ -102,37 +106,39 @@ func (m *_BACnetEventNotificationSubscription) GetTypeName() string {
 	return "BACnetEventNotificationSubscription"
 }
 
-func (m *_BACnetEventNotificationSubscription) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventNotificationSubscription) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetEventNotificationSubscription) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (recipient)
-	lengthInBits += m.Recipient.GetLengthInBits()
+	lengthInBits += m.Recipient.GetLengthInBits(ctx)
 
 	// Simple field (processIdentifier)
-	lengthInBits += m.ProcessIdentifier.GetLengthInBits()
+	lengthInBits += m.ProcessIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (issueConfirmedNotifications)
 	if m.IssueConfirmedNotifications != nil {
-		lengthInBits += m.IssueConfirmedNotifications.GetLengthInBits()
+		lengthInBits += m.IssueConfirmedNotifications.GetLengthInBits(ctx)
 	}
 
 	// Simple field (timeRemaining)
-	lengthInBits += m.TimeRemaining.GetLengthInBits()
+	lengthInBits += m.TimeRemaining.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventNotificationSubscription) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventNotificationSubscription) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
+func BACnetEventNotificationSubscriptionParse(ctx context.Context, theBytes []byte) (BACnetEventNotificationSubscription, error) {
+	return BACnetEventNotificationSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventNotificationSubscription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventNotificationSubscription")
 	}
@@ -143,7 +149,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
+	_recipient, _recipientErr := BACnetRecipientEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetEventNotificationSubscription")
 	}
@@ -156,7 +162,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 	}
-	_processIdentifier, _processIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_processIdentifier, _processIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _processIdentifierErr != nil {
 		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetEventNotificationSubscription")
 	}
@@ -172,10 +178,10 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetEventNotificationSubscription")
@@ -191,7 +197,7 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
 	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeRemainingErr != nil {
 		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetEventNotificationSubscription")
 	}
@@ -213,9 +219,19 @@ func BACnetEventNotificationSubscriptionParse(readBuffer utils.ReadBuffer) (BACn
 	}, nil
 }
 
-func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventNotificationSubscription) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetEventNotificationSubscription) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetEventNotificationSubscription"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventNotificationSubscription")
 	}
@@ -224,7 +240,7 @@ func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
-	_recipientErr := writeBuffer.WriteSerializable(m.GetRecipient())
+	_recipientErr := writeBuffer.WriteSerializable(ctx, m.GetRecipient())
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for recipient")
 	}
@@ -236,7 +252,7 @@ func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("processIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 	}
-	_processIdentifierErr := writeBuffer.WriteSerializable(m.GetProcessIdentifier())
+	_processIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetProcessIdentifier())
 	if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for processIdentifier")
 	}
@@ -251,7 +267,7 @@ func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.Write
 			return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 		}
 		issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-		_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(issueConfirmedNotifications)
+		_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
 		if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 		}
@@ -264,7 +280,7 @@ func (m *_BACnetEventNotificationSubscription) Serialize(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("timeRemaining"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timeRemaining")
 	}
-	_timeRemainingErr := writeBuffer.WriteSerializable(m.GetTimeRemaining())
+	_timeRemainingErr := writeBuffer.WriteSerializable(ctx, m.GetTimeRemaining())
 	if popErr := writeBuffer.PopContext("timeRemaining"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timeRemaining")
 	}
@@ -287,7 +303,7 @@ func (m *_BACnetEventNotificationSubscription) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

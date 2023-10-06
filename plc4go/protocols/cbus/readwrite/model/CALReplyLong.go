@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // CALReplyLong is the corresponding interface of CALReplyLong
 type CALReplyLong interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CALReply
@@ -126,6 +130,8 @@ func (m *_CALReplyLong) GetReplyNetwork() ReplyNetwork {
 ///////////////////////
 
 func (m *_CALReplyLong) GetIsUnitAddress() bool {
+	ctx := context.Background()
+	_ = ctx
 	unitAddress := m.UnitAddress
 	_ = unitAddress
 	bridgeAddress := m.BridgeAddress
@@ -158,7 +164,7 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALReplyLong(structType interface{}) CALReplyLong {
+func CastCALReplyLong(structType any) CALReplyLong {
 	if casted, ok := structType.(CALReplyLong); ok {
 		return casted
 	}
@@ -172,12 +178,8 @@ func (m *_CALReplyLong) GetTypeName() string {
 	return "CALReplyLong"
 }
 
-func (m *_CALReplyLong) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CALReplyLong) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CALReplyLong) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -186,16 +188,16 @@ func (m *_CALReplyLong) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (unitAddress)
 	if m.UnitAddress != nil {
-		lengthInBits += m.UnitAddress.GetLengthInBits()
+		lengthInBits += m.UnitAddress.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (bridgeAddress)
 	if m.BridgeAddress != nil {
-		lengthInBits += m.BridgeAddress.GetLengthInBits()
+		lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
 	}
 
 	// Simple field (serialInterfaceAddress)
-	lengthInBits += m.SerialInterfaceAddress.GetLengthInBits()
+	lengthInBits += m.SerialInterfaceAddress.GetLengthInBits(ctx)
 
 	// Optional Field (reservedByte)
 	if m.ReservedByte != nil {
@@ -204,19 +206,25 @@ func (m *_CALReplyLong) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Optional Field (replyNetwork)
 	if m.ReplyNetwork != nil {
-		lengthInBits += m.ReplyNetwork.GetLengthInBits()
+		lengthInBits += m.ReplyNetwork.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_CALReplyLong) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALReplyLong) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyLong, error) {
+func CALReplyLongParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyLong, error) {
+	return CALReplyLongParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+}
+
+func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyLong, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALReplyLong")
 	}
@@ -231,7 +239,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CALReplyLong")
 		}
 		if reserved != byte(0x86) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			log.Info().Fields(map[string]any{
 				"expected value": byte(0x86),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -261,10 +269,10 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 		if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
 		}
-		_val, _err := UnitAddressParse(readBuffer)
+		_val, _err := UnitAddressParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'unitAddress' field of CALReplyLong")
@@ -283,10 +291,10 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 		if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 		}
-		_val, _err := BridgeAddressParse(readBuffer)
+		_val, _err := BridgeAddressParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeAddress' field of CALReplyLong")
@@ -302,7 +310,7 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	if pullErr := readBuffer.PullContext("serialInterfaceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serialInterfaceAddress")
 	}
-	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParse(readBuffer)
+	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParseWithBuffer(ctx, readBuffer)
 	if _serialInterfaceAddressErr != nil {
 		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field of CALReplyLong")
 	}
@@ -333,10 +341,10 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 		if pullErr := readBuffer.PullContext("replyNetwork"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for replyNetwork")
 		}
-		_val, _err := ReplyNetworkParse(readBuffer)
+		_val, _err := ReplyNetworkParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'replyNetwork' field of CALReplyLong")
@@ -370,9 +378,19 @@ func CALReplyLongParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, req
 	return _child, nil
 }
 
-func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_CALReplyLong) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("CALReplyLong"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for CALReplyLong")
@@ -382,7 +400,7 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		{
 			var reserved byte = byte(0x86)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				log.Info().Fields(map[string]any{
 					"expected value": byte(0x86),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -394,7 +412,9 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 			}
 		}
 		// Virtual field
-		if _isUnitAddressErr := writeBuffer.WriteVirtual("isUnitAddress", m.GetIsUnitAddress()); _isUnitAddressErr != nil {
+		isUnitAddress := m.GetIsUnitAddress()
+		_ = isUnitAddress
+		if _isUnitAddressErr := writeBuffer.WriteVirtual(ctx, "isUnitAddress", m.GetIsUnitAddress()); _isUnitAddressErr != nil {
 			return errors.Wrap(_isUnitAddressErr, "Error serializing 'isUnitAddress' field")
 		}
 
@@ -405,7 +425,7 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for unitAddress")
 			}
 			unitAddress = m.GetUnitAddress()
-			_unitAddressErr := writeBuffer.WriteSerializable(unitAddress)
+			_unitAddressErr := writeBuffer.WriteSerializable(ctx, unitAddress)
 			if popErr := writeBuffer.PopContext("unitAddress"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for unitAddress")
 			}
@@ -421,7 +441,7 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 			}
 			bridgeAddress = m.GetBridgeAddress()
-			_bridgeAddressErr := writeBuffer.WriteSerializable(bridgeAddress)
+			_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, bridgeAddress)
 			if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for bridgeAddress")
 			}
@@ -434,7 +454,7 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("serialInterfaceAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serialInterfaceAddress")
 		}
-		_serialInterfaceAddressErr := writeBuffer.WriteSerializable(m.GetSerialInterfaceAddress())
+		_serialInterfaceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetSerialInterfaceAddress())
 		if popErr := writeBuffer.PopContext("serialInterfaceAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serialInterfaceAddress")
 		}
@@ -459,7 +479,7 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for replyNetwork")
 			}
 			replyNetwork = m.GetReplyNetwork()
-			_replyNetworkErr := writeBuffer.WriteSerializable(replyNetwork)
+			_replyNetworkErr := writeBuffer.WriteSerializable(ctx, replyNetwork)
 			if popErr := writeBuffer.PopContext("replyNetwork"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for replyNetwork")
 			}
@@ -473,7 +493,7 @@ func (m *_CALReplyLong) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CALReplyLong) isCALReplyLong() bool {
@@ -485,7 +505,7 @@ func (m *_CALReplyLong) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

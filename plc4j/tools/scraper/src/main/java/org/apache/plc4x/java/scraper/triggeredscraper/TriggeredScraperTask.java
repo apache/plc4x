@@ -20,8 +20,8 @@ package org.apache.plc4x.java.scraper.triggeredscraper;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -49,11 +49,11 @@ import java.util.stream.Collectors;
 public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(TriggeredScraperTask.class);
 
-    private final PlcDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final String jobName;
     private final String connectionAlias;
     private final String connectionString;
-    private final Map<String, String> fields;
+    private final Map<String, String> tags;
     private final long requestTimeoutMs;
     private final ExecutorService executorService;
     private final ResultHandler resultHandler;
@@ -65,38 +65,38 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
     private final DescriptiveStatistics failedStatistics = new DescriptiveStatistics(1000);
 
 
-    public TriggeredScraperTask(PlcDriverManager driverManager,
+    public TriggeredScraperTask(PlcConnectionManager connectionManager,
                                 String jobName,
                                 String connectionAlias,
                                 String connectionString,
-                                Map<String, String> fields,
+                                Map<String, String> tags,
                                 long requestTimeoutMs,
                                 ExecutorService executorService,
                                 ResultHandler resultHandler,
                                 TriggeredScrapeJobImpl triggeredScrapeJob,
                                 TriggerCollector triggerCollector) throws ScraperException {
-        this.driverManager = driverManager;
+        this.connectionManager = connectionManager;
         this.jobName = jobName;
         this.connectionAlias = connectionAlias;
         this.connectionString = connectionString;
-        this.fields = fields;
+        this.tags = tags;
         this.requestTimeoutMs = requestTimeoutMs;
         this.executorService = executorService;
         this.resultHandler = resultHandler;
-        this.triggerHandler = new TriggerHandlerImpl(triggeredScrapeJob.getTriggerConfig(),triggeredScrapeJob,this,triggerCollector);
+        this.triggerHandler = new TriggerHandlerImpl(triggeredScrapeJob.getTriggerConfig(), triggeredScrapeJob, this, triggerCollector);
     }
 
     @Override
     public void run() {
-        if(LOGGER.isTraceEnabled()) {
+        if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Check condition for task of job {} for connection {}", jobName, connectionAlias);
         }
-        if(this.triggerHandler.checkTrigger()) {
+        if (this.triggerHandler.checkTrigger()) {
             // Does a single fetch only when trigger is valid
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Trigger for job {} and device {} is met ... scraping desired data", jobName, connectionAlias);
             }
-            if(LOGGER.isTraceEnabled()) {
+            if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("Start new scrape of task of job {} for connection {}", jobName, connectionAlias);
             }
             requestCounter.incrementAndGet();
@@ -105,23 +105,23 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
             PlcConnection connection = null;
             try {
                 String info = "";
-                if(LOGGER.isTraceEnabled()) {
-                    info = String.format("acquiring data collecting connection to (%s,%s)", connectionAlias,jobName);
-                    LOGGER.trace("acquiring data collecting connection to ({},{})", connectionAlias,jobName);
+                if (LOGGER.isTraceEnabled()) {
+                    info = String.format("acquiring data collecting connection to (%s,%s)", connectionAlias, jobName);
+                    LOGGER.trace("acquiring data collecting connection to ({},{})", connectionAlias, jobName);
                 }
-                connection = TriggeredScraperImpl.getPlcConnection(driverManager,connectionString,executorService,requestTimeoutMs,info);
-                if(LOGGER.isTraceEnabled()) {
+                connection = TriggeredScraperImpl.getPlcConnection(connectionManager, connectionString, executorService, requestTimeoutMs, info);
+                if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("Connection to {} established: {}", connectionString, connection);
                 }
 
                 PlcReadResponse plcReadResponse;
                 try {
                     PlcReadRequest.Builder readRequestBuilder = connection.readRequestBuilder();
-                    for(Map.Entry<String,String> entry:fields.entrySet()){
-                        if(LOGGER.isTraceEnabled()) {
+                    for (Map.Entry<String, String> entry : tags.entrySet()) {
+                        if (LOGGER.isTraceEnabled()) {
                             LOGGER.trace("Requesting: {} -> {}", entry.getKey(), entry.getValue());
                         }
-                        readRequestBuilder.addItem(entry.getKey(),entry.getValue());
+                        readRequestBuilder.addTagAddress(entry.getKey(), entry.getValue());
                     }
                     //build and send request and store result in read response
                     plcReadResponse = readRequestBuilder
@@ -145,14 +145,14 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                 // Handle response (Async)
                 CompletableFuture.runAsync(() -> resultHandler.handle(jobName, connectionAlias, TriggeredScraperImpl.convertPlcResponseToMap(plcReadResponse)), executorService);
             } catch (Exception e) {
-                LOGGER.warn("Exception during scraping of Job {}, Connection-Alias {}: Error-message: {} - for stack-trace change logging to DEBUG", jobName,connectionAlias,e.getCause());
+                LOGGER.warn("Exception during scraping of Job {}, Connection-Alias {}: Error-message: {} - for stack-trace change logging to DEBUG", jobName, connectionAlias, e.getCause().getMessage());
                 handleException(e);
             } finally {
                 if (connection != null) {
                     try {
                         connection.close();
                     } catch (Exception e) {
-                        LOGGER.warn("Error on closing connection",e);
+                        LOGGER.warn("Error on closing connection", e);
                     }
                 }
             }
@@ -161,17 +161,18 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
 
     /**
      * detects if {@link PlcReadResponse} is valid
+     *
      * @param response the {@link PlcReadResponse} that should be validated
      */
     private void validateResponse(PlcReadResponse response) {
-        Map<String, PlcResponseCode> failedFields = response.getFieldNames().stream()
+        Map<String, PlcResponseCode> failedTags = response.getTagNames().stream()
             .filter(name -> !PlcResponseCode.OK.equals(response.getResponseCode(name)))
             .collect(Collectors.toMap(
                 Function.identity(),
                 response::getResponseCode
             ));
-        if (failedFields.size() > 0) {
-            handleErrorResponse(failedFields);
+        if (failedTags.size() > 0) {
+            handleErrorResponse(failedTags);
         }
     }
 
@@ -202,7 +203,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
 
     @Override
     public void handleException(Exception e) {
-        if(LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Detailed exception occurred at scraping", e);
         }
         failedStatistics.addValue(1.0);
@@ -213,8 +214,8 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
         LOGGER.warn("Handling error responses: {}", failed);
     }
 
-    public PlcDriverManager getDriverManager() {
-        return driverManager;
+    public PlcConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 
     public String getConnectionString() {
@@ -232,7 +233,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
     @Override
     public String toString() {
         return "TriggeredScraperTask{" +
-            "driverManager=" + driverManager +
+            "connectionManager=" + connectionManager +
             ", jobName='" + jobName + '\'' +
             ", connectionAlias='" + connectionAlias + '\'' +
             ", connectionString='" + connectionString + '\'' +
@@ -258,7 +259,7 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
 
     @Override
     public double getPercentageFailed() {
-        return 100.0 - (double)this.getScrapesSuccess()/this.getScrapesTotal() * 100.0;
+        return 100.0 - (double) this.getScrapesSuccess() / this.getScrapesTotal() * 100.0;
     }
 
     @Override

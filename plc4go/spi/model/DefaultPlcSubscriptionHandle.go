@@ -20,19 +20,23 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/google/uuid"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionHandle
 type DefaultPlcSubscriptionHandle struct {
-	handleToRegister model.PlcSubscriptionHandle
-	plcSubscriber    spi.PlcSubscriber
+	uuid             uuid.UUID                      `stringer:"true"`
+	handleToRegister apiModel.PlcSubscriptionHandle `ignore:"true"` // avoid recursion
+	plcSubscriber    spi.PlcSubscriber              `ignore:"true"` // avoid recursion
 }
 
 // NewDefaultPlcSubscriptionHandle can be used when the DefaultPlcSubscriptionHandle is sufficient
-func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) *DefaultPlcSubscriptionHandle {
+func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) apiModel.PlcSubscriptionHandle {
+	uuid, _ := uuid.NewUUID()
 	handle := &DefaultPlcSubscriptionHandle{
+		uuid:          uuid,
 		plcSubscriber: plcSubscriber,
 	}
 	handle.handleToRegister = handle
@@ -40,7 +44,7 @@ func NewDefaultPlcSubscriptionHandle(plcSubscriber spi.PlcSubscriber) *DefaultPl
 }
 
 // NewDefaultPlcSubscriptionHandleWithHandleToRegister should be used when an extension of DefaultPlcSubscriptionHandle is used
-func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSubscriber, handleToRegister model.PlcSubscriptionHandle) *DefaultPlcSubscriptionHandle {
+func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSubscriber, handleToRegister apiModel.PlcSubscriptionHandle) *DefaultPlcSubscriptionHandle {
 	return &DefaultPlcSubscriptionHandle{
 		handleToRegister: handleToRegister,
 		plcSubscriber:    plcSubscriber,
@@ -48,6 +52,6 @@ func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSu
 }
 
 // Register registers at the spi.PlcSubscriber
-func (d *DefaultPlcSubscriptionHandle) Register(consumer model.PlcSubscriptionEventConsumer) model.PlcConsumerRegistration {
-	return d.plcSubscriber.Register(consumer, []model.PlcSubscriptionHandle{d.handleToRegister})
+func (d *DefaultPlcSubscriptionHandle) Register(consumer apiModel.PlcSubscriptionEventConsumer) apiModel.PlcConsumerRegistration {
+	return d.plcSubscriber.Register(consumer, []apiModel.PlcSubscriptionHandle{d.handleToRegister})
 }

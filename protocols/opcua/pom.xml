@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <artifactId>plc4x-protocols-opcua</artifactId>
@@ -35,74 +35,34 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <version>2.1.1</version>
         <executions>
-          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
           <execution>
-            <id>fetch-opc-datatypes</id>
+            <id>manipulate-services-csv</id>
             <phase>generate-resources</phase>
             <goals>
-              <goal>wget</goal>
+              <goal>execute</goal>
             </goals>
             <configuration>
-              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.Types.bsd</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.Types.bsd</outputFileName>
-              <skipCache>true</skipCache>
-              <overwrite>true</overwrite>
-            </configuration>
-          </execution>
-          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-          <execution>
-            <id>fetch-opc-statuscodes</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/StatusCode.csv</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>StatusCode.csv</outputFileName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-discriminators</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.NodeSet2.Services.xml</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-services-enum</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.NodeIds.csv</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
+              <source>${project.basedir}/src/main/script/downloadAndEditOpcuaNodeSet.groovy</source>
             </configuration>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
-        <version>1.0.2</version>
+        <version>1.1.0</version>
         <executions>
           <execution>
             <id>transform-services</id>
@@ -220,7 +180,7 @@
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
             <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
-            <version>11.4</version>
+            <version>12.3</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -231,7 +191,20 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.9.3</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 

@@ -21,25 +21,35 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
-	"github.com/apache/plc4x/plc4go/pkg/api/logging"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/rs/zerolog/log"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"os"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	logging.InfoLevel()
+	logger := log.With().Str("myCustomLogger", "example").Logger()
 
-	driverManager := plc4go.NewPlcDriverManager()
+	driverManager := plc4go.NewPlcDriverManager(
+		options.WithCustomLogger(logger),
+		options.WithTraceTransactionManagerTransactions(true),
+	)
+	defer func() {
+		if err := driverManager.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	drivers.RegisterBacnetDriver(driverManager)
 
 	var connectionStrings []string
 	if len(os.Args) < 2 {
 		// Try to auto-find bacnet devices via broadcast-message discovery
-		if err := driverManager.Discover(func(event model.PlcDiscoveryItem) {
+		if err := driverManager.Discover(func(event apiModel.PlcDiscoveryItem) {
 			connStr := event.GetProtocolCode() + "://" + event.GetTransportUrl().Host
 			log.Info().Str("connection string", connStr).Stringer("event", event.(fmt.Stringer)).Msg("Found Bacnet Gateway")
 
@@ -71,11 +81,11 @@ func main() {
 		// Wait for the driver to connect (or not)
 		connectionResult := <-crc
 		if connectionResult.GetErr() != nil {
-			log.Error().Msgf("error connecting to PLC: %s", connectionResult.GetErr().Error())
+			log.Error().Err(connectionResult.GetErr()).Msg("error connecting to PLC")
 			return
 		}
 		log.Info().Str("connection string", connStr).Msg("Connected")
 		connection := connectionResult.GetConnection()
-		defer connection.BlockingClose()
+		connection.BlockingClose()
 	}
 }

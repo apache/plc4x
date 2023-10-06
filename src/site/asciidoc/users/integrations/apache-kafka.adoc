@@ -28,7 +28,6 @@ mission-critical applications.
 The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
 They can be built from source from the latest https://plc4x.apache.org/users/download.html[release] of
 PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github].
-They can also be downloaded from the Confluent https://www.confluent.io/hub/apache/kafka-connect-plc4x-plc4j[hub].
 
 ## Introduction
 

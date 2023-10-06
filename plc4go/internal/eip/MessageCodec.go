@@ -20,22 +20,33 @@
 package eip
 
 import (
+	"context"
+	"encoding/binary"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
+	none bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
+
+	log zerolog.Logger `ignore:"true"`
 }
 
-func NewMessageCodec(transportInstance transports.TransportInstance) *MessageCodec {
-	codec := &MessageCodec{}
-	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance)
+func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	codec := &MessageCodec{
+		log: customLogger,
+	}
+	codec.DefaultCodec = _default.NewDefaultCodec(codec, transportInstance, _options...)
 	return codec
 }
 
@@ -44,12 +55,12 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	log.Trace().Msg("Sending message")
+	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	eipPacket := message.(model.EipPacket)
 	// Serialize the request
-	wb := utils.NewLittleEndianWriteBufferByteBased()
-	err := eipPacket.Serialize(wb)
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	err := eipPacket.SerializeWithWriteBuffer(context.Background(), wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
@@ -64,36 +75,37 @@ func (m *MessageCodec) Send(message spi.Message) error {
 
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
-	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
-		log.Debug().Msgf("we got %d readable bytes", num)
-		data, err := m.GetTransportInstance().PeekReadableBytes(4)
+	transportInstance := m.GetTransportInstance()
+	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
+		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
+		data, err := transportInstance.PeekReadableBytes(4)
 		if err != nil {
-			log.Warn().Err(err).Msg("error peeking")
+			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		//Second byte for the size and then add the header size 24
 		packetSize := uint32(((uint16(data[3]) << 8) + uint16(data[2])) + 24)
 		if num < packetSize {
-			log.Debug().Msgf("Not enough bytes. Got: %d Need: %d\n", num, packetSize)
+			m.log.Debug().Uint32("num", num).Uint32("packetSize", packetSize).Msg("Not enough bytes. Got: num Need: packetSize")
 			return nil, nil
 		}
-		data, err = m.GetTransportInstance().Read(packetSize)
+		data, err = transportInstance.Read(packetSize)
 		if err != nil {
-			log.Debug().Err(err).Msg("Error reading")
+			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
-		rb := utils.NewLittleEndianReadBufferByteBased(data)
-		eipPacket, err := model.EipPacketParse(rb)
+		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb, true)
 		if err != nil {
-			log.Warn().Err(err).Msg("error parsing")
+			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		return eipPacket, nil
 	} else if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
+		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error

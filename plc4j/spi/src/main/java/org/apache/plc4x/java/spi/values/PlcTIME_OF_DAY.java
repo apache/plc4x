@@ -18,45 +18,45 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalTime;
-import java.time.ZoneId;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     public static PlcTIME_OF_DAY of(Object value) {
         if (value instanceof LocalTime) {
             return new PlcTIME_OF_DAY((LocalTime) value);
-        } else if (value instanceof Long) {
-            return new PlcTIME_OF_DAY(LocalTime.ofSecondOfDay(((long) value) / 1000));
+        } else if(value instanceof Long) {
+            return new PlcTIME_OF_DAY((Long) value);
         }
         throw new PlcRuntimeException("Invalid value type");
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME_OF_DAY(@JsonProperty("value") LocalTime value) {
+    public static PlcTIME_OF_DAY ofMillisecondsSinceMidnight(long millisecondsSinceMidnight) {
+        return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000));
+    }
+
+    public PlcTIME_OF_DAY(LocalTime value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME_OF_DAY(@JsonProperty("value") Long value) {
-        super(LocalTime.ofNanoOfDay(value * 1000000), true);
+    public PlcTIME_OF_DAY(long millisecondsSinceMidnight) {
+        super(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.TIME_OF_DAY;
+    }
+
+    public long getMillisecondsSinceMidnight() {
+        return (value.toNanoOfDay() / 1000_000);
     }
 
     @Override
@@ -66,35 +66,30 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     @Override
     public long getLong() {
-        return ((long) value.toSecondOfDay()) * 1000;
+        return getMillisecondsSinceMidnight();
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }
@@ -102,7 +97,9 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value.toString();
-        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
+        writeBuffer.writeString(getClass().getSimpleName(),
+            valueString.getBytes(StandardCharsets.UTF_8).length*8,
+            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
 
 }

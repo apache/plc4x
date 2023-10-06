@@ -31,10 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
 
@@ -161,6 +158,14 @@ public class StaticHelper {
             if (!BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.isDefined((short) rawValue))
                 return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.VENDOR_PROPRIETARY_VALUE;
             return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice.enumForValue((short) rawValue);
+        } else if (declaringClass == BACnetSegmentation.class) {
+            if (!BACnetSegmentation.isDefined((short) rawValue))
+                LOGGER.error("{} not defined for segmentation falling back to no segmentation", rawValue);
+            return BACnetSegmentation.NO_SEGMENTATION;
+        } else if (declaringClass == BACnetVendorId.class) {
+            if (!BACnetVendorId.isDefined((short) rawValue))
+                return BACnetVendorId.UNKNOWN_VENDOR;
+            return BACnetVendorId.enumForValue((short) rawValue);
         } else {
             LOGGER.warn("using reflection for {}", declaringClass);
             Optional<Method> enumForValue = Arrays.stream(declaringClass.getDeclaredMethods()).filter(method -> method.getName().equals("enumForValue")).findAny();
@@ -181,10 +186,7 @@ public class StaticHelper {
                     paramValue = (int) rawValue;
                 }
                 Object result = method.invoke(null, paramValue);
-                if (result == null) {
-                    return Enum.valueOf(template.getDeclaringClass(), "VENDOR_PROPRIETARY_VALUE");
-                }
-                return result;
+                return Objects.requireNonNullElseGet(result, () -> Enum.valueOf(template.getDeclaringClass(), "VENDOR_PROPRIETARY_VALUE"));
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new ParseException("error invoking method", e);
             }
@@ -242,6 +244,10 @@ public class StaticHelper {
             valueValue = ((BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) value).getValue();
         } else if (value.getDeclaringClass() == BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable.class) {
             valueValue = ((BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetSegmentation.class) {
+            valueValue = ((BACnetSegmentation) value).getValue();
+        } else if (value.getDeclaringClass() == BACnetVendorId.class) {
+            valueValue = ((BACnetVendorId) value).getValue();
         } else {
             LOGGER.warn("using reflection for {}", value.getDeclaringClass());
             try {
@@ -282,24 +288,25 @@ public class StaticHelper {
 
     @Deprecated
     public static BACnetObjectType readObjectType(ReadBuffer readBuffer) throws ParseException {
-        int readUnsignedLong = readBuffer.readUnsignedInt("objectType", 10);
-        if (!BACnetObjectType.isDefined(readUnsignedLong)) {
+        short readUnsignedShort = readBuffer.readUnsignedShort("objectType", 10);
+        if (!BACnetObjectType.isDefined(readUnsignedShort)) {
             return BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
         }
-        return BACnetObjectType.enumForValue(readUnsignedLong);
+        return BACnetObjectType.enumForValue(readUnsignedShort);
     }
 
     @Deprecated
-    public static Integer readProprietaryObjectType(ReadBuffer readBuffer, BACnetObjectType value) throws ParseException {
+    public static Short readProprietaryObjectType(ReadBuffer readBuffer, BACnetObjectType value) throws ParseException {
         if (value != null && value != BACnetObjectType.VENDOR_PROPRIETARY_VALUE) {
             return 0;
         }
         // We need to reset our reader to the position we read before
         // TODO: maybe we reset to much here because pos is byte based
-        // we consume the leftover bits before we reset to avoid trouble // TODO: we really need bit precision on resetting
+        // we consume the leftover bits before we reset to avoid trouble
+        // TODO: we really need bit precision on resetting
         readBuffer.readUnsignedInt(6);
         readBuffer.reset(readBuffer.getPos() - 2);
-        return readBuffer.readUnsignedInt("proprietaryObjectType", 10);
+        return readBuffer.readUnsignedShort("proprietaryObjectType", 10);
     }
 
     @Deprecated
@@ -321,7 +328,7 @@ public class StaticHelper {
     @Deprecated
     public static BACnetObjectType mapBACnetObjectType(BACnetContextTagEnumerated rawObjectType) {
         if (rawObjectType == null) return null;
-        BACnetObjectType baCnetObjectType = BACnetObjectType.enumForValue((int) rawObjectType.getActualValue());
+        BACnetObjectType baCnetObjectType = BACnetObjectType.enumForValue((short) rawObjectType.getActualValue());
         if (baCnetObjectType == null) return BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
         return baCnetObjectType;
     }
@@ -436,10 +443,10 @@ public class StaticHelper {
         return new BACnetClosingTag(header, tagNum);
     }
 
-    public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(int objectType, long instance) {
-        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.SIGNED_INTEGER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
+    public static BACnetApplicationTagObjectIdentifier createBACnetApplicationTagObjectIdentifier(short objectType, int instance) {
+        BACnetTagHeader header = new BACnetTagHeader((byte) BACnetDataType.BACNET_OBJECT_IDENTIFIER.getValue(), TagClass.APPLICATION_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
-        int proprietaryValue = 0;
+        short proprietaryValue = 0;
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
             objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
             proprietaryValue = objectType;
@@ -448,10 +455,10 @@ public class StaticHelper {
         return new BACnetApplicationTagObjectIdentifier(header, payload);
     }
 
-    public static BACnetContextTagObjectIdentifier createBACnetContextTagObjectIdentifier(byte tagNum, int objectType, long instance) {
+    public static BACnetContextTagObjectIdentifier createBACnetContextTagObjectIdentifier(byte tagNum, short objectType, int instance) {
         BACnetTagHeader header = new BACnetTagHeader(tagNum, TagClass.CONTEXT_SPECIFIC_TAGS, (byte) 4, null, null, null, null);
         BACnetObjectType objectTypeEnum = BACnetObjectType.enumForValue(objectType);
-        int proprietaryValue = 0;
+        short proprietaryValue = 0;
         if (objectType >= 128 || !BACnetObjectType.isDefined(objectType)) {
             objectTypeEnum = BACnetObjectType.VENDOR_PROPRIETARY_VALUE;
             proprietaryValue = objectType;
@@ -494,8 +501,8 @@ public class StaticHelper {
     }
 
     public static BACnetSegmentationTagged creatBACnetSegmentationTagged(BACnetSegmentation value) {
-        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 0, 1);
-        return new BACnetSegmentationTagged(header, value, (short) 0, TagClass.APPLICATION_TAGS);
+        BACnetTagHeader header = createBACnetTagHeaderBalanced(false, (byte) 9, 1);
+        return new BACnetSegmentationTagged(header, value, (short) 9, TagClass.APPLICATION_TAGS);
     }
 
     public static BACnetApplicationTagBoolean createBACnetApplicationTagBoolean(boolean value) {
@@ -524,11 +531,11 @@ public class StaticHelper {
         long length;
         Short valueUint8 = null;
         Integer valueUint16 = null;
-        Long valueUint24 = null;
+        Integer valueUint24 = null;
         Long valueUint32 = null;
-        BigInteger valueUint40 = null;
-        BigInteger valueUint48 = null;
-        BigInteger valueUint56 = null;
+        Long valueUint40 = null;
+        Long valueUint48 = null;
+        Long valueUint56 = null;
         BigInteger valueUint64 = null;
         if (value < 0x100) {
             length = 1;
@@ -538,7 +545,7 @@ public class StaticHelper {
             valueUint16 = (int) value;
         } else if (value < 0x1000000) {
             length = 3;
-            valueUint24 = value;
+            valueUint24 = (int) value;
         } else {
             length = 4;
             valueUint32 = value;

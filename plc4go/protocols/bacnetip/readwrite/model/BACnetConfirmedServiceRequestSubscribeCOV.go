@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOV is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOV
 type BACnetConfirmedServiceRequestSubscribeCOV interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -106,7 +110,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLifetimeInSeconds() BACn
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestSubscribeCOV factory function for _BACnetConfirmedServiceRequestSubscribeCOV
-func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmed BACnetContextTagBoolean, lifetimeInSeconds BACnetContextTagUnsignedInteger, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestSubscribeCOV {
+func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmed BACnetContextTagBoolean, lifetimeInSeconds BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOV {
 	_result := &_BACnetConfirmedServiceRequestSubscribeCOV{
 		SubscriberProcessIdentifier:    subscriberProcessIdentifier,
 		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
@@ -119,7 +123,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestSubscribeCOV(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOV {
+func CastBACnetConfirmedServiceRequestSubscribeCOV(structType any) BACnetConfirmedServiceRequestSubscribeCOV {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestSubscribeCOV); ok {
 		return casted
 	}
@@ -133,39 +137,41 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestSubscribeCOV"
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
-	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
+	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (monitoredObjectIdentifier)
-	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (issueConfirmed)
 	if m.IssueConfirmed != nil {
-		lengthInBits += m.IssueConfirmed.GetLengthInBits()
+		lengthInBits += m.IssueConfirmed.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (lifetimeInSeconds)
 	if m.LifetimeInSeconds != nil {
-		lengthInBits += m.LifetimeInSeconds.GetLengthInBits()
+		lengthInBits += m.LifetimeInSeconds.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestSubscribeCOV, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOV, error) {
+	return BACnetConfirmedServiceRequestSubscribeCOVParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestSubscribeCOVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOV, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOV"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestSubscribeCOV")
 	}
@@ -176,7 +182,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOV")
 	}
@@ -189,7 +195,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOV")
 	}
@@ -205,10 +211,10 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("issueConfirmed"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmed")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmed' field of BACnetConfirmedServiceRequestSubscribeCOV")
@@ -227,10 +233,10 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("lifetimeInSeconds"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for lifetimeInSeconds")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'lifetimeInSeconds' field of BACnetConfirmedServiceRequestSubscribeCOV")
@@ -260,9 +266,19 @@ func BACnetConfirmedServiceRequestSubscribeCOVParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestSubscribeCOV"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestSubscribeCOV")
@@ -272,7 +288,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.GetSubscriberProcessIdentifier())
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -284,7 +300,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 		}
-		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.GetMonitoredObjectIdentifier())
+		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
 		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 		}
@@ -299,7 +315,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 				return errors.Wrap(pushErr, "Error pushing for issueConfirmed")
 			}
 			issueConfirmed = m.GetIssueConfirmed()
-			_issueConfirmedErr := writeBuffer.WriteSerializable(issueConfirmed)
+			_issueConfirmedErr := writeBuffer.WriteSerializable(ctx, issueConfirmed)
 			if popErr := writeBuffer.PopContext("issueConfirmed"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for issueConfirmed")
 			}
@@ -315,7 +331,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 				return errors.Wrap(pushErr, "Error pushing for lifetimeInSeconds")
 			}
 			lifetimeInSeconds = m.GetLifetimeInSeconds()
-			_lifetimeInSecondsErr := writeBuffer.WriteSerializable(lifetimeInSeconds)
+			_lifetimeInSecondsErr := writeBuffer.WriteSerializable(ctx, lifetimeInSeconds)
 			if popErr := writeBuffer.PopContext("lifetimeInSeconds"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lifetimeInSeconds")
 			}
@@ -329,7 +345,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) Serialize(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) isBACnetConfirmedServiceRequestSubscribeCOV() bool {
@@ -341,7 +357,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

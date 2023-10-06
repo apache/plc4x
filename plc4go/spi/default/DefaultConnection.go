@@ -20,28 +20,36 @@
 package _default
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"context"
+	"runtime/debug"
+	"sync/atomic"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection
-// additional options can be set using the functions returning WithOption (e.g. WithDefaultTtl, WithPlcFieldHandler...)
+// additional options can be set using the functions returning WithOption (e.g. WithDefaultTtl, WithPlcTagHandler...)
 type DefaultConnectionRequirements interface {
 	// GetConnection should return the implementing connection when using DefaultConnection
 	GetConnection() plc4go.PlcConnection
 	// GetMessageCodec should return the spi.MessageCodec in use
 	GetMessageCodec() spi.MessageCodec
+	// ConnectWithContext is declared here for Connect redirection
+	ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult
 }
 
 // DefaultConnection should be used as an embedded struct. All defined methods here have default implementations
 type DefaultConnection interface {
+	utils.Serializable
 	plc4go.PlcConnection
 	spi.TransportInstanceExposer
 	spi.HandlerExposer
@@ -59,63 +67,12 @@ func WithDefaultTtl(defaultTtl time.Duration) options.WithOption {
 	return withDefaultTtl{defaultTtl: defaultTtl}
 }
 
-func WithPlcFieldHandler(plcFieldHandler spi.PlcFieldHandler) options.WithOption {
-	return withPlcFieldHandler{plcFieldHandler: plcFieldHandler}
+func WithPlcTagHandler(tagHandler spi.PlcTagHandler) options.WithOption {
+	return withPlcTagHandler{plcTagHandler: tagHandler}
 }
 
 func WithPlcValueHandler(plcValueHandler spi.PlcValueHandler) options.WithOption {
 	return withPlcValueHandler{plcValueHandler: plcValueHandler}
-}
-
-// DefaultConnectionMetadata implements the model.PlcConnectionMetadata interface
-type DefaultConnectionMetadata struct {
-	ConnectionAttributes map[string]string
-	ProvidesReading      bool
-	ProvidesWriting      bool
-	ProvidesSubscribing  bool
-	ProvidesBrowsing     bool
-}
-
-type DefaultPlcConnectionConnectResult interface {
-	plc4go.PlcConnectionConnectResult
-}
-
-func NewDefaultPlcConnectionConnectResult(connection plc4go.PlcConnection, err error) DefaultPlcConnectionConnectResult {
-	return &plcConnectionConnectResult{
-		connection: connection,
-		err:        err,
-	}
-}
-
-type DefaultPlcConnectionCloseResult interface {
-	plc4go.PlcConnectionCloseResult
-	GetTraces() []spi.TraceEntry
-}
-
-func NewDefaultPlcConnectionCloseResult(connection plc4go.PlcConnection, err error) plc4go.PlcConnectionCloseResult {
-	return &plcConnectionCloseResult{
-		connection: connection,
-		err:        err,
-		traces:     nil,
-	}
-}
-
-func NewDefaultPlcConnectionCloseResultWithTraces(connection plc4go.PlcConnection, err error, traces []spi.TraceEntry) plc4go.PlcConnectionCloseResult {
-	return &plcConnectionCloseResult{
-		connection: connection,
-		err:        err,
-		traces:     traces,
-	}
-}
-
-type DefaultPlcConnectionPingResult interface {
-	plc4go.PlcConnectionPingResult
-}
-
-func NewDefaultPlcConnectionPingResult(err error) plc4go.PlcConnectionPingResult {
-	return &plcConnectionPingResult{
-		err: err,
-	}
 }
 
 ///////////////////////////////////////
@@ -130,9 +87,9 @@ type withDefaultTtl struct {
 	defaultTtl time.Duration
 }
 
-type withPlcFieldHandler struct {
+type withPlcTagHandler struct {
 	options.Option
-	plcFieldHandler spi.PlcFieldHandler
+	plcTagHandler spi.PlcTagHandler
 }
 
 type withPlcValueHandler struct {
@@ -140,95 +97,65 @@ type withPlcValueHandler struct {
 	plcValueHandler spi.PlcValueHandler
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=defaultConnection
 type defaultConnection struct {
-	DefaultConnectionRequirements
+	DefaultConnectionRequirements `ignore:"true"`
 	// defaultTtl the time to live after a close
-	defaultTtl time.Duration
+	defaultTtl time.Duration `stringer:"true"`
 	// connected indicates if a connection is connected
-	connected    bool
-	fieldHandler spi.PlcFieldHandler
+	connected    atomic.Bool
+	tagHandler   spi.PlcTagHandler
 	valueHandler spi.PlcValueHandler
+
+	log zerolog.Logger `ignore:"true"`
 }
 
-func buildDefaultConnection(requirements DefaultConnectionRequirements, options ...options.WithOption) DefaultConnection {
-	defaultTtl := time.Second * 10
-	var fieldHandler spi.PlcFieldHandler
+func buildDefaultConnection(requirements DefaultConnectionRequirements, _options ...options.WithOption) DefaultConnection {
+	defaultTtl := 10 * time.Second
+	var tagHandler spi.PlcTagHandler
 	var valueHandler spi.PlcValueHandler
 
-	for _, option := range options {
+	for _, option := range _options {
 		switch option.(type) {
 		case withDefaultTtl:
 			defaultTtl = option.(withDefaultTtl).defaultTtl
-		case withPlcFieldHandler:
-			fieldHandler = option.(withPlcFieldHandler).plcFieldHandler
+		case withPlcTagHandler:
+			tagHandler = option.(withPlcTagHandler).plcTagHandler
 		case withPlcValueHandler:
 			valueHandler = option.(withPlcValueHandler).plcValueHandler
 		}
 	}
 
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &defaultConnection{
-		requirements,
-		defaultTtl,
-		false,
-		fieldHandler,
-		valueHandler,
+		DefaultConnectionRequirements: requirements,
+		defaultTtl:                    defaultTtl,
+		tagHandler:                    tagHandler,
+		valueHandler:                  valueHandler,
+
+		log: customLogger,
 	}
 }
 
-type plcConnectionConnectResult struct {
-	connection plc4go.PlcConnection
-	err        error
-}
-
-func (d *plcConnectionConnectResult) GetConnection() plc4go.PlcConnection {
-	return d.connection
-}
-
-func (d *plcConnectionConnectResult) GetErr() error {
-	return d.err
-}
-
-type plcConnectionCloseResult struct {
-	connection plc4go.PlcConnection
-	err        error
-	traces     []spi.TraceEntry
-}
-
-func (d *plcConnectionCloseResult) GetConnection() plc4go.PlcConnection {
-	return d.connection
-}
-
-func (d *plcConnectionCloseResult) GetErr() error {
-	return d.err
-}
-
-func (d *plcConnectionCloseResult) GetTraces() []spi.TraceEntry {
-	return d.traces
-}
-
-type plcConnectionPingResult struct {
-	err error
-}
-
-func (d *plcConnectionPingResult) GetErr() error {
-	return d.err
-}
-
-//
-// Internal section
-//
-///////////////////////////////////////
-///////////////////////////////////////
-
 func (d *defaultConnection) SetConnected(connected bool) {
-	d.connected = connected
+	d.log.Trace().Bool("connected", connected).Msg("set connected")
+	d.connected.Store(connected)
 }
 
 func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	return d.DefaultConnectionRequirements.ConnectWithContext(context.Background())
+}
+
+func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+	d.log.Trace().Msg("Connecting")
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
-		err := d.GetMessageCodec().Connect()
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			}
+		}()
+		err := d.GetMessageCodec().ConnectWithContext(ctx)
 		d.SetConnected(true)
 		connection := d.GetConnection()
 		ch <- NewDefaultPlcConnectionConnectResult(connection, err)
@@ -237,7 +164,7 @@ func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
 }
 
 func (d *defaultConnection) BlockingClose() {
-	log.Trace().Msg("blocking close connection")
+	d.log.Trace().Msg("blocking close connection")
 	closeResults := d.GetConnection().Close()
 	timeout := time.NewTimer(d.GetTtl())
 	d.SetConnected(false)
@@ -254,27 +181,43 @@ func (d *defaultConnection) BlockingClose() {
 }
 
 func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
-	log.Trace().Msg("close connection")
-	if err := d.GetMessageCodec().Disconnect(); err != nil {
-		log.Warn().Err(err).Msg("Error disconnecting message code")
+	d.log.Trace().Msg("close connection")
+	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
+		d.log.Trace().Msg("disconnecting message codec")
+		if err := messageCodec.Disconnect(); err != nil {
+			d.log.Warn().Err(err).Msg("Error disconnecting message code")
+		} else {
+			d.log.Trace().Msg("message codec disconnected")
+		}
 	}
-	err := d.GetTransportInstance().Close()
+	var err error
+	if transportInstance := d.GetTransportInstance(); transportInstance != nil {
+		d.log.Trace().Msg("closing transport instance")
+		if err = transportInstance.Close(); err != nil {
+			d.log.Warn().Err(err).Msg("Error disconnecting transport instance")
+		} else {
+			d.log.Trace().Msg("transport instance closed")
+		}
+	}
 	d.SetConnected(false)
-	ch := make(chan plc4go.PlcConnectionCloseResult)
-	go func() {
-		ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
-	}()
+	ch := make(chan plc4go.PlcConnectionCloseResult, 1)
+	ch <- NewDefaultPlcConnectionCloseResult(d.GetConnection(), err)
 	return ch
 }
 
 func (d *defaultConnection) IsConnected() bool {
 	// TODO: should we check here if the transport is connected?
-	return d.connected
+	return d.connected.Load()
 }
 
 func (d *defaultConnection) Ping() <-chan plc4go.PlcConnectionPingResult {
-	ch := make(chan plc4go.PlcConnectionPingResult)
+	ch := make(chan plc4go.PlcConnectionPingResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- NewDefaultPlcConnectionPingResult(errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			}
+		}()
 		if d.GetConnection().IsConnected() {
 			ch <- NewDefaultPlcConnectionPingResult(nil)
 		} else {
@@ -288,8 +231,8 @@ func (d *defaultConnection) GetTtl() time.Duration {
 	return d.defaultTtl
 }
 
-func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
-	return DefaultConnectionMetadata{
+func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {
+	return &DefaultConnectionMetadata{
 		ConnectionAttributes: nil,
 		ProvidesReading:      false,
 		ProvidesWriting:      false,
@@ -298,24 +241,24 @@ func (d *defaultConnection) GetMetadata() model.PlcConnectionMetadata {
 	}
 }
 
-func (d *defaultConnection) ReadRequestBuilder() model.PlcReadRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
+	panic("not provided by actual connection")
 }
 
-func (d *defaultConnection) BrowseRequestBuilder() model.PlcBrowseRequestBuilder {
-	panic("not implemented")
+func (d *defaultConnection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
+	panic("not provided by actual connection")
 }
 
 func (d *defaultConnection) GetTransportInstance() transports.TransportInstance {
@@ -325,30 +268,16 @@ func (d *defaultConnection) GetTransportInstance() transports.TransportInstance 
 	return nil
 }
 
-func (d *defaultConnection) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return d.fieldHandler
+func (d *defaultConnection) GetPlcTagHandler() spi.PlcTagHandler {
+	return d.tagHandler
 }
 
 func (d *defaultConnection) GetPlcValueHandler() spi.PlcValueHandler {
 	return d.valueHandler
 }
 
-func (m DefaultConnectionMetadata) GetConnectionAttributes() map[string]string {
-	return m.ConnectionAttributes
-}
-
-func (m DefaultConnectionMetadata) CanRead() bool {
-	return m.ProvidesReading
-}
-
-func (m DefaultConnectionMetadata) CanWrite() bool {
-	return m.ProvidesWriting
-}
-
-func (m DefaultConnectionMetadata) CanSubscribe() bool {
-	return m.ProvidesSubscribing
-}
-
-func (m DefaultConnectionMetadata) CanBrowse() bool {
-	return m.ProvidesBrowsing
-}
+//
+// Internal section
+//
+///////////////////////////////////////
+///////////////////////////////////////

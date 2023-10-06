@@ -37,8 +37,8 @@ public class StaticHelper {
 
         // A procedure for generating an LRC is:
         // 1. Add all bytes in the message, (byte) excluding the starting ‘colon’ and ending
-        //    CRLF. Add them into an 8–bit field, (byte) so that carries will be discarded.
-        // 2. Subtract the final field value from FF hex (all 1’s), (byte) to produce the
+        //    CRLF. Add them into an 8–bit tag, (byte) so that carries will be discarded.
+        // 2. Subtract the final tag value from FF hex (all 1’s), (byte) to produce the
         //    ones–complement.
         // 3. Add 1 to produce the twos–complement
         // 4. Convert the 8 bit checksum into it's 16 bit (2 char) hex representation.
@@ -73,7 +73,7 @@ public class StaticHelper {
         return (((((int) uchCRCHi) << 8) & 0xFFFF) | ((int) uchCRCLo) & 0x00FF);
     }
 
-    static byte[] auchCRCHi = {
+    static final byte[] auchCRCHi = {
         (byte) 0x00, (byte) 0xC1, (byte) 0x81, (byte) 0x40, (byte) 0x01, (byte) 0xC0, (byte) 0x80, (byte) 0x41, (byte) 0x01, (byte) 0xC0, (byte) 0x80, (byte) 0x41, (byte) 0x00, (byte) 0xC1, (byte) 0x81,
         (byte) 0x40, (byte) 0x01, (byte) 0xC0, (byte) 0x80, (byte) 0x41, (byte) 0x00, (byte) 0xC1, (byte) 0x81, (byte) 0x40, (byte) 0x00, (byte) 0xC1, (byte) 0x81, (byte) 0x40, (byte) 0x01, (byte) 0xC0,
         (byte) 0x80, (byte) 0x41, (byte) 0x01, (byte) 0xC0, (byte) 0x80, (byte) 0x41, (byte) 0x00, (byte) 0xC1, (byte) 0x81, (byte) 0x40, (byte) 0x00, (byte) 0xC1, (byte) 0x81, (byte) 0x40, (byte) 0x01,
@@ -94,7 +94,7 @@ public class StaticHelper {
         (byte) 0x40
     };
 
-    static byte[] auchCRCLo = {
+    static final byte[] auchCRCLo = {
         (byte) 0x00, (byte) 0xC0, (byte) 0xC1, (byte) 0x01, (byte) 0xC3, (byte) 0x03, (byte) 0x02, (byte) 0xC2, (byte) 0xC6, (byte) 0x06, (byte) 0x07, (byte) 0xC7, (byte) 0x05, (byte) 0xC5, (byte) 0xC4,
         (byte) 0x04, (byte) 0xCC, (byte) 0x0C, (byte) 0x0D, (byte) 0xCD, (byte) 0x0F, (byte) 0xCF, (byte) 0xCE, (byte) 0x0E, (byte) 0x0A, (byte) 0xCA, (byte) 0xCB, (byte) 0x0B, (byte) 0xC9, (byte) 0x09,
         (byte) 0x08, (byte) 0xC8, (byte) 0xD8, (byte) 0x18, (byte) 0x19, (byte) 0xD9, (byte) 0x1B, (byte) 0xDB, (byte) 0xDA, (byte) 0x1A, (byte) 0x1E, (byte) 0xDE, (byte) 0xDF, (byte) 0x1F, (byte) 0xDD,

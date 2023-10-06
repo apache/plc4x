@@ -33,7 +33,7 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
 }
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_error_code* _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_error_code* _message) {
     plc4c_return_code _res = OK;
 
     uint8_t value;
@@ -43,7 +43,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4c_spi_read
     return _res;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_error_code_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_error_code* _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_error_code_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_error_code* _message) {
     plc4c_return_code _res = OK;
 
     _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message);
@@ -136,10 +136,10 @@ plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_c
     }
 }
 
-uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bytes(plc4c_modbus_read_write_modbus_error_code* _message) {
-    return plc4c_modbus_read_write_modbus_error_code_length_in_bits(_message) / 8;
+uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bytes(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_error_code* _message) {
+    return plc4c_modbus_read_write_modbus_error_code_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bits(plc4c_modbus_read_write_modbus_error_code* _message) {
+uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bits(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_error_code* _message) {
     return 8;
 }

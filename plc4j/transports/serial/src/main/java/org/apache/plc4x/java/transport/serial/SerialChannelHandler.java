@@ -67,8 +67,8 @@ public abstract class SerialChannelHandler {
 
     public static class SerialPortHandler extends SerialChannelHandler {
 
-        private SerialChannelConfig config;
-        private SerialPort comPort;
+        private final SerialChannelConfig config;
+        private final SerialPort comPort;
 
         public SerialPortHandler(SocketAddress address, SerialChannelConfig config) {
             super(address);

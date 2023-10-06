@@ -28,6 +28,10 @@
 // Uncomment to add printf spam at end of plc4c_system_create_connection()
 //#define DEBUG_PLC4C_SYSTEM
 
+#ifdef DEBUG_PLC4C_SYSTEM
+#include <stdio.h>
+#endif
+
 #ifdef _WIN32
 #define strtok_r strtok_s
 #endif
@@ -295,7 +299,6 @@ plc4c_return_code plc4c_system_create_connection(
   }
   
 #ifdef DEBUG_PLC4C_SYSTEM
-#include <stdio.h>
   printf("\n~~~~~~~~ PLC4C Connection ~~~~~~~~\n"
     "Connection String:\t%s\n"
     "Protocol Code:\t\t%s\n"

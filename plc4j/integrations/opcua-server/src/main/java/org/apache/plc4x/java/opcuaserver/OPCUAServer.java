@@ -212,7 +212,7 @@ public class OPCUAServer {
 
         File securityTempDir = new File(config.getDir(), "security");
         if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
-            logger.error("Unable to create directory please confirm folder permissions on " + securityTempDir.toString());
+            logger.error("Unable to create directory please confirm folder permissions on " + securityTempDir);
             System.exit(1);
         }
         logger.info("Security Directory is: {}", securityTempDir.getAbsolutePath()); //

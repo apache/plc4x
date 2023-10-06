@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Optional;
@@ -201,7 +202,8 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void writeString(String logicalName, int bitLength, String value, WithWriterArgs... writerArgs) throws SerializationException {
+        String encoding = extractEncoding(writerArgs).orElse("UTF-8");
         String cleanedUpString = StringUtils.trimToEmpty(value).replaceAll("[^\u0009\r\n\u0020-\uD7FF\uE000-\uFFFD\ud800\udc00-\udbff\udfff]", "");
         createAndAppend(logicalName, rwStringKey, bitLength, cleanedUpString, encoding, writerArgs);
         move(bitLength);
@@ -236,11 +238,7 @@ public class WriteBufferXmlBased implements WriteBuffer, BufferCommons {
     }
 
     public String getXmlString() {
-        try {
-            return byteArrayOutputStream.toString("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new PlcRuntimeException(e);
-        }
+        return byteArrayOutputStream.toString(StandardCharsets.UTF_8);
     }
 
     private void move(int bits) {

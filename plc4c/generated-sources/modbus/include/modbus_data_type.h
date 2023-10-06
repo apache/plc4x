@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -62,9 +63,9 @@ typedef enum plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_mo
 // Get an empty NULL-struct
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_null();
 
-plc4c_return_code plc4c_modbus_read_write_modbus_data_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_data_type* message);
+plc4c_return_code plc4c_modbus_read_write_modbus_data_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_data_type* message);
 
-plc4c_return_code plc4c_modbus_read_write_modbus_data_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_data_type* message);
+plc4c_return_code plc4c_modbus_read_write_modbus_data_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_data_type* message);
 
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_for_value(uint8_t value);
 
@@ -77,9 +78,9 @@ plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_typ
 uint8_t plc4c_modbus_read_write_modbus_data_type_get_data_type_size(plc4c_modbus_read_write_modbus_data_type value);
 plc4c_modbus_read_write_modbus_data_type plc4c_modbus_read_write_modbus_data_type_get_first_enum_for_field_data_type_size(uint8_t value);
 
-uint16_t plc4c_modbus_read_write_modbus_data_type_length_in_bytes(plc4c_modbus_read_write_modbus_data_type* message);
+uint16_t plc4c_modbus_read_write_modbus_data_type_length_in_bytes(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_data_type* message);
 
-uint16_t plc4c_modbus_read_write_modbus_data_type_length_in_bits(plc4c_modbus_read_write_modbus_data_type* message);
+uint16_t plc4c_modbus_read_write_modbus_data_type_length_in_bits(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_data_type* message);
 
 
 #endif  // PLC4C_MODBUS_READ_WRITE_MODBUS_DATA_TYPE_H_

@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -29,6 +30,7 @@
 
 
 enum plc4c_s7_read_write_szl_sublist {
+  plc4c_s7_read_write_szl_sublist_NONE = 0x00,
   plc4c_s7_read_write_szl_sublist_MODULE_IDENTIFICATION = 0x11,
   plc4c_s7_read_write_szl_sublist_CPU_FEATURES = 0x12,
   plc4c_s7_read_write_szl_sublist_USER_MEMORY_AREA = 0x13,
@@ -39,24 +41,30 @@ enum plc4c_s7_read_write_szl_sublist {
   plc4c_s7_read_write_szl_sublist_INTERRUPT_STATUS = 0x22,
   plc4c_s7_read_write_szl_sublist_ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS = 0x25,
   plc4c_s7_read_write_szl_sublist_COMMUNICATION_STATUS_DATA = 0x32,
+  plc4c_s7_read_write_szl_sublist_H_CPU_GROUP_INFORMATION = 0x71,
   plc4c_s7_read_write_szl_sublist_STATUS_SINGLE_MODULE_LED = 0x74,
+  plc4c_s7_read_write_szl_sublist_SWITCHED_DP_SLAVES_H_SYSTEM = 0x75,
   plc4c_s7_read_write_szl_sublist_DP_MASTER_SYSTEM_INFORMATION = 0x90,
   plc4c_s7_read_write_szl_sublist_MODULE_STATUS_INFORMATION = 0x91,
   plc4c_s7_read_write_szl_sublist_RACK_OR_STATION_STATUS_INFORMATION = 0x92,
   plc4c_s7_read_write_szl_sublist_RACK_OR_STATION_STATUS_INFORMATION_2 = 0x94,
   plc4c_s7_read_write_szl_sublist_ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION = 0x95,
   plc4c_s7_read_write_szl_sublist_MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP = 0x96,
+  plc4c_s7_read_write_szl_sublist_TOOL_CHANGER_INFORMATION_PROFINET = 0x9C,
   plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_BUFFER = 0xA0,
-  plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_DATA = 0xB1
+  plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR0 = 0xB1,
+  plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR1_GI = 0xB2,
+  plc4c_s7_read_write_szl_sublist_MODULE_DIAGNOSTIC_INFORMATION_DR1_LA = 0xB3,
+  plc4c_s7_read_write_szl_sublist_DIAGNOSTIC_DATA_DP_SLAVE = 0xB4
 };
 typedef enum plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist;
 
 // Get an empty NULL-struct
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_null();
 
-plc4c_return_code plc4c_s7_read_write_szl_sublist_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_szl_sublist* message);
+plc4c_return_code plc4c_s7_read_write_szl_sublist_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_szl_sublist* message);
 
-plc4c_return_code plc4c_s7_read_write_szl_sublist_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_sublist* message);
+plc4c_return_code plc4c_s7_read_write_szl_sublist_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_szl_sublist* message);
 
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_for_value(uint8_t value);
 
@@ -66,9 +74,9 @@ int plc4c_s7_read_write_szl_sublist_num_values();
 
 plc4c_s7_read_write_szl_sublist plc4c_s7_read_write_szl_sublist_value_for_index(int index);
 
-uint16_t plc4c_s7_read_write_szl_sublist_length_in_bytes(plc4c_s7_read_write_szl_sublist* message);
+uint16_t plc4c_s7_read_write_szl_sublist_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_szl_sublist* message);
 
-uint16_t plc4c_s7_read_write_szl_sublist_length_in_bits(plc4c_s7_read_write_szl_sublist* message);
+uint16_t plc4c_s7_read_write_szl_sublist_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_szl_sublist* message);
 
 
 #endif  // PLC4C_S7_READ_WRITE_SZL_SUBLIST_H_

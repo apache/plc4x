@@ -20,6 +20,8 @@
 package readwrite
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/abeth/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -30,20 +32,20 @@ import (
 type AbethParserHelper struct {
 }
 
-func (m AbethParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m AbethParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "DF1RequestCommand":
-		return model.DF1RequestCommandParse(io)
+		return model.DF1RequestCommandParseWithBuffer(context.Background(), io)
 	case "DF1RequestMessage":
-		return model.DF1RequestMessageParse(io)
+		return model.DF1RequestMessageParseWithBuffer(context.Background(), io)
 	case "DF1ResponseMessage":
 		payloadLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DF1ResponseMessageParse(io, payloadLength)
+		return model.DF1ResponseMessageParseWithBuffer(context.Background(), io, payloadLength)
 	case "CIPEncapsulationPacket":
-		return model.CIPEncapsulationPacketParse(io)
+		return model.CIPEncapsulationPacketParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

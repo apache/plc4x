@@ -19,14 +19,63 @@
 
 package config
 
+import (
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/rs/zerolog"
+	"time"
+)
+
 // TraceTransactionManagerWorkers when set to true the transaction manager displays worker states in log
 var (
-	TraceTransactionManagerWorkers      bool
+	// Deprecated: use WithTraceTransactionManagerWorkers
+	TraceTransactionManagerWorkers bool
+	// Deprecated: use WithTraceTransactionManagerTransactions
 	TraceTransactionManagerTransactions bool
-	TraceDefaultMessageCodecWorker      bool
+	// Deprecated: use WithTraceDefaultMessageCodecWorker
+	TraceDefaultMessageCodecWorker bool
 )
 
 // TraceConnectionCache when set to true the connection cache outputs logs by default
 var (
 	TraceConnectionCache bool
 )
+
+// WithCustomLogger is a global option to supply a custom logger
+func WithCustomLogger(logger zerolog.Logger) WithOption {
+	return options.WithCustomLogger(logger)
+}
+
+// WithPassLoggerToModel enables passing of log to the model
+func WithPassLoggerToModel(passLogger bool) WithOption {
+	return options.WithPassLoggerToModel(passLogger)
+}
+
+// WithReceiveTimeout set's a timeout for a receive-operation (similar to SO_RCVTIMEO)
+func WithReceiveTimeout(timeout time.Duration) WithOption {
+	return options.WithReceiveTimeout(timeout)
+}
+
+// WithTraceTransactionManagerWorkers enables trace transaction manager workers
+func WithTraceTransactionManagerWorkers(traceWorkers bool) WithOption {
+	return options.WithTraceTransactionManagerWorkers(traceWorkers)
+}
+
+// WithTraceTransactionManagerTransactions enables trace transaction manager transactions
+func WithTraceTransactionManagerTransactions(traceTransactions bool) WithOption {
+	return options.WithTraceTransactionManagerTransactions(traceTransactions)
+}
+
+// WithTraceDefaultMessageCodecWorker enables trace default message codec worker
+func WithTraceDefaultMessageCodecWorker(traceWorkers bool) WithOption {
+	return options.WithTraceDefaultMessageCodecWorker(traceWorkers)
+}
+
+// WithExecutorOptionTracerWorkers sets a flag which extends logging for workers
+func WithExecutorOptionTracerWorkers(traceWorkers bool) WithOption {
+	return options.WithExecutorOptionTracerWorkers(traceWorkers)
+}
+
+// WithOption is a marker interface for options
+type WithOption interface {
+	options.WithOption
+}

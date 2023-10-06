@@ -471,6 +471,71 @@
     ]
 ]
 
+////////////////////////////////////////////////////////////////
+// TypeSwitch in TypeSwitch
+////////////////////////////////////////////////////////////////
+
+/* Needs to be ported to C and GO
+[discriminatedType TypeSwitchInTypeSwitchParentType
+    [discriminator uint 8 typeNumber]
+    [simple uint 8 parentFieldHurz]
+    [typeSwitch typeNumber
+        ['0x00' *Child0
+            [discriminator uint 8 childNumber]
+            [simple uint 8 childFieldwolf]
+            [typeSwitch childNumber
+                ['0x01' *Infant0
+                    [discriminator uint 8 infantNumber]
+                    [simple uint 8 infantSomeField00]
+                    [typeSwitch infantNumber
+                        ['0x98' *InfantsChild0
+                            [simple uint 8 infantsChild0SomeField00]
+                        ]
+                        ['0x99' *InfantsChild1
+                            [simple uint 8 infantsChild1SomeField00]
+                        ]
+                    ]
+                ]
+                ['0x02' *Infant1
+                    [simple uint 8 infantSomeField01]
+                ]
+                ['0x03' *Infant2
+                    [simple uint 8 infantSomeField02]
+                ]
+            ]
+        ]
+        ['0x10' *Child1
+            [discriminator uint 8 childNumber]
+            [simple uint 8 childFieldLamm]
+            [typeSwitch childNumber
+                ['0x11' *Infant3
+                    [simple uint 8 infantSomeField1ß]
+                ]
+                ['0x12' *Infant4
+                    [simple uint 8 infantSomeField11]
+                ]
+                ['0x13' *Infant5
+                    [simple uint 8 infantSomeField12]
+                ]
+            ]
+        ]
+        ['0x20' *Child2
+            [discriminator uint 8 childNumber]
+            [simple uint 8 childFieldGrueneWiese]
+            [typeSwitch childNumber
+                ['0x21' *Infant6
+                    [simple uint 8 infantSomeField21]
+                ]
+                ['0x22' *Infant7
+                    [simple uint 8 infantSomeField22]
+                ]
+                ['0x23' *Infant8
+                    [simple uint 8 infantSomeField23]
+                ]
+            ]
+        ]
+    ]
+]*/
 
 ////////////////////////////////////////////////////////////////
 // Missing Tests

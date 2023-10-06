@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVProperty is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVProperty
 type BACnetConfirmedServiceRequestSubscribeCOVProperty interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -120,7 +124,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetCovIncrement() B
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestSubscribeCOVProperty factory function for _BACnetConfirmedServiceRequestSubscribeCOVProperty
-func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, monitoredPropertyIdentifier BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestSubscribeCOVProperty {
+func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmedNotifications BACnetContextTagBoolean, lifetime BACnetContextTagUnsignedInteger, monitoredPropertyIdentifier BACnetPropertyReferenceEnclosed, covIncrement BACnetContextTagReal, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOVProperty {
 	_result := &_BACnetConfirmedServiceRequestSubscribeCOVProperty{
 		SubscriberProcessIdentifier:    subscriberProcessIdentifier,
 		MonitoredObjectIdentifier:      monitoredObjectIdentifier,
@@ -135,7 +139,7 @@ func NewBACnetConfirmedServiceRequestSubscribeCOVProperty(subscriberProcessIdent
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType interface{}) BACnetConfirmedServiceRequestSubscribeCOVProperty {
+func CastBACnetConfirmedServiceRequestSubscribeCOVProperty(structType any) BACnetConfirmedServiceRequestSubscribeCOVProperty {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestSubscribeCOVProperty); ok {
 		return casted
 	}
@@ -149,47 +153,49 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetTypeName() strin
 	return "BACnetConfirmedServiceRequestSubscribeCOVProperty"
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (subscriberProcessIdentifier)
-	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits()
+	lengthInBits += m.SubscriberProcessIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (monitoredObjectIdentifier)
-	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.MonitoredObjectIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (issueConfirmedNotifications)
 	if m.IssueConfirmedNotifications != nil {
-		lengthInBits += m.IssueConfirmedNotifications.GetLengthInBits()
+		lengthInBits += m.IssueConfirmedNotifications.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (lifetime)
 	if m.Lifetime != nil {
-		lengthInBits += m.Lifetime.GetLengthInBits()
+		lengthInBits += m.Lifetime.GetLengthInBits(ctx)
 	}
 
 	// Simple field (monitoredPropertyIdentifier)
-	lengthInBits += m.MonitoredPropertyIdentifier.GetLengthInBits()
+	lengthInBits += m.MonitoredPropertyIdentifier.GetLengthInBits(ctx)
 
 	// Optional Field (covIncrement)
 	if m.CovIncrement != nil {
-		lengthInBits += m.CovIncrement.GetLengthInBits()
+		lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
+	return BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
@@ -200,7 +206,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("subscriberProcessIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriberProcessIdentifier")
 	}
-	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_subscriberProcessIdentifier, _subscriberProcessIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _subscriberProcessIdentifierErr != nil {
 		return nil, errors.Wrap(_subscriberProcessIdentifierErr, "Error parsing 'subscriberProcessIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
@@ -213,7 +219,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
 	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _monitoredObjectIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
@@ -229,10 +235,10 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(2), BACnetDataType_BOOLEAN)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_BOOLEAN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -251,10 +257,10 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("lifetime"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for lifetime")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -270,7 +276,7 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("monitoredPropertyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredPropertyIdentifier")
 	}
-	_monitoredPropertyIdentifier, _monitoredPropertyIdentifierErr := BACnetPropertyReferenceEnclosedParse(readBuffer, uint8(uint8(4)))
+	_monitoredPropertyIdentifier, _monitoredPropertyIdentifierErr := BACnetPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
 	if _monitoredPropertyIdentifierErr != nil {
 		return nil, errors.Wrap(_monitoredPropertyIdentifierErr, "Error parsing 'monitoredPropertyIdentifier' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}
@@ -286,10 +292,10 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(5), BACnetDataType_REAL)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(5), BACnetDataType_REAL)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -321,9 +327,19 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParse(readBuffer utils.Rea
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestSubscribeCOVProperty")
@@ -333,7 +349,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("subscriberProcessIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for subscriberProcessIdentifier")
 		}
-		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(m.GetSubscriberProcessIdentifier())
+		_subscriberProcessIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetSubscriberProcessIdentifier())
 		if popErr := writeBuffer.PopContext("subscriberProcessIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for subscriberProcessIdentifier")
 		}
@@ -345,7 +361,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("monitoredObjectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredObjectIdentifier")
 		}
-		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(m.GetMonitoredObjectIdentifier())
+		_monitoredObjectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredObjectIdentifier())
 		if popErr := writeBuffer.PopContext("monitoredObjectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredObjectIdentifier")
 		}
@@ -360,7 +376,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 				return errors.Wrap(pushErr, "Error pushing for issueConfirmedNotifications")
 			}
 			issueConfirmedNotifications = m.GetIssueConfirmedNotifications()
-			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(issueConfirmedNotifications)
+			_issueConfirmedNotificationsErr := writeBuffer.WriteSerializable(ctx, issueConfirmedNotifications)
 			if popErr := writeBuffer.PopContext("issueConfirmedNotifications"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for issueConfirmedNotifications")
 			}
@@ -376,7 +392,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 				return errors.Wrap(pushErr, "Error pushing for lifetime")
 			}
 			lifetime = m.GetLifetime()
-			_lifetimeErr := writeBuffer.WriteSerializable(lifetime)
+			_lifetimeErr := writeBuffer.WriteSerializable(ctx, lifetime)
 			if popErr := writeBuffer.PopContext("lifetime"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for lifetime")
 			}
@@ -389,7 +405,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 		if pushErr := writeBuffer.PushContext("monitoredPropertyIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for monitoredPropertyIdentifier")
 		}
-		_monitoredPropertyIdentifierErr := writeBuffer.WriteSerializable(m.GetMonitoredPropertyIdentifier())
+		_monitoredPropertyIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetMonitoredPropertyIdentifier())
 		if popErr := writeBuffer.PopContext("monitoredPropertyIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for monitoredPropertyIdentifier")
 		}
@@ -404,7 +420,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 				return errors.Wrap(pushErr, "Error pushing for covIncrement")
 			}
 			covIncrement = m.GetCovIncrement()
-			_covIncrementErr := writeBuffer.WriteSerializable(covIncrement)
+			_covIncrementErr := writeBuffer.WriteSerializable(ctx, covIncrement)
 			if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for covIncrement")
 			}
@@ -418,7 +434,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) Serialize(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) isBACnetConfirmedServiceRequestSubscribeCOVProperty() bool {
@@ -430,7 +446,7 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOVProperty) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

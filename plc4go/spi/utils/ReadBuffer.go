@@ -24,8 +24,7 @@ import (
 )
 
 type ReadBuffer interface {
-	// GetPos return the current byte position
-	GetPos() uint16
+	PositionAware
 	// Reset sets the position to the supplied byte position
 	Reset(pos uint16)
 	// HasMore returns true if there are bitLength bits available

@@ -21,16 +21,20 @@ package model
 
 import (
 	"context"
+	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type PlcWriteRequestBuilder interface {
-	AddQuery(name string, query string, value interface{}) PlcWriteRequestBuilder
-	AddField(name string, field PlcField, value interface{}) PlcWriteRequestBuilder
+	fmt.Stringer
+	AddTagAddress(tagName string, tagAddress string, value any) PlcWriteRequestBuilder
+	AddTag(tagName string, tag PlcTag, value any) PlcWriteRequestBuilder
 	Build() (PlcWriteRequest, error)
 }
 
 type PlcWriteRequestResult interface {
+	fmt.Stringer
 	GetRequest() PlcWriteRequest
 	GetResponse() PlcWriteResponse
 	GetErr() error
@@ -40,14 +44,15 @@ type PlcWriteRequest interface {
 	PlcRequest
 	Execute() <-chan PlcWriteRequestResult
 	ExecuteWithContext(ctx context.Context) <-chan PlcWriteRequestResult
-	GetFieldNames() []string
-	GetField(name string) PlcField
-	GetValue(name string) values.PlcValue
+
+	GetTagNames() []string
+	GetTag(tagName string) PlcTag
+	GetValue(tagName string) values.PlcValue
 }
 
 type PlcWriteResponse interface {
 	PlcResponse
 	GetRequest() PlcWriteRequest
-	GetFieldNames() []string
-	GetResponseCode(name string) PlcResponseCode
+	GetTagNames() []string
+	GetResponseCode(tagName string) PlcResponseCode
 }

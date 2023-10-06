@@ -20,14 +20,21 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	abethIO "github.com/apache/plc4x/plc4go/protocols/abeth/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestAbEthDriver(t *testing.T) {
 	t.Skip("No test yet available")
-	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/abeth/DriverTestsuite.xml", abethIO.AbethXmlParserHelper{})
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		ads.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/abeth/DriverTestsuite.xml",
+		abethIO.AbethXmlParserHelper{},
+		optionsForTesting...,
+	)
 }

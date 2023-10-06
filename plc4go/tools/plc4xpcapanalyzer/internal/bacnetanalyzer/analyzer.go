@@ -20,33 +20,33 @@
 package bacnetanalyzer
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 func PackageParse(packetInformation common.PacketInformation, payload []byte) (spi.Message, error) {
-	log.Debug().Msgf("Parsing %s", packetInformation)
-	parse, err := model.BVLCParse(utils.NewReadBufferByteBased(payload))
+	log.Debug().Stringer("packetInformation", packetInformation).Msg("Parsing")
+	parse, err := model.BVLCParse(context.TODO(), payload)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing bvlc")
 	}
-	log.Debug().Msgf("Parsed bvlc %s", parse)
+	log.Debug().Stringer("parse", parse).Msg("Parsed bvlc")
 	return parse, nil
 }
 
 func SerializePackage(bvlc spi.Message) ([]byte, error) {
 	if bvlc, ok := bvlc.(model.BVLC); !ok {
-		log.Fatal().Msgf("Unsupported type %T supplied", bvlc)
+		log.Fatal().Type("bvlc", bvlc).Msg("Unsupported type supplied")
 		panic("unreachable statement")
 	} else {
-		based := utils.NewWriteBufferByteBased()
-		if err := bvlc.Serialize(based); err != nil {
+		theBytes, err := bvlc.Serialize()
+		if err != nil {
 			return nil, errors.Wrap(err, "Error serializing")
 		}
-		return based.GetBytes(), nil
+		return theBytes, nil
 	}
 }

@@ -64,7 +64,7 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_null() {
 }
 
 // Parse function.
-plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* _message) {
+plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
 
     ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())} value;
@@ -74,7 +74,7 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4c_spi_read_buffer*
     return _res;
 }
 
-plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
+plc4c_return_code ${helper.getCTypeName(type.name)}_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, ${helper.getCTypeName(type.name)}* _message) {
     plc4c_return_code _res = OK;
 
     _res = ${helper.getWriteBufferWriteMethodCall(type.type.orElseThrow().asSimpleTypeReference().orElseThrow(), "*_message", null)?no_esc};
@@ -194,10 +194,10 @@ ${helper.getCTypeName(type.name)} ${helper.getCTypeName(type.name)}_get_first_en
     </#list>
 </#if>
 
-uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(${helper.getCTypeName(type.name)}* _message) {
-    return ${helper.getCTypeName(type.name)}_length_in_bits(_message) / 8;
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bytes(plc4x_spi_context ctx, ${helper.getCTypeName(type.name)}* _message) {
+    return ${helper.getCTypeName(type.name)}_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(${helper.getCTypeName(type.name)}* _message) {
+uint16_t ${helper.getCTypeName(type.name)}_length_in_bits(plc4x_spi_context ctx, ${helper.getCTypeName(type.name)}* _message) {
     return ${type.type.orElseThrow().asSimpleTypeReference().orElseThrow().sizeInBits};
 }

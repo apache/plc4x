@@ -21,9 +21,12 @@ package spi
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+// PlcReader reads fields form a PLC
 type PlcReader interface {
-	Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult
+	// Read reads a field from a PLC
+	Read(ctx context.Context, readRequest apiModel.PlcReadRequest) <-chan apiModel.PlcReadRequestResult
 }

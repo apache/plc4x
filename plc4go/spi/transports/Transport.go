@@ -19,13 +19,18 @@
 
 package transports
 
-import "net/url"
+import (
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"io"
+	"net/url"
+)
 
 type Transport interface {
+	io.Closer
 	// GetTransportCode Get the short code used to identify this transport (As used in the connection string)
 	GetTransportCode() string
 	// GetTransportName Get a human-readable name for this transport
 	GetTransportName() string
 	// CreateTransportInstance creates transport instance
-	CreateTransportInstance(transportUrl url.URL, options map[string][]string) (TransportInstance, error)
+	CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (TransportInstance, error)
 }

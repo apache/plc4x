@@ -21,13 +21,13 @@ package org.apache.plc4x.java.can.generic.protocol;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.plc4x.java.can.generic.field.GenericCANField;
+import org.apache.plc4x.java.can.generic.tag.GenericCANTag;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;
 
 public class GenericCANSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
-    private final Map<String, GenericCANField> fields = new LinkedHashMap<>();
+    private final Map<String, GenericCANTag> tags = new LinkedHashMap<>();
     private final Integer nodeId;
 
     public GenericCANSubscriptionHandle(PlcSubscriber subscriber, Integer nodeId) {
@@ -43,16 +43,16 @@ public class GenericCANSubscriptionHandle extends DefaultPlcSubscriptionHandle {
         return "GenericCANSubscriptionHandle [node=" + nodeId + " " + intAndHex(nodeId) + "]";
     }
 
-    public void add(String name, GenericCANField field) {
-        fields.put(name, field);
+    public void add(String name, GenericCANTag tag) {
+        tags.put(name, tag);
     }
 
     private static String intAndHex(int val) {
         return val + "(0x" + Integer.toHexString(val) + ")";
     }
 
-    public Map<String, GenericCANField> getFields() {
-        return Collections.unmodifiableMap(fields);
+    public Map<String, GenericCANTag> getTags() {
+        return Collections.unmodifiableMap(tags);
     }
 }
 

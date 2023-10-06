@@ -20,7 +20,7 @@
 package config
 
 type AnalyzeConfig struct {
-	*PcapConfig
+	*PcapConfig                                          `json:"-"`
 	NoFilter, OnlyParse, NoBytesCompare, NoCustomMapping bool
 }
 

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.spi.codegen.io;
 
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 public interface DataWriter<T> extends ByteOrderAware {
 
@@ -27,5 +28,7 @@ public interface DataWriter<T> extends ByteOrderAware {
 
     void pushContext(String logicalName, WithWriterArgs... writerArgs);
     void popContext(String logicalName, WithWriterArgs... writerArgs);
+
+    WriteBuffer getWriteBuffer();
 
 }

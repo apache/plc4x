@@ -21,37 +21,34 @@ package tests
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/cbus"
-	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/transports"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/require"
-	"os"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/transports"
+	"github.com/apache/plc4x/plc4go/spi/options/converter"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestManualCBusDriverMixed(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.InfoLevel)
-	config.TraceTransactionManagerWorkers = true
-	config.TraceTransactionManagerTransactions = true
-	config.TraceDefaultMessageCodecWorker = true
 	t.Skip()
 
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+
 	connectionString := "c-bus://192.168.178.101"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(cbus.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
-	test := testutils.NewManualTestSuite(connectionString, driverManager, t)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
+	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
+	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
+	test := testutils.NewManualTestSuite(t, connectionString, driverManager)
 
 	// TODO: fix those test cases
 	//test.AddTestCase("status/binary/0x04", "PlcStruct{\n  application: \"LIGHTING_38\"\n  blockStart: \"false, false, false, false, false, false, false, false\"\n  values: \"DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON, DOES_NOT_EXIST, OFF, ERROR, ON\"\n}")
@@ -65,9 +62,9 @@ func TestManualCBusDriverMixed(t *testing.T) {
 		gotMMI := make(chan bool)
 		gotSAL := make(chan bool)
 		subscriptionRequest, err := plcConnection.SubscriptionRequestBuilder().
-			AddEventQuery("mmi", "mmimonitor/*/*").
-			AddEventQuery("sal", "salmonitor/*/*").
-			AddPreRegisteredConsumer("mmi", func(event model.PlcSubscriptionEvent) {
+			AddEventTagAddress("mmi", "mmimonitor/*/*").
+			AddEventTagAddress("sal", "salmonitor/*/*").
+			AddPreRegisteredConsumer("mmi", func(event apiModel.PlcSubscriptionEvent) {
 				fmt.Printf("mmi:\n%s", event)
 				if _, ok := event.GetValue("mmi").GetStruct()["SALData"]; ok {
 					panic("got sal in mmi")
@@ -77,7 +74,7 @@ func TestManualCBusDriverMixed(t *testing.T) {
 				default:
 				}
 			}).
-			AddPreRegisteredConsumer("sal", func(event model.PlcSubscriptionEvent) {
+			AddPreRegisteredConsumer("sal", func(event apiModel.PlcSubscriptionEvent) {
 				fmt.Printf("sal:\n%s", event)
 				select {
 				case gotSAL <- true:
@@ -120,19 +117,17 @@ func TestManualCBusDriverMixed(t *testing.T) {
 }
 
 func TestManualCBusBrowse(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.InfoLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(cbus.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
+	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
+	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
 	connectionResult := <-driverManager.GetConnection(connectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		t.Error(err)
@@ -146,7 +141,7 @@ func TestManualCBusBrowse(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result model.PlcBrowseEvent) bool {
+	browseRequestResult := <-browseRequest.ExecuteWithInterceptor(func(result apiModel.PlcBrowseItem) bool {
 		fmt.Printf("%s\n", result)
 		return true
 	})
@@ -154,19 +149,17 @@ func TestManualCBusBrowse(t *testing.T) {
 }
 
 func TestManualCBusRead(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.InfoLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+
 	connectionString := "c-bus://192.168.178.101?Monitor=false&MonitoredApplication1=0x00&MonitoredApplication2=0x00"
-	driverManager := plc4go.NewPlcDriverManager()
-	driverManager.RegisterDriver(cbus.NewDriver())
-	transports.RegisterTcpTransport(driverManager)
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
+	driverManager.RegisterDriver(cbus.NewDriver(optionsForTesting...))
+	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
 	connectionResult := <-driverManager.GetConnection(connectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		t.Error(err)
@@ -175,7 +168,7 @@ func TestManualCBusRead(t *testing.T) {
 	connection := connectionResult.GetConnection()
 	defer connection.Close()
 	readRequest, err := connection.ReadRequestBuilder().
-		AddQuery("asd", "cal/3/identify=OutputUnitSummary").
+		AddTagAddress("asd", "cal/3/identify=OutputUnitSummary").
 		Build()
 	require.NoError(t, err)
 	readRequestResult := <-readRequest.Execute()
@@ -183,21 +176,19 @@ func TestManualCBusRead(t *testing.T) {
 }
 
 func TestManualDiscovery(t *testing.T) {
-	log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.TraceLevel)
-	config.TraceTransactionManagerWorkers = false
-	config.TraceTransactionManagerTransactions = false
-	config.TraceDefaultMessageCodecWorker = false
 	t.Skip()
 
-	driverManager := plc4go.NewPlcDriverManager()
-	driver := cbus.NewDriver()
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+
+	driverManager := plc4go.NewPlcDriverManager(converter.WithOptionToExternal(optionsForTesting...)...)
+	t.Cleanup(func() {
+		assert.NoError(t, driverManager.Close())
+	})
+	driver := cbus.NewDriver(optionsForTesting...)
 	driverManager.RegisterDriver(driver)
-	transports.RegisterTcpTransport(driverManager)
-	err := driver.Discover(func(event model.PlcDiscoveryItem) {
-		println(event.(fmt.Stringer).String())
+	transports.RegisterTcpTransport(driverManager, converter.WithOptionToExternal(optionsForTesting...)...)
+	err := driver.Discover(func(event apiModel.PlcDiscoveryItem) {
+		t.Log(event.(fmt.Stringer).String())
 	})
 	require.NoError(t, err)
 }

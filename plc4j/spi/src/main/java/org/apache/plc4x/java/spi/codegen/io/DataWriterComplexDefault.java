@@ -69,4 +69,9 @@ public class DataWriterComplexDefault<T extends Message> implements DataWriterCo
         }
     }
 
+    @Override
+    public WriteBuffer getWriteBuffer() {
+        return writeBuffer;
+    }
+
 }

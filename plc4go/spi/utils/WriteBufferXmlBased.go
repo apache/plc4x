@@ -20,6 +20,7 @@
 package utils
 
 import (
+	"context"
 	"encoding/xml"
 	"fmt"
 	"math/big"
@@ -32,7 +33,7 @@ type WriteBufferXmlBased interface {
 	GetXmlString() string
 }
 
-//NewXmlWriteBuffer returns a WriteBufferXmlBased which renders all information into xml
+// NewXmlWriteBuffer returns a WriteBufferXmlBased which renders all information into xml
 func NewXmlWriteBuffer() WriteBufferXmlBased {
 	var xmlString strings.Builder
 	encoder := xml.NewEncoder(&xmlString)
@@ -45,7 +46,7 @@ func NewXmlWriteBuffer() WriteBufferXmlBased {
 	}
 }
 
-//NewConfiguredXmlWriteBuffer returns a WriteBufferXmlBased which renders configured information into xml
+// NewConfiguredXmlWriteBuffer returns a WriteBufferXmlBased which renders configured information into xml
 func NewConfiguredXmlWriteBuffer(renderLists bool, renderAttr bool) WriteBufferXmlBased {
 	var xmlString strings.Builder
 	encoder := xml.NewEncoder(&xmlString)
@@ -160,12 +161,12 @@ func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value 
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, fmt.Sprintf("%16.16f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, fmt.Sprintf("%32.32f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {
@@ -173,7 +174,7 @@ func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, valu
 	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
-//[^\u0009\r\n\u0020-\uD7FF\uE000-\uFFFD\ud800\udc00-\udbff\udfff]
+// [^\u0009\r\n\u0020-\uD7FF\uE000-\uFFFD\ud800\udc00-\udbff\udfff]
 var printableRange = &unicode.RangeTable{
 	R16: []unicode.Range16{
 		{0x0009, 0x0009, 1},
@@ -197,16 +198,16 @@ func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encod
 	return x.encodeElement(logicalName, cleanedUpString, attr, writerArgs...)
 }
 
-func (x *xmlWriteBuffer) WriteVirtual(_ string, _ interface{}, _ ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteVirtual(_ context.Context, _ string, _ any, _ ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (x *xmlWriteBuffer) WriteSerializable(serializable Serializable) error {
+func (x *xmlWriteBuffer) WriteSerializable(ctx context.Context, serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(x)
+	return serializable.SerializeWithWriteBuffer(ctx, x)
 }
 
 func (x *xmlWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {
@@ -220,7 +221,7 @@ func (x *xmlWriteBuffer) GetXmlString() string {
 	return x.xmlString.String()
 }
 
-func (x *xmlWriteBuffer) encodeElement(logicalName string, value interface{}, attr []xml.Attr, _ ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) encodeElement(logicalName string, value any, attr []xml.Attr, _ ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)},
 		Attr: attr,

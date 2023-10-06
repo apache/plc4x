@@ -160,11 +160,26 @@ First off all, it's probably a good idea to check if this connection supports re
 
 In order to create and run such a `PlcReadRequest`, please add the following code:
 
+.Up to version 0.10.0
 ----
 	// Prepare a read-request
 	readRequest, err := connection.ReadRequestBuilder().
 		AddQuery("field1", "holding-register:1:REAL").
 		AddQuery("field2", "holding-register:3:REAL").
+        Build()
+	if err != nil {
+		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
+		t.Fail()
+		return
+	}
+----
+
+.SNAPSHOT version
+----
+	// Prepare a read-request
+	readRequest, err := connection.ReadRequestBuilder().
+		AddTagAddress("tag1", "holding-register:1:REAL").
+		AddTagAddress("tag2", "holding-register:3:REAL").
         Build()
 	if err != nil {
 		t.Errorf("error preparing read-request: %s", connectionResult.Err.Error())
@@ -227,7 +242,7 @@ We first have to check if the connection supports this:
 
 Now we'll create the subscription request.
 
-The main difference is that while reading there is only one form how you could read, with subscriptions there are different forms of subscriptons:
+The main difference is that while reading there is only one form how you could read, with subscriptions there are different forms of subscriptions:
 
 - Change of state (Event is sent as soon as a value changes)
 - Cyclic (The Event is sent in regular cyclic intervals)
@@ -235,6 +250,7 @@ The main difference is that while reading there is only one form how you could r
 
 Therefore instead of using a normal `AddItem`, there are tree different functions as you can see in the following examples.
 
+.Up to version 0.10.0
 ----
 	// Prepare a subscription-request
     subscriptionRequest, err := connection.SubscriptionRequestBuilder().
@@ -249,8 +265,24 @@ Therefore instead of using a normal `AddItem`, there are tree different function
     }
 ----
 
+.SNAPSHOT version
+----
+	// Prepare a subscription-request
+    subscriptionRequest, err := connection.SubscriptionRequestBuilder().
+        AddChangeOfStateTagAddress("heating-actual-temperature", "*/*/10:DPT_Value_Temp").
+        AddChangeOfStateTagAddress("heating-target-temperature", "*/*/11:DPT_Value_Temp").
+        AddCyclicTagAddress("heating-valve-open", "*/*/12:DPT_OpenClose", 500 * time.Millisecond).
+        AddItemHandler(knxEventHandler).
+        Build()
+    if err != nil {
+	    fmt.Printf("Error preparing subscription-request: %s", connectionResult.Err.Error())
+        return
+    }
+----
+
 The `Event hadnler` for intercepting incoming events could look like this:
 
+.Up to version 0.10.0
 ----
 func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
     for _, fieldName := range event.GetFieldNames() {
@@ -263,9 +295,22 @@ func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
 }
 ----
 
-NOTE: The `AddCyclicField` method requires a third parameter `duration` which specifies the interval, in which a given value is sent (even if it has not changed).
+.SNAPSHOT version
+----
+func knxEventHandler(event apiModel.PlcSubscriptionEvent) {
+    for _, tagName := range event.GetTagNames() {
+        if event.GetResponseCode(tagName) == apiModel.PlcResponseCode_OK {
+            groupAddress := event.GetTag(tagName).GetAddressString()
+            fmt.Printf("Got update for tag %s with address %s. Value changed to: %s\n",
+                tagName, groupAddress, event.GetValue(tagName).GetString())
+        }
+    }
+}
+----
 
-NOTE: Here the API differs slightly form the Java version, as in the request-builder itself you specify the reference to the callback handler which should be notified on incoming data. Howerver, we will be alliging all API variants as much as possible in the near future.
+NOTE: The `AddCyclicField`/`AddCyclicTagAddress` method requires a third parameter `duration` which specifies the interval, in which a given value is sent (even if it has not changed).
+
+NOTE: Here the API differs slightly form the Java version, as in the request-builder itself you specify the reference to the callback handler which should be notified on incoming data. However, we will be aligning all API variants as much as possible in the near future.
 
 The request itself is executed exactly the same way the read and write operations are executed, using the `Execute` function.
 

@@ -21,26 +21,36 @@ package bacnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	plc4goModel "github.com/apache/plc4x/plc4go/spi/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
+
+	log      zerolog.Logger       `ignore:"true"`
+	_options []options.WithOption // Used to pass them downstream
 }
 
-func NewSubscriber(connection *Connection) *Subscriber {
+func NewSubscriber(connection *Connection, _options ...options.WithOption) *Subscriber {
+	logger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	return &Subscriber{
 		connection: connection,
 		consumers:  make(map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer),
+
+		log:      logger,
+		_options: _options,
 	}
 }
 
 func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel.PlcSubscriptionRequest) <-chan apiModel.PlcSubscriptionRequestResult {
-	// TODO: handle ctx
-	result := make(chan apiModel.PlcSubscriptionRequestResult)
+	result := make(chan apiModel.PlcSubscriptionRequestResult, 1)
 	go func() {
 		internalPlcSubscriptionRequest := subscriptionRequest.(*spiModel.DefaultPlcSubscriptionRequest)
 
@@ -50,23 +60,33 @@ func (m *Subscriber) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		// Just populate all requests with an OK
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		subscriptionValues := make(map[string]apiModel.PlcSubscriptionHandle)
-		for _, fieldName := range internalPlcSubscriptionRequest.GetFieldNames() {
-			responseCodes[fieldName] = apiModel.PlcResponseCode_OK
-			subscriptionValues[fieldName] = spiModel.NewDefaultPlcSubscriptionHandle(m)
+		for _, tagName := range internalPlcSubscriptionRequest.GetTagNames() {
+			if err := ctx.Err(); err != nil {
+				result <- spiModel.NewDefaultPlcSubscriptionRequestResult(subscriptionRequest, nil, err)
+				return
+			}
+			responseCodes[tagName] = apiModel.PlcResponseCode_OK
+			subscriptionValues[tagName] = spiModel.NewDefaultPlcSubscriptionHandle(m)
 		}
 
-		result <- &plc4goModel.DefaultPlcSubscriptionRequestResult{
-			Request:  subscriptionRequest,
-			Response: spiModel.NewDefaultPlcSubscriptionResponse(subscriptionRequest, responseCodes, subscriptionValues),
-			Err:      nil,
-		}
+		result <- spiModel.NewDefaultPlcSubscriptionRequestResult(
+			subscriptionRequest,
+			spiModel.NewDefaultPlcSubscriptionResponse(
+				subscriptionRequest,
+				responseCodes,
+				subscriptionValues,
+				append(m._options, options.WithCustomLogger(m.log))...,
+			),
+			nil,
+		)
 	}()
 	return result
 }
 
 func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiModel.PlcUnsubscriptionRequest) <-chan apiModel.PlcUnsubscriptionRequestResult {
 	// TODO: handle ctx
-	result := make(chan apiModel.PlcUnsubscriptionRequestResult)
+	result := make(chan apiModel.PlcUnsubscriptionRequestResult, 1)
+	result <- spiModel.NewDefaultPlcUnsubscriptionRequestResult(unsubscriptionRequest, nil, errors.New("not implemented"))
 
 	// TODO: As soon as we establish a connection, we start getting data...
 	// subscriptions are more an internal handling of which values to pass where.
@@ -76,7 +96,7 @@ func (m *Subscriber) Unsubscribe(ctx context.Context, unsubscriptionRequest apiM
 
 func (m *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
 	consumerRegistration := spiModel.NewDefaultPlcConsumerRegistration(m, consumer, handles...)
-	m.consumers[consumerRegistration] = consumer
+	m.consumers[consumerRegistration.(*spiModel.DefaultPlcConsumerRegistration)] = consumer
 	return consumerRegistration
 }
 

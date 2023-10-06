@@ -20,14 +20,21 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestDf1Driver(t *testing.T) {
 	t.Skip("No test yet")
-	testutils.RunDriverTestsuite(t, ads.NewDriver(), "assets/testing/protocols/df1/DriverTestsuite.xml", df1IO.Df1XmlParserHelper{})
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		ads.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/df1/DriverTestsuite.xml",
+		df1IO.Df1XmlParserHelper{},
+		optionsForTesting...,
+	)
 }

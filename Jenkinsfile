@@ -38,6 +38,8 @@ pipeline {
         // Test failures will be handled by the jenkins junit steps and mark the build as unstable.
         MVN_TEST_FAIL_IGNORE = '-Dmaven.test.failure.ignore=true'
 
+        ENABLE_ALL_TESTS = true
+
         SONARCLOUD_PARAMS = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_plc4x -Dsonar.branch.name=develop"
     }
 
@@ -136,7 +138,7 @@ pipeline {
                 echo 'Checking Code Quality on SonarCloud'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
                     //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-python,with-proxies,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
-                    sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
+                    sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.token=${SONAR_TOKEN}'
                 }
             }
         }

@@ -21,11 +21,16 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
-	"github.com/icza/bitio"
-	"github.com/pkg/errors"
 	"math"
 	"math/big"
+	"math/bits"
+	"regexp"
+	"strings"
+
+	"github.com/icza/bitio"
+	"github.com/pkg/errors"
 )
 
 type WriteBufferByteBased interface {
@@ -35,32 +40,38 @@ type WriteBufferByteBased interface {
 	GetTotalBytes() uint64
 }
 
-func NewWriteBufferByteBased() WriteBufferByteBased {
+func NewWriteBufferByteBased(options ...WriteBufferByteBasedOptions) WriteBufferByteBased {
 	data := new(bytes.Buffer)
 	writer := bitio.NewWriter(data)
-	return &byteWriteBuffer{
+	b := &byteWriteBuffer{
 		data:      data,
 		writer:    writer,
 		byteOrder: binary.BigEndian,
 	}
+	for _, option := range options {
+		option(b)
+	}
+	return b
 }
 
-func NewLittleEndianWriteBufferByteBased() WriteBufferByteBased {
-	data := new(bytes.Buffer)
-	writer := bitio.NewWriter(data)
-	return &byteWriteBuffer{
-		data:      data,
-		writer:    writer,
-		byteOrder: binary.LittleEndian,
+type WriteBufferByteBasedOptions = func(b *byteWriteBuffer)
+
+func WithInitialSizeForByteBasedBuffer(length int) WriteBufferByteBasedOptions {
+	return func(b *byteWriteBuffer) {
+		b.data.Grow(length)
 	}
 }
 
-func NewCustomWriteBufferByteBased(buffer *bytes.Buffer, byteOrder binary.ByteOrder) WriteBufferByteBased {
-	writer := bitio.NewWriter(buffer)
-	return &byteWriteBuffer{
-		data:      buffer,
-		writer:    writer,
-		byteOrder: byteOrder,
+func WithByteOrderForByteBasedBuffer(byteOrder binary.ByteOrder) WriteBufferByteBasedOptions {
+	return func(b *byteWriteBuffer) {
+		b.byteOrder = byteOrder
+	}
+}
+
+func WithCustomBufferForByteBasedBuffer(buffer *bytes.Buffer) WriteBufferByteBasedOptions {
+	return func(b *byteWriteBuffer) {
+		b.data = buffer
+		b.writer = bitio.NewWriter(b.data)
 	}
 }
 
@@ -136,9 +147,8 @@ func (wb *byteWriteBuffer) WriteUint8(_ string, bitLength uint8, value uint8, _ 
 func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		// TODO: validate that this produces the desired result
-		return binary.Write(wb.data, wb.byteOrder, value)
+		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
+		return wb.writer.WriteBits(reverseValue, bitLength)
 	}
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
@@ -146,9 +156,8 @@ func (wb *byteWriteBuffer) WriteUint16(_ string, bitLength uint8, value uint16, 
 func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		// TODO: validate that this produces the desired result
-		return binary.Write(wb.data, wb.byteOrder, value)
+		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
+		return wb.writer.WriteBits(reverseValue, bitLength)
 	}
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
@@ -156,9 +165,8 @@ func (wb *byteWriteBuffer) WriteUint32(_ string, bitLength uint8, value uint32, 
 func (wb *byteWriteBuffer) WriteUint64(_ string, bitLength uint8, value uint64, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		// TODO: validate that this produces the desired result
-		return binary.Write(wb.data, wb.byteOrder, value)
+		reverseValue := bits.ReverseBytes64(value) >> (64 - bitLength)
+		return wb.writer.WriteBits(reverseValue, bitLength)
 	}
 	return wb.writer.WriteBits(value, bitLength)
 }
@@ -171,9 +179,8 @@ func (wb *byteWriteBuffer) WriteInt8(_ string, bitLength uint8, value int8, _ ..
 func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		// TODO: validate that this produces the desired result
-		return binary.Write(wb.data, wb.byteOrder, value)
+		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
+		return wb.writer.WriteBits(reverseValue, bitLength)
 	}
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
@@ -181,9 +188,8 @@ func (wb *byteWriteBuffer) WriteInt16(_ string, bitLength uint8, value int16, _ 
 func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		// TODO: validate that this produces the desired result
-		return binary.Write(wb.data, wb.byteOrder, value)
+		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
+		return wb.writer.WriteBits(reverseValue, bitLength)
 	}
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
@@ -191,9 +197,8 @@ func (wb *byteWriteBuffer) WriteInt32(_ string, bitLength uint8, value int32, _ 
 func (wb *byteWriteBuffer) WriteInt64(_ string, bitLength uint8, value int64, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
 	if wb.byteOrder == binary.LittleEndian {
-		// TODO: indirection till we have a native LE implementation
-		// TODO: validate that this produces the desired result
-		return binary.Write(wb.data, wb.byteOrder, value)
+		reverseValue := bits.ReverseBytes64(uint64(value)) >> (64 - bitLength)
+		return wb.writer.WriteBits(reverseValue, bitLength)
 	}
 	return wb.writer.WriteBits(uint64(value), bitLength)
 }
@@ -232,23 +237,51 @@ func (wb *byteWriteBuffer) WriteBigFloat(_ string, bitLength uint8, value *big.F
 
 func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding string, value string, _ ...WithWriterArgs) error {
 	wb.move(uint(bitLength))
+	// TODO: make this a writer arg
+	var nonAlphanumericRegex = regexp.MustCompile(`[^A-Z0-9]+`)
+	encoding = nonAlphanumericRegex.ReplaceAllLiteralString(strings.ToUpper(encoding), "")
+	remainingBits := int64(bitLength) // we use int64 otherwise the subtraction below flips
 	// TODO: the implementation completely ignores encoding for now. Fix this
-	for _, theByte := range []byte(value) {
-		wb.writer.TryWriteByte(theByte)
+	switch encoding {
+	case "UTF8":
+		for _, theByte := range []byte(value) {
+			wb.writer.TryWriteByte(theByte)
+			remainingBits -= 8
+		}
+	case "UTF16":
+		fallthrough
+	case "UTF16BE":
+		// TODO: Really implement 2-byte characters
+		for _, theByte := range []byte(value) {
+			wb.writer.TryWriteByte(0x00)
+			wb.writer.TryWriteByte(theByte)
+			remainingBits -= 16
+		}
+	case "UTF16LE":
+		// TODO: Really implement 2-byte characters
+		for _, theByte := range []byte(value) {
+			wb.writer.TryWriteByte(theByte)
+			wb.writer.TryWriteByte(0x00)
+			remainingBits -= 16
+		}
+	}
+	// Fill up with 0-bytes
+	for i := 0; i < int(remainingBits/8); i++ {
+		wb.writer.TryWriteByte(0x00)
 	}
 	return wb.writer.TryError
 }
 
-func (wb *byteWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (wb *byteWriteBuffer) WriteSerializable(serializable Serializable) error {
+func (wb *byteWriteBuffer) WriteSerializable(ctx context.Context, serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(wb)
+	return serializable.SerializeWithWriteBuffer(ctx, wb)
 }
 
 func (wb *byteWriteBuffer) PopContext(_ string, _ ...WithWriterArgs) error {

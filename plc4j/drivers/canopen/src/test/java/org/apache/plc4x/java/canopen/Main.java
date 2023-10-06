@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.canopen;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -35,20 +35,17 @@ import java.util.concurrent.CompletableFuture;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
 
-        CANOpenDriverContext.CALLBACK.addCallback(new Callback() {
-            @Override
-            public void receive(CANOpenFrame frame) {
-                //System.err.println("Received frame " + frame);
-            }
+        CANOpenDriverContext.CALLBACK.addCallback(frame -> {
+            //System.err.println("Received frame " + frame);
         });
 
         PlcConnection connection = driverManager.getConnection("canopen:javacan://vcan0?nodeId=11");
 
         String value = "abcdef"; //UUID.randomUUID().toString();
         CompletableFuture<? extends PlcWriteResponse> response = connection.writeRequestBuilder()
-            .addItem("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING", value)
+            .addTagAddress("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING", value)
             .build().execute();
 
         response.whenComplete((writeReply, writeError) -> {
@@ -60,7 +57,7 @@ public class Main {
                 System.out.println("Result " + writeReply.getResponseCode("foo") + " " + value);
 
                 PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                builder.addItem("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING");
+                builder.addTagAddress("foo", "SDO:13:0x2000/0x0:VISIBLE_STRING");
                 CompletableFuture<? extends PlcReadResponse> future = builder.build().execute();
                 future.whenComplete((readReply, readError) -> {
                     System.out.println("====================================");

@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetConfirmedServiceRequestCreateObject is the corresponding interface of BACnetConfirmedServiceRequestCreateObject
 type BACnetConfirmedServiceRequestCreateObject interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -92,7 +96,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetListOfValues() BACnetPro
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestCreateObject factory function for _BACnetConfirmedServiceRequestCreateObject
-func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestCreateObject {
+func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestCreateObject {
 	_result := &_BACnetConfirmedServiceRequestCreateObject{
 		ObjectSpecifier:                objectSpecifier,
 		ListOfValues:                   listOfValues,
@@ -103,7 +107,7 @@ func NewBACnetConfirmedServiceRequestCreateObject(objectSpecifier BACnetConfirme
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestCreateObject(structType interface{}) BACnetConfirmedServiceRequestCreateObject {
+func CastBACnetConfirmedServiceRequestCreateObject(structType any) BACnetConfirmedServiceRequestCreateObject {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestCreateObject); ok {
 		return casted
 	}
@@ -117,31 +121,33 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestCreateObject"
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectSpecifier)
-	lengthInBits += m.ObjectSpecifier.GetLengthInBits()
+	lengthInBits += m.ObjectSpecifier.GetLengthInBits(ctx)
 
 	// Optional Field (listOfValues)
 	if m.ListOfValues != nil {
-		lengthInBits += m.ListOfValues.GetLengthInBits()
+		lengthInBits += m.ListOfValues.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestCreateObject) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestCreateObject, error) {
+func BACnetConfirmedServiceRequestCreateObjectParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
+	return BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestCreateObject")
 	}
@@ -152,7 +158,7 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("objectSpecifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectSpecifier")
 	}
-	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(readBuffer, uint8(uint8(0)))
+	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _objectSpecifierErr != nil {
 		return nil, errors.Wrap(_objectSpecifierErr, "Error parsing 'objectSpecifier' field of BACnetConfirmedServiceRequestCreateObject")
 	}
@@ -168,10 +174,10 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
 		}
-		_val, _err := BACnetPropertyValuesParse(readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() interface{} { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
+		_val, _err := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() any { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() any { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetConfirmedServiceRequestCreateObject")
@@ -199,9 +205,19 @@ func BACnetConfirmedServiceRequestCreateObjectParse(readBuffer utils.ReadBuffer,
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestCreateObject) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestCreateObject"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestCreateObject")
@@ -211,7 +227,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("objectSpecifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectSpecifier")
 		}
-		_objectSpecifierErr := writeBuffer.WriteSerializable(m.GetObjectSpecifier())
+		_objectSpecifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectSpecifier())
 		if popErr := writeBuffer.PopContext("objectSpecifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectSpecifier")
 		}
@@ -226,7 +242,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils
 				return errors.Wrap(pushErr, "Error pushing for listOfValues")
 			}
 			listOfValues = m.GetListOfValues()
-			_listOfValuesErr := writeBuffer.WriteSerializable(listOfValues)
+			_listOfValuesErr := writeBuffer.WriteSerializable(ctx, listOfValues)
 			if popErr := writeBuffer.PopContext("listOfValues"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for listOfValues")
 			}
@@ -240,7 +256,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) Serialize(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObject) isBACnetConfirmedServiceRequestCreateObject() bool {
@@ -252,7 +268,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObject) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

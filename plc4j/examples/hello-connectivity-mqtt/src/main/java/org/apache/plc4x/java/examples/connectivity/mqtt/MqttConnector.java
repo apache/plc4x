@@ -31,13 +31,13 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3PublishResult;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.examples.connectivity.mqtt.model.Configuration;
-import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcFieldConfig;
+import org.apache.plc4x.java.examples.connectivity.mqtt.model.PlcTagConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,12 +53,12 @@ public class MqttConnector {
     private Configuration config;
 
     private MqttConnector(String propsPath) {
-        if(StringUtils.isEmpty(propsPath)) {
+        if (StringUtils.isEmpty(propsPath)) {
             logger.error("Empty configuration file parameter");
             throw new IllegalArgumentException("Empty configuration file parameter");
         }
         File propsFile = new File(propsPath);
-        if(!(propsFile.exists() && propsFile.isFile())) {
+        if (!(propsFile.exists() && propsFile.isFile())) {
             logger.error("Invalid configuration file {}", propsFile.getPath());
             throw new IllegalArgumentException("Invalid configuration file " + propsFile.getPath());
         }
@@ -83,7 +83,7 @@ public class MqttConnector {
         final Single<Mqtt3ConnAck> connAckSingle = client.connect().timeout(10, TimeUnit.SECONDS);
 
         // Connect to the PLC.
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(config.getPlcConfig().getConnection())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(config.getPlcConfig().getConnection())) {
 
             // Check if this connection support reading of data.
             if (!plcConnection.getMetadata().canRead()) {
@@ -93,22 +93,24 @@ public class MqttConnector {
 
             // Create a new read request.
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for (PlcFieldConfig fieldConfig : config.getPlcConfig().getPlcFields()) {
-                builder = builder.addItem(fieldConfig.getName(), fieldConfig.getAddress());
+            for (PlcTagConfig tagConfig : config.getPlcConfig().getPlcTags()) {
+                builder = builder.addTagAddress(tagConfig.getName(), tagConfig.getAddress());
             }
             PlcReadRequest readRequest = builder.build();
 
             // Send a message containing the PLC read response.
-            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter -> {
-                PlcReadResponse response = readRequest.execute().get();
-                String jsonPayload = getPayload(response);
-                final Mqtt3Publish publishMessage = Mqtt3Publish.builder()
-                    .topic(config.getMqttConfig().getTopicName())
-                    .qos(MqttQos.AT_LEAST_ONCE)
-                    .payload(jsonPayload.getBytes())
-                    .build();
-                emitter.onNext(publishMessage);
-            });
+            Flowable<Mqtt3Publish> messagesToPublish = Flowable.generate(emitter ->
+                readRequest.execute()
+                    .thenAccept(response ->
+                        emitter.onNext(
+                            Mqtt3Publish.builder()
+                                .topic(config.getMqttConfig().getTopicName())
+                                .qos(MqttQos.AT_LEAST_ONCE)
+                                .payload(getPayload(response).getBytes())
+                                .build()
+                        )
+                    )
+            );
 
             // Emit 1 message only every 100 milliseconds.
             messagesToPublish = messagesToPublish.zipWith(Flowable.interval(
@@ -130,20 +132,20 @@ public class MqttConnector {
 
     private String getPayload(PlcReadResponse response) {
         JsonObject jsonObject = new JsonObject();
-        response.getFieldNames().forEach(fieldName -> {
-            if(response.getNumberOfValues(fieldName) == 1) {
-                jsonObject.addProperty(fieldName, response.getObject(fieldName).toString());
-            } else if (response.getNumberOfValues(fieldName) > 1) {
+        response.getTagNames().forEach(tagName -> {
+            if (response.getNumberOfValues(tagName) == 1) {
+                jsonObject.addProperty(tagName, response.getObject(tagName).toString());
+            } else if (response.getNumberOfValues(tagName) > 1) {
                 JsonArray values = new JsonArray();
-                response.getAllBytes(fieldName).forEach(values::add);
-                jsonObject.add(fieldName, values);
+                response.getAllBytes(tagName).forEach(values::add);
+                jsonObject.add(tagName, values);
             }
         });
         return jsonObject.toString();
     }
 
     public static void main(String[] args) throws Exception {
-        if(args.length != 1) {
+        if (args.length != 1) {
             System.out.println("Usage: MqttConnector {path-to-mqtt-connector.yml}");
         }
         MqttConnector mqttConnector = new MqttConnector(args[0]);

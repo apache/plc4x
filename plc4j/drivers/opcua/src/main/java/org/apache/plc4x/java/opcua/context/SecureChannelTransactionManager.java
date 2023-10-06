@@ -31,10 +31,10 @@ public class SecureChannelTransactionManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecureChannel.class);
     public static final int DEFAULT_MAX_REQUEST_ID = 0xFFFFFFFF;
-    private AtomicInteger transactionIdentifierGenerator = new AtomicInteger(0);
-    private AtomicInteger requestIdentifierGenerator = new AtomicInteger(0);
-    private AtomicInteger activeTransactionId = new AtomicInteger(0);
-    private Map<Integer, Transaction> queue = new HashMap<>();
+    private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(0);
+    private final AtomicInteger requestIdentifierGenerator = new AtomicInteger(0);
+    private final AtomicInteger activeTransactionId = new AtomicInteger(0);
+    private final Map<Integer, Transaction> queue = new HashMap<>();
 
     public synchronized void submit(Consumer<Integer> onSend, Integer transactionId) {
         LOGGER.info("Active transaction Number {}", activeTransactionId.get());

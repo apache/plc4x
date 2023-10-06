@@ -62,12 +62,7 @@ public class Plc4xEmbeddedChannel extends AbstractChannel implements EventLoopPr
     private static final ChannelMetadata METADATA_DISCONNECT = new ChannelMetadata(true);
 
     private final Plc4xEmbeddedEventLoop loop = new Plc4xEmbeddedEventLoop();
-    private final ChannelFutureListener recordExceptionListener = new ChannelFutureListener() {
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            recordException(future);
-        }
-    };
+    private final ChannelFutureListener recordExceptionListener = this::recordException;
 
     private final ChannelMetadata metadata;
     private final ChannelConfig config;
@@ -221,11 +216,11 @@ public class Plc4xEmbeddedChannel extends AbstractChannel implements EventLoopPr
     private void setup(boolean register, final ChannelHandler... handlers) {
         ObjectUtil.checkNotNull(handlers, "handlers");
         ChannelPipeline p = pipeline();
-        p.addLast(new ChannelInitializer<Channel>() {
+        p.addLast(new ChannelInitializer<>() {
             @Override
             protected void initChannel(Channel ch) throws Exception {
                 ChannelPipeline pipeline = ch.pipeline();
-                for (ChannelHandler h: handlers) {
+                for (ChannelHandler h : handlers) {
                     if (h == null) {
                         break;
                     }
@@ -281,7 +276,7 @@ public class Plc4xEmbeddedChannel extends AbstractChannel implements EventLoopPr
      */
     public Queue<Object> inboundMessages() {
         if (inboundMessages == null) {
-            inboundMessages = new ArrayDeque<Object>();
+            inboundMessages = new ArrayDeque<>();
         }
         return inboundMessages;
     }
@@ -299,7 +294,7 @@ public class Plc4xEmbeddedChannel extends AbstractChannel implements EventLoopPr
      */
     public Queue<Object> outboundMessages() {
         if (outboundMessages == null) {
-            outboundMessages = new ArrayDeque<Object>();
+            outboundMessages = new ArrayDeque<>();
         }
         return outboundMessages;
     }
@@ -424,8 +419,8 @@ public class Plc4xEmbeddedChannel extends AbstractChannel implements EventLoopPr
             flushOutbound0();
 
             int size = futures.size();
-            for (int i = 0; i < size; i++) {
-                ChannelFuture future = (ChannelFuture) futures.get(i);
+            for (Object o : futures) {
+                ChannelFuture future = (ChannelFuture) o;
                 if (future.isDone()) {
                     recordException(future);
                 } else {

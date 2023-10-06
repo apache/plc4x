@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetConfirmedServiceRequestConfirmedPrivateTransfer is the corresponding interface of BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 type BACnetConfirmedServiceRequestConfirmedPrivateTransfer interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetConfirmedServiceRequest
@@ -99,7 +103,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetServiceParam
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer factory function for _BACnetConfirmedServiceRequestConfirmedPrivateTransfer
-func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint16) *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
 	_result := &_BACnetConfirmedServiceRequestConfirmedPrivateTransfer{
 		VendorId:                       vendorId,
 		ServiceNumber:                  serviceNumber,
@@ -111,7 +115,7 @@ func NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(vendorId BACnetVen
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedPrivateTransfer(structType interface{}) BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
+func CastBACnetConfirmedServiceRequestConfirmedPrivateTransfer(structType any) BACnetConfirmedServiceRequestConfirmedPrivateTransfer {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedPrivateTransfer); ok {
 		return casted
 	}
@@ -125,34 +129,36 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetTypeName() s
 	return "BACnetConfirmedServiceRequestConfirmedPrivateTransfer"
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (vendorId)
-	lengthInBits += m.VendorId.GetLengthInBits()
+	lengthInBits += m.VendorId.GetLengthInBits(ctx)
 
 	// Simple field (serviceNumber)
-	lengthInBits += m.ServiceNumber.GetLengthInBits()
+	lengthInBits += m.ServiceNumber.GetLengthInBits(ctx)
 
 	// Optional Field (serviceParameters)
 	if m.ServiceParameters != nil {
-		lengthInBits += m.ServiceParameters.GetLengthInBits()
+		lengthInBits += m.ServiceParameters.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(ctx context.Context, theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
+	return BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetConfirmedServiceRequestConfirmedPrivateTransferParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedPrivateTransfer, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
 	}
@@ -163,7 +169,7 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParse(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
 	}
@@ -176,7 +182,7 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("serviceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for serviceNumber")
 	}
-	_serviceNumber, _serviceNumberErr := BACnetContextTagParse(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_serviceNumber, _serviceNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _serviceNumberErr != nil {
 		return nil, errors.Wrap(_serviceNumberErr, "Error parsing 'serviceNumber' field of BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
 	}
@@ -192,10 +198,10 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 		if pullErr := readBuffer.PullContext("serviceParameters"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for serviceParameters")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(2), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serviceParameters' field of BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
@@ -224,9 +230,19 @@ func BACnetConfirmedServiceRequestConfirmedPrivateTransferParse(readBuffer utils
 	return _child, nil
 }
 
-func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestConfirmedPrivateTransfer")
@@ -236,7 +252,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(write
 		if pushErr := writeBuffer.PushContext("vendorId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
-		_vendorIdErr := writeBuffer.WriteSerializable(m.GetVendorId())
+		_vendorIdErr := writeBuffer.WriteSerializable(ctx, m.GetVendorId())
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -248,7 +264,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(write
 		if pushErr := writeBuffer.PushContext("serviceNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for serviceNumber")
 		}
-		_serviceNumberErr := writeBuffer.WriteSerializable(m.GetServiceNumber())
+		_serviceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetServiceNumber())
 		if popErr := writeBuffer.PopContext("serviceNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for serviceNumber")
 		}
@@ -263,7 +279,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(write
 				return errors.Wrap(pushErr, "Error pushing for serviceParameters")
 			}
 			serviceParameters = m.GetServiceParameters()
-			_serviceParametersErr := writeBuffer.WriteSerializable(serviceParameters)
+			_serviceParametersErr := writeBuffer.WriteSerializable(ctx, serviceParameters)
 			if popErr := writeBuffer.PopContext("serviceParameters"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for serviceParameters")
 			}
@@ -277,7 +293,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) Serialize(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) isBACnetConfirmedServiceRequestConfirmedPrivateTransfer() bool {
@@ -289,7 +305,7 @@ func (m *_BACnetConfirmedServiceRequestConfirmedPrivateTransfer) String() string
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

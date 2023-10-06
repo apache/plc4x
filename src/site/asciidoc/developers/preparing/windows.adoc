@@ -44,6 +44,10 @@ If not, have a look here for possible help: https://github.com/kaitoy/pcap4j#abo
 
 NOTE: If you had WinPcap installed, you need to uninstall this and make sure the files `Packet.dll` and `wpcap.dll` are deleted in the `%SystemRoot%\System32\` directory. Otherwise `pcap4j` will incorrectly detect a wrong version.
 
+An alternative is to use the version that comes with nmap
+
+ choco install -y nmap
+
 === gcc
 
 Checking:

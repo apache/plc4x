@@ -17,10 +17,10 @@
  * under the License.
  */
 
-/* Package main contains the code for the plc4xbrowser
+/*
+	Package main contains the code for the plc4xbrowser
 
 The plc4xbrowser can be used to interactively talk to a plc using the plc4x api. Therefor it can be used by users to
 evaluate different API requests in a REPL style format.
-
 */
 package main

@@ -18,70 +18,101 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
+import org.apache.nifi.annotation.documentation.SeeAlso;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 
-@Tags({"plc4x-source"})
+@Tags({"plc4x", "get", "input", "source", "attributes"})
+@SeeAlso({Plc4xSinkProcessor.class})
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
 @CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X")
 @WritesAttributes({@WritesAttribute(attribute="value", description="some value")})
 public class Plc4xSourceProcessor extends BasePlc4xProcessor {
 
+	public static final String EXCEPTION = "plc4x.read.exception";
+
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
-        // Get an instance of a component able to read from a PLC.
-        try(PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
+        
+        FlowFile incomingFlowFile = null;
+        if (context.hasIncomingConnection()) {
+            incomingFlowFile = session.get();
+            if (incomingFlowFile == null && context.hasNonLoopConnection()) {
+                return;
+            }
+        }
 
-            // Prepare the request.
+        final ComponentLog logger = getLogger();
+        final FlowFile flowFile = session.create();
+    
+        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString(context, incomingFlowFile))) {
+
             if (!connection.getMetadata().canRead()) {
-                throw new ProcessException("Writing not supported by connection");
+                throw new ProcessException("Reading not supported by connection");
             }
 
-            FlowFile flowFile = session.create();
+            final Map<String,String> addressMap = getPlcAddressMap(context, incomingFlowFile);
+            final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+
+            PlcReadRequest readRequest = getReadRequest(logger, addressMap, tags, connection);
+
             try {
-                PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                getFields().forEach(field -> {
-                    String address = getAddress(field);
-                    if (address != null) {
-                        builder.addItem(field, address);
-                    }
-                });
-                PlcReadRequest readRequest = builder.build();
-                PlcReadResponse response = readRequest.execute().get();
-                Map<String, String> attributes = new HashMap<>();
-                for (String fieldName : response.getFieldNames()) {
-                    for (int i = 0; i < response.getNumberOfValues(fieldName); i++) {
-                        Object value = response.getObject(fieldName, i);
-                        attributes.put(fieldName, String.valueOf(value));
-                    }
-                }
-                flowFile = session.putAllAttributes(flowFile, attributes);   
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                final PlcReadResponse response = readRequest.execute().get(getTimeout(context, incomingFlowFile), TimeUnit.MILLISECONDS);
+                
+                evaluateReadResponse(session, flowFile, response);
+                
+            } catch (TimeoutException e) {
+                logger.error("Timeout reading the data from PLC", e);
+                getConnectionManager().removeCachedConnection(getConnectionString(context, incomingFlowFile));
                 throw new ProcessException(e);
-            } catch (ExecutionException e) {
-                throw new ProcessException(e);
+            } catch (Exception e) {
+                logger.error("Exception reading the data from PLC", e);
+                throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
+            }
+
+            
+            if (incomingFlowFile != null) {
+                session.remove(incomingFlowFile);
             }
             session.transfer(flowFile, REL_SUCCESS);
-        } catch (ProcessException e) {
-            throw e;
+                
+            if (tags == null){
+                if (debugEnabled)
+                    logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
+                getSchemaCache().addSchema(
+                    addressMap, 
+                    readRequest.getTagNames(),
+                    readRequest.getTags(),
+                    null
+                );
+            }
+            
         } catch (Exception e) {
-            throw new ProcessException("Got an error while trying to get a connection", e);
+            session.remove(flowFile);
+            if (incomingFlowFile != null){
+                incomingFlowFile = session.putAttribute(incomingFlowFile, EXCEPTION, e.getLocalizedMessage());
+                session.transfer(incomingFlowFile, REL_FAILURE);
+            }
+            session.commitAsync();
+            throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
         }
     }
-
+    
 }

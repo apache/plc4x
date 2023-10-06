@@ -18,11 +18,30 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcQuery;
+
+import java.util.LinkedHashSet;
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcBrowseRequest extends PlcRequest {
 
     CompletableFuture<? extends PlcBrowseResponse> execute();
+
+    /**
+     * In contrast to the default execute method, the executeWithInterceptor allows passing in a so-called
+     * interceptor. This can be used for two different situations:
+     * 1. Filter which items go into the final PlcBrowseResponse (Items are added, if interceptor returns true).
+     * 2. Allow accessing found items on the fly while the system is still processing, hereby allowing a more
+     *    asynchronous consumption of found tags.
+     *
+     * @param interceptor interceptor for intercepting found items
+     * @return future for the final PlcBrowseResponse
+     */
+    CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor);
+
+    LinkedHashSet<String> getQueryNames();
+
+    PlcQuery getQuery(String name);
 
     interface Builder extends PlcRequestBuilder {
 

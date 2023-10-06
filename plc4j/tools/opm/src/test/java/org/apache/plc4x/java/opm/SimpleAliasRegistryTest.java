@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SimpleAliasRegistryTest implements WithAssertions {
 
     public static final String ADDRESS = "DB2:1234";
-    public static final String ALIAS = "some_field";
+    public static final String ALIAS = "some_tag";
 
     @Test
     public void register_containsValue() {

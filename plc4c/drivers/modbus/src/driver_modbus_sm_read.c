@@ -170,7 +170,7 @@ plc4c_return_code plc4c_driver_modbus_read_machine_function(
 
       // Decode the items in the response ...
       plc4c_data* data_item;
-      plc4c_modbus_read_write_data_item_parse(read_buffer, modbus_item->datatype, modbus_item->num_elements, &data_item);
+      plc4c_modbus_read_write_data_item_parse(plc4x_spi_context_background(), read_buffer, modbus_item->datatype, modbus_item->num_elements, &data_item);
 
       // Create a new response value-item
       plc4c_response_value_item* response_value_item = malloc(sizeof(plc4c_response_value_item));

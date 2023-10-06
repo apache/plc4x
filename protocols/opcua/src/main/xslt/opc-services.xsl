@@ -50,16 +50,16 @@
 
     <xsl:template name="servicesEnumParsing" >
         <xsl:variable name="tokenizedLine" select="tokenize($servicesEnumFile, '\r\n|\r|\n')" />
-[enum int 32 OpcuaNodeIdServices<xsl:text>
-    </xsl:text>
-        <xsl:for-each select="$tokenizedLine">
-            <xsl:variable select="tokenize(., ',')" name="values" />
-            <xsl:choose>
-                <xsl:when test="$values[2]">['<xsl:value-of select="$values[2]"/>' <xsl:value-of select="$values[1]"/>]<xsl:text>
-    </xsl:text>
-                </xsl:when>
-            </xsl:choose>
-        </xsl:for-each>
+        <xsl:for-each-group select="$tokenizedLine" group-by="tokenize(., ',')[3]">
+[enum int 32 OpcuaNodeIdServices<xsl:value-of select="current-grouping-key()" /><xsl:text>&#xa;</xsl:text>
+            <xsl:for-each select="current-group()">
+                <xsl:variable select="tokenize(., ',')" name="values" />
+                <xsl:choose>
+                    <xsl:when test="$values[2]">  ['<xsl:value-of select="$values[2]"/>' <xsl:value-of select="$values[1]"/>]<xsl:text>&#xa;</xsl:text>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:for-each>
 ]
+        </xsl:for-each-group>
     </xsl:template>
 </xsl:stylesheet>

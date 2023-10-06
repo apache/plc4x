@@ -21,11 +21,15 @@ package utils
 
 import (
 	"encoding/hex"
+	"github.com/rs/zerolog"
 	"math/rand"
 )
 
-func GenerateId(numBytes int) string {
+var randomByteFiller = rand.Read
+
+func GenerateId(localLog zerolog.Logger, numBytes int) string {
 	transactionIdBytes := make([]byte, numBytes)
-	rand.Read(transactionIdBytes)
+	n, err := randomByteFiller(transactionIdBytes)
+	localLog.Trace().Err(err).Int("n", n).Msg("Read n bytes")
 	return hex.EncodeToString(transactionIdBytes)
 }

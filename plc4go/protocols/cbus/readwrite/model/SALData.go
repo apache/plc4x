@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // SALData is the corresponding interface of SALData
 type SALData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetApplicationId returns ApplicationId (discriminator field)
@@ -52,13 +56,12 @@ type _SALData struct {
 
 type _SALDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetApplicationId() ApplicationId
 }
 
 type SALDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child SALData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child SALData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -91,7 +94,7 @@ func NewSALData(salData SALData) *_SALData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALData(structType interface{}) SALData {
+func CastSALData(structType any) SALData {
 	if casted, ok := structType.(SALData); ok {
 		return casted
 	}
@@ -105,24 +108,30 @@ func (m *_SALData) GetTypeName() string {
 	return "SALData"
 }
 
-func (m *_SALData) GetParentLengthInBits() uint16 {
+func (m *_SALData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (salData)
 	if m.SalData != nil {
-		lengthInBits += m.SalData.GetLengthInBits()
+		lengthInBits += m.SalData.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_SALData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {
+func SALDataParse(ctx context.Context, theBytes []byte, applicationId ApplicationId) (SALData, error) {
+	return SALDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
+}
+
+func SALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("SALData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALData")
 	}
@@ -135,56 +144,56 @@ func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SAL
 		InitializeParent(SALData, SALData)
 		GetParent() SALData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child SALDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case applicationId == ApplicationId_RESERVED: // SALDataReserved
-		_childTemp, typeSwitchError = SALDataReservedParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataReservedParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_FREE_USAGE: // SALDataFreeUsage
-		_childTemp, typeSwitchError = SALDataFreeUsageParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataFreeUsageParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_TEMPERATURE_BROADCAST: // SALDataTemperatureBroadcast
-		_childTemp, typeSwitchError = SALDataTemperatureBroadcastParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTemperatureBroadcastParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_ROOM_CONTROL_SYSTEM: // SALDataRoomControlSystem
-		_childTemp, typeSwitchError = SALDataRoomControlSystemParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataRoomControlSystemParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_LIGHTING: // SALDataLighting
-		_childTemp, typeSwitchError = SALDataLightingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataLightingParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_VENTILATION: // SALDataVentilation
-		_childTemp, typeSwitchError = SALDataVentilationParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataVentilationParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_IRRIGATION_CONTROL: // SALDataIrrigationControl
-		_childTemp, typeSwitchError = SALDataIrrigationControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataIrrigationControlParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: // SALDataPoolsSpasPondsFountainsControl
-		_childTemp, typeSwitchError = SALDataPoolsSpasPondsFountainsControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_HEATING: // SALDataHeating
-		_childTemp, typeSwitchError = SALDataHeatingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataHeatingParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_AIR_CONDITIONING: // SALDataAirConditioning
-		_childTemp, typeSwitchError = SALDataAirConditioningParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataAirConditioningParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_TRIGGER_CONTROL: // SALDataTriggerControl
-		_childTemp, typeSwitchError = SALDataTriggerControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTriggerControlParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_ENABLE_CONTROL: // SALDataEnableControl
-		_childTemp, typeSwitchError = SALDataEnableControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataEnableControlParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_AUDIO_AND_VIDEO: // SALDataAudioAndVideo
-		_childTemp, typeSwitchError = SALDataAudioAndVideoParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataAudioAndVideoParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_SECURITY: // SALDataSecurity
-		_childTemp, typeSwitchError = SALDataSecurityParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataSecurityParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_METERING: // SALDataMetering
-		_childTemp, typeSwitchError = SALDataMeteringParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataMeteringParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_ACCESS_CONTROL: // SALDataAccessControl
-		_childTemp, typeSwitchError = SALDataAccessControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataAccessControlParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_CLOCK_AND_TIMEKEEPING: // SALDataClockAndTimekeeping
-		_childTemp, typeSwitchError = SALDataClockAndTimekeepingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataClockAndTimekeepingParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_TELEPHONY_STATUS_AND_CONTROL: // SALDataTelephonyStatusAndControl
-		_childTemp, typeSwitchError = SALDataTelephonyStatusAndControlParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTelephonyStatusAndControlParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_MEASUREMENT: // SALDataMeasurement
-		_childTemp, typeSwitchError = SALDataMeasurementParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataMeasurementParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_TESTING: // SALDataTesting
-		_childTemp, typeSwitchError = SALDataTestingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataTestingParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_MEDIA_TRANSPORT_CONTROL: // SALDataMediaTransport
-		_childTemp, typeSwitchError = SALDataMediaTransportParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataMediaTransportParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_ERROR_REPORTING: // SALDataErrorReporting
-		_childTemp, typeSwitchError = SALDataErrorReportingParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataErrorReportingParseWithBuffer(ctx, readBuffer, applicationId)
 	case applicationId == ApplicationId_HVAC_ACTUATOR: // SALDataHvacActuator
-		_childTemp, typeSwitchError = SALDataHvacActuatorParse(readBuffer, applicationId)
+		_childTemp, typeSwitchError = SALDataHvacActuatorParseWithBuffer(ctx, readBuffer, applicationId)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [applicationId=%v]", applicationId)
 	}
@@ -200,10 +209,10 @@ func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SAL
 		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for salData")
 		}
-		_val, _err := SALDataParse(readBuffer, applicationId)
+		_val, _err := SALDataParseWithBuffer(ctx, readBuffer, applicationId)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'salData' field of SALData")
@@ -224,12 +233,14 @@ func SALDataParse(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SAL
 	return _child, nil
 }
 
-func (pm *_SALData) SerializeParent(writeBuffer utils.WriteBuffer, child SALData, serializeChildFunction func() error) error {
+func (pm *_SALData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child SALData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("SALData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for SALData")
 	}
@@ -246,7 +257,7 @@ func (pm *_SALData) SerializeParent(writeBuffer utils.WriteBuffer, child SALData
 			return errors.Wrap(pushErr, "Error pushing for salData")
 		}
 		salData = m.GetSalData()
-		_salDataErr := writeBuffer.WriteSerializable(salData)
+		_salDataErr := writeBuffer.WriteSerializable(ctx, salData)
 		if popErr := writeBuffer.PopContext("salData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for salData")
 		}
@@ -270,7 +281,7 @@ func (m *_SALData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

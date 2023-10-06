@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // VTCloseError is the corresponding interface of VTCloseError
 type VTCloseError interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetError
@@ -102,7 +106,7 @@ func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTClose
 }
 
 // Deprecated: use the interface for direct cast
-func CastVTCloseError(structType interface{}) VTCloseError {
+func CastVTCloseError(structType any) VTCloseError {
 	if casted, ok := structType.(VTCloseError); ok {
 		return casted
 	}
@@ -116,31 +120,33 @@ func (m *_VTCloseError) GetTypeName() string {
 	return "VTCloseError"
 }
 
-func (m *_VTCloseError) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_VTCloseError) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_VTCloseError) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (errorType)
-	lengthInBits += m.ErrorType.GetLengthInBits()
+	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
 
 	// Optional Field (listOfVtSessionIdentifiers)
 	if m.ListOfVtSessionIdentifiers != nil {
-		lengthInBits += m.ListOfVtSessionIdentifiers.GetLengthInBits()
+		lengthInBits += m.ListOfVtSessionIdentifiers.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_VTCloseError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_VTCloseError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
+func VTCloseErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
+	return VTCloseErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
+}
+
+func VTCloseErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("VTCloseError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VTCloseError")
 	}
@@ -151,7 +157,7 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParse(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of VTCloseError")
 	}
@@ -167,10 +173,10 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 		if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
 		}
-		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParse(readBuffer, uint8(1))
+		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx, readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseError")
@@ -196,9 +202,19 @@ func VTCloseErrorParse(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedS
 	return _child, nil
 }
 
-func (m *_VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_VTCloseError) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("VTCloseError"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for VTCloseError")
@@ -208,7 +224,7 @@ func (m *_VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := writeBuffer.WriteSerializable(m.GetErrorType())
+		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -223,7 +239,7 @@ func (m *_VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 				return errors.Wrap(pushErr, "Error pushing for listOfVtSessionIdentifiers")
 			}
 			listOfVtSessionIdentifiers = m.GetListOfVtSessionIdentifiers()
-			_listOfVtSessionIdentifiersErr := writeBuffer.WriteSerializable(listOfVtSessionIdentifiers)
+			_listOfVtSessionIdentifiersErr := writeBuffer.WriteSerializable(ctx, listOfVtSessionIdentifiers)
 			if popErr := writeBuffer.PopContext("listOfVtSessionIdentifiers"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for listOfVtSessionIdentifiers")
 			}
@@ -237,7 +253,7 @@ func (m *_VTCloseError) Serialize(writeBuffer utils.WriteBuffer) error {
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_VTCloseError) isVTCloseError() bool {
@@ -249,7 +265,7 @@ func (m *_VTCloseError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

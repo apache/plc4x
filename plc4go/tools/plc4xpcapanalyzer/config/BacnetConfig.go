@@ -20,8 +20,8 @@
 package config
 
 type BacnetConfig struct {
-	*AnalyzeConfig
-	BacnetFilter string
+	*AnalyzeConfig `json:"-"`
+	BacnetFilter   string
 }
 
 var BacnetConfigInstance = BacnetConfig{}

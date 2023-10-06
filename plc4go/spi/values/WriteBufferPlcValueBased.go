@@ -20,10 +20,12 @@
 package values
 
 import (
+	"context"
+	"math/big"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
-	"math/big"
 )
 
 type WriteBufferPlcValueBased interface {
@@ -90,7 +92,7 @@ func (p *writeBufferPlcValueBased) WriteByte(logicalName string, value byte, _ .
 
 func (p *writeBufferPlcValueBased) WriteByteArray(logicalName string, data []byte, _ ...utils.WithWriterArgs) error {
 	p.move(uint(len(data) * 8))
-	return p.appendValue(logicalName, NewPlcByteArray(data))
+	return p.appendValue(logicalName, NewPlcRawByteArray(data))
 }
 
 func (p *writeBufferPlcValueBased) WriteUint8(logicalName string, bitLength uint8, value uint8, _ ...utils.WithWriterArgs) error {
@@ -134,9 +136,12 @@ func (p *writeBufferPlcValueBased) WriteInt64(logicalName string, bitLength uint
 }
 
 func (p *writeBufferPlcValueBased) WriteBigInt(logicalName string, bitLength uint8, value *big.Int, _ ...utils.WithWriterArgs) error {
+	if value == nil {
+		return errors.New("value must not be nil")
+	}
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
-	return p.appendValue(logicalName, NewPlcByteArray(value.Bytes()))
+	return p.appendValue(logicalName, NewPlcRawByteArray(value.Bytes()))
 }
 
 func (p *writeBufferPlcValueBased) WriteFloat32(logicalName string, bitLength uint8, value float32, _ ...utils.WithWriterArgs) error {
@@ -150,13 +155,16 @@ func (p *writeBufferPlcValueBased) WriteFloat64(logicalName string, bitLength ui
 }
 
 func (p *writeBufferPlcValueBased) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, _ ...utils.WithWriterArgs) error {
+	if value == nil {
+		return errors.New("value must not be nil")
+	}
 	p.move(uint(bitLength))
 	// TODO: check if we set the type dynamic here...
 	encode, err := value.GobEncode()
 	if err != nil {
 		return errors.Wrapf(err, "Error writing %s", logicalName)
 	}
-	return p.appendValue(logicalName, NewPlcByteArray(encode))
+	return p.appendValue(logicalName, NewPlcRawByteArray(encode))
 }
 
 func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uint32, _ string, value string, _ ...utils.WithWriterArgs) error {
@@ -164,33 +172,31 @@ func (p *writeBufferPlcValueBased) WriteString(logicalName string, bitLength uin
 	return p.appendValue(logicalName, NewPlcSTRING(value))
 }
 
-func (p *writeBufferPlcValueBased) WriteVirtual(logicalName string, value interface{}, _ ...utils.WithWriterArgs) error {
+func (p *writeBufferPlcValueBased) WriteVirtual(ctx context.Context, logicalName string, value any, _ ...utils.WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
 
-func (p *writeBufferPlcValueBased) WriteSerializable(serializable utils.Serializable) error {
+func (p *writeBufferPlcValueBased) WriteSerializable(ctx context.Context, serializable utils.Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.Serialize(p)
+	return serializable.SerializeWithWriteBuffer(ctx, p)
 }
 
 func (p *writeBufferPlcValueBased) PopContext(logicalName string, _ ...utils.WithWriterArgs) error {
 	pop := p.Pop()
 	var poppedName string
 	var unwrapped apiValues.PlcValue
-	switch pop.(type) {
+	switch _context := pop.(type) {
 	case *plcValueContext:
-		context := pop.(*plcValueContext)
-		poppedName = context.logicalName
-		unwrapped = NewPlcStruct(context.properties)
+		poppedName = _context.logicalName
+		unwrapped = NewPlcStruct(_context.properties)
 	case *plcListContext:
-		context := pop.(*plcListContext)
-		poppedName = context.logicalName
-		unwrapped = NewPlcList(context.list)
+		poppedName = _context.logicalName
+		unwrapped = NewPlcList(_context.list)
 	default:
-		panic("broken context")
+		return errors.New("broken context")
 	}
 	if poppedName != logicalName {
 		return errors.Errorf("unexpected closing context %s, expected %s", poppedName, logicalName)
@@ -199,13 +205,13 @@ func (p *writeBufferPlcValueBased) PopContext(logicalName string, _ ...utils.Wit
 		p.rootNode = NewPlcStruct(map[string]apiValues.PlcValue{logicalName: unwrapped})
 		return nil
 	}
-	switch context := p.Peek().(type) {
+	switch _context := p.Peek().(type) {
 	case *plcValueContext:
-		context.properties[logicalName] = unwrapped
+		_context.properties[logicalName] = unwrapped
 	case *plcListContext:
-		context.list = append(context.list, NewPlcStruct(map[string]apiValues.PlcValue{logicalName: unwrapped}))
+		_context.list = append(_context.list, NewPlcStruct(map[string]apiValues.PlcValue{logicalName: unwrapped}))
 	default:
-		panic("broken context")
+		return errors.New("broken context")
 	}
 	return nil
 }
@@ -217,19 +223,17 @@ func (p *writeBufferPlcValueBased) GetPlcValue() apiValues.PlcValue {
 func (p *writeBufferPlcValueBased) appendValue(logicalName string, value apiValues.PlcValue) error {
 	logicalName = p.SanitizeLogicalName(logicalName)
 	peek := p.Peek()
-	switch peek.(type) {
+	switch _context := peek.(type) {
 	case *plcValueContext:
-		context := peek.(*plcValueContext)
-		context.properties[logicalName] = value
+		_context.properties[logicalName] = value
 		return nil
 	case *plcListContext:
-		context := peek.(*plcListContext)
-		context.list = append(context.list, value)
+		_context.list = append(_context.list, value)
 		return nil
 	default:
-		context := &plcValueContext{logicalName, make(map[string]apiValues.PlcValue)}
-		context.properties[logicalName] = value
-		p.Push(context)
+		newContext := &plcValueContext{logicalName, make(map[string]apiValues.PlcValue)}
+		newContext.properties[logicalName] = value
+		p.Push(newContext)
 		return nil
 	}
 }

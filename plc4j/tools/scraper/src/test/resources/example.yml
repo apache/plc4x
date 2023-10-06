@@ -26,19 +26,19 @@ jobs:
     scrapeRate: 10
     sources:
     - S7_TIM
-    fields:
+    tags:
       pressure: '%DB225:DBW0:INT'
 
   - name: another-job
     scrapeRate: 100
     sources:
     - S7_TIM
-    fields:
+    tags:
       temperature: '%DB225:DBW0:INT'
 
   - name: counter-job
     scrapeRate: 100
     sources:
     - S7_CHRIS
-    fields:
+    tags:
       counter: '%DB3:DBD32:DINT'

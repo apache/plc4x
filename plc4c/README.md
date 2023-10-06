@@ -20,7 +20,7 @@
 ## Setting up in CLion
 
 Per default CLion will not be able to run the tests. 
-However it's pretty simple to setup.
+However, it's pretty simple to set up.
 
 In order to make this happen, you should add another `Profile` to your `CMake` configuration.
 

@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.test.driver.internal.handlers;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -46,13 +47,13 @@ public class ApiRequestHandler {
         switch (typeName) {
             case "TestReadRequest": {
                 final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                if (payload.element("fields") != null) {
-                    for (Element fieldElement : payload.element("fields").elements("field")) {
-                        builder.addItem(fieldElement.elementText("name"), fieldElement.elementText("address"));
+                if (payload.element("tags") != null) {
+                    for (Element tagElement : payload.element("tags").elements("tag")) {
+                        builder.addTagAddress(tagElement.elementText("name"), tagElement.elementText("address"));
                     }
                 }
                 final PlcReadRequest plc4xRequest = builder.build();
-                // Currently we can only process one response at at time, throw an error if more
+                // Currently we can only process one response at a time, throw an error if more
                 // are submitted.
                 if (synchronizer.responseFuture != null) {
                     throw new DriverTestsuiteException("Previous response not handled.");
@@ -63,15 +64,15 @@ public class ApiRequestHandler {
             }
             case "TestWriteRequest": {
                 final PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-                if (payload.element("fields") != null) {
-                    for (Element fieldElement : payload.element("fields").elements("field")) {
-                        List<Element> valueElements = fieldElement.elements("value");
+                if (payload.element("tags") != null) {
+                    for (Element tagElement : payload.element("tags").elements("tag")) {
+                        List<Element> valueElements = tagElement.elements("value");
                         List<String> valueStrings = new ArrayList<>(valueElements.size());
                         for (Element valueElement : valueElements) {
                             valueStrings.add(valueElement.getTextTrim());
                         }
-                        builder.addItem(fieldElement.elementText("name"),
-                            fieldElement.elementText("address"), valueStrings.toArray(new Object[0]));
+                        builder.addTagAddress(tagElement.elementText("name"),
+                            tagElement.elementText("address"), valueStrings.toArray(new Object[0]));
                     }
                 }
                 final PlcWriteRequest plc4xRequest = builder.build();
@@ -83,6 +84,10 @@ public class ApiRequestHandler {
                 // Save the response for being used later on.
                 synchronizer.responseFuture = plc4xRequest.execute();
                 break;
+            }
+            case "TestSubscriptionRequest":{
+                // TODO: chris add your stuff here...
+                throw new NotImplementedException();
             }
             default:
                 throw new PlcRuntimeException("Unknown class name" + typeName);

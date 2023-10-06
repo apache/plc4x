@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.types;
 public enum S7ControllerType {
 
     ANY,
+    S7_200,
     S7_300,
     S7_400,
     S7_1200,

@@ -21,7 +21,8 @@ package org.apache.plc4x.java.can.generic;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import org.apache.plc4x.java.PlcDriverManager;
+
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -34,7 +35,7 @@ public class GenericCANDriverTest {
 
     @Test
     void testConnection() throws PlcConnectionException {
-        PlcConnection connection = new PlcDriverManager().getConnection("genericcan:virtualcan://");
+        PlcConnection connection = new DefaultPlcDriverManager().getConnection("genericcan:virtualcan://");
 
         assertNotNull(connection);
         assertTrue(connection.isConnected());
@@ -48,38 +49,35 @@ public class GenericCANDriverTest {
     void testSubscribeAndWrite() throws Exception {
 //        PlcConnection connection1 = new PlcDriverManager().getConnection("genericcan:socketcan://vcan0");
 //        PlcConnection connection2 = new PlcDriverManager().getConnection("genericcan:socketcan://vcan0");
-        PlcConnection connection1 = new PlcDriverManager().getConnection("genericcan:virtualcan://");
+        PlcConnection connection1 = new DefaultPlcDriverManager().getConnection("genericcan:virtualcan://");
         PlcConnection connection2 = connection1;
 
         CountDownLatch latch = new CountDownLatch(1);
-        Byte field1 = 0x55;
-        short field2 = 10;
-        short field3 = 50;
+        Byte tag1 = 0x55;
+        short tag2 = 10;
+        short tag3 = 50;
 
         final AtomicReference<PlcSubscriptionEvent> plcEvent = new AtomicReference<>();
         connection1.subscriptionRequestBuilder()
-            .addEventField("field1", "200:BYTE")
-            .addEventField("field2", "200:UNSIGNED8")
-            .addEventField("field3", "200:UNSIGNED8")
+            .addEventTagAddress("tag1", "200:BYTE")
+            .addEventTagAddress("tag2", "200:UNSIGNED8")
+            .addEventTagAddress("tag3", "200:UNSIGNED8")
             .build().execute().whenComplete((reply, error) -> {
                 if (error != null) {
                     fail(error);
                     return;
                 }
 
-                reply.getSubscriptionHandle("field1").register(new Consumer<PlcSubscriptionEvent>() {
-                    @Override
-                    public void accept(PlcSubscriptionEvent event) {
-                        plcEvent.set(event);
-                        latch.countDown();
-                    }
+                reply.getSubscriptionHandle("tag1").register(event -> {
+                    plcEvent.set(event);
+                    latch.countDown();
                 });
             });
 
         connection2.writeRequestBuilder()
-            .addItem("f1", "200:BYTE", field1)
-            .addItem("f2", "200:UNSIGNED8", field2)
-            .addItem("f3", "200:UNSIGNED8", field3)
+            .addTagAddress("f1", "200:BYTE", tag1)
+            .addTagAddress("f2", "200:UNSIGNED8", tag2)
+            .addTagAddress("f3", "200:UNSIGNED8", tag3)
             .build().execute().whenComplete((reply, error) -> {
                 if (error != null) {
                     fail(error);
@@ -89,9 +87,9 @@ public class GenericCANDriverTest {
         latch.await();
 
         PlcSubscriptionEvent event = plcEvent.get();
-        assertEquals(field1, event.getByte("field1"));
-        assertEquals(field2, event.getShort("field2"));
-        assertEquals(field3, event.getShort("field3"));
+        assertEquals(tag1, event.getByte("tag1"));
+        assertEquals(tag2, event.getShort("tag2"));
+        assertEquals(tag3, event.getShort("tag3"));
 
     }
 }

@@ -21,8 +21,8 @@ package org.apache.plc4x.java.examples.cloud.azure;
 import com.microsoft.azure.sdk.iot.device.DeviceClient;
 import com.microsoft.azure.sdk.iot.device.IotHubClientProtocol;
 import com.microsoft.azure.sdk.iot.device.Message;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
@@ -34,12 +34,12 @@ public class S7PlcToAzureIoTHubSample {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(S7PlcToAzureIoTHubSample.class);
 
-    private static final String FIELD_NAME = "value";
+    private static final String TAG_NAME = "value";
 
     /**
      * Example code do demonstrate sending events from an S7 device to Microsoft Azure IoT Hub
      *
-     * @param args Expected: [plc4x connection string, plc4x field address, IoT-Hub connection string].
+     * @param args Expected: [plc4x connection string, plc4x tag address, IoT-Hub connection string].
      */
     public static void main(String[] args) throws Exception {
         CliOptions options = CliOptions.fromArgs(args);
@@ -49,12 +49,12 @@ public class S7PlcToAzureIoTHubSample {
             System.exit(1);
         }
 
-        LOGGER.info("Connecting {}, {}, {}", options.getPlc4xConnectionString(), options.getPlc4xFieldAddress(),
+        LOGGER.info("Connecting {}, {}, {}", options.getPlc4xConnectionString(), options.getPlc4xTagAddress(),
             options.getIotHubConnectionString());
 
         // Open both a connection to the remote PLC and the cloud service.
         DeviceClient client = new DeviceClient(options.getIotHubConnectionString(), IotHubClientProtocol.MQTT);
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getPlc4xConnectionString())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getPlc4xConnectionString())) {
 
             LOGGER.info("Connected");
 
@@ -62,12 +62,12 @@ public class S7PlcToAzureIoTHubSample {
 
             // Prepare a read request.
             PlcReadRequest request = plcConnection.readRequestBuilder()
-                .addItem(FIELD_NAME, options.getPlc4xFieldAddress()).build();
+                .addTagAddress(TAG_NAME, options.getPlc4xTagAddress()).build();
 
             while (!Thread.currentThread().isInterrupted()) {
                 // Simulate telemetry.
                 PlcReadResponse response = request.execute().get();
-                response.getAllLongs(FIELD_NAME)
+                response.getAllLongs(TAG_NAME)
                     .forEach(longValue -> {
                             String result = Long.toBinaryString(longValue);
                             LOGGER.info("Outputs {}", result);

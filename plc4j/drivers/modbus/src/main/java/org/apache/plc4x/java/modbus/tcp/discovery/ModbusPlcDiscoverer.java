@@ -69,9 +69,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
         // Get a list of all reachable IP addresses from the current system.
         // TODO: add an option to fine tune the network device or ip subnet to scan and maybe some timeouts and delays to prevent flooding.
         final CompletableFuture<PlcDiscoveryResponse> future = new CompletableFuture<>();
-        Thread discoveryThread = new Thread(() -> {
-            executeDiscovery(future, discoveryRequest, handler);
-        });
+        Thread discoveryThread = new Thread(() -> executeDiscovery(future, discoveryRequest, handler));
         discoveryThread.start();
         return future;
     }
@@ -132,7 +130,7 @@ public class ModbusPlcDiscoverer implements PlcDiscoverer {
                 int transactionIdentifier = 1;
                 for (short unitIdentifier = 1; unitIdentifier <= 247; unitIdentifier++) {
                     ModbusTcpADU packet = new ModbusTcpADU(transactionIdentifier++, unitIdentifier,
-                        new ModbusPDUReadCoilsRequest(1, 1), false);
+                        new ModbusPDUReadCoilsRequest(1, 1));
                     byte[] deviceIdentificationBytes = null;
                     try {
                         // Serialize the request to its byte form.

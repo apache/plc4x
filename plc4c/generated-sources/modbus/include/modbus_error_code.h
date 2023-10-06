@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -45,9 +46,9 @@ typedef enum plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_m
 // Get an empty NULL-struct
 plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_code_null();
 
-plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_error_code* message);
+plc4c_return_code plc4c_modbus_read_write_modbus_error_code_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_modbus_error_code* message);
 
-plc4c_return_code plc4c_modbus_read_write_modbus_error_code_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_error_code* message);
+plc4c_return_code plc4c_modbus_read_write_modbus_error_code_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_error_code* message);
 
 plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_code_for_value(uint8_t value);
 
@@ -57,9 +58,9 @@ int plc4c_modbus_read_write_modbus_error_code_num_values();
 
 plc4c_modbus_read_write_modbus_error_code plc4c_modbus_read_write_modbus_error_code_value_for_index(int index);
 
-uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bytes(plc4c_modbus_read_write_modbus_error_code* message);
+uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bytes(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_error_code* message);
 
-uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bits(plc4c_modbus_read_write_modbus_error_code* message);
+uint16_t plc4c_modbus_read_write_modbus_error_code_length_in_bits(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_error_code* message);
 
 
 #endif  // PLC4C_MODBUS_READ_WRITE_MODBUS_ERROR_CODE_H_

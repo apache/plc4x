@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <artifactId>plc4j-tools</artifactId>
@@ -35,12 +35,11 @@
 
   <modules>
     <module>capture-replay</module>
-    <module>connection-pool</module>
     <module>connection-cache</module>
     <module>opm</module>
     <module>plc4x-server</module>
     <module>scraper</module>
-    <module>ui</module>
+    <module>scraper-ng</module>
   </modules>
 
 </project>

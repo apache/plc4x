@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetLogRecord is the corresponding interface of BACnetLogRecord
 type BACnetLogRecord interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTimestamp returns Timestamp (property field)
@@ -81,7 +85,7 @@ func NewBACnetLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetLogReco
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecord(structType interface{}) BACnetLogRecord {
+func CastBACnetLogRecord(structType any) BACnetLogRecord {
 	if casted, ok := structType.(BACnetLogRecord); ok {
 		return casted
 	}
@@ -95,34 +99,36 @@ func (m *_BACnetLogRecord) GetTypeName() string {
 	return "BACnetLogRecord"
 }
 
-func (m *_BACnetLogRecord) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogRecord) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetLogRecord) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (timestamp)
-	lengthInBits += m.Timestamp.GetLengthInBits()
+	lengthInBits += m.Timestamp.GetLengthInBits(ctx)
 
 	// Simple field (logDatum)
-	lengthInBits += m.LogDatum.GetLengthInBits()
+	lengthInBits += m.LogDatum.GetLengthInBits(ctx)
 
 	// Optional Field (statusFlags)
 	if m.StatusFlags != nil {
-		lengthInBits += m.StatusFlags.GetLengthInBits()
+		lengthInBits += m.StatusFlags.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogRecord) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogRecord) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) {
+func BACnetLogRecordParse(ctx context.Context, theBytes []byte) (BACnetLogRecord, error) {
+	return BACnetLogRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecord")
 	}
@@ -133,7 +139,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
 	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParse(readBuffer, uint8(uint8(0)))
+	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogRecord")
 	}
@@ -146,7 +152,7 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	if pullErr := readBuffer.PullContext("logDatum"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for logDatum")
 	}
-	_logDatum, _logDatumErr := BACnetLogRecordLogDatumParse(readBuffer, uint8(uint8(1)))
+	_logDatum, _logDatumErr := BACnetLogRecordLogDatumParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _logDatumErr != nil {
 		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field of BACnetLogRecord")
 	}
@@ -162,10 +168,10 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 		if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 		}
-		_val, _err := BACnetStatusFlagsTaggedParse(readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'statusFlags' field of BACnetLogRecord")
@@ -189,9 +195,19 @@ func BACnetLogRecordParse(readBuffer utils.ReadBuffer) (BACnetLogRecord, error) 
 	}, nil
 }
 
-func (m *_BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogRecord) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetLogRecord) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetLogRecord"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetLogRecord")
 	}
@@ -200,7 +216,7 @@ func (m *_BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("timestamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for timestamp")
 	}
-	_timestampErr := writeBuffer.WriteSerializable(m.GetTimestamp())
+	_timestampErr := writeBuffer.WriteSerializable(ctx, m.GetTimestamp())
 	if popErr := writeBuffer.PopContext("timestamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for timestamp")
 	}
@@ -212,7 +228,7 @@ func (m *_BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 	if pushErr := writeBuffer.PushContext("logDatum"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for logDatum")
 	}
-	_logDatumErr := writeBuffer.WriteSerializable(m.GetLogDatum())
+	_logDatumErr := writeBuffer.WriteSerializable(ctx, m.GetLogDatum())
 	if popErr := writeBuffer.PopContext("logDatum"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for logDatum")
 	}
@@ -227,7 +243,7 @@ func (m *_BACnetLogRecord) Serialize(writeBuffer utils.WriteBuffer) error {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
 		statusFlags = m.GetStatusFlags()
-		_statusFlagsErr := writeBuffer.WriteSerializable(statusFlags)
+		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, statusFlags)
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -251,7 +267,7 @@ func (m *_BACnetLogRecord) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

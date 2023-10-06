@@ -22,7 +22,7 @@ file(GLOB generatedSources "../../generated-sources/s7/src/*.c")
 
 add_library(plc4c-driver-s7
         src/driver_s7.c
-        src/driver_modbus_encode_decode.c
+        src/driver_s7_encode_decode.c
         src/driver_s7_packets.c
         src/driver_s7_sm_connect.c
         src/driver_s7_sm_disconnect.c

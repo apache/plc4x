@@ -89,7 +89,7 @@
             <AdsDiscoveryBlockHostName>
               <hostName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">16</len>
+                  <strLen dataType="uint" bitLength="16">16</strLen>
                   <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-T0N6UNB</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -192,7 +192,7 @@
             <AdsDiscoveryBlockHostName>
               <hostName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">7</len>
+                  <strLen dataType="uint" bitLength="16">7</strLen>
                   <text dataType="string" bitLength="48" encoding="UTF-8">BK_IPC</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -264,7 +264,7 @@
             <AdsDiscoveryBlockRouteName>
               <routeName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">12</len>
+                  <strLen dataType="uint" bitLength="16">12</strLen>
                   <text dataType="string" bitLength="88" encoding="UTF-8">10.10.10.10</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -296,7 +296,7 @@
             <AdsDiscoveryBlockUserName>
               <userName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">9</len>
+                  <strLen dataType="uint" bitLength="16">9</strLen>
                   <text dataType="string" bitLength="64" encoding="UTF-8">username</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -310,7 +310,7 @@
             <AdsDiscoveryBlockPassword>
               <password>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">9</len>
+                  <strLen dataType="uint" bitLength="16">9</strLen>
                   <text dataType="string" bitLength="64" encoding="UTF-8">password</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -324,7 +324,7 @@
             <AdsDiscoveryBlockHostName>
               <hostName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">12</len>
+                  <strLen dataType="uint" bitLength="16">12</strLen>
                   <text dataType="string" bitLength="88" encoding="UTF-8">10.10.10.10</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -539,7 +539,7 @@
             <AdsDiscoveryBlockRouteName>
               <routeName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">16</len>
+                  <strLen dataType="uint" bitLength="16">16</strLen>
                   <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-3PJ1A5D</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -571,7 +571,7 @@
             <AdsDiscoveryBlockUserName>
               <userName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">14</len>
+                  <strLen dataType="uint" bitLength="16">14</strLen>
                   <text dataType="string" bitLength="104" encoding="UTF-8">Administrator</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -585,7 +585,7 @@
             <AdsDiscoveryBlockPassword>
               <password>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">1</len>
+                  <strLen dataType="uint" bitLength="16">1</strLen>
                   <text dataType="string" bitLength="0" encoding="UTF-8"></text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>
@@ -599,7 +599,7 @@
             <AdsDiscoveryBlockHostName>
               <hostName>
                 <AmsString>
-                  <len dataType="uint" bitLength="16">16</len>
+                  <strLen dataType="uint" bitLength="16">16</strLen>
                   <text dataType="string" bitLength="120" encoding="UTF-8">DESKTOP-3PJ1A5D</text>
                   <reserved dataType="uint" bitLength="8">0</reserved>
                 </AmsString>

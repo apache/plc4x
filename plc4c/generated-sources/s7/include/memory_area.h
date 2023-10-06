@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -44,9 +45,9 @@ typedef enum plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area;
 // Get an empty NULL-struct
 plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_null();
 
-plc4c_return_code plc4c_s7_read_write_memory_area_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_memory_area* message);
+plc4c_return_code plc4c_s7_read_write_memory_area_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_memory_area* message);
 
-plc4c_return_code plc4c_s7_read_write_memory_area_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_memory_area* message);
+plc4c_return_code plc4c_s7_read_write_memory_area_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_memory_area* message);
 
 plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_for_value(uint8_t value);
 
@@ -59,9 +60,9 @@ plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_value_for_index(
 char* plc4c_s7_read_write_memory_area_get_short_name(plc4c_s7_read_write_memory_area value);
 plc4c_s7_read_write_memory_area plc4c_s7_read_write_memory_area_get_first_enum_for_field_short_name(char* value);
 
-uint16_t plc4c_s7_read_write_memory_area_length_in_bytes(plc4c_s7_read_write_memory_area* message);
+uint16_t plc4c_s7_read_write_memory_area_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_memory_area* message);
 
-uint16_t plc4c_s7_read_write_memory_area_length_in_bits(plc4c_s7_read_write_memory_area* message);
+uint16_t plc4c_s7_read_write_memory_area_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_memory_area* message);
 
 
 #endif  // PLC4C_S7_READ_WRITE_MEMORY_AREA_H_

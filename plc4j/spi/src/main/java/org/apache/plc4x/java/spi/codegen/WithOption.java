@@ -27,22 +27,22 @@ public interface WithOption extends WithReaderWriterArgs {
         return (withOptionByteOrder) () -> byteOrder;
     }
 
-    static WithOption WithEncoding(String encoding) {
-        return (withOptionEncoding) () -> encoding;
+    static WithReaderWriterArgs WithEncoding(String encoding) {
+        return WithReaderWriterArgs.WithEncoding(encoding);
     }
 
     static WithOption WithSerializationContext(String context) {
         return (withOptionSerializationContext) () -> context;
     }
 
+    static WithReaderWriterArgs WithNullBytesHex(String nullBytesHex) {
+        return WithReaderWriterArgs.WithNullBytesHex(nullBytesHex);
+    }
+
 }
 
 interface withOptionByteOrder extends WithOption {
     ByteOrder byteOrder();
-}
-
-interface withOptionEncoding extends WithOption {
-    String encoding();
 }
 
 interface withOptionSerializationContext extends WithOption {

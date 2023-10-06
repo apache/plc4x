@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.generation;
 
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
@@ -31,9 +32,22 @@ class ReadBufferTest {
      */
     @Test
     void readString() throws ParseException {
-        String value = new String("abcdef");
+        String value = "abcdef";
         final ReadBuffer buffer = new ReadBufferByteBased(value.getBytes(StandardCharsets.UTF_8));
-        String answer = buffer.readString("", value.length() * 8, "UTF-8");
+        String answer = buffer.readString("", value.length() * 8, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+
+        assertEquals(value, answer);
+    }
+
+    /**
+     * Test which makes sure that UTF8 encoding with multi-byte characters works
+     */
+    @Test
+    void readStringUtf8() throws ParseException {
+        String value = "molybdän";
+        final var serialized = value.getBytes(StandardCharsets.UTF_8);
+        final ReadBuffer buffer = new ReadBufferByteBased(serialized);
+        String answer = buffer.readString("", serialized.length * 8, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         assertEquals(value, answer);
     }

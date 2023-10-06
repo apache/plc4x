@@ -1,34 +1,27 @@
-//
-//  Licensed to the Apache Software Foundation (ASF) under one or more
-//  contributor license agreements.  See the NOTICE file distributed with
-//  this work for additional information regarding copyright ownership.
-//  The ASF licenses this file to You under the Apache License, Version 2.0
-//  (the "License"); you may not use this file except in compliance with
-//  the License.  You may obtain a copy of the License at
-//
-//      https://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
-//
-:imagesdir: ../../images/
-:icons: font
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
 
-== https://kafka.apache.org/[Apache Kafka]
+      https://www.apache.org/licenses/LICENSE-2.0
 
-Apache Kafka is an open-source distributed event streaming platform used by thousands of
-companies for high-performance data pipelines, streaming analytics, data integration, and
-mission-critical applications.
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
 
 # PLC4X Kafka Connectors
 
 The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
 They can be built from source from the future 0.8 https://plc4x.apache.org/users/download.html[release] of
 PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github].
-//They can also be downloaded from the confluent https://www.confluent.io/hub/[hub].
 
 ## Introduction
 
@@ -221,12 +214,12 @@ A Retriable Exception is raised which provides jitter for the timing of the retr
 PLC4X specifies a very basic schema and leaves the majority of the implementation to the user. It contains the
 following fields:-
 
--   "fields": - This is a customized structure that is formed by the fields defined in the connector configuration.
-This allows the user to defined arbitrary fields within here all based on the PLC4X data types.
+-   "tags": - This is a customized structure that is formed by the tags defined in the connector configuration.
+This allows the user to defined arbitrary tags within here all based on the PLC4X data types.
 
 - "timestamp": - This is the timestamp at which the PLC4X connector processed the PLC request.
 
-- "expires": - This field is used by the sink connector. It allows it to discard the record if it is too old. A value
+- "expires": - This tag is used by the sink connector. It allows it to discard the record if it is too old. A value
 of 0 or null indicates that the record some never be discarded no matter how old it is.
 
 As the majority of the schema is left to the user to define we expect to be able to provide backward compatibility

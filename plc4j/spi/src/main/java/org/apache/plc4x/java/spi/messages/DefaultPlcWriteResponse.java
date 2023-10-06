@@ -18,33 +18,29 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithAdditionalStringRepresentation;
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithRenderAsList;
+
 public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
 
     private final PlcWriteRequest request;
-    private final Map<String, PlcResponseCode> responses;
+    private final Map<String, PlcResponseCode> responseCodes;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcWriteResponse(@JsonProperty("request") PlcWriteRequest request,
-                                   @JsonProperty("values") Map<String, PlcResponseCode> responses) {
+    public DefaultPlcWriteResponse(PlcWriteRequest request,
+                                   Map<String, PlcResponseCode> responseCodes) {
         this.request = request;
-        this.responses = responses;
+        this.responseCodes = responseCodes;
     }
 
     @Override
@@ -53,38 +49,39 @@ public class DefaultPlcWriteResponse implements PlcWriteResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
-    public Collection<String> getFieldNames() {
-        return request.getFieldNames();
+    public Collection<String> getTagNames() {
+        return request.getTagNames();
     }
 
     @Override
-    @JsonIgnore
-    public PlcField getField(String name) {
-        return request.getField(name);
+    public PlcTag getTag(String name) {
+        return request.getTag(name);
     }
 
     @Override
-    @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
-        return responses.get(name);
+        return responseCodes.get(name);
     }
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcWriteResponse");
 
+        writeBuffer.pushContext("request");
         if (request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
-        writeBuffer.pushContext("fields");
-        for (Map.Entry<String, PlcResponseCode> fieldEntry : responses.entrySet()) {
-            String fieldName = fieldEntry.getKey();
-            final PlcResponseCode fieldResponseCode = fieldEntry.getValue();
-            String result = fieldResponseCode.name();
-            writeBuffer.writeString(fieldName, result.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), result);
+        writeBuffer.popContext("request");
+
+        writeBuffer.pushContext("responseCodes", WithRenderAsList(true));
+        for (Map.Entry<String, PlcResponseCode> tagEntry : responseCodes.entrySet()) {
+            String tagName = tagEntry.getKey();
+            writeBuffer.pushContext(tagName);
+            final PlcResponseCode tagResponseCode = tagEntry.getValue();
+            writeBuffer.writeUnsignedByte("ResponseCode", 8, (byte) tagResponseCode.getValue(), WithAdditionalStringRepresentation(tagResponseCode.name()));
+            writeBuffer.popContext(tagName);
         }
-        writeBuffer.popContext("fields");
+        writeBuffer.popContext("responseCodes");
 
         writeBuffer.popContext("PlcWriteResponse");
     }

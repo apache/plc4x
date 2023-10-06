@@ -48,7 +48,9 @@ ${helper.fileName(protocolName, languageName, outputFlavor)?replace(".", "/")}/P
 package ${outputFlavor?replace("-","")}
 
 import (
-	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedProtocolName()}/${outputFlavor?replace("-","")}/model"
+	"context"
+
+	"github.com/apache/plc4x/plc4go/protocols/${helper.getSanitizedPackageName()}/${outputFlavor?replace("-","")}/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -58,7 +60,7 @@ import (
 type ${helper.getSanitizedProtocolName()?cap_first}ParserHelper struct {
 }
 
-func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
 	case "${typeDefinition.name}":
@@ -76,7 +78,7 @@ func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeNa
 			</#if>
 		</#list>
 	</#if>
-		return model.${typeDefinition.name}Parse(io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
+		return model.${typeDefinition.name}ParseWithBuffer(context.Background(), io<#if typeDefinition.parserArguments.isPresent()>, <#list typeDefinition.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#list></#if>)
 </#list>
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)

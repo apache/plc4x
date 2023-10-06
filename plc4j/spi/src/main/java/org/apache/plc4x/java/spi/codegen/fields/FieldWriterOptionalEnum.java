@@ -18,14 +18,17 @@
  */
 package org.apache.plc4x.java.spi.codegen.fields;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
+import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FieldWriterOptionalEnum<T> implements FieldCommons {
+import java.util.Optional;
+
+public class FieldWriterOptionalEnum<T> implements FieldCommons, WithReaderWriterArgs {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FieldWriterOptionalEnum.class);
 
@@ -35,7 +38,25 @@ public class FieldWriterOptionalEnum<T> implements FieldCommons {
         if (condition && value != null) {
             switchSerializeByteOrderIfNecessary(() -> dataWriter.write(innerName, value, writerArgs), dataWriter, extractByteOrder(writerArgs).orElse(null));
         } else {
-            LOGGER.debug("field {} not written because value is null({}) or condition({}) didn't evaluate to true", logicalName, value != null, condition);
+            WriteBuffer writeBuffer = dataWriter.getWriteBuffer();
+            // This is very special to byte based buffers, it would just confuse the others.
+            if(writeBuffer instanceof WriteBufferByteBased) {
+                // Check if a nullByteHex is set.
+                // If it is, peek the equivalent number of bytes and compare.
+                // If they match, return null.
+                Optional<String> nullByteHexOptional = extractNullBytesHex(writerArgs);
+                if (nullByteHexOptional.isPresent()) {
+                    String nullByteHex = nullByteHexOptional.get();
+                    try {
+                        byte[] nullBytes = Hex.decodeHex(nullByteHex);
+                        writeBuffer.writeByteArray(logicalName, nullBytes, writerArgs);
+                    } catch (DecoderException e) {
+                        // Ignore.
+                    }
+                } else {
+                    LOGGER.debug("field {} not written because value is null({}) or condition({}) didn't evaluate to true", logicalName, value != null, condition);
+                }
+            }
         }
         dataWriter.popContext(logicalName);
     }

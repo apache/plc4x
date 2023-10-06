@@ -17,4 +17,4 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Apache StreamPipes (incubating)
+== Apache StreamPipes

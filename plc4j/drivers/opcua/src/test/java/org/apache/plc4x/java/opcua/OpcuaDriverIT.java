@@ -23,7 +23,7 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class OpcuaDriverIT extends DriverTestsuiteRunner {
 
     public OpcuaDriverIT() {
-        super("/protocols/opcua/DriverTestsuite.xml", true);
+        super("/protocols/opcua/DriverTestsuite.xml", false);
     }
 
 }

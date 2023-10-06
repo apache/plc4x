@@ -1620,7 +1620,7 @@
             [simple  LevelInformationNibblePair  pair1                      ]
             [simple  LevelInformationNibblePair  pair2                      ]
             [virtual uint   8  actualLevel 'pair2.nibbleValue << 4 | pair1.nibbleValue']
-            [virtual float 32  actualLevelInPercent '100 * (actualLevel + 2) / 255 )'  ]
+            [virtual float 32  actualLevelInPercent '100 * (actualLevel + 2) / 255']
         ]
     ]
 ]

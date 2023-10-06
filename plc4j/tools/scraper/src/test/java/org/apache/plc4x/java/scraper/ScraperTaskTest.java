@@ -18,7 +18,8 @@
  */
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
@@ -50,7 +51,7 @@ public class ScraperTaskTest implements WithAssertions {
 
     @Test
     public void scrape() throws PlcConnectionException {
-        PlcDriverManager driverManager = new PlcDriverManager();
+        DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
         MockConnection connection = (MockConnection) driverManager.getConnection("mock:scraper");
         connection.setDevice(mockDevice);
         when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.OK, new PlcSTRING("hallo")));
@@ -67,7 +68,7 @@ public class ScraperTaskTest implements WithAssertions {
         @Test
         public void badResponseCode_shouldHandleException() throws PlcConnectionException {
             // Given
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             MockConnection connection = (MockConnection) driverManager.getConnection("mock:scraper");
             connection.setDevice(mockDevice);
             when(mockDevice.read(any())).thenReturn(new ResponseItem<>(PlcResponseCode.NOT_FOUND, new PlcSTRING("hallo")));
@@ -80,14 +81,14 @@ public class ScraperTaskTest implements WithAssertions {
         }
 
         @Mock
-        PlcDriverManager driverManager;
+        PlcConnectionManager connectionManager;
 
         @Test
         public void handleConnectionException() throws PlcConnectionException {
             // Given
-            when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
+            when(connectionManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
 
-            ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
+            ScraperTask scraperTask = new ScraperTaskImpl(connectionManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
                 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             ScraperTask spy = spy(scraperTask);
@@ -98,9 +99,9 @@ public class ScraperTaskTest implements WithAssertions {
 
         @Test
         void runByScheduler_handledGracefully() throws PlcConnectionException {
-            when(driverManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
+            when(connectionManager.getConnection(anyString())).thenThrow(new PlcConnectionException("stfu"));
             ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
-            ScraperTask scraperTask = new ScraperTaskImpl(driverManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
+            ScraperTask scraperTask = new ScraperTaskImpl(connectionManager, "job1", "m1", "mock:scraper", Collections.singletonMap("a", "b"),
                 1_000, ForkJoinPool.commonPool(), (j,a,m) -> {});
 
             Future<?> future = pool.scheduleAtFixedRate(scraperTask, 0, 10, TimeUnit.MILLISECONDS);

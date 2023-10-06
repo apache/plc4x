@@ -101,7 +101,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if (driverContext != null) {
             protocol.setDriverContext(driverContext);
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol, authentication, basePacketClass);
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(configuration.getTimeoutManager(), pipeline, passive, protocol, authentication, basePacketClass);
         pipeline.addLast(context);
         return protocol;
     }

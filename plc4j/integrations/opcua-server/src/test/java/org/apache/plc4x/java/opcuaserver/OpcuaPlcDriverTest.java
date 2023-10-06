@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opcuaserver;
 
 import io.vavr.collection.List;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -69,24 +69,24 @@ public class OpcuaPlcDriverTest {
     private static final String VARIANT_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/Variant";
     private static final String XML_ELEMENT_READ_WRITE = "ns=1;s=HelloWorld/ScalarTypes/XmlElement";
     // Address of local milo server
-    private String miloLocalAddress = "127.0.0.1:12673/plc4x";
+    private final String miloLocalAddress = "127.0.0.1:12673/plc4x";
     //Tcp pattern of OPC UA
-    private String opcPattern = "opcua:tcp://";
+    private final String opcPattern = "opcua:tcp://";
 
-    private String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
-    private String tcpConnectionAddress = opcPattern + miloLocalAddress;
+    private final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
-    private List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
-    private List<String> connectionStringCorruptedSet = List.of();
+    private final List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
+    private final List<String> connectionStringCorruptedSet = List.of();
 
-    private String discoveryValidParamTrue = "discovery=true";
-    private String discoveryValidParamFalse = "discovery=false";
-    private String discoveryCorruptedParamWrongValueNum = "discovery=1";
-    private String discoveryCorruptedParamWronName = "diskovery=false";
+    private final String discoveryValidParamTrue = "discovery=true";
+    private final String discoveryValidParamFalse = "discovery=false";
+    private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private final String discoveryCorruptedParamWronName = "diskovery=false";
 
-    List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
+    final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
 
     private static OPCUAServer exampleServer;
@@ -112,7 +112,7 @@ public class OpcuaPlcDriverTest {
         connectionStringValidSet.forEach(connectionAddress -> {
                 String connectionString = connectionAddress;
                 try {
-                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                     assert opcuaConnection.isConnected();
                     opcuaConnection.close();
                     assert !opcuaConnection.isConnected();
@@ -128,21 +128,19 @@ public class OpcuaPlcDriverTest {
 
     @Test
     public void connectionWithDiscoveryParam(){
-        connectionStringValidSet.forEach(connectionAddress -> {
-            discoveryParamValidSet.forEach(discoveryParam -> {
-                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
-                try {
-                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
-                    assert opcuaConnection.isConnected();
-                    opcuaConnection.close();
-                    assert !opcuaConnection.isConnected();
-                } catch (PlcConnectionException e) {
-                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
-                } catch (Exception e) {
-                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
-                }
-            });
-        });
+        connectionStringValidSet.forEach(connectionAddress -> discoveryParamValidSet.forEach(discoveryParam -> {
+            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+            try {
+                PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
+                assert opcuaConnection.isConnected();
+                opcuaConnection.close();
+                assert !opcuaConnection.isConnected();
+            } catch (PlcConnectionException e) {
+                fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
+            } catch (Exception e) {
+                fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
+            }
+        }));
 
 
     }
@@ -150,26 +148,26 @@ public class OpcuaPlcDriverTest {
     @Test
     public void readVariables() throws Exception{
 
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
             PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
-            builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE);
-            builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE);
-            builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE);
-            builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE);
-            builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE);
-            builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE);
-            builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE);
-            builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE);
-            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE);
-            builder.addItem("String", STRING_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Byte", BYTE_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Float", FLOAT_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Int16", INT16_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Int32", INT32_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Int64", INT64_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("String", STRING_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
 
-            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
+            builder.addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = request.execute().get();
@@ -199,26 +197,26 @@ public class OpcuaPlcDriverTest {
     @Test
     public void writeVariables() throws Exception {
 
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             assert opcuaConnection.isConnected();
 
             PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
-            builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
-            builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", 255);
-            builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
-            builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
-            builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + ";INT", 32000);
-            builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
-            builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
-            builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
-            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";USINT", 100);
-            builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
-            builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535);
-            builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 100);
-            builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"));
-            builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 100);
+            builder.addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
+            builder.addTagAddress("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", 255);
+            builder.addTagAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
+            builder.addTagAddress("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
+            builder.addTagAddress("Int16", INT16_IDENTIFIER_READ_WRITE + ";INT", 32000);
+            builder.addTagAddress("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
+            builder.addTagAddress("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
+            builder.addTagAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
+            builder.addTagAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";USINT", 100);
+            builder.addTagAddress("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
+            builder.addTagAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535);
+            builder.addTagAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 100);
+            builder.addTagAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"));
+            builder.addTagAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 100);
 
-            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "Sad Toddy");
+            builder.addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "Sad Toddy");
 
             PlcWriteRequest request = builder.build();
             PlcWriteResponse response = request.execute().get();

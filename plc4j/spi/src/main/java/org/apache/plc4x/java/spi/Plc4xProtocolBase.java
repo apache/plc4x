@@ -66,6 +66,10 @@ public abstract class Plc4xProtocolBase<T> {
     protected void decode(ConversationContext<T> context, T msg) throws Exception {
     }
 
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        throw new NotImplementedException("");
+    }
+
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         throw new NotImplementedException("");
     }
@@ -83,6 +87,10 @@ public abstract class Plc4xProtocolBase<T> {
     }
 
     public CompletableFuture<PlcBrowseResponse> browse(PlcBrowseRequest browseRequest) {
+        throw new NotImplementedException("");
+    }
+
+    public CompletableFuture<PlcBrowseResponse> browseWithInterceptor(PlcBrowseRequest browseRequest, PlcBrowseRequestInterceptor interceptor) {
         throw new NotImplementedException("");
     }
 

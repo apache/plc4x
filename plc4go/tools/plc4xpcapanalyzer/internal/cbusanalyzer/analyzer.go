@@ -20,19 +20,20 @@
 package cbusanalyzer
 
 import (
+	"context"
 	"fmt"
+	"net"
+	"reflect"
+
 	"github.com/apache/plc4x/plc4go/internal/cbus"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/config"
 	"github.com/apache/plc4x/plc4go/tools/plc4xpcapanalyzer/internal/common"
-	"github.com/google/gopacket"
+	"github.com/gopacket/gopacket"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"net"
-	"reflect"
 )
 
 type Analyzer struct {
@@ -65,7 +66,12 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		a.Init()
 	}
 	cBusOptions := a.cBusOptions
-	log.Debug().Msgf("Parsing %s with requestContext\n%v\nBusOptions\n%s\npayload:%+q", packetInformation, a.requestContext, cBusOptions, payload)
+	log.Debug().
+		Stringer("packetInformation", packetInformation).
+		Stringer("requestContext", a.requestContext).
+		Stringer("cBusOptions", cBusOptions).
+		Bytes("payload", payload).
+		Msg("Parsing")
 	isResponse := a.isResponse(packetInformation)
 	if isResponse {
 		// Responses should have a checksum
@@ -82,7 +88,7 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		)
 	}
 	mergeCallback := func(index int) {
-		log.Warn().Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d", index)
+		log.Warn().Stringer("packetInformation", packetInformation).Int("index", index).Msg("we have a split at index")
 	}
 	currentPayload, err := a.getCurrentPayload(packetInformation, payload, mergeCallback, a.currentInboundPayloads, &a.lastParsePayload)
 	if err != nil {
@@ -92,26 +98,32 @@ func (a *Analyzer) PackageParse(packetInformation common.PacketInformation, payl
 		return nil, common.ErrEcho
 	}
 	a.lastParsePayload = currentPayload
-	parse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, a.requestContext, cBusOptions)
+	parse, err := model.CBusMessageParse(context.TODO(), currentPayload, isResponse, a.requestContext, cBusOptions)
 	if err != nil {
-		if secondParse, err := model.CBusMessageParse(utils.NewReadBufferByteBased(currentPayload), isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
+		if secondParse, err := model.CBusMessageParse(context.TODO(), currentPayload, isResponse, model.NewRequestContext(false), model.NewCBusOptions(false, false, false, false, false, false, false, false, false)); err != nil {
 			log.Debug().Err(err).Msg("Second parse failed too")
 			return nil, errors.Wrap(err, "Error parsing CBusCommand")
 		} else {
-			log.Warn().Stringer("packetInformation", packetInformation).Msgf("package got overridden by second parse... probably a MMI\n%s", secondParse)
+			log.Warn().
+				Stringer("packetInformation", packetInformation).
+				Stringer("secondParse", secondParse).
+				Msg("package got overridden by second parse... probably a MMI")
 			parse = secondParse
 		}
 	}
 	a.requestContext = cbus.CreateRequestContextWithInfoCallback(parse, func(infoString string) {
-		log.Debug().Msgf("No.[%d] %s", packetInformation.PacketNumber, infoString)
+		log.Debug().
+			Int("packetNumber", packetInformation.PacketNumber).
+			Str("infoString", infoString).
+			Msg("No.[packetNumber] infoString")
 	})
-	log.Debug().Msgf("Parsed c-bus command \n%v", parse)
+	log.Debug().Stringer("parse", parse).Msg("Parsed c-bus command")
 	return parse, nil
 }
 
 func (a *Analyzer) isResponse(packetInformation common.PacketInformation) bool {
 	isResponse := packetInformation.DstIp.Equal(a.Client)
-	log.Debug().Stringer("packetInformation", packetInformation).Msgf("isResponse: %t", isResponse)
+	log.Debug().Stringer("packetInformation", packetInformation).Bool("isResponse", isResponse).Msg("isResponse")
 	return isResponse
 }
 
@@ -124,7 +136,11 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 	currentPayload := currentInboundPayloads[srcUip]
 	if currentPayload != nil {
 		log.Debug().Func(func(e *zerolog.Event) {
-			e.Msgf("Prepending current payload %+q to actual payload %+q: %+q", currentPayload, payload, append(currentPayload, payload...))
+			e.
+				Bytes("currentPayload", currentPayload).
+				Bytes("actualPayload", payload).
+				Interface("allPayload", append(currentPayload, payload...)).
+				Msg("Prepending current payload currentPayload to actual payload actualPayload: allPayload")
 		})
 		currentPayload = append(currentPayload, payload...)
 	} else {
@@ -148,12 +164,16 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 		// When we have a merge message we already set the current payload to the tail
 		currentInboundPayloads[srcUip] = currentPayload
 	} else {
-		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Remainder %+q", currentInboundPayloads[srcUip])
+		log.Debug().Stringer("packetInformation", packetInformation).
+			Interface("remainder", currentInboundPayloads[srcUip]).
+			Msg("Remainder %+q")
 	}
 	if lastElement := currentPayload[len(currentPayload)-1]; (lastElement != '\r') && (lastElement != '\n') {
 		return nil, common.ErrUnterminatedPackage
 	} else {
-		log.Debug().Stringer("packetInformation", packetInformation).Msgf("Last element 0x%x", lastElement)
+		log.Debug().Stringer("packetInformation", packetInformation).
+			Uint8("lastElement", lastElement).
+			Msg("Last element")
 		if shouldClearInboundPayload {
 			if currentSavedPayload := currentInboundPayloads[srcUip]; currentSavedPayload != nil {
 				// We remove our current payload from the beginning of the cache
@@ -166,7 +186,9 @@ func (a *Analyzer) getCurrentPayload(packetInformation common.PacketInformation,
 			currentInboundPayloads[srcUip] = nil
 		}
 	}
-	log.Debug().Stringer("packetInformation", packetInformation).Msgf("Returning payload %+q", currentPayload)
+	log.Debug().Stringer("packetInformation", packetInformation).
+		Bytes("currentPayload", currentPayload).
+		Msg("Returning payload")
 	return currentPayload, nil
 }
 
@@ -193,7 +215,7 @@ func mergeCheck(currentPayload *[]byte, srcUip string, mergeCallback func(int), 
 				if reflect.DeepEqual(headPayload, *lastPayload) {
 					// This means that we have a merge where the last payload is an echo. In that case we discard that here to not offset all numbers
 					*currentPayload = tailPayload
-					log.Debug().Msgf("We cut the echo message %s out of the response to keep numbering", headPayload)
+					log.Debug().Bytes("headPayload", headPayload).Msg("We cut the echo message %s out of the response to keep numbering")
 					return mergeCheck(currentPayload, srcUip, mergeCallback, currentInboundPayloads, lastPayload)
 				} else {
 					if mergeCallback != nil {
@@ -218,7 +240,11 @@ func filterXOnXOff(payload []byte) []byte {
 		case 0x11: // Filter XON
 			fallthrough
 		case 0x13: // Filter XOFF
-			log.Trace().Msgf("Filtering %x at %d for %+q", b, i, payload)
+			log.Trace().
+				Uint8("b", b).
+				Int("i", i).
+				Bytes("payload", payload).
+				Msg("Filtering b at i for payload")
 		default:
 			payload[n] = b
 			n++
@@ -239,14 +265,14 @@ func filterOneServerError(unfilteredPayload []byte) (filteredPayload []byte, con
 
 func (a *Analyzer) SerializePackage(message spi.Message) ([]byte, error) {
 	if message, ok := message.(model.CBusMessage); !ok {
-		log.Fatal().Msgf("Unsupported type %T supplied", message)
+		log.Fatal().Type("message", message).Msg("Unsupported type supplied")
 		panic("unreachable statement")
 	} else {
-		based := utils.NewWriteBufferByteBased()
-		if err := message.Serialize(based); err != nil {
+		theBytes, err := message.Serialize()
+		if err != nil {
 			return nil, errors.Wrap(err, "Error serializing")
 		}
-		return based.GetBytes(), nil
+		return theBytes, nil
 	}
 }
 
@@ -268,7 +294,9 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 				default:
 					packetInformation := packetInformationCreator(packet)
 					mergeCallback := func(index int) {
-						log.Warn().Stringer("packetInformation", packetInformation).Msgf("we have a split at index %d", index)
+						log.Warn().Stringer("packetInformation", packetInformation).
+							Int("index", index).
+							Msg("we have a split at index")
 					}
 					if payload, err := a.getCurrentPayload(packetInformation, packet.ApplicationLayer().Payload(), mergeCallback, a.currentPrefilterInboundPayloads, &a.lastMapPayload); err != nil {
 						log.Debug().Err(err).Stringer("packetInformation", packetInformation).Msg("Filtering message")
@@ -277,7 +305,10 @@ func (a *Analyzer) MapPackets(in chan gopacket.Packet, packetInformationCreator 
 						currentApplicationLayer := packet.ApplicationLayer()
 						newPayload := gopacket.Payload(payload)
 						if !reflect.DeepEqual(currentApplicationLayer.Payload(), payload) {
-							log.Debug().Msgf("Replacing payload %q with %q", currentApplicationLayer.Payload(), payload)
+							log.Debug().
+								Bytes("currentPayload", currentApplicationLayer.Payload()).
+								Bytes("payload", payload).
+								Msg("Replacing payload currentPayload with payload")
 							packet = &manipulatedPackage{Packet: packet, newApplicationLayer: newPayload}
 						}
 						a.lastMapPayload = payload

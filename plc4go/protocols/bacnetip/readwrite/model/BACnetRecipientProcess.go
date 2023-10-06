@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetRecipientProcess is the corresponding interface of BACnetRecipientProcess
 type BACnetRecipientProcess interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRecipient returns Recipient (property field)
@@ -74,7 +78,7 @@ func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentif
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientProcess(structType interface{}) BACnetRecipientProcess {
+func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
 	if casted, ok := structType.(BACnetRecipientProcess); ok {
 		return casted
 	}
@@ -88,31 +92,33 @@ func (m *_BACnetRecipientProcess) GetTypeName() string {
 	return "BACnetRecipientProcess"
 }
 
-func (m *_BACnetRecipientProcess) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetRecipientProcess) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetRecipientProcess) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (recipient)
-	lengthInBits += m.Recipient.GetLengthInBits()
+	lengthInBits += m.Recipient.GetLengthInBits(ctx)
 
 	// Optional Field (processIdentifier)
 	if m.ProcessIdentifier != nil {
-		lengthInBits += m.ProcessIdentifier.GetLengthInBits()
+		lengthInBits += m.ProcessIdentifier.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetRecipientProcess) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetRecipientProcess) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
+func BACnetRecipientProcessParse(ctx context.Context, theBytes []byte) (BACnetRecipientProcess, error) {
+	return BACnetRecipientProcessParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetRecipientProcessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientProcess, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRecipientProcess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientProcess")
 	}
@@ -123,7 +129,7 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
 	}
-	_recipient, _recipientErr := BACnetRecipientEnclosedParse(readBuffer, uint8(uint8(0)))
+	_recipient, _recipientErr := BACnetRecipientEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _recipientErr != nil {
 		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetRecipientProcess")
 	}
@@ -139,10 +145,10 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 		if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'processIdentifier' field of BACnetRecipientProcess")
@@ -165,9 +171,19 @@ func BACnetRecipientProcessParse(readBuffer utils.ReadBuffer) (BACnetRecipientPr
 	}, nil
 }
 
-func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRecipientProcess) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetRecipientProcess"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetRecipientProcess")
 	}
@@ -176,7 +192,7 @@ func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error
 	if pushErr := writeBuffer.PushContext("recipient"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for recipient")
 	}
-	_recipientErr := writeBuffer.WriteSerializable(m.GetRecipient())
+	_recipientErr := writeBuffer.WriteSerializable(ctx, m.GetRecipient())
 	if popErr := writeBuffer.PopContext("recipient"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for recipient")
 	}
@@ -191,7 +207,7 @@ func (m *_BACnetRecipientProcess) Serialize(writeBuffer utils.WriteBuffer) error
 			return errors.Wrap(pushErr, "Error pushing for processIdentifier")
 		}
 		processIdentifier = m.GetProcessIdentifier()
-		_processIdentifierErr := writeBuffer.WriteSerializable(processIdentifier)
+		_processIdentifierErr := writeBuffer.WriteSerializable(ctx, processIdentifier)
 		if popErr := writeBuffer.PopContext("processIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for processIdentifier")
 		}
@@ -215,7 +231,7 @@ func (m *_BACnetRecipientProcess) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

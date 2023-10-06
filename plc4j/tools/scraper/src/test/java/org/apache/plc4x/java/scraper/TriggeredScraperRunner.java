@@ -18,16 +18,14 @@
  */
 package org.apache.plc4x.java.scraper;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.scraper.config.ScraperConfiguration;
 import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfigurationTriggeredImpl;
 import org.apache.plc4x.java.scraper.exception.ScraperException;
-
-
 import org.apache.plc4x.java.scraper.triggeredscraper.TriggeredScraperImpl;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollectorImpl;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +42,8 @@ public class TriggeredScraperRunner {
 
         ScraperConfiguration configuration = ScraperConfiguration.fromFile("plc4j/utils/scraper/src/test/resources/example_triggered_scraper.yml", ScraperConfigurationTriggeredImpl.class);
 
-        PlcDriverManager plcDriverManager = new PooledPlcDriverManager();
-        TriggerCollector triggerCollector = new TriggerCollectorImpl(plcDriverManager);
+        PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder().build();
+        TriggerCollector triggerCollector = new TriggerCollectorImpl(connectionManager);
         TriggeredScraperImpl scraper = new TriggeredScraperImpl(configuration, (j, a, m) -> LOGGER.info("Results from {}/{}: {}", j, a, m),triggerCollector);
 
         scraper.start();

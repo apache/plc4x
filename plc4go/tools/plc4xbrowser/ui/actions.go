@@ -20,10 +20,12 @@
 package ui
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/cbus"
+	"github.com/apache/plc4x/plc4go/internal/opcua"
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/transports"
@@ -31,6 +33,7 @@ import (
 	"github.com/rivo/tview"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"strings"
 )
 
 func InitSubsystem() {
@@ -42,22 +45,46 @@ func InitSubsystem() {
 			logLevel = parsedLevel
 		}
 	}
-	driverManager = plc4go.NewPlcDriverManager()
 
 	log.Logger = log.
 		//// Enable below if you want to see the filenames
 		//With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: tview.ANSIWriter(consoleOutput)}).
+		Output(zerolog.NewConsoleWriter(
+			func(w *zerolog.ConsoleWriter) {
+				w.Out = tview.ANSIWriter(consoleOutput)
+			},
+			func(w *zerolog.ConsoleWriter) {
+				w.FormatFieldValue = func(i interface{}) string {
+					if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
+						return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+					}
+					return fmt.Sprintf("%s", i)
+				}
+				w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+					for key, i := range m {
+						if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
+							buffer.WriteString("\n")
+							buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+							buffer.WriteString(":\n" + aString)
+						}
+					}
+					return nil
+				}
+			},
+		),
+		).
 		Level(logLevel)
+
+	driverManager = plc4go.NewPlcDriverManager()
 
 	// We offset the commands executed with the last commands
 	commandsExecuted = len(config.History.Last10Commands)
 	outputCommandHistory()
 
 	for _, driver := range config.AutoRegisterDrivers {
-		log.Info().Msgf("Auto register driver %s", driver)
+		log.Info().Str("driver", driver).Msg("Auto register driver")
 		if err := validateDriverParam(driver); err != nil {
-			log.Err(err).Msgf("Invalid configuration")
+			log.Err(err).Msg("Invalid configuration")
 			continue
 		}
 		_ = registerDriver(driver)
@@ -111,6 +138,13 @@ func registerDriver(driverId string) error {
 		}
 	case "s7":
 		driver = s7.NewDriver()
+		driverManager.RegisterDriver(driver)
+		if !tcpRegistered {
+			transports.RegisterTcpTransport(driverManager)
+			tcpRegistered = true
+		}
+	case "opcua":
+		driver = opcua.NewDriver()
 		driverManager.RegisterDriver(driver)
 		if !tcpRegistered {
 			transports.RegisterTcpTransport(driverManager)

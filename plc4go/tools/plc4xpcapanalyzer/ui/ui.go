@@ -20,15 +20,19 @@
 package ui
 
 import (
+	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/gdamore/tcell/v2"
-	"github.com/pkg/errors"
-	"github.com/rivo/tview"
+	"math/rand"
 	"regexp"
 	"strconv"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+
+	"github.com/gdamore/tcell/v2"
+	"github.com/pkg/errors"
+	"github.com/rivo/tview"
 )
 
 func SetupApplication() *tview.Application {
@@ -167,7 +171,12 @@ func buildCommandArea(newPrimitive func(text string) tview.Primitive, applicatio
 						}
 					}
 					_, _ = fmt.Fprintf(enteredCommandsView, "%s [\"%d\"]%s[\"\"]\n", time.Now().Format("04:05"), commandsExecuted, commandText)
-					if err := Execute(commandText); err != nil {
+					ctx, cancelFunc := context.WithCancel(rootContext)
+					randomId := rand.Uint32()
+					cancelFunctions[randomId] = cancelFunc
+					defer delete(cancelFunctions, randomId)
+
+					if err := Execute(ctx, commandText); err != nil {
 						_, _ = fmt.Fprintf(enteredCommandsView, "[#ff0000]%s %s[white]\n", time.Now().Format("04:05"), err)
 						return
 					}
@@ -280,11 +289,11 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 
 		{
 			receivedMessagesList := tview.NewList()
-			messageReceived = func(messageNumber int, receiveTime time.Time, message model.PlcMessage) {
+			messageReceived = func(messageNumber int, receiveTime time.Time, message apiModel.PlcMessage) {
 				application.QueueUpdateDraw(func() {
 					receivedMessagesList.AddItem(fmt.Sprintf("No %d @%s (api)", messageNumber, receiveTime.Format("15:04:05.999999")), "", 0x0, func() {
 						if ok := jumpToMessageItem(messageNumber); !ok {
-							plc4xpcapanalyzerLog.Debug().Msgf("Adding new message to console output")
+							plc4xpcapanalyzerLog.Debug().Msg("Adding new message to console output")
 							_, _ = fmt.Fprintf(messageOutput, "Message nr: %d\n[\"%d\"]%s[\"\"]\n", messageNumber, messageNumber, message)
 							jumpToMessageItem(messageNumber)
 						}
@@ -295,7 +304,7 @@ func buildOutputArea(newPrimitive func(text string) tview.Primitive, application
 				application.QueueUpdateDraw(func() {
 					receivedMessagesList.AddItem(fmt.Sprintf("No %d @%s (spi)", messageNumber, receiveTime.Format("15:04:05.999999")), "", 0x0, func() {
 						if ok := jumpToMessageItem(messageNumber); !ok {
-							plc4xpcapanalyzerLog.Debug().Msgf("Adding new spi message to console output")
+							plc4xpcapanalyzerLog.Debug().Msg("Adding new spi message to console output")
 							_, _ = fmt.Fprintf(messageOutput, "Message nr: %d\n[\"%d\"]%s[\"\"]\n", messageNumber, messageNumber, message)
 							jumpToMessageItem(messageNumber)
 						}

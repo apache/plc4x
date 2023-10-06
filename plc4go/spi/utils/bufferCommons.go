@@ -50,9 +50,18 @@ func (b BufferCommons) IsToBeRenderedAsList(readerWriterArgs ...WithReaderWriter
 		if !arg.isWriterArgs() && !arg.isReaderArgs() {
 			panic("not a reader or writer arg")
 		}
-		switch arg.(type) {
+		switch rwArg := arg.(type) {
 		case withRenderAsList:
-			return arg.(withRenderAsList).renderAsList
+			return rwArg.renderAsList
+		case readerWriterArg:
+			switch rArg := rwArg.WithReaderArgs.(type) {
+			case withRenderAsList:
+				return rArg.renderAsList
+			}
+			switch wArg := rwArg.WithWriterArgs.(type) {
+			case withRenderAsList:
+				return wArg.renderAsList
+			}
 		}
 	}
 	return false
@@ -63,9 +72,18 @@ func (b BufferCommons) ExtractAdditionalStringRepresentation(readerWriterArgs ..
 		if !arg.isWriterArgs() && !arg.isReaderArgs() {
 			panic("not a reader or writer arg")
 		}
-		switch arg.(type) {
+		switch rwArg := arg.(type) {
 		case withAdditionalStringRepresentation:
-			return arg.(withAdditionalStringRepresentation).stringRepresentation
+			return rwArg.stringRepresentation
+		case readerWriterArg:
+			switch rArg := rwArg.WithReaderArgs.(type) {
+			case withAdditionalStringRepresentation:
+				return rArg.stringRepresentation
+			}
+			switch wArg := rwArg.WithWriterArgs.(type) {
+			case withAdditionalStringRepresentation:
+				return wArg.stringRepresentation
+			}
 		}
 	}
 	return ""
@@ -75,15 +93,12 @@ type Stack struct {
 	list.List
 }
 
-func (s *Stack) Push(value interface{}) interface{} {
+func (s *Stack) Push(value any) any {
 	s.PushBack(value)
 	return value
 }
 
-func (s *Stack) Pop() interface{} {
-	if s.Len() <= 0 {
-		return nil
-	}
+func (s *Stack) Pop() any {
 	element := s.Back()
 	if element == nil {
 		return nil
@@ -92,7 +107,7 @@ func (s *Stack) Pop() interface{} {
 	return element.Value
 }
 
-func (s *Stack) Peek() interface{} {
+func (s *Stack) Peek() any {
 	back := s.Back()
 	if back == nil {
 		return nil

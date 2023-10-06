@@ -22,7 +22,7 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 
 public class DiscoveredEvent {
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public DiscoveredEvent(Configuration c) {
         this.configuration = c;

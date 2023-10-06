@@ -38,13 +38,13 @@ public class Configuration {
     private String name;
 
     @JsonProperty
-    private Boolean disableInsecureEndpoint = true;
+    private final Boolean disableInsecureEndpoint = true;
 
     @JsonProperty
     private List<DeviceConfiguration> devices;
 
     @JsonProperty
-    private Integer tcpPort = 12686;
+    private final Integer tcpPort = 12686;
 
     public Configuration() {
     }

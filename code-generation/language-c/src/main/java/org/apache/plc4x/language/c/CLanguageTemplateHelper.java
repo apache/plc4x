@@ -221,7 +221,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "uint64_t";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    throw new FreemarkerException("Unsupported simple type");
                 }
                 case INT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -237,7 +237,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "int64_t";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    throw new FreemarkerException("Unsupported simple type");
                 }
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -290,7 +290,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "ulint";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    throw new FreemarkerException("Unsupported simple type");
                 }
                 case INT: {
                     IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -306,7 +306,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     if (integerTypeReference.getSizeInBits() <= 64) {
                         return "lint";
                     }
-                    throw new RuntimeException("Unsupported simple type");
+                    throw new FreemarkerException("Unsupported simple type");
                 }
                 case FLOAT:
                     FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
@@ -491,7 +491,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -501,7 +501,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             case VSTRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 // Here we need to use the serialized expression of the length instead.
@@ -562,7 +562,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             case STRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -572,7 +572,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             case VSTRING: {
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new FreemarkerException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 // Here we need to use the serialized expression of the length instead.
@@ -753,11 +753,11 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                 lengthType = typeReferenceForProperty.asNonSimpleTypeReference().orElseThrow().getTypeDefinition();
                 lengthExpression = variableExpressionGenerator.apply(variableLiteral);
             }
-            return tracer + getCTypeName(lengthType.getName()) + "_length_in_bytes(" + lengthExpression + ")";
-        } else if (variableLiteral.getName().equals("lastItem")) {
-            tracer = tracer.dive("lastItem");
-            return tracer + "lastItem";
-            // If this literal references an Enum type, then we have to output it differently.
+            return tracer + getCTypeName(lengthType.getName()) + "_length_in_bytes(ctx, " + lengthExpression + ")";
+        } else if (variableLiteral.getName().equals("_lastItem")) {
+            tracer = tracer.dive("_lastItem");
+            return tracer + "plc4x_spi_context_get_last_item_from_context(ctx)";
+        // If this literal references an Enum type, then we have to output it differently.
         } else if (getTypeDefinitions().get(variableLiteral.getName()) instanceof EnumTypeDefinition) {
             tracer = tracer.dive("enum type definition");
             return tracer + getCTypeName(variableLiteral.getName()) + "_" + variableLiteral.getChild().map(VariableLiteral::getName).orElseThrow(() -> new FreemarkerException("child required"));
@@ -895,7 +895,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
             // TODO: replace with map join
             final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
             if (!(encodingTerm instanceof StringLiteral)) {
-                throw new RuntimeException("Encoding must be a quoted string value");
+                throw new FreemarkerException("Encoding must be a quoted string value");
             }
             String encoding = ((StringLiteral) encodingTerm).getValue();
             return tracer + "\"" + encoding + "\"";
@@ -948,18 +948,18 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
 
     private String toCastVariableParseExpression(TypeDefinition baseType, Field field, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("CAST");
-        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new RuntimeException("A Cast expression needs arguments"));
+        List<Term> arguments = variableLiteral.getArgs().orElseThrow(() -> new FreemarkerException("A Cast expression needs arguments"));
         if (arguments.size() != 2) {
-            throw new RuntimeException("A CAST expression expects exactly two arguments.");
+            throw new FreemarkerException("A CAST expression expects exactly two arguments.");
         }
         VariableLiteral firstArgument = arguments.get(0).asLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a literal"))
+            .orElseThrow(() -> new FreemarkerException("First argument should be a literal"))
             .asVariableLiteral()
-            .orElseThrow(() -> new RuntimeException("First argument should be a Variable literal"));
+            .orElseThrow(() -> new FreemarkerException("First argument should be a Variable literal"));
         StringLiteral typeLiteral = arguments.get(1).asLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"))
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"))
             .asStringLiteral()
-            .orElseThrow(() -> new RuntimeException("Second argument should be a String literal"));
+            .orElseThrow(() -> new FreemarkerException("Second argument should be a String literal"));
 
         final TypeDefinition castType = getTypeDefinitions().get(typeLiteral.getValue());
         // If we're casting to a sub-type of a discriminated value, we got to cast to the parent
@@ -1084,7 +1084,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                     }
                     final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                     if (!(encodingTerm instanceof StringLiteral)) {
-                        throw new RuntimeException("Encoding must be a quoted string value");
+                        throw new FreemarkerException("Encoding must be a quoted string value");
                     }
                     String encoding = ((StringLiteral) encodingTerm).getValue();
                     return tracer + "\"" + encoding + "\"";
@@ -1095,7 +1095,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
         // If it wasn't an enum, treat it as a normal property.
         if (variableLiteral.getName().equals("lengthInBits")) {
             tracer = tracer.dive("is length in bits");
-            return tracer + getCTypeName(baseType.getName()) + "_length_in_bits(_message)";
+            return tracer + getCTypeName(baseType.getName()) + "_length_in_bits(ctx, _message)";
         }
         if (variableLiteral.getChild().isPresent() && "length".equals(variableLiteral.getChild().get().getName())) {
             tracer = tracer.dive("is length");
@@ -1176,7 +1176,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                                 }
                                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                                 if (!(encodingTerm instanceof StringLiteral)) {
-                                    throw new RuntimeException("Encoding must be a quoted string value");
+                                    throw new FreemarkerException("Encoding must be a quoted string value");
                                 }
                                 String encoding = ((StringLiteral) encodingTerm).getValue();
                                 sb.append("\"").append(encoding).append("\"");
@@ -1253,7 +1253,7 @@ public class CLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelpe
                             }
                             final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                             if (!(encodingTerm instanceof StringLiteral)) {
-                                throw new RuntimeException("Encoding must be a quoted string value");
+                                throw new FreemarkerException("Encoding must be a quoted string value");
                             }
                             String encoding = ((StringLiteral) encodingTerm).getValue();
                             sb.append("\"").append(encoding).append("\"");

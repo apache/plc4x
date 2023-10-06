@@ -18,9 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -28,12 +26,11 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcULINT extends PlcIECValue<BigInteger> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static BigInteger minValue = BigInteger.valueOf(0);
-    static BigInteger maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
+    static final BigInteger minValue = BigInteger.valueOf(0);
+    static final BigInteger maxValue = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
 
     public static PlcULINT of(Object value) {
         if (value instanceof Boolean) {
@@ -67,7 +64,7 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     public PlcULINT(Byte value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -76,7 +73,7 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     public PlcULINT(Short value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -85,7 +82,7 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     public PlcULINT(Integer value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -94,7 +91,7 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     public PlcULINT(Long value) {
         BigInteger val = BigInteger.valueOf(value);
         if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = val;
         this.isNullable = false;
@@ -104,12 +101,12 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = BigDecimal.valueOf(value).toBigInteger();
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -117,18 +114,18 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = BigDecimal.valueOf(value).toBigInteger();
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
     public PlcULINT(BigInteger value) {
         if ((value.compareTo(minValue) < 0) || (value.compareTo(maxValue) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value;
         this.isNullable = false;
@@ -138,12 +135,12 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = value.toBigInteger();
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -151,12 +148,12 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
         try {
             BigInteger val = new BigInteger(value.trim());
             if ((val.compareTo(minValue) < 0) || (val.compareTo(maxValue) > 0)) {
-                throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+                throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
             }
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -166,132 +163,110 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isBoolean() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean getBoolean() {
         return (value != null) && !value.equals(BigInteger.ZERO);
     }
 
     @Override
-    @JsonIgnore
     public boolean isByte() {
         return (value != null) && (value.compareTo(BigInteger.valueOf(Byte.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Byte.MIN_VALUE)) >= 0);
     }
 
     @Override
-    @JsonIgnore
     public byte getByte() {
         return value.byteValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isShort() {
         return (value != null) && (value.compareTo(BigInteger.valueOf(Short.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Short.MIN_VALUE)) >= 0);
     }
 
     @Override
-    @JsonIgnore
     public short getShort() {
         return value.shortValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isInteger() {
         return (value != null) && (value.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Integer.MIN_VALUE)) >= 0);
     }
 
     @Override
-    @JsonIgnore
     public int getInteger() {
         return value.intValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isLong() {
         return (value != null) && (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0) && (value.compareTo(BigInteger.valueOf(Long.MIN_VALUE)) >= 0);
     }
 
     @Override
-    @JsonIgnore
     public long getLong() {
         return value.longValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public boolean isFloat() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public float getFloat() {
         return value.floatValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDouble() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public double getDouble() {
         return value.doubleValue();
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigDecimal() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal() {
         return new BigDecimal(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return value.toString();
     }
 
-    @JsonIgnore
     public byte[] getBytes() {
         byte[] tmp = value.toByteArray();
         byte[] bytes = new byte[8];

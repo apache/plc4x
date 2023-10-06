@@ -135,9 +135,9 @@
 ]
 
 [type AmsString
-    [implicit uint 16                 len    'STR_LEN(text) + 1']
-    [simple   vstring '8 * (len - 1)' text   encoding='"UTF-8"' ]
-    [reserved uint 8                  '0x00'                    ]
+    [implicit uint 16                    strLen    'STR_LEN(text) + 1']
+    [simple   vstring '8 * (strLen - 1)' text      encoding='"UTF-8"' ]
+    [reserved uint 8                     '0x00'                       ]
 ]
 
 [type AmsNetId

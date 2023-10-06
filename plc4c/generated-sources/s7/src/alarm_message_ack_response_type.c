@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -27,7 +28,7 @@
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_ack_response_type** _message) {
+plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_alarm_message_ack_response_type** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -63,7 +64,6 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_parse(plc4
     // Count array
     uint16_t itemCount = (uint16_t) numberOfObjects;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      
       uint8_t* _value = malloc(sizeof(uint8_t));
       _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) _value);
       if(_res != OK) {
@@ -77,7 +77,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_parse(plc4
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_ack_response_type* _message) {
+plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_ack_response_type* _message) {
   plc4c_return_code _res = OK;
 
   // Simple Field (functionId)
@@ -96,7 +96,6 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_serialize(
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->message_objects);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-
       uint8_t* _value = (uint8_t*) plc4c_utils_list_get_value(_message->message_objects, curItem);
       plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_value);
     }
@@ -105,11 +104,11 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_ack_response_type_serialize(
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_alarm_message_ack_response_type_length_in_bytes(plc4c_s7_read_write_alarm_message_ack_response_type* _message) {
-  return plc4c_s7_read_write_alarm_message_ack_response_type_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_alarm_message_ack_response_type_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_ack_response_type* _message) {
+  return plc4c_s7_read_write_alarm_message_ack_response_type_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_alarm_message_ack_response_type_length_in_bits(plc4c_s7_read_write_alarm_message_ack_response_type* _message) {
+uint16_t plc4c_s7_read_write_alarm_message_ack_response_type_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_ack_response_type* _message) {
   uint16_t lengthInBits = 0;
 
   // Simple field (functionId)

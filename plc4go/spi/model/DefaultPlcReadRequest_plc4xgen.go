@@ -22,56 +22,28 @@
 package model
 
 import (
+	"context"
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcReadRequest) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcReadRequest"); err != nil {
 		return err
 	}
-	if err := d.DefaultRequest.Serialize(writeBuffer); err != nil {
+	if err := d.DefaultPlcTagRequest.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
-	}
-
-	if d.reader != nil {
-		if serializableField, ok := d.reader.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("reader"); err != nil {
-				return err
-			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("reader"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.reader)
-			if err := writeBuffer.WriteString("reader", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-
-	if d.readRequestInterceptor != nil {
-		if serializableField, ok := d.readRequestInterceptor.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("readRequestInterceptor"); err != nil {
-				return err
-			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("readRequestInterceptor"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.readRequestInterceptor)
-			if err := writeBuffer.WriteString("readRequestInterceptor", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
 	}
 	if err := writeBuffer.PopContext("PlcReadRequest"); err != nil {
 		return err
@@ -81,7 +53,7 @@ func (d *DefaultPlcReadRequest) Serialize(writeBuffer utils.WriteBuffer) error {
 
 func (d *DefaultPlcReadRequest) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

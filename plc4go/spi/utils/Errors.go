@@ -21,8 +21,15 @@ package utils
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"strings"
+	"time"
 )
+
+// ErrorIdentify is an interface defining the inline interface defined in errors.Is(err, target error) bool (wrap.go)
+type ErrorIdentify interface {
+	Is(target error) bool
+}
 
 // MultiError is a Wrapper for multiple Errors
 type MultiError struct {
@@ -33,17 +40,36 @@ type MultiError struct {
 }
 
 func (m MultiError) Error() string {
+	if m.MainError == nil && len(m.Errors) == 0 {
+		return ""
+	}
 	mainErrorText := "Child errors:\n"
 	if m.MainError != nil {
 		mainErrorText = fmt.Sprintf("Main Error: %v\nChild errors:\n", m.MainError)
 	}
-	return mainErrorText + strings.Join(func(errors []error) []string {
+	childErrorText := strings.Join(func(errors []error) []string {
 		result := make([]string, len(errors))
 		for i, errorElement := range errors {
 			result[i] = errorElement.Error()
 		}
 		return result
 	}(m.Errors), "\n")
+	if childErrorText == "" {
+		childErrorText = "No errors"
+	}
+	return mainErrorText + childErrorText
+}
+
+func (m MultiError) Is(target error) bool {
+	if _, ok := target.(MultiError); ok {
+		return true
+	}
+	for _, childError := range m.Errors {
+		if errors.Is(childError, target) {
+			return true
+		}
+	}
+	return false
 }
 
 type ParseAssertError struct {
@@ -69,5 +95,22 @@ func (e ParseValidationError) Error() string {
 
 func (e ParseValidationError) Is(target error) bool {
 	_, ok := target.(ParseValidationError)
+	return ok
+}
+
+type TimeoutError struct {
+	timeout time.Duration
+}
+
+func NewTimeoutError(timeout time.Duration) TimeoutError {
+	return TimeoutError{timeout: timeout}
+}
+
+func (t TimeoutError) Error() string {
+	return fmt.Sprintf("got timeout after %s", t.timeout)
+}
+
+func (t TimeoutError) Is(target error) bool {
+	_, ok := target.(TimeoutError)
 	return ok
 }

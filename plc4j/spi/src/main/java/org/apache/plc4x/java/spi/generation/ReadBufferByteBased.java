@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-public class ReadBufferByteBased implements ReadBuffer {
+public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     private final MyDefaultBitInput bi;
     private ByteOrder byteOrder;
@@ -152,8 +152,27 @@ public class ReadBufferByteBased implements ReadBuffer {
             throw new ParseException("unsigned short can only contain max 8 bits");
         }
         try {
-            // No need to flip here as we're only reading one byte.
-            return bi.readShort(true, bitLength);
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new ParseException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    byte[] stringBytes = new byte[charLen];
+                    for (int i = 0; i < charLen; i++) {
+                        stringBytes[i] = bi.readByte(false, 8);
+                    }
+                    String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
+                    stringValue = stringValue.trim();
+                    return Short.parseShort(stringValue);
+                case "default":
+                    // No need to flip here as we're only reading one byte.
+                    return bi.readShort(true, bitLength);
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
+            }
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned short", e);
         }
@@ -168,11 +187,30 @@ public class ReadBufferByteBased implements ReadBuffer {
             throw new ParseException("unsigned int can only contain max 16 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                int intValue = bi.readInt(true, bitLength);
-                return Integer.reverseBytes(intValue) >>> 16;
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new ParseException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    byte[] stringBytes = new byte[charLen];
+                    for (int i = 0; i < charLen; i++) {
+                        stringBytes[i] = bi.readByte(false, 8);
+                    }
+                    String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
+                    stringValue = stringValue.trim();
+                    return Integer.parseInt(stringValue);
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        final int longValue = bi.readInt(true, bitLength);
+                        return Integer.reverseBytes(longValue) >>> (32 - bitLength);
+                    }
+                    return bi.readInt(true, bitLength);
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
-            return bi.readInt(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned int", e);
         }
@@ -187,11 +225,30 @@ public class ReadBufferByteBased implements ReadBuffer {
             throw new ParseException("unsigned long can only contain max 32 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                final long longValue = bi.readLong(true, bitLength);
-                return Long.reverseBytes(longValue) >>> 32;
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new ParseException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    byte[] stringBytes = new byte[charLen];
+                    for (int i = 0; i < charLen; i++) {
+                        stringBytes[i] = bi.readByte(false, 8);
+                    }
+                    String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
+                    stringValue = stringValue.trim();
+                    return Long.parseLong(stringValue);
+                case "default":
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        final long longValue = bi.readLong(true, bitLength);
+                        return Long.reverseBytes(longValue) >>> 32;
+                    }
+                    return bi.readLong(true, bitLength);
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
-            return bi.readLong(true, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned long", e);
         }
@@ -207,16 +264,35 @@ public class ReadBufferByteBased implements ReadBuffer {
             throw new ParseException("unsigned long can only contain max 64 bits");
         }
         try {
-            // Read as signed value
-            long val = bi.readLong(false, bitLength);
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                val = Long.reverseBytes(val);
-            }
-            if (val >= 0) {
-                return BigInteger.valueOf(val);
-            } else {
-                BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
-                return BigInteger.valueOf(val).add(constant);
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "ASCII":
+                    // AsciiUint can only decode values that have a multiple of 8 length.
+                    if (bitLength % 8 != 0) {
+                        throw new ParseException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
+                    }
+                    int charLen = bitLength / 8;
+                    byte[] stringBytes = new byte[charLen];
+                    for (int i = 0; i < charLen; i++) {
+                        stringBytes[i] = bi.readByte(false, 8);
+                    }
+                    String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
+                    stringValue = stringValue.trim();
+                    return new BigInteger(stringValue);
+                case "default":
+                    // Read as signed value
+                    long val = bi.readLong(false, bitLength);
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        val = Long.reverseBytes(val);
+                    }
+                    if (val >= 0) {
+                        return BigInteger.valueOf(val);
+                    } else {
+                        BigInteger constant = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(2));
+                        return BigInteger.valueOf(val).add(constant);
+                    }
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
             }
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned big integer", e);
@@ -319,7 +395,7 @@ public class ReadBufferByteBased implements ReadBuffer {
         short fraction = bi.readShort(true, 11);
         // This is a 12-bit 2's complement notation ... the first bit belongs to the last 11 bits.
         // If the first bit is set, then we need to also set the upper 5 bits of the fraction part.
-        if(sign) {
+        if (sign) {
             fraction = (short) (fraction | 0xF800);
         }
         if ((exponent >= 1) && (exponent < 15)) {
@@ -388,10 +464,19 @@ public class ReadBufferByteBased implements ReadBuffer {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
+    /*
+     * When encoding strings we currently implement a sort of 0-terminated string. If the string is shorter than the
+     * max bit-length, we fill it up with 0x00, which makes it 0-terminated. If it exactly fits, then there is no
+     * 0-termination.
+     */
     @Override
-    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) throws ParseException {
+    public String readString(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
-        switch (encoding.toUpperCase()) {
+        encoding = encoding.toUpperCase();
+        switch (encoding) {
+            case "ASCII":
+            case "WINDOWS1252":
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
@@ -399,7 +484,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                 for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
                     try {
                         byte b = readByte(logicalName);
-                        if (b == 0x00) {
+                        if (!disable0Termination() && (b == 0x00)) {
                             finishedReading = true;
                         } else if (!finishedReading) {
                             strBytes[i] = b;
@@ -409,7 +494,18 @@ public class ReadBufferByteBased implements ReadBuffer {
                         throw new PlcRuntimeException(e);
                     }
                 }
-                return new String(strBytes, StandardCharsets.UTF_8).substring(0, realLength);
+                Charset charset;
+                switch (encoding) {
+                    case "UTF8":
+                        charset = StandardCharsets.UTF_8;
+                        break;
+                    case "WINDOWS1252":
+                        charset = Charset.forName("windows-1252");
+                        break;
+                    default:
+                        charset = StandardCharsets.US_ASCII;
+                }
+                return new String(strBytes, 0, realLength, charset);
             }
             case "UTF16":
             case "UTF16LE":
@@ -421,12 +517,12 @@ public class ReadBufferByteBased implements ReadBuffer {
                     try {
                         byte b1 = readByte(logicalName);
                         byte b2 = readByte(logicalName);
-                        if ((b1 == 0x00) && (b2 == 0x00)) {
+                        if (!disable0Termination() && (b1 == 0x00) && (b2 == 0x00)) {
                             finishedReading = true;
-                        } else if (!finishedReading){
+                        } else if (!finishedReading) {
                             strBytes[(i * 2)] = b1;
                             strBytes[(i * 2) + 1] = b2;
-                            realLength++;
+                            realLength += 2;
                         }
                     } catch (Exception e) {
                         throw new PlcRuntimeException(e);
@@ -443,7 +539,7 @@ public class ReadBufferByteBased implements ReadBuffer {
                     default:
                         charset = StandardCharsets.UTF_16;
                 }
-                return new String(strBytes, charset).substring(0, realLength);
+                return new String(strBytes, 0, realLength, charset);
             }
             default:
                 throw new ParseException("Unsupported encoding: " + encoding);
@@ -454,6 +550,10 @@ public class ReadBufferByteBased implements ReadBuffer {
     @Override
     public void closeContext(String logicalName, WithReaderArgs... readerArgs) {
         // byte buffer need no context handling
+    }
+
+    private boolean disable0Termination() {
+        return Boolean.parseBoolean(System.getProperty("disable-string-0-termination", "false"));
     }
 
 }

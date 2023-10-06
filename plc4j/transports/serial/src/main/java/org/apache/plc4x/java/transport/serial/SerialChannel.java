@@ -47,10 +47,10 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
     private final SerialChannelConfig config;
 
     private final VoidChannelPromise unsafeVoidPromise = new VoidChannelPromise(this, false);
-    private boolean readPending = false; // Did we receive an EOF?
+    private boolean serialReadPending = false; // Did we receive an EOF?
     private SocketAddress remoteAddress;
     private boolean active = false;
-    private SerialSelectionKey selectionKey;
+    private SerialSelectionKey serialSelectionKey;
     private SerialChannelHandler comPort;
     private final DefaultChannelPipeline pipeline; // Copied from AbstractChannel
 
@@ -161,15 +161,11 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         try {
             // A bit hacky but to support testing check for custom handler
             final Optional<SerialChannelHandler> customHandler = ((SerialSocketAddress) remoteAddress).getHandler();
-            if (customHandler.isPresent()) {
-                comPort = customHandler.get();
-            } else {
-                comPort = new SerialChannelHandler.SerialPortHandler(remoteAddress, config);
-            }
+            comPort = customHandler.orElseGet(() -> new SerialChannelHandler.SerialPortHandler(remoteAddress, config));
             logger.debug("Using Com Port {}, trying to open port", comPort.getIdentifier());
             if (comPort.open()) {
                 logger.debug("Opened port successful to {}", comPort.getIdentifier());
-                comPort.registerSelectionKey(selectionKey);
+                comPort.registerSelectionKey(serialSelectionKey);
 
                 this.active = true;
                 return true;
@@ -231,7 +227,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
         private boolean inFlush0; // Copied from AbstractUnsafe
         private Throwable initialCloseCause; // Copied from AbstractUnsafe
 
-        private ChannelOutboundBuffer outboundBuffer;
+        private final ChannelOutboundBuffer outboundBuffer;
 
         private RecvByteBufAllocator.Handle recvHandle;
 
@@ -279,13 +275,13 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                         close = allocHandle.lastBytesRead() < 0;
                         if (close) {
                             // There is nothing left to read as we received an EOF.
-                            readPending = false;
+                            serialReadPending = false;
                         }
                         break;
                     }
 
                     allocHandle.incMessagesRead(1);
-                    readPending = false;
+                    serialReadPending = false;
                     pipeline.fireChannelRead(byteBuf);
                 } while (allocHandle.continueReading());
 
@@ -301,13 +297,13 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 // handleReadException(pipeline, byteBuf, t, close, allocHandle);
                 t.printStackTrace();
             } finally {
-                // Check if there is a readPending which was not processed yet.
+                // Check if there is a serialReadPending which was not processed yet.
                 // This could be for two reasons:
                 // * The user called Channel.read() or ChannelHandlerContext.read() in channelRead(...) method
                 // * The user called Channel.read() or ChannelHandlerContext.read() in channelReadComplete(...) method
                 //
                 // See https://github.com/netty/netty/issues/2254
-                if (!readPending && !config.isAutoRead()) {
+                if (!serialReadPending && !config.isAutoRead()) {
                     // TODO
                 }
             }
@@ -353,12 +349,12 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
                 SerialPollingSelector selector = (SerialPollingSelector) method.invoke(eventLoop);
 
                 // Register the channel
-                selectionKey = (SerialSelectionKey) ((SerialChannel) promise.channel()).javaChannel().register(selector, 0, SerialChannel.this);
+                serialSelectionKey = (SerialSelectionKey) ((SerialChannel) promise.channel()).javaChannel().register(selector, 0, SerialChannel.this);
 
                 // Set selection key
                 final Field selectionKeyField = AbstractNioChannel.class.getDeclaredField("selectionKey");
                 selectionKeyField.setAccessible(true);
-                selectionKeyField.set(SerialChannel.this, selectionKey);
+                selectionKeyField.set(SerialChannel.this, serialSelectionKey);
 
                 // Set event loop (again, via reflection)
                 final Field loop = AbstractChannel.class.getDeclaredField("eventLoop");
@@ -458,12 +454,7 @@ public class SerialChannel extends AbstractNioByteChannel implements DuplexChann
             try {
                 doBeginRead();
             } catch (final Exception e) {
-                invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        pipeline().fireExceptionCaught(e);
-                    }
-                });
+                invokeLater(() -> pipeline().fireExceptionCaught(e));
                 close(voidPromise());
             }
         }

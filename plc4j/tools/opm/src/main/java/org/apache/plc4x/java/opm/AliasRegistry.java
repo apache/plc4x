@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.opm;
 
 /**
- * This interface can be used to give "aliases" for field names in {@link PlcEntity}s {@link PlcField} strings.
+ * This interface can be used to give "aliases" for tag names in {@link PlcEntity}s {@link PlcTag} strings.
  * These are then resolved.
  */
 public interface AliasRegistry {
@@ -35,7 +35,7 @@ public interface AliasRegistry {
     boolean canResolve(String connection, String alias);
 
     /**
-     * Resolves an alias to a valid PLC Field Address
+     * Resolves an alias to a valid PLC Tag Address
      */
     String resolve(String alias);
 

@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -48,7 +49,7 @@ plc4c_s7_read_write_s7_var_request_parameter_item plc4c_s7_read_write_s7_var_req
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_var_request_parameter_item** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_s7_read_write_s7_var_request_parameter_item** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -80,7 +81,7 @@ if( itemType == 0x12 ) { /* S7VarRequestParameterItemAddress */
 
   // Simple Field (address)
   plc4c_s7_read_write_s7_address* address;
-  _res = plc4c_s7_read_write_s7_address_parse(readBuffer, (void*) &address);
+  _res = plc4c_s7_read_write_s7_address_parse(ctx, readBuffer, (void*) &address);
   if(_res != OK) {
     return _res;
   }
@@ -90,7 +91,7 @@ if( itemType == 0x12 ) { /* S7VarRequestParameterItemAddress */
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
   plc4c_return_code _res = OK;
 
   // Discriminator Field (itemType)
@@ -101,13 +102,13 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(pl
     case plc4c_s7_read_write_s7_var_request_parameter_item_type_plc4c_s7_read_write_s7_var_request_parameter_item_address: {
 
   // Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_s7_address_length_in_bytes(_message->s7_var_request_parameter_item_address_address));
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_s7_address_length_in_bytes(ctx, _message->s7_var_request_parameter_item_address_address));
   if(_res != OK) {
     return _res;
   }
 
   // Simple Field (address)
-  _res = plc4c_s7_read_write_s7_address_serialize(writeBuffer, _message->s7_var_request_parameter_item_address_address);
+  _res = plc4c_s7_read_write_s7_address_serialize(ctx, writeBuffer, _message->s7_var_request_parameter_item_address_address);
   if(_res != OK) {
     return _res;
   }
@@ -119,11 +120,11 @@ plc4c_return_code plc4c_s7_read_write_s7_var_request_parameter_item_serialize(pl
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bytes(plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
-  return plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
+  return plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
+uint16_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_var_request_parameter_item* _message) {
   uint16_t lengthInBits = 0;
 
   // Discriminator Field (itemType)
@@ -138,7 +139,7 @@ uint16_t plc4c_s7_read_write_s7_var_request_parameter_item_length_in_bits(plc4c_
 
 
   // Simple field (address)
-  lengthInBits += plc4c_s7_read_write_s7_address_length_in_bits(_message->s7_var_request_parameter_item_address_address);
+  lengthInBits += plc4c_s7_read_write_s7_address_length_in_bits(ctx, _message->s7_var_request_parameter_item_address_address);
 
       break;
     }

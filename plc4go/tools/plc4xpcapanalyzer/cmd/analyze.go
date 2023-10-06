@@ -29,7 +29,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var validProtocolType = map[string]interface{}{
+var validProtocolType = map[string]any{
 	"bacnet": nil,
 	"c-bus":  nil,
 }

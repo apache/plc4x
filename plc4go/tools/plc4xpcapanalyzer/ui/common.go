@@ -20,15 +20,18 @@
 package ui
 
 import (
-	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	plc4goModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/rs/zerolog"
+	"context"
 	"io"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+
+	"github.com/rs/zerolog"
 )
 
 const protocols = "ads,bacnetip,c-bus,s7"
@@ -48,7 +51,7 @@ type loadedPcapFile struct {
 var loadedPcapFiles []loadedPcapFile
 var loadedPcapFilesChanged func()
 
-var messageReceived func(messageNumber int, receiveTime time.Time, message plc4goModel.PlcMessage)
+var messageReceived func(messageNumber int, receiveTime time.Time, message apiModel.PlcMessage)
 var numberOfMessagesReceived int
 var spiMessageReceived func(messageNumber int, receiveTime time.Time, message spi.Message)
 var spiNumberOfMessagesReceived int
@@ -67,6 +70,9 @@ var currentDir = func() string {
 	dir, _ := os.Getwd()
 	return dir
 }()
+
+var rootContext = context.Background()
+var cancelFunctions = make(map[uint32]context.CancelFunc)
 
 var shutdownMutex sync.Mutex
 var hasShutdown bool

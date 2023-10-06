@@ -25,7 +25,7 @@
 #include <tpkt_packet.h>
 
 #include "plc4c/driver_s7_packets.h"
-#include "plc4c/driver_s7_encode_decode.h"
+#include "szl_data_tree_item.h"
 
 // undef to use pointer to plc4c_data item on writes
 // probably safe to comment out but on for now.
@@ -143,14 +143,14 @@ plc4c_return_code plc4c_driver_s7_send_packet(plc4c_connection* connection,
   plc4c_return_code return_code;
   
   // Get the size required to contain the serialized form of this packet.
-  packet_size = plc4c_s7_read_write_tpkt_packet_length_in_bytes(packet);
+  packet_size = plc4c_s7_read_write_tpkt_packet_length_in_bytes(plc4x_spi_context_background(), packet);
 
   // Serialize this message to a byte-array.
   return_code = plc4c_spi_write_buffer_create(packet_size, &write_buffer);
   if (return_code != OK) {
     return return_code;
   }
-  return_code = plc4c_s7_read_write_tpkt_packet_serialize(write_buffer, packet);
+  return_code = plc4c_s7_read_write_tpkt_packet_serialize(plc4x_spi_context_background(), write_buffer, packet);
   if(return_code != OK) {
     return return_code;
   }
@@ -185,7 +185,7 @@ plc4c_return_code plc4c_driver_s7_receive_packet(plc4c_connection* connection,
 
   // Parse the packet by consuming the read_buffer data.
   *packet = NULL;
-  return_code = plc4c_s7_read_write_tpkt_packet_parse(read_buffer, packet);
+  return_code = plc4c_s7_read_write_tpkt_packet_parse(plc4x_spi_context_background(), read_buffer, packet);
   if (return_code != OK) {
     return return_code;
   }
@@ -975,7 +975,6 @@ void plc4c_driver_s7_time_transport_size(plc4c_s7_read_write_transport_size *tra
       *transport_size = plc4c_s7_read_write_transport_size_UINT;
       break;
     case plc4c_s7_read_write_transport_size_TIME_OF_DAY:
-    case plc4c_s7_read_write_transport_size_TOD:
       *transport_size = plc4c_s7_read_write_transport_size_UDINT;
       break;
   }

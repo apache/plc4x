@@ -21,78 +21,90 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 )
 
+var _ apiModel.PlcBrowseRequestBuilder = &DefaultPlcBrowseRequestBuilder{}
+
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestBuilder
 type DefaultPlcBrowseRequestBuilder struct {
-	fieldHandler spi.PlcFieldHandler
-	browser      spi.PlcBrowser
-	queries      map[string]string
+	tagHandler spi.PlcTagHandler `ignore:"true"`
+	browser    spi.PlcBrowser    `ignore:"true"`
+	// The double structure is in order to preserve the order of elements.
 	queryNames   []string
-	fields       map[string]model.PlcField
-	fieldNames   []string
+	queryStrings map[string]string
 }
 
-func NewDefaultPlcBrowseRequestBuilder(fieldHandler spi.PlcFieldHandler, browser spi.PlcBrowser) *DefaultPlcBrowseRequestBuilder {
+func NewDefaultPlcBrowseRequestBuilder(tagHandler spi.PlcTagHandler, browser spi.PlcBrowser) apiModel.PlcBrowseRequestBuilder {
 	return &DefaultPlcBrowseRequestBuilder{
-		fieldHandler: fieldHandler,
+		tagHandler:   tagHandler,
 		browser:      browser,
-		queries:      map[string]string{},
-		fields:       map[string]model.PlcField{},
+		queryStrings: map[string]string{},
 	}
 }
 
-func (d *DefaultPlcBrowseRequestBuilder) AddQuery(name string, query string) model.PlcBrowseRequestBuilder {
+func (d *DefaultPlcBrowseRequestBuilder) AddQuery(name string, query string) apiModel.PlcBrowseRequestBuilder {
 	d.queryNames = append(d.queryNames, name)
-	d.queries[name] = query
+	d.queryStrings[name] = query
 	return d
 }
 
-func (d *DefaultPlcBrowseRequestBuilder) AddField(name string, field model.PlcField) model.PlcBrowseRequestBuilder {
-	d.fieldNames = append(d.fieldNames, name)
-	d.fields[name] = field
-	return d
-}
-
-func (d *DefaultPlcBrowseRequestBuilder) Build() (model.PlcBrowseRequest, error) {
-	for _, name := range d.queryNames {
-		query := d.queries[name]
-		field, err := d.fieldHandler.ParseQuery(query)
+func (d *DefaultPlcBrowseRequestBuilder) Build() (apiModel.PlcBrowseRequest, error) {
+	queries := map[string]apiModel.PlcQuery{}
+	for name, queryString := range d.queryStrings {
+		query, err := d.tagHandler.ParseQuery(queryString)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Error parsing query: %s", query)
 		}
-		d.AddField(name, field)
+		queries[name] = query
 	}
-	return NewDefaultPlcBrowseRequest(d.fields, d.fieldNames, d.browser), nil
+	return NewDefaultPlcBrowseRequest(queries, d.queryNames, d.browser), nil
 }
+
+var _ apiModel.PlcBrowseRequest = &DefaultPlcBrowseRequest{}
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequest
 type DefaultPlcBrowseRequest struct {
-	DefaultRequest
-	browser spi.PlcBrowser
+	browser    spi.PlcBrowser
+	queryNames []string
+	queries    map[string]apiModel.PlcQuery
 }
 
-func NewDefaultPlcBrowseRequest(fields map[string]model.PlcField, fieldNames []string, browser spi.PlcBrowser) model.PlcBrowseRequest {
+func NewDefaultPlcBrowseRequest(queries map[string]apiModel.PlcQuery, queryNames []string, browser spi.PlcBrowser) *DefaultPlcBrowseRequest {
 	return &DefaultPlcBrowseRequest{
-		DefaultRequest: NewDefaultRequest(fields, fieldNames),
-		browser:        browser,
+		browser:    browser,
+		queryNames: queryNames,
+		queries:    queries,
 	}
 }
 
-func (d *DefaultPlcBrowseRequest) Execute() <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) IsAPlcMessage() bool {
+	return true
+}
+
+func (d *DefaultPlcBrowseRequest) Execute() <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.Browse(context.TODO(), d)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithContext(ctx context.Context) <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.Browse(ctx, d)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptor(interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	return d.ExecuteWithInterceptorWithContext(context.TODO(), interceptor)
 }
 
-func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result model.PlcBrowseEvent) bool) <-chan model.PlcBrowseRequestResult {
+func (d *DefaultPlcBrowseRequest) ExecuteWithInterceptorWithContext(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool) <-chan apiModel.PlcBrowseRequestResult {
 	return d.browser.BrowseWithInterceptor(ctx, d, interceptor)
+}
+
+func (d *DefaultPlcBrowseRequest) GetQueryNames() []string {
+	return d.queryNames
+}
+
+func (d *DefaultPlcBrowseRequest) GetQuery(queryName string) apiModel.PlcQuery {
+	return d.queries[queryName]
 }

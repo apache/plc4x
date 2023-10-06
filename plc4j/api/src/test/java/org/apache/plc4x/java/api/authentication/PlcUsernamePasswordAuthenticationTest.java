@@ -37,7 +37,7 @@ public class PlcUsernamePasswordAuthenticationTest {
 
     /**
      * Usually in a toString method most properties are output.
-     * However the password field should never be output this way or the password could be leaked to a log-file
+     * However, the password field should never be output this way or the password could be leaked to a log-file
      * unintentionally.
      */
     @Test

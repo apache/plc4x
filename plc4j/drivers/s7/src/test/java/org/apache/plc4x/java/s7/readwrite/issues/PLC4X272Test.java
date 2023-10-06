@@ -23,7 +23,7 @@ import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 public class PLC4X272Test extends DriverTestsuiteRunner {
 
     public PLC4X272Test() {
-        super("/tests/PLC4X-272.xml");
+        super("/tests/PLC4X-272.xml", "100 element read request");
     }
 
 }

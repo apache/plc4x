@@ -20,16 +20,24 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"runtime/debug"
+	"sync"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
-	internalModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 type Connection struct {
@@ -37,25 +45,31 @@ type Connection struct {
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	subscribers       []*Subscriber
-	tm                *spi.RequestTransactionManager
+	tm                transactions.RequestTransactionManager
 
 	connectionId string
-	tracer       *spi.Tracer
+	tracer       tracer.Tracer
+
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
-func NewConnection(messageCodec spi.MessageCodec, fieldHandler spi.PlcFieldHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm transactions.RequestTransactionManager, connectionOptions map[string][]string, _options ...options.WithOption) *Connection {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,
 		tm:                tm,
+		log:               customLogger,
+		_options:          _options,
 	}
-	if traceEnabledOption, ok := options["traceEnabled"]; ok {
+	if traceEnabledOption, ok := connectionOptions["traceEnabled"]; ok {
 		if len(traceEnabledOption) == 1 {
-			connection.tracer = spi.NewTracer(connection.connectionId)
+			connection.tracer = tracer.NewTracer(connection.connectionId, _options...)
 		}
 	}
 	connection.DefaultConnection = _default.NewDefaultConnection(connection,
-		_default.WithPlcFieldHandler(fieldHandler),
+		_default.WithPlcTagHandler(tagHandler),
 		_default.WithPlcValueHandler(NewValueHandler()),
 	)
 	return connection
@@ -69,33 +83,48 @@ func (c *Connection) IsTraceEnabled() bool {
 	return c.tracer != nil
 }
 
-func (c *Connection) GetTracer() *spi.Tracer {
+func (c *Connection) GetTracer() tracer.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
+	c.log.Trace().Msg("Connecting")
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
-		connectionConnectResult := <-c.DefaultConnection.Connect()
-		go func() {
-			for c.IsConnected() {
-				log.Debug().Msg("Polling data")
-				incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
-				timeout := time.NewTimer(20 * time.Millisecond)
-				select {
-				case message := <-incomingMessageChannel:
-					// TODO: implement mapping to subscribers
-					log.Info().Msgf("Received \n%v", message)
-					utils.CleanupTimer(timeout)
-				case <-timeout.C:
-				}
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
 			}
-			log.Info().Msg("Ending incoming message transfer")
+		}()
+		connectionConnectResult := <-c.DefaultConnection.ConnectWithContext(ctx)
+		go func() {
+			defer func() {
+				if err := recover(); err != nil {
+					ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+				}
+			}()
+			for c.IsConnected() {
+				c.log.Trace().Msg("Polling data")
+				c.passToDefaultIncomingMessageChannel()
+			}
+			c.log.Info().Msg("Ending incoming message transfer")
 		}()
 		ch <- connectionConnectResult
 	}()
 	return ch
+}
+
+func (c *Connection) passToDefaultIncomingMessageChannel() {
+	incomingMessageChannel := c.messageCodec.GetDefaultIncomingMessageChannel()
+	timeout := time.NewTimer(20 * time.Millisecond)
+	defer utils.CleanupTimer(timeout)
+	select {
+	case message := <-incomingMessageChannel:
+		// TODO: implement mapping to subscribers
+		log.Info().Stringer("message", message).Msg("Received")
+	case <-timeout.C:
+		log.Info().Msg("Message was not handled")
+	}
 }
 
 func (c *Connection) GetConnection() plc4go.PlcConnection {
@@ -107,17 +136,32 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (c *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {
-	return internalModel.NewDefaultPlcReadRequestBuilder(c.GetPlcFieldHandler(), NewReader(&c.invokeIdGenerator, c.messageCodec, c.tm))
+	return spiModel.NewDefaultPlcReadRequestBuilder(
+		c.GetPlcTagHandler(),
+		NewReader(
+			&c.invokeIdGenerator,
+			c.messageCodec,
+			c.tm,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
 func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionRequestBuilder {
-	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.GetPlcFieldHandler(), c.GetPlcValueHandler(), NewSubscriber(c))
+	return spiModel.NewDefaultPlcSubscriptionRequestBuilder(
+		c.GetPlcTagHandler(),
+		c.GetPlcValueHandler(),
+		NewSubscriber(
+			c,
+			append(c._options, options.WithCustomLogger(c.log))...,
+		),
+	)
 }
 
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			log.Debug().Msgf("Subscriber %v already added", subscriber)
+			c.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber already added")
 			return
 		}
 	}
@@ -136,10 +180,6 @@ type InvokeIdGenerator struct {
 func (t *InvokeIdGenerator) getAndIncrement() uint8 {
 	t.lock.Lock()
 	defer t.lock.Unlock()
-	// If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-	if t.currentInvokeId > 0xFF {
-		t.currentInvokeId = 0
-	}
 	result := t.currentInvokeId
 	t.currentInvokeId += 1
 	return result

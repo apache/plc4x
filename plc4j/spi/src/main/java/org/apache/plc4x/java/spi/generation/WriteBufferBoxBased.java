@@ -198,7 +198,7 @@ public class WriteBufferBoxBased implements WriteBuffer, BufferCommons {
     }
 
     @Override
-    public void writeString(String logicalName, int bitLength, String encoding, String value, WithWriterArgs... writerArgs) throws SerializationException {
+    public void writeString(String logicalName, int bitLength, String value, WithWriterArgs... writerArgs) throws SerializationException {
         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0)));
         move(bitLength);

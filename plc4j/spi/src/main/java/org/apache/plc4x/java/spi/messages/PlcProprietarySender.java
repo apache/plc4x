@@ -18,11 +18,8 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import java.util.concurrent.CompletableFuture;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcProprietarySender {
     <T> CompletableFuture<PlcProprietaryResponse<T>> send(PlcProprietaryRequest proprietaryRequest);
 }

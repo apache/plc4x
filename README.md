@@ -18,15 +18,18 @@
   -->
 [![Maven central](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)](https://img.shields.io/maven-central/v/org.apache.plc4x/plc4j-api.svg)
 [![License](https://img.shields.io/github/license/apache/plc4x.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Jenkins Build Status](https://ci-builds.apache.org/job/PLC4X/job/PLC4X/job/develop/badge/icon)](https://ci-builds.apache.org/job/PLC4X/job/PLC4X/job/develop/)
 [![Last commit](https://img.shields.io/github/last-commit/apache/plc4x.svg)]()
-[![Platform compatibility](https://img.shields.io/github/workflow/status/apache/plc4x/Platform%20compatibility?label=Platform%20compatibility)](https://github.com/apache/plc4x/actions/workflows/ensure-platforms.yml)
 [![Twitter](https://img.shields.io/twitter/follow/ApachePLC4X.svg?label=Follow&style=social)](https://twitter.com/ApachePLC4X)
-
+[![Java Platform compatibility](https://github.com/apache/plc4x/actions/workflows/java-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/java-platform.yml)
+[![Go Platform compatibility](https://github.com/apache/plc4x/actions/workflows/go-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/go-platform.yml)
+[![C Platform compatibility](https://github.com/apache/plc4x/actions/workflows/c-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/c-platform.yml)
+[![Python Platform Compatibility](https://github.com/apache/plc4x/actions/workflows/python-platform.yml/badge.svg)](https://github.com/apache/plc4x/actions/workflows/python-platform.yml)
 
 <h1 align="center">
   <br>
-   <img src="https://plc4x.apache.org/images/apache_plc4x_logo.png" 
-   alt="Apache PLC4X Logo" title="Apache PLC4X Logo"/>
+   <a href="https://plc4x.apache.org"><img src="https://plc4x.apache.org/images/apache_plc4x_logo.png" 
+   alt="Apache PLC4X Logo" title="Apache PLC4X Logo"/></a>
   <br>
 </h1>
 <h3 align="center">The Industrial IoT adapter</h3>
@@ -55,7 +58,7 @@ We are planning on shipping libraries for usage in:
 2. Go
 3. C (not ready for usage)
 4. Python (not ready for usage)
-5. C# (.Net) (not ready for usage)
+5. C# (.Net) (not ready for usage - abandoned)
 
 PLC4X also integrates with other Apache projects, such as:
 
@@ -128,6 +131,26 @@ With this setup you will be able to build the Java part of PLC4X.
 
 The when doing a full build, we automatically run a prerequisite check and fail the build with an explanation, if not all requirements are meet.
 
+### Building with Docker
+
+If you don't want to bother setting up the environment on your normal system, and you have Docker installed, you can also build everything in a Docker container:
+
+```
+   docker compose up
+```
+
+This will build a local Docker container able to build all parts of PLC4X and will run a maven build of the local directory inside this container.
+
+The default build will run a local release-build, so it can also be used to ensure reproducible builds when releasing.
+
+Per default will it store files locally:
+- Downloaded maven artifacts will go to `out/.repository`
+- Deployed artifacts will go to `out/.local-snapshots-dir`
+
+The reason for this is, that otherwise the artifacts would be packaged in with the source-release artifact, resulting in a 12GB or more zip archive.
+However, saving it in the main `target` directory would make the build delete the local repo every time a `mvn clean` is run. 
+The `out` directory however is excluded per default from the assembly descriptor, and therefore it is not included in the source zim.
+
 ### Getting Started
 
 You must have at least Java 11 installed on your system and connectivity to Maven Central
@@ -180,7 +203,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox install
+./mvnw -P with-c,with-go,with-python,with-sandbox install
 ```
 
 ## Community

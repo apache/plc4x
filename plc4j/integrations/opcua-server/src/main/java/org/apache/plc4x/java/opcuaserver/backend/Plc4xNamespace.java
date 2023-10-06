@@ -18,14 +18,11 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.opcuaserver.configuration.Configuration;
 import org.apache.plc4x.java.opcuaserver.configuration.DeviceConfiguration;
 import org.apache.plc4x.java.opcuaserver.configuration.Tag;
-import org.apache.plc4x.java.utils.connectionpool.PooledPlcDriverManager;
 import org.eclipse.milo.opcua.sdk.core.AccessLevel;
 import org.eclipse.milo.opcua.sdk.core.Reference;
 import org.eclipse.milo.opcua.sdk.core.ValueRank;
@@ -47,7 +44,10 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
 
@@ -55,11 +55,11 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
 
     public static final String APPLICATIONID = "urn:eclipse:milo:plc4x:server";
 
-    private Configuration config;
+    private final Configuration config;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DataTypeDictionaryManager dictionaryManager;
     private final SubscriptionModel subscriptionModel;
-    private Plc4xCommunication plc4xServer;
+    private final Plc4xCommunication plc4xServer;
 
     public Plc4xNamespace(OpcUaServer server, Configuration c) {
         super(server, APPLICATIONID);
@@ -74,7 +74,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     }
 
     private void addNodes() {
-        for (DeviceConfiguration c: config.getDevices()) {
+        for (DeviceConfiguration c : config.getDevices()) {
             NodeId folderNodeId = newNodeId(c.getName());
 
             UaFolderNode folderNode = new UaFolderNode(
@@ -100,33 +100,34 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     private void addConfiguredNodes(UaFolderNode rootNode, DeviceConfiguration c) {
         final List<Tag> tags = c.getTags();
         final String connectionString = c.getConnectionString();
-        for (int i = 0; i < tags.size(); i++) {
-            logger.info("Adding Tag " + tags.get(i).getAlias() + " - " + tags.get(i).getAddress());
-            String name = tags.get(i).getAlias();
-            final String tag = tags.get(i).getAddress();
+        for (Tag item : tags) {
+            logger.info("Adding Tag " + item.getAlias() + " - " + item.getAddress());
+            String name = item.getAlias();
+            final String tag = item.getAddress();
 
             Class datatype = null;
             NodeId typeId = Identifiers.String;
             UaVariableNode node = null;
             Variant variant = null;
             try {
-                datatype = plc4xServer.getField(tag, connectionString).getDefaultJavaType();
-                final int length = plc4xServer.getField(tag, connectionString).getNumberOfElements();
-                typeId = Plc4xCommunication.getNodeId(plc4xServer.getField(tag, connectionString).getPlcDataType());
+                datatype = plc4xServer.getTag(tag, connectionString).getPlcValueType().getDefaultJavaType();
+                final int length = (plc4xServer.getTag(tag, connectionString).getArrayInfo().isEmpty()) ? 1 :
+                        plc4xServer.getTag(tag, connectionString).getArrayInfo().get(0).getSize();
+                typeId = Plc4xCommunication.getNodeId(plc4xServer.getTag(tag, connectionString).getPlcValueType());
 
 
                 if (length > 1) {
                     node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                        .setNodeId(newNodeId(name))
-                        .setAccessLevel(AccessLevel.READ_WRITE)
-                        .setUserAccessLevel(AccessLevel.READ_WRITE)
-                        .setBrowseName(newQualifiedName(name))
-                        .setDisplayName(LocalizedText.english(name))
-                        .setDataType(typeId)
-                        .setTypeDefinition(Identifiers.BaseDataVariableType)
-                        .setValueRank(ValueRank.OneDimension.getValue())
-                        .setArrayDimensions(new UInteger[]{uint(length)})
-                        .build();
+                            .setNodeId(newNodeId(name))
+                            .setAccessLevel(AccessLevel.READ_WRITE)
+                            .setUserAccessLevel(AccessLevel.READ_WRITE)
+                            .setBrowseName(newQualifiedName(name))
+                            .setDisplayName(LocalizedText.english(name))
+                            .setDataType(typeId)
+                            .setTypeDefinition(Identifiers.BaseDataVariableType)
+                            .setValueRank(ValueRank.OneDimension.getValue())
+                            .setArrayDimensions(new UInteger[]{uint(length)})
+                            .build();
 
                     Object array = Array.newInstance(datatype, length);
                     for (int j = 0; j < length; j++) {
@@ -135,36 +136,36 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
                     variant = new Variant(array);
                 } else {
                     node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
-                        .setNodeId(newNodeId(name))
-                        .setAccessLevel(AccessLevel.READ_WRITE)
-                        .setUserAccessLevel(AccessLevel.READ_WRITE)
-                        .setBrowseName(newQualifiedName(name))
-                        .setDisplayName(LocalizedText.english(name))
-                        .setDataType(typeId)
-                        .setTypeDefinition(Identifiers.BaseDataVariableType)
-                        .build();
+                            .setNodeId(newNodeId(name))
+                            .setAccessLevel(AccessLevel.READ_WRITE)
+                            .setUserAccessLevel(AccessLevel.READ_WRITE)
+                            .setBrowseName(newQualifiedName(name))
+                            .setDisplayName(LocalizedText.english(name))
+                            .setDataType(typeId)
+                            .setTypeDefinition(Identifiers.BaseDataVariableType)
+                            .build();
                     variant = new Variant(0);
                 }
 
                 node.setValue(new DataValue(variant));
 
                 node.getFilterChain().addLast(
-                    AttributeFilters.getValue(
-                        ctx -> plc4xServer.getValue(ctx, tag, connectionString)
-                    )
+                        AttributeFilters.getValue(
+                                ctx -> plc4xServer.getValue(ctx, tag, connectionString)
+                        )
                 );
 
                 node.getFilterChain().addLast(
-                    AttributeFilters.setValue(
-                        (ctx, value) -> {
-                            if (length > 1) {
-                                plc4xServer.setValue(tag, Arrays.toString((Object[]) value.getValue().getValue()), connectionString);
-                            } else {
-                                plc4xServer.setValue(tag, value.getValue().getValue().toString(), connectionString);
-                            }
+                        AttributeFilters.setValue(
+                                (ctx, value) -> {
+                                    if (length > 1) {
+                                        plc4xServer.setValue(tag, Arrays.toString((Object[]) value.getValue().getValue()), connectionString);
+                                    } else {
+                                        plc4xServer.setValue(tag, value.getValue().getValue().toString(), connectionString);
+                                    }
 
-                        }
-                    )
+                                }
+                        )
                 );
 
             } catch (PlcConnectionException e) {
@@ -181,11 +182,11 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     @Override
     public void onDataItemsCreated(List<DataItem> dataItems) {
         for (DataItem item : dataItems) {
-            plc4xServer.addField(item);
+            plc4xServer.addTag(item);
 
             if (plc4xServer.getDriverManager() == null) {
-                plc4xServer.removeField(item);
-                plc4xServer.setDriverManager(new PooledPlcDriverManager());
+                plc4xServer.removeTag(item);
+                plc4xServer.setDriverManager(new DefaultPlcDriverManager());
             }
         }
 
@@ -195,7 +196,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     @Override
     public void onDataItemsModified(List<DataItem> dataItems) {
         for (DataItem item : dataItems) {
-            plc4xServer.addField(item);
+            plc4xServer.addTag(item);
         }
         subscriptionModel.onDataItemsModified(dataItems);
     }
@@ -203,7 +204,7 @@ public class Plc4xNamespace extends ManagedNamespaceWithLifecycle {
     @Override
     public void onDataItemsDeleted(List<DataItem> dataItems) {
         for (DataItem item : dataItems) {
-            plc4xServer.removeField(item);
+            plc4xServer.removeTag(item);
         }
         subscriptionModel.onDataItemsDeleted(dataItems);
     }

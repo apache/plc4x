@@ -18,7 +18,8 @@
  */
 package org.apache.plc4x.java.opm;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -59,7 +60,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcEntityInterceptorTest.class);
 
-    PlcDriverManager driverManager;
+    DefaultPlcDriverManager driverManager;
 
     MockConnection connection;
 
@@ -70,7 +71,7 @@ public class PlcEntityInterceptorTest implements WithAssertions {
 
     @BeforeEach
     void setUp() throws Exception {
-        driverManager = new PlcDriverManager();
+        driverManager = new DefaultPlcDriverManager();
         connection = (MockConnection) driverManager.getConnection("mock:test");
         connection.setDevice(mockDevice);
         entityManager = new PlcEntityManager(driverManager);
@@ -117,19 +118,19 @@ public class PlcEntityInterceptorTest implements WithAssertions {
     @Test
     public void getTyped_notOkResponse_throws() {
         DefaultPlcReadResponse response = new DefaultPlcReadResponse(null,
-            Collections.singletonMap("field", new ResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
-        assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "field"))
+            Collections.singletonMap("tag", new ResponseItem<>(PlcResponseCode.NOT_FOUND, null)));
+        assertThatThrownBy(() -> PlcEntityInterceptor.getTyped(Long.class, response, "tag"))
             .isInstanceOf(PlcRuntimeException.class)
-            .hasMessage("Unable to read specified field 'field', response code was 'NOT_FOUND'");
+            .hasMessage("Unable to read specified tag 'tag', response code was 'NOT_FOUND'");
     }
 
     @Test
     public void getterWithNoField() throws OPMException {
         BadEntity entity = entityManager.connect(BadEntity.class, "mock:test");
 
-        assertThatThrownBy(entity::getField1)
+        assertThatThrownBy(entity::getTag1)
             .isInstanceOf(OPMException.class)
-            .hasMessage("Unable to identify field with name 'field1' for call to 'getField1'");
+            .hasMessage("Unable to identify tag with name 'tag1' for call to 'getTag1'");
     }
 
     @Nested
@@ -139,11 +140,11 @@ public class PlcEntityInterceptorTest implements WithAssertions {
         Callable callable;
 
         @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-        PlcDriverManager plcDriverManager;
+        PlcConnectionManager connectionManager;
 
         class MiscEntity {
 
-            @PlcField("asd")
+            @PlcTag("asd")
             private String ok2;
 
             public void getTest(String a) {
@@ -181,27 +182,27 @@ public class PlcEntityInterceptorTest implements WithAssertions {
             assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("something"), callable, null, null, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Exception during forwarding call");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getTest", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getTest", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Only getter with no arguments are supported");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
-                .hasMessageMatching("Unable to identify field with name .*");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .hasMessageMatching("Unable to identify tag with name .*");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptGetter(null, MiscEntity.class.getDeclaredMethod("getOk2"), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
-                .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'Mock for PlcResponseCode");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOk2", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Problem during processing")
-                .hasStackTraceContaining(" Unable to read specified field 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'null'");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+                .hasStackTraceContaining(" Unable to read specified tag 'org.apache.plc4x.java.opm.PlcEntityInterceptorTest$Misc$MiscEntity.ok2', response code was 'Mock for PlcResponseCode");
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("setOkOk", String.class, String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Only setter with one arguments are supported");
-            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("someNotSetterMethod", String.class), callable, null, plcDriverManager, null, lastFetched, lastWritten))
+            assertThatThrownBy(() -> PlcEntityInterceptor.interceptSetter(null, MiscEntity.class.getDeclaredMethod("someNotSetterMethod", String.class), callable, null, connectionManager, null, lastFetched, lastWritten))
                 .isInstanceOf(OPMException.class)
                 .hasMessage("Unable to forward invocation someNotSetterMethod on connected PlcEntity");
         }
@@ -223,8 +224,8 @@ public class PlcEntityInterceptorTest implements WithAssertions {
             // For OPM
         }
 
-        // Getter with no field
-        public String getField1() {
+        // Getter with no tag
+        public String getTag1() {
             return "";
         }
 

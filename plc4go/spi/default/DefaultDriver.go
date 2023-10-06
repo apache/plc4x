@@ -22,27 +22,35 @@ package _default
 import (
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
+	"net/url"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"net/url"
 )
+
+type DefaultDriverRequirements interface {
+	GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult
+	DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error
+}
 
 type DefaultDriver interface {
 	fmt.Stringer
 	plc4go.PlcDriver
 	spi.PlcDiscoverer
-	GetPlcFieldHandler() spi.PlcFieldHandler
+	GetPlcTagHandler() spi.PlcTagHandler
 }
 
-func NewDefaultDriver(protocolCode string, protocolName string, defaultTransport string, plcFieldHandler spi.PlcFieldHandler) DefaultDriver {
+func NewDefaultDriver(defaultDriverRequirements DefaultDriverRequirements, protocolCode string, protocolName string, defaultTransport string, plcTagHandler spi.PlcTagHandler) DefaultDriver {
 	return &defaultDriver{
-		protocolCode:     protocolCode,
-		protocolName:     protocolName,
-		defaultTransport: defaultTransport,
-		plcFieldHandler:  plcFieldHandler,
+		DefaultDriverRequirements: defaultDriverRequirements,
+		protocolCode:              protocolCode,
+		protocolName:              protocolName,
+		defaultTransport:          defaultTransport,
+		plcTagHandler:             plcTagHandler,
 	}
 }
 
@@ -53,10 +61,11 @@ func NewDefaultDriver(protocolCode string, protocolName string, defaultTransport
 //
 
 type defaultDriver struct {
+	DefaultDriverRequirements
 	protocolCode     string
 	protocolName     string
 	defaultTransport string
-	plcFieldHandler  spi.PlcFieldHandler
+	plcTagHandler    spi.PlcTagHandler
 }
 
 //
@@ -77,29 +86,38 @@ func (d *defaultDriver) GetDefaultTransport() string {
 	return d.defaultTransport
 }
 
-func (d *defaultDriver) CheckQuery(query string) error {
-	_, err := d.plcFieldHandler.ParseQuery(query)
+func (d *defaultDriver) CheckTagAddress(query string) error {
+	_, err := d.plcTagHandler.ParseTag(query)
 	return err
 }
 
-func (d *defaultDriver) GetConnection(_ url.URL, _ map[string]transports.Transport, _ map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	panic("implement me")
+func (d *defaultDriver) CheckQuery(query string) error {
+	_, err := d.plcTagHandler.ParseQuery(query)
+	return err
+}
+
+func (d *defaultDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	return d.GetConnectionWithContext(context.Background(), transportUrl, transports, options)
 }
 
 func (d *defaultDriver) SupportsDiscovery() bool {
 	return false
 }
 
-func (d *defaultDriver) Discover(_ func(event apiModel.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {
-	panic("not available")
+func (d *defaultDriver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return d.DefaultDriverRequirements.DiscoverWithContext(context.Background(), callback, discoveryOptions...)
 }
 
-func (d *defaultDriver) DiscoverWithContext(_ context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	panic("not available")
+func (d *defaultDriver) DiscoverWithContext(_ context.Context, _ func(event apiModel.PlcDiscoveryItem), _ ...options.WithDiscoveryOption) error {
+	return errors.New("not available")
 }
 
-func (d *defaultDriver) GetPlcFieldHandler() spi.PlcFieldHandler {
-	return d.plcFieldHandler
+func (d *defaultDriver) GetPlcTagHandler() spi.PlcTagHandler {
+	return d.plcTagHandler
+}
+
+func (d *defaultDriver) Close() error {
+	return nil
 }
 
 func (d *defaultDriver) String() string {

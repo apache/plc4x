@@ -21,14 +21,13 @@ package org.apache.plc4x.java.ads;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
 import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
-import org.apache.plc4x.java.ads.field.AdsFieldHandler;
+import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.values.IEC61131ValueHandler;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -57,6 +56,11 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         return new DefaultPlcDiscoveryRequest.Builder(new AdsPlcDiscoverer());
+    }
+
+    @Override
+    protected boolean canPing() {
+        return true;
     }
 
     @Override
@@ -90,23 +94,18 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
-    protected AdsFieldHandler getFieldHandler() {
-        return new AdsFieldHandler();
+    protected AdsTagHandler getTagHandler() {
+        return new AdsTagHandler();
     }
 
     @Override
-    protected PlcValueHandler getValueHandler() {
-        return new IEC61131ValueHandler();
+    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
+        return new PlcValueHandler();
     }
 
     @Override
     public PlcDriverMetadata getMetadata() {
-        return new PlcDriverMetadata() {
-            @Override
-            public boolean canDiscover() {
-                return true;
-            }
-        };
+        return () -> true;
     }
 
     /**

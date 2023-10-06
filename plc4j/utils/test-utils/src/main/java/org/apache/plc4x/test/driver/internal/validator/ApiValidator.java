@@ -19,7 +19,6 @@
 package org.apache.plc4x.test.driver.internal.validator;
 
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
-import org.apache.plc4x.test.driver.internal.handlers.ApiResponseHandler;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +34,10 @@ public class ApiValidator {
             .withTest(apiMessage).checkForSimilar().ignoreComments().ignoreWhitespace()
             .build();
         if (diff.hasDifferences()) {
-            LOGGER.warn(apiMessage);
-            LOGGER.warn(diff.toString());
-            throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff.toString());
+            LOGGER.warn("got\n{}", apiMessage);
+            LOGGER.warn("Expect\n{}", referenceXmlString);
+            LOGGER.warn("diff\n{}", diff);
+            throw new DriverTestsuiteException("Differences were found after parsing.\n" + diff);
         }
     }
 }

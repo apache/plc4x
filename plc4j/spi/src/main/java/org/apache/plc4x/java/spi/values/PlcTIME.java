@@ -18,21 +18,16 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME extends PlcSimpleValue<Duration> {
 
     public static PlcTIME of(Object value) {
@@ -46,22 +41,25 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
         throw new PlcRuntimeException("Invalid value type");
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME(@JsonProperty("value") Duration value) {
+    public static PlcTIME ofMilliseconds(long milliseconds) {
+        return new PlcTIME(Duration.ofMillis(milliseconds));
+    }
+
+    public PlcTIME(Duration value) {
         super(value, true);
     }
 
-    public PlcTIME(@JsonProperty("value") Integer value) {
-        super(Duration.of((long) value, ChronoUnit.MILLIS), true);
-    }
-
-    public PlcTIME(@JsonProperty("value") Long value) {
-        super(Duration.of(value, ChronoUnit.MILLIS), true);
+    public PlcTIME(long milliseconds) {
+        super(Duration.ofMillis(milliseconds), true);
     }
 
     @Override
     public PlcValueType getPlcValueType() {
         return PlcValueType.TIME;
+    }
+
+    public long getMilliseconds() {
+        return value.toMillis();
     }
 
     @Override
@@ -75,7 +73,6 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
@@ -101,13 +98,11 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }
@@ -115,7 +110,9 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         String valueString = value.toString();
-        writeBuffer.writeString(getClass().getSimpleName(), valueString.getBytes(StandardCharsets.UTF_8).length*8,StandardCharsets.UTF_8.name(),valueString);
+        writeBuffer.writeString(getClass().getSimpleName(),
+            valueString.getBytes(StandardCharsets.UTF_8).length*8,
+            valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
 
 }

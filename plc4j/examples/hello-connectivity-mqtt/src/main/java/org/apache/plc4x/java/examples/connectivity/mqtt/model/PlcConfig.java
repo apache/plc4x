@@ -28,7 +28,7 @@ public class PlcConfig {
     @JsonProperty("memory-blocks")
     private List<PlcMemoryBlock> plcMemoryBlocks;
     @JsonProperty("addresses")
-    private List<PlcFieldConfig> plcFields;
+    private List<PlcTagConfig> plcTags;
 
     public String getConnection() {
         return connection;
@@ -46,12 +46,12 @@ public class PlcConfig {
         this.plcMemoryBlocks = plcMemoryBlocks;
     }
 
-    public List<PlcFieldConfig> getPlcFields() {
-        return plcFields;
+    public List<PlcTagConfig> getPlcTags() {
+        return plcTags;
     }
 
-    public void setPlcFields(List<PlcFieldConfig> plcFields) {
-        this.plcFields = plcFields;
+    public void setPlcTags(List<PlcTagConfig> plcTags) {
+        this.plcTags = plcTags;
     }
 
 }

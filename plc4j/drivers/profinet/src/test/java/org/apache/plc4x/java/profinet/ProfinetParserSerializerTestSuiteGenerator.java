@@ -28,6 +28,6 @@ public class ProfinetParserSerializerTestSuiteGenerator {
     public static void main(String... args) {
         String pcapFile = Path.of("protocols/profinet/src/test/resources/pcap/working-profinet-recording-plc4x.pcapng").toAbsolutePath().toString();
         String xmlTestSuiteFile = Path.of("protocols/profinet/src/test/resources/protocols/profinet/ParserSerializerTestsuite.xml").toAbsolutePath().toString();
-        ParserSerializerTestsuiteGenerator.main("-tProfinet", "-pprofinet", Ethernet_Frame.class.getName(), pcapFile, xmlTestSuiteFile);
+        ParserSerializerTestsuiteGenerator.main("--debug", "-tProfinet", "-pprofinet", Ethernet_Frame.class.getName(), pcapFile, xmlTestSuiteFile);
     }
 }

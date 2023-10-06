@@ -51,7 +51,7 @@ public class SourceTaskTest {
             "source_task_no_error.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 

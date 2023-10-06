@@ -16,4 +16,5 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-org.apache.plc4x.java.eip.readwrite.EIPDriver
+org.apache.plc4x.java.eip.base.EIPDriver
+org.apache.plc4x.java.eip.logix.LogixDriver

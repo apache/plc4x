@@ -20,12 +20,14 @@ package org.apache.plc4x.java.cbus;
 
 import org.apache.plc4x.java.cbus.readwrite.*;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import static org.apache.plc4x.java.cbus.Util.assertMessageMatches;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -453,5 +455,46 @@ public class RandomPackagesTest {
         }
     }
 
+    @Nested
+    class BridgeTest {
+        @Test
+        void BridgedIdentify() throws Exception {
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            CALDataIdentify calDataIdentify = new CALDataIdentify(CALCommandTypeContainer.CALCommandIdentify, null, Attribute.Type, requestContext);
+            NetworkRoute networkRoute = new NetworkRoute(new NetworkProtocolControlInformation((byte) 1, (byte) 1), new ArrayList<>());
+            CBusPointToPointCommandIndirect cBusPointToPointCommandIndirect = new CBusPointToPointCommandIndirect(1, calDataIdentify, new BridgeAddress((byte) 253), networkRoute, new UnitAddress((byte) 10), cBusOptions);
+            CBusCommandPointToPoint cbusCommand = new CBusCommandPointToPoint(new CBusHeader(PriorityClass.Class4, false, (byte) 0, DestinationAddressType.PointToPoint), cBusPointToPointCommandIndirect, cBusOptions);
+            RequestCommand request = new RequestCommand(RequestType.REQUEST_COMMAND, null, null, null, new RequestTermination(), cbusCommand, null, null, cBusOptions);
+            CBusMessageToServer cBusMessageToServer = new CBusMessageToServer(request, requestContext, cBusOptions);
 
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(cBusMessageToServer.getLengthInBytes());
+            cBusMessageToServer.serialize(writeBuffer);
+            System.out.println(new String(writeBuffer.getBytes()));
+        }
+
+        @Test
+        void BridgedIdentifyResponse() throws Exception {
+            byte[] bytes = ("86FD020107890144494D444E344620E3\r\n").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            requestContext = new RequestContext(true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+
+            assertMessageMatches(bytes, msg);
+        }
+        @Test
+        void BridgedIdentifyResponse2() throws Exception {
+            byte[] bytes = ("86FD0201078900434C495053414C20C2\r\n").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            requestContext = new RequestContext(true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+
+            assertMessageMatches(bytes, msg);
+        }
+    }
 }

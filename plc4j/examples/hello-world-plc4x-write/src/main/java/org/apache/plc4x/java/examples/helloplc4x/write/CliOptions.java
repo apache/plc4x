@@ -25,8 +25,8 @@ public class CliOptions {
     private static Options options;
 
     private final String connectionString;
-    private final String[] fieldAddress;
-    private final String[] fieldValues;
+    private final String[] tagAddress;
+    private final String[] tagValues;
 
     public static CliOptions fromArgs(String[] args) {
         options = new Options();
@@ -42,17 +42,17 @@ public class CliOptions {
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("field-addresses")
+                .longOpt("tag-addresses")
                 .hasArgs()
-                .desc("Field Addresses (Space separated).")
+                .desc("Tag Addresses (Space separated).")
                 .required()
                 .build());
         options.addOption(
             Option.builder()
                 .type(String.class)
-                .longOpt("field-values")
+                .longOpt("tag-values")
                 .hasArgs()
-                .desc("Field Values (Space separated).")
+                .desc("Tag Values (Space separated).")
                 .required()
                 .build());
 
@@ -62,10 +62,10 @@ public class CliOptions {
             commandLine = parser.parse(options, args);
 
             String connectionString = commandLine.getOptionValue("connection-string");
-            String[] fieldAddress = commandLine.getOptionValues("field-addresses");
-            String[] fieldValues = commandLine.getOptionValues("field-values");
+            String[] tagAddress = commandLine.getOptionValues("tag-addresses");
+            String[] tagValues = commandLine.getOptionValues("tag-values");
 
-            return new CliOptions(connectionString, fieldAddress, fieldValues);
+            return new CliOptions(connectionString, tagAddress, tagValues);
         } catch (ParseException e) {
             System.err.println(e.getMessage());
             return null;
@@ -77,22 +77,22 @@ public class CliOptions {
         formatter.printHelp("HelloPlc4x", options);
     }
 
-    public CliOptions(String connectionString, String[] fieldAddress, String[] fieldValues) {
+    public CliOptions(String connectionString, String[] tagAddress, String[] tagValues) {
         this.connectionString = connectionString;
-        this.fieldAddress = fieldAddress;
-        this.fieldValues = fieldValues;
+        this.tagAddress = tagAddress;
+        this.tagValues = tagValues;
     }
 
     public String getConnectionString() {
         return connectionString;
     }
 
-    public String[] getFieldAddress() {
-        return fieldAddress;
+    public String[] getTagAddress() {
+        return tagAddress;
     }
 
-    public String[] getFieldValues() {
-        return fieldValues;
+    public String[] getTagValues() {
+        return tagValues;
     }
 
 }

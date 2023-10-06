@@ -20,34 +20,40 @@
 package tcp
 
 import (
-	"bufio"
-	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"regexp"
 	"strconv"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Transport struct {
+	log zerolog.Logger
 }
 
-func NewTransport() *Transport {
-	return &Transport{}
+func NewTransport(_options ...options.WithOption) *Transport {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	return &Transport{
+		log: customLogger,
+	}
 }
 
-func (m Transport) GetTransportCode() string {
+func (m *Transport) GetTransportCode() string {
 	return "tcp"
 }
 
-func (m Transport) GetTransportName() string {
+func (m *Transport) GetTransportName() string {
 	return "TCP/IP Socket Transport"
 }
 
-func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, options map[string][]string, _options ...options.WithOption) (transports.TransportInstance, error) {
 	connectionStringRegexp := regexp.MustCompile(`^((?P<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?P<hostname>[a-zA-Z0-9.\-]+))(:(?P<port>[0-9]{1,5}))?`)
 	var address string
 	var port int
@@ -56,16 +62,9 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 			address = val
 		} else if val, ok := match["hostname"]; ok && len(val) > 0 {
 			address = val
-		} else {
-			return nil, errors.New("missing hostname or ip to connect")
-		}
+		} // Note: the regex ensures that it is either ip or hostname
 		if val, ok := match["port"]; ok && len(val) > 0 {
-			portVal, err := strconv.Atoi(val)
-			if err != nil {
-				return nil, errors.Wrap(err, "error setting port")
-			} else {
-				port = portVal
-			}
+			port, _ = strconv.Atoi(val) // Note: the regex ensures that this is always a valid number
 		} else if val, ok := options["defaultTcpPort"]; ok && len(val) > 0 {
 			portVal, err := strconv.Atoi(val[0])
 			if err != nil {
@@ -91,78 +90,14 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 		return nil, errors.Wrap(err, "error resolving typ address")
 	}
 
-	return NewTcpTransportInstance(tcpAddr, connectTimeout, &m), nil
+	return NewTcpTransportInstance(tcpAddr, connectTimeout, m, _options...), nil
 }
 
-type TransportInstance struct {
-	transports.DefaultBufferedTransportInstance
-	RemoteAddress  *net.TCPAddr
-	LocalAddress   *net.TCPAddr
-	ConnectTimeout uint32
-	transport      *Transport
-	tcpConn        net.Conn
-	reader         *bufio.Reader
-}
-
-func NewTcpTransportInstance(remoteAddress *net.TCPAddr, connectTimeout uint32, transport *Transport) *TransportInstance {
-	transportInstance := &TransportInstance{
-		RemoteAddress:  remoteAddress,
-		ConnectTimeout: connectTimeout,
-		transport:      transport,
-	}
-	transportInstance.DefaultBufferedTransportInstance = transports.NewDefaultBufferedTransportInstance(transportInstance)
-	return transportInstance
-}
-
-func (m *TransportInstance) Connect() error {
-	return m.ConnectWithContext(context.Background())
-}
-
-func (m *TransportInstance) ConnectWithContext(ctx context.Context) error {
-	var err error
-	var d net.Dialer
-	m.tcpConn, err = d.DialContext(ctx, "tcp", m.RemoteAddress.String())
-	if err != nil {
-		return errors.Wrap(err, "error connecting to remote address")
-	}
-
-	m.LocalAddress = m.tcpConn.LocalAddr().(*net.TCPAddr)
-
-	m.reader = bufio.NewReader(m.tcpConn)
-
+func (m *Transport) Close() error {
+	m.log.Trace().Msg("Closing")
 	return nil
 }
 
-func (m *TransportInstance) Close() error {
-	if m.tcpConn == nil {
-		return nil
-	}
-	err := m.tcpConn.Close()
-	if err != nil {
-		return errors.Wrap(err, "error closing connection")
-	}
-	m.tcpConn = nil
-	return nil
-}
-
-func (m *TransportInstance) IsConnected() bool {
-	return m.tcpConn != nil
-}
-
-func (m *TransportInstance) Write(data []uint8) error {
-	if m.tcpConn == nil {
-		return errors.New("error writing to transport. No writer available")
-	}
-	num, err := m.tcpConn.Write(data)
-	if err != nil {
-		return errors.Wrap(err, "error writing")
-	}
-	if num != len(data) {
-		return errors.New("error writing: not all bytes written")
-	}
-	return nil
-}
-
-func (m *TransportInstance) GetReader() *bufio.Reader {
-	return m.reader
+func (m *Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }

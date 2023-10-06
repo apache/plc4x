@@ -20,9 +20,11 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -33,6 +35,7 @@ const S7Message_PROTOCOLID uint8 = 0x32
 
 // S7Message is the corresponding interface of S7Message
 type S7Message interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)
@@ -64,13 +67,12 @@ type _S7Message struct {
 
 type _S7MessageChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetMessageType() uint8
 }
 
 type S7MessageParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -124,7 +126,7 @@ func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7Message(structType interface{}) S7Message {
+func CastS7Message(structType any) S7Message {
 	if casted, ok := structType.(S7Message); ok {
 		return casted
 	}
@@ -138,7 +140,7 @@ func (m *_S7Message) GetTypeName() string {
 	return "S7Message"
 }
 
-func (m *_S7Message) GetParentLengthInBits() uint16 {
+func (m *_S7Message) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Const Field (protocolId)
@@ -160,24 +162,30 @@ func (m *_S7Message) GetParentLengthInBits() uint16 {
 
 	// Optional Field (parameter)
 	if m.Parameter != nil {
-		lengthInBits += m.Parameter.GetLengthInBits()
+		lengthInBits += m.Parameter.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (payload)
 	if m.Payload != nil {
-		lengthInBits += m.Payload.GetLengthInBits()
+		lengthInBits += m.Payload.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_S7Message) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7Message) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
+func S7MessageParse(ctx context.Context, theBytes []byte) (S7Message, error) {
+	return S7MessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7Message, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("S7Message"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7Message")
 	}
@@ -207,7 +215,7 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7Message")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			log.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -243,18 +251,18 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		InitializeParent(S7Message, uint16, S7Parameter, S7Payload)
 		GetParent() S7Message
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7MessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		_childTemp, typeSwitchError = S7MessageRequestParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageRequestParseWithBuffer(ctx, readBuffer)
 	case messageType == 0x02: // S7MessageResponse
-		_childTemp, typeSwitchError = S7MessageResponseParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageResponseParseWithBuffer(ctx, readBuffer)
 	case messageType == 0x03: // S7MessageResponseData
-		_childTemp, typeSwitchError = S7MessageResponseDataParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageResponseDataParseWithBuffer(ctx, readBuffer)
 	case messageType == 0x07: // S7MessageUserData
-		_childTemp, typeSwitchError = S7MessageUserDataParse(readBuffer)
+		_childTemp, typeSwitchError = S7MessageUserDataParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [messageType=%v]", messageType)
 	}
@@ -270,10 +278,10 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for parameter")
 		}
-		_val, _err := S7ParameterParse(readBuffer, messageType)
+		_val, _err := S7ParameterParseWithBuffer(ctx, readBuffer, messageType)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'parameter' field of S7Message")
@@ -292,10 +300,10 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for payload")
 		}
-		_val, _err := S7PayloadParse(readBuffer, messageType, (parameter))
+		_val, _err := S7PayloadParseWithBuffer(ctx, readBuffer, messageType, (parameter))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'payload' field of S7Message")
@@ -317,12 +325,14 @@ func S7MessageParse(readBuffer utils.ReadBuffer) (S7Message, error) {
 	return _child, nil
 }
 
-func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error {
+func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7Message, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("S7Message"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for S7Message")
 	}
@@ -345,7 +355,7 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 	{
 		var reserved uint16 = uint16(0x0000)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			log.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -365,14 +375,14 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() interface{} { return uint16((m.GetParameter()).GetLengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() any { return uint16((m.GetParameter()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	_parameterLengthErr := writeBuffer.WriteUint16("parameterLength", 16, (parameterLength))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() interface{} { return uint16((m.GetPayload()).GetLengthInBytes()) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() any { return uint16((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, (payloadLength))
 	if _payloadLengthErr != nil {
 		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
@@ -390,7 +400,7 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 			return errors.Wrap(pushErr, "Error pushing for parameter")
 		}
 		parameter = m.GetParameter()
-		_parameterErr := writeBuffer.WriteSerializable(parameter)
+		_parameterErr := writeBuffer.WriteSerializable(ctx, parameter)
 		if popErr := writeBuffer.PopContext("parameter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameter")
 		}
@@ -406,7 +416,7 @@ func (pm *_S7Message) SerializeParent(writeBuffer utils.WriteBuffer, child S7Mes
 			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
 		payload = m.GetPayload()
-		_payloadErr := writeBuffer.WriteSerializable(payload)
+		_payloadErr := writeBuffer.WriteSerializable(ctx, payload)
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for payload")
 		}
@@ -430,7 +440,7 @@ func (m *_S7Message) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

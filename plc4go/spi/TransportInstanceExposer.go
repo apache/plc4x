@@ -21,6 +21,8 @@ package spi
 
 import "github.com/apache/plc4x/plc4go/spi/transports"
 
+// TransportInstanceExposer exposes the transports.TransportInstance
 type TransportInstanceExposer interface {
+	// GetTransportInstance returns a transports.TransportInstance
 	GetTransportInstance() transports.TransportInstance
 }

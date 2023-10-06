@@ -61,7 +61,6 @@ public class CBusServerModule implements ServerModule {
         this.context = context;
     }
 
-
     @Override
     public void start() throws SimulatorException {
         if (loopGroup != null) {
@@ -86,12 +85,13 @@ public class CBusServerModule implements ServerModule {
                             new CBusDriver.CorruptPackageCleaner()));
                         pipeline.addLast(new CBusServerAdapter(context));
                     }
-                }).option(ChannelOption.SO_BACKLOG, 128)
+                })
+                .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             int port = CBusConstants.CBUSTCPDEFAULTPORT;
-            if (config.getS7Port() != null) {
-                port = Integer.parseInt(config.getS7Port());
+            if (config.getCBusPort() != null) {
+                port = Integer.parseInt(config.getCBusPort());
             }
             String host = config.getHost();
             if (host != null) {

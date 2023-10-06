@@ -22,8 +22,10 @@ package knxnetip
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"math"
 	"net"
+	"runtime/debug"
 	"strconv"
 	"sync/atomic"
 	"time"
@@ -32,7 +34,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,14 @@ func (m *Connection) castIpToKnxAddress(ip net.IP) driverModel.IPAddress {
 
 func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunnelingRequest driverModel.TunnelingRequest) {
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		lDataInd, ok := tunnelingRequest.GetCemi().(driverModel.LDataIndExactly)
 		if !ok {
 			return
@@ -75,15 +84,16 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					payload = append(payload, byte(groupValueWrite.GetDataFirstByte()))
 					payload = append(payload, groupValueWrite.GetData()...)
 
-					m.handleValueCacheUpdate(destinationAddress, payload)
+					m.handleValueCacheUpdate(ctx, destinationAddress, payload)
 				default:
 					if dataFrame.GetGroupAddress() {
 						return
 					}
 					// If this is an individual address, and it is targeted at us, we need to ack that.
-					targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+					ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+					targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
 					if targetAddress == m.ClientKnxAddress {
-						log.Info().Msg("Acknowleding an unhandled data message.")
+						m.log.Info().Msg("Acknowleding an unhandled data message.")
 						_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 					}
 				}
@@ -92,19 +102,20 @@ func (m *Connection) handleIncomingTunnelingRequest(ctx context.Context, tunneli
 					return
 				}
 				// If this is an individual address, and it is targeted at us, we need to ack that.
-				targetAddress := ByteArrayToKnxAddress(dataFrame.GetDestinationAddress())
+				ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+				targetAddress := ByteArrayToKnxAddress(ctxForModel, dataFrame.GetDestinationAddress())
 				if targetAddress == m.ClientKnxAddress {
-					log.Info().Msg("Acknowleding an unhandled contol message.")
+					m.log.Info().Msg("Acknowleding an unhandled contol message.")
 					_ = m.sendDeviceAck(ctx, dataFrame.GetSourceAddress(), dataFrame.GetApdu().GetCounter(), func(err error) {})
 				}
 			}
 		default:
-			log.Info().Msg("Unknown unhandled message.")
+			m.log.Info().Msg("Unknown unhandled message.")
 		}
 	}()
 }
 
-func (m *Connection) handleValueCacheUpdate(destinationAddress []byte, payload []byte) {
+func (m *Connection) handleValueCacheUpdate(ctx context.Context, destinationAddress []byte, payload []byte) {
 	addressData := uint16(destinationAddress[0])<<8 | (uint16(destinationAddress[1]) & 0xFF)
 
 	m.valueCacheMutex.RLock()
@@ -119,7 +130,7 @@ func (m *Connection) handleValueCacheUpdate(destinationAddress []byte, payload [
 	}
 	if m.subscribers != nil {
 		for _, subscriber := range m.subscribers {
-			subscriber.handleValueChange(destinationAddress, payload, changed)
+			subscriber.handleValueChange(ctx, destinationAddress, payload, changed)
 		}
 	}
 }
@@ -148,7 +159,7 @@ func (m *Connection) resetTimeout() {
 }
 
 func (m *Connection) resetConnection() {
-	log.Warn().Msg("Reset connection")
+	m.log.Warn().Msg("Reset connection")
 }
 
 func (m *Connection) getGroupAddressNumLevels() uint8 {
@@ -165,7 +176,7 @@ func (m *Connection) getGroupAddressNumLevels() uint8 {
 func (m *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range m.subscribers {
 		if sub == subscriber {
-			log.Debug().Msgf("Subscriber %v already added", subscriber)
+			m.log.Debug().Stringer("subscriber", subscriber).Msg("Subscriber %v already added")
 			return
 		}
 	}
@@ -180,7 +191,6 @@ func (m *Connection) removeSubscriber(subscriber *Subscriber) {
 	}
 }
 
-// TODO: we can replace this with reflect.DeepEqual()
 func (m *Connection) sliceEqual(a, b []byte) bool {
 	if len(a) != len(b) {
 		return false

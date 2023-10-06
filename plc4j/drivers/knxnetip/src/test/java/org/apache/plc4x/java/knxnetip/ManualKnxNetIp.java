@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.knxnetip;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
@@ -39,7 +39,7 @@ public class ManualKnxNetIp {
 
     public static void main(String[] args) throws Exception {
         //final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip://192.168.42.11?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
-        final PlcConnection connection = new PlcDriverManager().getConnection("knxnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Recording-01.03.2020-2.pcapng?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("knxnet-ip:pcap:///Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Recording-01.03.2020-2.pcapng?knxproj-file-path=/Users/christofer.dutz/Projects/Apache/PLC4X-Documents/KNX/Stettiner%20Str.%2013/StettinerStr-Soll-Ist-Temperatur.knxproj");
         // Make sure we hang up correctly when terminating.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -53,7 +53,7 @@ public class ManualKnxNetIp {
         // The address and the name is just bogus as we're always returning everything.
         // We will probably refactor the API in the near future.
         final PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
-            .addEventField("knxData", "*/*/*")
+            .addEventTagAddress("knxData", "*/*/*")
             .build();
 
         // Register the subscription
@@ -64,10 +64,8 @@ public class ManualKnxNetIp {
 
         // Register a callback which is called on new data being available.
         final PlcSubscriptionHandle subscriptionHandle = subscriptionResponse.getSubscriptionHandle("knxData");
-        subscriptionHandle.register(knxData -> {
-            System.out.println(knxData.getTimestamp().toString() + " - " +
-                ((DefaultPlcSubscriptionEvent) knxData).getValues().get("knxData"));
-        });
+        subscriptionHandle.register(knxData -> System.out.println(knxData.getTimestamp().toString() + " - " +
+            ((DefaultPlcSubscriptionEvent) knxData).getValues().get("knxData")));
     }
 
 }

@@ -47,7 +47,7 @@ void parser_serializer_test_plc4x_read_write_connection_request() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -58,7 +58,7 @@ void parser_serializer_test_plc4x_read_write_connection_request() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -84,7 +84,7 @@ void parser_serializer_test_plc4x_read_write_connection_response() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -95,7 +95,7 @@ void parser_serializer_test_plc4x_read_write_connection_response() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -121,7 +121,7 @@ void parser_serializer_test_plc4x_read_write_read_request_single_item() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -132,7 +132,7 @@ void parser_serializer_test_plc4x_read_write_read_request_single_item() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -158,7 +158,7 @@ void parser_serializer_test_plc4x_read_write_read_response_single_item() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -169,7 +169,7 @@ void parser_serializer_test_plc4x_read_write_read_response_single_item() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -195,7 +195,7 @@ void parser_serializer_test_plc4x_read_write_read_request_multiple_items() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -206,7 +206,7 @@ void parser_serializer_test_plc4x_read_write_read_request_multiple_items() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -232,7 +232,7 @@ void parser_serializer_test_plc4x_read_write_read_response_multiple_items() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -243,7 +243,7 @@ void parser_serializer_test_plc4x_read_write_read_response_multiple_items() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -269,7 +269,7 @@ void parser_serializer_test_plc4x_read_write_write_request() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -280,7 +280,7 @@ void parser_serializer_test_plc4x_read_write_write_request() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }
@@ -306,7 +306,7 @@ void parser_serializer_test_plc4x_read_write_write_response() {
     }
 
     plc4c_plc4x_read_write_plc4x_message* message = NULL;
-    return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, &message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, &message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -317,7 +317,7 @@ void parser_serializer_test_plc4x_read_write_write_response() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, message);
+    return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }

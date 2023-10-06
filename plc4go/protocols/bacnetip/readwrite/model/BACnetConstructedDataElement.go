@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetConstructedDataElement is the corresponding interface of BACnetConstructedDataElement
 type BACnetConstructedDataElement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -100,6 +104,8 @@ func (m *_BACnetConstructedDataElement) GetConstructedData() BACnetConstructedDa
 ///////////////////////
 
 func (m *_BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	applicationTag := m.ApplicationTag
 	_ = applicationTag
 	contextTag := m.ContextTag
@@ -110,6 +116,8 @@ func (m *_BACnetConstructedDataElement) GetPeekedTagNumber() uint8 {
 }
 
 func (m *_BACnetConstructedDataElement) GetIsApplicationTag() bool {
+	ctx := context.Background()
+	_ = ctx
 	applicationTag := m.ApplicationTag
 	_ = applicationTag
 	contextTag := m.ContextTag
@@ -120,6 +128,8 @@ func (m *_BACnetConstructedDataElement) GetIsApplicationTag() bool {
 }
 
 func (m *_BACnetConstructedDataElement) GetIsConstructedData() bool {
+	ctx := context.Background()
+	_ = ctx
 	applicationTag := m.ApplicationTag
 	_ = applicationTag
 	contextTag := m.ContextTag
@@ -130,6 +140,8 @@ func (m *_BACnetConstructedDataElement) GetIsConstructedData() bool {
 }
 
 func (m *_BACnetConstructedDataElement) GetIsContextTag() bool {
+	ctx := context.Background()
+	_ = ctx
 	applicationTag := m.ApplicationTag
 	_ = applicationTag
 	contextTag := m.ContextTag
@@ -150,7 +162,7 @@ func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataElement(structType interface{}) BACnetConstructedDataElement {
+func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataElement {
 	if casted, ok := structType.(BACnetConstructedDataElement); ok {
 		return casted
 	}
@@ -164,11 +176,7 @@ func (m *_BACnetConstructedDataElement) GetTypeName() string {
 	return "BACnetConstructedDataElement"
 }
 
-func (m *_BACnetConstructedDataElement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataElement) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetConstructedDataElement) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -181,29 +189,35 @@ func (m *_BACnetConstructedDataElement) GetLengthInBitsConditional(lastItem bool
 
 	// Optional Field (applicationTag)
 	if m.ApplicationTag != nil {
-		lengthInBits += m.ApplicationTag.GetLengthInBits()
+		lengthInBits += m.ApplicationTag.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (contextTag)
 	if m.ContextTag != nil {
-		lengthInBits += m.ContextTag.GetLengthInBits()
+		lengthInBits += m.ContextTag.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (constructedData)
 	if m.ConstructedData != nil {
-		lengthInBits += m.ConstructedData.GetLengthInBits()
+		lengthInBits += m.ConstructedData.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataElement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataElement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
+func BACnetConstructedDataElementParse(ctx context.Context, theBytes []byte, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
+	return BACnetConstructedDataElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+}
+
+func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataElement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataElement")
 	}
@@ -215,7 +229,7 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParse(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -250,10 +264,10 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("applicationTag"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for applicationTag")
 		}
-		_val, _err := BACnetApplicationTagParse(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'applicationTag' field of BACnetConstructedDataElement")
@@ -272,10 +286,10 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for contextTag")
 		}
-		_val, _err := BACnetContextTagParse(readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field of BACnetConstructedDataElement")
@@ -294,10 +308,10 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for constructedData")
 		}
-		_val, _err := BACnetConstructedDataParse(readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field of BACnetConstructedDataElement")
@@ -330,26 +344,44 @@ func BACnetConstructedDataElementParse(readBuffer utils.ReadBuffer, objectTypeAr
 	}, nil
 }
 
-func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataElement) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetConstructedDataElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetConstructedDataElement"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataElement")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	peekedTagNumber := m.GetPeekedTagNumber()
+	_ = peekedTagNumber
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
-	if _isApplicationTagErr := writeBuffer.WriteVirtual("isApplicationTag", m.GetIsApplicationTag()); _isApplicationTagErr != nil {
+	isApplicationTag := m.GetIsApplicationTag()
+	_ = isApplicationTag
+	if _isApplicationTagErr := writeBuffer.WriteVirtual(ctx, "isApplicationTag", m.GetIsApplicationTag()); _isApplicationTagErr != nil {
 		return errors.Wrap(_isApplicationTagErr, "Error serializing 'isApplicationTag' field")
 	}
 	// Virtual field
-	if _isConstructedDataErr := writeBuffer.WriteVirtual("isConstructedData", m.GetIsConstructedData()); _isConstructedDataErr != nil {
+	isConstructedData := m.GetIsConstructedData()
+	_ = isConstructedData
+	if _isConstructedDataErr := writeBuffer.WriteVirtual(ctx, "isConstructedData", m.GetIsConstructedData()); _isConstructedDataErr != nil {
 		return errors.Wrap(_isConstructedDataErr, "Error serializing 'isConstructedData' field")
 	}
 	// Virtual field
-	if _isContextTagErr := writeBuffer.WriteVirtual("isContextTag", m.GetIsContextTag()); _isContextTagErr != nil {
+	isContextTag := m.GetIsContextTag()
+	_ = isContextTag
+	if _isContextTagErr := writeBuffer.WriteVirtual(ctx, "isContextTag", m.GetIsContextTag()); _isContextTagErr != nil {
 		return errors.Wrap(_isContextTagErr, "Error serializing 'isContextTag' field")
 	}
 
@@ -360,7 +392,7 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 			return errors.Wrap(pushErr, "Error pushing for applicationTag")
 		}
 		applicationTag = m.GetApplicationTag()
-		_applicationTagErr := writeBuffer.WriteSerializable(applicationTag)
+		_applicationTagErr := writeBuffer.WriteSerializable(ctx, applicationTag)
 		if popErr := writeBuffer.PopContext("applicationTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for applicationTag")
 		}
@@ -376,7 +408,7 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 			return errors.Wrap(pushErr, "Error pushing for contextTag")
 		}
 		contextTag = m.GetContextTag()
-		_contextTagErr := writeBuffer.WriteSerializable(contextTag)
+		_contextTagErr := writeBuffer.WriteSerializable(ctx, contextTag)
 		if popErr := writeBuffer.PopContext("contextTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for contextTag")
 		}
@@ -392,7 +424,7 @@ func (m *_BACnetConstructedDataElement) Serialize(writeBuffer utils.WriteBuffer)
 			return errors.Wrap(pushErr, "Error pushing for constructedData")
 		}
 		constructedData = m.GetConstructedData()
-		_constructedDataErr := writeBuffer.WriteSerializable(constructedData)
+		_constructedDataErr := writeBuffer.WriteSerializable(ctx, constructedData)
 		if popErr := writeBuffer.PopContext("constructedData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for constructedData")
 		}
@@ -432,7 +464,7 @@ func (m *_BACnetConstructedDataElement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

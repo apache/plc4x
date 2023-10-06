@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.test.migration;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -62,10 +63,7 @@ public class MessageResolver {
                 boolean isNonGenericParse = parameterCount > 1 && method.getParameterTypes()[parameterCount - 1] != Object[].class;
                 if (method.getName().equals("staticParse") && Modifier.isStatic(method.getModifiers()) && isNonGenericParse) {
                     // Get a list of additional parameter types for the parser.
-                    for (int i = 1; i < parameterCount; i++) {
-                        Class<?> parameterType = method.getParameterTypes()[i];
-                        parameterTypes.add(parameterType);
-                    }
+                    parameterTypes.addAll(Arrays.asList(method.getParameterTypes()).subList(1, parameterCount));
                     break;
                 }
             }
@@ -130,7 +128,7 @@ public class MessageResolver {
         } catch (RuntimeException e) {
             throw new DriverTestsuiteException("Invalid or non existent package detected: " + driverPackage, e);
         }
-        String ioRootClassName = driverPackage + "." + typeName;
+        String ioRootClassName = driverPackage.replace("-", "") + "." + typeName;
         // make sure both type and it's IO are present
         Class<? extends Message> messageType = (Class<? extends Message>) Class.forName(ioRootClassName);
         Method staticParse = messageType.getMethod("staticParse", ReadBuffer.class, Object[].class);

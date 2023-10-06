@@ -18,37 +18,38 @@
  */
 package org.apache.plc4x.examples.plc4j.s7event;
 
-import java.util.Map;
-
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
-import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
-import org.apache.plc4x.java.s7.events.S7SysEvent;
-import org.apache.plc4x.java.s7.events.S7UserEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * Example for capturing events generated from a Siemens S7-300, S7-400 or VIPA PLC.
  * Support for mode events ("MODE"), system events ("SYS"), user events ("USR")
  * and alarms ("ALM").
- * Each consumer shows the fields and associated values of the "map" containing
+ * Each consumer shows the tags and associated values of the "map" containing
  * the event parameters.
  */
 public class EventSubscription {
+
+    private static final Logger logger = LoggerFactory.getLogger(EventSubscription.class);
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new PlcDriverManager().getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
 
-            subscription.addEventField("myMODE", "MODE");
-            subscription.addEventField("mySYS", "SYS");
-            subscription.addEventField("myUSR", "USR");
-            subscription.addEventField("myALM", "ALM");
+            subscription.addEventTagAddress("myMODE", "MODE");
+//            subscription.addEventTagAddress("mySYS", "SYS");
+//            subscription.addEventTagAddress("myUSR", "USR");
+//            subscription.addEventTagAddress("myALM", "ALM");
 
             final PlcSubscriptionRequest sub = subscription.build();
             final PlcSubscriptionResponse subresponse = sub.execute().get();
@@ -59,48 +60,50 @@ public class EventSubscription {
                 .register(msg -> {
                     System.out.println("******** S7ModeEvent ********");
                     Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        System.out.println(x + " : " + y);
-                    });
+                    map.forEach((x, y) -> System.out.println(x + " : " + y));
                     System.out.println("****************************");
                 });
+//
+//            subresponse
+//                .getSubscriptionHandle("mySYS")
+//                .register(msg -> {
+//                    System.out.println("******** S7SysEvent ********");
+//                    Map<String, Object> map = ((S7SysEvent) msg).getMap();
+//                    map.forEach((x, y) -> {
+//                        if ("INFO1".equals(x)) {
+//                            System.out.println(x + " : " + String.format("0x%04X", y));
+//                        } else if ("INFO2".equals(x)) {
+//                            System.out.println(x + " : " + String.format("0x%08X", y));    
+//                        } else System.out.println(x + " : " + y);
+//                    });
+//                    System.out.println("****************************");
+//                });
+//
+//            subresponse
+//                .getSubscriptionHandle("myUSR")
+//                .register(msg -> {
+//                    System.out.println("******** S7UserEvent *******");
+//                    Map<String, Object> map = ((S7UserEvent) msg).getMap();
+//                    map.forEach((x, y) -> {
+//                        System.out.println(x + " : " + y);
+//                    });
+//                    System.out.println("****************************");
+//                });
 
-            subresponse
-                .getSubscriptionHandle("mySYS")
-                .register(msg -> {
-                    System.out.println("******** S7SysEvent ********");
-                    Map<String, Object> map = ((S7SysEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        System.out.println(x + " : " + y);
-                    });
-                    System.out.println("****************************");
-                });
-
-            subresponse
-                .getSubscriptionHandle("myUSR")
-                .register(msg -> {
-                    System.out.println("******** S7UserEvent *******");
-                    Map<String, Object> map = ((S7UserEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        System.out.println(x + " : " + y);
-                    });
-                    System.out.println("****************************");
-                });
-
-            subresponse
-                .getSubscriptionHandle("myALM")
-                .register(msg -> {
-                    System.out.println("******** S7AlmEvent *********");
-                    Map<String, Object> map = ((S7AlarmEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        System.out.println(x + " : " + y);
-                    });
-                    System.out.println("****************************");
-                });
+//            subresponse
+//                .getSubscriptionHandle("myALM")
+//                .register(msg -> {
+//                    System.out.println("******** S7AlmEvent *********");
+//                    Map<String, Object> map = ((S7AlarmEvent) msg).getMap();
+//                    map.forEach((x, y) -> {
+//                        System.out.println(x + " : " + y);
+//                    });
+//                    System.out.println("****************************");
+//                });
 
             System.out.println("Waiting for events");
 
-            Thread.sleep(120000);
+            Thread.sleep(5000);
 
             System.out.println("Bye...");
 

@@ -18,54 +18,42 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
-import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
 
-    private final List<PlcBrowseItemArrayInfo> arrayInfo;
-
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultListPlcBrowseItem(@JsonProperty("address") String address,
-                                    @JsonProperty("name") String name,
-                                    @JsonProperty("dataType") PlcValueType dataType,
-                                    @JsonProperty("arrayInfo") List<PlcBrowseItemArrayInfo> arrayInfo,
-                                    @JsonProperty("readable") boolean readable,
-                                    @JsonProperty("writable") boolean writable,
-                                    @JsonProperty("subscribable") boolean subscribable,
-                                    @JsonProperty("children") List<PlcBrowseItem> children,
-                                    @JsonProperty("options") Map<String, PlcValue> options) {
-        super(address, name, dataType, readable, writable, subscribable, children, options);
-        this.arrayInfo = arrayInfo;
-    }
-
-    @Override
-    public List<PlcBrowseItemArrayInfo> getArrayInfo() {
-        return arrayInfo;
+    public DefaultListPlcBrowseItem(PlcTag tag,
+                                    String name,
+                                    boolean readable,
+                                    boolean writable,
+                                    boolean subscribable,
+                                    Map<String, PlcBrowseItem> children,
+                                    Map<String, PlcValue> options) {
+        super(tag, name, readable, writable, subscribable, children, options);
     }
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
-        writeBuffer.writeString("address", getAddress().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), getAddress());
-        writeBuffer.writeString("name", getName().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), getName());
+        writeBuffer.writeString("address",
+            getTag().getAddressString().getBytes(StandardCharsets.UTF_8).length * 8,
+            getTag().getAddressString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString("name",
+            getName().getBytes(StandardCharsets.UTF_8).length * 8,
+            getName(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         // TODO: Find out how to serialize an enum.
         //writeBuffer.writeString("dataType", dataType.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), dataType);
         if(getChildren() != null && !getChildren().isEmpty()) {
             writeBuffer.pushContext("children");
-            for (PlcBrowseItem child : getChildren()) {
+            for (PlcBrowseItem child : getChildren().values()) {
                 writeBuffer.pushContext("child");
                 ((DefaultListPlcBrowseItem) child).serialize(writeBuffer);
                 writeBuffer.popContext("child");
@@ -76,7 +64,9 @@ public class DefaultListPlcBrowseItem extends DefaultPlcBrowseItem {
             writeBuffer.pushContext("options");
             for (Map.Entry<String, PlcValue> optionEntry : getOptions().entrySet()) {
                 writeBuffer.pushContext("option");
-                writeBuffer.writeString("name", optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getKey());
+                writeBuffer.writeString("name",
+                    optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8,
+                    optionEntry.getKey(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
                 // TODO: Find out how to serialize a PlcValue
                 //writeBuffer.writeString("value", optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getValue());
                 ((DefaultListPlcBrowseItem) optionEntry).serialize(writeBuffer);

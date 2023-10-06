@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class Utils {
     static final boolean DUMP_PACKAGES = false;
 
-    static int PAYLOAD_START_INDEX = 42;
+    static final int PAYLOAD_START_INDEX = 42;
 
     static BVLC tryParseBytes(int[] rawBytesAsInts) throws ParseException {
         return tryParseBytes(rawBytesAsInts, PAYLOAD_START_INDEX);

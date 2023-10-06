@@ -22,53 +22,29 @@
 package model
 
 import (
+	"context"
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcSubscriptionHandle) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcSubscriptionHandle) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcSubscriptionHandle"); err != nil {
 		return err
 	}
 
-	if d.handleToRegister != nil {
-		if serializableField, ok := d.handleToRegister.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("handleToRegister"); err != nil {
-				return err
-			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("handleToRegister"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.handleToRegister)
-			if err := writeBuffer.WriteString("handleToRegister", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-
-	if d.plcSubscriber != nil {
-		if serializableField, ok := d.plcSubscriber.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("plcSubscriber"); err != nil {
-				return err
-			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("plcSubscriber"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.plcSubscriber)
-			if err := writeBuffer.WriteString("plcSubscriber", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
+	if err := writeBuffer.WriteString("uuid", uint32(len(d.uuid.String())*8), "UTF-8", d.uuid.String()); err != nil {
+		return err
 	}
 	if err := writeBuffer.PopContext("PlcSubscriptionHandle"); err != nil {
 		return err
@@ -78,7 +54,7 @@ func (d *DefaultPlcSubscriptionHandle) Serialize(writeBuffer utils.WriteBuffer) 
 
 func (d *DefaultPlcSubscriptionHandle) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

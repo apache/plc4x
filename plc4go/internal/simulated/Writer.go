@@ -21,31 +21,45 @@ package simulated
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	model2 "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"runtime/debug"
 	"strconv"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type Writer struct {
 	device  *Device
 	options map[string][]string
-	tracer  *spi.Tracer
+	tracer  tracer.Tracer
+
+	log zerolog.Logger
 }
 
-func NewWriter(device *Device, options map[string][]string, tracer *spi.Tracer) Writer {
-	return Writer{
+func NewWriter(device *Device, writerOptions map[string][]string, tracer tracer.Tracer, _options ...options.WithOption) *Writer {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	return &Writer{
 		device:  device,
-		options: options,
+		options: writerOptions,
 		tracer:  tracer,
+
+		log: customLogger,
 	}
 }
 
-func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <-chan model.PlcWriteRequestResult {
-	// TODO: handle context
-	ch := make(chan model.PlcWriteRequestResult)
+func (w *Writer) Write(_ context.Context, writeRequest apiModel.PlcWriteRequest) <-chan apiModel.PlcWriteRequestResult {
+	ch := make(chan apiModel.PlcWriteRequestResult, 1)
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Errorf("panic-ed %v. Stack: %s", err, debug.Stack()))
+			}
+		}()
 		var txId string
 		if w.tracer != nil {
 			txId = w.tracer.AddTransactionalStartTrace("write", "started")
@@ -61,16 +75,16 @@ func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 		}
 
 		// Process the request
-		responseCodes := map[string]model.PlcResponseCode{}
-		for _, fieldName := range writeRequest.GetFieldNames() {
-			field := writeRequest.GetField(fieldName)
-			simulatedField, ok := field.(SimulatedField)
+		responseCodes := map[string]apiModel.PlcResponseCode{}
+		for _, tagName := range writeRequest.GetTagNames() {
+			tag := writeRequest.GetTag(tagName)
+			simulatedTagVar, ok := tag.(simulatedTag)
 			if !ok {
-				responseCodes[fieldName] = model.PlcResponseCode_INVALID_ADDRESS
+				responseCodes[tagName] = apiModel.PlcResponseCode_INVALID_ADDRESS
 			} else {
-				plcValue := writeRequest.GetValue(fieldName)
-				w.device.Set(simulatedField, &plcValue)
-				responseCodes[fieldName] = model.PlcResponseCode_OK
+				plcValue := writeRequest.GetValue(tagName)
+				w.device.Set(simulatedTagVar, &plcValue)
+				responseCodes[tagName] = apiModel.PlcResponseCode_OK
 			}
 		}
 
@@ -78,11 +92,7 @@ func (w Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 			w.tracer.AddTransactionalTrace(txId, "write", "success")
 		}
 		// Emit the response
-		ch <- &model2.DefaultPlcWriteRequestResult{
-			Request:  writeRequest,
-			Response: model2.NewDefaultPlcWriteResponse(writeRequest, responseCodes),
-			Err:      nil,
-		}
+		ch <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, spiModel.NewDefaultPlcWriteResponse(writeRequest, responseCodes), nil)
 	}()
 	return ch
 }

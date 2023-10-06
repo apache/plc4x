@@ -2522,14 +2522,12 @@ public class BACnetObjectsDefinitions {
 
     private static void createPropertyTypeCombinationCount() {
         propertyTypeCombinationCount = new HashMap<>();
-        bacNetObjects.forEach(bacNetObject -> {
-            bacNetObject.properties.forEach(bacNetProperty -> {
-                PropertyTypeCombination propertyTypeCombination = new PropertyTypeCombination(bacNetProperty);
-                propertyTypeCombinationCount.putIfAbsent(propertyTypeCombination, 0);
-                int count = propertyTypeCombinationCount.get(propertyTypeCombination);
-                propertyTypeCombinationCount.put(propertyTypeCombination, ++count);
-            });
-        });
+        bacNetObjects.forEach(bacNetObject -> bacNetObject.properties.forEach(bacNetProperty -> {
+            PropertyTypeCombination propertyTypeCombination = new PropertyTypeCombination(bacNetProperty);
+            propertyTypeCombinationCount.putIfAbsent(propertyTypeCombination, 0);
+            int count = propertyTypeCombinationCount.get(propertyTypeCombination);
+            propertyTypeCombinationCount.put(propertyTypeCombination, ++count);
+        }));
     }
 
     static void createPropertyIdToPropertyNameMap() {
@@ -2574,8 +2572,8 @@ public class BACnetObjectsDefinitions {
     }
 
     static class BacNetObject {
-        String name;
-        List<BacNetProperty> properties;
+        final String name;
+        final List<BacNetProperty> properties;
 
         BacNetObject(String name, List<BacNetProperty> properties) {
             this.name = name;
@@ -2584,9 +2582,9 @@ public class BACnetObjectsDefinitions {
     }
 
     static class BacNetProperty {
-        String propertyIdentifier;
-        String propertyDataType;
-        ConformanceCode conformanceCode;
+        final String propertyIdentifier;
+        final String propertyDataType;
+        final ConformanceCode conformanceCode;
 
         BacNetProperty(String propertyIdentifier, String propertyDataType, ConformanceCode conformanceCode) {
             this.propertyIdentifier = propertyIdentifier;
@@ -2596,8 +2594,8 @@ public class BACnetObjectsDefinitions {
     }
 
     static class ConformanceCode {
-        Type type;
-        List<Integer> additionalFootnotes;
+        final Type type;
+        final List<Integer> additionalFootnotes;
 
         public ConformanceCode(Type type, List<Integer> additionalFootnotes) {
             this.type = type;
@@ -2610,8 +2608,8 @@ public class BACnetObjectsDefinitions {
     }
 
     static class PropertyTypeCombination implements Comparable<PropertyTypeCombination> {
-        String propertyIdentifier;
-        String propertyDataType;
+        final String propertyIdentifier;
+        final String propertyDataType;
 
         PropertyTypeCombination(BacNetProperty bacNetProperty) {
             propertyIdentifier = bacNetProperty.propertyIdentifier;

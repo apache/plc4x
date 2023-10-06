@@ -18,12 +18,9 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
@@ -31,7 +28,6 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
 
     private final String protocolCode;
@@ -42,13 +38,12 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
 
     private final Map<String, PlcValue> attributes;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcDiscoveryItem(@JsonProperty("protocolCode") String protocolCode,
-                                   @JsonProperty("transportCode") String transportCode,
-                                   @JsonProperty("transportUrl") String transportUrl,
-                                   @JsonProperty("options") Map<String, String> options,
-                                   @JsonProperty("name") String name,
-                                   @JsonProperty("options") Map<String, PlcValue> attributes) {
+    public DefaultPlcDiscoveryItem(String protocolCode,
+                                   String transportCode,
+                                   String transportUrl,
+                                   Map<String, String> options,
+                                   String name,
+                                   Map<String, PlcValue> attributes) {
         this.protocolCode = protocolCode;
         this.transportCode = transportCode;
         this.transportUrl = transportUrl;
@@ -110,21 +105,33 @@ public class DefaultPlcDiscoveryItem implements PlcDiscoveryItem, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
-        writeBuffer.writeString("protocolCode", protocolCode.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), protocolCode);
-        writeBuffer.writeString("transportCode", transportCode.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), transportCode);
-        writeBuffer.writeString("transportUrl", transportUrl.toString().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), transportUrl.toString());
+        writeBuffer.writeString("protocolCode",
+            protocolCode.getBytes(StandardCharsets.UTF_8).length * 8,
+            protocolCode, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString("transportCode",
+            transportCode.getBytes(StandardCharsets.UTF_8).length * 8,
+            transportCode, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString("transportUrl",
+            transportUrl.toString().getBytes(StandardCharsets.UTF_8).length * 8,
+            transportUrl.toString(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         if(options != null && !options.isEmpty()) {
             writeBuffer.pushContext("options");
             for (Map.Entry<String, String> optionEntry : options.entrySet()) {
                 writeBuffer.pushContext("option");
-                writeBuffer.writeString("name", optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getKey());
-                writeBuffer.writeString("value", optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), optionEntry.getValue());
+                writeBuffer.writeString("name",
+                    optionEntry.getKey().getBytes(StandardCharsets.UTF_8).length * 8,
+                    optionEntry.getKey(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+                writeBuffer.writeString("value",
+                    optionEntry.getValue().getBytes(StandardCharsets.UTF_8).length * 8,
+                    optionEntry.getValue(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
                 writeBuffer.popContext("option");
             }
             writeBuffer.popContext("options");
         }
         if(name != null && !name.isEmpty()) {
-            writeBuffer.writeString("name", name.getBytes(StandardCharsets.UTF_8).length * 8, StandardCharsets.UTF_8.name(), name);
+            writeBuffer.writeString("name",
+                name.getBytes(StandardCharsets.UTF_8).length * 8,
+                name, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
 
         writeBuffer.popContext(getClass().getSimpleName());

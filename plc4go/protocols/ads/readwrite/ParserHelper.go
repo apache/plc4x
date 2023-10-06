@@ -20,6 +20,8 @@
 package readwrite
 
 import (
+	"context"
+
 	"github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -30,49 +32,49 @@ import (
 type AdsParserHelper struct {
 }
 
-func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "AmsSerialFrame":
-		return model.AmsSerialFrameParse(io)
+		return model.AmsSerialFrameParseWithBuffer(context.Background(), io)
 	case "DataItem":
 		plcValueType, _ := model.PlcValueTypeByName(arguments[0])
 		stringLength, err := utils.StrToInt32(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParse(io, plcValueType, stringLength)
+		return model.DataItemParseWithBuffer(context.Background(), io, plcValueType, stringLength)
 	case "AdsTableSizes":
-		return model.AdsTableSizesParse(io)
+		return model.AdsTableSizesParseWithBuffer(context.Background(), io)
 	case "AdsMultiRequestItem":
 		indexGroup, err := utils.StrToUint32(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.AdsMultiRequestItemParse(io, indexGroup)
+		return model.AdsMultiRequestItemParseWithBuffer(context.Background(), io, indexGroup)
 	case "AmsSerialAcknowledgeFrame":
-		return model.AmsSerialAcknowledgeFrameParse(io)
+		return model.AmsSerialAcknowledgeFrameParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeArrayInfo":
-		return model.AdsDataTypeArrayInfoParse(io)
+		return model.AdsDataTypeArrayInfoParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeTableEntry":
-		return model.AdsDataTypeTableEntryParse(io)
+		return model.AdsDataTypeTableEntryParseWithBuffer(context.Background(), io)
 	case "AmsNetId":
-		return model.AmsNetIdParse(io)
+		return model.AmsNetIdParseWithBuffer(context.Background(), io)
 	case "AdsStampHeader":
-		return model.AdsStampHeaderParse(io)
+		return model.AdsStampHeaderParseWithBuffer(context.Background(), io)
 	case "AmsSerialResetFrame":
-		return model.AmsSerialResetFrameParse(io)
+		return model.AmsSerialResetFrameParseWithBuffer(context.Background(), io)
 	case "AdsDataTypeTableChildEntry":
-		return model.AdsDataTypeTableChildEntryParse(io)
+		return model.AdsDataTypeTableChildEntryParseWithBuffer(context.Background(), io)
 	case "AdsConstants":
-		return model.AdsConstantsParse(io)
+		return model.AdsConstantsParseWithBuffer(context.Background(), io)
 	case "AdsNotificationSample":
-		return model.AdsNotificationSampleParse(io)
+		return model.AdsNotificationSampleParseWithBuffer(context.Background(), io)
 	case "AdsSymbolTableEntry":
-		return model.AdsSymbolTableEntryParse(io)
+		return model.AdsSymbolTableEntryParseWithBuffer(context.Background(), io)
 	case "AmsTCPPacket":
-		return model.AmsTCPPacketParse(io)
+		return model.AmsTCPPacketParseWithBuffer(context.Background(), io)
 	case "AmsPacket":
-		return model.AmsPacketParse(io)
+		return model.AmsPacketParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

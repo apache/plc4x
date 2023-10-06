@@ -18,10 +18,8 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcRequest;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcProprietaryRequest<REQUEST> extends PlcRequest {
     REQUEST getProprietaryRequest();
 }

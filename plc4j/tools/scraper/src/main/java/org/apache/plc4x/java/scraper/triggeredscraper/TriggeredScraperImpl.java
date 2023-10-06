@@ -23,10 +23,8 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
-import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -37,7 +35,7 @@ import org.apache.plc4x.java.scraper.config.triggeredscraper.ScraperConfiguratio
 import org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler.collector.TriggerCollector;
 import org.apache.plc4x.java.scraper.util.PercentageAboveThreshold;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.utils.connectionpool2.PooledDriverManager;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,71 +73,71 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     private final MultiValuedMap<ScrapeJob, ScraperTask> tasks = new ArrayListValuedHashMap<>();
     private final MultiValuedMap<ScraperTask, ScheduledFuture<?>> scraperTaskMap = new ArrayListValuedHashMap<>();
-    private final PlcDriverManager driverManager;
+    private final PlcConnectionManager plcConnectionManager;
     private final List<ScrapeJob> jobs;
     private MBeanServer mBeanServer;
 
-    private long futureTimeOut;
+    private final long futureTimeOut;
 
     private final TriggerCollector triggerCollector;
 
     /**
      * Creates a Scraper instance from a configuration.
-     * By default a {@link PooledDriverManager} is used.
+     * By default a {@link CachedPlcConnectionManager} is used.
      * @param config Configuration to use.
      * @param resultHandler handler the defines the processing of acquired data
      * @param triggerCollector the trigger collector
      * @throws ScraperException something went wrong
      */
     public TriggeredScraperImpl(ScraperConfiguration config, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
-        this(resultHandler, createPooledDriverManager(), config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
+        this(resultHandler, createCachedPlcConnectionManager(), config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
     }
 
     /**
      * Creates a Scraper instance from a configuration.
      * @param config Configuration to use.
-     * @param plcDriverManager external DriverManager
+     * @param plcConnectionManager external DriverManager
      * @param resultHandler handler the defines the processing of acquired data
      * @param triggerCollector the trigger collector
      * @throws ScraperException something went wrong
      */
-    public TriggeredScraperImpl(ScraperConfiguration config, PlcDriverManager plcDriverManager, ResultHandler resultHandler,TriggerCollector triggerCollector) throws ScraperException {
-        this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
+    public TriggeredScraperImpl(ScraperConfiguration config, PlcConnectionManager plcConnectionManager, ResultHandler resultHandler, TriggerCollector triggerCollector) throws ScraperException {
+        this(resultHandler, plcConnectionManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT);
     }
 
     /**
      * Creates a Scraper instance from a configuration.
      * @param config Configuration to use.
-     * @param plcDriverManager external DriverManager
+     * @param plcConnectionManager external DriverManager
      * @param resultHandler handler the defines the processing of acquired data
      * @param triggerCollector the trigger collector
      * @param poolSizeExecutor the pool size of the executor
      * @param poolSizeScheduler the pool size of the scheduler
      * @throws ScraperException something went wrong
      */
-    public TriggeredScraperImpl(ScraperConfigurationTriggeredImpl config, PlcDriverManager plcDriverManager, ResultHandler resultHandler, TriggerCollector triggerCollector, int poolSizeScheduler, int poolSizeExecutor) throws ScraperException {
-        this(resultHandler, plcDriverManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT,poolSizeScheduler,poolSizeExecutor);
+    public TriggeredScraperImpl(ScraperConfigurationTriggeredImpl config, PlcConnectionManager plcConnectionManager, ResultHandler resultHandler, TriggerCollector triggerCollector, int poolSizeScheduler, int poolSizeExecutor) throws ScraperException {
+        this(resultHandler, plcConnectionManager, config.getJobs(),triggerCollector,DEFAULT_FUTURE_TIME_OUT,poolSizeScheduler,poolSizeExecutor);
     }
 
     /**
      * Creates a Scraper instance from a configuration.
-     * @param plcDriverManager external DriverManager
+     * @param plcConnectionManager external DriverManager
      * @param resultHandler handler the defines the processing of acquired data
      * @param jobs list of jobs that scraper shall handle
      * @param triggerCollector a collection that centralizes the trigger requests and joins them to grouped plc requests
      * @param futureTimeOut max duration of future to return a result
      */
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut) {
-        this(resultHandler,plcDriverManager,jobs,triggerCollector,futureTimeOut,20,5);
+    public TriggeredScraperImpl(ResultHandler resultHandler, PlcConnectionManager plcConnectionManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut) {
+        this(resultHandler,plcConnectionManager,jobs,triggerCollector,futureTimeOut,20,5);
     }
 
-    public TriggeredScraperImpl(ResultHandler resultHandler, PlcDriverManager plcDriverManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
+    public TriggeredScraperImpl(ResultHandler resultHandler, PlcConnectionManager plcConnectionManager, List<ScrapeJob> jobs,TriggerCollector triggerCollector, long futureTimeOut, int poolSizeScheduler, int poolSizeExecutor) {
         this.resultHandler = resultHandler;
         Validate.notEmpty(jobs);
-        if (!(plcDriverManager instanceof PooledDriverManager)) {
-            LOGGER.warn("The Triggered Scraper is intended to be used with a Pooled Connection. In other situations leaks could occur!");
+        if (!(plcConnectionManager instanceof CachedPlcConnectionManager)) {
+            LOGGER.warn("The Triggered Scraper is intended to be used with a cached PlcConnectionManager. In other situations leaks could occur!");
         }
-        this.driverManager = plcDriverManager;
+        this.plcConnectionManager = plcConnectionManager;
         this.jobs = jobs;
         this.triggerCollector = triggerCollector;
         this.futureTimeOut = futureTimeOut;
@@ -174,8 +172,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * Then, on reconnect we can fail all getConnection calls (in the ScraperTask) fast until
      * (in the background) the idle connection is created and the getConnection call returns fast.
      */
-    private static PooledDriverManager createPooledDriverManager() {
-        return new PooledDriverManager();
+    private static CachedPlcConnectionManager createCachedPlcConnectionManager() {
+        return CachedPlcConnectionManager.getBuilder().build();
     }
 
     /**
@@ -202,11 +200,11 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
                 TriggeredScraperTask triggeredScraperTask;
                 try {
                     triggeredScraperTask = new TriggeredScraperTask(
-                        driverManager,
+                        plcConnectionManager,
                         job.getJobName(),
                         sourceEntry.getKey(),
                         sourceEntry.getValue(),
-                        job.getFields(),
+                        job.getTags(),
                         futureTimeOut,
                         executorService,
                         resultHandler,
@@ -278,17 +276,17 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     /**
      * acquires a plc connection from connection pool
-     * @param plcDriverManager  Driver manager handling connection and pools
-     * @param connectionString  Connection string as defined in the regarding implementation of {@link PlcDriver}
-     * @param executorService   ExecuterService holding a pool as threads handling requests and stuff
-     * @param requestTimeoutMs  maximum awaiting for the the future to return a result
-     * @param info              additional info for trace reasons
+     * @param plcConnectionManager  Connection manager handling connection and pools
+     * @param connectionString      Connection string as defined in the regarding implementation of {@link PlcDriver}
+     * @param executorService       ExecutorService holding a pool as threads handling requests and stuff
+     * @param requestTimeoutMs      maximum wait time for the future to return a result
+     * @param info                  additional info for trace reasons
      * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
      * @throws InterruptedException something went wrong
      * @throws ExecutionException something went wrong
      * @throws TimeoutException something went wrong
      */
-    public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
+    public static PlcConnection getPlcConnection(PlcConnectionManager plcConnectionManager,
                                                  String connectionString,
                                                  ExecutorService executorService,
                                                  long requestTimeoutMs,
@@ -298,12 +296,8 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
         }
         CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
             try {
-                return plcDriverManager.getConnection(connectionString);
-            } catch (PlcConnectionException e) {
-                LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
-                throw new PlcRuntimeException(e);
-            }
-            catch (Exception e){
+                return plcConnectionManager.getConnection(connectionString);
+            } catch (Exception e){
                 LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
                 throw new PlcRuntimeException(e);
             }
@@ -324,20 +318,20 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
 
     /**
      * acquires a plc connection from connection pool
-     * @param plcDriverManager  Driver manager handling connection and pools
+     * @param plcConnectionManager  Connection manager handling connection and pools
      * @param connectionString  Connection string as defined in the regarding implementation of {@link PlcDriver}
      * @param executorService   ExecuterService holding a pool as threads handling requests and stuff
-     * @param requestTimeoutMs  maximum awaiting for the the future to return a result
+     * @param requestTimeoutMs  maximum waiting time for the future to return a result
      * @return the {@link PlcConnection} used for acquiring data from PLC endpoint
      * @throws InterruptedException something went wrong
      * @throws ExecutionException something went wrong
      * @throws TimeoutException something went wrong
      */
-    public static PlcConnection getPlcConnection(PlcDriverManager plcDriverManager,
+    public static PlcConnection getPlcConnection(PlcConnectionManager plcConnectionManager,
                                                  String connectionString,
                                                  ExecutorService executorService,
                                                  long requestTimeoutMs) throws InterruptedException, ExecutionException, TimeoutException {
-        return getPlcConnection(plcDriverManager,connectionString,executorService,requestTimeoutMs,"");
+        return getPlcConnection(plcConnectionManager,connectionString,executorService,requestTimeoutMs,"");
     }
 
     /**
@@ -346,7 +340,7 @@ public class TriggeredScraperImpl implements Scraper, TriggeredScraperMBean {
      * @return the converted map
      */
     public static Map<String, Object> convertPlcResponseToMap(PlcReadResponse plcReadResponse) {
-        return plcReadResponse.getFieldNames().stream()
+        return plcReadResponse.getTagNames().stream()
             .collect(Collectors.toMap(
                 name -> name,
                 plcReadResponse::getObject

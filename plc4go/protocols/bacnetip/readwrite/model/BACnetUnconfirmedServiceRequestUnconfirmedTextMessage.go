@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage is the corresponding interface of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
 type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BACnetUnconfirmedServiceRequest
@@ -119,7 +123,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(textMessageSourceD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedTextMessage(structType any) BACnetUnconfirmedServiceRequestUnconfirmedTextMessage {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnconfirmedTextMessage); ok {
 		return casted
 	}
@@ -133,37 +137,39 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetTypeName() s
 	return "BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (textMessageSourceDevice)
-	lengthInBits += m.TextMessageSourceDevice.GetLengthInBits()
+	lengthInBits += m.TextMessageSourceDevice.GetLengthInBits(ctx)
 
 	// Optional Field (messageClass)
 	if m.MessageClass != nil {
-		lengthInBits += m.MessageClass.GetLengthInBits()
+		lengthInBits += m.MessageClass.GetLengthInBits(ctx)
 	}
 
 	// Simple field (messagePriority)
-	lengthInBits += m.MessagePriority.GetLengthInBits()
+	lengthInBits += m.MessagePriority.GetLengthInBits(ctx)
 
 	// Simple field (message)
-	lengthInBits += m.Message.GetLengthInBits()
+	lengthInBits += m.Message.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
+func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(ctx context.Context, theBytes []byte, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
+	return BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+}
+
+func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
@@ -174,7 +180,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("textMessageSourceDevice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for textMessageSourceDevice")
 	}
-	_textMessageSourceDevice, _textMessageSourceDeviceErr := BACnetContextTagParse(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+	_textMessageSourceDevice, _textMessageSourceDeviceErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
 	if _textMessageSourceDeviceErr != nil {
 		return nil, errors.Wrap(_textMessageSourceDeviceErr, "Error parsing 'textMessageSourceDevice' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
@@ -190,10 +196,10 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 		if pullErr := readBuffer.PullContext("messageClass"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for messageClass")
 		}
-		_val, _err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParse(readBuffer, uint8(1))
+		_val, _err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, readBuffer, uint8(1))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'messageClass' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
@@ -209,7 +215,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("messagePriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for messagePriority")
 	}
-	_messagePriority, _messagePriorityErr := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse(readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_messagePriority, _messagePriorityErr := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _messagePriorityErr != nil {
 		return nil, errors.Wrap(_messagePriorityErr, "Error parsing 'messagePriority' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
@@ -222,7 +228,7 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for message")
 	}
-	_message, _messageErr := BACnetContextTagParse(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_message, _messageErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _messageErr != nil {
 		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
 	}
@@ -249,9 +255,19 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(readBuffer utils
 	return _child, nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
@@ -261,7 +277,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 		if pushErr := writeBuffer.PushContext("textMessageSourceDevice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for textMessageSourceDevice")
 		}
-		_textMessageSourceDeviceErr := writeBuffer.WriteSerializable(m.GetTextMessageSourceDevice())
+		_textMessageSourceDeviceErr := writeBuffer.WriteSerializable(ctx, m.GetTextMessageSourceDevice())
 		if popErr := writeBuffer.PopContext("textMessageSourceDevice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for textMessageSourceDevice")
 		}
@@ -276,7 +292,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 				return errors.Wrap(pushErr, "Error pushing for messageClass")
 			}
 			messageClass = m.GetMessageClass()
-			_messageClassErr := writeBuffer.WriteSerializable(messageClass)
+			_messageClassErr := writeBuffer.WriteSerializable(ctx, messageClass)
 			if popErr := writeBuffer.PopContext("messageClass"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for messageClass")
 			}
@@ -289,7 +305,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 		if pushErr := writeBuffer.PushContext("messagePriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for messagePriority")
 		}
-		_messagePriorityErr := writeBuffer.WriteSerializable(m.GetMessagePriority())
+		_messagePriorityErr := writeBuffer.WriteSerializable(ctx, m.GetMessagePriority())
 		if popErr := writeBuffer.PopContext("messagePriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for messagePriority")
 		}
@@ -301,7 +317,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for message")
 		}
-		_messageErr := writeBuffer.WriteSerializable(m.GetMessage())
+		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
 		if popErr := writeBuffer.PopContext("message"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for message")
 		}
@@ -314,7 +330,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) Serialize(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) isBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() bool {
@@ -326,7 +342,7 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage) String() string
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -22,7 +22,6 @@ import io.vavr.control.Either;
 import org.apache.plc4x.java.spi.ConversationContext;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.TimeoutException;
@@ -37,9 +36,9 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
 
     protected final Consumer<HandlerRegistration> finisher;
 
-    private final Object request;
+    private final T request;
 
-    private final ConversationContext context;
+    private final ConversationContext<T> context;
 
     protected Class<?> expectClazz;
 
@@ -57,7 +56,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
         this.context = context;
     }
 
-    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, Object request, ConversationContext<?> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+    protected DefaultSendRequestContext(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Duration timeout, Consumer<HandlerRegistration> finisher, T request, ConversationContext<T> context, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
         this.commands = commands;
         this.timeout = timeout;
         this.finisher = finisher;
@@ -126,7 +125,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             onTimeoutConsumer = new NoopTimeoutConsumer();
         }
         commands.addLast(Either.left(unwrapper));
-        return new DefaultSendRequestContext<>(commands, timeout, finisher, request, context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
+        return new DefaultSendRequestContext<>(commands, timeout, finisher, (R) request, (ConversationContext<R>) context, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer);
     }
 
     @Override

@@ -18,11 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.plc4x.java.api.exceptions.PlcInvalidFieldException;
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -30,12 +26,11 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcBOOL extends PlcIECValue<Boolean> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
-    static int minValue = 0;
-    static int maxValue = 1;
+    static final int minValue = 0;
+    static final int maxValue = 1;
 
     public static PlcBOOL of(Object value) {
         if (value instanceof Boolean) {
@@ -68,7 +63,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Byte value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -76,7 +71,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Short value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -84,7 +79,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Integer value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -92,7 +87,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Long value) {
         if ((value == null) || (value < minValue || value > maxValue)) {
-            throw new PlcInvalidFieldException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format("Value of type %d is out of range %d - %d for a %s Value", value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -100,7 +95,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Float value) {
         if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -108,7 +103,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(Double value) {
         if ((value == null) || (value < minValue) || (value > maxValue) || (value % 1 != 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value >= 1;
         this.isNullable = true;
@@ -116,7 +111,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(BigInteger value) {
         if ((value == null) || (value.compareTo(BigInteger.valueOf(minValue)) < 0) || (value.compareTo(BigInteger.valueOf(maxValue)) > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.compareTo(BigInteger.valueOf(maxValue)) >= 0;
         this.isNullable = true;
@@ -124,7 +119,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
 
     public PlcBOOL(BigDecimal value) {
         if ((value == null) || (value.compareTo(BigDecimal.valueOf(minValue)) < 0) || (value.compareTo(BigDecimal.valueOf(maxValue)) > 0) || (value.scale() > 0)) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
         }
         this.value = value.compareTo(BigDecimal.valueOf(maxValue)) >= 0;
         this.isNullable = true;
@@ -135,7 +130,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
             this.value = parseValue(value);
             this.isNullable = false;
         } catch (RuntimeException e) {
-            throw new PlcInvalidFieldException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()), e);
         }
     }
 
@@ -148,8 +143,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         }
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcBOOL(@JsonProperty("value") boolean value) {
+    public PlcBOOL(boolean value) {
         this.value = value;
         this.isNullable = true;
     }
@@ -160,132 +154,110 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isBoolean() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean getBoolean() {
         return (value != null) && value;
     }
 
     @Override
-    @JsonIgnore
     public boolean isByte() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public byte getByte() {
         return (byte) (((value != null) && value) ? 1 : 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isShort() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public short getShort() {
         return (short) (((value != null) && value) ? 1 : 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public int getInteger() {
         return ((value != null) && value) ? 1 : 0;
     }
 
     @Override
-    @JsonIgnore
     public boolean isLong() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public long getLong() {
         return ((value != null) && value) ? 1 : 0;
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger() {
         return value ? BigInteger.ONE : BigInteger.ZERO;
     }
 
     @Override
-    @JsonIgnore
     public boolean isFloat() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public float getFloat() {
         return ((value != null) && value) ? 1.0f : 0.0f;
     }
 
     @Override
-    @JsonIgnore
     public boolean isDouble() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public double getDouble() {
         return ((value != null) && value) ? 1.0 : 0.0;
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigDecimal() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal() {
         return value ? BigDecimal.ONE : BigDecimal.ZERO;
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return toString();
     }
 
-    @JsonIgnore
     public byte[] getBytes() {
         return ((value != null) && value) ? new byte[]{0x01} : new byte[]{0x00};
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return Boolean.toString(value);
     }

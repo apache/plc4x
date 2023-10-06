@@ -188,46 +188,51 @@
         //['WSTRING' WSTRING
         //]
         ['TIME' TIME
-            [reserved uint 8    '0x00']
-            [simple   uint 32   value ]
+            [reserved uint 8    '0x00'      ]
+            // TODO: Check if this is correct ...
+            [simple   uint 32   milliseconds]
         ]
         ['LTIME' LTIME
-            [reserved uint 8    '0x00']
-            [simple   uint 64   value ]
+            [reserved uint 8    '0x00'     ]
+            // TODO: Check if this is correct ...
+            [simple   uint 64   nanoseconds]
         ]
         ['DATE' DATE
-            [reserved uint 8    '0x00']
-            [simple   uint 16   value ]
+            [reserved uint 8    '0x00'           ]
+            // TODO: Check if this is correct ...
+            [simple   uint 32   secondsSinceEpoch]
         ]
         ['TIME_OF_DAY' TIME_OF_DAY
-            [reserved uint 8    '0x00']
-            [simple   uint 32   value ]
+            [reserved uint 8    '0x00'                   ]
+            // TODO: Check if this is correct ...
+            [simple   uint 32   millisecondsSinceMidnight]
         ]
         ['TOD' TIME_OF_DAY
-            [reserved uint 8    '0x00']
-            [simple   uint 32   value ]
+            [reserved uint 8    '0x00'                   ]
+            // TODO: Check if this is correct ...
+            [simple   uint 32   millisecondsSinceMidnight]
         ]
         ['DATE_AND_TIME' DATE_AND_TIME
-            [reserved uint 8  '0x00'   ]
-            [simple   uint 16 year     ]
-            [simple   uint 8  month    ]
-            [simple   uint 8  day      ]
-            [simple   uint 8  dayOfWeek]
-            [simple   uint 8  hour     ]
-            [simple   uint 8  minutes  ]
-            [simple   uint 8  seconds  ]
-            [simple   uint 32 nanos    ]
+            [reserved uint 8  '0x00'     ]
+            [simple   uint 16 year       ]
+            [simple   uint 8  month      ]
+            [simple   uint 8  day        ]
+            [simple   uint 8  dayOfWeek  ]
+            [simple   uint 8  hour       ]
+            [simple   uint 8  minutes    ]
+            [simple   uint 8  seconds    ]
+            [simple   uint 32 nanoseconds]
         ]
         ['DT' DATE_AND_TIME
-            [reserved uint 8  '0x00'   ]
-            [simple   uint 16 year     ]
-            [simple   uint 8  month    ]
-            [simple   uint 8  day      ]
-            [simple   uint 8  dayOfWeek]
-            [simple   uint 8  hour     ]
-            [simple   uint 8  minutes  ]
-            [simple   uint 8  seconds  ]
-            [simple   uint 32 nanos    ]
+            [reserved uint 8  '0x00'     ]
+            [simple   uint 16 year       ]
+            [simple   uint 8  month      ]
+            [simple   uint 8  day        ]
+            [simple   uint 8  dayOfWeek  ]
+            [simple   uint 8  hour       ]
+            [simple   uint 8  minutes    ]
+            [simple   uint 8  seconds    ]
+            [simple   uint 32 nanoseconds]
         ]
 
     <xsl:for-each select="knx:KNX/knx:MasterData/knx:DatapointTypes/knx:DatapointType/knx:DatapointSubtypes/knx:DatapointSubtype">

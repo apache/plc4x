@@ -19,8 +19,9 @@
 package org.apache.plc4x.java.opcua;
 
 import io.vavr.collection.List;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
@@ -30,35 +31,21 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.assertj.core.api.Condition;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
-
-import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.INET_ADDRESS_PATTERN;
-import static org.apache.plc4x.java.opcua.OpcuaPlcDriver.URI_PATTERN;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
-@Disabled("Currently seems to block")
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class OpcuaPlcDriverTest {
 
-    @BeforeAll
-    static void setUp() {
-        assumeTrue(() -> {
-            String OS = System.getProperty("os.name").toLowerCase();
-            if (OS.contains("nix")
-                || OS.contains("nux")
-                || OS.contains("aix")) {
-                return false;
-            }
-
-            return true;
-        }, "somehow opcua doesn't run properly on linux");
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
 
     // Read only variables of milo example server of version 3.6
     private static final String BOOL_IDENTIFIER_READ_WRITE = "ns=2;s=HelloWorld/ScalarTypes/Boolean";
@@ -106,26 +93,29 @@ public class OpcuaPlcDriverTest {
     private static final String UINT64_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/UInt64Array";
     private static final String DATE_TIME_ARRAY_IDENTIFIER = "ns=2;s=HelloWorld/ArrayTypes/DateTimeArray";
 
+    //Restricted
+    public static final String STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE = "ns=2;s=HelloWorld/OnlyAdminCanRead/String";
+
     // Address of local milo server
-    private String miloLocalAddress = "127.0.0.1:12686/milo";
+    private final String miloLocalAddress = "127.0.0.1:12686/milo";
     //Tcp pattern of OPC UA
-    private String opcPattern = "opcua:tcp://";
+    private final String opcPattern = "opcua:tcp://";
 
-    private String paramSectionDivider = "?";
-    private String paramDivider = "&";
+    private final String paramSectionDivider = "?";
+    private final String paramDivider = "&";
 
-    private String tcpConnectionAddress = opcPattern + miloLocalAddress;
+    private final String tcpConnectionAddress = opcPattern + miloLocalAddress;
 
-    private List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
-    private List<String> connectionStringCorruptedSet = List.of();
+    private final List<String> connectionStringValidSet = List.of(tcpConnectionAddress);
+    private final List<String> connectionStringCorruptedSet = List.of();
 
-    private String discoveryValidParamTrue = "discovery=true";
-    private String discoveryValidParamFalse = "discovery=false";
-    private String discoveryCorruptedParamWrongValueNum = "discovery=1";
-    private String discoveryCorruptedParamWronName = "diskovery=false";
+    private final String discoveryValidParamTrue = "discovery=true";
+    private final String discoveryValidParamFalse = "discovery=false";
+    private final String discoveryCorruptedParamWrongValueNum = "discovery=1";
+    private final String discoveryCorruptedParamWrongName = "diskovery=false";
 
-    List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
-    List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWronName);
+    final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
+    List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWrongName);
 
     private static ExampleServer exampleServer;
 
@@ -152,222 +142,252 @@ public class OpcuaPlcDriverTest {
         }
     }
 
-    @Test
-    public void connectionNoParams() {
-        connectionStringValidSet.forEach(connectionString -> {
-            try {
-                PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
-                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
-                assertThat(opcuaConnection).is(is_connected);
-                opcuaConnection.close();
-                assertThat(opcuaConnection).isNot(is_connected);
-            } catch (PlcConnectionException e) {
-                fail("Exception during connectionNoParams while connecting Test EXCEPTION: " + e.getMessage());
-            } catch (Exception e) {
-                fail("Exception during connectionNoParams while closing Test EXCEPTION: " + e.getMessage());
-            }
-        });
-    }
-
-    @Test
-    public void connectionWithDiscoveryParam() {
-        connectionStringValidSet.forEach(connectionAddress -> {
-            discoveryParamValidSet.forEach(discoveryParam -> {
-                String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
-                try {
-                    PlcConnection opcuaConnection = new PlcDriverManager().getConnection(connectionString);
+    @Nested
+    class ConnectionRelated {
+        @TestFactory
+        Stream<DynamicNode> connectionNoParams() {
+            return connectionStringValidSet.toStream()
+                .map(connectionString -> DynamicTest.dynamicTest(connectionString, () -> {
+                    PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
                     Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
                     assertThat(opcuaConnection).is(is_connected);
                     opcuaConnection.close();
                     assertThat(opcuaConnection).isNot(is_connected);
-                } catch (PlcConnectionException e) {
-                    fail("Exception during connectionWithDiscoveryParam while connecting Test EXCEPTION: " + e.getMessage());
-                } catch (Exception e) {
-                    fail("Exception during connectionWithDiscoveryParam while closing Test EXCEPTION: " + e.getMessage());
-                }
-            });
-        });
+                }))
+                .map(DynamicNode.class::cast)
+                .toJavaStream();
+        }
+
+        @TestFactory
+        Stream<DynamicNode> connectionWithDiscoveryParam() throws Exception {
+            return connectionStringValidSet.toStream()
+                .map(connectionAddress -> DynamicContainer.dynamicContainer(connectionAddress, () ->
+                    discoveryParamValidSet.toStream().map(discoveryParam -> DynamicTest.dynamicTest(discoveryParam, () -> {
+                            String connectionString = connectionAddress + paramSectionDivider + discoveryParam;
+                            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(connectionString);
+                            Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                            assertThat(opcuaConnection).is(is_connected);
+                            opcuaConnection.close();
+                            assertThat(opcuaConnection).isNot(is_connected);
+                        }))
+                        .map(DynamicNode.class::cast)
+                        .iterator()))
+                .map(DynamicNode.class::cast)
+                .toJavaStream();
+        }
+
+        @Test
+        void connectionWithUrlAuthentication() throws Exception {
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "?username=admin&password=password2")) {
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+
+                PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                        .addTagAddress("String", STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE);
+
+                PlcReadRequest request = builder.build();
+                PlcReadResponse response = request.execute().get();
+
+                assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+
+        @Test
+        void connectionWithPlcAuthentication() throws Exception {
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress,
+                    new PlcUsernamePasswordAuthentication("admin", "password2"))) {
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+
+                PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                        .addTagAddress("String", STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE);
+
+                PlcReadRequest request = builder.build();
+                PlcReadResponse response = request.execute().get();
+
+                assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
+
+        @Test
+        void connectionWithPlcAuthenticationOverridesUrlParam() throws Exception {
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
+            try (PlcConnection opcuaConnection = driverManager.getConnection(tcpConnectionAddress + "?username=user&password=password1",
+                    new PlcUsernamePasswordAuthentication("admin", "password2"))) {
+                Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+                assertThat(opcuaConnection).is(is_connected);
+
+                PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                        .addTagAddress("String", STRING_IDENTIFIER_ONLY_ADMIN_READ_WRITE);
+
+                PlcReadRequest request = builder.build();
+                PlcReadResponse response = request.execute().get();
+
+                assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
+            }
+        }
     }
 
-    @Test
-    public void readVariables() {
-        try {
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
+    @Nested
+    class readWrite {
+
+        @Test
+        public void readVariables() throws Exception {
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
             Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
             assertThat(opcuaConnection).is(is_connected);
 
-            PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder();
-            builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE);
-            builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE);
-            builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE);
-            builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE);
-            builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE);
-            builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE);
-            builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE);
-            builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE);
-            builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE);
-            builder.addItem("String", STRING_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE);
-            builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE);
+            PlcReadRequest.Builder builder = opcuaConnection.readRequestBuilder()
+                .addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Byte", BYTE_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Float", FLOAT_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Int16", INT16_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Int32", INT32_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Int64", INT64_IDENTIFIER_READ_WRITE)
+                .addTagAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE)
+                .addTagAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE)
+                .addTagAddress("String", STRING_IDENTIFIER_READ_WRITE)
+                .addTagAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE)
+                .addTagAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE)
+                .addTagAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE)
+                .addTagAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE)
 
-            builder.addItem("BoolArray", BOOL_ARRAY_IDENTIFIER);
-            //builder.addItem("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
-            builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER);
-            builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER);
-            builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER);
-            builder.addItem("Int16Array", INT16_ARRAY_IDENTIFIER);
-            builder.addItem("Int32Array", INT32_ARRAY_IDENTIFIER);
-            builder.addItem("Int64Array", INT64_ARRAY_IDENTIFIER);
-            builder.addItem("SByteArray", SBYTE_ARRAY_IDENTIFIER);
-            builder.addItem("StringArray", STRING_ARRAY_IDENTIFIER);
-            builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER);
-            builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER);
-            builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER);
+                .addTagAddress("BoolArray", BOOL_ARRAY_IDENTIFIER)
+                //.addTagAddress("ByteStringArray", BYTE_STRING_ARRAY_IDENTIFIER);
+                .addTagAddress("ByteArray", BYTE_ARRAY_IDENTIFIER)
+                .addTagAddress("DoubleArray", DOUBLE_ARRAY_IDENTIFIER)
+                .addTagAddress("FloatArray", FLOAT_ARRAY_IDENTIFIER)
+                .addTagAddress("Int16Array", INT16_ARRAY_IDENTIFIER)
+                .addTagAddress("Int32Array", INT32_ARRAY_IDENTIFIER)
+                .addTagAddress("Int64Array", INT64_ARRAY_IDENTIFIER)
+                .addTagAddress("SByteArray", SBYTE_ARRAY_IDENTIFIER)
+                .addTagAddress("StringArray", STRING_ARRAY_IDENTIFIER)
+                .addTagAddress("UInt16Array", UINT16_ARRAY_IDENTIFIER)
+                .addTagAddress("UInt32Array", UINT32_ARRAY_IDENTIFIER)
+                .addTagAddress("UInt64Array", UINT64_ARRAY_IDENTIFIER)
 
-            builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
+                .addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE);
 
             PlcReadRequest request = builder.build();
             PlcReadResponse response = request.execute().get();
-            assertThat(response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Byte")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Double")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Float")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int16")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int32")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int64")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Integer")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("SByte")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt16")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt32")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt64")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInteger")).isEqualTo(PlcResponseCode.OK);
+            List.of(
+                "Bool",
+                "Byte",
+                "Double",
+                "Float",
+                "Int16",
+                "Int32",
+                "Int64",
+                "Integer",
+                "SByte",
+                "String",
+                "UInt16",
+                "UInt32",
+                "UInt64",
+                "UInteger",
+                "BoolArray",
+                "ByteArray",
+                "DoubleArray",
+                "FloatArray",
+                "Int16Array",
+                "Int32Array",
+                "Int64Array",
+                "SByteArray",
+                "StringArray",
+                "UInt16Array",
+                "UInt32Array",
+                "UInt64Array"
+            ).forEach(tag -> assertThat(response.getResponseCode(tag)).isEqualTo(PlcResponseCode.OK));
 
-            assertThat(response.getResponseCode("BoolArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("ByteArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("DoubleArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("FloatArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int16Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int32Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("Int64Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("SByteArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("StringArray")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt16Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt32Array")).isEqualTo(PlcResponseCode.OK);
-            assertThat(response.getResponseCode("UInt64Array")).isEqualTo(PlcResponseCode.OK);
 
             assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
 
             opcuaConnection.close();
-            assert !opcuaConnection.isConnected();
-        } catch (Exception e) {
-            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
+            assertThat(opcuaConnection.isConnected()).isFalse();
         }
-    }
 
-    @Test
-    public void writeVariables() throws Exception {
-        PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
-        Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
-        assertThat(opcuaConnection).is(is_connected);
+        @Test
+        public void writeVariables() throws Exception {
 
-        PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder();
-        builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
-        builder.addItem("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", (short) 3);
-        builder.addItem("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d);
-        builder.addItem("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f);
-        //builder.addItem("Int16", INT16_IDENTIFIER_READ_WRITE + "", (short) 1);
-        builder.addItem("Int32", INT32_IDENTIFIER_READ_WRITE, 42);
-        builder.addItem("Int64", INT64_IDENTIFIER_READ_WRITE, 42L);
-        builder.addItem("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42);
-        builder.addItem("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";SINT", -127);
-        builder.addItem("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!");
-        builder.addItem("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535);
-        builder.addItem("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 101010101L);
-        builder.addItem("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"));
-        builder.addItem("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 102020202L);
+            PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
+            Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+            assertThat(opcuaConnection).is(is_connected);
 
-
-        builder.addItem("BooleanArray", BOOL_ARRAY_IDENTIFIER, new Boolean[]{true, true, true, true, true});
-        builder.addItem("ByteArray", BYTE_ARRAY_IDENTIFIER + ";BYTE", new Short[]{1, 100, 100, 255, 123});
-        builder.addItem("DoubleArray", DOUBLE_ARRAY_IDENTIFIER, new Double[]{1.0, 2.0, 3.0, 4.0, 5.0});
-        builder.addItem("FloatArray", FLOAT_ARRAY_IDENTIFIER, new Float[]{1.0F, 2.0F, 3.0F, 4.0F, 5.0F});
-        builder.addItem("Int16Array", INT16_ARRAY_IDENTIFIER, new Short[]{1, 2, 3, 4, 5});
-        builder.addItem("Int32Array", INT32_ARRAY_IDENTIFIER, new Integer[]{1, 2, 3, 4, 5});
-        builder.addItem("Int64Array", INT64_ARRAY_IDENTIFIER, new Long[]{1L, 2L, 3L, 4L, 5L});
-        builder.addItem("IntegerArray", INT32_ARRAY_IDENTIFIER, new Integer[]{1, 2, 3, 4, 5});
-        builder.addItem("SByteArray", SBYTE_ARRAY_IDENTIFIER, new Byte[]{1, 2, 3, 4, 5});
-        builder.addItem("StringArray", STRING_ARRAY_IDENTIFIER, new String[]{"1", "2", "3", "4", "5"});
-        builder.addItem("UInt16Array", UINT16_ARRAY_IDENTIFIER + ";UINT", new Short[]{1, 2, 3, 4, 5});
-        builder.addItem("UInt32Array", UINT32_ARRAY_IDENTIFIER + ";UDINT", new Integer[]{1, 2, 3, 4, 5});
-        builder.addItem("UInt64Array", UINT64_ARRAY_IDENTIFIER + ";ULINT", new Long[]{1L, 2L, 3L, 4L, 5L});
-
-        builder.addItem("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "11");
-
-        PlcWriteRequest request = builder.build();
-        PlcWriteResponse response = request.execute().get();
-
-        assertThat(response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Byte")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Double")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Float")).isEqualTo(PlcResponseCode.OK);
-        //assertThat(response.getResponseCode("Int16")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Int32")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Int64")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Integer")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("SByte")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("String")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInt16")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInt32")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInt64")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInteger")).isEqualTo(PlcResponseCode.OK);
-
-        assertThat(response.getResponseCode("BooleanArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("ByteArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("DoubleArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("FloatArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Int16Array")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Int32Array")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("Int64Array")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("IntegerArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("SByteArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("StringArray")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInt16Array")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInt32Array")).isEqualTo(PlcResponseCode.OK);
-        assertThat(response.getResponseCode("UInt64Array")).isEqualTo(PlcResponseCode.OK);
-
-        assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
-
-        opcuaConnection.close();
-        assert !opcuaConnection.isConnected();
-    }
-
-    @Test
-    public void testOpcuaAddressPattern() {
-
-        assertThat(":tcp://localhost").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://localhost:3131").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://www.google.de").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://www.google.de:443").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://127.0.0.1").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://127.0.0.1:251").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://254.254.254.254:1337").matches(INET_ADDRESS_PATTERN);
-        assertThat(":tcp://254.254.254.254").matches(INET_ADDRESS_PATTERN);
+            PlcWriteRequest.Builder builder = opcuaConnection.writeRequestBuilder()
+                .addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE, true)
+                .addTagAddress("Byte", BYTE_IDENTIFIER_READ_WRITE + ";BYTE", (short) 3)
+                .addTagAddress("Double", DOUBLE_IDENTIFIER_READ_WRITE, 0.5d)
+                .addTagAddress("Float", FLOAT_IDENTIFIER_READ_WRITE, 0.5f)
+                //.addTagAddress("Int16", INT16_IDENTIFIER_READ_WRITE + "", (short) 1)
+                .addTagAddress("Int32", INT32_IDENTIFIER_READ_WRITE, 42)
+                .addTagAddress("Int64", INT64_IDENTIFIER_READ_WRITE, 42L)
+                .addTagAddress("Integer", INTEGER_IDENTIFIER_READ_WRITE, 42)
+                .addTagAddress("SByte", SBYTE_IDENTIFIER_READ_WRITE + ";SINT", -127)
+                .addTagAddress("String", STRING_IDENTIFIER_READ_WRITE, "Helllo Toddy!")
+                .addTagAddress("UInt16", UINT16_IDENTIFIER_READ_WRITE + ";UINT", 65535)
+                .addTagAddress("UInt32", UINT32_IDENTIFIER_READ_WRITE + ";UDINT", 101010101L)
+                .addTagAddress("UInt64", UINT64_IDENTIFIER_READ_WRITE + ";ULINT", new BigInteger("1337"))
+                .addTagAddress("UInteger", UINTEGER_IDENTIFIER_READ_WRITE + ";UDINT", 102020202L)
 
 
-        assertThat("opcua:tcp://localhost").matches(URI_PATTERN);
-        assertThat("opcua:tcp://localhost:3131").matches(URI_PATTERN);
-        assertThat("opcua:tcp://www.google.de").matches(URI_PATTERN);
-        assertThat("opcua:tcp://www.google.de:443").matches(URI_PATTERN);
-        assertThat("opcua:tcp://127.0.0.1").matches(URI_PATTERN);
-        assertThat("opcua:tcp://127.0.0.1:251").matches(URI_PATTERN);
-        assertThat("opcua:tcp://254.254.254.254:1337").matches(URI_PATTERN);
-        assertThat("opcua:tcp://254.254.254.254").matches(URI_PATTERN);
+                .addTagAddress("BooleanArray", BOOL_ARRAY_IDENTIFIER, (Object[]) new Boolean[]{true, true, true, true, true})
+                .addTagAddress("ByteArray", BYTE_ARRAY_IDENTIFIER + ";BYTE", (Object[]) new Short[]{1, 100, 100, 255, 123})
+                .addTagAddress("DoubleArray", DOUBLE_ARRAY_IDENTIFIER, (Object[]) new Double[]{1.0, 2.0, 3.0, 4.0, 5.0})
+                .addTagAddress("FloatArray", FLOAT_ARRAY_IDENTIFIER, (Object[]) new Float[]{1.0F, 2.0F, 3.0F, 4.0F, 5.0F})
+                .addTagAddress("Int16Array", INT16_ARRAY_IDENTIFIER, (Object[]) new Short[]{1, 2, 3, 4, 5})
+                .addTagAddress("Int32Array", INT32_ARRAY_IDENTIFIER, (Object[]) new Integer[]{1, 2, 3, 4, 5})
+                .addTagAddress("Int64Array", INT64_ARRAY_IDENTIFIER, (Object[]) new Long[]{1L, 2L, 3L, 4L, 5L})
+                .addTagAddress("IntegerArray", INT32_ARRAY_IDENTIFIER, (Object[]) new Integer[]{1, 2, 3, 4, 5})
+                .addTagAddress("SByteArray", SBYTE_ARRAY_IDENTIFIER, (Object[]) new Byte[]{1, 2, 3, 4, 5})
+                .addTagAddress("StringArray", STRING_ARRAY_IDENTIFIER, (Object[]) new String[]{"1", "2", "3", "4", "5"})
+                .addTagAddress("UInt16Array", UINT16_ARRAY_IDENTIFIER + ";UINT", (Object[]) new Short[]{1, 2, 3, 4, 5})
+                .addTagAddress("UInt32Array", UINT32_ARRAY_IDENTIFIER + ";UDINT", (Object[]) new Integer[]{1, 2, 3, 4, 5})
+                .addTagAddress("UInt64Array", UINT64_ARRAY_IDENTIFIER + ";ULINT", (Object[]) new Long[]{1L, 2L, 3L, 4L, 5L})
 
-        assertThat("opcua:tcp://127.0.0.1?discovery=false").matches(URI_PATTERN);
-        assertThat("opcua:tcp://opcua.demo-this.com:51210/UA/SampleServer?discovery=false").matches(URI_PATTERN);
+                .addTagAddress("DoesNotExists", DOES_NOT_EXIST_IDENTIFIER_READ_WRITE, "11");
+
+            PlcWriteRequest request = builder.build();
+            PlcWriteResponse response = request.execute().get();
+
+            List.of(
+                "Bool",
+                "Byte",
+                "Double",
+                "Float",
+                //"Int16", // TODO: why is htat disabled???
+                "Int32",
+                "Int64",
+                "Integer",
+                "SByte",
+                "String",
+                "UInt16",
+                "UInt32",
+                "UInt64",
+                "UInteger",
+                "BooleanArray",
+                "ByteArray",
+                "DoubleArray",
+                "FloatArray",
+                "Int16Array",
+                "Int32Array",
+                "Int64Array",
+                "IntegerArray",
+                "SByteArray",
+                "StringArray",
+                "UInt16Array",
+                "UInt32Array",
+                "UInt64Array"
+            ).forEach(s -> {
+                assertThat(response.getResponseCode(s)).withFailMessage(s + "is not ok").isEqualTo(PlcResponseCode.OK);
+            });
+            assertThat(response.getResponseCode("DoesNotExists")).isEqualTo(PlcResponseCode.NOT_FOUND);
+
+            opcuaConnection.close();
+            assert !opcuaConnection.isConnected();
+        }
 
     }
 
@@ -375,10 +395,10 @@ public class OpcuaPlcDriverTest {
         Test added to test the syncronized Trnasactionhandler.
         The test originally failed one out of every 5 or so.
      */
-
-    public void multipleThreads() {
+    //@Test
+    public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
-            private PlcConnection connection;
+            private final PlcConnection connection;
 
             public ReadWorker(PlcConnection opcuaConnection) {
                 this.connection = opcuaConnection;
@@ -388,7 +408,7 @@ public class OpcuaPlcDriverTest {
             public void run() {
                 try {
                     PlcReadRequest.Builder read_builder = connection.readRequestBuilder();
-                    read_builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE);
+                    read_builder.addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE);
                     PlcReadRequest read_request = read_builder.build();
 
                     for (int i = 0; i < 100; i++) {
@@ -396,17 +416,17 @@ public class OpcuaPlcDriverTest {
                         assertThat(read_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
 
-                } catch (ExecutionException executionException) {
-                    executionException.printStackTrace();
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
+                } catch (ExecutionException e) {
+                    LOGGER.error("run aborted", e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
                 }
-
             }
         }
 
         class WriteWorker extends Thread {
-            private PlcConnection connection;
+            private final PlcConnection connection;
 
             public WriteWorker(PlcConnection opcuaConnection) {
                 this.connection = opcuaConnection;
@@ -416,40 +436,37 @@ public class OpcuaPlcDriverTest {
             public void run() {
                 try {
                     PlcWriteRequest.Builder write_builder = connection.writeRequestBuilder();
-                    write_builder.addItem("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
+                    write_builder.addTagAddress("Bool", BOOL_IDENTIFIER_READ_WRITE, true);
                     PlcWriteRequest write_request = write_builder.build();
 
                     for (int i = 0; i < 100; i++) {
                         PlcWriteResponse write_response = write_request.execute().get();
                         assertThat(write_response.getResponseCode("Bool")).isEqualTo(PlcResponseCode.OK);
                     }
-                } catch (ExecutionException executionException) {
-                    executionException.printStackTrace();
-                } catch (InterruptedException interruptedException) {
-                    interruptedException.printStackTrace();
+                } catch (ExecutionException e) {
+                    LOGGER.error("run aborted", e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(e);
                 }
             }
         }
 
 
-        try {
-            PlcConnection opcuaConnection = new PlcDriverManager().getConnection(tcpConnectionAddress);
-            Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
-            assertThat(opcuaConnection).is(is_connected);
+        PlcConnection opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
+        Condition<PlcConnection> is_connected = new Condition<>(PlcConnection::isConnected, "is connected");
+        assertThat(opcuaConnection).is(is_connected);
 
-            ReadWorker read_worker = new ReadWorker(opcuaConnection);
-            WriteWorker write_worker = new WriteWorker(opcuaConnection);
-            read_worker.start();
-            write_worker.start();
+        ReadWorker read_worker = new ReadWorker(opcuaConnection);
+        WriteWorker write_worker = new WriteWorker(opcuaConnection);
+        read_worker.start();
+        write_worker.start();
 
-            read_worker.join();
-            write_worker.join();
+        read_worker.join();
+        write_worker.join();
 
-            opcuaConnection.close();
-            assert !opcuaConnection.isConnected();
-        } catch (Exception e) {
-            fail("Exception during readVariables Test EXCEPTION: " + e.getMessage());
-        }
+        opcuaConnection.close();
+        assert !opcuaConnection.isConnected();
     }
 
 }

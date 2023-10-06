@@ -16,104 +16,54 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.profinet.context;
 
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.readwrite.DceRpc_ActivityUuid;
-import org.apache.plc4x.java.profinet.readwrite.IpAddress;
-import org.apache.plc4x.java.profinet.readwrite.MacAddress;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.profinet.device.ProfinetChannel;
+import org.apache.plc4x.java.profinet.device.ProfinetDeviceMessageHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 
 import java.net.DatagramSocket;
 
-public class ProfinetDriverContext  implements DriverContext, HasConfiguration<ProfinetConfiguration> {
+public class ProfinetDriverContext implements DriverContext {
 
-    private DceRpc_ActivityUuid dceRpc_activityUuid;
-    private MacAddress localMacAddress;
-    private IpAddress localIpAddress;
-    private int localUdpPort;
-    private MacAddress remoteMacAddress;
-    private IpAddress remoteIpAddress;
-    private int remoteUdpPort;
-    private int sessionKey;
+    public static final int DEFAULT_UDP_PORT = 34964;
+    private ProfinetDeviceMessageHandler handler;
+    private ProfinetConfiguration configuration;
+    private DatagramSocket socket;
+    private ProfinetChannel channel;
 
-    private DatagramSocket udpSocket;
+    public ProfinetChannel getChannel() {
+        return channel;
+    }
 
-    @Override
+    public void setChannel(ProfinetChannel channel) {
+        this.channel = channel;
+    }
+
+    public ProfinetDeviceMessageHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(ProfinetDeviceMessageHandler handler) {
+        this.handler = handler;
+    }
+
+    public ProfinetConfiguration getConfiguration() {
+        return configuration;
+    }
+
     public void setConfiguration(ProfinetConfiguration configuration) {
-
+        this.configuration = configuration;
     }
 
-    public DceRpc_ActivityUuid getDceRpcActivityUuid() {
-        return dceRpc_activityUuid;
+    public DatagramSocket getSocket() {
+        return socket;
     }
 
-    public void setDceRpcActivityUuid(DceRpc_ActivityUuid dceRpc_activityUuid) {
-        this.dceRpc_activityUuid = dceRpc_activityUuid;
+    public void setSocket(DatagramSocket socket) {
+        this.socket = socket;
     }
 
-    public MacAddress getLocalMacAddress() {
-        return localMacAddress;
-    }
-
-    public void setLocalMacAddress(MacAddress localMacAddress) {
-        this.localMacAddress = localMacAddress;
-    }
-
-    public IpAddress getLocalIpAddress() {
-        return localIpAddress;
-    }
-
-    public void setLocalIpAddress(IpAddress localIpAddress) {
-        this.localIpAddress = localIpAddress;
-    }
-
-    public int getLocalUdpPort() {
-        return localUdpPort;
-    }
-
-    public void setLocalUdpPort(int localUdpPort) {
-        this.localUdpPort = localUdpPort;
-    }
-
-    public MacAddress getRemoteMacAddress() {
-        return remoteMacAddress;
-    }
-
-    public void setRemoteMacAddress(MacAddress remoteMacAddress) {
-        this.remoteMacAddress = remoteMacAddress;
-    }
-
-    public IpAddress getRemoteIpAddress() {
-        return remoteIpAddress;
-    }
-
-    public void setRemoteIpAddress(IpAddress remoteIpAddress) {
-        this.remoteIpAddress = remoteIpAddress;
-    }
-
-    public int getRemoteUdpPort() {
-        return remoteUdpPort;
-    }
-
-    public void setRemoteUdpPort(int remoteUdpPort) {
-        this.remoteUdpPort = remoteUdpPort;
-    }
-
-    public int getSessionKey() {
-        return sessionKey;
-    }
-
-    public void setSessionKey(int sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
-    public DatagramSocket getUdpSocket() {
-        return udpSocket;
-    }
-
-    public void setUdpSocket(DatagramSocket udpSocket) {
-        this.udpSocket = udpSocket;
-    }
 }

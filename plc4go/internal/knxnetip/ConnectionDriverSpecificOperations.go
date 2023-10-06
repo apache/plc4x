@@ -21,16 +21,17 @@ package knxnetip
 
 import (
 	"context"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"math"
+	"runtime/debug"
 	"strconv"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	values2 "github.com/apache/plc4x/plc4go/spi/values"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,10 +46,10 @@ import (
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
-	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -64,6 +65,14 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		groupAddressReadResponse, err := m.sendGroupAddressReadRequest(ctx, groupAddress)
 		if err != nil {
 			sendResponse(nil, 0, errors.Wrap(err, "error reading group address"))
@@ -77,7 +86,7 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 
 		// Parse the response data.
 		rb := utils.NewReadBufferByteBased(payload)
-		// If the size of the field is greater than 6, we have to skip the first byte
+		// If the size of the tag is greater than 6, we have to skip the first byte
 		if datapointType.DatapointMainType().SizeInBits() > 6 {
 			_, _ = rb.ReadUint8("datapointType", 8)
 		}
@@ -87,24 +96,24 @@ func (m *Connection) ReadGroupAddress(ctx context.Context, groupAddress []byte, 
 			datapointType = &defaultDatapointType
 		}
 		// Parse the value
-		plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
+		plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
 		if err != nil {
 			sendResponse(nil, 0, errors.Wrap(err, "error parsing group address response"))
 			return
 		}
 
 		// Return the value
-		sendResponse(&plcValue, 1, nil)
+		sendResponse(plcValue, 1, nil)
 	}()
 
 	return result
 }
 
 func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverModel.KnxAddress) <-chan KnxDeviceConnectResult {
-	result := make(chan KnxDeviceConnectResult)
+	result := make(chan KnxDeviceConnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceConnectResult{
 			connection: connection,
@@ -119,6 +128,14 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		// If we're already connected, use that connection instead.
 		if connection, ok := m.DeviceConnections[targetAddress]; ok {
 			sendResponse(connection, nil)
@@ -169,15 +186,15 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 			if propertyValueResponse.GetCount() > 0 {
 				dataLength := uint8(len(propertyValueResponse.GetData()))
 				data := propertyValueResponse.GetData()
-				rb := utils.NewReadBufferByteBased(data)
-				plcValue, err := driverModel.KnxPropertyParse(rb,
+				ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+				plcValue, err := driverModel.KnxPropertyParse(ctxForModel, data,
 					driverModel.KnxInterfaceObjectProperty_PID_DEVICE_MAX_APDULENGTH.PropertyDataType(), dataLength)
 
 				// Return the result
 				if err == nil {
 					deviceApduSize = plcValue.GetUint16()
 				} else {
-					log.Debug().Err(err).Msgf("Error parsing knx property")
+					m.log.Debug().Err(err).Msg("Error parsing knx property")
 				}
 			}
 		}
@@ -192,10 +209,10 @@ func (m *Connection) DeviceConnect(ctx context.Context, targetAddress driverMode
 }
 
 func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverModel.KnxAddress) <-chan KnxDeviceDisconnectResult {
-	result := make(chan KnxDeviceDisconnectResult)
+	result := make(chan KnxDeviceDisconnectResult, 1)
 
 	sendResponse := func(connection *KnxDeviceConnection, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceDisconnectResult{
 			connection: connection,
@@ -210,6 +227,14 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		if connection, ok := m.DeviceConnections[targetAddress]; ok {
 			_, err := m.sendDeviceDisconnectionRequest(ctx, targetAddress)
 
@@ -226,10 +251,10 @@ func (m *Connection) DeviceDisconnect(ctx context.Context, targetAddress driverM
 }
 
 func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress driverModel.KnxAddress, buildingKey []byte) <-chan KnxDeviceAuthenticateResult {
-	result := make(chan KnxDeviceAuthenticateResult)
+	result := make(chan KnxDeviceAuthenticateResult, 1)
 
 	sendResponse := func(err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxDeviceAuthenticateResult{
 			err: err,
@@ -243,6 +268,14 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
 		connection, ok := m.DeviceConnections[targetAddress]
@@ -279,10 +312,10 @@ func (m *Connection) DeviceAuthenticate(ctx context.Context, targetAddress drive
 }
 
 func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8, propertyIndex uint16, numElements uint8) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
-	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -298,6 +331,14 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
 		connection, ok := m.DeviceConnections[targetAddress]
@@ -346,12 +387,12 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 
 		dataLength := uint8(len(propertyValueResponse.GetData()))
 		data := propertyValueResponse.GetData()
-		rb := utils.NewReadBufferByteBased(data)
-		plcValue, err := driverModel.KnxPropertyParse(rb, property.PropertyDataType(), dataLength)
+		ctxForModel := options.GetLoggerContextForModel(ctx, m.log, options.WithPassLoggerToModel(m.passLogToModel))
+		plcValue, err := driverModel.KnxPropertyParse(ctxForModel, data, property.PropertyDataType(), dataLength)
 		if err != nil {
 			sendResponse(nil, 0, err)
 		} else {
-			sendResponse(&plcValue, 1, err)
+			sendResponse(plcValue, 1, err)
 		}
 	}()
 
@@ -359,10 +400,10 @@ func (m *Connection) DeviceReadProperty(ctx context.Context, targetAddress drive
 }
 
 func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAddress driverModel.KnxAddress, objectId uint8, propertyId uint8) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
-	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -378,6 +419,14 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		// Check if there is already a connection available,
 		// if not, create a new one.
 		connection, ok := m.DeviceConnections[targetAddress]
@@ -406,12 +455,12 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 		}
 
 		val := map[string]values.PlcValue{}
-		val["writable"] = values2.NewPlcBOOL(propertyDescriptionResponse.GetWriteEnabled())
-		val["dataType"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetPropertyDataType().Name())
-		val["maxElements"] = values2.NewPlcUINT(propertyDescriptionResponse.GetMaxNrOfElements())
-		val["readLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetReadLevel().String())
-		val["writeLevel"] = values2.NewPlcSTRING(propertyDescriptionResponse.GetWriteLevel().String())
-		str := values2.NewPlcStruct(val)
+		val["writable"] = spiValues.NewPlcBOOL(propertyDescriptionResponse.GetWriteEnabled())
+		val["dataType"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetPropertyDataType().Name())
+		val["maxElements"] = spiValues.NewPlcUINT(propertyDescriptionResponse.GetMaxNrOfElements())
+		val["readLevel"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetReadLevel().String())
+		val["writeLevel"] = spiValues.NewPlcSTRING(propertyDescriptionResponse.GetWriteLevel().String())
+		str := spiValues.NewPlcStruct(val)
 		sendResponse(&str, 1, nil)
 	}()
 
@@ -419,10 +468,10 @@ func (m *Connection) DeviceReadPropertyDescriptor(ctx context.Context, targetAdd
 }
 
 func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverModel.KnxAddress, address uint16, numElements uint8, datapointType *driverModel.KnxDatapointType) <-chan KnxReadResult {
-	result := make(chan KnxReadResult)
+	result := make(chan KnxReadResult, 1)
 
-	sendResponse := func(value *values.PlcValue, numItems uint8, err error) {
-		timeout := time.NewTimer(time.Millisecond * 10)
+	sendResponse := func(value values.PlcValue, numItems uint8, err error) {
+		timeout := time.NewTimer(10 * time.Millisecond)
 		select {
 		case result <- KnxReadResult{
 			value:    value,
@@ -438,6 +487,14 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
+			}
+		}()
 		// Set a default datatype, if none is specified
 		if datapointType == nil {
 			dpt := driverModel.KnxDatapointType_USINT
@@ -495,7 +552,7 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 			// Parse the data according to the property type information
 			rb := utils.NewReadBufferByteBased(memoryReadResponse.GetData())
 			for rb.HasMore(datapointType.DatapointMainType().SizeInBits()) {
-				plcValue, err := driverModel.KnxDatapointParse(rb, *datapointType)
+				plcValue, err := driverModel.KnxDatapointParseWithBuffer(context.Background(), rb, *datapointType)
 				// Return the result
 				if err != nil {
 					sendResponse(nil, 0, err)
@@ -511,10 +568,10 @@ func (m *Connection) DeviceReadMemory(ctx context.Context, targetAddress driverM
 		}
 		if len(results) > 1 {
 			var plcList values.PlcValue
-			plcList = values2.NewPlcList(results)
-			sendResponse(&plcList, 1, nil)
+			plcList = spiValues.NewPlcList(results)
+			sendResponse(plcList, 1, nil)
 		} else if len(results) == 1 {
-			sendResponse(&results[0], 1, nil)
+			sendResponse(results[0], 1, nil)
 		}
 	}()
 

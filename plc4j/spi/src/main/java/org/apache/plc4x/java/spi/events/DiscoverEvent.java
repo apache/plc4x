@@ -18,5 +18,7 @@
  */
 package org.apache.plc4x.java.spi.events;
 
+// TODO: This type of event actually shouldn't be needed.
+//  Seems to be related to DefaultNettyPlcConnection implementation.
 public class DiscoverEvent {
 }

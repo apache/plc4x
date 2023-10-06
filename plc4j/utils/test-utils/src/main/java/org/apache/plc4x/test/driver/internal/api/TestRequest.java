@@ -18,8 +18,7 @@
  */
 package org.apache.plc4x.test.driver.internal.api;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
-public interface TestRequest {
+public interface TestRequest extends Serializable {
 }

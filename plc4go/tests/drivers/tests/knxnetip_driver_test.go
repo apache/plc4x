@@ -20,19 +20,29 @@
 package tests
 
 import (
+	"context"
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
-	knxModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestKNXNetIPDriver(t *testing.T) {
 	t.Skip("No test yet")
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return knxModel.KnxNetIpMessageParse(readBufferByteBased)
-	})}
-	testutils.RunDriverTestsuiteWithOptions(t, knxnetip.NewDriver(), "assets/testing/protocols/knxnetip/DriverTestsuite.xml", knxIO.KnxnetipXmlParserHelper{}, options)
+	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
+		return readWriteModel.KnxNetIpMessageParseWithBuffer(context.Background(), readBufferByteBased)
+	}
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		knxnetip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/knxnetip/DriverTestsuite.xml",
+		knxIO.KnxnetipXmlParserHelper{},
+		append(optionsForTesting,
+			testutils.WithRootTypeParser(parser),
+		)...,
+	)
 }

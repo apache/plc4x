@@ -18,6 +18,13 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
+import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
+import org.apache.plc4x.java.spi.TimeoutManager;
+
 public interface Configuration {
+
+    default TimeoutManager getTimeoutManager() {
+        return new NettyHashTimerTimeoutManager();
+    }
 
 }

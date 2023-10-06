@@ -98,11 +98,11 @@ public enum ${type.name} {
         }
     }
 
-    private ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)} value;
+    private final ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)} value;
 </#if>
 <#if type.constantNames?has_content>
     <#list type.constantNames as constantName>
-        private ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName};
+        private final ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} ${constantName};
     </#list>
 </#if>
 
@@ -129,19 +129,31 @@ public enum ${type.name} {
 
     public static ${type.name} firstEnumForField${constantName?cap_first}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} fieldValue) {
         for (${type.name} _val : ${type.name}.values()) {
+        <#if type.name == "String" || helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true) == "String">
+            if(_val.get${constantName?cap_first}().equals(fieldValue)) {
+                return _val;
+            }
+        <#else>
             if(_val.get${constantName?cap_first}() == fieldValue) {
                 return _val;
             }
+        </#if>
         }
         return null;
     }
 
     public static List<${type.name}> enumsForField${constantName?cap_first}(${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)} fieldValue) {
-        List<${type.name}> _values = new ArrayList();
+        List<${type.name}> _values = new ArrayList<>();
         for (${type.name} _val : ${type.name}.values()) {
+        <#if type.name == "String" || helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true) == "String">
+            if(_val.get${constantName?cap_first}().equals(fieldValue)) {
+                _values.add(_val);
+            }
+        <#else>
             if(_val.get${constantName?cap_first}() == fieldValue) {
                 _values.add(_val);
             }
+        </#if>
         }
         return _values;
     }

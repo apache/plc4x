@@ -18,15 +18,13 @@
  */
 package org.apache.plc4x.java.examples.helloplc4x.read;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 public class HelloPlc4xRead {
 
@@ -46,7 +44,7 @@ public class HelloPlc4xRead {
         }
 
         // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getConnectionString())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support reading of data.
             if (!plcConnection.getMetadata().canRead()) {
@@ -57,8 +55,8 @@ public class HelloPlc4xRead {
             // Create a new read request:
             // - Give the single item requested the alias name "value"
             PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-            for (int i = 0; i < options.getFieldAddress().length; i++) {
-                builder.addItem("value-" + options.getFieldAddress()[i], options.getFieldAddress()[i]);
+            for (int i = 0; i < options.getTagAddress().length; i++) {
+                builder.addTagAddress("value-" + options.getTagAddress()[i], options.getTagAddress()[i]);
             }
             PlcReadRequest readRequest = builder.build();
 
@@ -68,7 +66,7 @@ public class HelloPlc4xRead {
             // the response is processed and available.
             logger.info("Synchronous request ...");
             PlcReadResponse syncResponse = readRequest.execute().get();
-            // Simply iterating over the field names returned in the response.
+            // Simply iterating over the tag names returned in the response.
             printResponse(syncResponse);
 
             /*PlcValue asPlcValue = syncResponse.getAsPlcValue();
@@ -77,42 +75,42 @@ public class HelloPlc4xRead {
             //////////////////////////////////////////////////////////
             // Read asynchronously ...
             // Register a callback executed as soon as a response arrives.
-            /*logger.info("Asynchronous request ...");
-            CompletionStage<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-            asyncResponse.whenComplete((readResponse, throwable) -> {
-                if (readResponse != null) {
-                    printResponse(readResponse);
-                } else {
-                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
-                }
-            });*/
-
-            // Give the async request a little time...
-            TimeUnit.MILLISECONDS.sleep(1000);
-            plcConnection.close();
-            System.exit(0);
+//            logger.info("Asynchronous request ...");
+//            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+//            asyncResponse.whenComplete((readResponse, throwable) -> {
+//                if (readResponse != null) {
+//                    printResponse(readResponse);
+//                } else {
+//                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
+//                }
+//              });
+//
+//            // Wait until the async request has finished
+//            asyncResponse.get();
         }
+        // This is needed to avoid a known problem that an application may hang indefinitely.
+        System.exit(0);
     }
 
     private static void printResponse(PlcReadResponse response) {
-        for (String fieldName : response.getFieldNames()) {
-            if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                int numValues = response.getNumberOfValues(fieldName);
+        for (String tagName : response.getTagNames()) {
+            if (response.getResponseCode(tagName) == PlcResponseCode.OK) {
+                int numValues = response.getNumberOfValues(tagName);
                 // If it's just one element, output just one single line.
                 if (numValues == 1) {
-                    logger.info("Value[{}]: {}", fieldName, response.getObject(fieldName));
+                    logger.info("Value[{}]: {}", tagName, response.getObject(tagName));
                 }
                 // If it's more than one element, output each in a single row.
                 else {
-                    logger.info("Value[{}]:", fieldName);
+                    logger.info("Value[{}]:", tagName);
                     for (int i = 0; i < numValues; i++) {
-                        logger.info(" - {}", response.getObject(fieldName, i));
+                        logger.info(" - {}", response.getObject(tagName, i));
                     }
                 }
             }
             // Something went wrong, to output an error message instead.
             else {
-                logger.error("Error[{}]: {}", fieldName, response.getResponseCode(fieldName).name());
+                logger.error("Error[{}]: {}", tagName, response.getResponseCode(tagName).name());
             }
         }
     }

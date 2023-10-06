@@ -18,14 +18,14 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcField;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
  * Request to read one or more values from a plc.
  */
-public interface PlcReadRequest extends PlcFieldRequest {
+public interface PlcReadRequest extends PlcTagRequest {
 
     @Override
     CompletableFuture<? extends PlcReadResponse> execute();
@@ -35,8 +35,8 @@ public interface PlcReadRequest extends PlcFieldRequest {
         @Override
         PlcReadRequest build();
 
-        Builder addItem(String name, String fieldQuery);
-        Builder addItem(String name, PlcField fieldQuery);
+        Builder addTagAddress(String name, String tagAddress);
+        Builder addTag(String name, PlcTag tag);
 
     }
 

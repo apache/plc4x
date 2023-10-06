@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <artifactId>plc4c</artifactId>
@@ -42,126 +42,14 @@
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
-  <!--
-    Notes:
-    - It turns out that the default version of CMake the cmake-maven-plugin uses is too
-    old to detect the recent boost version. So we need to manually download a newer version
-    and tell the plugin to use that instead.
-    - As downloading and building boost takes quite some time, we only do this, if no
-    target/lib/boost is found.
-  -->
-
   <profiles>
-    <!-- Profile for linux -->
-    <profile>
-      <id>os-unix</id>
-      <activation>
-        <os>
-          <family>unix</family>
-        </os>
-      </activation>
-      <!-- Make the cmake executable executable -->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>make-cmake-executable</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <basedir>${cmake.root}</basedir>
-                  <executable>chmod</executable>
-                  <arguments>
-                    <argument>+x</argument>
-                    <argument>cmake</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- Profile for mac -->
-    <profile>
-      <id>os-mac-amd64</id>
-      <activation>
-        <os>
-          <family>mac</family>
-          <arch>amd64</arch>
-        </os>
-      </activation>
-      <!-- Make the cmake executable, executable -->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>make-cmake-executable</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <basedir>${cmake.root}</basedir>
-                  <executable>chmod</executable>
-                  <arguments>
-                    <argument>+x</argument>
-                    <argument>cmake</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- Profile for mac -->
-    <profile>
-      <id>os-mac-aarch64</id>
-      <activation>
-        <os>
-          <family>mac</family>
-          <arch>aarch64</arch>
-        </os>
-      </activation>
-      <!-- Make the cmake executable, executable -->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>make-cmake-executable</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <basedir>${cmake.root}</basedir>
-                  <executable>chmod</executable>
-                  <arguments>
-                    <argument>+x</argument>
-                    <argument>cmake</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
     <profile>
       <id>jenkins-build</id>
+      <!-- This is needed by the groovy hack script -->
+      <properties>
+        <cmake.root>${project.build.directory}/dependency/cmake/bin</cmake.root>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -192,7 +80,7 @@
               <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
               <execution>
                 <id>modify-cmake</id>
-                <phase>process-sources</phase>
+                <phase>process-test-sources</phase>
                 <goals>
                   <goal>execute</goal>
                 </goals>
@@ -220,19 +108,6 @@
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
         <executions>
-          <!-- First download the cmake binaries -->
-          <execution>
-            <id>get-cmake</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>${cmake.url}</url>
-              <unpack>true</unpack>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-            </configuration>
-          </execution>
           <!--
             Get additional stuff we need for the build.
           -->
@@ -319,7 +194,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>xml-maven-plugin</artifactId>
-        <version>1.0.2</version>
+        <version>1.1.0</version>
         <executions>
           <!--execution>
             <id>generate-modbus-tests</id>
@@ -392,7 +267,7 @@
           <dependency>
             <groupId>net.sf.saxon</groupId>
             <artifactId>Saxon-HE</artifactId>
-            <version>11.4</version>
+            <version>12.3</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -424,7 +299,7 @@
           <!-- Generate the configuration for the test compilation -->
           <execution>
             <id>cmake-generate-test-compile</id>
-            <phase>test-compile</phase>
+            <phase>generate-test-sources</phase>
             <goals>
               <goal>generate</goal>
             </goals>
@@ -443,14 +318,19 @@
               <goal>compile</goal>
             </goals>
           </execution>
+          <!-- Execute the tests -->
+          <execution>
+            <id>cmake-run-tests</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <buildDirectory>${project.build.directory}/build</buildDirectory>
+            </configuration>
+          </execution>
         </executions>
         <configuration>
-          <!--
-            We need to use a newer version of cmake, so disable downloading
-            and tell the plugin where to find that version.
-          -->
-          <downloadBinaries>false</downloadBinaries>
-          <cmakeDir>${cmake.root}</cmakeDir>
           <!--
             Actually the path to the CMakeList.txt file which then again
             tells to tool where to find the sources.
@@ -468,26 +348,6 @@
           <!-- The directory where the "generate" step generated the build configuration -->
           <projectDirectory>${project.build.directory}/build</projectDirectory>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>run-tests</id>
-            <phase>test</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <basedir>${project.build.directory}/build</basedir>
-              <executable>${cmake.root}/ctest</executable>
-              <arguments>
-                <argument>--extra-verbose</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- For this module deploying maven artifacts doesn't make any sense -->
@@ -524,7 +384,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-c</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -532,21 +392,21 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-plc4x</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>

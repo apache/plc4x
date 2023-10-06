@@ -18,9 +18,16 @@
  */
 package org.apache.plc4x.java.opcuaserver.backend;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 import org.eclipse.milo.opcua.sdk.server.AbstractLifecycle;
 import org.eclipse.milo.opcua.sdk.server.api.DataItem;
 import org.eclipse.milo.opcua.sdk.server.nodes.filters.AttributeFilterContext;
@@ -29,31 +36,18 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.StatusCode;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
-
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.ULong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.plc4x.java.PlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-
-import org.apache.plc4x.java.utils.connectionpool.*;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-
-import org.apache.plc4x.java.api.model.PlcField;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.TimeUnit;
-import java.util.Map;
-import java.util.HashMap;
-
+import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
 
@@ -61,22 +55,23 @@ import static org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned.
 public class Plc4xCommunication extends AbstractLifecycle {
 
     private PlcDriverManager driverManager;
+    private CachedPlcConnectionManager cachedPlcConnectionManager;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Integer DEFAULT_TIMEOUT = 1000000;
     private final Integer DEFAULT_RETRY_BACKOFF = 5000;
     private final DataValue BAD_RESPONSE = new DataValue(new Variant(null), StatusCode.BAD);
 
-    private Map<String, Long> failedConnectionList = new HashMap<>();
+    private final Map<String, Long> failedConnectionList = new HashMap<>();
 
-    Map<NodeId, DataItem> monitoredList = new HashMap<>();
+    final Map<NodeId, DataItem> monitoredList = new HashMap<>();
 
-    public Plc4xCommunication () {
+    public Plc4xCommunication() {
 
     }
 
     @Override
     protected void onStartup() {
-        driverManager = new PooledPlcDriverManager();
+        setDriverManager(PlcDriverManager.getDefault());
     }
 
     @Override
@@ -89,79 +84,56 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public void setDriverManager(PlcDriverManager driverManager) {
-        this.driverManager =  driverManager;
+        this.driverManager = driverManager;
+        this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(driverManager.getConnectionManager()).build();
     }
 
-    public PlcField getField(String tag, String connectionString) throws PlcConnectionException {
-        return driverManager.getDriverForUrl(connectionString).prepareField(tag);
+    public PlcTag getTag(String tag, String connectionString) throws PlcConnectionException {
+        return driverManager.getDriverForUrl(connectionString).prepareTag(tag);
     }
 
-    public void addField(DataItem item) {
+    public void addTag(DataItem item) {
         logger.info("Adding item to OPC UA monitored list " + item.getReadValueId());
         monitoredList.put(item.getReadValueId().getNodeId(), item);
     }
 
-    public void removeField(DataItem item) {
+    public void removeTag(DataItem item) {
         logger.info("Removing item from OPC UA monitored list " + item.getReadValueId());
         monitoredList.remove(item.getReadValueId().getNodeId());
     }
 
-    public static NodeId getNodeId(String plcValue) {
-        switch (plcValue) {
-            case "BOOL":
-            case "BIT":
+    public static NodeId getNodeId(PlcValueType plcValueType) {
+        switch (plcValueType) {
+            case BOOL:
                 return Identifiers.Boolean;
-            case "BYTE":
-            case "BITARR8":
+            case BYTE:
+            case USINT:
                 return Identifiers.Byte;
-            case "SINT":
-            case "INT8":
+            case SINT:
                 return Identifiers.SByte;
-            case "USINT":
-            case "UINT8":
-            case "BIT8":
-                return Identifiers.Byte;
-            case "INT":
-            case "INT16":
+            case INT:
                 return Identifiers.Int16;
-            case "UINT":
-            case "UINT16":
+            case WORD:
+            case UINT:
                 return Identifiers.UInt16;
-            case "WORD":
-            case "BITARR16":
-                return Identifiers.UInt16;
-            case "DINT":
-            case "INT32":
+            case DINT:
                 return Identifiers.Int32;
-            case "UDINT":
-            case "UINT32":
+            case DWORD:
+            case UDINT:
                 return Identifiers.UInt32;
-            case "DWORD":
-            case "BITARR32":
-                return Identifiers.UInt32;
-            case "LINT":
-            case "INT64":
+            case LINT:
                 return Identifiers.Int64;
-            case "ULINT":
-            case "UINT64":
+            case ULINT:
+            case LWORD:
                 return Identifiers.UInt64;
-            case "LWORD":
-            case "BITARR64":
-                return Identifiers.UInt64;
-            case "REAL":
-            case "FLOAT":
+            case REAL:
                 return Identifiers.Float;
-            case "LREAL":
-            case "DOUBLE":
+            case LREAL:
                 return Identifiers.Double;
-            case "CHAR":
-                return Identifiers.String;
-            case "WCHAR":
-                return Identifiers.String;
-            case "STRING":
-                return Identifiers.String;
-            case "WSTRING":
-            case "STRING16":
+            case CHAR:
+            case WCHAR:
+            case STRING:
+            case WSTRING:
                 return Identifiers.String;
             default:
                 return Identifiers.BaseDataType;
@@ -172,7 +144,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
         PlcConnection connection = null;
         try {
 
-            //Check if we just polled the connection and it failed. Wait for the backoff counter to expire before we try again.
+            //Check if we just polled the connection, and it failed. Wait for the backoff counter to expire before we try again.
             if (failedConnectionList.containsKey(connectionString)) {
                 if (System.currentTimeMillis() > failedConnectionList.get(connectionString) + DEFAULT_RETRY_BACKOFF) {
                     failedConnectionList.remove(connectionString);
@@ -184,7 +156,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
 
             //Try to connect to PLC
             try {
-                connection = driverManager.getConnection(connectionString);
+                connection = cachedPlcConnectionManager.getConnection(connectionString);
                 logger.debug(connectionString + " Connected");
             } catch (PlcConnectionException e) {
                 logger.error("Failed to connect to device, error raised - " + e);
@@ -210,7 +182,7 @@ public class Plc4xCommunication extends AbstractLifecycle {
             // Create a new read request:
             // - Give the single item requested an alias name
             PlcReadRequest.Builder builder = connection.readRequestBuilder();
-            builder.addItem("value-1", tag);
+            builder.addTagAddress("value-1", tag);
             PlcReadRequest readRequest = builder.build();
 
             PlcReadResponse response = null;
@@ -226,27 +198,27 @@ public class Plc4xCommunication extends AbstractLifecycle {
                 return BAD_RESPONSE;
             }
             DataValue resp = BAD_RESPONSE;
-            for (String fieldName : response.getFieldNames()) {
-                if (response.getResponseCode(fieldName) == PlcResponseCode.OK) {
-                    int numValues = response.getNumberOfValues(fieldName);
+            for (String tagName : response.getTagNames()) {
+                if (response.getResponseCode(tagName) == PlcResponseCode.OK) {
+                    int numValues = response.getNumberOfValues(tagName);
                     if (numValues == 1) {
-                        if (response.getObject(fieldName) instanceof BigInteger) {
-                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(fieldName))), StatusCode.GOOD);
+                        if (response.getObject(tagName) instanceof BigInteger) {
+                            resp = new DataValue(new Variant(ulong((BigInteger) response.getObject(tagName))), StatusCode.GOOD);
                         } else {
-                            resp = new DataValue(new Variant(response.getObject(fieldName)), StatusCode.GOOD);
+                            resp = new DataValue(new Variant(response.getObject(tagName)), StatusCode.GOOD);
                         }
                     } else {
                         Object array = null;
-                        if (response.getObject(fieldName, 0) instanceof BigInteger) {
+                        if (response.getObject(tagName, 0) instanceof BigInteger) {
                             array = Array.newInstance(ULong.class, numValues);
                         } else {
-                            array = Array.newInstance(response.getObject(fieldName, 0).getClass(), numValues);
+                            array = Array.newInstance(response.getObject(tagName, 0).getClass(), numValues);
                         }
                         for (int i = 0; i < numValues; i++) {
-                            if (response.getObject(fieldName, i) instanceof BigInteger) {
-                                Array.set(array, i, ulong((BigInteger) response.getObject(fieldName, i)));
+                            if (response.getObject(tagName, i) instanceof BigInteger) {
+                                Array.set(array, i, ulong((BigInteger) response.getObject(tagName, i)));
                             } else {
-                                Array.set(array, i, response.getObject(fieldName, i));
+                                Array.set(array, i, response.getObject(tagName, i));
                             }
                         }
                         resp = new DataValue(new Variant(array), StatusCode.GOOD);
@@ -276,53 +248,34 @@ public class Plc4xCommunication extends AbstractLifecycle {
     }
 
     public void setValue(String tag, String value, String connectionString) {
-        PlcConnection connection = null;
-        try {
-          connection = driverManager.getConnection(connectionString);
-          if (connection.isConnected() == false) {
-              logger.debug("getConnection() returned a connection that isn't connected");
-              connection.connect();
-          }
-        } catch (PlcConnectionException e) {
-          logger.warn("Failed" + e);
-        }
-
-        if (!connection.getMetadata().canWrite()) {
-            logger.error("This connection doesn't support writing.");
-            try {
-              connection.close();
-            } catch (Exception e) {
-              logger.warn("Closing connection failed with error " + e);
+        try (PlcConnection connection = cachedPlcConnectionManager.getConnection(connectionString)) {
+            if (!connection.getMetadata().canWrite()) {
+                logger.error("This connection doesn't support writing.");
+                return;
             }
-            return;
-        }
 
-        // Create a new read request:
-        // - Give the single item requested an alias name
-        final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+            // Create a new read request:
+            // - Give the single item requested an alias name
+            final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
 
-        //If an array value is passed instead of a single value then convert to a String array
-        if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
-            String[] values = value.substring(1,value.length() - 1).split(",");
-            logger.info("Adding Tag " + Arrays.toString(values));
-            builder.addItem(tag, tag, values);
-        } else {
-            builder.addItem(tag, tag, value);
-        }
+            //If an array value is passed instead of a single value then convert to a String array
+            if ((value.charAt(0) == '[') && (value.charAt(value.length() - 1) == ']')) {
+                String[] values = value.substring(1, value.length() - 1).split(",");
+                logger.info("Adding Tag " + Arrays.toString(values));
+                builder.addTagAddress(tag, tag, values);
+            } else {
+                builder.addTagAddress(tag, tag, value);
+            }
 
-        PlcWriteRequest writeRequest = builder.build();
+            PlcWriteRequest writeRequest = builder.build();
 
-        try {
-          writeRequest.execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-          logger.warn("Failed" + e);
-        }
-
-        try {
-          connection.close();
+            try {
+                writeRequest.execute().get();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.warn("Failed" + e);
+            }
         } catch (Exception e) {
-          logger.warn("Closing Connection Failed with error " + e);
+            logger.warn("Failed" + e);
         }
-        return;
     }
 }

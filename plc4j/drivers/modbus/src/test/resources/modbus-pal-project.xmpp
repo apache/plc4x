@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<!DOCTYPE modbuspal_project SYSTEM "modbuspal.dtd">
+<modbuspal_project>
+<idgen  value="0"/>
+<links selected="TCP/IP" >
+<tcpip port="502" />
+<serial com="COM 1" baudrate="9600" parity="even" stops="1" >
+<flowcontrol xonxoff="false" rtscts="false" />
+</serial>
+</links>
+<slave id="1" enabled="true" name="unknown slave" implementation="modbus">
+<holding_registers>
+<register address="999" value="1"/>
+<register address="1000" value="42"/>
+<register address="1001" value="42424"/>
+<register address="1002" value="64734"/>
+<register address="1003" value="35000"/>
+<register address="1004" value="15072"/>
+<register address="1005" value="12008"/>
+<register address="1006" value="19716"/>
+<register address="1007" value="18866"/>
+<register address="1008" value="214"/>
+<register address="1009" value="42"/>
+<register address="1010" value="63112"/>
+<register address="1011" value="42424"/>
+<register address="1012" value="61836"/>
+<register address="1013" value="40776"/>
+<register address="1014" value="64734"/>
+<register address="1015" value="35000"/>
+<register address="1016" value="50463"/>
+<register address="1017" value="53527"/>
+<register address="1018" value="45819"/>
+<register address="1019" value="46670"/>
+<register address="1020" value="15072"/>
+<register address="1021" value="12008"/>
+<register address="1022" value="19716"/>
+<register address="1023" value="18866"/>
+<register address="1024" value="16457"/>
+<register address="1025" value="4060"/>
+<register address="1026" value="16389"/>
+<register address="1027" value="48906"/>
+<register address="1028" value="35604"/>
+<register address="1029" value="24527"/>
+<register address="1030" value="26741"/>
+<register address="1031" value="29306"/>
+<register address="1032" value="104"/>
+<register address="1033" value="117"/>
+<register address="1034" value="114"/>
+<register address="1035" value="122"/>
+<register address="1036" value="1234"/>
+<register address="1037" value="0"/>
+<register address="1038" value="0"/>
+<register address="1039" value="0"/>
+</holding_registers>
+<coils>
+</coils>
+<tuning>
+<reply_delay min="0" max="0" />
+<error_rates no_reply="0.0" />
+</tuning>
+</slave>
+</modbuspal_project>

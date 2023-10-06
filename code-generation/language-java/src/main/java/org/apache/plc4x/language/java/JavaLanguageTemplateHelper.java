@@ -114,16 +114,16 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 7) {
                     return allowPrimitive ? byte.class.getSimpleName() : Byte.class.getSimpleName();
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 15) {
                     return allowPrimitive ? short.class.getSimpleName() : Short.class.getSimpleName();
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 31) {
                     return allowPrimitive ? int.class.getSimpleName() : Integer.class.getSimpleName();
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 63) {
                     return allowPrimitive ? long.class.getSimpleName() : Long.class.getSimpleName();
                 }
                 return BigInteger.class.getSimpleName();
@@ -164,7 +164,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return LocalDateTime.class.getSimpleName();
 
         }
-        throw new RuntimeException("Unsupported simple type");
+        throw new FreemarkerException("Unsupported simple type");
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
@@ -172,50 +172,49 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             return "PlcStruct";
         }
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
+        int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 return "PlcBOOL";
             case BYTE:
                 return "PlcSINT";
             case UINT:
-                IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                if (sizeInBits <= 8) {
                     return "PlcUSINT";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                if (sizeInBits <= 16) {
                     return "PlcUINT";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                if (sizeInBits <= 32) {
                     return "PlcUDINT";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                if (sizeInBits <= 64) {
                     return "PlcULINT";
                 }
+                throw new FreemarkerException("Unsupported UINT with bit length " + sizeInBits);
             case INT:
-                IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (integerTypeReference.getSizeInBits() <= 8) {
+                if (sizeInBits <= 8) {
                     return "PlcSINT";
                 }
-                if (integerTypeReference.getSizeInBits() <= 16) {
+                if (sizeInBits <= 16) {
                     return "PlcINT";
                 }
-                if (integerTypeReference.getSizeInBits() <= 32) {
+                if (sizeInBits <= 32) {
                     return "PlcDINT";
                 }
-                if (integerTypeReference.getSizeInBits() <= 64) {
+                if (sizeInBits <= 64) {
                     return "PlcLINT";
                 }
-
+                throw new FreemarkerException("Unsupported INT with bit length " + sizeInBits);
             case FLOAT:
             case UFLOAT:
-                FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
-                int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
                     return "PlcREAL";
                 }
                 if (sizeInBits <= 64) {
                     return "PlcLREAL";
                 }
+                throw new FreemarkerException("Unsupported REAL with bit length " + sizeInBits);
             case STRING:
             case VSTRING:
                 return "PlcSTRING";
@@ -224,7 +223,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case DATETIME:
                 return "PlcTIME";
         }
-        throw new RuntimeException("Unsupported simple type");
+        throw new FreemarkerException("Unsupported simple type");
     }
 
     @Override
@@ -238,10 +237,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return "0";
                 case UINT:
                     IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    if (unsignedIntegerTypeReference.getSizeInBits() <= 31) {
                         return "0";
                     }
-                    if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    if (unsignedIntegerTypeReference.getSizeInBits() <= 63) {
                         return "0l";
                     }
                     return "null";
@@ -315,13 +314,13 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 7) {
                     unsignedIntegerType = "UnsignedByte";
-                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 15) {
                     unsignedIntegerType = "UnsignedShort";
-                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 31) {
                     unsignedIntegerType = "UnsignedInt";
-                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                } else if (unsignedIntegerTypeReference.getSizeInBits() <= 63) {
                     unsignedIntegerType = "UnsignedLong";
                 } else {
                     unsignedIntegerType = "UnsignedBigInteger";
@@ -349,7 +348,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 String stringType = "String";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
-                    throw new RuntimeException("Encoding must be a quoted string value");
+                    throw new IllegalArgumentException("Encoding must be a quoted string value");
                 }
                 String encoding = ((StringLiteral) encodingTerm).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
@@ -357,8 +356,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
-                    encoding + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", WithOption.WithEncoding(\"" +
+                    encoding + "\"))";
         }
         return "/*TODO: migrate me*/" + "";
     }
@@ -416,10 +415,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BYTE:
                 return "readByte(readBuffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 4) return "readUnsignedByte(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 8) return "readUnsignedShort(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "readUnsignedInt(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "readUnsignedLong(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 7) return "readUnsignedByte(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 15) return "readUnsignedShort(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 31) return "readUnsignedInt(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 63) return "readUnsignedLong(readBuffer, " + sizeInBits + ")";
                 return "readUnsignedBigInteger(readBuffer, " + sizeInBits + ")";
             case INT:
                 if (sizeInBits <= 8) return "readSignedByte(readBuffer, " + sizeInBits + ")";
@@ -483,10 +482,10 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             case BYTE:
                 return "writeByte(writeBuffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 4) return "writeUnsignedByte(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 8) return "writeUnsignedShort(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "writeUnsignedInt(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "writeUnsignedLong(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 7) return "writeUnsignedByte(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 15) return "writeUnsignedShort(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 31) return "writeUnsignedInt(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 63) return "writeUnsignedLong(writeBuffer, " + sizeInBits + ")";
                 return "writeUnsignedBigInteger(writeBuffer, " + sizeInBits + ")";
             case INT:
                 if (sizeInBits <= 8) return "writeSignedByte(writeBuffer, " + sizeInBits + ")";
@@ -534,16 +533,16 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return "/*TODO: migrate me*/" + "writeBuffer.writeByte(\"" + logicalName + "\", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 7) {
                     return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedByte(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").byteValue()" + writerArgsString + ")";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 15) {
                     return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedShort(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").shortValue()" + writerArgsString + ")";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 31) {
                     return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").intValue()" + writerArgsString + ")";
                 }
-                if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                if (unsignedIntegerTypeReference.getSizeInBits() <= 63) {
                     return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedLong(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", ((Number) " + fieldName + ").longValue()" + writerArgsString + ")";
                 }
                 return "/*TODO: migrate me*/" + "writeBuffer.writeUnsignedBigInteger(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", (BigInteger) " + fieldName + "" + writerArgsString + ")";
@@ -584,8 +583,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toSerializationExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList()));
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
-                    encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", (String) " + fieldName + "" + writerArgsString + ", WithOption.WithEncoding(\"" + encoding + "\"))";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
     }
@@ -964,10 +962,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     private String toFunctionCallParseExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> parserArguments, Tracer tracer) {
         tracer = tracer.dive("FunctionCall");
         StringBuilder sb = new StringBuilder(variableLiteral.getName());
-        if (variableLiteral.getArgs().isPresent()) {
+        Optional<List<Term>> args = variableLiteral.getArgs();
+        if (args.isPresent()) {
             sb.append("(");
             boolean firstArg = true;
-            for (Term arg : variableLiteral.getArgs().get()) {
+            for (Term arg : args.get()) {
                 if (!firstArg) {
                     sb.append(", ");
                 }
@@ -1036,10 +1035,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     private String toGlobalFunctionCallSerializationExpression(Field field, TypeReference resultType, VariableLiteral variableLiteral, List<Argument> serialzerArguments, Tracer tracer) {
         tracer = tracer.dive("GLOBAL_FUNCTION_CALL");
         StringBuilder sb = new StringBuilder(variableLiteral.getName());
-        if (variableLiteral.getArgs().isPresent()) {
+        Optional<List<Term>> args = variableLiteral.getArgs();
+        if (args.isPresent()) {
             sb.append("(");
             boolean firstArg = true;
-            for (Term arg : variableLiteral.getArgs().get()) {
+            for (Term arg : args.get()) {
                 if (!firstArg) {
                     sb.append(", ");
                 }
@@ -1199,6 +1199,55 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         return sb.toString() + sizeInBits;
     }
 
+    public boolean requiresCurPos() {
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            for (Field curField : complexTypeDefinition.getFields()) {
+                if (requiresVariable(curField, "curPos")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean requiresStartPos() {
+        if (thisType instanceof ComplexTypeDefinition) {
+            ComplexTypeDefinition complexTypeDefinition = (ComplexTypeDefinition) this.thisType;
+            for (Field curField : complexTypeDefinition.getFields()) {
+                if (requiresVariable(curField, "startPos")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean requiresVariable(Field curField, String variable) {
+        if (curField.isArrayField()) {
+            ArrayField arrayField = (ArrayField) curField;
+            if (arrayField.getLoopExpression().contains(variable)) {
+                return true;
+            }
+        } else if (curField.isOptionalField()) {
+            OptionalField optionalField = (OptionalField) curField;
+            if (optionalField.getConditionExpression().isPresent() && optionalField.getConditionExpression().orElseThrow(IllegalStateException::new).contains(variable)) {
+                return true;
+            }
+        }
+        return curField.asTypedField()
+            .map(typedField -> typedField.getType().asNonSimpleTypeReference()
+                .map(nonSimpleTypeReference -> nonSimpleTypeReference.getParams()
+                    .map(params -> params.stream()
+                        .anyMatch(param -> param.contains(variable))
+                    )
+                    .orElse(false)
+                )
+                .orElse(false)
+            )
+            .orElse(false);
+    }
+
     public String escapeValue(TypeReference typeReference, String valueString) {
         if (valueString == null) {
             return null;
@@ -1233,6 +1282,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             final String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
             sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
         }
+        final Optional<Term> nullBytesHexOptional = field.getAttribute("nullBytesHex");
+        if (nullBytesHexOptional.isPresent()) {
+            final String nullBytesHex = toParseExpression(field, field.getType(), nullBytesHexOptional.get(), parserArguments);
+            sb.append(", WithOption.WithNullBytesHex(\"").append(nullBytesHex).append("\")");
+        }
         return sb.toString();
     }
 
@@ -1253,6 +1307,14 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public boolean needsLongMarker(Optional<SimpleTypeReference> baseTypeReference) {
         return baseTypeReference.isPresent() && baseTypeReference.get().isIntegerTypeReference() && baseTypeReference.get().asIntegerTypeReference().orElseThrow().getSizeInBits() >= 32;
+    }
+
+    public boolean isGeneratePropertiesForParserArguments() {
+        return options.getOrDefault("generate-properties-for-parser-arguments", "false").equals("true");
+    }
+
+    public boolean isGeneratePropertiesForReservedFields() {
+        return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
     }
 
 }

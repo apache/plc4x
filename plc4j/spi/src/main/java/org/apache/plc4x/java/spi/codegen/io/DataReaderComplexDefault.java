@@ -84,5 +84,10 @@ public class DataReaderComplexDefault<T> implements DataReaderComplex<T> {
         readBuffer.closeContext(logicalName, readerArgs);
     }
 
+    @Override
+    public ReadBuffer getReadBuffer() {
+        return readBuffer;
+    }
+
 }
 

@@ -36,6 +36,9 @@ type AsciiBox struct {
 // DebugAsciiBox set to true to get debug messages
 var DebugAsciiBox bool
 
+// ANSI_PATTERN source: https://github.com/chalk/ansi-regex/blob/main/index.js#L3
+var ANSI_PATTERN = regexp.MustCompile("[\u001b\u009b][\\[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]")
+
 // AsciiBoxer is used to render something in a box
 type AsciiBoxer interface {
 	// Box where int param is the proposed width
@@ -113,7 +116,15 @@ func (b boxSet) compressBoxSet() string {
 
 func (b boxSet) contributeToCompressedBoxSet(box AsciiBox) string {
 	actualSet := b.compressBoxSet()
-	if strings.ContainsAny(box.compressedBoxSet, actualSet) {
+	if box.compressedBoxSet == "" {
+		// they have nothing to contribute
+		return actualSet
+	}
+	if actualSet == "" {
+		// I have nothing to contribute
+		return box.compressedBoxSet
+	}
+	if strings.Contains(box.compressedBoxSet, actualSet) {
 		// we have nothing to add
 		return box.compressedBoxSet
 	}
@@ -151,7 +162,7 @@ func (a *asciiBoxWriter) boxString(name string, data string, charWidth int) Asci
 	longestLine := rawBox.Width()
 	if charWidth < longestLine {
 		if DebugAsciiBox {
-			log.Debug().Msgf("Overflow by %d chars", longestLine-charWidth)
+			log.Debug().Int("nChars", longestLine-charWidth).Msg("Overflow by nChars chars")
 		}
 		charWidth = longestLine + a.borderWidth + a.borderWidth
 	}
@@ -270,7 +281,7 @@ func (a *asciiBoxWriter) hasBorders(box AsciiBox) bool {
 }
 
 func countChars(s string) int {
-	return len([]rune(s))
+	return len([]rune(ANSI_PATTERN.ReplaceAllString(s, "")))
 }
 
 //
@@ -344,13 +355,13 @@ func (a *asciiBoxWriter) AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox
 		boxWidth := box.Width()
 		if boxWidth > actualWidth {
 			if DebugAsciiBox {
-				log.Debug().Msgf("Overflow by %d chars", boxWidth-desiredWidth)
+				log.Debug().Int("nChars", boxWidth-desiredWidth).Msg("Overflow by nChars chars")
 			}
 			actualWidth = boxWidth
 		}
 	}
 	if DebugAsciiBox {
-		log.Debug().Msgf("Working with %d chars", actualWidth)
+		log.Debug().Int("actualWidth", actualWidth).Msg("Working with actualWidth chars")
 	}
 	bigBox := AsciiBox{"", a, a.compressBoxSet()}
 	currentBoxRow := make([]AsciiBox, 0)

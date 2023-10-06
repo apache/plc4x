@@ -77,28 +77,36 @@ def checkVersionAtMost(String current, String maximum) {
 
 def checkDotnet() {
     print "Detecting Dotnet version:  "
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "dotnet --version".execute().text
+        def proc = "dotnet --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
     } catch (IOException e) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
+        String curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "4.5.2")
         if (!result) {
             allConditionsMet = false
         }
     } else {
         println "missing"
+        println "--- output of version `dotnet --version` command ---"
+        println output
+        println errOutput
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
-    def curVersion = System.properties['java.version']
+    String curVersion = System.properties['java.version'].split("-")[0]
+
     def result
     if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)
@@ -111,14 +119,13 @@ def checkJavaVersion(String minVersion, String maxVersion) {
         result = checkVersionAtMost(curVersion, maxVersion)
         if (!result) {
             allConditionsMet = false
-            return
         }
     }
 }
 
 def checkMavenVersion(String minVersion, String maxVersion) {
     print "Detecting Maven version:   "
-    def curVersion = project.projectBuilderConfiguration.systemProperties['maven.version']
+    String curVersion = project.projectBuilderConfiguration.systemProperties['maven.version']
     def result
     if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)
@@ -131,7 +138,6 @@ def checkMavenVersion(String minVersion, String maxVersion) {
         result = checkVersionAtMost(curVersion, maxVersion)
         if (!result) {
             allConditionsMet = false
-            return
         }
     }
 }
@@ -139,42 +145,56 @@ def checkMavenVersion(String minVersion, String maxVersion) {
 def checkGcc() {
     print "Detecting Gcc version:     "
     // TODO: For windows, check that mingw32-make is on the PATH
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "gcc --version".execute().text
-    } catch (IOException e) {
+        def proc = "gcc --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
+    } catch (IOException ignored) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
+        String curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
         if (!result) {
             allConditionsMet = false
         }
     } else {
         println "missing"
+        println "--- output of version `gcc --version` command ---"
+        println output
+        println errOutput
+        println "-------------------------------------------------"
         allConditionsMet = false
     }
 }
 
 def checkGit() {
     print "Detecting Git version:     "
-    def output
+    def output = new StringBuffer()
+    def errOutput = new StringBuffer()
     try {
-        output = "git --version".execute().text
-    } catch (IOException e) {
+        def proc = "git --version".execute()
+        proc.waitForProcessOutput(output, errOutput)
+    } catch (IOException ignored) {
         output = ""
+        errOutput.append(e)
     }
     Matcher matcher = extractVersion(output)
     if (matcher.size() > 0) {
-        def curVersion = matcher[0][1]
+        String curVersion = matcher[0][1]
         def result = checkVersionAtLeast(curVersion, "1.0.0")
         if (!result) {
             allConditionsMet = false
         }
     } else {
         println "missing"
+        println "--- output of version `git --version` command ---"
+        println output
+        println errOutput
+        println "-------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -182,16 +202,17 @@ def checkGit() {
 // Remark: We're using venv, which was introduced with python 3.3,
 // that's why this is the baseline for python.
 def checkPython() {
+    def python = project.properties['python.exe.bin']
+    println "Using python executable:   " + python + "        OK"
     print "Detecting Python version:  "
     try {
-        def process = ("python3 --version").execute()
+        def process = (python + " --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
+        process.waitForProcessOutput(stdOut, stdErr)
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
-            def curVersion = matcher[0][1]
+            String curVersion = matcher[0][1]
             def result = checkVersionAtLeast(curVersion, "3.7.0")
             if (!result) {
                 allConditionsMet = false
@@ -200,8 +221,11 @@ def checkPython() {
             println "missing (Please install at least version 3.7.0)"
             allConditionsMet = false
         }
-    } catch (Exception e) {
+    } catch (Exception ignored) {
         println "missing"
+        println "--- output of version `${python} --version` command ---"
+        println output
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -212,20 +236,27 @@ def checkPython() {
 def checkPythonVenv() {
     print "Detecting venv:            "
     try {
-        def cmdArray = ["python3", "-Im", "ensurepip"]
+        def python = project.properties['python.exe.bin']
+        def cmdArray = [python, "-Im", "ensurepip"]
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
+        process.waitForProcessOutput(stdOut, stdErr)
         if (stdErr.contains("No module named")) {
             println "missing"
+            println "--- output of version `python -Im \"ensurepip\"` command ---"
+            println output
+            println "------------------------------------------------------------"
             allConditionsMet = false
         } else {
             println "               OK"
         }
     } catch (Exception e) {
         println "missing"
+        println "--- failed with exception ---"
+        println e
+        e.printStackTrace()
+        println "----------------------------------------------------"
         allConditionsMet = false
     }
 }
@@ -234,11 +265,14 @@ def checkPythonVenv() {
 // Not only should the docker executable be available, but also should the docker daemon be running.
 def checkDocker() {
     print "Detecting Docker version:  "
-    def output
+    def output = new StringBuilder()
+    def errOutput = new StringBuilder()
     try {
-        output = "docker info".execute().text
+        def proc = "docker info".execute()
+        proc.waitForProcessOutput(output, errOutput)
     } catch (IOException e) {
         output = ""
+        errOutput.append(e)
     }
     // Check if Docker is installed at all
     def matcher1 = output =~ /Server:/
@@ -246,7 +280,7 @@ def checkDocker() {
         // If it is check if the daemon is running and if the version is ok
         def matcher2 = output =~ /Server Version: (\d+\.\d+(\.\d+)?).*/
         if (matcher2.size() > 0) {
-            def curVersion = matcher2[0][1]
+            String curVersion = matcher2[0][1]
             def result = checkVersionAtLeast(curVersion, "1.0.0")
             if (!result) {
                 allConditionsMet = false
@@ -257,6 +291,10 @@ def checkDocker() {
         }
     } else {
         println "missing"
+        println "--- output of version `docker info` command ---"
+        println output
+        println errOutput
+        println "-----------------------------------------------"
         allConditionsMet = false
     }
     // TODO: Implement the actual check ...
@@ -271,8 +309,8 @@ def checkLibPcap(String minVersion, String os, String arch) {
             // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
             if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
                 System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
-            } else if (new File("/opt/homebrew/Cellar/libpcap/1.10.1/lib").exists()) {
-                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/Cellar/libpcap/1.10.1/lib");
+            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
             }
             // java.lang.UnsatisfiedLinkError: Can't load library: /Users/christoferdutz/Library/Caches/JNA/temp/jna877652535357666533.tmp
         }
@@ -284,11 +322,16 @@ def checkLibPcap(String minVersion, String os, String arch) {
             if (!result) {
                 //allConditionsMet = false
             }
+        } else {
+            println "               SKIPPED (on aarch64)"
         }
     } catch (Error e) {
-        e.printStackTrace()
         output = ""
         println "missing"
+        println "--- exception ---"
+        println e
+        e.printStackTrace()
+        println "-----------------"
         allConditionsMet = false
     }
 }
@@ -304,7 +347,7 @@ def checkLibPcapHeaders() {
  * @param input
  * @return
  */
-private Matcher extractVersion(input) {
+private static Matcher extractVersion(input) {
     def matcher = input =~ /(\d+\.\d+(\.\d+)?).*/
     matcher
 }

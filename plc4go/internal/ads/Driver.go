@@ -20,68 +20,105 @@
 package ads
 
 import (
+	"context"
+	"github.com/rs/zerolog"
+	"net/url"
+	"strconv"
+
+	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	adsModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
-	"net/url"
 )
 
 type Driver struct {
 	_default.DefaultDriver
+
+	log      zerolog.Logger
+	_options []options.WithOption // Used to pass them downstream
 }
 
-func NewDriver() plc4go.PlcDriver {
-	return &Driver{
-		DefaultDriver: _default.NewDefaultDriver("ads", "Beckhoff TwinCat ADS", "tcp", NewFieldHandler()),
+func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	driver := &Driver{
+		log:      customLogger,
+		_options: _options,
 	}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "ads", "Beckhoff TwinCat ADS", "tcp", NewTagHandler())
+	return driver
 }
 
-func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
-	// Get an the transport specified in the url
+func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	m.log.Debug().
+		Stringer("transportUrl", &transportUrl).
+		Int("nTransports", len(transports)).
+		Int("nDriverOptions", len(driverOptions)).
+		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
+	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
-		}()
+		m.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Str("scheme", transportUrl.Scheme).
+			Msg("We couldn't find a transport for scheme")
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Errorf("couldn't find transport for given transport url %#v", transportUrl))
 		return ch
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
-	options["defaultTcpPort"] = []string{"48898"}
+	driverOptions["defaultTcpPort"] = []string{strconv.Itoa(int(adsModel.AdsConstants_ADSTCPDEFAULTPORT))}
 	// Have the transport create a new transport-instance.
-	transportInstance, err := transport.CreateTransportInstance(transportUrl, options)
+	transportInstance, err := transport.CreateTransportInstance(
+		transportUrl,
+		driverOptions,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
 	if err != nil {
-		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", options["defaultTcpPort"])
-		ch := make(chan plc4go.PlcConnectionConnectResult)
+		m.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
+			Msg("We couldn't create a transport instance for port")
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.New("couldn't initialize transport configuration for given transport url "+transportUrl.String()))
 		return ch
 	}
 
 	// Create a new codec for taking care of encoding/decoding of messages
-	codec := NewMessageCodec(transportInstance)
-	log.Debug().Msgf("working with codec %#v", codec)
+	codec := NewMessageCodec(
+		transportInstance,
+		append(m._options, options.WithCustomLogger(m.log))...,
+	)
+	m.log.Debug().Stringer("codec", codec).Msg("working with codec")
 
-	configuration, err := ParseFromOptions(options)
+	configuration, err := model.ParseFromOptions(m.log, driverOptions)
 	if err != nil {
-		log.Error().Err(err).Msgf("Invalid options")
-		ch := make(chan plc4go.PlcConnectionConnectResult)
+		m.log.Error().Err(err).Msg("Invalid driverOptions")
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "invalid configuration"))
 		return ch
 	}
 
 	// Create the new connection
-	connection, err := NewConnection(codec, configuration, m.GetPlcFieldHandler(), options)
+	connection, err := NewConnection(codec, configuration, driverOptions)
 	if err != nil {
-		ch := make(chan plc4go.PlcConnectionConnectResult)
-		go func() {
-			ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
-		}()
+		ch := make(chan plc4go.PlcConnectionConnectResult, 1)
+		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "couldn't create connection"))
 		return ch
 	}
-	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
-	return connection.Connect()
+	m.log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
+	return connection.ConnectWithContext(ctx)
+}
+
+func (m *Driver) SupportsDiscovery() bool {
+	return true
+}
+
+func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return NewDiscoverer(
+		append(m._options, options.WithCustomLogger(m.log))...,
+	).Discover(ctx, callback, discoveryOptions...)
 }

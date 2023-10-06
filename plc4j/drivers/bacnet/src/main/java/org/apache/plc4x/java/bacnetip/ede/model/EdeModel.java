@@ -18,19 +18,19 @@
  */
 package org.apache.plc4x.java.bacnetip.ede.model;
 
-import org.apache.plc4x.java.bacnetip.field.BacNetIpField;
+import org.apache.plc4x.java.bacnetip.tag.BacNetIpTag;
 
 import java.util.Map;
 
 public class EdeModel {
 
-    private final Map<BacNetIpField, Datapoint> datapoints;
+    private final Map<BacNetIpTag, Datapoint> datapoints;
 
-    public EdeModel(Map<BacNetIpField, Datapoint> datapoints) {
+    public EdeModel(Map<BacNetIpTag, Datapoint> datapoints) {
         this.datapoints = datapoints;
     }
 
-    public Datapoint getDatapoint(BacNetIpField field) {
+    public Datapoint getDatapoint(BacNetIpTag field) {
         return datapoints.get(field);
     }
 

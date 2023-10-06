@@ -40,8 +40,8 @@ public class PlcUnsubscriptionRequestTest {
     }
 
     @Test
-    public void addItem() {
-        SUT.addItem(mock(UnsubscriptionRequestItem.class));
+    public void addField() {
+        SUT.addField(mock(UnsubscriptionRequestItem.class));
     }
 
     @Test

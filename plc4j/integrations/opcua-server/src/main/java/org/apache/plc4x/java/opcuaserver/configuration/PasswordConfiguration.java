@@ -45,7 +45,7 @@ public class PasswordConfiguration {
     private String securityPassword;
 
     @JsonProperty
-    private Map<String, User> users = new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
 
     public PasswordConfiguration() {
     }

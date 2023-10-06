@@ -55,3 +55,9 @@ The following pages will describe how to provide these requirements for your ope
 * link:linux.html[Linux]
 * link:macos.html[MacOS]
 * link:windows.html[Windows]
+
+== Preparing your IDE
+
+=== IntelliJ
+
+When running Java unit-tests in IntelliJ, you might run into problems where during the test execution complaints arise that JUnit is unable to load `{failsafeArgLine}`. In this case you need to go to `Settings -> Build, Execution, Deployment -> Build Tools -> Maven -> Running Tests` and deselect the option `argLine`.

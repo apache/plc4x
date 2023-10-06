@@ -20,9 +20,11 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -33,6 +35,7 @@ const RequestDirectCommandAccess_AT byte = 0x40
 
 // RequestDirectCommandAccess is the corresponding interface of RequestDirectCommandAccess
 type RequestDirectCommandAccess interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request
@@ -103,6 +106,8 @@ func (m *_RequestDirectCommandAccess) GetAlpha() Alpha {
 ///////////////////////
 
 func (m *_RequestDirectCommandAccess) GetCalDataDecoded() CALData {
+	ctx := context.Background()
+	_ = ctx
 	alpha := m.Alpha
 	_ = alpha
 	return CastCALData(m.GetCalData())
@@ -138,7 +143,7 @@ func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte Requ
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestDirectCommandAccess(structType interface{}) RequestDirectCommandAccess {
+func CastRequestDirectCommandAccess(structType any) RequestDirectCommandAccess {
 	if casted, ok := structType.(RequestDirectCommandAccess); ok {
 		return casted
 	}
@@ -152,36 +157,38 @@ func (m *_RequestDirectCommandAccess) GetTypeName() string {
 	return "RequestDirectCommandAccess"
 }
 
-func (m *_RequestDirectCommandAccess) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_RequestDirectCommandAccess) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_RequestDirectCommandAccess) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (at)
 	lengthInBits += 8
 
 	// Manual Field (calData)
-	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes()) * int32(int32(2)))) * int32(int32(8)))
+	lengthInBits += uint16(int32((int32(m.GetCalData().GetLengthInBytes(ctx)) * int32(int32(2)))) * int32(int32(8)))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (alpha)
 	if m.Alpha != nil {
-		lengthInBits += m.Alpha.GetLengthInBits()
+		lengthInBits += m.Alpha.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_RequestDirectCommandAccess) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_RequestDirectCommandAccess) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+func RequestDirectCommandAccessParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
+	return RequestDirectCommandAccessParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
+}
+
+func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("RequestDirectCommandAccess"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestDirectCommandAccess")
 	}
@@ -198,7 +205,7 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	}
 
 	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(readBuffer)
+	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestDirectCommandAccess")
 	}
@@ -219,10 +226,10 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 		if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alpha")
 		}
-		_val, _err := AlphaParse(readBuffer)
+		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alpha' field of RequestDirectCommandAccess")
@@ -250,9 +257,19 @@ func RequestDirectCommandAccessParse(readBuffer utils.ReadBuffer, cBusOptions CB
 	return _child, nil
 }
 
-func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_RequestDirectCommandAccess) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("RequestDirectCommandAccess"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for RequestDirectCommandAccess")
@@ -265,12 +282,14 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 
 		// Manual Field (calData)
-		_calDataErr := WriteCALData(writeBuffer, m.GetCalData())
+		_calDataErr := WriteCALData(ctx, writeBuffer, m.GetCalData())
 		if _calDataErr != nil {
 			return errors.Wrap(_calDataErr, "Error serializing 'calData' field")
 		}
 		// Virtual field
-		if _calDataDecodedErr := writeBuffer.WriteVirtual("calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
+		calDataDecoded := m.GetCalDataDecoded()
+		_ = calDataDecoded
+		if _calDataDecodedErr := writeBuffer.WriteVirtual(ctx, "calDataDecoded", m.GetCalDataDecoded()); _calDataDecodedErr != nil {
 			return errors.Wrap(_calDataDecodedErr, "Error serializing 'calDataDecoded' field")
 		}
 
@@ -281,7 +300,7 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 				return errors.Wrap(pushErr, "Error pushing for alpha")
 			}
 			alpha = m.GetAlpha()
-			_alphaErr := writeBuffer.WriteSerializable(alpha)
+			_alphaErr := writeBuffer.WriteSerializable(ctx, alpha)
 			if popErr := writeBuffer.PopContext("alpha"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for alpha")
 			}
@@ -295,7 +314,7 @@ func (m *_RequestDirectCommandAccess) Serialize(writeBuffer utils.WriteBuffer) e
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_RequestDirectCommandAccess) isRequestDirectCommandAccess() bool {
@@ -307,7 +326,7 @@ func (m *_RequestDirectCommandAccess) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

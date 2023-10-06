@@ -52,7 +52,7 @@ public class SinkConfigTest {
         Path path = FileSystems.getDefault().getPath(TEST_PATH, "sink_task_no_error.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -72,7 +72,7 @@ public class SinkConfigTest {
         Path path = FileSystems.getDefault().getPath(TEST_PATH, "sink_task_no_error.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -93,7 +93,7 @@ public class SinkConfigTest {
         Path path = FileSystems.getDefault().getPath(TEST_PATH, "sink_task_no_error.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -108,7 +108,7 @@ public class SinkConfigTest {
         Path path = FileSystems.getDefault().getPath(TEST_PATH, "sink_task_no_error.properties");
         properties.load((new StringReader(new String(Files.readAllBytes(path)))));
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         for (final String name: properties.stringPropertyNames())
             map.put(name, properties.getProperty(name));
 
@@ -116,7 +116,7 @@ public class SinkConfigTest {
         sinkConnector.start(map);
         sinkConnector.toString();
         sinkConnector.stop();
-        assertThrows(NullPointerException.class, () -> sinkConnector.toString());
+        assertThrows(NullPointerException.class, sinkConnector::toString);
     }
 
     private static Map<String, String> toStringMap(Properties properties) {

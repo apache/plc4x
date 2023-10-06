@@ -53,4 +53,9 @@ public abstract class DataWriterSimpleBase<T> implements DataWriter<T>, FieldCom
         writeBuffer.popContext(logicalName, writerArgs);
     }
 
+    @Override
+    public WriteBuffer getWriteBuffer() {
+        return writeBuffer;
+    }
+
 }

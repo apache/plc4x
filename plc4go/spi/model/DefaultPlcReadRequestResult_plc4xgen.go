@@ -22,13 +22,23 @@
 package model
 
 import (
+	"context"
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ = fmt.Printf
 
-func (d *DefaultPlcReadRequestResult) Serialize(writeBuffer utils.WriteBuffer) error {
+func (d *DefaultPlcReadRequestResult) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcReadRequestResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("PlcReadRequestResult"); err != nil {
 		return err
 	}
@@ -38,7 +48,7 @@ func (d *DefaultPlcReadRequestResult) Serialize(writeBuffer utils.WriteBuffer) e
 			if err := writeBuffer.PushContext("request"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("request"); err != nil {
@@ -57,7 +67,7 @@ func (d *DefaultPlcReadRequestResult) Serialize(writeBuffer utils.WriteBuffer) e
 			if err := writeBuffer.PushContext("response"); err != nil {
 				return err
 			}
-			if err := serializableField.Serialize(writeBuffer); err != nil {
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
 			if err := writeBuffer.PopContext("response"); err != nil {
@@ -72,7 +82,8 @@ func (d *DefaultPlcReadRequestResult) Serialize(writeBuffer utils.WriteBuffer) e
 	}
 
 	if d.Err != nil {
-		if err := writeBuffer.WriteString("err", uint32(len(d.Err.Error())*8), "UTF-8", d.Err.Error()); err != nil {
+		_errString := d.Err.Error()
+		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
 			return err
 		}
 	}
@@ -84,7 +95,7 @@ func (d *DefaultPlcReadRequestResult) Serialize(writeBuffer utils.WriteBuffer) e
 
 func (d *DefaultPlcReadRequestResult) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(d); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

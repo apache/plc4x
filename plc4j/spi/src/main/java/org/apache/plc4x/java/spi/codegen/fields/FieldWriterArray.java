@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.codegen.fields;
 
 import org.apache.plc4x.java.spi.codegen.FieldCommons;
+import org.apache.plc4x.java.spi.codegen.ThreadLocalHelper;
 import org.apache.plc4x.java.spi.codegen.io.DataWriter;
 import org.apache.plc4x.java.spi.generation.*;
 import org.slf4j.Logger;
@@ -42,7 +43,9 @@ public class FieldWriterArray<T> implements FieldCommons {
         switchSerializeByteOrderIfNecessary(() -> {
             if (values != null) {
                 dataWriter.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-                for (T value : values) {
+                for (int curItem = 0; curItem < values.size(); curItem++) {
+                    T value = values.get(curItem);
+                    ThreadLocalHelper.lastItemThreadLocal.set(curItem == values.size() - 1);
                     dataWriter.write("value", value, writerArgs);
                 }
                 dataWriter.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
@@ -55,7 +58,9 @@ public class FieldWriterArray<T> implements FieldCommons {
         switchSerializeByteOrderIfNecessary(() -> {
             if (values != null) {
                 writeBuffer.pushContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));
-                for (Message value : values) {
+                for (int curItem = 0; curItem < values.size(); curItem++) {
+                    Message value = values.get(curItem);
+                    ThreadLocalHelper.lastItemThreadLocal.set(curItem == values.size() - 1);
                     value.serialize(writeBuffer);
                 }
                 writeBuffer.popContext(logicalName, WithReaderWriterArgs.WithRenderAsList(true));

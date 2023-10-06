@@ -36,13 +36,13 @@ public class ManualParserTest {
     public static final int EXTENDED_FORMAT_IDENTIFIER_MASK = 0b00011111_11111111_11111111_11111111;
 
     // cansend 5A1#11.2233.44556677.88
-    String STANDARD = "a1050000080000001122334455667788";
+    final String STANDARD = "a1050000080000001122334455667788";
 
     // cansend 5A1#R
     String STANDARD_REPLY = "a1050040000000000000000000000000";
 
     // cansend 1E6EC676#05.05.1F.26.C3
-    String EXTENDED = "76c66e9e0500000005051f26c3000000";
+    final String EXTENDED = "76c66e9e0500000005051f26c3000000";
 
     @Test
     public void readBufferTest() throws Exception {
@@ -76,7 +76,7 @@ public class ManualParserTest {
         assertEquals(frame.data.length, 5);
     }
 
-    public final static SocketCanFrameStub parse(String hex) throws Exception {
+    public static SocketCanFrameStub parse(String hex) throws Exception {
         byte[] input = Hex.decodeHex(hex.toCharArray());
 
         ReadBufferByteBased readBuffer = new ReadBufferByteBased(input, ByteOrder.LITTLE_ENDIAN);
@@ -94,11 +94,11 @@ public class ManualParserTest {
     }
 
     static class SocketCanFrameStub {
-        public int id;
-        public boolean extended;
-        public boolean remote;
-        public boolean error;
-        public byte[] data;
+        public final int id;
+        public final boolean extended;
+        public final boolean remote;
+        public final boolean error;
+        public final byte[] data;
 
         public SocketCanFrameStub(int id, boolean extended, boolean remote, boolean error, byte[] data) {
             this.id = id;

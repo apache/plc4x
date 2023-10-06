@@ -21,22 +21,24 @@ package testutils
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
+	"github.com/pkg/errors"
 	"math/rand"
 	"reflect"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type ManualTestCase struct {
 	Address           string
-	ExpectedReadValue interface{}
-	WriteValue        interface{}
+	ExpectedReadValue any
+	WriteValue        any
 	UnwrappedValue    bool
 }
 
@@ -47,7 +49,7 @@ type ManualTestSuite struct {
 	t                *testing.T
 }
 
-func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverManager, t *testing.T) *ManualTestSuite {
+func NewManualTestSuite(t *testing.T, connectionString string, driverManager plc4go.PlcDriverManager) *ManualTestSuite {
 	return &ManualTestSuite{
 		ConnectionString: connectionString,
 		DriverManager:    driverManager,
@@ -55,7 +57,7 @@ func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverM
 	}
 }
 
-func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interface{}, testCaseOptions ...WithTestCaseOption) {
+func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue any, testCaseOptions ...WithTestCaseOption) {
 	testCase := ManualTestCase{Address: address, ExpectedReadValue: expectedReadValue, UnwrappedValue: true}
 	for _, testCaseOption := range testCaseOptions {
 		testCaseOption(testCase)
@@ -75,6 +77,14 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if err := connectionResult.GetErr(); err != nil {
+		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
+		if ok {
+			stackTrace := tracer.StackTrace()
+			for _, f := range stackTrace {
+				fmt.Printf("%+s:%d\n", f, f)
+			}
+			fmt.Println()
+		}
 		m.t.Error(err)
 		m.t.FailNow()
 	}
@@ -82,12 +92,12 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	m.t.Cleanup(func() {
 		connection.Close()
 	})
-	log.Info().Msg("Reading all types in separate requests")
+	m.t.Log("Reading all types in separate requests")
 	// Run all entries separately:
 	for _, testCase := range m.TestCases {
-		fieldName := testCase.Address
-		m.t.Run(fieldName, func(t *testing.T) {
-			m.runSingleTest(t, connection, fieldName, testCase)
+		tagName := testCase.Address
+		m.t.Run(tagName, func(t *testing.T) {
+			m.runSingleTest(t, connection, tagName, testCase)
 		})
 	}
 	m.t.Run("combinedTest", func(t *testing.T) {
@@ -96,58 +106,58 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	return connection
 }
 
-func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnection, fieldName string, testCase ManualTestCase) {
+func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConnection, tagName string, testCase ManualTestCase) {
 	// Prepare the read-request
 	readRequestBuilder := connection.ReadRequestBuilder()
-	readRequestBuilder.AddQuery(fieldName, testCase.Address)
+	readRequestBuilder.AddTagAddress(tagName, testCase.Address)
 	readRequest, err := readRequestBuilder.Build()
 	if err != nil {
-		panic(err)
+		t.Fatal(err)
+		return
 	}
 
 	// Execute the read request
 	readResponseResult := <-readRequest.Execute()
 	if readResponseResult.GetErr() != nil {
-		t.Errorf("Error getting response %v", readResponseResult.GetErr())
-		t.FailNow()
+		t.Fatalf("Error getting response %v", readResponseResult.GetErr())
 		return
 	}
 	readResponse := readResponseResult.GetResponse()
 
 	// Check the result
-	assert.Equalf(t, 1, len(readResponse.GetFieldNames()), "response should have a field for %s", fieldName)
-	assert.Equalf(t, fieldName, readResponse.GetFieldNames()[0], "first field should be equal to %s", fieldName)
-	assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), "response code should be ok for %s", fieldName)
-	assert.NotNil(t, readResponse.GetValue(fieldName), fieldName)
+	assert.Equalf(t, 1, len(readResponse.GetTagNames()), "response should have a tag for %s", tagName)
+	assert.Equalf(t, tagName, readResponse.GetTagNames()[0], "first tag should be equal to %s", tagName)
+	assert.Equalf(t, apiModel.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
+	assert.NotNil(t, readResponse.GetValue(tagName), tagName)
 	expectation := reflect.ValueOf(testCase.ExpectedReadValue)
-	if readResponse.GetValue(fieldName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
-		plcList := readResponse.GetValue(fieldName).GetList()
+	if readResponse.GetValue(tagName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
+		plcList := readResponse.GetValue(tagName).GetList()
 		for j := 0; j < expectation.Len(); j++ {
 			var actual any
 			actual = plcList[j]
 			if testCase.UnwrappedValue {
 				switch actualCasted := actual.(type) {
-				case values.PlcBOOL:
+				case spiValues.PlcBOOL:
 					actual = actualCasted.GetBool()
-				case values.PlcWORD:
+				case spiValues.PlcWORD:
 					actual = actualCasted.GetInt8()
 				default:
 					t.Fatalf("%T not yet mapped", actualCasted)
 				}
 			}
-			assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", fieldName, j))
+			assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", tagName, j))
 		}
 	} else {
-		assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
+		assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(tagName).GetString(), tagName)
 	}
 }
 
 func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnection) {
 	// Read all items in one big request.
 	// Shuffle the list of test cases and run the test 10 times.
-	log.Info().Msg("Reading all items together in random order")
+	t.Log("Reading all items together in random order")
 	for i := 0; i < 100; i++ {
-		log.Info().Msgf(" - run number %d of %d", i, 100)
+		t.Logf(" - run number %d of %d", i, 100)
 		shuffledTestcases := append(make([]ManualTestCase, 0), m.TestCases...)
 		rand.Seed(time.Now().UnixNano())
 		rand.Shuffle(len(shuffledTestcases), func(i, j int) {
@@ -159,12 +169,12 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 			sb.WriteString(testCase.Address)
 			sb.WriteString(", ")
 		}
-		log.Info().Msgf("       using order: %s", sb.String())
+		t.Logf("       using order: %s", sb.String())
 
 		builder := connection.ReadRequestBuilder()
 		for _, testCase := range shuffledTestcases {
-			fieldName := testCase.Address
-			builder.AddQuery(fieldName, testCase.Address)
+			tagName := testCase.Address
+			builder.AddTagAddress(tagName, testCase.Address)
 		}
 		readRequest, err := builder.Build()
 		if err != nil {
@@ -181,31 +191,31 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 		readResponse := readResponseResult.GetResponse()
 
 		// Check the result
-		assert.Equal(t, len(shuffledTestcases), len(readResponse.GetFieldNames()))
+		assert.Equal(t, len(shuffledTestcases), len(readResponse.GetTagNames()))
 		for _, testCase := range shuffledTestcases {
-			fieldName := testCase.Address
-			assert.Equalf(t, model.PlcResponseCode_OK, readResponse.GetResponseCode(fieldName), "response code should be ok for %s", fieldName)
-			assert.NotNil(t, readResponse.GetValue(fieldName))
+			tagName := testCase.Address
+			assert.Equalf(t, apiModel.PlcResponseCode_OK, readResponse.GetResponseCode(tagName), "response code should be ok for %s", tagName)
+			assert.NotNil(t, readResponse.GetValue(tagName))
 			expectation := reflect.ValueOf(testCase.ExpectedReadValue)
-			if readResponse.GetValue(fieldName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
-				plcList := readResponse.GetValue(fieldName).GetList()
+			if readResponse.GetValue(tagName).IsList() && (expectation.Kind() == reflect.Slice || expectation.Kind() == reflect.Array) {
+				plcList := readResponse.GetValue(tagName).GetList()
 				for j := 0; j < expectation.Len(); j++ {
 					var actual any
 					actual = plcList[j]
 					if testCase.UnwrappedValue {
 						switch actualCasted := actual.(type) {
-						case values.PlcBOOL:
+						case spiValues.PlcBOOL:
 							actual = actualCasted.GetBool()
-						case values.PlcWORD:
+						case spiValues.PlcWORD:
 							actual = actualCasted.GetInt8()
 						default:
 							t.Fatalf("%T not yet mapped", actualCasted)
 						}
 					}
-					assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", fieldName, j))
+					assert.Equal(t, expectation.Index(j).Interface(), actual, fmt.Sprintf("%s[%d]", tagName, j))
 				}
 			} else {
-				assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(fieldName).GetString(), fieldName)
+				assert.Equal(t, fmt.Sprint(testCase.ExpectedReadValue), readResponse.GetValue(tagName).GetString(), tagName)
 			}
 		}
 	}

@@ -31,7 +31,7 @@ public class DefaultArgument implements Argument {
 
     private TypeReference type;
 
-    protected CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
+    protected final CompletableFuture<TypeReference> typeReferenceCompletionStage = new CompletableFuture<>();
 
     public DefaultArgument(String name) {
         this.name = Objects.requireNonNull(name);

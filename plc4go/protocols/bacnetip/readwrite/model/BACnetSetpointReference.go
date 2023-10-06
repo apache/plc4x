@@ -20,8 +20,11 @@
 package model
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"io"
 )
 
@@ -29,6 +32,7 @@ import (
 
 // BACnetSetpointReference is the corresponding interface of BACnetSetpointReference
 type BACnetSetpointReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSetPointReference returns SetPointReference (property field)
@@ -67,7 +71,7 @@ func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSetpointReference(structType interface{}) BACnetSetpointReference {
+func CastBACnetSetpointReference(structType any) BACnetSetpointReference {
 	if casted, ok := structType.(BACnetSetpointReference); ok {
 		return casted
 	}
@@ -81,28 +85,30 @@ func (m *_BACnetSetpointReference) GetTypeName() string {
 	return "BACnetSetpointReference"
 }
 
-func (m *_BACnetSetpointReference) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetSetpointReference) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetSetpointReference) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (setPointReference)
 	if m.SetPointReference != nil {
-		lengthInBits += m.SetPointReference.GetLengthInBits()
+		lengthInBits += m.SetPointReference.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetSetpointReference) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetSetpointReference) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
+func BACnetSetpointReferenceParse(ctx context.Context, theBytes []byte) (BACnetSetpointReference, error) {
+	return BACnetSetpointReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
+}
+
+func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSetpointReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSetpointReference")
 	}
@@ -116,10 +122,10 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 		if pullErr := readBuffer.PullContext("setPointReference"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for setPointReference")
 		}
-		_val, _err := BACnetObjectPropertyReferenceEnclosedParse(readBuffer, uint8(0))
+		_val, _err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'setPointReference' field of BACnetSetpointReference")
@@ -141,9 +147,19 @@ func BACnetSetpointReferenceParse(readBuffer utils.ReadBuffer) (BACnetSetpointRe
 	}, nil
 }
 
-func (m *_BACnetSetpointReference) Serialize(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSetpointReference) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
+	log := zerolog.Ctx(ctx)
+	_ = log
 	if pushErr := writeBuffer.PushContext("BACnetSetpointReference"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetSetpointReference")
 	}
@@ -155,7 +171,7 @@ func (m *_BACnetSetpointReference) Serialize(writeBuffer utils.WriteBuffer) erro
 			return errors.Wrap(pushErr, "Error pushing for setPointReference")
 		}
 		setPointReference = m.GetSetPointReference()
-		_setPointReferenceErr := writeBuffer.WriteSerializable(setPointReference)
+		_setPointReferenceErr := writeBuffer.WriteSerializable(ctx, setPointReference)
 		if popErr := writeBuffer.PopContext("setPointReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setPointReference")
 		}
@@ -179,7 +195,7 @@ func (m *_BACnetSetpointReference) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

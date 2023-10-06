@@ -27,6 +27,7 @@ import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.plc4x.java.utils.pcap.netty.exception.PcapException;
+import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketPassiveAddress;
 import org.apache.plc4x.java.utils.rawsockets.netty.config.RawSocketChannelConfig;
 import org.apache.plc4x.java.utils.rawsockets.netty.utils.ArpUtils;
@@ -34,6 +35,7 @@ import org.pcap4j.core.*;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IllegalRawDataException;
 import org.pcap4j.packet.Packet;
+import org.pcap4j.packet.namednumber.ArpOperation;
 import org.pcap4j.util.MacAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +95,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
     @Override
     protected void doConnect(SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
-        if(!((remoteAddress instanceof RawSocketPassiveAddress) || (remoteAddress instanceof InetSocketAddress))) {
+        if(!((remoteAddress instanceof RawSocketPassiveAddress) || (remoteAddress instanceof InetSocketAddress) || (remoteAddress instanceof RawSocketAddress))) {
             logger.error("Expecting remote address of type RawSocketPassiveAddress or InetSocketAddress");
             pipeline().fireExceptionCaught(
                 new PcapException("Expecting remote address of type RawSocketPassiveAddress or InetSocketAddress"));
@@ -116,7 +118,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
 
             // Get a handle to the network-device and open it.
             nif = Pcaps.getDevByName(deviceName);
-        } else {
+        } else if (remoteAddress instanceof InetSocketAddress) {
             InetSocketAddress inetSocketAddress = (InetSocketAddress) remoteAddress;
             InetAddress address = inetSocketAddress.getAddress();
             deviceLoop:
@@ -150,6 +152,12 @@ public class RawSocketChannel extends OioByteStreamChannel {
                     }
                 }
             }
+        }
+        // This would be generally to use a remote MAC address as target.
+        else {
+            // Here we would need to do a reverse ARP lookup to find the
+            throw new RuntimeException("Not Implemented yet ");
+            // TODO: Implement finding out which device is used for communicating with a given MAC address.
         }
 
         if (nif == null) {

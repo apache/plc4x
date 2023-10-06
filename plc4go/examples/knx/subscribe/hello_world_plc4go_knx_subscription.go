@@ -21,13 +21,14 @@ package main
 
 import (
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/drivers"
 	"github.com/apache/plc4x/plc4go/pkg/api/logging"
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"strings"
-	"time"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 func main() {
@@ -35,6 +36,11 @@ func main() {
 	logging.InfoLevel()
 
 	driverManager := plc4go.NewPlcDriverManager()
+	defer func() {
+		if err := driverManager.Close(); err != nil {
+			panic(err)
+		}
+	}()
 	drivers.RegisterKnxDriver(driverManager)
 
 	// Get a connection to a remote PLC
@@ -53,23 +59,23 @@ func main() {
 
 	// Prepare a subscription-request
 	if subscriptionRequest, err := connection.SubscriptionRequestBuilder().
-		// Intentionally catching all without datatype and the temperature values of the first floor with type
-		AddChangeOfStateQuery("all", "*/*/*").
-		AddChangeOfStateQuery("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
-		AddPreRegisteredConsumer("all", func(event model.PlcSubscriptionEvent) {
-			// Iterate over all fields that were triggered in the current event.
-			for _, fieldName := range event.GetFieldNames() {
-				if event.GetResponseCode(fieldName) == model.PlcResponseCode_OK {
-					address := event.GetAddress(fieldName)
-					value := event.GetValue(fieldName)
+		// Intentionally catching all without datatype and the temperature apiValues of the first floor with type
+		AddChangeOfStateTagAddress("all", "*/*/*").
+		AddChangeOfStateTagAddress("firstFlorTemperatures", "2/[1,2,4,6]/10:DPT_Value_Temp").
+		AddPreRegisteredConsumer("all", func(event apiModel.PlcSubscriptionEvent) {
+			// Iterate over all tags that were triggered in the current event.
+			for _, tagName := range event.GetTagNames() {
+				if event.GetResponseCode(tagName) == apiModel.PlcResponseCode_OK {
+					address := event.GetAddress(tagName)
+					value := event.GetValue(tagName)
 					// If the plc-value was a raw-plcValue, we will try lazily decode the value
-					// In my installation all group addresses ending with "/10" are temperature values
+					// In my installation all group addresses ending with "/10" are temperature apiValues
 					// and ending on "/0" are light switch actions.
 					// So if I find a group address ending on that, decode it with a given type name,
-					// If not, simply output it as array of USINT values.
+					// If not, simply output it as array of USINT apiValues.
 					switch value.(type) {
-					case values.RawPlcValue:
-						rawValue := value.(values.RawPlcValue)
+					case apiValues.RawPlcValue:
+						rawValue := value.(apiValues.RawPlcValue)
 						datatypeName := "USINT"
 						if strings.HasSuffix(address, "/10") {
 							datatypeName = "DPT_Value_Temp"
@@ -102,9 +108,9 @@ func main() {
 		}
 
 		// Do something with the response
-		for _, fieldName := range rrr.GetResponse().GetFieldNames() {
-			if rrr.GetResponse().GetResponseCode(fieldName) != model.PlcResponseCode_OK {
-				fmt.Printf("error an non-ok return code for field %s: %s\n", fieldName, rrr.GetResponse().GetResponseCode(fieldName).GetName())
+		for _, tagName := range rrr.GetResponse().GetTagNames() {
+			if rrr.GetResponse().GetResponseCode(tagName) != apiModel.PlcResponseCode_OK {
+				fmt.Printf("error an non-ok return code for tag %s: %s\n", tagName, rrr.GetResponse().GetResponseCode(tagName).GetName())
 				continue
 			}
 		}

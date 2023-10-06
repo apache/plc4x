@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation</artifactId>
@@ -35,10 +35,9 @@
 
   <modules>
     <module>language-base-freemarker</module>
+    <module>language-java</module>
     <module>protocol-base-mspec</module>
     <module>protocol-test</module>
-
-    <module>language-java</module>
   </modules>
 
   <profiles>
@@ -60,6 +59,20 @@
       <id>with-go</id>
       <modules>
         <module>language-go</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>with-python</id>
+      <modules>
+        <module>language-python</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>enable-all-checks</id>
+      <modules>
+        <module>tests</module>
       </modules>
     </profile>
   </profiles>

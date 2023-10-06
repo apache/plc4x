@@ -20,18 +20,20 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/eip"
 	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
-	eipModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestEIPDriver(t *testing.T) {
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return eipModel.EipPacketParse(readBufferByteBased)
-	})}
-	testutils.RunDriverTestsuiteWithOptions(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", eipIO.EipXmlParserHelper{}, options)
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
+	testutils.RunDriverTestsuite(
+		t,
+		eip.NewDriver(optionsForTesting...),
+		"assets/testing/protocols/eip/DriverTestsuite.xml",
+		eipIO.EipXmlParserHelper{},
+		optionsForTesting...,
+	)
 }

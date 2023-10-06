@@ -20,6 +20,9 @@ package org.apache.plc4x.java.spi.values;
 
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,11 +30,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class PlcNull implements PlcValue {
+public class PlcNull implements PlcValue, Serializable {
 
     @Override
     public PlcValueType getPlcValueType() {
@@ -268,4 +272,24 @@ public class PlcNull implements PlcValue {
         return null;
     }
 
+    @Override
+    public Set<String> getMetaDataNames() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public boolean hasMetaData(String key) {
+        return false;
+    }
+
+    @Override
+    public PlcValue getMetaData(String key) {
+        return null;
+    }
+
+    @Override
+    public void serialize(WriteBuffer writeBuffer) throws SerializationException {
+        writeBuffer.pushContext("PlcNull");
+        writeBuffer.popContext("PlcNull");
+    }
 }

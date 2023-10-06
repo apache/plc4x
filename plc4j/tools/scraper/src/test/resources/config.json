@@ -9,7 +9,7 @@
             "sources": [
                 "a"
             ],
-            "fields": {
+            "tags": {
                 "a": "DBasdf",
                 "b": "DBbsdf"
             }

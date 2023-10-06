@@ -79,7 +79,7 @@ void <xsl:value-of select="normalize-space($testName)"/>() {
     }
 
     plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>* message = NULL;
-    return_code = plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>_parse(read_buffer, <xsl:value-of disable-output-escaping="yes" select="'&#038;'"/>message);
+    return_code = plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>_parse(plc4x_spi_context_background(), read_buffer, <xsl:value-of disable-output-escaping="yes" select="'&#038;'"/>message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error parsing packet");
     }
@@ -90,7 +90,7 @@ void <xsl:value-of select="normalize-space($testName)"/>() {
         TEST_FAIL_MESSAGE("Error writing to buffer");
     }
 
-    return_code = plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>_serialize(write_buffer, message);
+    return_code = plc4c_<xsl:value-of select="replace(lower-case($protocolName), ' ', '_')"/>_<xsl:value-of select="replace(replace(lower-case($outputFlavor), ' ', '_'), '-', '_')"/>_<xsl:value-of select="$rootTypeName"/>_serialize(plc4x_spi_context_background(), write_buffer, message);
     if (return_code != OK) {
         TEST_FAIL_MESSAGE("Error serializing");
     }

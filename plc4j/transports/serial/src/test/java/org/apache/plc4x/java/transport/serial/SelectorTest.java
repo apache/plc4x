@@ -24,7 +24,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -36,9 +35,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SelectorTest {
 
@@ -65,14 +64,12 @@ public class SelectorTest {
             /*
              * Enable debug mode of the loggers we need and grab copy of the output for test logic
              */
-            Arrays.asList(loopLogger, selectorLogger)
-                .stream()
+            Stream.of(loopLogger, selectorLogger)
                 .map(Logger.class::cast)
                 .forEach(l -> {
                     l.setLevel(Level.DEBUG);
                     l.addAppender(listAppender);
                 });
-            ;
         }
 
 
@@ -113,8 +110,7 @@ public class SelectorTest {
          * chosen with a little safety buffer.
          */
         while (listAppender.list.size() < 600
-            && Duration.between(start, Instant.now()).compareTo(maxTestRunTime) <= 0)
-        {
+            && Duration.between(start, Instant.now()).compareTo(maxTestRunTime) <= 0) {
             Thread.sleep(Duration.ofSeconds(1).toMillis());
         }
 

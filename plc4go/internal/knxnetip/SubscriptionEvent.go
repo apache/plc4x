@@ -20,44 +20,70 @@
 package knxnetip
 
 import (
+	"context"
+	"time"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	internalMode "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"time"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+
+	"github.com/rs/zerolog"
 )
 
 type SubscriptionEvent struct {
-	internalMode.DefaultPlcSubscriptionEvent
+	*spiModel.DefaultPlcSubscriptionEvent
 	addresses map[string][]byte
+
+	passLogToModel bool
+	log            zerolog.Logger
 }
 
-func NewSubscriptionEvent(fields map[string]apiModel.PlcField, types map[string]internalMode.SubscriptionType,
-	intervals map[string]time.Duration, responseCodes map[string]apiModel.PlcResponseCode,
-	addresses map[string][]byte, values map[string]values.PlcValue) SubscriptionEvent {
-	subscriptionEvent := SubscriptionEvent{addresses: addresses}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, fields, types, intervals, responseCodes, values)
+func NewSubscriptionEvent(
+	tags map[string]apiModel.PlcTag,
+	types map[string]apiModel.PlcSubscriptionType,
+	intervals map[string]time.Duration,
+	responseCodes map[string]apiModel.PlcResponseCode,
+	addresses map[string][]byte,
+	values map[string]values.PlcValue,
+	_options ...options.WithOption,
+) SubscriptionEvent {
+	passLoggerToModel, _ := options.ExtractPassLoggerToModel(_options...)
+	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	subscriptionEvent := SubscriptionEvent{
+		addresses:      addresses,
+		passLogToModel: passLoggerToModel,
+		log:            customLogger,
+	}
+	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values, _options...)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
 }
 
-// GetAddress Decode the binary data in the address according to the field requested
+// GetAddress Decode the binary data in the address according to the tag requested
 func (m SubscriptionEvent) GetAddress(name string) string {
 	rawAddress := m.addresses[name]
-	rawAddressReadBuffer := utils.NewReadBufferByteBased(rawAddress)
-	field := m.DefaultPlcSubscriptionEvent.GetField(name)
+	tag := m.DefaultPlcSubscriptionEvent.GetTag(name)
 	var groupAddress driverModel.KnxGroupAddress
 	var err error
-	switch field.(type) {
-	case GroupAddress3LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 3)
-	case GroupAddress2LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 2)
-	case GroupAddress1LevelPlcField:
-		groupAddress, err = driverModel.KnxGroupAddressParse(rawAddressReadBuffer, 1)
+	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
+	switch tag.(type) {
+	case GroupAddress3LevelPlcTag:
+		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 3)
+	case GroupAddress2LevelPlcTag:
+		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 2)
+	case GroupAddress1LevelPlcTag:
+		groupAddress, err = driverModel.KnxGroupAddressParse(ctxForModel, rawAddress, 1)
 	}
 	if err != nil {
+		m.log.Debug().Err(err).Msg("error parsing")
 		return ""
 	}
-	return GroupAddressToString(groupAddress)
+	toString, err := GroupAddressToString(groupAddress)
+	if err != nil {
+		m.log.Debug().Err(err).Msg("error mapping")
+		return ""
+	}
+	return toString
 }
