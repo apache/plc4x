@@ -17,7 +17,7 @@
 :imagesdir: ../../images/
 :icons: font
 
-== https://kafka.apache.org/[Apache Kafka]
+# [Apache Kafka](https://kafka.apache.org) 
 
 Apache Kafka is an open-source distributed event streaming platform used by thousands of
 companies for high-performance data pipelines, streaming analytics, data integration, and
@@ -26,9 +26,8 @@ mission-critical applications.
 # PLC4X Kafka Connectors
 
 The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
-They can be built from source from the future 0.8 https://plc4x.apache.org/users/download.html[release] of
-PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github].
-//They can also be downloaded from the confluent https://www.confluent.io/hub/[hub].
+They can be built from source from the future [release] of
+PLC4X or from the latest snapshot from [github](https://github.com/apache/plc4x).
 
 ## Introduction
 
