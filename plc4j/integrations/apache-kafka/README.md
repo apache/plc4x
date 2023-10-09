@@ -238,8 +238,16 @@ data to a sink.
 
 
 ### Start with Docker
-If you want to use PLC4x with Kafka on Docker, simply download the docker-compose.yml file, configure the necessary port and IP settings, and start the containers. The available docker-compose.yml file includes four containers: zookeeper, kafka, kafka connect, and control-center. The control-center container provides a web interface to facilitate the configuration of kafka connect. If you don't want to use it, you can remove it from the docker-compose.yml file.
 
-To start the docker-compose.yml file, download it and use the following command to start it:
-    docker-compose up -d
+If you want to use PLC4X with Kafka on Docker, follow these steps:
 
+- Download the `docker-compose.yml` file.
+- Add the linked images and, if necessary, configure the IP address. You can also change the container port.
+- This `docker-compose.yml` file includes four containers: ZooKeeper, Kafka, Kafka Connect, and Control Center. If you do not need the control center, you can delete it.
+- Add the `plc4j-apache-kafka-0.10.0-uber-jar.jar` connector to the volume. This is necessary for successfully using the PLC4X connector.
+
+To start the `docker-compose.yml` file use the following command:
+
+        docker-compose up -d
+
+[release]: https://github.com/apache/plc4x
