@@ -50,8 +50,10 @@ In order to start a Kafka Connect system the following steps have to be performe
 
 2) Unpack the archive.
 
-3) Copy the `target/plc4j-apache-kafka-0.8.0-uber-jar.jar` to the Kafka `libs` or plugin directory specified
+3) Copy the `target/plc4j-apache-kafka-0.10.0-uber-jar.jar` to the Kafka `libs` or plugin directory specified
 in the config/connect-distributed.properties file.
+
+    To access the `target/plc4j-apache-kafka-0.10.0-uber-jar.jar` you can compile the project.
 
 4) Copy the files in the `config` to Kafka's `config` directory.
 
