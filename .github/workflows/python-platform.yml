@@ -41,6 +41,9 @@ on:
 permissions:
   contents: read
 
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+
 jobs:
   test:
     strategy:

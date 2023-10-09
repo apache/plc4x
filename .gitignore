@@ -201,3 +201,6 @@ DartConfiguration.tcl
 /out/
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/codeStyles/Project.xml
+
+# Develocity
+.mvn/.gradle-enterprise/

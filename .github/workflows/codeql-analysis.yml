@@ -22,6 +22,9 @@ on:
   schedule:
     - cron: '17 19 * * 3'
 
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+
 jobs:
   analyze:
     name: Analyze

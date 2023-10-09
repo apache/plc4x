@@ -26,6 +26,9 @@
 name: 'Dependency Review'
 on: [pull_request]
 
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+
 permissions:
   contents: read
 

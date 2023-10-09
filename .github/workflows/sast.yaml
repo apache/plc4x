@@ -23,6 +23,10 @@ on:
     branches:
       - develop
   pull_request:
+
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+
 jobs:
   build:
     name: Trivy Scan

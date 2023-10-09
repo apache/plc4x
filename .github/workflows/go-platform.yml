@@ -78,6 +78,7 @@ env:
   PLC4X_TEST_TRACE_DEFAULT_MESSAGE_CODEC_WORKER: ${{ github.event.inputs.traceDefaultMessageCodecWorker }}
   PLC4X_TEST_TRACE_EXECUTOR_WORKERS: ${{ github.event.inputs.traceExecutorWorkers }}
   PLC4X_TEST_TEST_TRANSPORT_INSTANCE: ${{ github.event.inputs.traceTestTransportInstance }}
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
 
 jobs:
   test:
