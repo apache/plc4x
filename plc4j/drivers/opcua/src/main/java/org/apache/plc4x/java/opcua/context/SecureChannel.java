@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -45,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
@@ -122,6 +125,8 @@ public class SecureChannel {
     private CompletableFuture<Void> keepAlive;
     private final List<String> endpoints = new ArrayList<>();
     private final AtomicLong senderSequenceNumber = new AtomicLong();
+    private final AtomicBoolean enableKeepalive = new AtomicBoolean(true);
+    private double sessionTimeout = 120000L;
 
     public SecureChannel(OpcuaDriverContext driverContext, OpcuaConfiguration configuration, PlcAuthentication authentication) {
         this.configuration = configuration;
@@ -415,7 +420,7 @@ public class SecureChannel {
             new PascalString(sessionName),
             new PascalByteString(clientNonce.length, clientNonce),
             NULL_BYTE_STRING,
-            120000L,
+            sessionTimeout,
             0L
         );
 
@@ -452,6 +457,7 @@ public class SecureChannel {
                                 responseMessage = (CreateSessionResponse) unknownExtensionObject;
 
                                 authenticationToken = responseMessage.getAuthenticationToken().getNodeId();
+                                sessionTimeout = responseMessage.getRevisedSessionTimeout();
 
                                 onConnectActivateSessionRequest(context, responseMessage, (CreateSessionResponse) message.getBody());
                             } else {
@@ -601,7 +607,7 @@ public class SecureChannel {
         int requestHandle = getRequestHandle();
 
         if (keepAlive != null) {
-            keepAlive.complete(null);
+            enableKeepalive.set(false);
         }
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(
@@ -995,14 +1001,7 @@ public class SecureChannel {
 
     private void keepAlive() {
         keepAlive = CompletableFuture.supplyAsync(() -> {
-                while (true) {
-
-                    try {
-                        Thread.sleep((long) Math.ceil(this.lifetime * 0.75f));
-                    } catch (InterruptedException e) {
-                        LOGGER.trace("Interrupted Exception");
-                    }
-
+                while (enableKeepalive.get()) {
                     int transactionId = channelTransactionManager.getTransactionIdentifier();
 
                     RequestHeader requestHeader = new RequestHeader(new NodeId(authenticationToken),
@@ -1071,7 +1070,16 @@ public class SecureChannel {
                             .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
                             .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
                             .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
-                            .check(p -> p.getRequestId() == transactionId)
+                            .check(p -> {
+                                if (p.getRequestId() == transactionId) {
+                                    if (!(senderSequenceNumber.incrementAndGet() == (p.getSequenceNumber()))) {
+                                        LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSequenceNumber.get(), p.getSequenceNumber());
+                                    }
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            })
                             .handle(opcuaOpenResponse -> {
                                 try {
                                     ReadBufferByteBased readBuffer = new ReadBufferByteBased(opcuaOpenResponse.getMessage(), org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN);
@@ -1096,8 +1104,16 @@ public class SecureChannel {
                     } catch (SerializationException | ParseException e) {
                         LOGGER.error("Unable to to Parse Open Secure Request");
                     }
+
+                    try {
+                        Thread.sleep((long) Math.ceil(this.sessionTimeout * 0.25f));
+                    } catch (InterruptedException e) {
+                        LOGGER.trace("Interrupted Exception");
+                    }
                 }
-            }
+                return null;
+            },
+            newSingleThreadExecutor()
         );
     }
 

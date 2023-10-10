@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -332,7 +334,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 LOGGER.error("Failed to start subscription", e);
             }
             return null;
-        });
+        },
+        newSingleThreadExecutor());
     }
 
 
