@@ -238,6 +238,8 @@
     [simple bit arrayDimensionsSpecified]
     [discriminator uint 6 VariantType]
     [typeSwitch VariantType,arrayLengthSpecified
+        ['0' VariantNull
+        ]
         ['1' VariantBoolean (bit arrayLengthSpecified)
             [optional int 32 arrayLength 'arrayLengthSpecified']
             [array byte value count 'arrayLength == null ? 1 : arrayLength']
