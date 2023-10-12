@@ -22,6 +22,7 @@ import org.opentest4j.TestAbortedException
 import spock.lang.IgnoreIf
 
 import java.nio.file.FileSystems
+import org.apache.commons.io.FileUtils
 
 import static org.xmlunit.matchers.CompareMatcher.isIdenticalTo
 import static spock.util.matcher.HamcrestSupport.*
@@ -82,12 +83,12 @@ class ParserSerializerTestsuiteGeneratorSpec extends Specification {
     }
 
     private String DownloadAndCache(String file) throws IOException {
-        String tempDirectory = FileUtils.getTempDirectoryPath();
-        File pcapFile = FileSystems.getDefault().getPath(tempDirectory, RandomPackagesTest.class.getSimpleName(), file).toFile();
+        def tempDirectory = FileUtils.getTempDirectoryPath()
+        def pcapFile = FileSystems.getDefault().getPath(tempDirectory, ParserSerializerTestsuiteGeneratorSpec.class.getSimpleName(), file).toFile()
         FileUtils.createParentDirectories(pcapFile);
         if (!pcapFile.exists()) {
-            URL source = new URL("https://kargs.net/captures/" + file);
-            LOGGER.info("Downloading {}", source);
+            URL source = new URL("https://kargs.net/captures/" + file)
+            println("Downloading ${source}");
             FileUtils.copyURLToFile(source, pcapFile);
         }
         return pcapFile.getAbsolutePath();
