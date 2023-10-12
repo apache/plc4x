@@ -1663,6 +1663,7 @@ public enum BACnetVendorId {
   AMERICAN_GAS_SAFETYLLC((int) 1447, (int) 1447, (String) "American Gas Safety, LLC"),
   SS_NORTHERN_LTD((int) 1448, (int) 1448, (String) "S&S Northern Ltd."),
   ULBIOS_TECHSENS((int) 1449, (int) 1449, (String) "Ulbios Techsens"),
+  BOWERY_FARMING_INC((int) 1450, (int) 1450, (String) "Bowery Farming, Inc."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
