@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
+import static java.lang.Thread.currentThread;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -1072,9 +1073,7 @@ public class SecureChannel {
                             .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
                             .check(p -> {
                                 if (p.getRequestId() == transactionId) {
-                                    if (!(senderSequenceNumber.incrementAndGet() == (p.getSequenceNumber()))) {
-                                        LOGGER.error("Sequence number isn't as expected, we might have missed a packet. - {} != {}", senderSequenceNumber.get(), p.getSequenceNumber());
-                                    }
+                                    senderSequenceNumber.incrementAndGet();
                                     return true;
                                 } else {
                                     return false;
@@ -1109,6 +1108,7 @@ public class SecureChannel {
                         Thread.sleep((long) Math.ceil(this.sessionTimeout * 0.25f));
                     } catch (InterruptedException e) {
                         LOGGER.trace("Interrupted Exception");
+                        currentThread().interrupt();
                     }
                 }
                 return null;
