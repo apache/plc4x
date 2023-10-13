@@ -20,6 +20,7 @@ package org.apache.plc4x.java.opcua.context;
 
 import static java.lang.Thread.currentThread;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static java.util.concurrent.ForkJoinPool.commonPool;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -178,7 +179,7 @@ public class SecureChannel {
         }
     }
 
-    public void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
+    public synchronized void submit(ConversationContext<OpcuaAPU> context, Consumer<TimeoutException> onTimeout, BiConsumer<OpcuaAPU, Throwable> error, Consumer<byte[]> consumer, WriteBufferByteBased buffer) {
         int transactionId = channelTransactionManager.getTransactionIdentifier();
 
         //TODO: We need to split large messages up into chunks if it is larger than the sendBufferSize
@@ -235,7 +236,7 @@ public class SecureChannel {
                             tokenId.set(opcuaResponse.getSecureTokenId());
                             channelId.set(opcuaResponse.getSecureChannelId());
 
-                            consumer.accept(messageBuffer.toByteArray());
+                            commonPool().submit(() -> consumer.accept(messageBuffer.toByteArray()));
                         }
                     });
             } catch (Exception e) {
@@ -266,7 +267,7 @@ public class SecureChannel {
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
             .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
-            .handle(opcuaAcknowledgeResponse -> onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse));
+            .handle(opcuaAcknowledgeResponse -> commonPool().submit(() -> onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse)));
         channelTransactionManager.submit(requestConsumer, channelTransactionManager.getTransactionIdentifier());
     }
 
@@ -360,15 +361,17 @@ public class SecureChannel {
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", ((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode(), OpcuaStatusCode.enumForValue(((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode()));
                         } else {
                             LOGGER.debug("Got Secure Response Connection Response");
-                            try {
-                                OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) message.getBody();
-                                ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
-                                tokenId.set((int) securityToken.getTokenId());
-                                channelId.set((int) securityToken.getChannelId());
-                                onConnectCreateSessionRequest(context);
-                            } catch (PlcConnectionException e) {
-                                LOGGER.error("Error occurred while connecting to OPC UA server", e);
-                            }
+                            OpenSecureChannelResponse openSecureChannelResponse = (OpenSecureChannelResponse) message.getBody();
+                            ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
+                            tokenId.set((int) securityToken.getTokenId());
+                            channelId.set((int) securityToken.getChannelId());
+                            commonPool().submit(() -> {
+                                try {
+                                    onConnectCreateSessionRequest(context);
+                                } catch (PlcConnectionException e) {
+                                    LOGGER.error("Error occurred while connecting to OPC UA server", e);
+                                }
+                            });
                         }
                     } catch (ParseException e) {
                         LOGGER.error("Error parsing", e);
@@ -758,7 +761,7 @@ public class SecureChannel {
             .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
             .handle(opcuaAcknowledgeResponse -> {
                 LOGGER.debug("Got Hello Response Connection Response");
-                onDiscoverOpenSecureChannel(context, opcuaAcknowledgeResponse);
+                commonPool().submit(() -> onDiscoverOpenSecureChannel(context, opcuaAcknowledgeResponse));
             });
 
         channelTransactionManager.submit(requestConsumer, channelTransactionManager.getTransactionIdentifier());
@@ -829,11 +832,14 @@ public class SecureChannel {
                             LOGGER.error("Failed to connect to opc ua server for the following reason:- {}, {}", ((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode(), OpcuaStatusCode.enumForValue(((ResponseHeader) fault.getResponseHeader()).getServiceResult().getStatusCode()));
                         } else {
                             LOGGER.debug("Got Secure Response Connection Response");
-                            try {
-                                onDiscoverGetEndpointsRequest(context, opcuaOpenResponse, (OpenSecureChannelResponse) message.getBody());
-                            } catch (PlcConnectionException e) {
-                                LOGGER.error("Error occurred while connecting to OPC UA server");
-                            }
+                            commonPool().submit(() -> {
+                                try {
+                                    onDiscoverGetEndpointsRequest(context, opcuaOpenResponse,
+                                            (OpenSecureChannelResponse) message.getBody());
+                                } catch (PlcConnectionException e) {
+                                    LOGGER.error("Error occurred while connecting to OPC UA server");
+                                }
+                            });
                         }
                     } catch (ParseException e) {
                         LOGGER.debug("error caught", e);
@@ -938,7 +944,7 @@ public class SecureChannel {
                         } catch (NoSuchAlgorithmException e) {
                             LOGGER.error("Failed to find hashing algorithm");
                         }
-                        onDiscoverCloseSecureChannel(context, response);
+                        commonPool().submit(() -> onDiscoverCloseSecureChannel(context, response));
                     } catch (ParseException e) {
                         LOGGER.error("Error parsing", e);
                     }
