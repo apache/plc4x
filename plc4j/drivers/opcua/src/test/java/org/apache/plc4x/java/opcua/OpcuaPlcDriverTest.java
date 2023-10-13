@@ -19,15 +19,25 @@
 package org.apache.plc4x.java.opcua;
 
 import io.vavr.collection.List;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.TimeUnit;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.assertj.core.api.Condition;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
@@ -41,6 +51,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OpcuaPlcDriverTest {
@@ -139,6 +150,76 @@ public class OpcuaPlcDriverTest {
     public static void tearDown() throws Exception {
         if (exampleServer != null) {
             exampleServer.shutdown().get();
+        }
+    }
+
+    @Nested
+    class SmokeTest {
+        @Test
+        public void manyReconnectionsWithSingleSubscription() throws Exception {
+            PlcDriverManager driverManager = new DefaultPlcDriverManager();
+            PlcConnectionManager connectionManager = driverManager.getConnectionManager();
+
+            for (int i = 0; i < 25; i++) {
+                try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+
+                    PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                            .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
+                            .build();
+
+                    PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                    assertThat(response.getResponseCode("Demo")).isEqualTo(PlcResponseCode.OK);
+
+                    connection.unsubscriptionRequestBuilder()
+                            .addHandles(response.getSubscriptionHandles())
+                            .build()
+                            .execute();
+                }
+            }
+        }
+        @Test
+        public void manySubscriptionsOnSingleConnection() throws Exception {
+            PlcDriverManager driverManager = new DefaultPlcDriverManager();
+            PlcConnectionManager connectionManager = driverManager.getConnectionManager();
+
+            ArrayList<PlcSubscriptionResponse> plcSubscriptionResponses = new ArrayList<>();
+            ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
+
+            try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
+                for (int i = 0; i < 25; i++) {
+                    PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
+                            .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
+                            .build();
+
+                    PlcSubscriptionResponse response = request.execute().get(60, TimeUnit.SECONDS);
+                    assertThat(response.getResponseCode("Demo")).isEqualTo(PlcResponseCode.OK);
+
+                    plcSubscriptionResponses.add(response);
+
+                    response.getSubscriptionHandles().forEach(handle -> handle.register(events::add));
+                }
+
+                CompletableFuture.supplyAsync(() -> {
+                    for (int i = 0; i < 60; i++) {
+                        if (events.size() == 25) {
+                            break;
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    return null;
+                }, newSingleThreadExecutor()).get(60, TimeUnit.SECONDS);
+
+                for (PlcSubscriptionResponse response : plcSubscriptionResponses) {
+                    connection.unsubscriptionRequestBuilder()
+                            .addHandles(response.getSubscriptionHandles())
+                            .build()
+                            .execute();
+                }
+            }
         }
     }
 
