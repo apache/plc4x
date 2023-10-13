@@ -95,7 +95,7 @@ public class DefaultSendRequestContext<T> implements ConversationContext.SendReq
             onTimeoutConsumer, errorConsumer, timeout);
         finisher.accept(registration);
         context.sendToWire(request);
-        return new DefaultContextHandler(registration::hasHandled, registration::cancel);
+        return new DefaultContextHandler(registration, registration::cancel);
     }
 
     @Override
