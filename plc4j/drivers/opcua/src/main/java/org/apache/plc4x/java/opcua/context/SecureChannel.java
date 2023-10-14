@@ -1105,7 +1105,7 @@ public class SecureChannel {
                     }
 
                     try {
-                        Thread.sleep((long) Math.ceil(this.sessionTimeout * 0.25f));
+                        Thread.sleep((long) Math.ceil(this.lifetime * 0.75f));
                     } catch (InterruptedException e) {
                         LOGGER.trace("Interrupted Exception");
                         currentThread().interrupt();
