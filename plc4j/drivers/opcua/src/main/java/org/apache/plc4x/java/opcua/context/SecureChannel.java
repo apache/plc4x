@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua.context;
 import static java.lang.Thread.currentThread;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 
+import java.time.Instant;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
@@ -365,6 +366,7 @@ public class SecureChannel {
                                 ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
                                 tokenId.set((int) securityToken.getTokenId());
                                 channelId.set((int) securityToken.getChannelId());
+                                lifetime = securityToken.getRevisedLifetime();
                                 onConnectCreateSessionRequest(context);
                             } catch (PlcConnectionException e) {
                                 LOGGER.error("Error occurred while connecting to OPC UA server", e);
@@ -1003,6 +1005,24 @@ public class SecureChannel {
     private void keepAlive() {
         keepAlive = CompletableFuture.supplyAsync(() -> {
                 while (enableKeepalive.get()) {
+
+                    final Instant sendNextKeepaliveAt = Instant.now()
+                            .plus(Duration.ofMillis((long) Math.ceil(this.lifetime * 0.75f)));
+
+                    while (Instant.now().isBefore(sendNextKeepaliveAt)) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            LOGGER.trace("Interrupted Exception");
+                            currentThread().interrupt();
+                        }
+
+                        // Do not attempt to send keepalive, if the thread has already been shut down.
+                        if (!enableKeepalive.get()) {
+                            return null; // exit from keepalive loop
+                        }
+                    }
+
                     int transactionId = channelTransactionManager.getTransactionIdentifier();
 
                     RequestHeader requestHeader = new RequestHeader(new NodeId(authenticationToken),
@@ -1102,13 +1122,6 @@ public class SecureChannel {
                         channelTransactionManager.submit(requestConsumer, transactionId);
                     } catch (SerializationException | ParseException e) {
                         LOGGER.error("Unable to to Parse Open Secure Request");
-                    }
-
-                    try {
-                        Thread.sleep((long) Math.ceil(this.lifetime * 0.75f));
-                    } catch (InterruptedException e) {
-                        LOGGER.trace("Interrupted Exception");
-                        currentThread().interrupt();
                     }
                 }
                 return null;
