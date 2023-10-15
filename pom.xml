@@ -157,6 +157,7 @@
     <asciidoctorj.version>2.5.10</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.2.13</asciidoctorj.diagram.version>
 
+    <skip-code-generation>false</skip-code-generation>
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <skip-pgp-signing>false</skip-pgp-signing>
     <enable-all-tests>false</enable-all-tests>
@@ -1052,6 +1053,9 @@
           <groupId>org.apache.plc4x.plugins</groupId>
           <artifactId>plc4x-maven-plugin</artifactId>
           <version>${plc4x-code-generation.version}</version>
+          <configuration>
+            <skip>${skip-code-generation}</skip>
+          </configuration>
         </plugin>
 
         <plugin>

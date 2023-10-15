@@ -197,7 +197,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx256m @{surefireArgLine}</argLine>
+          <argLine>-Xmx512m @{surefireArgLine}</argLine>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
@@ -225,7 +225,7 @@
             We have to slightly increase the heap-size or some tests will fail.
             Notice the @ instead of the $ as prefix? That's late evaluation.
           -->
-          <argLine>-Xmx256m @{failsafeArgLine}</argLine>
+          <argLine>-Xmx512m @{failsafeArgLine}</argLine>
           <includes>
             <include>**/*IT.java</include>
           </includes>
