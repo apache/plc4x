@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.connection;
 
 import io.netty.channel.*;
+import java.util.concurrent.RejectedExecutionException;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -171,8 +172,18 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         } catch (Exception e) {
             logger.error("Timeout while trying to close connection");
         }
-        channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-        channel.close().awaitUninterruptibly();
+
+        // The channel might have already been closed by the remote end.
+        if (channel.isOpen()) {
+            try {
+                channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
+                channel.close().awaitUninterruptibly();
+            } catch (RejectedExecutionException ex) {
+                if (channel.isOpen()) {
+                    throw ex;
+                }
+            }
+        }
 
         if (!sessionDisconnectCompleteFuture.isDone()) {
             sessionDisconnectCompleteFuture.complete(null);
