@@ -366,6 +366,7 @@ public class SecureChannel {
                             ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
                             tokenId.set((int) securityToken.getTokenId());
                             channelId.set((int) securityToken.getChannelId());
+                            lifetime = securityToken.getRevisedLifetime();
                             commonPool().submit(() -> {
                                 try {
                                     onConnectCreateSessionRequest(context);
