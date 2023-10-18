@@ -473,7 +473,7 @@ public class OpcuaPlcDriverTest {
     }
 
     /*
-        Test added to test the synchronized TransactionHandler.
+        Test added to test the synchronized TransactionHandler. (This was disabled before being enabled again so it might be a candidate for those tests not running properly on different platforms)
      */
     @Test
     public void multipleThreads() throws Exception {
