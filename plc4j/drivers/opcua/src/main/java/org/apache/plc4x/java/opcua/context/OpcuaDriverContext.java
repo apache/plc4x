@@ -117,6 +117,10 @@ public class OpcuaDriverContext implements DriverContext, HasConfiguration<Opcua
     public String getTransportEndpoint() {
         return transportEndpoint;
     }
+    
+    public void setTransportEndpoint(String transportEndpoint) {
+        this.transportEndpoint = transportEndpoint;
+    }
 
     public Boolean getEncrypted() {
         return isEncrypted;
