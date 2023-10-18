@@ -24,6 +24,7 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import java.time.Instant;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -1214,6 +1215,14 @@ public class SecureChannel {
                 "Endpoint returned from the server doesn't match the format '{protocol-code}:({transport-code})?//{transport-host}(:{transport-port})(/{transport-endpoint})'");
         }
         LOGGER.trace("Using Endpoint {} {} {}", matcher.group("transportHost"), matcher.group("transportPort"), matcher.group("transportEndpoint"));
+
+        //When the parameter discovery=false is configured, prefer using the custom address. If the transportEndpoint is empty,
+        // directly replace it with the TransportEndpoint returned by the server.
+        if (!configuration.isDiscovery() && StringUtils.isBlank(driverContext.getTransportEndpoint())) {
+            driverContext.setTransportEndpoint(matcher.group("transportEndpoint"));
+            return true;
+        }
+        
         if (configuration.isDiscovery() && !this.endpoints.contains(matcher.group("transportHost"))) {
             return false;
         }
@@ -1224,10 +1233,6 @@ public class SecureChannel {
 
         if (!driverContext.getTransportEndpoint().equals(matcher.group("transportEndpoint"))) {
             return false;
-        }
-
-        if (!configuration.isDiscovery()) {
-            driverContext.setHost(matcher.group("transportHost"));
         }
 
         return true;
