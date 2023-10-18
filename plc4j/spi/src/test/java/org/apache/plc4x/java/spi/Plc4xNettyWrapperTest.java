@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
@@ -35,7 +36,9 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -65,6 +68,7 @@ class Plc4xNettyWrapperTest {
         doNothing().when(protocol).onConnect(captor.capture());
 
         when(channelHandlerContext.channel()).thenReturn(channel);
+        when(channel.writeAndFlush(any())).thenReturn(mock(ChannelFuture.class));
 
         wrapper.userEventTriggered(channelHandlerContext, new ConnectEvent());
         conversationContext = captor.getValue();

@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import static java.util.concurrent.ForkJoinPool.commonPool;
+
 import java.nio.ByteBuffer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -98,7 +100,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         for (Map.Entry<Long, OpcuaSubscriptionHandle> subscriber : subscriptions.entrySet()) {
             subscriber.getValue().stopSubscriber();
         }
-        channel.onDisconnect(context);
+        commonPool().submit(() -> channel.onDisconnect(context));
     }
 
     @Override
@@ -118,7 +120,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 return;
             }
         }
-        this.channel.onConnect(context);
+        commonPool().submit(() -> this.channel.onConnect(context));
     }
 
     @Override
@@ -133,7 +135,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 return;
             }
         }
-        channel.onDiscover(context);
+        commonPool().submit(() -> channel.onDiscover(context));
     }
 
     private SecureChannel createSecureChannel(PlcAuthentication authentication) {
