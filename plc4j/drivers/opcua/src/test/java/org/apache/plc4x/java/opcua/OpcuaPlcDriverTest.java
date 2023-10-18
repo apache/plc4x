@@ -473,10 +473,9 @@ public class OpcuaPlcDriverTest {
     }
 
     /*
-        Test added to test the syncronized Trnasactionhandler.
-        The test originally failed one out of every 5 or so.
+        Test added to test the synchronized TransactionHandler. (This was disabled before being enabled again so it might be a candidate for those tests not running properly on different platforms)
      */
-    //@Test
+    @Test
     public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
             private final PlcConnection connection;
