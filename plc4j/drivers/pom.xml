@@ -53,6 +53,7 @@
     <module>profinet-ng</module>
     <module>s7</module>
     <module>simulated</module>
+    <module>all</module>
   </modules>
 
 </project>

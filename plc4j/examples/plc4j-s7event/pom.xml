@@ -42,16 +42,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="override">
-            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-profinet</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-all</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -70,6 +61,13 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-all</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>

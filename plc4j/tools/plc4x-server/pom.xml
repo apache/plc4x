@@ -58,9 +58,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <usedDependencies>
+          <usedDependencies combine.children="append">
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-all</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -88,15 +88,16 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-simulated</artifactId>
+      <artifactId>plc4j-driver-plc4x</artifactId>
       <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
+    <!-- Include all other drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-plc4x</artifactId>
+      <artifactId>plc4j-driver-all</artifactId>
       <version>0.12.0-SNAPSHOT</version>
-      <scope>test</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>

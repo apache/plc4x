@@ -41,17 +41,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <usedDependencies>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+          <usedDependencies combine.children="append">
+            <usedDependency>org.apache.plc4x:plc4j-driver-all</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -87,61 +78,7 @@
     <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ab-eth</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-canopen</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-firmata</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-knxnetip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-modbus</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-opcua</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-simulated</artifactId>
+      <artifactId>plc4j-driver-all</artifactId>
       <version>0.12.0-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
