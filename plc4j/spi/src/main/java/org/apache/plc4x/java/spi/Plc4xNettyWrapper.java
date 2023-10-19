@@ -93,7 +93,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public void sendToWire(T msg) {
-                pipeline.writeAndFlush(msg);
+                pipeline.writeAndFlush(msg).syncUninterruptibly();
             }
 
             @Override

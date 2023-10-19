@@ -179,6 +179,8 @@ public class OpcuaPlcDriverTest {
         }
         @Test
         public void manySubscriptionsOnSingleConnection() throws Exception {
+            final int numberOfSubscriptions = 25;
+
             PlcDriverManager driverManager = new DefaultPlcDriverManager();
             PlcConnectionManager connectionManager = driverManager.getConnectionManager();
 
@@ -186,7 +188,7 @@ public class OpcuaPlcDriverTest {
             ConcurrentLinkedDeque<PlcSubscriptionEvent> events = new ConcurrentLinkedDeque<>();
 
             try (PlcConnection connection = connectionManager.getConnection(tcpConnectionAddress)) {
-                for (int i = 0; i < 25; i++) {
+                for (int i = 0; i < numberOfSubscriptions; i++) {
                     PlcSubscriptionRequest request = connection.subscriptionRequestBuilder()
                             .addChangeOfStateTag("Demo", OpcuaTag.of(INTEGER_IDENTIFIER_READ_WRITE))
                             .build();
@@ -199,19 +201,17 @@ public class OpcuaPlcDriverTest {
                     response.getSubscriptionHandles().forEach(handle -> handle.register(events::add));
                 }
 
-                CompletableFuture.supplyAsync(() -> {
-                    for (int i = 0; i < 60; i++) {
-                        if (events.size() == 25) {
-                            break;
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                for (int i = 0; i < 60; i++) {
+                    if (events.size() == numberOfSubscriptions) {
+                        break;
                     }
-                    return null;
-                }, newSingleThreadExecutor()).get(60, TimeUnit.SECONDS);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                assertThat(events.size()).isEqualTo(numberOfSubscriptions);
 
                 for (PlcSubscriptionResponse response : plcSubscriptionResponses) {
                     connection.unsubscriptionRequestBuilder()
@@ -473,10 +473,9 @@ public class OpcuaPlcDriverTest {
     }
 
     /*
-        Test added to test the syncronized Trnasactionhandler.
-        The test originally failed one out of every 5 or so.
+        Test added to test the synchronized TransactionHandler. (This was disabled before being enabled again so it might be a candidate for those tests not running properly on different platforms)
      */
-    //@Test
+    @Test
     public void multipleThreads() throws Exception {
         class ReadWorker extends Thread {
             private final PlcConnection connection;

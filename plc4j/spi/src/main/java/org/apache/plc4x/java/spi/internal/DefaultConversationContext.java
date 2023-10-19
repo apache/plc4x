@@ -67,7 +67,7 @@ public class DefaultConversationContext<T1> implements ConversationContext<T1> {
     @Override
     public void sendToWire(T1 msg) {
         logger.trace("Sending to wire {}", msg);
-        channelHandlerContext.channel().writeAndFlush(msg);
+        channelHandlerContext.channel().writeAndFlush(msg).syncUninterruptibly();
     }
 
     @Override
