@@ -29,7 +29,7 @@
     <artifactId>plc4j-driver-all</artifactId>
     <packaging>pom</packaging>
 
-    <name>PLC4J: Drivers meta package</name>
+    <name>PLC4J: All Drivers</name>
     <description>Meta package to include all standard drivers</description>
 
     <dependencies>
