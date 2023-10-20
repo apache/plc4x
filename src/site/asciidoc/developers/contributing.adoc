@@ -32,6 +32,12 @@ These usually are, but are not limited to:
 
 We are a very friendly bunch and don't be afraid to step forward.
 
+=== Commits
+
+We make use of https://www.conventionalcommits.org/en/v1.0.0/[conventional commits].
+As plc4x is a monolithic polyglot repository we usually define the scope as `...(plc4[language shortcut here]/subcomponent)`
+(e.g. a new feature in Bacnet in the Golang part would have a message of `feat(plc4go/bacnet): cool new feature for...`).
+
 === Pull-Requests
 
 The simplest way to submit code changes, is via a GitHub pull-request.
