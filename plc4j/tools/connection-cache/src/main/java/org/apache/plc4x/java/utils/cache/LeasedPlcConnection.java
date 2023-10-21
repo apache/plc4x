@@ -58,6 +58,11 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
+        // In this case the connection was already closed (possibly by the timer)
+        if(connection == null) {
+            return;
+        }
+
         // Cancel automatically timing out.
         usageTimer.cancel();
 
