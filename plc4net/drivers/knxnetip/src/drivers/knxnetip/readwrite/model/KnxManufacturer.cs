@@ -670,8 +670,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_MOX_CONTROL_IT_CHINA_LIMITED = 643,
         M_CLOWIRE = 644,
         M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD = 645,
-        M_ABB___RESERVED = 646,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 647,
+        M_NS_TOUCH = 646,
+        M_ROOMIO = 647,
+        M_ABB___RESERVED = 648,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 649,
     }
 
     public static class KnxManufacturerInfo
@@ -2505,10 +2507,16 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD: { /* '645' */
                     return 703;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '646' */
+                case KnxManufacturer.M_NS_TOUCH: { /* '646' */
+                    return 704;
+                }
+                case KnxManufacturer.M_ROOMIO: { /* '647' */
+                    return 705;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '648' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '647' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '649' */
                     return 43959;
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
@@ -4459,10 +4467,16 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD: { /* '645' */
                     return "NINGBO QIYUAN LIGHTING TECH CO.,LTD";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '646' */
+                case KnxManufacturer.M_NS_TOUCH: { /* '646' */
+                    return "NS Touch";
+                }
+                case KnxManufacturer.M_ROOMIO: { /* '647' */
+                    return "ROOMIO";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '648' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '647' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '649' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
