@@ -40,20 +40,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="override">
-            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-profinet</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
-          </usedDependencies>
-        </configuration>
       </plugin>
     </plugins>
   </build>
