@@ -24,6 +24,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
 from typing import List
 import math
 
@@ -84,8 +85,8 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
 
         fifo_count: int = read_implicit_field("fifoCount", read_unsigned_int)
 
-        self.fifo_value = read_count_array_field(
-            "fifoValue", read_unsigned_int, fifo_count
+        fifo_value: List[Any] = read_buffer.read_array_field(
+            "fifoValue", read_buffer.read_unsigned_int, count=fifo_count
         )
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueResponse")

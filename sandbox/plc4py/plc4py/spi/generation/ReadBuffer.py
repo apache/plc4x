@@ -122,6 +122,17 @@ class ReadBuffer(ByteOrderAware, PositionAware):
     def read_complex_array(self, logical_name: str = "", **kwargs) -> List[PlcMessage]:
         raise NotImplementedError
 
+    def read_array_field(
+        self,
+        logical_name: str = "",
+        read_function=None,
+        count: int = None,
+        length: int = None,
+        terminated=None,
+        **kwargs
+    ) -> List[PlcMessage]:
+        raise NotImplementedError
+
 
 class ReadBufferByteBased(ReadBuffer):
     byte_order: ByteOrder

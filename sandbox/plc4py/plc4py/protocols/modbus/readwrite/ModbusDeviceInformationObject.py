@@ -79,7 +79,7 @@ class ModbusDeviceInformationObject(PlcMessage):
 
         object_length: int = read_implicit_field("objectLength", read_unsigned_short)
 
-        self.data = read_buffer.read_byte_array("data", int(object_length))
+        data: List[int] = read_buffer.read_byte_array("data", int(object_length))
 
         read_buffer.pop_context("ModbusDeviceInformationObject")
         # Create the instance

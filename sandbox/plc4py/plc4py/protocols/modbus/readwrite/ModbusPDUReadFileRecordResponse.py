@@ -78,13 +78,13 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
 
         byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
-        self.items = read_length_array_field(
+        items: List[Any] = read_buffer.read_array_field(
             "items",
-            DataReaderComplexDefault(
+            read_buffer.DataReaderComplexDefault(
                 ModbusPDUReadFileRecordResponseItem.static_parse(read_buffer),
                 read_buffer,
             ),
-            byte_count,
+            length=byte_count,
         )
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponse")

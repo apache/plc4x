@@ -101,7 +101,9 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
 
         record_length: int = read_implicit_field("recordLength", read_unsigned_int)
 
-        self.record_data = read_buffer.read_byte_array("recordData", int(record_length))
+        record_data: List[int] = read_buffer.read_byte_array(
+            "recordData", int(record_length)
+        )
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
         # Create the instance

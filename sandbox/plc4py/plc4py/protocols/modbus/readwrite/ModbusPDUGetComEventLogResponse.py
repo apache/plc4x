@@ -102,7 +102,9 @@ class ModbusPDUGetComEventLogResponse(PlcMessage, ModbusPDU):
 
         self.message_count = read_simple_field("messageCount", read_unsigned_int)
 
-        self.events = read_buffer.read_byte_array("events", int(byte_count - int(6)))
+        events: List[int] = read_buffer.read_byte_array(
+            "events", int(byte_count - int(6))
+        )
 
         read_buffer.pop_context("ModbusPDUGetComEventLogResponse")
         # Create the instance

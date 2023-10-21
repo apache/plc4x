@@ -73,7 +73,7 @@ class ModbusPDUReadHoldingRegistersResponse(PlcMessage, ModbusPDU):
 
         byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
-        self.value = read_buffer.read_byte_array("value", int(byte_count))
+        value: List[int] = read_buffer.read_byte_array("value", int(byte_count))
 
         read_buffer.pop_context("ModbusPDUReadHoldingRegistersResponse")
         # Create the instance

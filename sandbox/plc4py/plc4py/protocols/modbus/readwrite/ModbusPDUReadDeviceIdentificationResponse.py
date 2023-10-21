@@ -36,6 +36,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
 from typing import List
 import math
 
@@ -184,12 +185,12 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
             "numberOfObjects", read_unsigned_short
         )
 
-        self.objects = read_count_array_field(
+        objects: List[Any] = read_buffer.read_array_field(
             "objects",
-            DataReaderComplexDefault(
+            read_buffer.DataReaderComplexDefault(
                 ModbusDeviceInformationObject.static_parse(read_buffer), read_buffer
             ),
-            number_of_objects,
+            count=number_of_objects,
         )
 
         read_buffer.pop_context("ModbusPDUReadDeviceIdentificationResponse")

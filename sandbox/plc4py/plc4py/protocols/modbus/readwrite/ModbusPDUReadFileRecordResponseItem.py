@@ -81,7 +81,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
 
         self.reference_type = read_simple_field("referenceType", read_unsigned_short)
 
-        self.data = read_buffer.read_byte_array("data", int(data_length - int(1)))
+        data: List[int] = read_buffer.read_byte_array("data", int(data_length - int(1)))
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
         # Create the instance
