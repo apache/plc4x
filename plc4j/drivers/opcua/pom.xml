@@ -33,25 +33,6 @@
 
   <build>
     <plugins>
-        <plugin>
-          <groupId>org.apache.plc4x.plugins</groupId>
-          <artifactId>plc4x-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>generate-driver</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>generate-driver</goal>
-              </goals>
-              <configuration>
-                <protocolName>opcua</protocolName>
-                <languageName>java</languageName>
-                <outputFlavor>read-write</outputFlavor>
-                <outputDir>src/main/generated</outputDir>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
@@ -249,5 +230,34 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>opcua</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

@@ -34,30 +34,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>c-bus</protocolName>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>src/main/generated</outputDir>
-              <options>
-                <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
-                <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
-                <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
-              </options>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
         <executions>
@@ -179,5 +155,39 @@
       <artifactId>commons-text</artifactId>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>test</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>c-bus</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                  <options>
+                    <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
+                    <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
+                    <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
+                  </options>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

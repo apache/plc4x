@@ -25,22 +25,25 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUGetComEventCounterRequest(PlcMessage, ModbusPDU):
+class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x0B
     response: bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventCounterRequest")
 
         write_buffer.pop_context("ModbusPDUGetComEventCounterRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -51,6 +54,7 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUGetComEventCounterRequest")
@@ -58,6 +62,7 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage, ModbusPDU):
         read_buffer.pop_context("ModbusPDUGetComEventCounterRequest")
         # Create the instance
         return ModbusPDUGetComEventCounterRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -84,13 +89,13 @@ class ModbusPDUGetComEventCounterRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUGetComEventCounterRequestBuilder(ModbusPDUBuilder):
+
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUGetComEventCounterRequest:
-        modbus_pdu_get_com_event_counter_request: ModbusPDUGetComEventCounterRequest = (
-            ModbusPDUGetComEventCounterRequest()
-        )
+    def build(self,) -> ModbusPDUGetComEventCounterRequest:
+        modbus_pdu_get_com_event_counter_request: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest()
         return modbus_pdu_get_com_event_counter_request
+
+
+

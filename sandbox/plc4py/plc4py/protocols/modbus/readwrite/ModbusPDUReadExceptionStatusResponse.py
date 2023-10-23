@@ -25,18 +25,20 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
+class ModbusPDUReadExceptionStatusResponse(PlcMessage,ModbusPDU):
     value: int
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x07
     response: bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
@@ -45,6 +47,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
         write_buffer.write_unsigned_byte(self.value, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -58,15 +61,17 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
 
-        self.value = read_simple_field("value", read_unsigned_short)
+        self.value= read_simple_field("value", read_unsigned_short)
 
         read_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
         # Create the instance
-        return ModbusPDUReadExceptionStatusResponseBuilder(value)
+        return ModbusPDUReadExceptionStatusResponseBuilder(value )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -75,9 +80,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUReadExceptionStatusResponse):
             return False
 
-        that: ModbusPDUReadExceptionStatusResponse = (
-            ModbusPDUReadExceptionStatusResponse(o)
-        )
+        that: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(o)
         return (self.value == that.value) and super().equals(that) and True
 
     def hash_code(self) -> int:
@@ -100,10 +103,9 @@ class ModbusPDUReadExceptionStatusResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReadExceptionStatusResponse:
-        modbus_pdu_read_exception_status_response: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(
-            self.value
-        )
+    def build(self,) -> ModbusPDUReadExceptionStatusResponse:
+        modbus_pdu_read_exception_status_response: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(self.value )
         return modbus_pdu_read_exception_status_response
+
+
+

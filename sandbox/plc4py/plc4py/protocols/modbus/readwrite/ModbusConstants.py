@@ -23,24 +23,25 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
 class ModbusConstants(PlcMessage):
     MODBUSTCPDEFAULTPORT: int = int(502)
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusConstants")
 
         # Const Field (modbusTcpDefaultPort)
-        write_buffer.write_unsigned_short(
-            self.modbus_tcp_default_port.value, logical_name="modbusTcpDefaultPort"
-        )
+        write_buffer.write_unsigned_short(self.modbus_tcp_default_port.value, logical_name="modbusTcpDefaultPort")
 
         write_buffer.pop_context("ModbusConstants")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -54,23 +55,22 @@ class ModbusConstants(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
+
+    def static_parse(self, read_buffer: ReadBuffer , args):
         return self.static_parse_context(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusConstants")
 
-        self.modbus_tcp_default_port: int = read_const_field(
-            "modbusTcpDefaultPort",
-            read_unsigned_int,
-            ModbusConstants.MODBUSTCPDEFAULTPORT,
-        )
+        self.modbus_tcp_default_port: int = read_const_field("modbusTcpDefaultPort", read_unsigned_int, ModbusConstants.MODBUSTCPDEFAULTPORT)
 
         read_buffer.pop_context("ModbusConstants")
         # Create the instance
         _modbus_constants: ModbusConstants = ModbusConstants()
         return _modbus_constants
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -93,3 +93,7 @@ class ModbusConstants(PlcMessage):
             raise RuntimeException(e)
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

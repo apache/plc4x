@@ -42,66 +42,6 @@
     <option.with-proxies>OFF</option.with-proxies>
   </properties>
 
-  <profiles>
-    <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
-    <profile>
-      <id>jenkins-build</id>
-      <!-- This is needed by the groovy hack script -->
-      <properties>
-        <cmake.root>${project.build.directory}/dependency/cmake/bin</cmake.root>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.googlecode.maven-download-plugin</groupId>
-            <artifactId>download-maven-plugin</artifactId>
-            <executions>
-              <!-- Get the build-wrapper from our sonarcloud server -->
-              <execution>
-                <id>get-build-wrapper</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>wget</goal>
-                </goals>
-                <configuration>
-                  <skipCache>true</skipCache>
-                  <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
-                  <unpack>true</unpack>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <skipCache>true</skipCache>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>groovy-maven-plugin</artifactId>
-            <executions>
-              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
-              <execution>
-                <id>modify-cmake</id>
-                <phase>process-test-sources</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <configuration>
-                  <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>${groovy.version}</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <build>
     <plugins>
       <plugin>
@@ -138,55 +78,6 @@
               <outputDirectory>${project.build.directory}/dependency/clang-format</outputDirectory>
             </configuration>
           </execution-->
-        </executions>
-      </plugin>
-      <!--
-        Generate the driver code.
-      -->
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-driver-modbus</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>modbus</protocolName>
-              <languageName>c</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/generated-sources</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-plc4x</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>plc4x</protocolName>
-              <protocolVersion>0</protocolVersion>
-              <languageName>c</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/generated-sources</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-s7</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>s7</protocolName>
-              <languageName>c</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/generated-sources</outputDir>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
 
@@ -411,5 +302,121 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <!--
+            Generate the driver code.
+          -->
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver-modbus</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>modbus</protocolName>
+                  <languageName>c</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/generated-sources</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-plc4x</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>plc4x</protocolName>
+                  <protocolVersion>0</protocolVersion>
+                  <languageName>c</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/generated-sources</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-s7</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>s7</protocolName>
+                  <languageName>c</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/generated-sources</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
+    <profile>
+      <id>jenkins-build</id>
+      <!-- This is needed by the groovy hack script -->
+      <properties>
+        <cmake.root>${project.build.directory}/dependency/cmake/bin</cmake.root>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <executions>
+              <!-- Get the build-wrapper from our sonarcloud server -->
+              <execution>
+                <id>get-build-wrapper</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <skipCache>true</skipCache>
+                  <url>https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip</url>
+                  <unpack>true</unpack>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <skipCache>true</skipCache>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <executions>
+              <!-- rename the cmake binary and generate a script that adds the sonar build-wrapper -->
+              <execution>
+                <id>modify-cmake</id>
+                <phase>process-test-sources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/SonarcloudBuildWrapperHack.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

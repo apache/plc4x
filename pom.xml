@@ -166,8 +166,6 @@
   </properties>
 
   <modules>
-    <module>code-generation</module>
-
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
 
@@ -1053,9 +1051,6 @@
           <groupId>org.apache.plc4x.plugins</groupId>
           <artifactId>plc4x-maven-plugin</artifactId>
           <version>${plc4x-code-generation.version}</version>
-          <configuration>
-            <skip>${skip-code-generation}</skip>
-          </configuration>
         </plugin>
 
         <plugin>
@@ -1503,6 +1498,13 @@
   </pluginRepositories>
 
   <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <modules>
+        <module>code-generation</module>
+      </modules>
+    </profile>
+
     <!-- Allows skipping of the pre-flight-check as needed when deploying on jenkins -->
     <profile>
       <id>skip-prerequisite-check</id>

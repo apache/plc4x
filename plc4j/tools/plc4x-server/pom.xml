@@ -34,26 +34,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-driver</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>plc4x</protocolName>
-              <protocolVersion>0</protocolVersion>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>src/main/generated</outputDir>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <!-- Build a fat jar containing all dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -189,5 +169,35 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>plc4x</protocolName>
+                  <protocolVersion>0</protocolVersion>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

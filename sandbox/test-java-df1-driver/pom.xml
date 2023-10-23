@@ -30,6 +30,30 @@
 
   <name>Sandbox: Test Df1 Driver</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.plc4x.plugins</groupId>
+        <artifactId>plc4x-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-driver</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate-driver</goal>
+            </goals>
+            <configuration>
+              <protocolName>df1</protocolName>
+              <languageName>java</languageName>
+              <outputFlavor>read-write</outputFlavor>
+              <outputDir>src/main/generated</outputDir>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -77,7 +101,6 @@
       <artifactId>crc</artifactId>
       <version>1.1.0</version>
     </dependency>
-
 
     <!-- Logging -->
     <dependency>
@@ -143,28 +166,14 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-driver</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>df1</protocolName>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>src/main/generated</outputDir>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
