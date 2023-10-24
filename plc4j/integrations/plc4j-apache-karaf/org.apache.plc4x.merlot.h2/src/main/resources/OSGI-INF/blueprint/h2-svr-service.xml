@@ -35,6 +35,7 @@
                 <value>-web</value>
                 <value>-tcpAllowOthers</value>
                 <value>-webAllowOthers</value>
+                <value>-ifNotExists</value>
                 <value>-tcpPort</value>
                 <value>9092</value>
                 <value>-webPort</value>

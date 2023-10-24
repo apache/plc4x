@@ -177,9 +177,9 @@
                         <feature>wrapper</feature>
                         <feature>aries-blueprint</feature>
                         <feature>shell-compat</feature>
-                        <feature>plc4x_derby</feature>                          
-                        <feature>plc4x_h2</feature>
-                        <feature>plc4x_uns</feature>                            
+                        <feature>plc4x-derby</feature>                          
+                        <feature>plc4x-h2</feature>
+                        <feature>plc4x-uns</feature>                            
                     </installedFeatures>
                     
                     <startupFeatures>

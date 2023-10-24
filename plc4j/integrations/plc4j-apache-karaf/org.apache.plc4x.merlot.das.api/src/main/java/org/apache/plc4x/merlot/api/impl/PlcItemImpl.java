@@ -24,20 +24,24 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.merlot.api.PlcGroup;
 import org.apache.plc4x.merlot.api.PlcItem;
 import org.apache.plc4x.merlot.api.PlcItemListener;
 
-
+/*
+*
+*/
 public class PlcItemImpl implements PlcItem {
         
+    private ReentrantLock lock = new ReentrantLock();    
     private String item_name;
     private String item_description;
     private String item_id;
@@ -50,8 +54,11 @@ public class PlcItemImpl implements PlcItem {
     private Boolean item_isarray     = false;    
     private Boolean item_disableoutput = false; 
     
+    private final Hashtable<String, Object> myproperties;    
+    
     private PlcTag item_plctag = null;
-    private Collection<Object> plcvalues = null;
+    private PlcValue item_plcvalue = null;
+   
     private LinkedList<PlcItemListener> item_clients = null;
     private ByteBuf item_buffer = null;
     
@@ -61,7 +68,7 @@ public class PlcItemImpl implements PlcItem {
     private long itemerrors = 0;
 
 
-    
+    private PlcReadResponse  plcresponse;   
     private PlcResponseCode dataquality;
 
     private Date lastreadtime;
@@ -70,10 +77,20 @@ public class PlcItemImpl implements PlcItem {
 
  
     public PlcItemImpl(PlcItemBuilder builder) {
+        this.myproperties = new Hashtable<>();        
+        
+        myproperties.put(PlcItem.ITEM_NAME, builder.item_name);        
         item_name = builder.item_name;
+        
+        myproperties.put(PlcItem.ITEM_DESCRIPTION, builder.item_description);         
         item_description = builder.item_description;
+        
+        myproperties.put(PlcItem.ITEM_UID, builder.item_uid.toString());           
+        item_uid = builder.item_uid;        
+        
+        myproperties.put(PlcItem.ITEM_ID, builder.item_id);           
         item_id = builder.item_id;        
-        item_uid = builder.item_uid;
+
         
         item_enable = builder.item_enable;
         item_accessrigths = builder.item_accessrigths;
@@ -86,38 +103,48 @@ public class PlcItemImpl implements PlcItem {
     }     
 
     @Override
+    public void enable() {
+        item_enable = true;
+    }
+
+    @Override
+    public void disable() {
+        item_enable = false;
+    }
+               
+    @Override
     public UUID getItemUid() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return UUID.fromString((String) myproperties.get(PlcItem.ITEM_UID));
     }
        
     @Override
     public String getItemName() {
-        return item_name;
+        return (String) myproperties.get(PlcItem.ITEM_NAME);
     }
 
     @Override
     public void setItemName(String itemname) {
-        this.item_name = itemname;
+        myproperties.put(PlcItem.ITEM_NAME, item_name);   
     }
 
     @Override
     public String getItemDescription() {
-        return item_description;
+        return (String) myproperties.get(PlcItem.ITEM_DESCRIPTION);
     }
 
     @Override
     public void setItemDescription(String item_description) {
-        this.item_description = item_description;
+        myproperties.put(PlcItem.ITEM_DESCRIPTION, item_description);  
     }
 
     @Override
     public String getItemId() {
-        return item_id;
+        return (String) myproperties.get(PlcItem.ITEM_ID);
     }
 
     @Override
-    public void setItemId(String itemid) {
-        this.item_id = itemid;
+    public void setItemId(String item_id) {
+        myproperties.put(PlcItem.ITEM_ID, item_id);
     }
 
     @Override
@@ -131,16 +158,21 @@ public class PlcItemImpl implements PlcItem {
     }
         
     @Override
-    public Boolean getIsEnable() {
+    public Boolean getEnable() {
         return item_enable;
     }
 
     @Override
-    public void setIsEnable(Boolean enable) {
+    public void setEnable(Boolean enable) {
         this.item_enable = enable;
                 
     }    
-        
+
+    @Override
+    public Boolean isEnable() {
+        return  item_enable;
+    }
+                
     @Override
     public Boolean getIsArray() {
         return item_isarray;
@@ -192,78 +224,103 @@ public class PlcItemImpl implements PlcItem {
     }
 
     @Override
-    public void setPlcValues(PlcReadResponse  plcresponse) {
-        item_buffer.clear();
-        plcvalues.forEach(v ->{
+    public void setPlcValue(PlcValue  plcvalue) {
+        
+        lock.lock();        
+        try {
+            this.item_plcvalue = plcvalue;
+            item_buffer.clear();
             switch (item_plctag.getPlcValueType()){
-            case BYTE:
-                plcresponse.getAllBytes(item_uid.toString()).forEach(b -> {
-                    item_buffer.writeByte(b);
-                });
-                break;
-            case CHAR:                
-            case STRING:
-                plcresponse.getAllStrings(item_uid.toString()).forEach(s -> {
-                    item_buffer.writeBytes(s.getBytes());
-                });                
-                break;
-            case WORD:
-            case USINT:
-            case SINT:
-            case UINT:
-            case INT:
-            case DINT:
-                plcresponse.getAllIntegers(item_uid.toString()).forEach(i -> {
-                    item_buffer.writeShort(i);
-                });                   
-                break;
-            case UDINT:
-            case ULINT:
-            case LINT:  
-                plcresponse.getAllLongs(item_uid.toString()).forEach(l -> {
-                    item_buffer.writeLong(l);
-                });                  
-                break;
-            case BOOL:   
-                plcresponse.getAllBooleans(item_uid.toString()).forEach(b -> {
-                    item_buffer.writeBoolean(b);
-                });                
-                break;
-            case REAL:
-            case LREAL: 
-                plcresponse.getAllFloats(item_uid.toString()).forEach(f -> {
-                    item_buffer.writeFloat(f);
-                });                 
-                break;
-            case DATE_AND_TIME:  
-                plcresponse.getAllDateTimes(item_uid.toString()).forEach(dt -> {
-                    item_buffer.writeLong(dt.toEpochSecond(ZoneOffset.UTC));
-                });                    
-                break;
-            case DATE: 
-                plcresponse.getAllDates(item_uid.toString()).forEach(dt -> {
-                    item_buffer.writeLong(dt.toEpochDay());
-                });                    
-                break;
-            case TIME:
-                break;
-            case TIME_OF_DAY:
-                plcresponse.getAllTimes(item_uid.toString()).forEach(t -> {
-                    item_buffer.writeLong(t.toEpochSecond(LocalDate.MAX, ZoneOffset.UTC));
-                });                 
-                break;               
-            default:
-                throw new NotImplementedException("The response type for datatype " + item_plctag.getPlcValueType() + " is not yet implemented");                
+                case BYTE:
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeByte(p.getByte());});
+                    break;
+                case CHAR:                
+                case STRING:
+                    plcresponse.getAllStrings(item_uid.toString()).forEach(s -> {
+                        item_buffer.writeBytes(s.getBytes());
+                    });  
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeBytes(p.getRaw());});                
+                    break;
+                case WORD:
+                case USINT:
+                case SINT:
+                case UINT:
+                case INT:
+                case DINT:
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeShort(p.getShort());});                 
+                    break;
+                case UDINT:
+                case ULINT:
+                case LINT:    
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeLong(p.getLong());});                 
+                    break;
+                case BOOL:     
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeBoolean(p.getBoolean());});                 
+                    break;
+                case REAL:
+                case LREAL: 
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeFloat(p.getFloat());});                  
+                    break;
+                case DATE_AND_TIME:  
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeLong(p.getDateTime().toEpochSecond(ZoneOffset.UTC));});                  
+                    break;
+                case DATE: 
+                    plcresponse.getAllDates(item_uid.toString()).forEach(dt -> {
+                        item_buffer.writeLong(dt.toEpochDay());
+                    }); 
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeLong(p.getDateTime().toLocalDate().toEpochDay());});                 
+                    break;
+                case TIME:
+                    break;
+                case TIME_OF_DAY:
+                    item_plcvalue.getList().forEach(p -> {item_buffer.writeLong(p.getTime().toEpochSecond(LocalDate.MAX, ZoneOffset.UTC));});                 
+                    break;               
+                default:
+                    throw new NotImplementedException("The response type for datatype " + item_plcvalue.getPlcValueType() + " is not yet implemented");                
             }
-        });
-        this.plcvalues = plcvalues;
+        } catch (Exception ex) {
+            
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
-    public Collection<Object> getPlcValues() {
-        return plcvalues;
+    public PlcValue getItemPlcValue() {
+        lock.lock();
+        PlcValue plcvalue;
+        try {
+            plcvalue = item_plcvalue;
+        } finally {
+            lock.unlock();
+        }
+        return plcvalue;
     }
-            
+
+    @Override
+    public ByteBuf getItemByteBuf() {
+        lock.lock();
+        ByteBuf itembuffer;
+        try {
+            itembuffer = item_buffer.duplicate();
+        } finally {
+            lock.unlock();
+        }        
+        return itembuffer;
+    }
+
+    @Override
+    public byte[] getItemBytes() {
+        lock.lock();
+        byte[] bytebuffer;
+        try {
+            bytebuffer = item_buffer.array();
+        } finally {
+            lock.unlock();
+        }              
+        return bytebuffer;
+    }
+                  
     @Override
     public void setDataQuality(PlcResponseCode dataquality) {
         this.dataquality = dataquality;
@@ -284,12 +341,12 @@ public class PlcItemImpl implements PlcItem {
             client.detach();
         }        
     }
-
+            
     @Override
-    public ByteBuf getItemBuffer() {
-        return item_buffer;
+    public Hashtable<String, Object> getProperties() {
+        return myproperties;
     }
-                   
+               
     @Override
     public Date getLastReadDate() {
         return lastreadtime;

@@ -27,52 +27,99 @@ import org.apache.plc4x.java.api.PlcDriver;
 
 public interface PlcDevice extends org.osgi.service.device.Device, org.osgi.service.dal.Device {
 	
+    /*
+    *
+    */    
     public void init() throws Exception;
-    public void destroy() throws Exception;
-        
-    public void start();
-    public void stop();
     
+    /*
+    *
+    */    
+    public void destroy() throws Exception;
+      
+    /*
+    *
+    */    
+    public void enable();
+    
+    /*
+    *
+    */    
+    public void disable();
+    
+    /*
+    *
+    */    
+    public boolean isEnable();    
+    
+    /*
+    *
+    */    
     public Hashtable<String, ?> getProperties();
     
+    /*
+    *
+    */    
     public String getDeviceName();
+    
+    /*
+    *
+    */    
     public void setDeviceName(String groupname);
     
+    /*
+    *
+    */    
     public String getDeviceDescription();
+    
+    /*
+    *
+    */    
     public void setDeviceDescription(String groupdescription);   
     
+    /*
+    *
+    */    
     public void setUid(UUID uid);
+    
+    /*
+    *
+    */    
     public UUID getUid();    
-        
-    public boolean isEnable();
-    public void setEnable(boolean enable);	
-        
+      
+    /*
+    *
+    */    
     public void setUrl(String url);
+    
+    /*
+    *
+    */    
     public String getUrl();      
-        
+      
+    /*
+    *
+    */    
     public void attach(PlcDriver driver);
-        
+      
+    /*
+    *
+    */    
     public void putGroup(PlcGroup group);
+    
+    /*
+    *
+    */    
     public PlcGroup getGroup(UUID uid);
+    
+    /*
+    *
+    */    
     public void removeGroup(UUID uid);          
+
+    /*
+    *
+    */    
     public List<PlcGroup> getGroups();
-        
-//	public DriverEvent getEvent();
-//	
-//	public void putEvent(DriverEvent event);
-//        
-//        public void doEvent(DriverEvent event, String tag);
-//        
-//        public void ReadRequest(String index, String id, DriverCallback cb);
-//        
-//        public void WriteRequest(String scalar, String id, List<String> values, DriverCallback cb);
-//        
-//        public void SubscriptionRequest(String... events);
-//        
-//        public void UnsubscriptionRequest(String... events);
-//        
-//        public void ConsumerRegister(String event, Consumer<PlcSubscriptionEvent> consumer);
-//        
-//        public void ConsumerUnRegister(String event);
-	
+        	
 }

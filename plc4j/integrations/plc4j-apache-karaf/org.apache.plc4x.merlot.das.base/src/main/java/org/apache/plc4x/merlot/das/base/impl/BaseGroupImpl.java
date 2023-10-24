@@ -22,6 +22,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.merlot.scheduler.api.Job;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
 import org.osgi.framework.BundleContext;
@@ -56,6 +58,16 @@ public class BaseGroupImpl implements PlcGroup, Job {
     public BaseGroupImpl(String name) { 
         myproperties.put(PlcGroup.GROUP_NAME, name);
     }
+
+    @Override
+    public UUID getGroupDeviceUid() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setGroupDeviceUid(UUID device_uid) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
     
     public void start(int bc){
@@ -65,7 +77,17 @@ public class BaseGroupImpl implements PlcGroup, Job {
     public void stop(int bc){
         //
     }
-    
+
+    @Override
+    public void enable() {
+        //
+    }
+
+    @Override
+    public void disable() {
+        //
+    }
+           
     @Override
     public UUID getGroupUid() {
         return  (UUID) myproperties.get(PlcGroup.GROUP_UID);
@@ -97,11 +119,6 @@ public class BaseGroupImpl implements PlcGroup, Job {
     }
 
     @Override
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    @Override
     public long getGroupTransmit() {  
         aux[0] = 0;
         items.forEach((uid, item) -> {aux[0] = +item.getItemTransmits();});
@@ -121,8 +138,6 @@ public class BaseGroupImpl implements PlcGroup, Job {
         items.forEach((uid, item) -> {aux[0] = +item.getItemErrors();});
         return aux[0];
     }
-
-
 
     @Override
     public void setGroupItems(long groupitems) {
@@ -176,6 +191,11 @@ public class BaseGroupImpl implements PlcGroup, Job {
 
     @Override
     public Hashtable<String, Object> getProperties() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setPlcConnection(AtomicReference<PlcConnection> plcConnection) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

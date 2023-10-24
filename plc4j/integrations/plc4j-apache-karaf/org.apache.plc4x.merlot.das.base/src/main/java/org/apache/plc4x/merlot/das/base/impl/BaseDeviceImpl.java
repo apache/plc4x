@@ -80,7 +80,7 @@ import org.apache.plc4x.merlot.api.PlcGroup;
         //        
     }
 
-    @Override
+
     public void start() {
         if (null != plcdriver) {
             //Try to connect
@@ -90,12 +90,24 @@ import org.apache.plc4x.merlot.api.PlcGroup;
         }
     }
 
-    @Override
+
     public void stop() {
         enable = false;
         //Disconect from plc.
         
-    }    
+    }  
+
+    @Override
+    public void enable() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void disable() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    
 
     @Override
     public Hashtable<String, ?> getProperties() {
@@ -136,11 +148,6 @@ import org.apache.plc4x.merlot.api.PlcGroup;
             
     @Override
     public boolean isEnable() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -47,6 +47,11 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Export-Package>org.apache.plc4x.merlot.derby*;version=${project.version}</Export-Package>
                         <Import-Package>*</Import-Package>
+<!--                        <Embed-Dependency>
+                            derby,
+                            derbynet
+                        </Embed-Dependency>  
+                        <Embed-Directory>lib</Embed-Directory>                    -->
                     </instructions>
                 </configuration>
             </plugin>
@@ -66,11 +71,13 @@
             <groupId>org.apache.derby</groupId>
             <artifactId>derbynet</artifactId>
             <version>${derby.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>${derby.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -14,30 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.plc4x.merlot.api.impl;
+package org.apache.plc4x.merlot.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.apache.plc4x.merlot.api.PlcDevice;
-import org.apache.plc4x.merlot.api.PlcDeviceFactory;
-import org.osgi.framework.BundleContext;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.value.PlcValue;
 
-/*
-*
-*/
-public class PlcDeviceFactoryImpl implements PlcDeviceFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PlcDeviceFactory.class); 
+
+public interface PlcItemClient {
     
-    private final BundleContext bc;
-
-    public PlcDeviceFactoryImpl(BundleContext bc) {
-        this.bc = bc;
-    }
-    
-    @Override
-    public PlcDevice create(String device, String url, String name, String description) {
-        return new PlcDeviceImpl.PlcDeviceBuilder(bc, url, name, description).build();        
-
-    }
+    public void execute(PlcValue  plcvalue);
     
 }

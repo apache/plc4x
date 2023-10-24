@@ -16,6 +16,7 @@
  */
 package org.apache.plc4x.merlot.derby.impl;
 
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.derby.drda.NetworkServerControl;
@@ -27,9 +28,12 @@ public class DerbyServiceImpl implements DerbyService {
     
     @Override
     public void init() {
-        try {
-            NetworkServerControl server = new NetworkServerControl();
-            server.start(null);
+        try {            
+            System.setProperty("derby.system.home", "data/derby");
+            System.setProperty("derby.storage.tempDirectory", "data/derby/tmp");            
+            server = new NetworkServerControl();           
+            server.start(null); 
+            Properties props = server.getCurrentProperties();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             Logger.getLogger(DerbyServiceImpl.class.getName()).log(Level.SEVERE, null, ex);

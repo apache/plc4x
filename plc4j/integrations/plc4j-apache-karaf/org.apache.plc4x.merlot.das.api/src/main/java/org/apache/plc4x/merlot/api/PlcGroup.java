@@ -22,6 +22,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import org.apache.plc4x.java.api.PlcConnection;
 
 
 public interface PlcGroup {
@@ -40,36 +42,119 @@ public interface PlcGroup {
     
     public static final String	GROUP_CONCURRENT    = "scheduler.concurrent";  
     
-  
+    /*
+    *
+    */
+    public void enable();
     
+    /*
+    *
+    */
+    public void disable(); 
+    
+    /*
+    *
+    */
+    public boolean isEnable();
+      
+    /*
+    *
+    */
     public UUID getGroupUid();    
     
+    /*
+    *
+    */
+    public UUID getGroupDeviceUid(); 
+    
+    /*
+    *
+    */
+    public void setGroupDeviceUid(UUID device_uid);     
+    
+    /*
+    *
+    */
     public String getGroupName();
+    
+    /*
+    *
+    */
     public void setGroupName(String groupname);
     
+    /*
+    *
+    */
     public String getGroupDescription();
+    
+    /*
+    *
+    */
     public void setGroupDescription(String groupdescription);    
     
-    public boolean isEnable();
-    public void setEnable(boolean enable);
-
+    /*
+    *
+    */
     public long getPeriod();
+    
+    /*
+    *
+    */
     public void setPeriod(long scantime);
 
+    /*
+    *
+    */
     public long getGroupTransmit();
     
+    /*
+    *
+    */
     public long getGroupReceives();
 
+    /*
+    *
+    */
     public long getGroupErrors();
+    
+    /*
+    * 
+    */
+    public void setPlcConnection(AtomicReference<PlcConnection> plcConnection);
  
+    /*
+    *
+    */
     public Map<UUID, PlcItem> getGroupItems();
+    
+    /*
+    *
+    */
     public void setGroupItems(long groupitems);
-       
+     
+    /*
+    *
+    */
     public Hashtable<String, Object> getProperties();
-                
+     
+    /*
+    *
+    */
     public void putItem(PlcItem item);
+    
+    /*
+    *
+    */
     public PlcItem getItem(UUID itemkey);
+    
+    /*
+    *
+    */
     public void removeItem(UUID itemkey);
+    
+    /*
+    *
+    */
     public List<PlcItem> getItems();
      
 }

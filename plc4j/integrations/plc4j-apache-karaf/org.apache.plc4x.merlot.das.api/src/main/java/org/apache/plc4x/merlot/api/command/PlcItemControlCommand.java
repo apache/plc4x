@@ -18,31 +18,45 @@
  */
 package org.apache.plc4x.merlot.api.command;
 
-import java.util.List;
+import java.util.UUID;
 import org.apache.karaf.shell.api.action.Action;
 import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.Option;
 import org.apache.karaf.shell.api.action.lifecycle.Reference;
 import org.apache.karaf.shell.api.action.lifecycle.Service;
-import org.apache.karaf.shell.support.table.ShellTable;
-import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.merlot.api.impl.PlcDriverAdminServiceImpl;
+import org.apache.plc4x.merlot.api.PlcItem;
+import org.apache.plc4x.merlot.api.PlcGeneralFunction;
 
-@Command(scope = "plc4x", name = "driver-list", description = "List all channels")
+@Command(scope = "plc4x", name = "item-ctrl", description = "List all channels")
 @Service
-public class ListPlcDriverCommand implements Action {
+public class PlcItemControlCommand implements Action {
     
     @Reference
-    PlcDriverAdminServiceImpl channels;
+    PlcGeneralFunction plcservice; 
+    
+    
+    @Option(name = "-i", aliases = "--iid", description = "Item uid.", required = true, multiValued = false)
+    String iid;
+    
+    @Option(name = "-e", aliases = "--enable", description = "Enable the device.", required = false, multiValued = false)
+    Boolean enable = false;  
+
+    @Option(name = "-x", aliases = "--disable", description = "Disable the device.", required = false, multiValued = false)
+    Boolean disable = false;      
     
     @Override
     public Object execute() throws Exception {
-        ShellTable table = new ShellTable();
-        table.column("Code");
-        table.column("Name");        
-        List<PlcDriver> drivers = channels.getPlcDriverList();
+        UUID item_uid = UUID.fromString(iid);
+        final PlcItem item = plcservice.getPlcItem(item_uid);
         
-        drivers.forEach(drv -> {table.addRow().addContent(drv.getProtocolCode(), drv.getProtocolName());});
-        table.print(System.out);        
+        if (null != item){
+            if (enable) {
+                item.enable();
+            } else if (disable) {
+                item.disable();
+            }            
+        }
+             
         return null;
     }
     

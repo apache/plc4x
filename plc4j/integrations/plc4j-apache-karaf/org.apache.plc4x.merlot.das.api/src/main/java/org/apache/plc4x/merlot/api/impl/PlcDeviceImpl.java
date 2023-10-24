@@ -22,6 +22,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import static java.util.stream.Collectors.toList;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -37,34 +39,42 @@ import org.apache.plc4x.merlot.api.PlcItem;
 import org.apache.plc4x.merlot.scheduler.api.Job;
 import org.osgi.framework.ServiceReference;
 
- public class PlcDeviceImpl implements PlcDevice {	
+/*
+*
+*/
+public class PlcDeviceImpl implements PlcDevice {	
+     
     private static final Logger LOGGER = LoggerFactory.getLogger(PlcDeviceImpl.class);
-    private static final String FILTER_DEVICE =  "(&(" + org.osgi.framework.Constants.OBJECTCLASS + "=" + PlcDevice.class.getName() + ")" +
-                    "(" + PlcDevice.SERVICE_UID + "=*))";   
+    
+    private static final String FILTER_DEVICE =  "(&(" + 
+            org.osgi.framework.Constants.OBJECTCLASS + 
+            "=" + PlcDevice.class.getName() + ")" +
+            "(" + PlcDevice.SERVICE_UID + "=*))";   
     
     protected final BundleContext bc;
     protected boolean enable  = false;      
     protected boolean autostart = false;  
-    protected UUID uid = null;
-
-    protected String url = null;
     
     protected PlcDriver plcDriver = null;    
-    protected PlcConnection plcConnection = null;   
+    AtomicReference<PlcConnection> refPlcConnection;
+    PlcConnection plcConnection = null;
     
-    protected Hashtable<String, Object> myProperties = new Hashtable<String, Object>();
+    protected Hashtable<String, Object> myProperties;
     
-    private final Map<UUID, PlcGroup> device_groups = new HashMap();     
+    private final Map<UUID, PlcGroup> device_groups;     
     
     public PlcDeviceImpl(PlcDeviceBuilder builder) {
+        this.refPlcConnection = new AtomicReference<PlcConnection>();
+        this.myProperties = new Hashtable<String, Object>();
+        this.device_groups = new HashMap<UUID, PlcGroup>();
         this.bc = builder.bc;
-        myProperties.put(Device.SERVICE_DRIVER, builder.service_driver);         
-        myProperties.put(Device.SERVICE_NAME, builder.service_name);
-        myProperties.put(Device.SERVICE_DESCRIPTION, builder.service_description); 
+        myProperties.put(PlcDevice.SERVICE_DRIVER, builder.service_driver);         
+        myProperties.put(PlcDevice.SERVICE_NAME, builder.service_name);
+        myProperties.put(PlcDevice.SERVICE_DESCRIPTION, builder.service_description); 
         if (null != builder.service_uid) {
-            myProperties.put(Device.SERVICE_UID, builder.service_uid);
+            myProperties.put(PlcDevice.SERVICE_UID, builder.service_uid.toString());
         } else {
-            myProperties.put(Device.SERVICE_UID, UUID.randomUUID().toString());            
+            myProperties.put(PlcDevice.SERVICE_UID, UUID.randomUUID().toString());            
         }        
         
         if (null != builder.device_category) myProperties.put(Constants.DEVICE_CATEGORY, builder.device_category);
@@ -91,36 +101,60 @@ import org.osgi.framework.ServiceReference;
     }
 
     @Override
-    public void start() {
+    public void enable() {
         if (null != plcDriver) {
             //Try to connect
             final String url = (String) myProperties.get(Device.SERVICE_DRIVER);
             try {
                 plcConnection = plcDriver.getConnection(url);
-                enable = true;                
+                plcConnection.connect();
+                refPlcConnection.set(plcConnection);
+                if (plcConnection.isConnected()) {
+                    enable = true;
+                    LOGGER.info("Device [{}] was enbale.", myProperties.get(Device.SERVICE_NAME));
+                } else {
+                    LOGGER.info("The connection could not be established, check the url.");
+                }               
             } catch (PlcConnectionException ex) {
                 LOGGER.info(ex.getLocalizedMessage());
                 enable = false;
             }
+        } else {
+            LOGGER.info("The PlcDriver has not been assigned to the device.");
         }
     }
 
     @Override
-    public void stop() {
+    public void disable() {
         enable = false;
+        LOGGER.info("Device [{}] was disable.", myProperties.get(Device.SERVICE_NAME));        
         try {
-            plcConnection.close();
+            if (null != plcConnection) {
+                //All groups are disabled for security, they are activated 
+                //individually manually. Simple job to do when the IDE 
+                //is available.                 
+                device_groups.forEach((u, d) -> d.disable());                
+                plcConnection.close();
+                if (!plcConnection.isConnected()) {
+                    enable = false;
+                    LOGGER.info("Device [{}] connection was close.", myProperties.get(Device.SERVICE_NAME));
+                }
+            }
         } catch (Exception ex) {
             LOGGER.info(ex.getLocalizedMessage());
         }
     }    
-
+            
+    @Override
+    public boolean isEnable() {
+        return enable;
+    }    
+    
     @Override
     public Hashtable<String, ?> getProperties() {
         return myProperties;
     }
-    
-    
+        
     @Override
     public String getDeviceName() {
         return (String) myProperties.get(Device.SERVICE_NAME);
@@ -143,45 +177,39 @@ import org.osgi.framework.ServiceReference;
 
     @Override
     public void setUid(UUID uid) {
-        this.uid = uid;
+        myProperties.put(PlcDevice.SERVICE_UID, uid.toString());
     }
 
     @Override
     public UUID getUid() {
-        return uid;
-    }
-
-            
-    @Override
-    public boolean isEnable() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setEnable(boolean enable) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return UUID.fromString((String) myProperties.get(PlcDevice.SERVICE_UID));
     }
 
     @Override
     public void setUrl(String url) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!enable) {
+            myProperties.put(Device.SERVICE_DRIVER, url); 
+        }
     }
 
     @Override
     public String getUrl() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return (String) myProperties.get(Device.SERVICE_DRIVER); 
     }
 
     @Override
     public void putGroup(PlcGroup group) {
-        if ((!enable) && (!device_groups.containsKey(group.getGroupUid()))) {           
+        if ((!enable) && (!device_groups.containsKey(group.getGroupUid()))) {
+                group.setGroupDeviceUid(UUID.fromString((String) myProperties.get(PlcDevice.SERVICE_UID)));
+                group.setPlcConnection(refPlcConnection);
                 device_groups.put(group.getGroupUid(), group);
                 bc.registerService(new String[]{Job.class.getName(), 
                     PlcGroup.class.getName()}, 
                   group, 
                group.getProperties());
-            }
-        device_groups.put(group.getGroupUid(), group);
+        } else {
+            LOGGER.info("The device is enabled or the group identifier already exists.");
+        }
     }
 
     @Override
@@ -198,10 +226,10 @@ import org.osgi.framework.ServiceReference;
     }
 
     @Override
-    public List<PlcGroup> getGroups() {
-        return null;
+    public List<PlcGroup> getGroups() { 
+        return device_groups.values().stream().
+                collect(toList());
     }
-
             
     @Override
     public void noDriverFound() {
@@ -235,7 +263,7 @@ import org.osgi.framework.ServiceReference;
         private final String service_name;
         private final String service_description;
         private final String service_driver;         
-        private String service_uid;          
+        private UUID service_uid;          
         private String device_category;
         private String service_firmware_vendor;  
         private String service_firmware_version;  
@@ -257,7 +285,7 @@ import org.osgi.framework.ServiceReference;
             this.device_category = drv[0];
         }
 
-        public PlcDeviceBuilder setServiceUid(String serviceuid) {
+        public PlcDeviceBuilder setServiceUid(UUID serviceuid) {
             this.service_uid = serviceuid;
             return this;
         }

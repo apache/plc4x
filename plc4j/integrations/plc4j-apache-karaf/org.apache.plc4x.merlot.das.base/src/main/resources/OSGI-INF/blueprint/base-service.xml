@@ -18,17 +18,17 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="lazy">
 
       
-    <bean id="beanBDFactory" 
+<!--    <bean id="beanBDFactory" 
             class="org.apache.plc4x.merlot.das.base.impl.BaseDeviceFactoryImpl" 
             scope="singleton">
             <argument ref="blueprintBundleContext" />
-    </bean>    
+    </bean>    -->
     
-    <bean id="beanBDManagedService" 
+<!--    <bean id="beanBDManagedService" 
             class="org.apache.plc4x.merlot.das.base.core.BaseDeviceManagedService" 
             scope="singleton">
             <argument ref="blueprintBundleContext" />
-    </bean> 
+    </bean> -->
     
     <bean id="beanBFunctionService" 
             class="org.apache.plc4x.merlot.das.base.impl.BaseFunctionImpl" 
@@ -48,7 +48,7 @@
         <reference-listener bind-method="bind" unbind-method="unbind" ref="beanBFunctionService" />
     </reference-list>       
     
-    <service ref="beanBDManagedService" auto-export="interfaces">
+<!--    <service ref="beanBDManagedService" auto-export="interfaces">
     	<service-properties>
             <entry key="service.pid" value="org.apache.plc4x.merlot.das.devices"/>  
             <entry key="scheduler.name" value="BaseDeviceManagedService"/>  
@@ -56,9 +56,9 @@
             <entry key="scheduler.immediate" value="true"/>
             <entry key="scheduler.concurrent" value="false"/>                                                                    
      	</service-properties>        
-    </service>   
+    </service>   -->
     
-    <service ref="beanBFunctionService" auto-export="interfaces">
-    </service>            
+<!--    <service ref="beanBFunctionService" auto-export="interfaces">
+    </service>            -->
 
 </blueprint>

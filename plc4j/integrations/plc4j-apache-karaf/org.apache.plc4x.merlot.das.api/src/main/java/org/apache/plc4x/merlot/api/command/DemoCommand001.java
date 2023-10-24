@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.plc4x.merlot.das.base.command;
+package org.apache.plc4x.merlot.api.command;
 
 import java.util.Hashtable;
 import java.util.UUID;
@@ -30,7 +30,7 @@ import org.apache.plc4x.merlot.api.impl.PlcGroupImpl;
 
 @Command(scope = "plc4x", name = "demo_001", description = "Command for test.")
 @Service
-public class DemoCommand  implements Action  {
+public class DemoCommand001  implements Action  {
 
 //    private String filter_device =  "(&(" + Constants.OBJECTCLASS + "=" + Device.class.getName() + ")" +
 //                        "(" + org.osgi.service.device.Constants.DEVICE_SERIAL + "=dummy))";    
@@ -51,17 +51,33 @@ public class DemoCommand  implements Action  {
 
         Hashtable props = new Hashtable();
                       
-        props.put(PlcGroup.GROUP_NAME, "PRUEBA_DE_SCHEDULER");
+        props.put(PlcGroup.GROUP_NAME, "PRUEBA_DE_SCHEDULER_1");
         props.put(PlcGroup.GROUP_UID, UUID.randomUUID().toString());
-        props.put(PlcGroup.GROUP_PERIOD, 1000L);
+        props.put(PlcGroup.GROUP_PERIOD, 5000L);
         props.put(PlcGroup.GROUP_IMMEDIATE, true);
         props.put(PlcGroup.GROUP_CONCURRENT, false); 
         
-        PlcGroup grupo = new PlcGroupImpl.PlcGroupBuilder(bc, "PRUEBA_DE_SCHEDULER").
-                                    setGroupPeriod(5000).
+        PlcGroup grupo1 = new PlcGroupImpl.PlcGroupBuilder(bc, "PRUEBA_DE_SCHEDULER_1", UUID.fromString((String) props.get(PlcGroup.GROUP_UID))).
+                                    setGroupPeriod((long) props.get(PlcGroup.GROUP_PERIOD)).                                    
                                     build();
         
-        bc.registerService(new String[]{Job.class.getName(), PlcGroup.class.getName()}, grupo, props);        
+        bc.registerService(new String[]{Job.class.getName(), PlcGroup.class.getName()}, grupo1, props);         
+        
+        props.put(PlcGroup.GROUP_NAME, "PRUEBA_DE_SCHEDULER_2");        
+        props.put(PlcGroup.GROUP_UID, UUID.randomUUID().toString());        
+        PlcGroup grupo2 = new PlcGroupImpl.PlcGroupBuilder(bc, "PRUEBA_DE_SCHEDULER_2", UUID.fromString((String) props.get(PlcGroup.GROUP_UID))).
+                                    setGroupPeriod((long) props.get(PlcGroup.GROUP_PERIOD)).                                    
+                                    build();
+        
+        bc.registerService(new String[]{Job.class.getName(), PlcGroup.class.getName()}, grupo2, props);         
+        
+        props.put(PlcGroup.GROUP_NAME, "PRUEBA_DE_SCHEDULER_3");
+        props.put(PlcGroup.GROUP_UID, UUID.randomUUID().toString());        
+        PlcGroup grupo3 = new PlcGroupImpl.PlcGroupBuilder(bc, "PRUEBA_DE_SCHEDULER_3", UUID.fromString((String) props.get(PlcGroup.GROUP_UID))).
+                                    setGroupPeriod((long) props.get(PlcGroup.GROUP_PERIOD)).                                    
+                                    build();        
+        
+        bc.registerService(new String[]{Job.class.getName(), PlcGroup.class.getName()}, grupo3, props);         
         
         return null;
     }

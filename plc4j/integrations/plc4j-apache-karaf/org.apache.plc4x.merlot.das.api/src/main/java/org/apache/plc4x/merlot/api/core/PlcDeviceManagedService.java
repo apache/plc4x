@@ -1,25 +1,21 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.plc4x.merlot.api.core;
 
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
-*/
-
-package org.apache.plc4x.merlot.das.base.core;
-
-import org.apache.plc4x.merlot.das.base.api.BaseDevice;
 import org.apache.plc4x.merlot.scheduler.api.Job;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
 import java.util.Collections;
@@ -29,7 +25,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.merlot.das.base.impl.BaseDeviceFactoryImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -47,9 +42,9 @@ import org.apache.plc4x.merlot.api.PlcDevice;
  *
  * @author cgarcia
  */
-public class BaseDeviceManagedService implements ManagedService, ConfigurationListener, Job {
+public class PlcDeviceManagedService implements ManagedService, ConfigurationListener, Job {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseDeviceManagedService.class);     
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlcDeviceManagedService.class);     
     private final BundleContext bc;
     private static Map<String, Dictionary<String, ?>> waitingConfigs = null;  
     private String filter_driver =  "(&(" + Constants.OBJECTCLASS + "=" + PlcDriver.class.getName() + ")" +
@@ -60,7 +55,7 @@ public class BaseDeviceManagedService implements ManagedService, ConfigurationLi
                         "(org.apache.plc4x.device.factory=*))";
     
        
-    public BaseDeviceManagedService(BundleContext bc) {
+    public PlcDeviceManagedService(BundleContext bc) {
         this.bc = bc;
         waitingConfigs = Collections.synchronizedMap(new HashMap<String, Dictionary<String, ?>>());
     }
@@ -110,10 +105,11 @@ public class BaseDeviceManagedService implements ManagedService, ConfigurationLi
                                 ServiceReference reference = references[0];
                                 PlcDeviceFactory bdf = (PlcDeviceFactory) bc.getService(reference);
                                 if (bdf != null){
-                                    PlcDevice device =  bdf.create(key.toString(), drv_data[0], drv_data[1], drv_data[1]);
+                                    PlcDevice device =  bdf.create(key.toString(), drv_data[0], drv_data[1], drv_data[2]);
                                     if (device != null) {
-                                        device.enable();
-                                        LOGGER.info("Starting device["+ key.toString() + "] @ url[ " + drv_data[0]+ "]");  
+                                        
+                                        bc.registerService(org.apache.plc4x.merlot.api.PlcDevice.class.getName(), device, device.getProperties());
+                                        
                                     } else {
                                        LOGGER.info("Failed to register driver." + factoryFilter);
 //                                       waitingConfigs.put(pid, props);  
@@ -124,24 +120,19 @@ public class BaseDeviceManagedService implements ManagedService, ConfigurationLi
                                 };
                             } else {
                                 LOGGER.info("There is no factory specific for the driver [{}], using base device. to register device driver.", factoryFilter);
-                                //1. Si existe un driver se puede registrar el dispositivo.
-                                LOGGER.info("Clave: " + key.toString() + " : " + drv_data[0]);
-                                                               
+                                //1. Si existe un driver se puede registrar el dispositivo.                                                              
                                 //2. Registra el dispositivo con un BaseDevice
                                 String factoryBaseFilter = filter_factory.replace("*","base");    
-                                LOGGER.info("Buscando referencia con filtro [{}].", factoryBaseFilter);                                
+                            
                                 references = bc.getServiceReferences((String) null, factoryBaseFilter);
                                 
+                                //Filters changes to other configuration files.
                                 if ((null != references) && (references.length > 0) && (!drv_data[0].equalsIgnoreCase("file"))) {
-                                    ServiceReference reference = references[0];             
-                                    Hashtable properties = new Hashtable();
-                                    properties.putIfAbsent(org.osgi.service.device.Constants.DEVICE_CATEGORY, drv_data[0]);
-                                    properties.putIfAbsent(org.osgi.service.device.Constants.DEVICE_DESCRIPTION, this);
-                                    properties.putIfAbsent(org.osgi.service.device.Constants.DEVICE_SERIAL, this);                                    
+                                    ServiceReference reference = references[0];                                         
                                     PlcDeviceFactory bdf = (PlcDeviceFactory) bc.getService(reference);
                                     drv_data = driver_information.split(",",3);
                                     PlcDevice device  =  bdf.create(key.toString() , drv_data[0], drv_data[1], drv_data[2]);
-                                    LOGGER.info("Registra ahora el dispositivo...");
+
                                     bc.registerService(org.apache.plc4x.merlot.api.PlcDevice.class.getName(), device, device.getProperties());
                                                                        
                                 } else {

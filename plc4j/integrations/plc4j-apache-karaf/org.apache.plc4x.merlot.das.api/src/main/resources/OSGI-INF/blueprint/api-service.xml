@@ -15,42 +15,177 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" default-activation="eager">
 
-    <reference id="serviceEventAdmin"
+    <!--
+    -->
+    <reference id="servEventAdmin"
         interface="org.osgi.service.event.EventAdmin">
-    </reference>        
+    </reference> 
     
-    <bean id="beanPlcDriverAdmin" class="org.apache.plc4x.merlot.api.impl.PlcDriverAdminServiceImpl" scope="singleton">
-        <argument ref="blueprintBundleContext"/>
-        <argument ref="serviceEventAdmin"/>   
-        <property name="plcDriverList" ref="Plc4xDriverReference"/>             
-    </bean> 
+    <!--
+    -->
+    <reference id="servScheduler"
+        interface="org.apache.plc4x.merlot.scheduler.api.Scheduler">
+    </reference>     
     
-    <bean id="beanPlcDeviceFactory" 
-            class="org.apache.plc4x.merlot.api.impl.PlcDeviceFactoryImpl" 
-            scope="singleton">
-            <argument ref="blueprintBundleContext" />
-    </bean>                
-    
+    <!--
+    -->    
+    <reference id="servPlcFunctionRef"              
+        interface="org.apache.plc4x.merlot.api.PlcFunction" 
+        component-name="beanPlcGeneralFunction"
+        availability="optional">
+        <reference-listener bind-method="bind"  unbind-method="unbind" ref="beanPlcGeneralFunction"/>        
+    </reference>      
+           
+    <!--
+    -->               
     <reference-list id="Plc4xDriverReference"
         interface="org.apache.plc4x.java.api.PlcDriver"
         availability="mandatory">
         <reference-listener bind-method="bind" unbind-method="unbind" ref="beanPlcDriverAdmin" />
-    </reference-list>  
+    </reference-list>                               
     
+    <!--
+    -->    
+    <bean id="beanPlcDriverAdmin" class="org.apache.plc4x.merlot.api.impl.PlcDriverAdminServiceImpl" scope="singleton">
+        <argument ref="blueprintBundleContext"/>
+        <argument ref="servEventAdmin"/>   
+        <property name="plcDriverList" ref="Plc4xDriverReference"/>             
+    </bean> 
+    
+    <!--
+    -->    
+    <bean id="beanPlcDeviceFactory" 
+            class="org.apache.plc4x.merlot.api.impl.PlcDeviceFactoryImpl" 
+            scope="singleton">
+            <argument ref="blueprintBundleContext" />
+    </bean>
+    
+    <!--
+    -->    
+<!--    <bean id="beanPlcFunction" 
+            class="org.apache.plc4x.merlot.api.impl.PlcFunctionImpl" 
+            scope="singleton"
+            activation="eager">
+            <argument ref="blueprintBundleContext" />
+    </bean>    -->
+    
+    <!--
+    -->    
+    <bean id="beanPlcManagedService" 
+            class="org.apache.plc4x.merlot.api.core.PlcDeviceManagedService" 
+            scope="singleton"
+            activation="eager">
+            <argument ref="blueprintBundleContext" />
+    </bean> 
+    
+    <!--
+    -->    
+    <bean id="beanPlcItemClientService" 
+            class="org.apache.plc4x.merlot.api.core.PlcItemClientService" 
+            scope="singleton"
+            init-method = "init"
+            destroy-method = "destroy"
+            activation="eager">
+            <argument ref="blueprintBundleContext" />         
+    </bean>  
+    
+    <!--
+    -->    
+    <bean id="beanPlcGeneralFunction" 
+            class="org.apache.plc4x.merlot.api.impl.PlcGeneralFunctionImpl" 
+            scope="singleton"
+            activation="eager">
+            <argument ref="blueprintBundleContext" />
+            <argument ref="servScheduler" />
+    </bean>                                                                                                                                                          
+           
+    <!--
+    -->           
     <service ref="beanPlcDeviceFactory" auto-export="interfaces">
     	<service-properties>
             <entry key="org.apache.plc4x.device.factory" value="base"/>                                                                  
      	</service-properties>            
-    </service>     
-    
+    </service>
+
+    <!--
+        . Mandatory service propertye
+        SERVICE_UID                = "dal.function.UID"         
+           
+        . Optional service propertye                   
+        SERVICE_TYPE               = "dal.function.type"          
+        SERVICE_DESCRIPTION        = "dal.function.description" 
+        SERVICE_OPERATION_NAMES    = "dal.function.operation.names" 
+        SERVICE_PROPERTY_NAMES     = "dal.function.property.names" 
+        SERVICE_REFERENCE_UIDS     = "dal.function.reference.UIDs 
+        SERVICE_DEVICE_UID         = "dal.function.device.UID" 
+        SERVICE_VERSION            = "dal.function.version" 
+    -->
+    <service id="servPlcFunction" ref="beanPlcGeneralFunction" auto-export="interfaces">
+    	<service-properties>
+            <entry key="dal.function.UID">
+                <bean class="java.util.UUID" factory-method="randomUUID" />
+            </entry>
+            <entry key="dal.function.description" value="Basic operations for the base devices."/>                
+            <entry key="dal.function.operation.names">
+                <array value-type="java.lang.String">                    
+                    <value>"getPlcDrivers"</value>
+                    <value>"getPlcDevices"</value>
+                    <value>"getPlcDevice"</value>
+                    <value>"getPlcDeviceMeta"</value>
+                    <value>"setPlcDeviceName"</value> 
+                    <value>"setPlcDeviceDesc"</value>      
+                    <value>"getPlcDeviceGroups"</value>
+                    <value>"getPlcGroup"</value>
+                    <value>"setPlcGroupScanRate"</value>
+                    <value>"getPlcGroupItemsCount"</value>
+                    <value>"getPlcGroupItems"</value>
+                    <value>"getPlcItem"</value>
+                    <value>"getPlcItemType"</value>
+                    <value>"getPlcItemValue"</value>
+                    <value>"getPlcItemByteBuf"</value>
+                    <value>"enable"</value>
+                    <value>"disable"</value> 
+                    <value>"read"</value> 
+                    <value>"write"</value>                                                                                                              
+                </array>
+            </entry>     
+     	</service-properties> 
+<!--        <registration-listener ref="beanPlcFunction" registration-method="register"
+            unregistration-method="unregister" />                   -->
+    </service>               
+               
+    <!--
+    -->       
     <service  ranking="0" ref="beanPlcDriverAdmin" interface="org.apache.plc4x.merlot.api.impl.PlcDriverAdminServiceImpl">
         <!--
         <service-properties>
             <entry key="DRIVER_ID" value="org.apache.plc4x.referring"/>
         </service-properties>
                 -->
-    </service>    
+    </service> 
+    
+    <!--
+    -->       
+    <service ref="beanPlcManagedService" auto-export="interfaces">
+    	<service-properties>
+            <entry key="service.pid" value="org.apache.plc4x.merlot.das.devices"/>  
+            <entry key="scheduler.name" value="PlcDeviceManagedService"/>  
+            <entry key="scheduler.period" value="5000"/>
+            <entry key="scheduler.immediate" value="true"/>
+            <entry key="scheduler.concurrent" value="false"/>                                                                    
+     	</service-properties>        
+    </service>   
+         
+    <!--
+    -->                    
+    <service ref="beanPlcItemClientService" interface="org.apache.plc4x.merlot.api.core.PlcItemClientService"> 
+    </service>
+       
+    <!--
+    -->                    
+<!--    <service ref="beanPlcGeneralService" interface="org.apache.plc4x.merlot.api.PlcGeneralService"> 
+    </service>                             -->
     
 </blueprint>

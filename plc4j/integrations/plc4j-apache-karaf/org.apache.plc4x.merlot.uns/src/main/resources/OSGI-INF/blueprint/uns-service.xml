@@ -48,6 +48,12 @@
           factory-method="create">
         <argument ref="MerlotModel" />           
     </bean>
+    
+    <bean id="beanLdapServer" 
+          class="org.apache.plc4x.merlot.uns.core.LdapEmbeddedServer"
+          scope="singleton"
+          init-method="init" destroy-method="destroy">        
+    </bean>    
 
     <service ref="MerlotModelManagedService" auto-export="interfaces">
     	<service-properties>

@@ -19,10 +19,12 @@ package org.apache.plc4x.merlot.das.base.impl;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.UUID;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.merlot.api.PlcItem;
 import org.apache.plc4x.merlot.api.PlcItemListener;
 
@@ -53,6 +55,29 @@ public class BaseItemImpl implements PlcItem {
     private Date lastreaddate;
     private Date lastwritedate;
     private Date lasterrordate;
+
+    @Override
+    public void setPlcValue(PlcValue plcvalue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public PlcValue getItemPlcValue() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public ByteBuf getItemByteBuf() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public byte[] getItemBytes() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+
+
     
     @Override
     public UUID getItemUid() {
@@ -90,15 +115,21 @@ public class BaseItemImpl implements PlcItem {
     }
 
     @Override
-    public Boolean getIsEnable() {
+    public Boolean getEnable() {
         return enable; 
     }
 
     @Override
-    public void setIsEnable(Boolean enable) {
+    public void setEnable(Boolean enable) {
         this.enable = enable; 
     }
 
+    @Override
+    public Boolean isEnable() {
+        return enable;
+    }
+
+    
     @Override
     public Boolean getIsArray() {
         return isarray; 
@@ -182,27 +213,27 @@ public class BaseItemImpl implements PlcItem {
     }
 
     @Override
-    public void setPlcValues(PlcReadResponse plcresponse) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public Collection<Object> getPlcValues() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public ByteBuf getItemBuffer() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public void addItemClient(PlcItemListener client) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public void removeItemClient(PlcItemListener client) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void enable() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void disable() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Hashtable<String, Object> getProperties() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
