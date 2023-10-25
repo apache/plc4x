@@ -83,8 +83,6 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>com.github.purejavacomm:purejavacomm</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-firmata</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

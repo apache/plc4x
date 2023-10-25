@@ -85,8 +85,6 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-transport-serial</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-transport-raw-socket</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-modbus</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
