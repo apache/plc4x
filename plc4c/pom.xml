@@ -326,7 +326,41 @@
           </plugin>
         </plugins>
       </build>
+
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-c</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-modbus</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-plc4x</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-s7</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
     </profile>
+
     <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
     <profile>
       <id>jenkins-build</id>
@@ -383,38 +417,6 @@
           </plugin>
         </plugins>
       </build>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-language-c</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-plc4x</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-protocols-s7</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
-          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
     </profile>
   </profiles>
 
