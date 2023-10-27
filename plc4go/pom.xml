@@ -192,185 +192,6 @@
         </executions>
       </plugin>
 
-      <!--
-        Generate the driver code.
-      -->
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-driver-ab-eth</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>ab-eth</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-ads</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>ads</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-ads-discovery</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>ads.discovery</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-bacnetip</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>bacnetip</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-c-bus</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>c-bus</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-df1</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>df1</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-eip</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>eip</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-firmata</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>firmata</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-knxnetip</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>knxnetip</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-modbus</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>modbus</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-opcua</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>opcua</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-s7</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>s7</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-simulated</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>simulated</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>mvn-golang-wrapper</artifactId>
@@ -618,20 +439,12 @@
     </plugins>
   </build>
 
-  <!-- This dependency is just to ensure thrift is built first -->
   <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-go</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -639,6 +452,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -646,6 +460,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -653,6 +468,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-c-bus</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -660,6 +476,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -667,6 +484,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-eip</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -674,6 +492,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-firmata</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -681,6 +500,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -688,6 +508,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -695,6 +516,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-opcua</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -702,6 +524,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -709,6 +532,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -729,6 +553,287 @@
         -->
         <go.cover.flag>-v</go.cover.flag>
       </properties>
+    </profile>
+
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <!--
+            Generate the driver code.
+          -->
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver-ab-eth</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>ab-eth</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-ads</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>ads</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-ads-discovery</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>ads.discovery</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-bacnetip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>bacnetip</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-c-bus</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>c-bus</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-df1</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>df1</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-eip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>eip</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-firmata</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>firmata</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-knxnetip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>knxnetip</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-modbus</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>modbus</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-opcua</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>opcua</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-s7</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>s7</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-simulated</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>simulated</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-go</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-ab-eth</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-ads</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-bacnetip</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-c-bus</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-df1</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-eip</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-firmata</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-knxnetip</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-modbus</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-opcua</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-s7</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-simulated</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 

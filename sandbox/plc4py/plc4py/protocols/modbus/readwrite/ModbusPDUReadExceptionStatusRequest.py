@@ -25,22 +25,25 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
+class ModbusPDUReadExceptionStatusRequest(PlcMessage,ModbusPDU):
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x07
     response: bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadExceptionStatusRequest")
 
         write_buffer.pop_context("ModbusPDUReadExceptionStatusRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -51,6 +54,7 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadExceptionStatusRequest")
@@ -59,6 +63,7 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
         # Create the instance
         return ModbusPDUReadExceptionStatusRequestBuilder()
 
+
     def equals(self, o: object) -> bool:
         if self == o:
             return True
@@ -66,9 +71,7 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUReadExceptionStatusRequest):
             return False
 
-        that: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(
-            o
-        )
+        that: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest(o)
         return super().equals(that) and True
 
     def hash_code(self) -> int:
@@ -86,13 +89,13 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUReadExceptionStatusRequestBuilder(ModbusPDUBuilder):
+
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReadExceptionStatusRequest:
-        modbus_pdu_read_exception_status_request: ModbusPDUReadExceptionStatusRequest = (
-            ModbusPDUReadExceptionStatusRequest()
-        )
+    def build(self,) -> ModbusPDUReadExceptionStatusRequest:
+        modbus_pdu_read_exception_status_request: ModbusPDUReadExceptionStatusRequest = ModbusPDUReadExceptionStatusRequest()
         return modbus_pdu_read_exception_status_request
+
+
+

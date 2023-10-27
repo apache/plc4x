@@ -125,8 +125,8 @@ jobs:
       # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw
         run: |
-          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-c,enable-all-checks' -pl :plc4c -am ${{ steps.platform_opts.outputs.platform_opts }} install
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-c,enable-all-checks,update-generated-code' -pl :plc4c -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-c,skip-bacnet-regression-test' -pl :plc4c -am ${{ steps.platform_opts.outputs.platform_opts }} install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-c,skip-bacnet-regression-test,update-generated-code' -pl :plc4c -am ${{ steps.platform_opts.outputs.platform_opts }} install

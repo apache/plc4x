@@ -24,15 +24,17 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
-
-
+    
 @dataclass
 class ModbusDeviceInformationObject(PlcMessage):
     object_id: int
     data: List[int]
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusDeviceInformationObject")
@@ -41,13 +43,14 @@ class ModbusDeviceInformationObject(PlcMessage):
         write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        object_length: int = int(len(self.data))
+        object_length: int = (int(len(self.data)))
         write_buffer.write_unsigned_byte(object_length, logical_name="objectLength")
 
         # Array Field (data)
         write_buffer.write_byte_array(self.data, logical_name="data")
 
         write_buffer.pop_context("ModbusDeviceInformationObject")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -66,16 +69,19 @@ class ModbusDeviceInformationObject(PlcMessage):
         if self.data != None:
             length_in_bits += 8 * len(self.data)
 
+
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
+
+    def static_parse(self, read_buffer: ReadBuffer , args):
         return self.static_parse_context(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusDeviceInformationObject")
 
-        self.object_id = read_simple_field("objectId", read_unsigned_short)
+        self.object_id= read_simple_field("objectId", read_unsigned_short)
 
         object_length: int = read_implicit_field("objectLength", read_unsigned_short)
 
@@ -83,10 +89,9 @@ class ModbusDeviceInformationObject(PlcMessage):
 
         read_buffer.pop_context("ModbusDeviceInformationObject")
         # Create the instance
-        _modbus_device_information_object: ModbusDeviceInformationObject = (
-            ModbusDeviceInformationObject(object_id, data)
-        )
+        _modbus_device_information_object: ModbusDeviceInformationObject = ModbusDeviceInformationObject(object_id, data )
         return _modbus_device_information_object
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,3 +114,7 @@ class ModbusDeviceInformationObject(PlcMessage):
             raise RuntimeException(e)
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

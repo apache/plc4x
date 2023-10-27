@@ -25,22 +25,25 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
+class ModbusPDUReportServerIdRequest(PlcMessage,ModbusPDU):
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x11
     response: bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReportServerIdRequest")
 
         write_buffer.pop_context("ModbusPDUReportServerIdRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -51,6 +54,7 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReportServerIdRequest")
@@ -58,6 +62,7 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
         read_buffer.pop_context("ModbusPDUReportServerIdRequest")
         # Create the instance
         return ModbusPDUReportServerIdRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -84,13 +89,13 @@ class ModbusPDUReportServerIdRequest(PlcMessage, ModbusPDU):
 
 @dataclass
 class ModbusPDUReportServerIdRequestBuilder(ModbusPDUBuilder):
+
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReportServerIdRequest:
-        modbus_pdu_report_server_id_request: ModbusPDUReportServerIdRequest = (
-            ModbusPDUReportServerIdRequest()
-        )
+    def build(self,) -> ModbusPDUReportServerIdRequest:
+        modbus_pdu_report_server_id_request: ModbusPDUReportServerIdRequest = ModbusPDUReportServerIdRequest()
         return modbus_pdu_report_server_id_request
+
+
+
