@@ -18,13 +18,14 @@
  */
 package org.apache.plc4x.java.modbus.tcp.config;
 
-import org.apache.plc4x.java.modbus.readwrite.ModbusConstants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class ModbusTcpConfiguration implements Configuration, TcpTransportConfiguration {
+public class ModbusTcpConfiguration implements Configuration, TransportConfigurationProvider {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
@@ -33,6 +34,9 @@ public class ModbusTcpConfiguration implements Configuration, TcpTransportConfig
     @ConfigurationParameter("unit-identifier")
     @IntDefaultValue(1)
     private int unitIdentifier;
+
+    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
+    private ModbusTcpTransportConfiguration tcpTransportConfiguration;
 
     public int getRequestTimeout() {
         return requestTimeout;
@@ -50,9 +54,21 @@ public class ModbusTcpConfiguration implements Configuration, TcpTransportConfig
         this.unitIdentifier = unitIdentifier;
     }
 
+    public ModbusTcpTransportConfiguration getTcpTransportConfiguration() {
+        return tcpTransportConfiguration;
+    }
+
+    public void setTcpTransportConfiguration(ModbusTcpTransportConfiguration tcpTransportConfiguration) {
+        this.tcpTransportConfiguration = tcpTransportConfiguration;
+    }
+
     @Override
-    public int getDefaultPort() {
-        return ModbusConstants.MODBUSTCPDEFAULTPORT;
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return tcpTransportConfiguration;
+        }
+        return null;
     }
 
     @Override

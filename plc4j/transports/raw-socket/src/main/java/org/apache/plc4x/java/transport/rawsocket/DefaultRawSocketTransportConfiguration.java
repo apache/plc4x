@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,12 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.transport.rawsocket;
 
-import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.transport.pcap.DefaultPcapTransportConfiguration;
 
-public interface RawSocketTransportConfiguration extends PcapTransportConfiguration {
+public abstract class DefaultRawSocketTransportConfiguration extends DefaultPcapTransportConfiguration implements RawSocketTransportConfiguration {
 
-    boolean isResolveMacAccess();
+    @ConfigurationParameter("resolve-mac-address")
+    @BooleanDefaultValue(false)
+    private boolean resolveMacAddress;
+
+    @Override
+    public boolean isResolveMacAccess() {
+        return resolveMacAddress;
+    }
+
+    public void setResolveMacAddress(boolean resolveMacAddress) {
+        this.resolveMacAddress = resolveMacAddress;
+    }
 
 }

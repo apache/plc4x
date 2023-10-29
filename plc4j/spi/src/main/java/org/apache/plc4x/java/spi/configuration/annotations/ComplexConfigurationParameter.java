@@ -16,12 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.transport.rawsocket;
+package org.apache.plc4x.java.spi.configuration.annotations;
 
-import org.apache.plc4x.java.transport.pcap.PcapTransportConfiguration;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface RawSocketTransportConfiguration extends PcapTransportConfiguration {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ComplexConfigurationParameter {
 
-    boolean isResolveMacAccess();
+    String prefix() default "";
+
+    ComplexConfigurationParameterDefaultOverride[] defaultOverrides();
+
+    ComplexConfigurationParameterRequiredOverride[] requiredOverrides();
 
 }

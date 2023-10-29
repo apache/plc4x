@@ -18,18 +18,14 @@
  */
 package org.apache.plc4x.java.bacnetip.configuration;
 
-import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameterDefaultOverride;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
-import org.pcap4j.packet.Dot1qVlanTagPacket;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class BacNetIpConfiguration implements Configuration, UdpTransportConfiguration, RawSocketTransportConfiguration, PcapReplayTransportConfiguration {
+public class BacNetIpConfiguration implements Configuration, TransportConfigurationProvider {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
@@ -39,18 +35,18 @@ public class BacNetIpConfiguration implements Configuration, UdpTransportConfigu
     @ConfigurationParameter("ede-directory-path")
     private String edeDirectoryPath;
 
-    // The speed in which the pcap file is replayed:
-    // - 1.0 being the original speed
-    // - 0   being as fast as possible (no delays between the packets)
-    // - 0.5 being double speed
-    // - 2.0 being half speed
-    @ConfigurationParameter("pcap-replay-speed")
-    @DoubleDefaultValue(1.0F)
-    private double pcapReplaySpeed;
+    @ComplexConfigurationParameter(prefix = "udp", defaultOverrides = {}, requiredOverrides = {})
+    private BacNetUdpTransportConfiguration udpTransportConfiguration;
 
-    @ConfigurationParameter("filter")
-    @StringDefaultValue("")
-    private String filter = "";
+    @ComplexConfigurationParameter(prefix = "pcap", defaultOverrides = {
+        @ComplexConfigurationParameterDefaultOverride(name = "support-vlans", value = "true")
+    }, requiredOverrides = {})
+    private BacNetPcapReplayTransportConfiguration pcapReplayTransportConfiguration;
+
+    @ComplexConfigurationParameter(prefix = "raw", defaultOverrides = {
+        @ComplexConfigurationParameterDefaultOverride(name = "resolve-mac-address", value = "true")
+    }, requiredOverrides = {})
+    private BacNetRawSocketTransportConfiguration rawSocketTransportConfiguration;
 
     public String getEdeFilePath() {
         return edeFilePath;
@@ -68,61 +64,41 @@ public class BacNetIpConfiguration implements Configuration, UdpTransportConfigu
         this.edeDirectoryPath = edeDirectoryPath;
     }
 
-    public void setPcapReplaySpeed(double pcapReplaySpeed) {
-        this.pcapReplaySpeed = pcapReplaySpeed;
+    public BacNetUdpTransportConfiguration getUdpTransportConfiguration() {
+        return udpTransportConfiguration;
+    }
+
+    public void setUdpTransportConfiguration(BacNetUdpTransportConfiguration udpTransportConfiguration) {
+        this.udpTransportConfiguration = udpTransportConfiguration;
+    }
+
+    public BacNetPcapReplayTransportConfiguration getPcapReplayTransportConfiguration() {
+        return pcapReplayTransportConfiguration;
+    }
+
+    public void setPcapReplayTransportConfiguration(BacNetPcapReplayTransportConfiguration pcapReplayTransportConfiguration) {
+        this.pcapReplayTransportConfiguration = pcapReplayTransportConfiguration;
+    }
+
+    public BacNetRawSocketTransportConfiguration getRawSocketTransportConfiguration() {
+        return rawSocketTransportConfiguration;
+    }
+
+    public void setRawSocketTransportConfiguration(BacNetRawSocketTransportConfiguration rawSocketTransportConfiguration) {
+        this.rawSocketTransportConfiguration = rawSocketTransportConfiguration;
     }
 
     @Override
-    public float getReplaySpeedFactor() {
-        return (float) pcapReplaySpeed;
-    }
-
-    @Override
-    public boolean getSupportVlans() {
-        return true;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return BacnetConstants.BACNETUDPDEFAULTPORT;
-    }
-
-    @Override
-    public Integer getProtocolId() {
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return udpTransportConfiguration;
+            case "raw":
+                return rawSocketTransportConfiguration;
+            case "pcap":
+                return pcapReplayTransportConfiguration;
+        }
         return null;
-    }
-
-    @Override
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    /**
-     * Packet handler to use when running in PCAP mode.
-     * In this case all packets are Ethernet frames and we need to first get the
-     * IP packet and then the UDP packet and then the raw data from that.
-     *
-     * @return payload of the packet.
-     */
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return packet -> {
-            // If it's a VLan packet, we need to go one level deeper.
-            if (packet.getPayload() instanceof Dot1qVlanTagPacket) {
-                return packet.getPayload().getPayload().getPayload().getPayload().getRawData();
-            }
-            // This is a normal udp packet.
-            else {
-                if ((packet.getPayload() != null) && (packet.getPayload().getPayload() != null) && (packet.getPayload().getPayload().getPayload() != null)) {
-                    return packet.getPayload().getPayload().getPayload().getRawData();
-                }
-            }
-            return null;
-        };
     }
 
 }

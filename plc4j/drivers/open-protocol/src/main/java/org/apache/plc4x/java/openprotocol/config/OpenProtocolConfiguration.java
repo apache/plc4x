@@ -18,15 +18,31 @@
  */
 package org.apache.plc4x.java.openprotocol.config;
 
-import org.apache.plc4x.java.openprotocol.readwrite.Constants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class OpenProtocolConfiguration implements Configuration, TcpTransportConfiguration {
+public class OpenProtocolConfiguration implements Configuration, TransportConfigurationProvider {
+
+    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
+    private OpenProtocolTcpTransportConfiguration tcpTransportConfiguration;
+
+    public OpenProtocolTcpTransportConfiguration getTcpTransportConfiguration() {
+        return tcpTransportConfiguration;
+    }
+
+    public void setTcpTransportConfiguration(OpenProtocolTcpTransportConfiguration tcpTransportConfiguration) {
+        this.tcpTransportConfiguration = tcpTransportConfiguration;
+    }
 
     @Override
-    public int getDefaultPort() {
-        return Constants.TCPDEFAULTPORT;
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return tcpTransportConfiguration;
+        }
+        return null;
     }
 
     @Override

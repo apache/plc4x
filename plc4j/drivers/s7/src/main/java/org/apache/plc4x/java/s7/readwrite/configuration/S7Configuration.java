@@ -18,14 +18,15 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class S7Configuration implements Configuration, TcpTransportConfiguration {
+public class S7Configuration implements Configuration, TransportConfigurationProvider {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -91,6 +92,8 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @IntDefaultValue(4)
     public int retryTime = 4;
 
+    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
+    private S7TcpTransportConfiguration tcpTransportConfiguration;
 
     public int getLocalRack() {
         return localRack;
@@ -220,15 +223,21 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
         this.retryTime = retryTime;
     }
 
+    public S7TcpTransportConfiguration getTcpTransportConfiguration() {
+        return tcpTransportConfiguration;
+    }
 
-    /**
-     * Per default port for the S7 protocol is 102.
-     *
-     * @return 102
-     */
+    public void setTcpTransportConfiguration(S7TcpTransportConfiguration tcpTransportConfiguration) {
+        this.tcpTransportConfiguration = tcpTransportConfiguration;
+    }
+
     @Override
-    public int getDefaultPort() {
-        return S7Driver.ISO_ON_TCP_PORT;
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return tcpTransportConfiguration;
+        }
+        return null;
     }
 
     @Override

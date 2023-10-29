@@ -19,15 +19,20 @@
 package org.apache.plc4x.java.cbus.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class CBusConfiguration implements Configuration, TcpTransportConfiguration {
+public class CBusConfiguration implements Configuration, TransportConfigurationProvider {
 
     @ConfigurationParameter("srchk")
     @BooleanDefaultValue(false)
     public boolean srchk = false;
+
+    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
+    private CBusTcpTransportConfiguration tcpTransportConfiguration;
 
     public boolean isSrchk() {
         return srchk;
@@ -37,9 +42,21 @@ public class CBusConfiguration implements Configuration, TcpTransportConfigurati
         this.srchk = srchk;
     }
 
+    public CBusTcpTransportConfiguration getTcpTransportConfiguration() {
+        return tcpTransportConfiguration;
+    }
+
+    public void setTcpTransportConfiguration(CBusTcpTransportConfiguration tcpTransportConfiguration) {
+        this.tcpTransportConfiguration = tcpTransportConfiguration;
+    }
+
     @Override
-    public int getDefaultPort() {
-        return 123;//CBusDriver.C_BUS_TCP_PORT;
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return tcpTransportConfiguration;
+        }
+        return null;
     }
 
     @Override

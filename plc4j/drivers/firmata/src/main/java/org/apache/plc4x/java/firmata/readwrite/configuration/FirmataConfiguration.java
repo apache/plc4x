@@ -19,17 +19,31 @@
 package org.apache.plc4x.java.firmata.readwrite.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
+import org.apache.plc4x.java.transport.serial.DefaultSerialTransportConfiguration;
 
-public class FirmataConfiguration implements Configuration, SerialTransportConfiguration {
+public class FirmataConfiguration implements Configuration, TransportConfigurationProvider {
 
-    /**
-     * The StandardFirmata sketch uses 57600 baud per default.
-     * @return 57600 as this is what the Arduino uses.
-     */
+    @ComplexConfigurationParameter(prefix = "serial", defaultOverrides = {}, requiredOverrides = {})
+    private DefaultSerialTransportConfiguration serialTransportConfiguration;
+
+    public DefaultSerialTransportConfiguration getSerialTransportConfiguration() {
+        return serialTransportConfiguration;
+    }
+
+    public void setSerialTransportConfiguration(DefaultSerialTransportConfiguration serialTransportConfiguration) {
+        this.serialTransportConfiguration = serialTransportConfiguration;
+    }
+
     @Override
-    public int getBaudRate() {
-        return 57600;
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "serial":
+                return serialTransportConfiguration;
+        }
+        return null;
     }
 
 }

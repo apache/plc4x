@@ -18,22 +18,17 @@
  */
 package org.apache.plc4x.java.knxnetip.configuration;
 
-import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
-import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration, PcapReplayTransportConfiguration, RawSocketTransportConfiguration {
+public class KnxNetIpConfiguration implements Configuration, TransportConfigurationProvider {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
@@ -49,13 +44,14 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @StringDefaultValue("LINK_LAYER")
     public String connectionType = "LINK_LAYER";
 
-    @ConfigurationParameter("replay-speed-factor")
-    @FloatDefaultValue(1.0f)
-    public float replaySpeedFactor = 1.0f;
+    @ComplexConfigurationParameter(prefix = "udp", defaultOverrides = {}, requiredOverrides = {})
+    private KnxNetIpUdpTransportConfiguration udpTransportConfiguration;
 
-    @ConfigurationParameter("loop")
-    @BooleanDefaultValue(false)
-    public boolean loop = false;
+    @ComplexConfigurationParameter(prefix = "pcap", defaultOverrides = {}, requiredOverrides = {})
+    private KnxNetIpPcapReplayTransportConfiguration pcapReplayTransportConfiguration;
+
+    @ComplexConfigurationParameter(prefix = "raw", defaultOverrides = {}, requiredOverrides = {})
+    private KnxNetIpRawSocketTransportConfiguration rawSocketTransportConfiguration;
 
     public String getKnxprojFilePath() {
         return knxprojFilePath;
@@ -96,37 +92,41 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
         this.connectionType = connectionType.toUpperCase();
     }
 
-    @Override
-    public float getReplaySpeedFactor() {
-        return replaySpeedFactor;
+    public KnxNetIpUdpTransportConfiguration getUdpTransportConfiguration() {
+        return udpTransportConfiguration;
     }
 
-    public void setReplaySpeedFactor(float replaySpeedFactor) {
-        this.replaySpeedFactor = replaySpeedFactor;
+    public void setUdpTransportConfiguration(KnxNetIpUdpTransportConfiguration udpTransportConfiguration) {
+        this.udpTransportConfiguration = udpTransportConfiguration;
     }
 
-    @Override
-    public boolean isLoop() {
-        return loop;
+    public KnxNetIpPcapReplayTransportConfiguration getPcapReplayTransportConfiguration() {
+        return pcapReplayTransportConfiguration;
     }
 
-    public void setLoop(boolean loop) {
-        this.loop = loop;
+    public void setPcapReplayTransportConfiguration(KnxNetIpPcapReplayTransportConfiguration pcapReplayTransportConfiguration) {
+        this.pcapReplayTransportConfiguration = pcapReplayTransportConfiguration;
     }
 
-    @Override
-    public int getDefaultPort() {
-        return KnxNetIpDriver.KNXNET_IP_PORT;
+    public KnxNetIpRawSocketTransportConfiguration getRawSocketTransportConfiguration() {
+        return rawSocketTransportConfiguration;
     }
 
-    @Override
-    public Integer getProtocolId() {
-        return PcapChannelConfig.ALL_PROTOCOLS;
+    public void setRawSocketTransportConfiguration(KnxNetIpRawSocketTransportConfiguration rawSocketTransportConfiguration) {
+        this.rawSocketTransportConfiguration = rawSocketTransportConfiguration;
     }
 
     @Override
-    public PacketHandler getPcapPacketHandler() {
-        return packet -> packet.getPayload().getPayload().getPayload().getRawData();
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return udpTransportConfiguration;
+            case "pcap":
+                return pcapReplayTransportConfiguration;
+            case "raw":
+                return rawSocketTransportConfiguration;
+        }
+        return null;
     }
 
     @Override

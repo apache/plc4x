@@ -19,12 +19,15 @@
 package org.apache.plc4x.java.opcua.config;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
+import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
 
-public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
+public class OpcuaConfiguration implements Configuration, TransportConfigurationProvider {
 
     @ConfigurationParameter("protocolCode")
     private String protocolCode;
@@ -57,6 +60,9 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
 
     @ConfigurationParameter("keyStorePassword")
     private String keyStorePassword;
+
+    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
+    private DefaultTcpTransportConfiguration tcpTransportConfiguration;
 
     public String getProtocolCode() {
         return protocolCode;
@@ -98,6 +104,22 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return keyStorePassword;
     }
 
+    public DefaultTcpTransportConfiguration getTcpTransportConfiguration() {
+        return tcpTransportConfiguration;
+    }
+
+    public void setTcpTransportConfiguration(DefaultTcpTransportConfiguration tcpTransportConfiguration) {
+        this.tcpTransportConfiguration = tcpTransportConfiguration;
+    }
+
+    @Override
+    public TransportConfiguration getTransportConfiguration(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return tcpTransportConfiguration;
+        }
+        return null;
+    }
 
     @Override
     public String toString() {
