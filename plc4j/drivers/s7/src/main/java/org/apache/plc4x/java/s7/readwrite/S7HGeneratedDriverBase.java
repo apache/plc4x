@@ -30,6 +30,8 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +102,13 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         // Inject the configuration into the transport.
-        configure(configuration, transport);
+        if(configuration instanceof TransportConfigurationProvider) {
+            TransportConfigurationProvider transportConfigurationProvider =
+                (TransportConfigurationProvider) configuration;
+            TransportConfiguration transportConfiguration =
+                transportConfigurationProvider.getTransportConfiguration(transportCode);
+            configure(transportConfiguration, transport);
+        }
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);

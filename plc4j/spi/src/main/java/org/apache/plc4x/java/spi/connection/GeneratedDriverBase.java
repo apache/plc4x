@@ -28,6 +28,8 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -151,7 +153,13 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         // Inject the configuration into the transport.
-        configure(configuration, transport);
+        if(configuration instanceof TransportConfigurationProvider) {
+            TransportConfigurationProvider transportConfigurationProvider =
+                (TransportConfigurationProvider) configuration;
+            TransportConfiguration transportConfiguration =
+                transportConfigurationProvider.getTransportConfiguration(transportCode);
+            configure(transportConfiguration, transport);
+        }
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
