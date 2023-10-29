@@ -35,6 +35,7 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.generation.MessageOutput;
+import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -111,7 +112,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if (driverContextClass != null) {
             protocol.setDriverContext(configure(configuration, createInstance(driverContextClass)));
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(configuration.getTimeoutManager(), pipeline, passive, protocol,
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, protocol,
             authentication, basePacketClass);
         pipeline.addLast(context);
         return protocol;
