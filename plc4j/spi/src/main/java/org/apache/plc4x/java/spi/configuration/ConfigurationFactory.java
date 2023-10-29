@@ -22,6 +22,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
@@ -55,11 +56,19 @@ public class ConfigurationFactory {
 
     public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
                                                            String transportConfig, String paramString) {
+
+        // Get a map of all parameters in the connection string.
+        Map<String, List<String>> paramStringValues = splitQuery(paramString);
+        return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, paramStringValues);
+    }
+
+    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+                                                           String transportConfig, Map<String, List<String>> paramStringValues) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
         Map<String, Field> fields = Arrays.stream(FieldUtils.getAllFields(pClazz))
             // - Filter out only the ones annotated with the ConfigurationParameter annotation.
-            .filter(field -> field.getAnnotation(ConfigurationParameter.class) != null)
+            .filter(field -> (field.getAnnotation(ConfigurationParameter.class) != null) || (field.getAnnotation(ComplexConfigurationParameter.class) != null))
             // - Create a map with the field-name as key and the field itself as value.
             .collect(Collectors.toMap(
                 ConfigurationFactory::getConfigurationName,
@@ -67,6 +76,7 @@ public class ConfigurationFactory {
             ));
 
         // Get a list of all required configuration parameters.
+        // TODO: Check for the complex-fields with required annotations.
         List<String> missingFieldNames = fields.values().stream()
             .filter(field -> field.getAnnotation(Required.class) != null)
             .map(ConfigurationFactory::getConfigurationName)
@@ -83,8 +93,10 @@ public class ConfigurationFactory {
 
         // Process the parameters passed in with the connection string.
         try {
-            // Get a map of all parameters in the connection string.
-            Map<String, List<String>> paramStringValues = splitQuery(paramString);
+            // Add the other codes to the param strings, so we can make them accessible from Configurations.
+            // Like this:
+            //    @ConfigurationParameter("protocolCode")
+            //    private String protocolCode;
             paramStringValues = new HashMap<>(paramStringValues);
             List<String> previousValue;
             previousValue = paramStringValues.put("protocolCode", List.of(protocolCode));
@@ -105,7 +117,19 @@ public class ConfigurationFactory {
             for (Map.Entry<String, Field> entry : fields.entrySet()) {
                 final String configName = entry.getKey();
                 final Field field = fields.get(configName);
-                if (paramStringValues.containsKey(configName)) {
+                if (field.getAnnotation(ComplexConfigurationParameter.class) != null) {
+                    // Filter out only the parameters with the given prefix.
+                    String prefix = field.getAnnotation(ComplexConfigurationParameter.class).prefix() + ".";
+                    Map<String, List<String>> filteredParamStringValues = new HashMap<>();
+                    for (String paramName : paramStringValues.keySet()) {
+                        if(paramName.startsWith(prefix)) {
+                            filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
+                        }
+                    }
+                    Class<Configuration> configType = (Class<Configuration>) field.getType();
+                    Configuration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+                    FieldUtils.writeField(instance, field.getName(), configValue, true);
+                } else if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
                     // As the arguments might be URL encoded, be sure it's decoded.
                     stringValue = URLDecoder.decode(stringValue, StandardCharsets.UTF_8);
@@ -170,7 +194,9 @@ public class ConfigurationFactory {
      * @return name of the configuration (either from the annotation or from the field itself)
      */
     private static String getConfigurationName(Field field) {
-        if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
+        if (field.getAnnotation(ComplexConfigurationParameter.class) != null) {
+            return field.getAnnotation(ComplexConfigurationParameter.class).prefix();
+        } else if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
             return field.getName();
         } else {
             return field.getAnnotation(ConfigurationParameter.class).value();
