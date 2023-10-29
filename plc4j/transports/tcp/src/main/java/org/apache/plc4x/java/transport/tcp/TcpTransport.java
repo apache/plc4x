@@ -75,7 +75,11 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
         SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
 
         // Initialize the channel factory with the default socket address we want to connect to.
-        return new TcpChannelFactory(address);
+        TcpChannelFactory tcpChannelFactory = new TcpChannelFactory(address);
+        if(configuration != null) {
+            tcpChannelFactory.setConfiguration(configuration);
+        }
+        return tcpChannelFactory;
     }
 
 }
