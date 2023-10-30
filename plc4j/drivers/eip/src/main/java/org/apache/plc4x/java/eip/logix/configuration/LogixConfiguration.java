@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.eip.logix.configuration;
 
-import org.apache.plc4x.java.eip.base.EIPDriver;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 
@@ -26,9 +25,6 @@ public class LogixConfiguration extends EIPConfiguration {
 
     @ConfigurationParameter
     private String communicationPath;
-
-    @Override
-    public int getDefaultPort(){return EIPDriver.PORT;}
 
     public String getCommunicationPath() { return this.communicationPath; }
 

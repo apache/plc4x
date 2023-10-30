@@ -19,22 +19,17 @@
 package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class AdsConfiguration implements Configuration, TcpTransportConfiguration, SerialTransportConfiguration {
+public class AdsConfiguration implements Configuration {
 
     public static final Pattern AMS_NET_ID_PATTERN =
         Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
@@ -123,16 +118,6 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
 
     public void setLoadSymbolAndDataTypeTables(boolean loadSymbolAndDataTypeTables) {
         this.loadSymbolAndDataTypeTables = loadSymbolAndDataTypeTables;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return AdsConstants.ADSTCPDEFAULTPORT;
-    }
-
-    @Override
-    public int getBaudRate() {
-        return 57600;
     }
 
     public static class AmsNetIdConverter implements ConfigurationParameterConverter<AmsNetId> {

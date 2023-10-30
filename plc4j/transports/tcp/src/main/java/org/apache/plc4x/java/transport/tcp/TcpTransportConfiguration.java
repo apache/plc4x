@@ -33,16 +33,10 @@ public interface TcpTransportConfiguration extends TransportConfiguration {
         return NO_DEFAULT_PORT;
     }
 
-    default boolean isKeepAlive() {
-        return false;
-    }
+    boolean isKeepAlive();
 
-    default boolean isNoDelay() {
-        return true;
-    }
+    boolean isNoDelay();
 
-    default int getConnectTimeout() {
-        return 1000;
-    }
+    int getConnectTimeout();
 
 }

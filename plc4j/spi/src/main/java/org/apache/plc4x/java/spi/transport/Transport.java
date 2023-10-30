@@ -28,4 +28,8 @@ public interface Transport {
 
     ChannelFactory createChannelFactory(String transportConfig);
 
+    default Class<? extends TransportConfiguration> getTransportConfigType() {
+        return null;
+    }
+
 }

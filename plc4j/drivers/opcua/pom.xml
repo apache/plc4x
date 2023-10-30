@@ -110,12 +110,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
     </dependency>
@@ -144,11 +138,16 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-tcp</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
       <version>0.12.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.eclipse.milo</groupId>
       <artifactId>sdk-client</artifactId>

@@ -25,8 +25,6 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -34,7 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
+public class ProfinetConfiguration implements Configuration {
 
     @Required
     @ConfigurationParameter("gsd-directory")
@@ -43,31 +41,6 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     @ConfigurationParameter("dap-id")
     public String dapId;
-
-    @Override
-    public boolean getSupportVlans() {
-        return RawSocketTransportConfiguration.super.getSupportVlans();
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return 34964;
-    }
-
-    @Override
-    public Integer getProtocolId() {
-        return RawSocketTransportConfiguration.super.getProtocolId();
-    }
-
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return null;
-    }
-
-    @Override
-    public boolean isResolveMacAccess() {
-        return true;
-    }
 
     public ProfinetISO15745Profile getGsdProfile(int vendorId, int deviceId) {
         String value = gsdDirectory;

@@ -27,6 +27,7 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusAsciiADU;
+import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -34,12 +35,14 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.ToIntFunction;
 
-public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
+public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -182,6 +185,15 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
             encodedWriteBuffer.writeShort(8, (short) 0x0a);
             return encodedWriteBuffer;
         }
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return ModbusTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

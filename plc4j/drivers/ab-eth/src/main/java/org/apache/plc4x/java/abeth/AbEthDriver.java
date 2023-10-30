@@ -20,11 +20,14 @@ package org.apache.plc4x.java.abeth;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
+import org.apache.plc4x.java.abeth.configuration.AbEthTcpTransportConfiguration;
 import org.apache.plc4x.java.abeth.tag.AbEthTag;
 import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -33,7 +36,7 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
 import java.util.function.ToIntFunction;
 
-public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
+public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> implements TransportConfigurationTypeProvider {
 
     public static final int AB_ETH_PORT = 2222;
 
@@ -102,6 +105,15 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     @Override
     public PlcTag prepareTag(String tagAddress) {
         return AbEthTag.of(tagAddress);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return AbEthTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }
