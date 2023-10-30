@@ -18,16 +18,11 @@
  */
 package org.apache.plc4x.java.modbus.rtu.config;
 
-import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
-import org.apache.plc4x.java.transport.serial.DefaultSerialTransportConfiguration;
 
-public class ModbusRtuConfiguration implements Configuration, TransportConfigurationProvider {
+public class ModbusRtuConfiguration implements Configuration {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
@@ -36,12 +31,6 @@ public class ModbusRtuConfiguration implements Configuration, TransportConfigura
     @ConfigurationParameter("unit-identifier")
     @IntDefaultValue(1)
     private int unitIdentifier;
-
-    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
-    private ModbusTcpTransportConfiguration tcpTransportConfiguration;
-
-    @ComplexConfigurationParameter(prefix = "serial", defaultOverrides = {}, requiredOverrides = {})
-    private DefaultSerialTransportConfiguration serialTransportConfiguration;
 
     public int getRequestTimeout() {
         return requestTimeout;
@@ -57,33 +46,6 @@ public class ModbusRtuConfiguration implements Configuration, TransportConfigura
 
     public void setUnitIdentifier(int unitIdentifier) {
         this.unitIdentifier = unitIdentifier;
-    }
-
-    public ModbusTcpTransportConfiguration getTcpTransportConfiguration() {
-        return tcpTransportConfiguration;
-    }
-
-    public void setTcpTransportConfiguration(ModbusTcpTransportConfiguration tcpTransportConfiguration) {
-        this.tcpTransportConfiguration = tcpTransportConfiguration;
-    }
-
-    public DefaultSerialTransportConfiguration getSerialTransportConfiguration() {
-        return serialTransportConfiguration;
-    }
-
-    public void setSerialTransportConfiguration(DefaultSerialTransportConfiguration serialTransportConfiguration) {
-        this.serialTransportConfiguration = serialTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return tcpTransportConfiguration;
-            case "serial":
-                return serialTransportConfiguration;
-        }
-        return null;
     }
 
     @Override

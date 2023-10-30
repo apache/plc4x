@@ -22,13 +22,9 @@ package org.apache.plc4x.java.profinet.config;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameterDefaultOverride;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -36,7 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ProfinetConfiguration implements Configuration, TransportConfigurationProvider {
+public class ProfinetConfiguration implements Configuration {
 
     @Required
     @ConfigurationParameter("gsd-directory")
@@ -45,19 +41,6 @@ public class ProfinetConfiguration implements Configuration, TransportConfigurat
 
     @ConfigurationParameter("dap-id")
     public String dapId;
-
-    @ComplexConfigurationParameter(prefix = "raw", defaultOverrides = {
-        @ComplexConfigurationParameterDefaultOverride(name = "resolve-mac-address", value = "true")
-    }, requiredOverrides = {})
-    private ProfinetRawSocketTransportConfiguration rawSocketTransportConfiguration;
-
-    public ProfinetRawSocketTransportConfiguration getRawSocketTransportConfiguration() {
-        return rawSocketTransportConfiguration;
-    }
-
-    public void setRawSocketTransportConfiguration(ProfinetRawSocketTransportConfiguration rawSocketTransportConfiguration) {
-        this.rawSocketTransportConfiguration = rawSocketTransportConfiguration;
-    }
 
     public ProfinetISO15745Profile getGsdProfile(int vendorId, int deviceId) {
         String value = gsdDirectory;
@@ -94,15 +77,6 @@ public class ProfinetConfiguration implements Configuration, TransportConfigurat
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-        return null;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "raw":
-                return rawSocketTransportConfiguration;
         }
         return null;
     }

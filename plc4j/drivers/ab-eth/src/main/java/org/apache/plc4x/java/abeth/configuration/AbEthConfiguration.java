@@ -19,18 +19,12 @@
 package org.apache.plc4x.java.abeth.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class AbEthConfiguration implements Configuration, TransportConfigurationProvider {
+public class AbEthConfiguration implements Configuration {
 
     @ConfigurationParameter
     private int station;
-
-    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
-    private AbEthTcpTransportConfiguration tcpTransportConfiguration;
 
     public int getStation() {
         return station;
@@ -38,23 +32,6 @@ public class AbEthConfiguration implements Configuration, TransportConfiguration
 
     public void setStation(int station) {
         this.station = station;
-    }
-
-    public AbEthTcpTransportConfiguration getTcpTransportConfiguration() {
-        return tcpTransportConfiguration;
-    }
-
-    public void setTcpTransportConfiguration(AbEthTcpTransportConfiguration tcpTransportConfiguration) {
-        this.tcpTransportConfiguration = tcpTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return tcpTransportConfiguration;
-        }
-        return null;
     }
 
 }

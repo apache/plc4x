@@ -19,14 +19,10 @@
 package org.apache.plc4x.java.canopen.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
-import org.apache.plc4x.java.transport.can.DefaultCANTransportConfiguration;
 
-public class CANOpenConfiguration implements Configuration, TransportConfigurationProvider {
+public class CANOpenConfiguration implements Configuration {
 
     @ConfigurationParameter
     private int nodeId;
@@ -37,9 +33,6 @@ public class CANOpenConfiguration implements Configuration, TransportConfigurati
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(1000)
     private int requestTimeout;
-
-    @ComplexConfigurationParameter(prefix = "can", defaultOverrides = {}, requiredOverrides = {})
-    private DefaultCANTransportConfiguration canTransportConfiguration;
 
     public int getNodeId() {
         return nodeId;
@@ -63,23 +56,6 @@ public class CANOpenConfiguration implements Configuration, TransportConfigurati
 
     public void setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
-    }
-
-    public DefaultCANTransportConfiguration getCanTransportConfiguration() {
-        return canTransportConfiguration;
-    }
-
-    public void setCanTransportConfiguration(DefaultCANTransportConfiguration canTransportConfiguration) {
-        this.canTransportConfiguration = canTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "can":
-                return canTransportConfiguration;
-        }
-        return null;
     }
 
 }

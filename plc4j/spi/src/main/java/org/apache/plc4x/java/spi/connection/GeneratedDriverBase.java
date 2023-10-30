@@ -29,7 +29,7 @@ import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -112,6 +112,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     @Override
     public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
+        ConfigurationFactory configurationFactory = new ConfigurationFactory();
         // Split up the connection string into its individual segments.
         Matcher matcher = URI_PATTERN.matcher(connectionString);
         if (!matcher.matches()) {
@@ -132,7 +133,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         // Create the configuration object.
-        Configuration configuration = new ConfigurationFactory()
+        Configuration configuration = configurationFactory
             .createConfiguration(getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
@@ -152,12 +153,22 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             throw new PlcConnectionException("Unsupported transport " + transportCode);
         }
 
-        // Inject the configuration into the transport.
-        if(configuration instanceof TransportConfigurationProvider) {
-            TransportConfigurationProvider transportConfigurationProvider =
-                (TransportConfigurationProvider) configuration;
-            TransportConfiguration transportConfiguration =
-                transportConfigurationProvider.getTransportConfiguration(transportCode);
+        // Find out the type of the transport configuration.
+        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        if(this instanceof TransportConfigurationTypeProvider) {
+            TransportConfigurationTypeProvider transportConfigurationTypeProvider =
+                (TransportConfigurationTypeProvider) this;
+            Class<? extends TransportConfiguration> driverTransportConfigurationType =
+                transportConfigurationTypeProvider.getTransportConfigurationType(transportCode);
+            if(driverTransportConfigurationType != null) {
+                transportConfigurationType = driverTransportConfigurationType;
+            }
+        }
+        // Use the transport configuration type to actually configure the transport instance.
+        if(transportConfigurationType != null) {
+            Configuration transportConfiguration = configurationFactory
+                .createPrefixedConfiguration(transportConfigurationType,
+                    transportCode, protocolCode, transportCode, transportConfig, paramString);
             configure(transportConfiguration, transport);
         }
 

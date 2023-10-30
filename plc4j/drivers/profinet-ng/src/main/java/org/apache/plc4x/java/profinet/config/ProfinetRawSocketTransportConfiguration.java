@@ -19,10 +19,25 @@
 
 package org.apache.plc4x.java.profinet.config;
 
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.transport.rawsocket.DefaultRawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 public class ProfinetRawSocketTransportConfiguration extends DefaultRawSocketTransportConfiguration {
+
+    @ConfigurationParameter("resolve-mac-address")
+    @BooleanDefaultValue(true)
+    private boolean resolveMacAddress;
+
+    @Override
+    public boolean isResolveMacAccess() {
+        return resolveMacAddress;
+    }
+
+    public void setResolveMacAddress(boolean resolveMacAddress) {
+        this.resolveMacAddress = resolveMacAddress;
+    }
 
     @Override
     public int getDefaultPort() {

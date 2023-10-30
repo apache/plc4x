@@ -19,14 +19,11 @@
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class S7Configuration implements Configuration, TransportConfigurationProvider {
+public class S7Configuration implements Configuration {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -91,9 +88,6 @@ public class S7Configuration implements Configuration, TransportConfigurationPro
     @ConfigurationParameter("retry-time")
     @IntDefaultValue(4)
     public int retryTime = 4;
-
-    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
-    private S7TcpTransportConfiguration tcpTransportConfiguration;
 
     public int getLocalRack() {
         return localRack;
@@ -221,23 +215,6 @@ public class S7Configuration implements Configuration, TransportConfigurationPro
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
-    }
-
-    public S7TcpTransportConfiguration getTcpTransportConfiguration() {
-        return tcpTransportConfiguration;
-    }
-
-    public void setTcpTransportConfiguration(S7TcpTransportConfiguration tcpTransportConfiguration) {
-        this.tcpTransportConfiguration = tcpTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return tcpTransportConfiguration;
-        }
-        return null;
     }
 
     @Override

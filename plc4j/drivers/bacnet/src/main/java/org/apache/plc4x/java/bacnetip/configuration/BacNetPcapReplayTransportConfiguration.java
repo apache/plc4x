@@ -20,11 +20,26 @@
 package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.transport.pcapreplay.DefaultPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 import org.pcap4j.packet.Dot1qVlanTagPacket;
 
 public class BacNetPcapReplayTransportConfiguration extends DefaultPcapReplayTransportConfiguration {
+
+    @ConfigurationParameter("support-vlans")
+    @BooleanDefaultValue(false)
+    private boolean supportVlans;
+
+    @Override
+    public boolean getSupportVlans() {
+        return supportVlans;
+    }
+
+    public void setSupportVlans(boolean supportVlans) {
+        this.supportVlans = supportVlans;
+    }
 
     @Override
     public int getDefaultPort() {

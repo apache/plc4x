@@ -20,15 +20,12 @@ package org.apache.plc4x.java.knxnetip.configuration;
 
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class KnxNetIpConfiguration implements Configuration, TransportConfigurationProvider {
+public class KnxNetIpConfiguration implements Configuration {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
@@ -43,15 +40,6 @@ public class KnxNetIpConfiguration implements Configuration, TransportConfigurat
     @ConfigurationParameter("connection-type")
     @StringDefaultValue("LINK_LAYER")
     public String connectionType = "LINK_LAYER";
-
-    @ComplexConfigurationParameter(prefix = "udp", defaultOverrides = {}, requiredOverrides = {})
-    private KnxNetIpUdpTransportConfiguration udpTransportConfiguration;
-
-    @ComplexConfigurationParameter(prefix = "pcap", defaultOverrides = {}, requiredOverrides = {})
-    private KnxNetIpPcapReplayTransportConfiguration pcapReplayTransportConfiguration;
-
-    @ComplexConfigurationParameter(prefix = "raw", defaultOverrides = {}, requiredOverrides = {})
-    private KnxNetIpRawSocketTransportConfiguration rawSocketTransportConfiguration;
 
     public String getKnxprojFilePath() {
         return knxprojFilePath;
@@ -90,43 +78,6 @@ public class KnxNetIpConfiguration implements Configuration, TransportConfigurat
             throw new ConfigurationException("Value provided for connection-type invalid.");
         }
         this.connectionType = connectionType.toUpperCase();
-    }
-
-    public KnxNetIpUdpTransportConfiguration getUdpTransportConfiguration() {
-        return udpTransportConfiguration;
-    }
-
-    public void setUdpTransportConfiguration(KnxNetIpUdpTransportConfiguration udpTransportConfiguration) {
-        this.udpTransportConfiguration = udpTransportConfiguration;
-    }
-
-    public KnxNetIpPcapReplayTransportConfiguration getPcapReplayTransportConfiguration() {
-        return pcapReplayTransportConfiguration;
-    }
-
-    public void setPcapReplayTransportConfiguration(KnxNetIpPcapReplayTransportConfiguration pcapReplayTransportConfiguration) {
-        this.pcapReplayTransportConfiguration = pcapReplayTransportConfiguration;
-    }
-
-    public KnxNetIpRawSocketTransportConfiguration getRawSocketTransportConfiguration() {
-        return rawSocketTransportConfiguration;
-    }
-
-    public void setRawSocketTransportConfiguration(KnxNetIpRawSocketTransportConfiguration rawSocketTransportConfiguration) {
-        this.rawSocketTransportConfiguration = rawSocketTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "udp":
-                return udpTransportConfiguration;
-            case "pcap":
-                return pcapReplayTransportConfiguration;
-            case "raw":
-                return rawSocketTransportConfiguration;
-        }
-        return null;
     }
 
     @Override

@@ -19,23 +19,49 @@
 
 package org.apache.plc4x.java.transport.pcapreplay;
 
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
 import org.apache.plc4x.java.transport.pcap.DefaultPcapTransportConfiguration;
 
 public abstract class DefaultPcapReplayTransportConfiguration extends DefaultPcapTransportConfiguration implements PcapReplayTransportConfiguration {
 
+    @ConfigurationParameter("replay-speed-factor")
+    @FloatDefaultValue(1.0f)
+    private float replaySpeedFactor;
+
+    @ConfigurationParameter("loop")
+    @BooleanDefaultValue(false)
+    private boolean loop;
+
+    @ConfigurationParameter("filter")
+    private String filter;
+
     @Override
     public float getReplaySpeedFactor() {
-        return 1.0f;
+        return replaySpeedFactor;
+    }
+
+    public void setReplaySpeedFactor(float replaySpeedFactor) {
+        this.replaySpeedFactor = replaySpeedFactor;
     }
 
     @Override
     public boolean isLoop() {
-        return false;
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        this.loop = loop;
     }
 
     @Override
     public String getFilter() {
-        return "";
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 
 }

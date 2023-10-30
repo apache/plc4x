@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
 import org.apache.plc4x.java.s7.readwrite.connection.S7HDefaultNettyPlcConnection;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -31,7 +32,7 @@ import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.confi
 /**
  * Customized version of a GeneratedDriverBase that supports opening two connections to a remote host.
  */
-public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
+public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> implements TransportConfigurationTypeProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(S7HGeneratedDriverBase.class);
 
@@ -56,6 +57,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
     @Override
     public PlcConnection getConnection(String connectionString) throws PlcConnectionException {
+        ConfigurationFactory configurationFactory = new ConfigurationFactory();
         // Split up the connection string into its individual segments.
         Matcher smatcher = URI_PATTERN.matcher(connectionString);
         Matcher hmatcher = URI_H_PATTERN.matcher(connectionString);
@@ -81,7 +83,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         }
 
         // Create the configuration object.
-        Configuration configuration = new ConfigurationFactory().createConfiguration(
+        Configuration configuration = configurationFactory.createConfiguration(
             getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
@@ -101,12 +103,17 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             throw new PlcConnectionException("Unsupported transport " + transportCode);
         }
 
-        // Inject the configuration into the transport.
-        if(configuration instanceof TransportConfigurationProvider) {
-            TransportConfigurationProvider transportConfigurationProvider =
-                (TransportConfigurationProvider) configuration;
-            TransportConfiguration transportConfiguration =
-                transportConfigurationProvider.getTransportConfiguration(transportCode);
+        // Find out the type of the transport configuration.
+        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        Class<? extends TransportConfiguration> driverTransportConfigurationType = getTransportConfigurationType(transportCode);
+        if(driverTransportConfigurationType != null) {
+            transportConfigurationType = driverTransportConfigurationType;
+        }
+        // Use the transport configuration type to actually configure the transport instance.
+        if(transportConfigurationType != null) {
+            Configuration transportConfiguration = configurationFactory
+                .createPrefixedConfiguration(transportConfigurationType,
+                    transportCode, protocolCode, transportCode, transportConfig, paramString);
             configure(transportConfiguration, transport);
         }
 
@@ -212,5 +219,13 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         return null;
     }
 
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return S7TcpTransportConfiguration.class;
+        }
+        return null;
+    }
 
 }

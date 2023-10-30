@@ -25,8 +25,6 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -38,7 +36,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetConfiguration implements Configuration, TransportConfigurationProvider {
+public class ProfinetConfiguration implements Configuration {
 
     @Required
     @ConfigurationParameter
@@ -65,19 +63,6 @@ public class ProfinetConfiguration implements Configuration, TransportConfigurat
     @ConfigurationParameter("dataholdfactor")
     @IntDefaultValue(50)
     private int dataHoldFactor;
-
-    @ComplexConfigurationParameter(prefix = "raw", defaultOverrides = {
-        @ComplexConfigurationParameterDefaultOverride(name = "resolve-mac-address", value = "true")
-    }, requiredOverrides = {})
-    private ProfinetRawSocketTransportConfiguration rawSocketTransportConfiguration;
-
-    public ProfinetRawSocketTransportConfiguration getRawSocketTransportConfiguration() {
-        return rawSocketTransportConfiguration;
-    }
-
-    public void setRawSocketTransportConfiguration(ProfinetRawSocketTransportConfiguration rawSocketTransportConfiguration) {
-        this.rawSocketTransportConfiguration = rawSocketTransportConfiguration;
-    }
 
     public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {
 
@@ -192,15 +177,6 @@ public class ProfinetConfiguration implements Configuration, TransportConfigurat
 
     public static GsdFileMap getGsdFiles() {
         return gsdFiles;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "raw":
-                return rawSocketTransportConfiguration;
-        }
-        return null;
     }
 
     @Override

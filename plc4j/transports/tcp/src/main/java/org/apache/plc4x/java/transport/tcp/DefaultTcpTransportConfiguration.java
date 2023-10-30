@@ -23,7 +23,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParamete
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public abstract class DefaultTcpTransportConfiguration implements TcpTransportConfiguration {
+public class DefaultTcpTransportConfiguration implements TcpTransportConfiguration {
 
     @ConfigurationParameter("keep-alive")
     @BooleanDefaultValue(false)

@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.channel.ProfinetChannel;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.config.ProfinetRawSocketTransportConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.discovery.ProfinetDiscoverer;
 import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
@@ -36,12 +37,14 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.Pcaps;
 
 import java.util.function.ToIntFunction;
 
-public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
+public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implements TransportConfigurationTypeProvider {
 
     public static final String DRIVER_CODE = "profinet";
 
@@ -159,6 +162,15 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     @Override
     public ProfinetTag prepareTag(String query) {
         return ProfinetTag.of(query);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "raw":
+                return ProfinetRawSocketTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

@@ -20,20 +20,14 @@
 package org.apache.plc4x.java.iec608705104.readwrite.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class Iec608705014Configuration implements Configuration, TransportConfigurationProvider {
+public class Iec608705014Configuration implements Configuration {
 
     @ConfigurationParameter("timeout-request")
     @IntDefaultValue(4000)
     protected int timeoutRequest;
-
-    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
-    private Iec608705014TcpTransportConfiguration tcpTransportConfiguration;
 
     public int getTimeoutRequest() {
         return timeoutRequest;
@@ -41,23 +35,6 @@ public class Iec608705014Configuration implements Configuration, TransportConfig
 
     public void setTimeoutRequest(int timeoutRequest) {
         this.timeoutRequest = timeoutRequest;
-    }
-
-    public Iec608705014TcpTransportConfiguration getTcpTransportConfiguration() {
-        return tcpTransportConfiguration;
-    }
-
-    public void setTcpTransportConfiguration(Iec608705014TcpTransportConfiguration tcpTransportConfiguration) {
-        this.tcpTransportConfiguration = tcpTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return tcpTransportConfiguration;
-        }
-        return null;
     }
 
 }

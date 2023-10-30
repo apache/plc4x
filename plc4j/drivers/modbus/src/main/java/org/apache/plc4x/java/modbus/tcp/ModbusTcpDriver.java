@@ -24,11 +24,14 @@ import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
+import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.modbus.tcp.discovery.ModbusPlcDiscoverer;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.ModbusTcpADU;
 import org.apache.plc4x.java.modbus.tcp.protocol.ModbusTcpProtocolLogic;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -39,7 +42,7 @@ import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
 import java.util.function.ToIntFunction;
 
-public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
+public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -144,6 +147,15 @@ public class ModbusTcpDriver extends GeneratedDriverBase<ModbusTcpADU> {
     @Override
     public ModbusTag prepareTag(String tagAddress){
         return ModbusTag.of(tagAddress);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return ModbusTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

@@ -19,13 +19,10 @@
 package org.apache.plc4x.java.plc4x.config;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class Plc4xConfiguration implements Configuration, TransportConfigurationProvider {
+public class Plc4xConfiguration implements Configuration {
 
     @ConfigurationParameter("remote-connection-string")
     private String remoteConnectionString;
@@ -33,9 +30,6 @@ public class Plc4xConfiguration implements Configuration, TransportConfiguration
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
     private int requestTimeout;
-
-    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
-    private Plc4xTcpTransportConfiguration tcpTransportConfiguration;
 
     public String getRemoteConnectionString() {
         return remoteConnectionString;
@@ -51,23 +45,6 @@ public class Plc4xConfiguration implements Configuration, TransportConfiguration
 
     public void setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
-    }
-
-    public Plc4xTcpTransportConfiguration getTcpTransportConfiguration() {
-        return tcpTransportConfiguration;
-    }
-
-    public void setTcpTransportConfiguration(Plc4xTcpTransportConfiguration tcpTransportConfiguration) {
-        this.tcpTransportConfiguration = tcpTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return tcpTransportConfiguration;
-        }
-        return null;
     }
 
 }

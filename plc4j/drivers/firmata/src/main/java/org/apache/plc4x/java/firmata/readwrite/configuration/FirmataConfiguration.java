@@ -19,31 +19,7 @@
 package org.apache.plc4x.java.firmata.readwrite.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
-import org.apache.plc4x.java.transport.serial.DefaultSerialTransportConfiguration;
 
-public class FirmataConfiguration implements Configuration, TransportConfigurationProvider {
-
-    @ComplexConfigurationParameter(prefix = "serial", defaultOverrides = {}, requiredOverrides = {})
-    private DefaultSerialTransportConfiguration serialTransportConfiguration;
-
-    public DefaultSerialTransportConfiguration getSerialTransportConfiguration() {
-        return serialTransportConfiguration;
-    }
-
-    public void setSerialTransportConfiguration(DefaultSerialTransportConfiguration serialTransportConfiguration) {
-        this.serialTransportConfiguration = serialTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "serial":
-                return serialTransportConfiguration;
-        }
-        return null;
-    }
+public class FirmataConfiguration implements Configuration {
 
 }

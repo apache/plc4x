@@ -19,8 +19,8 @@
 
 package org.apache.plc4x.java.spi.transport;
 
-public interface TransportConfigurationProvider {
+public interface TransportConfigurationTypeProvider {
 
-    TransportConfiguration getTransportConfiguration(String transportCode);
+    Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode);
 
 }

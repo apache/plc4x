@@ -19,13 +19,10 @@
 package org.apache.plc4x.java.eip.base.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class EIPConfiguration implements Configuration, TransportConfigurationProvider {
+public class EIPConfiguration implements Configuration {
 
     @ConfigurationParameter
     private int backplane = 1;
@@ -35,9 +32,6 @@ public class EIPConfiguration implements Configuration, TransportConfigurationPr
 
     @ConfigurationParameter
     private boolean bigEndian = true;
-
-    @ComplexConfigurationParameter(prefix = "tcp", defaultOverrides = {}, requiredOverrides = {})
-    private EipTcpTransportConfiguration tcpTransportConfiguration;
 
     public int getBackplane() {
         return backplane;
@@ -61,23 +55,6 @@ public class EIPConfiguration implements Configuration, TransportConfigurationPr
 
     public void setByteOrder(ByteOrder byteOrder) {
         this.bigEndian = byteOrder == ByteOrder.BIG_ENDIAN;
-    }
-
-    public EipTcpTransportConfiguration getTcpTransportConfiguration() {
-        return tcpTransportConfiguration;
-    }
-
-    public void setTcpTransportConfiguration(EipTcpTransportConfiguration tcpTransportConfiguration) {
-        this.tcpTransportConfiguration = tcpTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return tcpTransportConfiguration;
-        }
-        return null;
     }
 
 }

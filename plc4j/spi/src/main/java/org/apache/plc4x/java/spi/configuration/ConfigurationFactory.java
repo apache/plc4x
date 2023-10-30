@@ -62,6 +62,23 @@ public class ConfigurationFactory {
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, paramStringValues);
     }
 
+    public <T extends Configuration> T createPrefixedConfiguration(Class<T> pClazz, String prefix, String protocolCode,
+                                                                   String transportCode, String transportConfig,
+                                                                   String paramString) {
+
+        // Get a map of all parameters in the connection string.
+        Map<String, List<String>> paramStringValues = splitQuery(paramString);
+        // Filter out the properties, that don't have the current prefix
+        prefix = prefix + ".";
+        Map<String, List<String>> filteredParamStringValues = new HashMap<>();
+        for (String paramName : paramStringValues.keySet()) {
+            if(paramName.startsWith(prefix)) {
+                filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
+            }
+        }
+        return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+    }
+
     public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
                                                            String transportConfig, Map<String, List<String>> paramStringValues) {
         // Get a map of all configuration parameter fields.

@@ -19,13 +19,9 @@
 package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameterDefaultOverride;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationProvider;
 
-public class BacNetIpConfiguration implements Configuration, TransportConfigurationProvider {
+public class BacNetIpConfiguration implements Configuration {
 
     // Path to a single EDE file.
     @ConfigurationParameter("ede-file-path")
@@ -34,19 +30,6 @@ public class BacNetIpConfiguration implements Configuration, TransportConfigurat
     // Path to a directory containing many EDE files.
     @ConfigurationParameter("ede-directory-path")
     private String edeDirectoryPath;
-
-    @ComplexConfigurationParameter(prefix = "udp", defaultOverrides = {}, requiredOverrides = {})
-    private BacNetUdpTransportConfiguration udpTransportConfiguration;
-
-    @ComplexConfigurationParameter(prefix = "pcap", defaultOverrides = {
-        @ComplexConfigurationParameterDefaultOverride(name = "support-vlans", value = "true")
-    }, requiredOverrides = {})
-    private BacNetPcapReplayTransportConfiguration pcapReplayTransportConfiguration;
-
-    @ComplexConfigurationParameter(prefix = "raw", defaultOverrides = {
-        @ComplexConfigurationParameterDefaultOverride(name = "resolve-mac-address", value = "true")
-    }, requiredOverrides = {})
-    private BacNetRawSocketTransportConfiguration rawSocketTransportConfiguration;
 
     public String getEdeFilePath() {
         return edeFilePath;
@@ -62,43 +45,6 @@ public class BacNetIpConfiguration implements Configuration, TransportConfigurat
 
     public void setEdeDirectoryPath(String edeDirectoryPath) {
         this.edeDirectoryPath = edeDirectoryPath;
-    }
-
-    public BacNetUdpTransportConfiguration getUdpTransportConfiguration() {
-        return udpTransportConfiguration;
-    }
-
-    public void setUdpTransportConfiguration(BacNetUdpTransportConfiguration udpTransportConfiguration) {
-        this.udpTransportConfiguration = udpTransportConfiguration;
-    }
-
-    public BacNetPcapReplayTransportConfiguration getPcapReplayTransportConfiguration() {
-        return pcapReplayTransportConfiguration;
-    }
-
-    public void setPcapReplayTransportConfiguration(BacNetPcapReplayTransportConfiguration pcapReplayTransportConfiguration) {
-        this.pcapReplayTransportConfiguration = pcapReplayTransportConfiguration;
-    }
-
-    public BacNetRawSocketTransportConfiguration getRawSocketTransportConfiguration() {
-        return rawSocketTransportConfiguration;
-    }
-
-    public void setRawSocketTransportConfiguration(BacNetRawSocketTransportConfiguration rawSocketTransportConfiguration) {
-        this.rawSocketTransportConfiguration = rawSocketTransportConfiguration;
-    }
-
-    @Override
-    public TransportConfiguration getTransportConfiguration(String transportCode) {
-        switch (transportCode) {
-            case "udp":
-                return udpTransportConfiguration;
-            case "raw":
-                return rawSocketTransportConfiguration;
-            case "pcap":
-                return pcapReplayTransportConfiguration;
-        }
-        return null;
     }
 
 }
