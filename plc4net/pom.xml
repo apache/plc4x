@@ -96,6 +96,17 @@
     </plugins>
   </build>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-knxnetip</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <profile>
       <id>update-generated-code</id>
