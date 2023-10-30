@@ -23,8 +23,7 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
 class ModbusPDUReadFileRecordRequestItem(PlcMessage):
     reference_type: int
@@ -32,31 +31,29 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
     record_number: int
     record_length: int
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFileRecordRequestItem")
 
         # Simple Field (referenceType)
-        write_buffer.write_unsigned_byte(
-            self.reference_type, logical_name="referenceType"
-        )
+        write_buffer.write_unsigned_byte(self.reference_type, logical_name="referenceType")
 
         # Simple Field (fileNumber)
         write_buffer.write_unsigned_short(self.file_number, logical_name="fileNumber")
 
         # Simple Field (recordNumber)
-        write_buffer.write_unsigned_short(
-            self.record_number, logical_name="recordNumber"
-        )
+        write_buffer.write_unsigned_short(self.record_number, logical_name="recordNumber")
 
         # Simple Field (recordLength)
-        write_buffer.write_unsigned_short(
-            self.record_length, logical_name="recordLength"
-        )
+        write_buffer.write_unsigned_short(self.record_length, logical_name="recordLength")
 
         write_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -79,27 +76,28 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
+
+    def static_parse(self, read_buffer: ReadBuffer , args):
         return self.static_parse_context(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusPDUReadFileRecordRequestItem")
 
-        self.reference_type = read_simple_field("referenceType", read_unsigned_short)
+        self.reference_type= read_simple_field("referenceType", read_unsigned_short)
 
-        self.file_number = read_simple_field("fileNumber", read_unsigned_int)
+        self.file_number= read_simple_field("fileNumber", read_unsigned_int)
 
-        self.record_number = read_simple_field("recordNumber", read_unsigned_int)
+        self.record_number= read_simple_field("recordNumber", read_unsigned_int)
 
-        self.record_length = read_simple_field("recordLength", read_unsigned_int)
+        self.record_length= read_simple_field("recordLength", read_unsigned_int)
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance
-        _modbus_pdu_read_file_record_request_item: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(
-            reference_type, file_number, record_number, record_length
-        )
+        _modbus_pdu_read_file_record_request_item: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(reference_type, file_number, record_number, record_length )
         return _modbus_pdu_read_file_record_request_item
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,13 +107,7 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
             return False
 
         that: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(o)
-        return (
-            (self.reference_type == that.reference_type)
-            and (self.file_number == that.file_number)
-            and (self.record_number == that.record_number)
-            and (self.record_length == that.record_length)
-            and True
-        )
+        return (self.reference_type == that.reference_type) and (self.file_number == that.file_number) and (self.record_number == that.record_number) and (self.record_length == that.record_length) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -128,3 +120,7 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
             raise RuntimeException(e)
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

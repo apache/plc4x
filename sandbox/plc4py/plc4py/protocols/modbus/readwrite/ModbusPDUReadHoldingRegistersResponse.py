@@ -26,30 +26,33 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
-
-
+    
 @dataclass
-class ModbusPDUReadHoldingRegistersResponse(PlcMessage, ModbusPDU):
+class ModbusPDUReadHoldingRegistersResponse(PlcMessage,ModbusPDU):
     value: List[int]
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x03
     response: bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadHoldingRegistersResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = int(len(self.value))
+        byte_count: int = (int(len(self.value)))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (value)
         write_buffer.write_byte_array(self.value, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUReadHoldingRegistersResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -65,7 +68,9 @@ class ModbusPDUReadHoldingRegistersResponse(PlcMessage, ModbusPDU):
         if self.value != None:
             length_in_bits += 8 * len(self.value)
 
+
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
@@ -77,7 +82,8 @@ class ModbusPDUReadHoldingRegistersResponse(PlcMessage, ModbusPDU):
 
         read_buffer.pop_context("ModbusPDUReadHoldingRegistersResponse")
         # Create the instance
-        return ModbusPDUReadHoldingRegistersResponseBuilder(value)
+        return ModbusPDUReadHoldingRegistersResponseBuilder(value )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -86,9 +92,7 @@ class ModbusPDUReadHoldingRegistersResponse(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUReadHoldingRegistersResponse):
             return False
 
-        that: ModbusPDUReadHoldingRegistersResponse = (
-            ModbusPDUReadHoldingRegistersResponse(o)
-        )
+        that: ModbusPDUReadHoldingRegistersResponse = ModbusPDUReadHoldingRegistersResponse(o)
         return (self.value == that.value) and super().equals(that) and True
 
     def hash_code(self) -> int:
@@ -111,10 +115,9 @@ class ModbusPDUReadHoldingRegistersResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReadHoldingRegistersResponse:
-        modbus_pdu_read_holding_registers_response: ModbusPDUReadHoldingRegistersResponse = ModbusPDUReadHoldingRegistersResponse(
-            self.value
-        )
+    def build(self,) -> ModbusPDUReadHoldingRegistersResponse:
+        modbus_pdu_read_holding_registers_response: ModbusPDUReadHoldingRegistersResponse = ModbusPDUReadHoldingRegistersResponse(self.value )
         return modbus_pdu_read_holding_registers_response
+
+
+

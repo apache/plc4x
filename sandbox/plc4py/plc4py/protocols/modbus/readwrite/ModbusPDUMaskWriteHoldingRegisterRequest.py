@@ -25,10 +25,9 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage, ModbusPDU):
+class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
     reference_address: int
     and_mask: int
     or_mask: int
@@ -37,16 +36,17 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage, ModbusPDU):
     function_flag: int = 0x16
     response: bool = False
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterRequest")
 
         # Simple Field (referenceAddress)
-        write_buffer.write_unsigned_short(
-            self.reference_address, logical_name="referenceAddress"
-        )
+        write_buffer.write_unsigned_short(self.reference_address, logical_name="referenceAddress")
 
         # Simple Field (andMask)
         write_buffer.write_unsigned_short(self.and_mask, logical_name="andMask")
@@ -55,6 +55,7 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage, ModbusPDU):
         write_buffer.write_unsigned_short(self.or_mask, logical_name="orMask")
 
         write_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterRequest")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -74,23 +75,21 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterRequest")
 
-        self.reference_address = read_simple_field(
-            "referenceAddress", read_unsigned_int
-        )
+        self.reference_address= read_simple_field("referenceAddress", read_unsigned_int)
 
-        self.and_mask = read_simple_field("andMask", read_unsigned_int)
+        self.and_mask= read_simple_field("andMask", read_unsigned_int)
 
-        self.or_mask = read_simple_field("orMask", read_unsigned_int)
+        self.or_mask= read_simple_field("orMask", read_unsigned_int)
 
         read_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterRequest")
         # Create the instance
-        return ModbusPDUMaskWriteHoldingRegisterRequestBuilder(
-            reference_address, and_mask, or_mask
-        )
+        return ModbusPDUMaskWriteHoldingRegisterRequestBuilder(reference_address, and_mask, or_mask )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -99,16 +98,8 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUMaskWriteHoldingRegisterRequest):
             return False
 
-        that: ModbusPDUMaskWriteHoldingRegisterRequest = (
-            ModbusPDUMaskWriteHoldingRegisterRequest(o)
-        )
-        return (
-            (self.reference_address == that.reference_address)
-            and (self.and_mask == that.and_mask)
-            and (self.or_mask == that.or_mask)
-            and super().equals(that)
-            and True
-        )
+        that: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(o)
+        return (self.reference_address == that.reference_address) and (self.and_mask == that.and_mask) and (self.or_mask == that.or_mask) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -132,10 +123,9 @@ class ModbusPDUMaskWriteHoldingRegisterRequestBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUMaskWriteHoldingRegisterRequest:
-        modbus_pdu_mask_write_holding_register_request: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(
-            self.reference_address, self.and_mask, self.or_mask
-        )
+    def build(self,) -> ModbusPDUMaskWriteHoldingRegisterRequest:
+        modbus_pdu_mask_write_holding_register_request: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(self.reference_address, self.and_mask, self.or_mask )
         return modbus_pdu_mask_write_holding_register_request
+
+
+

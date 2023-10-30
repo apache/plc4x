@@ -33,76 +33,14 @@
   <description>Base protocol specifications for the KNXNet/IP protocol</description>
 
   <build>
-    <plugins>
-      <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-      <!--
-        We're intentionally not using the download plugin as this would either download only once
-        and not get any updates or it would try downloading for every build. This however might result
-        in getting banned on the KNX server.
-
-        So this script makes sure the knx-master-data.xml is updated at most every 24h
-      -->
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <version>2.1.1</version>
-        <executions>
-          <!-- Do some pre-build checks and report any findings to the user -->
-          <execution>
-            <id>fetch-knx-manufacturer-data</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <source>${project.basedir}/src/main/script/getKnxMasterData.groovy</source>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>${groovy.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xml-maven-plugin</artifactId>
-        <version>1.1.0</version>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>transform</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <transformationSets>
-            <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
-              <includes>*.xml</includes>
-              <stylesheet>src/main/xslt/knx-types.xsl</stylesheet>
-              <outputDir>${project.build.outputDirectory}/protocols/knxnetip</outputDir>
-              <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
-                  <targetExtension>.mspec</targetExtension>
-                </fileMapper>
-              </fileMappers>
-            </transformationSet>
-          </transformationSets>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <version>12.3</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/generated</directory>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
@@ -142,5 +80,83 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
+          <!--
+            We're intentionally not using the download plugin as this would either download only once
+            and not get any updates or it would try downloading for every build. This however might result
+            in getting banned on the KNX server.
+
+            So this script makes sure the knx-master-data.xml is updated at most every 24h
+          -->
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <!-- Do some pre-build checks and report any findings to the user -->
+              <execution>
+                <id>fetch-knx-manufacturer-data</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/src/main/script/getKnxMasterData.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>xml-maven-plugin</artifactId>
+            <version>1.1.0</version>
+            <executions>
+              <execution>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>transform</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>*.xml</includes>
+                  <stylesheet>src/main/xslt/knx-types.xsl</stylesheet>
+                  <outputDir>${project.basedir}/src/main/generated/protocols/knxnetip</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                      <targetExtension>.mspec</targetExtension>
+                    </fileMapper>
+                  </fileMappers>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
+                <version>12.3</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
