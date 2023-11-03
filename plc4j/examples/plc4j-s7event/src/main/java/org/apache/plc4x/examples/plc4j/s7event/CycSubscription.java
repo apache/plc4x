@@ -100,7 +100,7 @@ public class CycSubscription implements ConnectionStateListener { //01
     public void OpenConnection() {
         try {
             connection = (S7HPlcConnection) new DefaultPlcDriverManager().
-             getConnection("s7://10.10.1.33/10.10.1.34?remote-rack=0&remote-slot=3&remote-rack2=0&remote-slot=4&controller-type=S7_400&read-timeout=8&ping=true&ping-time=4&retry-time=5");  
+             getConnection("s7://10.10.1.80/10.10.1.81?remote-rack=0&remote-slot=3&remote-rack2=0&remote-slot=4&controller-type=S7_400&read-timeout=8&ping=true&ping-time=4&retry-time=5");  
             connection.addEventListener(this);           
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -113,8 +113,8 @@ public class CycSubscription implements ConnectionStateListener { //01
     public void RegisterPlcTags(){
         subs_request_builder = connection.subscriptionRequestBuilder();
 
-        subs_request_builder.addEventTagAddress(PLCTAG_1, "CYC(B1SEC:2):%DB2.DBD2:REAL");
-        subs_request_builder.addEventTagAddress(PLCTAG_2, "CYC(B1SEC:2):%DB2.DBB3:BYTE"); 
+//        subs_request_builder.addEventTagAddress(PLCTAG_1, "CYC(B1SEC:2):%DB2.DBD2:REAL");
+//        subs_request_builder.addEventTagAddress(PLCTAG_2, "CYC(B1SEC:2):%DB2.DBB3:BYTE"); 
         subs_request_builder.addEventTagAddress(PLCTAG_3, "CYC(B1SEC:2):%MB190:BYTE");        
 
         subs_request = subs_request_builder.build();       
@@ -159,12 +159,12 @@ public class CycSubscription implements ConnectionStateListener { //01
                     System.out.println("******** <CYC Event 02> *********");
                     Map<String, Object> map = cycMsg.getMap();
                     map.keySet().forEach(key -> {System.out.println("Field available: " + key);});
-                    byte[] data01 = (byte[]) map.get("myCYC01");
-                    byte[] data02 = (byte[]) map.get("myCYC02");
-                    System.out.println("myCYC01" + ": " + Hex.encodeHexString(data01));
-                    System.out.println("myCYC02" + ": " + Hex.encodeHexString(data02));
-                    System.out.println("myCYC01" + ": " + cycMsg.getFloat("myCYC01"));                    
-                    System.out.println("myCYC02" + ": " + cycMsg.getByte("myCYC02"));
+//                    byte[] data01 = (byte[]) map.get("myCYC01");
+//                    byte[] data02 = (byte[]) map.get("myCYC02");
+//                    System.out.println("myCYC01" + ": " + Hex.encodeHexString(data01));
+//                    System.out.println("myCYC02" + ": " + Hex.encodeHexString(data02));
+//                    System.out.println("myCYC01" + ": " + cycMsg.getFloat("myCYC01"));                    
+//                    System.out.println("myCYC02" + ": " + cycMsg.getByte("myCYC02"));
                     System.out.println("myCYC03" + ": " + cycMsg.getByte("myCYC03"));                    
                     System.out.println("****************************");
                 });

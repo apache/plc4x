@@ -50,7 +50,7 @@ public class EventSubscription {
     public static void main(String[] args) throws Exception {
         System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "trace");                   
         
-        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.80?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
             
             subscription.addEventTagAddress("myMODE", "MODE");
