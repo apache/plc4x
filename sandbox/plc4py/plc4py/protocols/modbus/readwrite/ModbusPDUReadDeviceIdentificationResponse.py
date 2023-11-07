@@ -135,7 +135,7 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
         length_in_bits += 8
 
         # Array field
-        if self.objects != None:
+        if self.objects is not None:
             i: int = 0
             for element in self.objects:
                 last: bool = ++i >= len(self.objects)
@@ -147,49 +147,36 @@ class ModbusPDUReadDeviceIdentificationResponse(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadDeviceIdentificationResponse")
 
-        self.mei_type: int = read_const_field(
-            "meiType",
-            read_unsigned_short,
-            ModbusPDUReadDeviceIdentificationResponse.MEITYPE,
+        mei_type: int = read_buffer.read_unsigned_short(logical_name="meiType")
+
+        level: ModbusDeviceInformationLevel = read_buffer.read_complex(
+            read_function=ModbusDeviceInformationLevel, logical_name="level"
         )
 
-        self.level = read_enum_field(
-            "level",
-            "ModbusDeviceInformationLevel",
-            DataReaderEnumDefault(
-                ModbusDeviceInformationLevel.enumForValue, read_unsigned_short
-            ),
+        individual_access: bool = read_buffer.read_bit(logical_name="individualAccess")
+
+        conformity_level: ModbusDeviceInformationConformityLevel = (
+            read_buffer.read_complex(
+                read_function=ModbusDeviceInformationConformityLevel,
+                logical_name="conformityLevel",
+            )
         )
 
-        self.individual_access = read_simple_field("individualAccess", read_bit)
-
-        self.conformity_level = read_enum_field(
-            "conformityLevel",
-            "ModbusDeviceInformationConformityLevel",
-            DataReaderEnumDefault(
-                ModbusDeviceInformationConformityLevel.enumForValue, read_unsigned_short
-            ),
+        more_follows: ModbusDeviceInformationMoreFollows = read_buffer.read_complex(
+            read_function=ModbusDeviceInformationMoreFollows, logical_name="moreFollows"
         )
 
-        self.more_follows = read_enum_field(
-            "moreFollows",
-            "ModbusDeviceInformationMoreFollows",
-            DataReaderEnumDefault(
-                ModbusDeviceInformationMoreFollows.enumForValue, read_unsigned_short
-            ),
+        next_object_id: int = read_buffer.read_unsigned_short(
+            logical_name="nextObjectId"
         )
 
-        self.next_object_id = read_simple_field("nextObjectId", read_unsigned_short)
-
-        number_of_objects: int = read_implicit_field(
-            "numberOfObjects", read_unsigned_short
+        number_of_objects: int = read_buffer.read_unsigned_short(
+            logical_name="numberOfObjects"
         )
 
         objects: List[Any] = read_buffer.read_array_field(
-            "objects",
-            read_buffer.DataReaderComplexDefault(
-                ModbusDeviceInformationObject.static_parse(read_buffer), read_buffer
-            ),
+            logical_name="objects",
+            read_function=ModbusDeviceInformationObject.static_parse,
             count=number_of_objects,
         )
 

@@ -71,9 +71,11 @@ class ModbusPDUReadCoilsRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadCoilsRequest")
 
-        self.starting_address = read_simple_field("startingAddress", read_unsigned_int)
+        starting_address: int = read_buffer.read_unsigned_int(
+            logical_name="startingAddress"
+        )
 
-        self.quantity = read_simple_field("quantity", read_unsigned_int)
+        quantity: int = read_buffer.read_unsigned_int(logical_name="quantity")
 
         read_buffer.pop_context("ModbusPDUReadCoilsRequest")
         # Create the instance

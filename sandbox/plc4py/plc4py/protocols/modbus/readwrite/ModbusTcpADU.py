@@ -26,6 +26,7 @@ from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
 import math
 
 
@@ -100,35 +101,26 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
     ):
         read_buffer.push_context("ModbusTcpADU")
 
-        self.transaction_identifier = read_simple_field(
-            "transactionIdentifier",
-            read_unsigned_int,
-            WithOption.WithByteOrder(get_bi_g__endian()),
+        transaction_identifier: int = read_buffer.read_unsigned_int(
+            logical_name="transactionIdentifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        self.protocol_identifier: int = read_const_field(
-            "protocolIdentifier",
-            read_unsigned_int,
-            ModbusTcpADU.PROTOCOLIDENTIFIER,
-            WithOption.WithByteOrder(get_bi_g__endian()),
+        protocol_identifier: int = read_buffer.read_unsigned_int(
+            logical_name="protocolIdentifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        length: int = read_implicit_field(
-            "length", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
+        length: int = read_buffer.read_unsigned_int(
+            logical_name="length", byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        self.unit_identifier = read_simple_field(
-            "unitIdentifier",
-            read_unsigned_short,
-            WithOption.WithByteOrder(get_bi_g__endian()),
+        unit_identifier: int = read_buffer.read_unsigned_short(
+            logical_name="unitIdentifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        self.pdu = read_simple_field(
-            "pdu",
-            DataReaderComplexDefault(
-                ModbusPDU.static_parse(read_buffer, bool(response)), read_buffer
-            ),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+        pdu: ModbusPDU = read_buffer.read_complex(
+            read_function=ModbusPDU.static_parse,
+            logical_name="pdu",
+            byte_order=ByteOrder.BIG_ENDIAN,
         )
 
         read_buffer.pop_context("ModbusTcpADU")

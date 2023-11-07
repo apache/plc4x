@@ -65,10 +65,8 @@ class ModbusPDUError(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUError")
 
-        self.exception_code = read_enum_field(
-            "exceptionCode",
-            "ModbusErrorCode",
-            DataReaderEnumDefault(ModbusErrorCode.enumForValue, read_unsigned_short),
+        exception_code: ModbusErrorCode = read_buffer.read_complex(
+            read_function=ModbusErrorCode, logical_name="exceptionCode"
         )
 
         read_buffer.pop_context("ModbusPDUError")

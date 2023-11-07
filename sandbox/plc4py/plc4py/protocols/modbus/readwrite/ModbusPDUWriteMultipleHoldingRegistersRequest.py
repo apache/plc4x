@@ -24,6 +24,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
 from typing import List
 import math
 
@@ -78,7 +79,7 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
         length_in_bits += 8
 
         # Array field
-        if self.value != None:
+        if self.value is not None:
             length_in_bits += 8 * len(self.value)
 
         return length_in_bits
@@ -87,13 +88,17 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUWriteMultipleHoldingRegistersRequest")
 
-        self.starting_address = read_simple_field("startingAddress", read_unsigned_int)
+        starting_address: int = read_buffer.read_unsigned_int(
+            logical_name="startingAddress"
+        )
 
-        self.quantity = read_simple_field("quantity", read_unsigned_int)
+        quantity: int = read_buffer.read_unsigned_int(logical_name="quantity")
 
-        byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
+        byte_count: int = read_buffer.read_unsigned_short(logical_name="byteCount")
 
-        value: List[int] = read_buffer.read_byte_array("value", int(byte_count))
+        value: List[Any] = read_buffer.read_array_field(
+            logical_name="value", read_function=read_buffer.read_byte, count=byte_count
+        )
 
         read_buffer.pop_context("ModbusPDUWriteMultipleHoldingRegistersRequest")
         # Create the instance

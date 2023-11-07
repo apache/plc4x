@@ -78,13 +78,13 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterRequest")
 
-        self.reference_address = read_simple_field(
-            "referenceAddress", read_unsigned_int
+        reference_address: int = read_buffer.read_unsigned_int(
+            logical_name="referenceAddress"
         )
 
-        self.and_mask = read_simple_field("andMask", read_unsigned_int)
+        and_mask: int = read_buffer.read_unsigned_int(logical_name="andMask")
 
-        self.or_mask = read_simple_field("orMask", read_unsigned_int)
+        or_mask: int = read_buffer.read_unsigned_int(logical_name="orMask")
 
         read_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterRequest")
         # Create the instance

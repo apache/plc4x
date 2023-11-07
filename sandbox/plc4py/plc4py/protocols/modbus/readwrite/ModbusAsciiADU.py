@@ -27,6 +27,7 @@ from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
 import math
 
 
@@ -53,8 +54,7 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
 
         # Checksum Field (checksum) (Calculated)
         write_buffer.write_unsigned_byte(
-            int(StaticHelper.ascii_lrc_check(self.address, self.pdu)),
-            logical_name="crc",
+            int(StaticHelper.ascii_lrc_check(address, pdu)), logical_name="crc"
         )
 
         write_buffer.pop_context("ModbusAsciiADU")
@@ -83,23 +83,18 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
     ):
         read_buffer.push_context("ModbusAsciiADU")
 
-        self.address = read_simple_field(
-            "address", read_unsigned_short, WithOption.WithByteOrder(get_bi_g__endian())
+        address: int = read_buffer.read_unsigned_short(
+            logical_name="address", byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        self.pdu = read_simple_field(
-            "pdu",
-            DataReaderComplexDefault(
-                ModbusPDU.static_parse(read_buffer, bool(response)), read_buffer
-            ),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+        pdu: ModbusPDU = read_buffer.read_complex(
+            read_function=ModbusPDU.static_parse,
+            logical_name="pdu",
+            byte_order=ByteOrder.BIG_ENDIAN,
         )
 
-        crc: int = read_checksum_field(
-            "crc",
-            read_unsigned_short,
-            (int)(ascii_lrc_check(self.address, self.pdu)),
-            WithOption.WithByteOrder(get_bi_g__endian()),
+        crc: int = read_buffer.read_unsigned_short(
+            logical_name="crc", byte_order=ByteOrder.BIG_ENDIAN
         )
 
         read_buffer.pop_context("ModbusAsciiADU")

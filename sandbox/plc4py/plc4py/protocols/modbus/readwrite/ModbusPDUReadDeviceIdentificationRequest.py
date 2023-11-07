@@ -83,21 +83,13 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
 
-        self.mei_type: int = read_const_field(
-            "meiType",
-            read_unsigned_short,
-            ModbusPDUReadDeviceIdentificationRequest.MEITYPE,
+        mei_type: int = read_buffer.read_unsigned_short(logical_name="meiType")
+
+        level: ModbusDeviceInformationLevel = read_buffer.read_complex(
+            read_function=ModbusDeviceInformationLevel, logical_name="level"
         )
 
-        self.level = read_enum_field(
-            "level",
-            "ModbusDeviceInformationLevel",
-            DataReaderEnumDefault(
-                ModbusDeviceInformationLevel.enumForValue, read_unsigned_short
-            ),
-        )
-
-        self.object_id = read_simple_field("objectId", read_unsigned_short)
+        object_id: int = read_buffer.read_unsigned_short(logical_name="objectId")
 
         read_buffer.pop_context("ModbusPDUReadDeviceIdentificationRequest")
         # Create the instance

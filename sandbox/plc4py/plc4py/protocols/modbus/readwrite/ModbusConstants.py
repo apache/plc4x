@@ -54,17 +54,16 @@ class ModbusConstants(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
-        return self.static_parse_context(read_buffer)
+    @staticmethod
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+        return ModbusConstants.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusConstants")
 
-        self.modbus_tcp_default_port: int = read_const_field(
-            "modbusTcpDefaultPort",
-            read_unsigned_int,
-            ModbusConstants.MODBUSTCPDEFAULTPORT,
+        modbus_tcp_default_port: int = read_buffer.read_unsigned_int(
+            logical_name="modbusTcpDefaultPort"
         )
 
         read_buffer.pop_context("ModbusConstants")

@@ -207,28 +207,29 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final Optional<Term> encodingOptional = field.getEncoding();
         if (encodingOptional.isPresent()) {
             final String encoding = toParseExpression(field, field.getType(), encodingOptional.get(), parserArguments);
-            sb.append(", WithOption.WithEncoding(").append(encoding).append(")");
+            sb.append(", encoding='").append(encoding).append("'");
         }
         final Optional<Term> byteOrderOptional = field.getByteOrder();
         if (byteOrderOptional.isPresent()) {
             final String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
-            sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
+            emitRequiredImport("from plc4py.utils.GenericTypes import ByteOrder");
+            sb.append(", byte_order=ByteOrder.").append(byteOrder);
         }
         return sb.toString();
     }
 
     public String getDataReaderCall(TypeReference typeReference) {
-        return getDataReaderCall(typeReference, "enumForValue");
+        return getDataReaderCall(typeReference, "enumForValue", false);
     }
 
-    public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
+    public String getDataReaderCall(TypeReference typeReference, String resolverMethod, Boolean isArray) {
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "DataReaderEnumDefault(" + languageTypeName + "." + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+            return "read_complex(read_function=" + languageTypeName + ",";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
-            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod, true);
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
@@ -251,12 +252,15 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 final TypeReference argumentType = getArgumentType(complexTypeReference, i);
                 paramsString
                     .append(", ")
-                    .append(getLanguageTypeNameForTypeReference(argumentType, true))
-                    .append("(")
                     .append(toParseExpression(null, argumentType, paramTerm, null))
-                    .append(")");
+                    .append("=")
+                    .append(toParseExpression(null, argumentType, paramTerm, null));
             }
-            return "DataReaderComplexDefault(" + parserCallString + ".static_parse(read_buffer" + paramsString + "), read_buffer)";
+            if (isArray) {
+                return parserCallString + ".static_parse, ";
+            } else {
+                return "read_complex(read_function=" + parserCallString + ".static_parse, ";
+            }
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -1026,7 +1030,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName)) && "stringLength".equals(variableLiteralName)) {
             tracer = tracer.dive("serialization argument");
-            return tracer + variableLiteralName +
+            return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
@@ -1041,7 +1045,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if ((parserArguments != null) && parserArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("parser argument");
-            return tracer + variableLiteralName +
+            return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
@@ -1058,7 +1062,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if (isChild) {
             variableAccess = "get_" + camelCaseToSnakeCase(variableAccess) + "()";
         }
-        return tracer + (serialize ? "self." + camelCaseToSnakeCase(variableLiteralName) + "" : variableAccess) + indexCall +
+        return tracer + (serialize ? "self." + camelCaseToSnakeCase(variableLiteralName) + "" : camelCaseToSnakeCase(variableAccess)) + indexCall +
             variableLiteral.getChild()
                 .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                 .orElse("");
@@ -1066,7 +1070,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     private String toUppercaseVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("toUppercaseVariableExpression");
-        StringBuilder sb = new StringBuilder("get_" + camelCaseToSnakeCase(variableLiteral.getName()) + "()");
+        StringBuilder sb = new StringBuilder(variableLiteral.getName().toUpperCase());
         if (variableLiteral.getArgs().isPresent()) {
             sb.append("(");
             boolean firstArg = true;
@@ -1220,7 +1224,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                             break;
                     }
                 } else {
-                    sb.append("self." + toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
+                    sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
                 }
             } else if (arg instanceof StringLiteral) {
                 tracer = tracer.dive("StringLiteral");

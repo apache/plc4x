@@ -62,7 +62,7 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
 
-        self.value = read_simple_field("value", read_unsigned_short)
+        value: int = read_buffer.read_unsigned_short(logical_name="value")
 
         read_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
         # Create the instance

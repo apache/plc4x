@@ -69,9 +69,9 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUGetComEventCounterResponse")
 
-        self.status = read_simple_field("status", read_unsigned_int)
+        status: int = read_buffer.read_unsigned_int(logical_name="status")
 
-        self.event_count = read_simple_field("eventCount", read_unsigned_int)
+        event_count: int = read_buffer.read_unsigned_int(logical_name="eventCount")
 
         read_buffer.pop_context("ModbusPDUGetComEventCounterResponse")
         # Create the instance

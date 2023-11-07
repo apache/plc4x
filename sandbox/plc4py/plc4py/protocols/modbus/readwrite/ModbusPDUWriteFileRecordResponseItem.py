@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
 from typing import List
 import math
 
@@ -81,28 +82,33 @@ class ModbusPDUWriteFileRecordResponseItem(PlcMessage):
         length_in_bits += 16
 
         # Array field
-        if self.record_data != None:
+        if self.record_data is not None:
             length_in_bits += 8 * len(self.record_data)
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
-        return self.static_parse_context(read_buffer)
+    @staticmethod
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+        return ModbusPDUWriteFileRecordResponseItem.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusPDUWriteFileRecordResponseItem")
 
-        self.reference_type = read_simple_field("referenceType", read_unsigned_short)
+        reference_type: int = read_buffer.read_unsigned_short(
+            logical_name="referenceType"
+        )
 
-        self.file_number = read_simple_field("fileNumber", read_unsigned_int)
+        file_number: int = read_buffer.read_unsigned_int(logical_name="fileNumber")
 
-        self.record_number = read_simple_field("recordNumber", read_unsigned_int)
+        record_number: int = read_buffer.read_unsigned_int(logical_name="recordNumber")
 
-        record_length: int = read_implicit_field("recordLength", read_unsigned_int)
+        record_length: int = read_buffer.read_unsigned_int(logical_name="recordLength")
 
-        record_data: List[int] = read_buffer.read_byte_array(
-            "recordData", int(record_length)
+        record_data: List[Any] = read_buffer.read_array_field(
+            logical_name="recordData",
+            read_function=read_buffer.read_byte,
+            count=record_length,
         )
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")

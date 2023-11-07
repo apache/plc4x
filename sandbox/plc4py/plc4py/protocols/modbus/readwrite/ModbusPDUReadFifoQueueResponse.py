@@ -72,7 +72,7 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
         length_in_bits += 16
 
         # Array field
-        if self.fifo_value != None:
+        if self.fifo_value is not None:
             length_in_bits += 16 * len(self.fifo_value)
 
         return length_in_bits
@@ -81,12 +81,14 @@ class ModbusPDUReadFifoQueueResponse(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFifoQueueResponse")
 
-        byte_count: int = read_implicit_field("byteCount", read_unsigned_int)
+        byte_count: int = read_buffer.read_unsigned_int(logical_name="byteCount")
 
-        fifo_count: int = read_implicit_field("fifoCount", read_unsigned_int)
+        fifo_count: int = read_buffer.read_unsigned_int(logical_name="fifoCount")
 
         fifo_value: List[Any] = read_buffer.read_array_field(
-            "fifoValue", read_buffer.read_unsigned_int, count=fifo_count
+            logical_name="fifoValue",
+            read_function=read_buffer.read_unsigned_int,
+            count=fifo_count,
         )
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueResponse")

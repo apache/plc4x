@@ -69,9 +69,9 @@ class ModbusPDUDiagnosticRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUDiagnosticRequest")
 
-        self.sub_function = read_simple_field("subFunction", read_unsigned_int)
+        sub_function: int = read_buffer.read_unsigned_int(logical_name="subFunction")
 
-        self.data = read_simple_field("data", read_unsigned_int)
+        data: int = read_buffer.read_unsigned_int(logical_name="data")
 
         read_buffer.pop_context("ModbusPDUDiagnosticRequest")
         # Create the instance

@@ -79,20 +79,23 @@ class ModbusPDUReadFileRecordRequestItem(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
-        return self.static_parse_context(read_buffer)
+    @staticmethod
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+        return ModbusPDUReadFileRecordRequestItem.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusPDUReadFileRecordRequestItem")
 
-        self.reference_type = read_simple_field("referenceType", read_unsigned_short)
+        reference_type: int = read_buffer.read_unsigned_short(
+            logical_name="referenceType"
+        )
 
-        self.file_number = read_simple_field("fileNumber", read_unsigned_int)
+        file_number: int = read_buffer.read_unsigned_int(logical_name="fileNumber")
 
-        self.record_number = read_simple_field("recordNumber", read_unsigned_int)
+        record_number: int = read_buffer.read_unsigned_int(logical_name="recordNumber")
 
-        self.record_length = read_simple_field("recordLength", read_unsigned_int)
+        record_length: int = read_buffer.read_unsigned_int(logical_name="recordLength")
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance

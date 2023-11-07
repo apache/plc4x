@@ -30,7 +30,7 @@ from ctypes import (
     c_uint8,
 )
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Union, Any
 
 from bitarray import bitarray
 from bitarray.util import zeros, ba2int, ba2base
@@ -119,7 +119,10 @@ class ReadBuffer(ByteOrderAware, PositionAware):
     def read_virtual(self, logical_name: str = "", **kwargs) -> str:
         raise NotImplementedError
 
-    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[PlcMessage]:
+    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[Any]:
+        raise NotImplementedError
+
+    def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
         raise NotImplementedError
 
     def read_array_field(
@@ -130,7 +133,7 @@ class ReadBuffer(ByteOrderAware, PositionAware):
         length: int = None,
         terminated=None,
         **kwargs
-    ) -> List[PlcMessage]:
+    ) -> List[Any]:
         raise NotImplementedError
 
 

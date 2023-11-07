@@ -64,8 +64,8 @@ class ModbusPDUReadFifoQueueRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFifoQueueRequest")
 
-        self.fifo_pointer_address = read_simple_field(
-            "fifoPointerAddress", read_unsigned_int
+        fifo_pointer_address: int = read_buffer.read_unsigned_int(
+            logical_name="fifoPointerAddress"
         )
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueRequest")

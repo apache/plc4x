@@ -69,9 +69,9 @@ class ModbusPDUWriteSingleCoilRequest(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUWriteSingleCoilRequest")
 
-        self.address = read_simple_field("address", read_unsigned_int)
+        address: int = read_buffer.read_unsigned_int(logical_name="address")
 
-        self.value = read_simple_field("value", read_unsigned_int)
+        value: int = read_buffer.read_unsigned_int(logical_name="value")
 
         read_buffer.pop_context("ModbusPDUWriteSingleCoilRequest")
         # Create the instance

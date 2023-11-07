@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
 import math
 
 
@@ -52,15 +53,16 @@ class Dummy(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
-        return self.static_parse_context(read_buffer)
+    @staticmethod
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+        return Dummy.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("Dummy")
 
-        self.dummy = read_simple_field(
-            "dummy", read_unsigned_int, WithOption.WithByteOrder(get_bi_g__endian())
+        dummy: int = read_buffer.read_unsigned_int(
+            logical_name="dummy", byte_order=ByteOrder.BIG_ENDIAN
         )
 
         read_buffer.pop_context("Dummy")
