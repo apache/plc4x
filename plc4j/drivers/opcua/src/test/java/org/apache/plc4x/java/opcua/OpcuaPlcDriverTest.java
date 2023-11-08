@@ -18,10 +18,9 @@
  */
 package org.apache.plc4x.java.opcua;
 
-import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -30,7 +29,6 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -42,7 +40,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.assertj.core.api.Condition;
-import org.eclipse.milo.examples.server.ExampleServer;
+import org.eclipse.milo.examples.server.TestMiloServer;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -56,9 +54,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 public class OpcuaPlcDriverTest {
 
@@ -134,7 +130,7 @@ public class OpcuaPlcDriverTest {
     final List<String> discoveryParamValidSet = List.of(discoveryValidParamTrue, discoveryValidParamFalse);
     List<String> discoveryParamCorruptedSet = List.of(discoveryCorruptedParamWrongValueNum, discoveryCorruptedParamWrongName);
 
-    private static ExampleServer exampleServer;
+    private static TestMiloServer exampleServer;
 
     @BeforeAll
     public static void setup() throws Exception {
@@ -148,7 +144,7 @@ public class OpcuaPlcDriverTest {
             // Ignore this ...
         }
 
-        exampleServer = new ExampleServer();
+        exampleServer = new TestMiloServer();
         exampleServer.startup().get();
     }
 
@@ -564,20 +560,18 @@ public class OpcuaPlcDriverTest {
             case NONE:
                 return tcpConnectionAddress;
             case Basic128Rsa15:
-                fail("Unsupported");
-                return null;
             case Basic256Sha256:
                 Path securityTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "server");
                 String keyStoreFile = securityTempDir.resolve("security").resolve("example-server.pfx").toAbsolutePath().toString();
 
                 String certDirectory = securityTempDir.toAbsolutePath().toString();
                 String connectionParams = Stream.of(
-                        new Tuple2<>("keyStoreFile", keyStoreFile),
-                        new Tuple2<>("certDirectory", certDirectory),
-                        new Tuple2<>("keyStorePassword", "password"),
-                        new Tuple2<>("securityPolicy", policy)
+                        Map.entry("keyStoreFile", keyStoreFile),
+                        Map.entry("certDirectory", certDirectory),
+                        Map.entry("keyStorePassword", "password"),
+                        Map.entry("securityPolicy", policy)
                     )
-                    .map(tuple -> tuple._1() + "=" + tuple._2())
+                    .map(tuple -> tuple.getKey() + "=" + tuple.getValue())
                     .collect(Collectors.joining(paramDivider));
 
 

@@ -74,8 +74,8 @@ public class SecureChannel {
     private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
     private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
     private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
-    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
-    public static final long REQUEST_TIMEOUT_LONG = 10000L;
+    public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(1000000);
+    public static final long REQUEST_TIMEOUT_LONG = 1000000L;
     private static final String PASSWORD_ENCRYPTION_ALGORITHM = "http://www.w3.org/2001/04/xmlenc#rsa-oaep";
     private static final PascalString SECURITY_POLICY_NONE = new PascalString("http://opcfoundation.org/UA/SecurityPolicy#None");
     protected static final PascalString NULL_STRING = new PascalString("");
@@ -154,7 +154,7 @@ public class SecureChannel {
         this.securityPolicy = determineSecurityPolicy(configuration, driverContext);
         CertificateKeyPair ckp = driverContext.getCertificateKeyPair();
 
-        if (this.securityPolicy == SecurityPolicy.Basic256Sha256) {
+        if (this.securityPolicy != SecurityPolicy.NONE) {
             //Sender Certificate gets populated during the 'discover' phase when encryption is enabled.
             this.senderCertificate = configuration.getSenderCertificate();
             this.encryptionHandler = new EncryptionHandler(ckp, this.senderCertificate, configuration.getSecurityPolicy());
@@ -762,7 +762,7 @@ public class SecureChannel {
     public void onDiscover(ConversationContext<OpcuaAPU> context) {
         if (!driverContext.getEncrypted()) {
             LOGGER.debug("not encrypted, ignoring onDiscover");
-            context.fireDiscovered(configuration);
+            context.fireDiscovered(this.configuration);
             return;
         }
         // Only the TCP transport supports login.
@@ -952,12 +952,24 @@ public class SecureChannel {
                             List<ExtensionObjectDefinition> endpoints = response.getEndpoints();
                             for (ExtensionObjectDefinition endpoint : endpoints) {
                                 EndpointDescription endpointDescription = (EndpointDescription) endpoint;
-                                if (endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue())
-                                    && endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy.getSecurityPolicyUri())) {
+
+                                boolean urlMatch = endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue());
+                                boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.securityPolicy.getSecurityPolicyUri());
+
+                                LOGGER.debug("Validate OPC UA endpoint {} during discovery phase."
+                                    + "Expected {}. Endpoint policy {} looking for {}", endpointDescription.getEndpointUrl().getStringValue(), this.endpoint.getStringValue(),
+                                    endpointDescription.getSecurityPolicyUri().getStringValue(), securityPolicy.getSecurityPolicyUri());
+
+                                if (urlMatch && policyMatch) {
                                    LOGGER.info("Found OPC UA endpoint {}", this.endpoint.getStringValue());
                                    configuration.setSenderCertificate(endpointDescription.getServerCertificate().getStringValue());
+                                   break;
                                }
-                           }
+                            }
+
+                            if (configuration.getSenderCertificate() == null) {
+                                throw new IllegalArgumentException("");
+                            }
 
                             try {
                                 MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
