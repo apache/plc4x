@@ -138,7 +138,6 @@ class ReadBuffer(ByteOrderAware, PositionAware):
 
 
 class ReadBufferByteBased(ReadBuffer):
-
     NUMERIC_UNION = Union[
         c_ubyte,
         c_byte,

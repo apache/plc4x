@@ -59,17 +59,17 @@ class ModbusRtuADU(ModbusADU):
         write_buffer.pop_context("ModbusRtuADU")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusRtuADU = self
 
         # Simple field (address)
         length_in_bits += 8
 
         # Simple field (pdu)
-        length_in_bits += self.pdu.get_length_in_bits()
+        length_in_bits += self.pdu.length_in_bits()
 
         # Checksum Field (checksum)
         length_in_bits += 16
@@ -133,10 +133,10 @@ class ModbusRtuADU(ModbusADU):
 class ModbusRtuADUBuilder(ModbusADUBuilder):
     address: int
     pdu: ModbusPDU
-    response: bool
 
     def build(
         self,
+        response: bool,
     ) -> ModbusRtuADU:
-        modbus_rtu_adu: ModbusRtuADU = ModbusRtuADU(self.address, self.pdu, response)
+        modbus_rtu_adu: ModbusRtuADU = ModbusRtuADU(response, self.address, self.pdu)
         return modbus_rtu_adu

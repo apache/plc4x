@@ -39,7 +39,7 @@ class ModbusTcpADU(ModbusADU):
     pdu: ModbusPDU
     # Arguments.
     response: bool
-    PROTOCOLIDENTIFIER: int = 0x0000
+    PROTOCOL_IDENTIFIER: int = 0x0000
     # Accessors for discriminator values.
     driver_type: DriverType = DriverType.MODBUS_TCP
 
@@ -53,11 +53,11 @@ class ModbusTcpADU(ModbusADU):
 
         # Const Field (protocolIdentifier)
         write_buffer.write_unsigned_short(
-            self.protocol_identifier.value, logical_name="protocolIdentifier"
+            self.PROTOCOL_IDENTIFIER, logical_name="protocolIdentifier"
         )
 
         # Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        length: int = self.pdu.getlength_in_bytes(ctx) + int(1)
+        length: int = self.pdu.length_in_bytes() + int(1)
         write_buffer.write_unsigned_short(length, logical_name="length")
 
         # Simple Field (unitIdentifier)
@@ -71,10 +71,10 @@ class ModbusTcpADU(ModbusADU):
         write_buffer.pop_context("ModbusTcpADU")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusTcpADU = self
 
         # Simple field (transactionIdentifier)
@@ -90,7 +90,7 @@ class ModbusTcpADU(ModbusADU):
         length_in_bits += 8
 
         # Simple field (pdu)
-        length_in_bits += self.pdu.get_length_in_bits()
+        length_in_bits += self.pdu.length_in_bits()
 
         return length_in_bits
 
@@ -104,7 +104,7 @@ class ModbusTcpADU(ModbusADU):
             logical_name="transactionIdentifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        protocol_identifier: int = read_buffer.read_unsigned_int(
+        PROTOCOL_IDENTIFIER: int = read_buffer.read_unsigned_int(
             logical_name="protocolIdentifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
@@ -163,12 +163,12 @@ class ModbusTcpADUBuilder(ModbusADUBuilder):
     transaction_identifier: int
     unit_identifier: int
     pdu: ModbusPDU
-    response: bool
 
     def build(
         self,
+        response: bool,
     ) -> ModbusTcpADU:
         modbus_tcp_adu: ModbusTcpADU = ModbusTcpADU(
-            self.transaction_identifier, self.unit_identifier, self.pdu, response
+            response, self.transaction_identifier, self.unit_identifier, self.pdu
         )
         return modbus_tcp_adu

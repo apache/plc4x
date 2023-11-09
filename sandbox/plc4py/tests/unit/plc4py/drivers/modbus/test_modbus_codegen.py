@@ -16,6 +16,10 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from bitarray import bitarray
+
+from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
+from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADUBuilder
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
@@ -29,10 +33,25 @@ async def test_modbus_discreate_inputs_request():
     assert request is not None
 
 
-async def test_modbus_discreate_inputs_request():
-    request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
+async def test_modbus_discreate_inputs_request_serialize():
+    request = ModbusPDUReadDiscreteInputsRequestBuilder(5, 2).build()
     size = request.length_in_bytes()
-    write_buffer = WriteBufferByteBased(size, ByteOrder.LITTLE_ENDIAN)
-    serialize = request.serialize_modbus_pdu_child(write_buffer)
+    write_buffer = WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN)
+    serialize = request.serialize(write_buffer)
+    bytes_array = write_buffer.get_bytes().tobytes()
+
+    assert request is not None
+    assert len(write_buffer.get_bytes()) * 8 == 40
+    assert write_buffer.get_pos() == 40
+    assert write_buffer.get_bytes().tobytes() == b"\x01\x05\x00\x02\x00"
+
+
+async def test_modbus_ModbusTcpADUBuilder_serialize():
+    pdu = ModbusPDUReadDiscreteInputsRequestBuilder(5, 2).build()
+    request = ModbusTcpADUBuilder(10, 5, pdu).build(False)
+    size = request.length_in_bytes()
+    write_buffer = WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN)
+    serialize = request.serialize(write_buffer)
+    bytes_array = write_buffer.get_bytes().tobytes()
 
     assert request is not None

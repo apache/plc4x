@@ -334,7 +334,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "write_boolean";
+                return "write_bit";
             case BYTE:
                 return "write_byte";
             case UINT:
@@ -1309,12 +1309,12 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     private String toLengthInBitsVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBits");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(self.get" : "get") + "length_in_bits" + (serialize ? "(ctx))" : "(ctx)");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(" : "") + "length_in_bits" + (serialize ? "())" : "()");
     }
 
     private String toLengthInBytesVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBytes");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(self.get" : "Get") + "length_in_bytes" + (serialize ? "(ctx))" : "(ctx)");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(" : "") + "length_in_bytes" + (serialize ? "())" : "()");
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, List<Argument> parserArguments) {

@@ -143,7 +143,6 @@ class WriteBuffer(ByteOrderAware, PositionAware):
 
 
 class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
-
     NUMERIC_UNION = Union[
         c_ubyte,
         c_byte,
@@ -317,5 +316,5 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         elif value_encoding == "default":
             src = bitarray(endian=ByteOrder.get_short_name(byte_order))
             src.frombytes(value)
-            self.bb[self.position : bit_length] = src[:bit_length]
+            self.bb[self.position : self.position + bit_length] = src[:bit_length]
             self.position += bit_length

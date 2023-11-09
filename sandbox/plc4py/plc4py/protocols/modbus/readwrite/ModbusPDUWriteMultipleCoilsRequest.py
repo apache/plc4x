@@ -62,10 +62,10 @@ class ModbusPDUWriteMultipleCoilsRequest(ModbusPDU):
         write_buffer.pop_context("ModbusPDUWriteMultipleCoilsRequest")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUWriteMultipleCoilsRequest = self
 
         # Simple field (startingAddress)

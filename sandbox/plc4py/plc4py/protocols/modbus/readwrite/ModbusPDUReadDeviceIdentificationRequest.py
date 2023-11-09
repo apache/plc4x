@@ -36,7 +36,7 @@ import math
 class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
     level: ModbusDeviceInformationLevel
     object_id: int
-    MEITYPE: int = 0x0E
+    MEI_TYPE: int = 0x0E
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x2B
@@ -46,7 +46,7 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
         write_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
 
         # Const Field (meiType)
-        write_buffer.write_unsigned_byte(self.mei_type.value, logical_name="meiType")
+        write_buffer.write_unsigned_byte(self.MEI_TYPE, logical_name="meiType")
 
         # Simple Field (level)
         write_buffer.write_unsigned_byte(self.level, logical_name="level")
@@ -57,10 +57,10 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
         write_buffer.pop_context("ModbusPDUReadDeviceIdentificationRequest")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUReadDeviceIdentificationRequest = self
 
         # Const Field (meiType)
@@ -78,7 +78,7 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
 
-        mei_type: int = read_buffer.read_unsigned_short(logical_name="meiType")
+        MEI_TYPE: int = read_buffer.read_unsigned_short(logical_name="meiType")
 
         level: ModbusDeviceInformationLevel = read_buffer.read_complex(
             read_function=ModbusDeviceInformationLevel, logical_name="level"

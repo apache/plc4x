@@ -62,9 +62,9 @@ class ModbusPDUWriteFileRecordRequestItem:
         write_buffer.pop_context("ModbusPDUWriteFileRecordRequestItem")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
+    def length_in_bits(self) -> int:
         length_in_bits: int = 0
         _value: ModbusPDUWriteFileRecordRequestItem = self
 

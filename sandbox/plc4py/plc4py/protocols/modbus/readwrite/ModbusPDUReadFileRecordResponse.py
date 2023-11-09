@@ -56,10 +56,10 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
         write_buffer.pop_context("ModbusPDUReadFileRecordResponse")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUReadFileRecordResponse = self
 
         # Implicit Field (byteCount)
@@ -68,7 +68,7 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
         # Array field
         if self.items is not None:
             for element in self.items:
-                length_in_bits += element.get_length_in_bits()
+                length_in_bits += element.length_in_bits()
 
         return length_in_bits
 

@@ -29,22 +29,22 @@ import math
 
 @dataclass
 class ModbusConstants:
-    MODBUSTCPDEFAULTPORT: int = int(502)
+    MODBUS_TCP_DEFAULT_PORT: int = int(502)
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusConstants")
 
         # Const Field (modbusTcpDefaultPort)
         write_buffer.write_unsigned_short(
-            self.modbus_tcp_default_port.value, logical_name="modbusTcpDefaultPort"
+            self.MODBUS_TCP_DEFAULT_PORT, logical_name="modbusTcpDefaultPort"
         )
 
         write_buffer.pop_context("ModbusConstants")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
+    def length_in_bits(self) -> int:
         length_in_bits: int = 0
         _value: ModbusConstants = self
 
@@ -61,7 +61,7 @@ class ModbusConstants:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusConstants")
 
-        modbus_tcp_default_port: int = read_buffer.read_unsigned_int(
+        MODBUS_TCP_DEFAULT_PORT: int = read_buffer.read_unsigned_int(
             logical_name="modbusTcpDefaultPort"
         )
 

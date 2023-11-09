@@ -92,7 +92,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     <#-- If the current type contains "const" fields, generate some Python constants for holing their values -->
     <#if type.constFields?has_content>
         <#list type.constFields as field>
-    ${field.name?upper_case}: ${helper.getLanguageTypeNameForTypeReference(field.type)} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)}
+    ${helper.camelCaseToSnakeCase(field.name)?upper_case}: ${helper.getLanguageTypeNameForTypeReference(field.type)} = ${helper.toParseExpression(field, field.type, field.referenceValue, parserArguments)}
         </#list>
     </#if>
 <#--
@@ -221,7 +221,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#assign namedField = field.asNamedField().orElseThrow()>
 
         # Const Field (${constField.name})
-        <#if typedField.type.isEnumTypeReference()>write_buffer.${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)}(self.${helper.camelCaseToSnakeCase(namedField.name)}.value, logical_name="${constField.name}")<#else>write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(self.${helper.camelCaseToSnakeCase(namedField.name)}.value, logical_name="${constField.name}")</#if>
+        <#if typedField.type.isEnumTypeReference()>write_buffer.${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)}(self.${helper.camelCaseToSnakeCase(namedField.name)?upper_case}.value, logical_name="${constField.name}")<#else>write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(self.${helper.camelCaseToSnakeCase(namedField.name)?upper_case}, logical_name="${constField.name}")</#if>
                         <#break>
                     <#case "discriminator">
                         <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -230,9 +230,10 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         # Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
                         <#if typedField.type.isEnumTypeReference()>
-        write_buffer.${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}(), logical_name="${namedField.name}")
+        write_buffer.${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}, logical_name="${namedField.name}", ${helper.getFieldOptions(typedField, parserArguments)})
                         <#else>
-        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}(), logical_name="${namedField.name}")
+        <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
+        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}, logical_name="${namedField.name}", bit_length=${simpleTypeReference.sizeInBits}, ${helper.getFieldOptions(typedField, parserArguments)})
                         </#if>
                         <#break>
                     <#case "enum">
@@ -607,7 +608,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForField(field)} = read_buffer.${helper.getDataReaderCall(constField.type)}(logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)})
+        ${helper.camelCaseToSnakeCase(namedField.name)?upper_case}: ${helper.getLanguageTypeNameForField(field)} = read_buffer.${helper.getDataReaderCall(constField.type)}(logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)})
                 <#break>
             <#case "discriminator">
                 <#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
@@ -862,16 +863,17 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
     ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}
     </#list>
 </#if>
-<#if filteredParserArguments?has_content>
-    <#list filteredParserArguments as arg>
-    ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
-    </#list>
-</#if>
 <#list reservedFields as reservedField>
     reservedField${reservedField?index}: ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)}
 </#list>
 
     def build(self,<@compress single_line=true>
+    <#if filteredParserArguments?has_content>
+        <#list filteredParserArguments as arg>
+            ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
+        </#list>
+        ,
+    </#if>
     <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
         ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
     </#list>
@@ -883,15 +885,17 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
     </#if>
     ) -> ${type.name}:</@compress>
         ${helper.camelCaseToSnakeCase(type.name)}: ${type.name} = ${type.name}(<@compress single_line=true>
-    <#list type.allPropertyFields as field>
-        self.${helper.camelCaseToSnakeCase(field.name)}<#sep>, </#sep>
-    </#list>
     <#if filteredParserArguments?has_content>
-        <#if type.allPropertyFields?has_content>, </#if>
         <#list filteredParserArguments as arg>
             ${arg.name}<#sep>, </#sep>
         </#list>
-    </#if>)</@compress>
+    </#if>
+    <#if filteredParserArguments?has_content>, </#if>
+    <#list type.allPropertyFields as field>
+
+        self.${helper.camelCaseToSnakeCase(field.name)}<#sep>, </#sep>
+    </#list>
+    )</@compress>
     <#list reservedFields as reservedField>
         ${helper.camelCaseToSnakeCase(type.name)}.reservedField${reservedField?index} = reservedField${reservedField?index}
     </#list>
