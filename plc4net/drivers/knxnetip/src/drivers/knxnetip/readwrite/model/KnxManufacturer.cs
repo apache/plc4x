@@ -491,7 +491,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_OSRAM = 464,
         M_LEBENOR = 465,
         M_AUTOMANENG = 466,
-        M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA = 467,
+        M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD = 467,
         M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD = 468,
         M_ETA_HEIZTECHNIK = 469,
         M_DIVUS_GMBH = 470,
@@ -672,8 +672,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD = 645,
         M_NS_TOUCH = 646,
         M_ROOMIO = 647,
-        M_ABB___RESERVED = 648,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 649,
+        M_ATOUCH = 648,
+        M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD = 649,
+        M_ABB___RESERVED = 650,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 651,
     }
 
     public static class KnxManufacturerInfo
@@ -1910,7 +1912,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_AUTOMANENG: { /* '466' */
                     return 521;
                 }
-                case KnxManufacturer.M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA: { /* '467' */
+                case KnxManufacturer.M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD: { /* '467' */
                     return 522;
                 }
                 case KnxManufacturer.M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD: { /* '468' */
@@ -2513,14 +2515,20 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ROOMIO: { /* '647' */
                     return 705;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '648' */
-                    return 43954;
+                case KnxManufacturer.M_ATOUCH: { /* '648' */
+                    return 706;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '649' */
-                    return 43959;
+                case KnxManufacturer.M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD: { /* '649' */
+                    return 707;
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
                     return 104;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '650' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '651' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
                     return 105;
@@ -3870,8 +3878,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_AUTOMANENG: { /* '466' */
                     return "automaneng";
                 }
-                case KnxManufacturer.M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA: { /* '467' */
-                    return "Honeywell Automation Solution control(China)";
+                case KnxManufacturer.M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD: { /* '467' */
+                    return "Honeywell Automation Control Solutions(China)CoLtd";
                 }
                 case KnxManufacturer.M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD: { /* '468' */
                     return "Hangzhou binthen Intelligence Technology Co.,Ltd";
@@ -4473,14 +4481,20 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_ROOMIO: { /* '647' */
                     return "ROOMIO";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '648' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_ATOUCH: { /* '648' */
+                    return "Atouch";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '649' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD: { /* '649' */
+                    return "Panasonic Life Solutions India Pvt. Ltd";
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
                     return "JEPAZ";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '650' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '651' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
                     return "RTS Automation";

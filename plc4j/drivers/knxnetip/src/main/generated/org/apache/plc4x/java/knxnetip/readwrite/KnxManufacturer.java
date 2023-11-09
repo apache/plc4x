@@ -531,8 +531,8 @@ public enum KnxManufacturer {
   M_OSRAM((int) 464, (int) 519, (String) "OSRAM"),
   M_LEBENOR((int) 465, (int) 520, (String) "Lebenor"),
   M_AUTOMANENG((int) 466, (int) 521, (String) "automaneng"),
-  M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA(
-      (int) 467, (int) 522, (String) "Honeywell Automation Solution control(China)"),
+  M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD(
+      (int) 467, (int) 522, (String) "Honeywell Automation Control Solutions(China)CoLtd"),
   M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD(
       (int) 468, (int) 523, (String) "Hangzhou binthen Intelligence Technology Co.,Ltd"),
   M_ETA_HEIZTECHNIK((int) 469, (int) 524, (String) "ETA Heiztechnik"),
@@ -744,9 +744,12 @@ public enum KnxManufacturer {
       (int) 645, (int) 703, (String) "NINGBO QIYUAN LIGHTING TECH CO.,LTD"),
   M_NS_TOUCH((int) 646, (int) 704, (String) "NS Touch"),
   M_ROOMIO((int) 647, (int) 705, (String) "ROOMIO"),
-  M_ABB___RESERVED((int) 648, (int) 43954, (String) "ABB - reserved"),
+  M_ATOUCH((int) 648, (int) 706, (String) "Atouch"),
+  M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD(
+      (int) 649, (int) 707, (String) "Panasonic Life Solutions India Pvt. Ltd"),
+  M_ABB___RESERVED((int) 650, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 649, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 651, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

@@ -510,7 +510,7 @@ const (
 	KnxManufacturer_M_OSRAM                                              KnxManufacturer = 464
 	KnxManufacturer_M_LEBENOR                                            KnxManufacturer = 465
 	KnxManufacturer_M_AUTOMANENG                                         KnxManufacturer = 466
-	KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA         KnxManufacturer = 467
+	KnxManufacturer_M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD   KnxManufacturer = 467
 	KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD   KnxManufacturer = 468
 	KnxManufacturer_M_ETA_HEIZTECHNIK                                    KnxManufacturer = 469
 	KnxManufacturer_M_DIVUS_GMBH                                         KnxManufacturer = 470
@@ -691,8 +691,10 @@ const (
 	KnxManufacturer_M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD                KnxManufacturer = 645
 	KnxManufacturer_M_NS_TOUCH                                           KnxManufacturer = 646
 	KnxManufacturer_M_ROOMIO                                             KnxManufacturer = 647
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 648
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 649
+	KnxManufacturer_M_ATOUCH                                             KnxManufacturer = 648
+	KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD            KnxManufacturer = 649
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 650
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 651
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1167,7 +1169,7 @@ func init() {
 		KnxManufacturer_M_OSRAM,
 		KnxManufacturer_M_LEBENOR,
 		KnxManufacturer_M_AUTOMANENG,
-		KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA,
+		KnxManufacturer_M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD,
 		KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD,
 		KnxManufacturer_M_ETA_HEIZTECHNIK,
 		KnxManufacturer_M_DIVUS_GMBH,
@@ -1348,6 +1350,8 @@ func init() {
 		KnxManufacturer_M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD,
 		KnxManufacturer_M_NS_TOUCH,
 		KnxManufacturer_M_ROOMIO,
+		KnxManufacturer_M_ATOUCH,
+		KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3797,15 +3801,23 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 648:
 		{ /* '648' */
-			return 43954
+			return 706
 		}
 	case 649:
 		{ /* '649' */
-			return 43959
+			return 707
 		}
 	case 65:
 		{ /* '65' */
 			return 104
+		}
+	case 650:
+		{ /* '650' */
+			return 43954
+		}
+	case 651:
+		{ /* '651' */
+			return 43959
 		}
 	case 66:
 		{ /* '66' */
@@ -5611,7 +5623,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 467:
 		{ /* '467' */
-			return "Honeywell Automation Solution control(China)"
+			return "Honeywell Automation Control Solutions(China)CoLtd"
 		}
 	case 468:
 		{ /* '468' */
@@ -6415,15 +6427,23 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 648:
 		{ /* '648' */
-			return "ABB - reserved"
+			return "Atouch"
 		}
 	case 649:
 		{ /* '649' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "Panasonic Life Solutions India Pvt. Ltd"
 		}
 	case 65:
 		{ /* '65' */
 			return "JEPAZ"
+		}
+	case 650:
+		{ /* '650' */
+			return "ABB - reserved"
+		}
+	case 651:
+		{ /* '651' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 66:
 		{ /* '66' */
@@ -7409,7 +7429,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 466:
 		return KnxManufacturer_M_AUTOMANENG, true
 	case 467:
-		return KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA, true
+		return KnxManufacturer_M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD, true
 	case 468:
 		return KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD, true
 	case 469:
@@ -7811,11 +7831,15 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 647:
 		return KnxManufacturer_M_ROOMIO, true
 	case 648:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ATOUCH, true
 	case 649:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD, true
 	case 65:
 		return KnxManufacturer_M_JEPAZ, true
+	case 650:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 651:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 66:
 		return KnxManufacturer_M_RTS_AUTOMATION, true
 	case 67:
@@ -8714,8 +8738,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_LEBENOR, true
 	case "M_AUTOMANENG":
 		return KnxManufacturer_M_AUTOMANENG, true
-	case "M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA":
-		return KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA, true
+	case "M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD":
+		return KnxManufacturer_M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD, true
 	case "M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD":
 		return KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD, true
 	case "M_ETA_HEIZTECHNIK":
@@ -9116,12 +9140,16 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_NS_TOUCH, true
 	case "M_ROOMIO":
 		return KnxManufacturer_M_ROOMIO, true
+	case "M_ATOUCH":
+		return KnxManufacturer_M_ATOUCH, true
+	case "M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD":
+		return KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD, true
+	case "M_JEPAZ":
+		return KnxManufacturer_M_JEPAZ, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_JEPAZ":
-		return KnxManufacturer_M_JEPAZ, true
 	case "M_RTS_AUTOMATION":
 		return KnxManufacturer_M_RTS_AUTOMATION, true
 	case "M_EIBMARKT_GMBH":
@@ -10081,8 +10109,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_LEBENOR"
 	case KnxManufacturer_M_AUTOMANENG:
 		return "M_AUTOMANENG"
-	case KnxManufacturer_M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA:
-		return "M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA"
+	case KnxManufacturer_M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD:
+		return "M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD"
 	case KnxManufacturer_M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD:
 		return "M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD"
 	case KnxManufacturer_M_ETA_HEIZTECHNIK:
@@ -10483,12 +10511,16 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_NS_TOUCH"
 	case KnxManufacturer_M_ROOMIO:
 		return "M_ROOMIO"
+	case KnxManufacturer_M_ATOUCH:
+		return "M_ATOUCH"
+	case KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD:
+		return "M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD"
+	case KnxManufacturer_M_JEPAZ:
+		return "M_JEPAZ"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_JEPAZ:
-		return "M_JEPAZ"
 	case KnxManufacturer_M_RTS_AUTOMATION:
 		return "M_RTS_AUTOMATION"
 	case KnxManufacturer_M_EIBMARKT_GMBH:
