@@ -1215,7 +1215,7 @@
     ['464' M_OSRAM ['519', '"OSRAM"']]
     ['465' M_LEBENOR ['520', '"Lebenor"']]
     ['466' M_AUTOMANENG ['521', '"automaneng"']]
-    ['467' M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA ['522', '"Honeywell Automation Solution control(China)"']]
+    ['467' M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD ['522', '"Honeywell Automation Control Solutions(China)CoLtd"']]
     ['468' M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD ['523', '"Hangzhou binthen Intelligence Technology Co.,Ltd"']]
     ['469' M_ETA_HEIZTECHNIK ['524', '"ETA Heiztechnik"']]
     ['470' M_DIVUS_GMBH ['525', '"DIVUS GmbH"']]
@@ -1396,8 +1396,10 @@
     ['645' M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD ['703', '"NINGBO QIYUAN LIGHTING TECH CO.,LTD"']]
     ['646' M_NS_TOUCH ['704', '"NS Touch"']]
     ['647' M_ROOMIO ['705', '"ROOMIO"']]
-    ['648' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['649' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['648' M_ATOUCH ['706', '"Atouch"']]
+    ['649' M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD ['707', '"Panasonic Life Solutions India Pvt. Ltd"']]
+    ['650' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['651' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
