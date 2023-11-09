@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
@@ -32,16 +34,13 @@ import math
 
 
 @dataclass
-class ModbusAsciiADU(PlcMessage, ModbusADU):
+class ModbusAsciiADU(ModbusADU):
     address: int
     pdu: ModbusPDU
     # Arguments.
     response: bool
     # Accessors for discriminator values.
     driver_type: DriverType = DriverType.MODBUS_ASCII
-
-    def __post_init__(self):
-        super().__init__(self.response)
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusAsciiADU")
@@ -120,13 +119,14 @@ class ModbusAsciiADU(PlcMessage, ModbusADU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -135,10 +135,9 @@ class ModbusAsciiADUBuilder(ModbusADUBuilder):
     pdu: ModbusPDU
     response: bool
 
-    def __post_init__(self):
-        pass
-
-    def build(self, response: bool) -> ModbusAsciiADU:
+    def build(
+        self,
+    ) -> ModbusAsciiADU:
         modbus_ascii_adu: ModbusAsciiADU = ModbusAsciiADU(
             self.address, self.pdu, response
         )

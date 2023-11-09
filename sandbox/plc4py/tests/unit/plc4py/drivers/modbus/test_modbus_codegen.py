@@ -16,32 +16,23 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import logging
+from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
+
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
+    ModbusPDUReadDiscreteInputsRequestBuilder,
+)
+from plc4py.utils.GenericTypes import ByteOrder
 
 
-class PlcException(Exception):
-    pass
+async def test_modbus_discreate_inputs_request():
+    request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
+    assert request is not None
 
 
-class PlcRuntimeException(PlcException):
-    pass
+async def test_modbus_discreate_inputs_request():
+    request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
+    size = request.length_in_bytes()
+    write_buffer = WriteBufferByteBased(size, ByteOrder.LITTLE_ENDIAN)
+    serialize = request.serialize_modbus_pdu_child(write_buffer)
 
-
-class PlcConnectionException(Exception):
-    logging.error("Unable to establish a connection to the plc")
-
-
-class PlcFieldParseException(Exception):
-    pass
-
-
-class PlcNotImplementedException(Exception):
-    pass
-
-
-class SerializationException(Exception):
-    pass
-
-
-class ParseException(Exception):
-    pass
+    assert request is not None

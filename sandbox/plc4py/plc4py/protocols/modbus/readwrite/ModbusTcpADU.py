@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
@@ -31,7 +33,7 @@ import math
 
 
 @dataclass
-class ModbusTcpADU(PlcMessage, ModbusADU):
+class ModbusTcpADU(ModbusADU):
     transaction_identifier: int
     unit_identifier: int
     pdu: ModbusPDU
@@ -40,9 +42,6 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
     PROTOCOLIDENTIFIER: int = 0x0000
     # Accessors for discriminator values.
     driver_type: DriverType = DriverType.MODBUS_TCP
-
-    def __post_init__(self):
-        super().__init__(self.response)
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusTcpADU")
@@ -149,26 +148,26 @@ class ModbusTcpADU(PlcMessage, ModbusADU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusTcpADUBuilder(ModbusADUBuilder):
-    transactionIdentifier: int
-    unitIdentifier: int
+    transaction_identifier: int
+    unit_identifier: int
     pdu: ModbusPDU
     response: bool
 
-    def __post_init__(self):
-        pass
-
-    def build(self, response: bool) -> ModbusTcpADU:
+    def build(
+        self,
+    ) -> ModbusTcpADU:
         modbus_tcp_adu: ModbusTcpADU = ModbusTcpADU(
             self.transaction_identifier, self.unit_identifier, self.pdu, response
         )

@@ -14,6 +14,7 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+from abc import ABCMeta
 from ctypes import (
     c_byte,
     c_ubyte,
@@ -141,10 +142,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         value.serialize(self)
 
 
-class WriteBufferByteBased(WriteBuffer):
-    byte_order: ByteOrder
-    position: int = 0
-    bb: bitarray
+class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
 
     NUMERIC_UNION = Union[
         c_ubyte,
@@ -164,6 +162,7 @@ class WriteBufferByteBased(WriteBuffer):
     def __init__(self, size: int, byte_order: ByteOrder):
         self.bb = zeros(size * 8, endian=ByteOrder.get_short_name(byte_order))
         self.byte_order = byte_order
+        self.position: int = 0
 
     def get_bytes(self) -> memoryview:
         return memoryview(self.bb)
@@ -173,6 +172,9 @@ class WriteBufferByteBased(WriteBuffer):
 
     def push_context(self, logical_name: str, **kwargs) -> None:
         # byte buffer need no context handling
+        pass
+
+    def pop_context(self, logical_name: str, **kwargs) -> None:
         pass
 
     def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:

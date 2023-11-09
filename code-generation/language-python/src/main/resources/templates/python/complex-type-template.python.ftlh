@@ -66,7 +66,7 @@ ${import}
 <@emitImport import="from plc4py.api.messages.PlcMessage import PlcMessage" />
 <@emitImport import="from plc4py.spi.generation.WriteBuffer import WriteBuffer" />
 @dataclass
-class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if type.isDiscriminatedParentTypeDefinition()>ABC, <@emitImport import="from abc import ABC" /></#if>PlcMessage<#if type.parentType.isPresent()>,${type.parentType.orElseThrow().name}<@emitImport import="from plc4py.protocols.${protocolName}.${outputFlavor?replace('-', '')}.${type.parentType.orElseThrow().name} import ${type.parentType.orElseThrow().name}" /></#if>):
+class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if type.isDiscriminatedParentTypeDefinition()>ABC, PlcMessage<@emitImport import="from abc import ABC" /></#if><#if type.parentType.isPresent()>${type.parentType.orElseThrow().name}<@emitImport import="from plc4py.protocols.${protocolName}.${outputFlavor?replace('-', '')}.${type.parentType.orElseThrow().name} import ${type.parentType.orElseThrow().name}" /></#if>):
     <#if parserArguments?has_content>
         <#assign filteredParserArguments=parserArguments?filter(arg -> !type.isDiscriminatorField(arg.name) && !type.getPropertyFieldFromThisOrParentByName(arg.name).isPresent())>
     </#if>
@@ -121,30 +121,6 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         </#if>
     </#list>
 </#if>
-
-
-    <#-- getAllPropertyFields() returns not only the property fields of this type but also of it's parents -->
-    def __post_init__(self):
-        <@compress single_line=true>        super().__init__(
-            <#if type.parentPropertyFields?has_content>
-                <#list type.parentPropertyFields as field>
-                    self.${helper.camelCaseToSnakeCase(field.name)}
-                    <#sep>, </#sep>
-                </#list>
-            </#if>
-            <#if type.parentType.isPresent() && type.parentType.orElseThrow().allParserArguments.isPresent()>
-                <#assign filteredParentParserArguments = type.parentType.orElseThrow().allParserArguments.orElseThrow()?filter(arg -> !type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().isDiscriminatorField(arg.name))>
-                <#if filteredParentParserArguments?has_content>
-                    <#if type.parentPropertyFields?has_content>, </#if>
-                    <#list filteredParentParserArguments as parserArgument>
-                        self.${helper.camelCaseToSnakeCase(parserArgument.name)}
-                        <#sep>, </#sep>
-                    </#list>
-                </#if>
-            </#if>
-            )
-        </@compress>
-
 
 <#--
     If this is a discriminated parent type, we need to generate the abstract methods for accessing it's
@@ -206,6 +182,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     def serialize(self, write_buffer: WriteBuffer):
 </#if>
         <#if helper.hasFieldOfType("unknown")>
+        <@emitImport import="from plc4py.api.exceptions.exceptions import SerializationException" />
         raise SerializationException("Unknown field not serializable")
         <#else>
         <#if helper.requiresStartPos() || helper.requiresCurPos()>
@@ -357,10 +334,10 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
     <@emitImport import="import math" />
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = <#if type.parentType.isPresent()>super().get_length_in_bits()<#else>0</#if>
+    def length_in_bits(self) -> int:
+        length_in_bits: int = <#if type.parentType.isPresent()>super().length_in_bits()<#else>0</#if>
         _value: ${type.name} = self
 <#list type.fields as field>
 <#switch field.typeName>
@@ -374,15 +351,13 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
             <#assign simpleTypeReference = arrayElementTypeReference.asSimpleTypeReference().orElseThrow()>
             length_in_bits += ${simpleTypeReference.sizeInBits} * len(self.${helper.camelCaseToSnakeCase(arrayField.name)})
         <#elseif arrayField.isCountArrayField()>
-            i: int = 0
             <#assign nonSimpleTypeReference = arrayElementTypeReference.asNonSimpleTypeReference().orElseThrow()>
             for element in self.${helper.camelCaseToSnakeCase(arrayField.name)}:
-                last: bool = ++i >= len(self.${helper.camelCaseToSnakeCase(arrayField.name)})
-                length_in_bits += element.get_length_in_bits()
+                length_in_bits += element.length_in_bits()
 
         <#else>
             for element in self.${helper.camelCaseToSnakeCase(arrayField.name)}:
-                length_in_bits += element.get_length_in_bits()
+                length_in_bits += element.length_in_bits()
 
         </#if>
 
@@ -422,7 +397,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#elseif helper.isEnumField(field)>
             length_in_bits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits}
         <#else>
-            length_in_bits += self.${helper.camelCaseToSnakeCase(discriminatorField.name)}.get_length_in_bits()
+            length_in_bits += self.${helper.camelCaseToSnakeCase(discriminatorField.name)}.length_in_bits()
         </#if>
         <#break>
     <#case "enum">
@@ -467,9 +442,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#elseif helper.isEnumField(field)>
             length_in_bits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
         <#elseif optionalField.type.isDataIoTypeReference()>
-            length_in_bits += ${optionalField.type.asComplexTypeReference().orElseThrow().name}.get_length_in_bits(self.${helper.camelCaseToSnakeCase(optionalField.name)}<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)
+            length_in_bits += ${optionalField.type.asComplexTypeReference().orElseThrow().name}.length_in_bits(self.${helper.camelCaseToSnakeCase(optionalField.name)}<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)
         <#else>
-            length_in_bits += self.${helper.camelCaseToSnakeCase(optionalField.name)}.get_length_in_bits()
+            length_in_bits += self.${helper.camelCaseToSnakeCase(optionalField.name)}.length_in_bits()
         </#if>
 
         <#break>
@@ -506,9 +481,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#elseif helper.isEnumField(field)>
         length_in_bits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
         <#elseif simpleField.type.isDataIoTypeReference()>
-        length_in_bits += self.${helper.camelCaseToSnakeCase(simpleField.type.asComplexTypeReference().orElseThrow().name)}.get_length_in_bits(${simpleField.name}<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)
+        length_in_bits += self.${helper.camelCaseToSnakeCase(simpleField.type.asComplexTypeReference().orElseThrow().name)}.length_in_bits(${simpleField.name}<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)
         <#else>
-        length_in_bits += self.${helper.camelCaseToSnakeCase(simpleField.name)}.get_length_in_bits()
+        length_in_bits += self.${helper.camelCaseToSnakeCase(simpleField.name)}.length_in_bits()
         </#if>
         <#break>
     <#case "switch">
@@ -544,24 +519,24 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         if kwargs is None:
             raise PlcRuntimeException("Wrong number of arguments, expected ${parserArguments?size}, but got None")
-        elif len(kwargs) ${parserArguments?size}:
+        elif len(kwargs) == ${parserArguments?size}:
             raise PlcRuntimeException("Wrong number of arguments, expected ${parserArguments?size}, but got " + str(len(kwargs)))
 
             <#list parserArguments as parserArgument>
                 <#assign languageName=helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)>
-        ${parserArgument.name}: ${languageName} = ${helper.getNullValueForTypeReference(parserArgument.type)}
+        ${helper.camelCaseToSnakeCase(parserArgument.name)}: ${languageName} = ${helper.getNullValueForTypeReference(parserArgument.type)}
         if isinstance(kwargs.get("${parserArgument.name}"), ${languageName}):
-            ${parserArgument.name} = ${languageName}(kwargs.get("${parserArgument.name}"))
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${languageName}(kwargs.get("${parserArgument.name}"))
                 <#if parserArgument.type.isSimpleTypeReference() || parserArgument.type.isEnumTypeReference()>
         elif isinstance(kwargs.get("${parserArgument.name}"), str):
-            ${parserArgument.name} = ${languageName}(str(kwargs.get("${parserArgument.name}")))
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${languageName}(str(kwargs.get("${parserArgument.name}")))
                 </#if>
         else:
             raise PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${languageName} or a string which is parseable but was " + kwargs.get("${parserArgument.name}").getClass().getName())
 
             </#list>
         </#if>
-        return ${type.name}.static_parse_context(read_buffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+        return ${type.name}.static_parse_context(read_buffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}<#sep>, </#sep></#list></#if>)
 
 
     </#if>
@@ -712,6 +687,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         builder: ${type.name}Builder = None
                 <#list switchField.cases as case>
                     <#if case.discriminatorValueTerms?has_content>
+        from plc4py.protocols.${protocolName}.${outputFlavor?replace('-', '')}.${case.name} import ${case.name}
         if <@compress single_line=true>
                             <#list case.discriminatorValueTerms as discriminatorValueTerm>
                                 <#if helper.isWildcard(discriminatorValueTerm)>
@@ -733,13 +709,14 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
             builder = <@compress single_line=true>
                         <#assign hasCaseParseArguments=case.allParserArguments.isPresent() && case.allParserArguments.orElseThrow()?has_content>
-                        <#assign caseParseArguments><#if hasCaseParseArguments><#list case.allParserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
-                        ${case.name}.staticParseBuilder(read_buffer<#if hasCaseParseArguments>, ${tracer.dive("case parse arguments")} ${caseParseArguments}</#if>)
+                        <#assign caseParseArguments><#if hasCaseParseArguments><#list case.allParserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}<#sep>, </#sep></#list></#if></#assign>
+                        ${case.name}.static_parse_builder(read_buffer<#if hasCaseParseArguments>, ${tracer.dive("case parse arguments")} ${caseParseArguments}</#if>)
                     </@compress>
 
         </#list>
+        <@emitImport import="from plc4py.api.exceptions.exceptions import ParseException" />
         if builder is None:
-            raise ParseException("Unsupported case for discriminated type"<#if switchField.getDiscriminatorExpressions()?has_content>+" parameters ["<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>+"${discriminatorExpression.stringRepresentation()}="+${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>+" "</#sep></#list>+"]"</#if>)
+            raise ParseException("Unsupported case for discriminated type"<#if switchField.getDiscriminatorExpressions()?has_content>+" parameters ["<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>+"${discriminatorExpression.stringRepresentation()}="+str(${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)})<#sep>+" "</#sep></#list>+"]"</#if>)
 
                 <#break>
             <#case "unknown">
@@ -847,25 +824,28 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
     def hash_code(self) -> int:
         return hash(self)
 
+    <@emitImport import="from plc4py.api.exceptions.exceptions import SerializationException" />
+    <@emitImport import="from plc4py.api.exceptions.exceptions import PlcRuntimeException" />
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
+        #    write_buffer_box_based.writeSerializable(self)
+        #except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
     <#if type.isDiscriminatedParentTypeDefinition()>
 class ${type.name}Builder:
     <@compress single_line=true>def build(self,
 <#list type.propertyFields as field>
-    ${field.name}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
+    ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
 </#list>
 <#if filteredParserArguments?has_content>
     <#if type.propertyFields?has_content>, </#if>
     <#list filteredParserArguments as arg>
-        ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
+        ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
     </#list>
 </#if>
 ) -> ${type.name}:</@compress>
@@ -879,29 +859,26 @@ class ${type.name}Builder:
 class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
 <#if type.propertyFields?has_content>
     <#list type.propertyFields as field>
-    ${field.name}: ${helper.getLanguageTypeNameForField(field)}
+    ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}
     </#list>
 </#if>
 <#if filteredParserArguments?has_content>
     <#list filteredParserArguments as arg>
-    ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
+    ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
     </#list>
 </#if>
 <#list reservedFields as reservedField>
     reservedField${reservedField?index}: ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)}
 </#list>
 
-    def __post_init__(self):
-        pass
-
     def build(self,<@compress single_line=true>
     <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
-        ${field.name}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
+        ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
     </#list>
     <#if filteredParentParserArguments?has_content>
         <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if>
         <#list filteredParentParserArguments as arg>
-            ${arg.name}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
+            ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
         </#list>
     </#if>
     ) -> ${type.name}:</@compress>

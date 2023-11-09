@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -28,12 +30,9 @@ import math
 
 
 @dataclass
-class ModbusDeviceInformationObject(PlcMessage):
+class ModbusDeviceInformationObject:
     object_id: int
     data: List[int]
-
-    def __post_init__(self):
-        super().__init__()
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusDeviceInformationObject")
@@ -110,10 +109,11 @@ class ModbusDeviceInformationObject(PlcMessage):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"

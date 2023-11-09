@@ -138,9 +138,6 @@ class ReadBuffer(ByteOrderAware, PositionAware):
 
 
 class ReadBufferByteBased(ReadBuffer):
-    byte_order: ByteOrder
-    position: int = 0
-    bb: bitarray
 
     NUMERIC_UNION = Union[
         c_ubyte,
@@ -165,6 +162,7 @@ class ReadBufferByteBased(ReadBuffer):
             buffer=memoryview(bb), endian=ByteOrder.get_short_name(byte_order)
         )
         self.byte_order = byte_order
+        self.position = 0
 
     def get_bytes(self) -> memoryview:
         return memoryview(self.bb)

@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -28,14 +30,11 @@ import math
 
 
 @dataclass
-class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
+class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x07
     response: bool = False
-
-    def __post_init__(self):
-        super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadExceptionStatusRequest")
@@ -75,20 +74,18 @@ class ModbusPDUReadExceptionStatusRequest(PlcMessage, ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadExceptionStatusRequestBuilder(ModbusPDUBuilder):
-    def __post_init__(self):
-        pass
-
     def build(
         self,
     ) -> ModbusPDUReadExceptionStatusRequest:

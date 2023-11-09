@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import (
     ModbusDeviceInformationLevel,
@@ -31,7 +33,7 @@ import math
 
 
 @dataclass
-class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
+class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
     level: ModbusDeviceInformationLevel
     object_id: int
     MEITYPE: int = 0x0E
@@ -40,9 +42,6 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
     function_flag: int = 0x2B
     response: bool = False
 
-    def __post_init__(self):
-        super().__init__()
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
 
@@ -50,11 +49,7 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
         write_buffer.write_unsigned_byte(self.mei_type.value, logical_name="meiType")
 
         # Simple Field (level)
-        write_buffer.DataWriterEnumDefault(
-            ModbusDeviceInformationLevel.value,
-            ModbusDeviceInformationLevel.name,
-            write_unsigned_byte,
-        )(self.level, logical_name="level")
+        write_buffer.write_unsigned_byte(self.level, logical_name="level")
 
         # Simple Field (objectId)
         write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
@@ -116,22 +111,20 @@ class ModbusPDUReadDeviceIdentificationRequest(PlcMessage, ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadDeviceIdentificationRequestBuilder(ModbusPDUBuilder):
     level: ModbusDeviceInformationLevel
-    objectId: int
-
-    def __post_init__(self):
-        pass
+    object_id: int
 
     def build(
         self,

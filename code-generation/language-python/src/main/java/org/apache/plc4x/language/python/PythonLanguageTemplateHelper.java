@@ -327,7 +327,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "DataWriterEnumDefault(" + languageTypeName + "." + camelCaseToSnakeCase(attributeName) + ", " + languageTypeName + ".name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return getDataWriterCall(outputTypeReference, fieldName);
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
