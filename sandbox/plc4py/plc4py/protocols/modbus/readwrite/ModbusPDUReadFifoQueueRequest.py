@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -27,16 +29,12 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
     
 @dataclass
-class ModbusPDUReadFifoQueueRequest(PlcMessage,ModbusPDU):
+class ModbusPDUReadFifoQueueRequest(ModbusPDU):
     fifo_pointer_address: int
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x18
     response: bool = False
-
-
-    def __post_init__(self):
-        super().__init__( )
 
 
 
@@ -50,10 +48,10 @@ class ModbusPDUReadFifoQueueRequest(PlcMessage,ModbusPDU):
 
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUReadFifoQueueRequest = self
 
         # Simple field (fifoPointerAddress)
@@ -66,7 +64,7 @@ class ModbusPDUReadFifoQueueRequest(PlcMessage,ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFifoQueueRequest")
 
-        self.fifo_pointer_address= read_simple_field("fifoPointerAddress", read_unsigned_int)
+        fifo_pointer_address: int = read_buffer.read_unsigned_int(logical_name="fifoPointerAddress")  
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueRequest")
         # Create the instance
@@ -87,21 +85,19 @@ class ModbusPDUReadFifoQueueRequest(PlcMessage,ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
+        #    write_buffer_box_based.writeSerializable(self)
+        #except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadFifoQueueRequestBuilder(ModbusPDUBuilder):
-    fifoPointerAddress: int
-
-    def __post_init__(self):
-        pass
+    fifo_pointer_address: int
 
     def build(self,) -> ModbusPDUReadFifoQueueRequest:
         modbus_pdu_read_fifo_queue_request: ModbusPDUReadFifoQueueRequest = ModbusPDUReadFifoQueueRequest(self.fifo_pointer_address )

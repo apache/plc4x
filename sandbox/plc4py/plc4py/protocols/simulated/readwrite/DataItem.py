@@ -35,10 +35,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_bool" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
@@ -54,10 +54,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_byte" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcUINT(int(read_buffer.read_unsigned_short(8, logical_name=""))))
@@ -73,10 +73,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_word" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcUDINT(int(read_buffer.read_unsigned_int(16, logical_name=""))))
@@ -92,10 +92,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_dword" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name=""))))
@@ -111,10 +111,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_lword" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcLINT(int(read_buffer.read_unsigned_big_integer(64, logical_name=""))))
@@ -130,10 +130,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_sint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcSINT(int(read_buffer.read_signed_byte(8, logical_name=""))))
@@ -149,10 +149,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_int" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcINT(int(read_buffer.read_short(16, logical_name=""))))
@@ -168,10 +168,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_dint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcDINT(int(read_buffer.read_int(32, logical_name=""))))
@@ -187,10 +187,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_lint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcLINT(int(read_buffer.read_long(64, logical_name=""))))
@@ -206,10 +206,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_usint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcUINT(int(read_buffer.read_unsigned_short(8, logical_name=""))))
@@ -225,10 +225,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_uint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcUDINT(int(read_buffer.read_unsigned_int(16, logical_name=""))))
@@ -244,10 +244,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_udint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name=""))))
@@ -263,10 +263,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_ulint" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcLINT(int(read_buffer.read_unsigned_big_integer(64, logical_name=""))))
@@ -282,10 +282,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_real" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcREAL(float(read_buffer.read_float(32, logical_name=""))))
@@ -301,10 +301,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_lreal" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcLREAL(float(read_buffer.read_double(64, logical_name=""))))
@@ -320,10 +320,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_char" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcSTRING(str(read_buffer.read_string(8, logical_name="", encoding=""))))
@@ -339,10 +339,10 @@ class DataItem:
         if EvaluationHelper.equals( data_type, "_wchar" ) :  # List
             # Array field (value)
             # Count array
-            if numberOfValues > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (numberOfValues) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
+            if number_of_values > Integer.MAX_VALUE:
+                raise ParseException("Array count of " + (number_of_values) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
 
-            item_count: int = int(numberOfValues)
+            item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for cur_item in range(item_count):
                 value.append(PlcSTRING(str(read_buffer.read_string(16, logical_name="", encoding=""))))
@@ -369,12 +369,12 @@ class DataItem:
 
     @staticmethod
     def static_serialize(writeBuffer: WriteBuffer, _value: PlcValue, dataType: str, numberOfValues: int, byteOrder: ByteOrder) -> None:
-        if EvaluationHelper.equals( dataType, "BOOL" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # BOOL
+        if EvaluationHelper.equals( data_type, "BOOL" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # BOOL
 
             # Simple Field (value)
             value: bool = _value.getBool()
             writeBuffer.WriteBit("value", (value))
-        if EvaluationHelper.equals( dataType, "BOOL" ) : # List
+        if EvaluationHelper.equals( data_type, "BOOL" ) : # List
 
             values: PlcList = _value
 
@@ -382,12 +382,12 @@ class DataItem:
                 value: bool = val.getBool()
                 writeBuffer.WriteBit("value", (value))
 
-        if EvaluationHelper.equals( dataType, "BYTE" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # BYTE
+        if EvaluationHelper.equals( data_type, "BYTE" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # BYTE
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint8("value", 8, (value))
-        if EvaluationHelper.equals( dataType, "BYTE" ) : # List
+        if EvaluationHelper.equals( data_type, "BYTE" ) : # List
 
             values: PlcList = _value
 
@@ -395,12 +395,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint8("value", 8, (value))
 
-        if EvaluationHelper.equals( dataType, "WORD" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # WORD
+        if EvaluationHelper.equals( data_type, "WORD" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # WORD
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint16("value", 16, (value))
-        if EvaluationHelper.equals( dataType, "WORD" ) : # List
+        if EvaluationHelper.equals( data_type, "WORD" ) : # List
 
             values: PlcList = _value
 
@@ -408,12 +408,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint16("value", 16, (value))
 
-        if EvaluationHelper.equals( dataType, "DWORD" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # DWORD
+        if EvaluationHelper.equals( data_type, "DWORD" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # DWORD
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint32("value", 32, (value))
-        if EvaluationHelper.equals( dataType, "DWORD" ) : # List
+        if EvaluationHelper.equals( data_type, "DWORD" ) : # List
 
             values: PlcList = _value
 
@@ -421,12 +421,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint32("value", 32, (value))
 
-        if EvaluationHelper.equals( dataType, "LWORD" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # LWORD
+        if EvaluationHelper.equals( data_type, "LWORD" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # LWORD
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint64("value", 64, (value))
-        if EvaluationHelper.equals( dataType, "LWORD" ) : # List
+        if EvaluationHelper.equals( data_type, "LWORD" ) : # List
 
             values: PlcList = _value
 
@@ -434,12 +434,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint64("value", 64, (value))
 
-        if EvaluationHelper.equals( dataType, "SINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # SINT
+        if EvaluationHelper.equals( data_type, "SINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # SINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteInt8("value", 8, (value))
-        if EvaluationHelper.equals( dataType, "SINT" ) : # List
+        if EvaluationHelper.equals( data_type, "SINT" ) : # List
 
             values: PlcList = _value
 
@@ -447,12 +447,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteInt8("value", 8, (value))
 
-        if EvaluationHelper.equals( dataType, "INT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # INT
+        if EvaluationHelper.equals( data_type, "INT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # INT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteInt16("value", 16, (value))
-        if EvaluationHelper.equals( dataType, "INT" ) : # List
+        if EvaluationHelper.equals( data_type, "INT" ) : # List
 
             values: PlcList = _value
 
@@ -460,12 +460,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteInt16("value", 16, (value))
 
-        if EvaluationHelper.equals( dataType, "DINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # DINT
+        if EvaluationHelper.equals( data_type, "DINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # DINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteInt32("value", 32, (value))
-        if EvaluationHelper.equals( dataType, "DINT" ) : # List
+        if EvaluationHelper.equals( data_type, "DINT" ) : # List
 
             values: PlcList = _value
 
@@ -473,12 +473,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteInt32("value", 32, (value))
 
-        if EvaluationHelper.equals( dataType, "LINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # LINT
+        if EvaluationHelper.equals( data_type, "LINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # LINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteInt64("value", 64, (value))
-        if EvaluationHelper.equals( dataType, "LINT" ) : # List
+        if EvaluationHelper.equals( data_type, "LINT" ) : # List
 
             values: PlcList = _value
 
@@ -486,12 +486,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteInt64("value", 64, (value))
 
-        if EvaluationHelper.equals( dataType, "USINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # USINT
+        if EvaluationHelper.equals( data_type, "USINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # USINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint8("value", 8, (value))
-        if EvaluationHelper.equals( dataType, "USINT" ) : # List
+        if EvaluationHelper.equals( data_type, "USINT" ) : # List
 
             values: PlcList = _value
 
@@ -499,12 +499,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint8("value", 8, (value))
 
-        if EvaluationHelper.equals( dataType, "UINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # UINT
+        if EvaluationHelper.equals( data_type, "UINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # UINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint16("value", 16, (value))
-        if EvaluationHelper.equals( dataType, "UINT" ) : # List
+        if EvaluationHelper.equals( data_type, "UINT" ) : # List
 
             values: PlcList = _value
 
@@ -512,12 +512,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint16("value", 16, (value))
 
-        if EvaluationHelper.equals( dataType, "UDINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # UDINT
+        if EvaluationHelper.equals( data_type, "UDINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # UDINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint32("value", 32, (value))
-        if EvaluationHelper.equals( dataType, "UDINT" ) : # List
+        if EvaluationHelper.equals( data_type, "UDINT" ) : # List
 
             values: PlcList = _value
 
@@ -525,12 +525,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint32("value", 32, (value))
 
-        if EvaluationHelper.equals( dataType, "ULINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # ULINT
+        if EvaluationHelper.equals( data_type, "ULINT" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # ULINT
 
             # Simple Field (value)
             value: int = _value.getInt()
             writeBuffer.WriteUint64("value", 64, (value))
-        if EvaluationHelper.equals( dataType, "ULINT" ) : # List
+        if EvaluationHelper.equals( data_type, "ULINT" ) : # List
 
             values: PlcList = _value
 
@@ -538,12 +538,12 @@ class DataItem:
                 value: int = val.getInt()
                 writeBuffer.WriteUint64("value", 64, (value))
 
-        if EvaluationHelper.equals( dataType, "REAL" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # REAL
+        if EvaluationHelper.equals( data_type, "REAL" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # REAL
 
             # Simple Field (value)
             value: float = _value.getFloat()
             writeBuffer.WriteFloat32("value", 32, (value))
-        if EvaluationHelper.equals( dataType, "REAL" ) : # List
+        if EvaluationHelper.equals( data_type, "REAL" ) : # List
 
             values: PlcList = _value
 
@@ -551,12 +551,12 @@ class DataItem:
                 value: float = val.getFloat()
                 writeBuffer.WriteFloat32("value", 32, (value))
 
-        if EvaluationHelper.equals( dataType, "LREAL" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # LREAL
+        if EvaluationHelper.equals( data_type, "LREAL" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # LREAL
 
             # Simple Field (value)
             value: float = _value.getFloat()
             writeBuffer.WriteFloat64("value", 64, (value))
-        if EvaluationHelper.equals( dataType, "LREAL" ) : # List
+        if EvaluationHelper.equals( data_type, "LREAL" ) : # List
 
             values: PlcList = _value
 
@@ -564,12 +564,12 @@ class DataItem:
                 value: float = val.getFloat()
                 writeBuffer.WriteFloat64("value", 64, (value))
 
-        if EvaluationHelper.equals( dataType, "CHAR" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # CHAR
+        if EvaluationHelper.equals( data_type, "CHAR" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # CHAR
 
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.WriteString("value", uint32(8), "UTF-8", (value))
-        if EvaluationHelper.equals( dataType, "CHAR" ) : # List
+        if EvaluationHelper.equals( data_type, "CHAR" ) : # List
 
             values: PlcList = _value
 
@@ -577,12 +577,12 @@ class DataItem:
                 value: str = val.getStr()
                 writeBuffer.WriteString("value", uint32(8), "UTF-8", (value))
 
-        if EvaluationHelper.equals( dataType, "WCHAR" ) and EvaluationHelper.equals( numberOfValues, int(1) ) : # WCHAR
+        if EvaluationHelper.equals( data_type, "WCHAR" ) and EvaluationHelper.equals( number_of_values, int(1) ) : # WCHAR
 
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.WriteString("value", uint32(16), "UTF-16", (value))
-        if EvaluationHelper.equals( dataType, "WCHAR" ) : # List
+        if EvaluationHelper.equals( data_type, "WCHAR" ) : # List
 
             values: PlcList = _value
 
@@ -590,12 +590,12 @@ class DataItem:
                 value: str = val.getStr()
                 writeBuffer.WriteString("value", uint32(16), "UTF-16", (value))
 
-        if EvaluationHelper.equals( dataType, "STRING" ) : # STRING
+        if EvaluationHelper.equals( data_type, "STRING" ) : # STRING
 
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.WriteString("value", uint32(255), "UTF-8", (value))
-        if EvaluationHelper.equals( dataType, "WSTRING" ) : # STRING
+        if EvaluationHelper.equals( data_type, "WSTRING" ) : # STRING
 
             # Simple Field (value)
             value: str = _value.getStr()
@@ -609,112 +609,112 @@ class DataItem:
     @staticmethod
     def get_length_in_bits(_value: PlcValue, dataType: str, numberOfValues: int) -> int:
         sizeInBits: int = 0
-        if EvaluationHelper.equals( dataType, "BOOL" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # BOOL
+        if EvaluationHelper.equals( data_type, "BOOL" ) and EvaluationHelper.equals( number_of_values, int(1) ): # BOOL
                 # Simple Field (value)
                 sizeInBits += 1
-        if EvaluationHelper.equals( dataType, "BOOL" ): # List
+        if EvaluationHelper.equals( data_type, "BOOL" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 1
-        if EvaluationHelper.equals( dataType, "BYTE" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # BYTE
+        if EvaluationHelper.equals( data_type, "BYTE" ) and EvaluationHelper.equals( number_of_values, int(1) ): # BYTE
                 # Simple Field (value)
                 sizeInBits += 8
-        if EvaluationHelper.equals( dataType, "BYTE" ): # List
+        if EvaluationHelper.equals( data_type, "BYTE" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 8
-        if EvaluationHelper.equals( dataType, "WORD" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # WORD
+        if EvaluationHelper.equals( data_type, "WORD" ) and EvaluationHelper.equals( number_of_values, int(1) ): # WORD
                 # Simple Field (value)
                 sizeInBits += 16
-        if EvaluationHelper.equals( dataType, "WORD" ): # List
+        if EvaluationHelper.equals( data_type, "WORD" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 16
-        if EvaluationHelper.equals( dataType, "DWORD" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # DWORD
+        if EvaluationHelper.equals( data_type, "DWORD" ) and EvaluationHelper.equals( number_of_values, int(1) ): # DWORD
                 # Simple Field (value)
                 sizeInBits += 32
-        if EvaluationHelper.equals( dataType, "DWORD" ): # List
+        if EvaluationHelper.equals( data_type, "DWORD" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 32
-        if EvaluationHelper.equals( dataType, "LWORD" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # LWORD
+        if EvaluationHelper.equals( data_type, "LWORD" ) and EvaluationHelper.equals( number_of_values, int(1) ): # LWORD
                 # Simple Field (value)
                 sizeInBits += 64
-        if EvaluationHelper.equals( dataType, "LWORD" ): # List
+        if EvaluationHelper.equals( data_type, "LWORD" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 64
-        if EvaluationHelper.equals( dataType, "SINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # SINT
+        if EvaluationHelper.equals( data_type, "SINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # SINT
                 # Simple Field (value)
                 sizeInBits += 8
-        if EvaluationHelper.equals( dataType, "SINT" ): # List
+        if EvaluationHelper.equals( data_type, "SINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 8
-        if EvaluationHelper.equals( dataType, "INT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # INT
+        if EvaluationHelper.equals( data_type, "INT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # INT
                 # Simple Field (value)
                 sizeInBits += 16
-        if EvaluationHelper.equals( dataType, "INT" ): # List
+        if EvaluationHelper.equals( data_type, "INT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 16
-        if EvaluationHelper.equals( dataType, "DINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # DINT
+        if EvaluationHelper.equals( data_type, "DINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # DINT
                 # Simple Field (value)
                 sizeInBits += 32
-        if EvaluationHelper.equals( dataType, "DINT" ): # List
+        if EvaluationHelper.equals( data_type, "DINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 32
-        if EvaluationHelper.equals( dataType, "LINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # LINT
+        if EvaluationHelper.equals( data_type, "LINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # LINT
                 # Simple Field (value)
                 sizeInBits += 64
-        if EvaluationHelper.equals( dataType, "LINT" ): # List
+        if EvaluationHelper.equals( data_type, "LINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 64
-        if EvaluationHelper.equals( dataType, "USINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # USINT
+        if EvaluationHelper.equals( data_type, "USINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # USINT
                 # Simple Field (value)
                 sizeInBits += 8
-        if EvaluationHelper.equals( dataType, "USINT" ): # List
+        if EvaluationHelper.equals( data_type, "USINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 8
-        if EvaluationHelper.equals( dataType, "UINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # UINT
+        if EvaluationHelper.equals( data_type, "UINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # UINT
                 # Simple Field (value)
                 sizeInBits += 16
-        if EvaluationHelper.equals( dataType, "UINT" ): # List
+        if EvaluationHelper.equals( data_type, "UINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 16
-        if EvaluationHelper.equals( dataType, "UDINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # UDINT
+        if EvaluationHelper.equals( data_type, "UDINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # UDINT
                 # Simple Field (value)
                 sizeInBits += 32
-        if EvaluationHelper.equals( dataType, "UDINT" ): # List
+        if EvaluationHelper.equals( data_type, "UDINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 32
-        if EvaluationHelper.equals( dataType, "ULINT" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # ULINT
+        if EvaluationHelper.equals( data_type, "ULINT" ) and EvaluationHelper.equals( number_of_values, int(1) ): # ULINT
                 # Simple Field (value)
                 sizeInBits += 64
-        if EvaluationHelper.equals( dataType, "ULINT" ): # List
+        if EvaluationHelper.equals( data_type, "ULINT" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 64
-        if EvaluationHelper.equals( dataType, "REAL" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # REAL
+        if EvaluationHelper.equals( data_type, "REAL" ) and EvaluationHelper.equals( number_of_values, int(1) ): # REAL
                 # Simple Field (value)
                 sizeInBits += 32
-        if EvaluationHelper.equals( dataType, "REAL" ): # List
+        if EvaluationHelper.equals( data_type, "REAL" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 32
-        if EvaluationHelper.equals( dataType, "LREAL" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # LREAL
+        if EvaluationHelper.equals( data_type, "LREAL" ) and EvaluationHelper.equals( number_of_values, int(1) ): # LREAL
                 # Simple Field (value)
                 sizeInBits += 64
-        if EvaluationHelper.equals( dataType, "LREAL" ): # List
+        if EvaluationHelper.equals( data_type, "LREAL" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 64
-        if EvaluationHelper.equals( dataType, "CHAR" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # CHAR
+        if EvaluationHelper.equals( data_type, "CHAR" ) and EvaluationHelper.equals( number_of_values, int(1) ): # CHAR
                 # Simple Field (value)
                 sizeInBits += 8
-        if EvaluationHelper.equals( dataType, "CHAR" ): # List
+        if EvaluationHelper.equals( data_type, "CHAR" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 8
-        if EvaluationHelper.equals( dataType, "WCHAR" ) and EvaluationHelper.equals( numberOfValues, int(1) ): # WCHAR
+        if EvaluationHelper.equals( data_type, "WCHAR" ) and EvaluationHelper.equals( number_of_values, int(1) ): # WCHAR
                 # Simple Field (value)
                 sizeInBits += 16
-        if EvaluationHelper.equals( dataType, "WCHAR" ): # List
+        if EvaluationHelper.equals( data_type, "WCHAR" ): # List
                 values: PlcList = _value
                 sizeInBits += values.getList().size() * 16
-        if EvaluationHelper.equals( dataType, "STRING" ): # STRING
+        if EvaluationHelper.equals( data_type, "STRING" ): # STRING
                 # Simple Field (value)
                 sizeInBits += 255
-        if EvaluationHelper.equals( dataType, "WSTRING" ): # STRING
+        if EvaluationHelper.equals( data_type, "WSTRING" ): # STRING
                 # Simple Field (value)
                 sizeInBits += 255
         return sizeInBits

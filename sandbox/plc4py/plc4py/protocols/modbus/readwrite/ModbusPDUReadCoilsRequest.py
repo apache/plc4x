@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -27,17 +29,13 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
     
 @dataclass
-class ModbusPDUReadCoilsRequest(PlcMessage,ModbusPDU):
+class ModbusPDUReadCoilsRequest(ModbusPDU):
     starting_address: int
     quantity: int
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x01
     response: bool = False
-
-
-    def __post_init__(self):
-        super().__init__( )
 
 
 
@@ -54,10 +52,10 @@ class ModbusPDUReadCoilsRequest(PlcMessage,ModbusPDU):
 
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUReadCoilsRequest = self
 
         # Simple field (startingAddress)
@@ -73,9 +71,9 @@ class ModbusPDUReadCoilsRequest(PlcMessage,ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadCoilsRequest")
 
-        self.starting_address= read_simple_field("startingAddress", read_unsigned_int)
+        starting_address: int = read_buffer.read_unsigned_int(logical_name="startingAddress")  
 
-        self.quantity= read_simple_field("quantity", read_unsigned_int)
+        quantity: int = read_buffer.read_unsigned_int(logical_name="quantity")  
 
         read_buffer.pop_context("ModbusPDUReadCoilsRequest")
         # Create the instance
@@ -96,22 +94,20 @@ class ModbusPDUReadCoilsRequest(PlcMessage,ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
+        #    write_buffer_box_based.writeSerializable(self)
+        #except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadCoilsRequestBuilder(ModbusPDUBuilder):
-    startingAddress: int
+    starting_address: int
     quantity: int
-
-    def __post_init__(self):
-        pass
 
     def build(self,) -> ModbusPDUReadCoilsRequest:
         modbus_pdu_read_coils_request: ModbusPDUReadCoilsRequest = ModbusPDUReadCoilsRequest(self.starting_address, self.quantity )

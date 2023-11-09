@@ -21,7 +21,9 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
+from plc4py.api.exceptions.exceptions import ParseException
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -29,10 +31,6 @@ import math
     
 @dataclass
 class ModbusPDU(ABC, PlcMessage):
-
-
-    def __post_init__(self):
-        super().__init__( )
 
     # Abstract accessors for discriminator values.
     @property
@@ -57,10 +55,10 @@ class ModbusPDU(ABC, PlcMessage):
         write_buffer.push_context("ModbusPDU")
 
         # Discriminator Field (errorFlag) (Used as input to a switch field)
-        write_buffer.write_boolean(self.error_flag(), logical_name="errorFlag")
+        write_buffer.write_bit(self.error_flag, logical_name="errorFlag", bit_length=1, )
 
         # Discriminator Field (functionFlag) (Used as input to a switch field)
-        write_buffer.write_unsigned_byte(self.function_flag(), logical_name="functionFlag")
+        write_buffer.write_unsigned_byte(self.function_flag, logical_name="functionFlag", bit_length=7, )
 
         # Switch field (Serialize the sub-type)
         self.serialize_modbus_pdu_child(write_buffer)
@@ -69,9 +67,9 @@ class ModbusPDU(ABC, PlcMessage):
 
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
+    def length_in_bits(self) -> int:
         length_in_bits: int = 0
         _value: ModbusPDU = self
 
@@ -86,152 +84,193 @@ class ModbusPDU(ABC, PlcMessage):
         return length_in_bits
 
 
-    def static_parse(self, read_buffer: ReadBuffer , args):
-        if args is None:
+    @staticmethod
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+
+        if kwargs is None:
             raise PlcRuntimeException("Wrong number of arguments, expected 1, but got None")
-        elif args.length != 1:
-            raise PlcRuntimeException("Wrong number of arguments, expected 1, but got " + str(len(args)))
+        elif len(kwargs) == 1:
+            raise PlcRuntimeException("Wrong number of arguments, expected 1, but got " + str(len(kwargs)))
 
         response: bool = False
-        if isinstance(args[0], bool):
-            response = bool(args[0])
-        elif isinstance(args[0], str):
-            response = bool(str(args[0]))
+        if isinstance(kwargs.get("response"), bool):
+            response = bool(kwargs.get("response"))
+        elif isinstance(kwargs.get("response"), str):
+            response = bool(str(kwargs.get("response")))
         else:
-            raise PlcRuntimeException("Argument 0 expected to be of type bool or a string which is parseable but was " + args[0].getClass().getName())
+            raise PlcRuntimeException("Argument 0 expected to be of type bool or a string which is parseable but was " + kwargs.get("response").getClass().getName())
 
-        return self.static_parse_context(read_buffer, response)
+        return ModbusPDU.static_parse_context(read_buffer, response)
 
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDU")
 
-        error_flag: bool = read_discriminator_field("errorFlag", read_bit)
+        error_flag: bool = read_buffer.read_bit(logical_name="errorFlag")
 
-        function_flag: int = read_discriminator_field("functionFlag", read_unsigned_short)
+        function_flag: int = read_buffer.read_unsigned_short(logical_name="functionFlag")
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusPDUBuilder = None
-        if EvaluationHelper.equals( errorFlag, bool(True) ):
+        from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
+        if error_flag == bool(True) :
 
-            builder = ModbusPDUError.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x02) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUError.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import ModbusPDUReadDiscreteInputsRequest
+        if error_flag == bool(False) and function_flag == int(0x02) and response == bool(False) :
 
-            builder = ModbusPDUReadDiscreteInputsRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x02) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadDiscreteInputsRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsResponse import ModbusPDUReadDiscreteInputsResponse
+        if error_flag == bool(False) and function_flag == int(0x02) and response == bool(True) :
 
-            builder = ModbusPDUReadDiscreteInputsResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x01) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadDiscreteInputsResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsRequest import ModbusPDUReadCoilsRequest
+        if error_flag == bool(False) and function_flag == int(0x01) and response == bool(False) :
 
-            builder = ModbusPDUReadCoilsRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x01) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadCoilsRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsResponse import ModbusPDUReadCoilsResponse
+        if error_flag == bool(False) and function_flag == int(0x01) and response == bool(True) :
 
-            builder = ModbusPDUReadCoilsResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x05) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadCoilsResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteSingleCoilRequest import ModbusPDUWriteSingleCoilRequest
+        if error_flag == bool(False) and function_flag == int(0x05) and response == bool(False) :
 
-            builder = ModbusPDUWriteSingleCoilRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x05) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUWriteSingleCoilRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteSingleCoilResponse import ModbusPDUWriteSingleCoilResponse
+        if error_flag == bool(False) and function_flag == int(0x05) and response == bool(True) :
 
-            builder = ModbusPDUWriteSingleCoilResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x0F) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUWriteSingleCoilResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest import ModbusPDUWriteMultipleCoilsRequest
+        if error_flag == bool(False) and function_flag == int(0x0F) and response == bool(False) :
 
-            builder = ModbusPDUWriteMultipleCoilsRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x0F) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUWriteMultipleCoilsRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsResponse import ModbusPDUWriteMultipleCoilsResponse
+        if error_flag == bool(False) and function_flag == int(0x0F) and response == bool(True) :
 
-            builder = ModbusPDUWriteMultipleCoilsResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x04) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUWriteMultipleCoilsResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import ModbusPDUReadInputRegistersRequest
+        if error_flag == bool(False) and function_flag == int(0x04) and response == bool(False) :
 
-            builder = ModbusPDUReadInputRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x04) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadInputRegistersRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersResponse import ModbusPDUReadInputRegistersResponse
+        if error_flag == bool(False) and function_flag == int(0x04) and response == bool(True) :
 
-            builder = ModbusPDUReadInputRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x03) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadInputRegistersResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest import ModbusPDUReadHoldingRegistersRequest
+        if error_flag == bool(False) and function_flag == int(0x03) and response == bool(False) :
 
-            builder = ModbusPDUReadHoldingRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x03) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadHoldingRegistersRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse import ModbusPDUReadHoldingRegistersResponse
+        if error_flag == bool(False) and function_flag == int(0x03) and response == bool(True) :
 
-            builder = ModbusPDUReadHoldingRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x06) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadHoldingRegistersResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteSingleRegisterRequest import ModbusPDUWriteSingleRegisterRequest
+        if error_flag == bool(False) and function_flag == int(0x06) and response == bool(False) :
 
-            builder = ModbusPDUWriteSingleRegisterRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x06) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUWriteSingleRegisterRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteSingleRegisterResponse import ModbusPDUWriteSingleRegisterResponse
+        if error_flag == bool(False) and function_flag == int(0x06) and response == bool(True) :
 
-            builder = ModbusPDUWriteSingleRegisterResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x10) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUWriteSingleRegisterResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import ModbusPDUWriteMultipleHoldingRegistersRequest
+        if error_flag == bool(False) and function_flag == int(0x10) and response == bool(False) :
 
-            builder = ModbusPDUWriteMultipleHoldingRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x10) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUWriteMultipleHoldingRegistersRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersResponse import ModbusPDUWriteMultipleHoldingRegistersResponse
+        if error_flag == bool(False) and function_flag == int(0x10) and response == bool(True) :
 
-            builder = ModbusPDUWriteMultipleHoldingRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x17) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUWriteMultipleHoldingRegistersResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersRequest import ModbusPDUReadWriteMultipleHoldingRegistersRequest
+        if error_flag == bool(False) and function_flag == int(0x17) and response == bool(False) :
 
-            builder = ModbusPDUReadWriteMultipleHoldingRegistersRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x17) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadWriteMultipleHoldingRegistersRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersResponse import ModbusPDUReadWriteMultipleHoldingRegistersResponse
+        if error_flag == bool(False) and function_flag == int(0x17) and response == bool(True) :
 
-            builder = ModbusPDUReadWriteMultipleHoldingRegistersResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x16) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadWriteMultipleHoldingRegistersResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterRequest import ModbusPDUMaskWriteHoldingRegisterRequest
+        if error_flag == bool(False) and function_flag == int(0x16) and response == bool(False) :
 
-            builder = ModbusPDUMaskWriteHoldingRegisterRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x16) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUMaskWriteHoldingRegisterRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterResponse import ModbusPDUMaskWriteHoldingRegisterResponse
+        if error_flag == bool(False) and function_flag == int(0x16) and response == bool(True) :
 
-            builder = ModbusPDUMaskWriteHoldingRegisterResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x18) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUMaskWriteHoldingRegisterResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadFifoQueueRequest import ModbusPDUReadFifoQueueRequest
+        if error_flag == bool(False) and function_flag == int(0x18) and response == bool(False) :
 
-            builder = ModbusPDUReadFifoQueueRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x18) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadFifoQueueRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadFifoQueueResponse import ModbusPDUReadFifoQueueResponse
+        if error_flag == bool(False) and function_flag == int(0x18) and response == bool(True) :
 
-            builder = ModbusPDUReadFifoQueueResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x14) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadFifoQueueResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordRequest import ModbusPDUReadFileRecordRequest
+        if error_flag == bool(False) and function_flag == int(0x14) and response == bool(False) :
 
-            builder = ModbusPDUReadFileRecordRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x14) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadFileRecordRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordResponse import ModbusPDUReadFileRecordResponse
+        if error_flag == bool(False) and function_flag == int(0x14) and response == bool(True) :
 
-            builder = ModbusPDUReadFileRecordResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x15) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadFileRecordResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordRequest import ModbusPDUWriteFileRecordRequest
+        if error_flag == bool(False) and function_flag == int(0x15) and response == bool(False) :
 
-            builder = ModbusPDUWriteFileRecordRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x15) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUWriteFileRecordRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUWriteFileRecordResponse import ModbusPDUWriteFileRecordResponse
+        if error_flag == bool(False) and function_flag == int(0x15) and response == bool(True) :
 
-            builder = ModbusPDUWriteFileRecordResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x07) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUWriteFileRecordResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadExceptionStatusRequest import ModbusPDUReadExceptionStatusRequest
+        if error_flag == bool(False) and function_flag == int(0x07) and response == bool(False) :
 
-            builder = ModbusPDUReadExceptionStatusRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x07) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadExceptionStatusRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadExceptionStatusResponse import ModbusPDUReadExceptionStatusResponse
+        if error_flag == bool(False) and function_flag == int(0x07) and response == bool(True) :
 
-            builder = ModbusPDUReadExceptionStatusResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x08) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReadExceptionStatusResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUDiagnosticRequest import ModbusPDUDiagnosticRequest
+        if error_flag == bool(False) and function_flag == int(0x08) and response == bool(False) :
 
-            builder = ModbusPDUDiagnosticRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x08) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUDiagnosticRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUDiagnosticResponse import ModbusPDUDiagnosticResponse
+        if error_flag == bool(False) and function_flag == int(0x08) and response == bool(True) :
 
-            builder = ModbusPDUDiagnosticResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x0B) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUDiagnosticResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUGetComEventCounterRequest import ModbusPDUGetComEventCounterRequest
+        if error_flag == bool(False) and function_flag == int(0x0B) and response == bool(False) :
 
-            builder = ModbusPDUGetComEventCounterRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x0B) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUGetComEventCounterRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUGetComEventCounterResponse import ModbusPDUGetComEventCounterResponse
+        if error_flag == bool(False) and function_flag == int(0x0B) and response == bool(True) :
 
-            builder = ModbusPDUGetComEventCounterResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x0C) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUGetComEventCounterResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUGetComEventLogRequest import ModbusPDUGetComEventLogRequest
+        if error_flag == bool(False) and function_flag == int(0x0C) and response == bool(False) :
 
-            builder = ModbusPDUGetComEventLogRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x0C) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUGetComEventLogRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUGetComEventLogResponse import ModbusPDUGetComEventLogResponse
+        if error_flag == bool(False) and function_flag == int(0x0C) and response == bool(True) :
 
-            builder = ModbusPDUGetComEventLogResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x11) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUGetComEventLogResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReportServerIdRequest import ModbusPDUReportServerIdRequest
+        if error_flag == bool(False) and function_flag == int(0x11) and response == bool(False) :
 
-            builder = ModbusPDUReportServerIdRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x11) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReportServerIdRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReportServerIdResponse import ModbusPDUReportServerIdResponse
+        if error_flag == bool(False) and function_flag == int(0x11) and response == bool(True) :
 
-            builder = ModbusPDUReportServerIdResponse.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x2B) ) and EvaluationHelper.equals( response, bool(False) ):
+            builder = ModbusPDUReportServerIdResponse.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadDeviceIdentificationRequest import ModbusPDUReadDeviceIdentificationRequest
+        if error_flag == bool(False) and function_flag == int(0x2B) and response == bool(False) :
 
-            builder = ModbusPDUReadDeviceIdentificationRequest.staticParseBuilder(read_buffer, response)
-        if EvaluationHelper.equals( errorFlag, bool(False) ) and EvaluationHelper.equals( functionFlag, int(0x2B) ) and EvaluationHelper.equals( response, bool(True) ):
+            builder = ModbusPDUReadDeviceIdentificationRequest.static_parse_builder(read_buffer, response)
+        from plc4py.protocols.modbus.readwrite.ModbusPDUReadDeviceIdentificationResponse import ModbusPDUReadDeviceIdentificationResponse
+        if error_flag == bool(False) and function_flag == int(0x2B) and response == bool(True) :
 
-            builder = ModbusPDUReadDeviceIdentificationResponse.staticParseBuilder(read_buffer, response)
+            builder = ModbusPDUReadDeviceIdentificationResponse.static_parse_builder(read_buffer, response)
         if builder is None:
-            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"errorFlag="+errorFlag+" "+"functionFlag="+functionFlag+" "+"response="+response+"]")
+            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"errorFlag="+str(error_flag)+" "+"functionFlag="+str(function_flag)+" "+"response="+str(response)+"]")
 
 
         read_buffer.pop_context("ModbusPDU")
@@ -254,13 +293,14 @@ class ModbusPDU(ABC, PlcMessage):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
+        #    write_buffer_box_based.writeSerializable(self)
+        #except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 class ModbusPDUBuilder:
     def build(self, ) -> ModbusPDU:

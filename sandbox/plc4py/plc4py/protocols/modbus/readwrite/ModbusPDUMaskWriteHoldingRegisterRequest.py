@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -27,7 +29,7 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
     
 @dataclass
-class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
+class ModbusPDUMaskWriteHoldingRegisterRequest(ModbusPDU):
     reference_address: int
     and_mask: int
     or_mask: int
@@ -35,10 +37,6 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
     error_flag: bool = False
     function_flag: int = 0x16
     response: bool = False
-
-
-    def __post_init__(self):
-        super().__init__( )
 
 
 
@@ -58,10 +56,10 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
 
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUMaskWriteHoldingRegisterRequest = self
 
         # Simple field (referenceAddress)
@@ -80,11 +78,11 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterRequest")
 
-        self.reference_address= read_simple_field("referenceAddress", read_unsigned_int)
+        reference_address: int = read_buffer.read_unsigned_int(logical_name="referenceAddress")  
 
-        self.and_mask= read_simple_field("andMask", read_unsigned_int)
+        and_mask: int = read_buffer.read_unsigned_int(logical_name="andMask")  
 
-        self.or_mask= read_simple_field("orMask", read_unsigned_int)
+        or_mask: int = read_buffer.read_unsigned_int(logical_name="orMask")  
 
         read_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterRequest")
         # Create the instance
@@ -105,23 +103,21 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(PlcMessage,ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        #try:
+        #    write_buffer_box_based.writeSerializable(self)
+        #except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUMaskWriteHoldingRegisterRequestBuilder(ModbusPDUBuilder):
-    referenceAddress: int
-    andMask: int
-    orMask: int
-
-    def __post_init__(self):
-        pass
+    reference_address: int
+    and_mask: int
+    or_mask: int
 
     def build(self,) -> ModbusPDUMaskWriteHoldingRegisterRequest:
         modbus_pdu_mask_write_holding_register_request: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(self.reference_address, self.and_mask, self.or_mask )
