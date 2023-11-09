@@ -540,7 +540,7 @@
 
   <profiles>
     <profile>
-      <id>os-windows</id>
+      <id>.os-windows</id>
       <activation>
         <os>
           <family>windows</family>
