@@ -101,7 +101,7 @@
             <executions>
               <execution>
                 <id>transform-services</id>
-                <phase>process-resources</phase>
+                <phase>generate-resources</phase>
                 <goals>
                   <goal>transform</goal>
                 </goals>

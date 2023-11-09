@@ -125,7 +125,7 @@
             <version>1.1.0</version>
             <executions>
               <execution>
-                <phase>process-resources</phase>
+                <phase>generate-resources</phase>
                 <goals>
                   <goal>transform</goal>
                 </goals>
