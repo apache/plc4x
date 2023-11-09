@@ -59,4 +59,5 @@ public class CANTestTransport extends TestTransport implements CANTransport<CANO
     public Function<CANOpenFrame, FrameData> adapter() {
         return new CANOpenFrameDataAdapter();
     }
+
 }

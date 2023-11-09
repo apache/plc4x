@@ -19,20 +19,22 @@
 
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
 from typing import List
 import math
-
-
+    
 @dataclass
-class ModbusDeviceInformationObject:
+class ModbusDeviceInformationObject(PlcMessage):
     object_id: int
     data: List[int]
+
+
+    def __post_init__(self):
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusDeviceInformationObject")
@@ -41,7 +43,7 @@ class ModbusDeviceInformationObject:
         write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        object_length: int = int(len(self.data))
+        object_length: int = (int(len(self.data)))
         write_buffer.write_unsigned_byte(object_length, logical_name="objectLength")
 
         # Array Field (data)
@@ -49,10 +51,11 @@ class ModbusDeviceInformationObject:
 
         write_buffer.pop_context("ModbusDeviceInformationObject")
 
-    def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def length_in_bits(self) -> int:
+    def length_in_bytes(self) -> int:
+        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+
+    def get_length_in_bits(self) -> int:
         length_in_bits: int = 0
         _value: ModbusDeviceInformationObject = self
 
@@ -63,37 +66,32 @@ class ModbusDeviceInformationObject:
         length_in_bits += 8
 
         # Array field
-        if self.data is not None:
+        if self.data != None:
             length_in_bits += 8 * len(self.data)
+
 
         return length_in_bits
 
-    @staticmethod
-    def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return ModbusDeviceInformationObject.static_parse_context(read_buffer)
+
+    def static_parse(self, read_buffer: ReadBuffer , args):
+        return self.static_parse_context(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusDeviceInformationObject")
 
-        object_id: int = read_buffer.read_unsigned_short(logical_name="objectId")
+        self.object_id= read_simple_field("objectId", read_unsigned_short)
 
-        object_length: int = read_buffer.read_unsigned_short(
-            logical_name="objectLength"
-        )
+        object_length: int = read_implicit_field("objectLength", read_unsigned_short)
 
-        data: List[Any] = read_buffer.read_array_field(
-            logical_name="data",
-            read_function=read_buffer.read_byte,
-            count=object_length,
-        )
+        data: List[int] = read_buffer.read_byte_array("data", int(object_length))
 
         read_buffer.pop_context("ModbusDeviceInformationObject")
         # Create the instance
-        _modbus_device_information_object: ModbusDeviceInformationObject = (
-            ModbusDeviceInformationObject(object_id, data)
-        )
+        _modbus_device_information_object: ModbusDeviceInformationObject = ModbusDeviceInformationObject(object_id, data )
         return _modbus_device_information_object
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,11 +107,14 @@ class ModbusDeviceInformationObject:
         return hash(self)
 
     def __str__(self) -> str:
-        pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
-        #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
-        #    raise PlcRuntimeException(e)
+        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        try:
+            write_buffer_box_based.writeSerializable(self)
+        except SerializationException as e:
+            raise RuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

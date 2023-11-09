@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
 
 import java.net.InetSocketAddress;
@@ -97,6 +98,11 @@ public class RawSocketTransport implements Transport, HasConfiguration<RawSocket
         SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
 
         return new RawSocketChannelFactory(address);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigType() {
+        return DefaultRawSocketTransportConfiguration.class;
     }
 
 }

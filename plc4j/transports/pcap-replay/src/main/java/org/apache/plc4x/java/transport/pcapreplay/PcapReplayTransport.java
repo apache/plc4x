@@ -21,6 +21,7 @@ package org.apache.plc4x.java.transport.pcapreplay;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.utils.pcapreplay.netty.address.PcapReplayAddress;
 
 import java.io.File;
@@ -45,6 +46,11 @@ public class PcapReplayTransport implements Transport {
         }
         PcapReplayAddress address = new PcapReplayAddress(pcapFile);
         return new PcapReplayChannelFactory(address);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigType() {
+        return DefaultPcapReplayTransportConfiguration.class;
     }
 
 }

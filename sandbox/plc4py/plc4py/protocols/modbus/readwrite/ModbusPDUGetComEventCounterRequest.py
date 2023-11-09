@@ -19,36 +19,41 @@
 
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUGetComEventCounterRequest(ModbusPDU):
+class ModbusPDUGetComEventCounterRequest(PlcMessage,ModbusPDU):
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x0B
     response: bool = False
+
+
+    def __post_init__(self):
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventCounterRequest")
 
         write_buffer.pop_context("ModbusPDUGetComEventCounterRequest")
 
-    def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def length_in_bits(self) -> int:
-        length_in_bits: int = super().length_in_bits()
+    def length_in_bytes(self) -> int:
+        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+
+    def get_length_in_bits(self) -> int:
+        length_in_bits: int = super().get_length_in_bits()
         _value: ModbusPDUGetComEventCounterRequest = self
 
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
@@ -57,6 +62,7 @@ class ModbusPDUGetComEventCounterRequest(ModbusPDU):
         read_buffer.pop_context("ModbusPDUGetComEventCounterRequest")
         # Create the instance
         return ModbusPDUGetComEventCounterRequestBuilder()
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -72,22 +78,24 @@ class ModbusPDUGetComEventCounterRequest(ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
-        #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
-        #    raise PlcRuntimeException(e)
+        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        try:
+            write_buffer_box_based.writeSerializable(self)
+        except SerializationException as e:
+            raise RuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUGetComEventCounterRequestBuilder(ModbusPDUBuilder):
-    def build(
-        self,
-    ) -> ModbusPDUGetComEventCounterRequest:
-        modbus_pdu_get_com_event_counter_request: ModbusPDUGetComEventCounterRequest = (
-            ModbusPDUGetComEventCounterRequest()
-        )
+
+    def __post_init__(self):
+        pass
+
+    def build(self,) -> ModbusPDUGetComEventCounterRequest:
+        modbus_pdu_get_com_event_counter_request: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest()
         return modbus_pdu_get_com_event_counter_request
+
+
+

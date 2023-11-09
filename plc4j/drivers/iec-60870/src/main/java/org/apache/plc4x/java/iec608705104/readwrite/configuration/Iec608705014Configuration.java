@@ -19,22 +19,15 @@
 
 package org.apache.plc4x.java.iec608705104.readwrite.configuration;
 
-import org.apache.plc4x.java.iec608705104.readwrite.IEC608705104Constants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class Iec608705014Configuration implements Configuration, TcpTransportConfiguration {
+public class Iec608705014Configuration implements Configuration {
 
     @ConfigurationParameter("timeout-request")
     @IntDefaultValue(4000)
     protected int timeoutRequest;
-
-    @Override
-    public int getDefaultPort() {
-        return IEC608705104Constants.DEFAULTPORT;
-    }
 
     public int getTimeoutRequest() {
         return timeoutRequest;

@@ -21,26 +21,28 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
-from plc4py.api.exceptions.exceptions import ParseException
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
 class ModbusADU(ABC, PlcMessage):
     # Arguments.
     response: bool
+
+
+    def __post_init__(self):
+        super().__init__( )
 
     # Abstract accessors for discriminator values.
     @property
     @abstractmethod
     def driver_type(self) -> DriverType:
         pass
+
 
     @abstractmethod
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer) -> None:
@@ -54,10 +56,11 @@ class ModbusADU(ABC, PlcMessage):
 
         write_buffer.pop_context("ModbusADU")
 
-    def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def length_in_bits(self) -> int:
+    def length_in_bytes(self) -> int:
+        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+
+    def get_length_in_bits(self) -> int:
         length_in_bits: int = 0
         _value: ModbusADU = self
 
@@ -65,80 +68,56 @@ class ModbusADU(ABC, PlcMessage):
 
         return length_in_bits
 
-    @staticmethod
-    def static_parse(read_buffer: ReadBuffer, **kwargs):
-        if kwargs is None:
-            raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got None"
-            )
-        elif len(kwargs) == 2:
-            raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got " + str(len(kwargs))
-            )
 
-        driver_type: DriverType = 0
-        if isinstance(kwargs.get("driverType"), DriverType):
-            driver_type = DriverType(kwargs.get("driverType"))
-        elif isinstance(kwargs.get("driverType"), str):
-            driver_type = DriverType(str(kwargs.get("driverType")))
+    def static_parse(self, read_buffer: ReadBuffer , args):
+        if args is None:
+            raise PlcRuntimeException("Wrong number of arguments, expected 2, but got None")
+        elif args.length != 2:
+            raise PlcRuntimeException("Wrong number of arguments, expected 2, but got " + str(len(args)))
+
+        driverType: DriverType = 0
+        if isinstance(args[0], DriverType):
+            driverType = DriverType(args[0])
+        elif isinstance(args[0], str):
+            driverType = DriverType(str(args[0]))
         else:
-            raise PlcRuntimeException(
-                "Argument 0 expected to be of type DriverType or a string which is parseable but was "
-                + kwargs.get("driverType").getClass().getName()
-            )
+            raise PlcRuntimeException("Argument 0 expected to be of type DriverType or a string which is parseable but was " + args[0].getClass().getName())
 
         response: bool = False
-        if isinstance(kwargs.get("response"), bool):
-            response = bool(kwargs.get("response"))
-        elif isinstance(kwargs.get("response"), str):
-            response = bool(str(kwargs.get("response")))
+        if isinstance(args[1], bool):
+            response = bool(args[1])
+        elif isinstance(args[1], str):
+            response = bool(str(args[1]))
         else:
-            raise PlcRuntimeException(
-                "Argument 1 expected to be of type bool or a string which is parseable but was "
-                + kwargs.get("response").getClass().getName()
-            )
+            raise PlcRuntimeException("Argument 1 expected to be of type bool or a string which is parseable but was " + args[1].getClass().getName())
 
-        return ModbusADU.static_parse_context(read_buffer, driver_type, response)
+        return self.static_parse_context(read_buffer, driverType, response)
+
 
     @staticmethod
-    def static_parse_context(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
-    ):
+    def static_parse_context(read_buffer: ReadBuffer, driver_type: DriverType, response: bool):
         read_buffer.push_context("ModbusADU")
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None
-        from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+        if EvaluationHelper.equals( driverType, DriverType.get_modbu_s__tcp() ):
 
-        if driver_type == DriverType.MODBUS_TCP:
-            builder = ModbusTcpADU.static_parse_builder(
-                read_buffer, driver_type, response
-            )
-        from plc4py.protocols.modbus.readwrite.ModbusRtuADU import ModbusRtuADU
+            builder = ModbusTcpADU.staticParseBuilder(read_buffer, driverType, response)
+        if EvaluationHelper.equals( driverType, DriverType.get_modbu_s__rtu() ):
 
-        if driver_type == DriverType.MODBUS_RTU:
-            builder = ModbusRtuADU.static_parse_builder(
-                read_buffer, driver_type, response
-            )
-        from plc4py.protocols.modbus.readwrite.ModbusAsciiADU import ModbusAsciiADU
+            builder = ModbusRtuADU.staticParseBuilder(read_buffer, driverType, response)
+        if EvaluationHelper.equals( driverType, DriverType.get_modbu_s__ascii() ):
 
-        if driver_type == DriverType.MODBUS_ASCII:
-            builder = ModbusAsciiADU.static_parse_builder(
-                read_buffer, driver_type, response
-            )
+            builder = ModbusAsciiADU.staticParseBuilder(read_buffer, driverType, response)
         if builder is None:
-            raise ParseException(
-                "Unsupported case for discriminated type"
-                + " parameters ["
-                + "driverType="
-                + str(driver_type)
-                + "]"
-            )
+            raise ParseException("Unsupported case for discriminated type"+" parameters ["+"driverType="+driverType+"]")
+
 
         read_buffer.pop_context("ModbusADU")
         # Create the instance
-        _modbus_adu: ModbusADU = builder.build(response)
+        _modbus_adu: ModbusADU = builder.build(response )
         return _modbus_adu
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -154,16 +133,18 @@ class ModbusADU(ABC, PlcMessage):
         return hash(self)
 
     def __str__(self) -> str:
-        pass
-        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        # try:
-        #    write_buffer_box_based.writeSerializable(self)
-        # except SerializationException as e:
-        #    raise PlcRuntimeException(e)
+        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        try:
+            write_buffer_box_based.writeSerializable(self)
+        except SerializationException as e:
+            raise RuntimeException(e)
 
-        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
-
+        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 class ModbusADUBuilder:
-    def build(self, response: bool) -> ModbusADU:
+    def build(self, response: bool ) -> ModbusADU:
         pass
+
+
+
+

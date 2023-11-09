@@ -80,6 +80,7 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-all</artifactId>
       <version>0.12.0-SNAPSHOT</version>
+      <type>pom</type>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
@@ -90,12 +91,12 @@
       <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
-        <version>3.24.4</version>
+        <version>3.25.0</version>
       </dependency>
       <dependency>
         <groupId>org.checkerframework</groupId>
         <artifactId>checker-qual</artifactId>
-        <version>3.39.0</version>
+        <version>3.40.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.errorprone</groupId>

@@ -18,14 +18,12 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class S7Configuration implements Configuration, TcpTransportConfiguration {
+public class S7Configuration implements Configuration {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -90,7 +88,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
     @ConfigurationParameter("retry-time")
     @IntDefaultValue(4)
     public int retryTime = 4;
-
 
     public int getLocalRack() {
         return localRack;
@@ -218,17 +215,6 @@ public class S7Configuration implements Configuration, TcpTransportConfiguration
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
-    }
-
-
-    /**
-     * Per default port for the S7 protocol is 102.
-     *
-     * @return 102
-     */
-    @Override
-    public int getDefaultPort() {
-        return S7Driver.ISO_ON_TCP_PORT;
     }
 
     @Override

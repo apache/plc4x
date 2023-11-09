@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
+import org.apache.plc4x.java.eip.base.configuration.EipTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
@@ -34,6 +35,8 @@ import org.apache.plc4x.java.spi.transport.Transport;
 
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
@@ -43,7 +46,7 @@ import java.util.regex.Pattern;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
-public class EIPDriver extends GeneratedDriverBase<EipPacket> {
+public class EIPDriver extends GeneratedDriverBase<EipPacket> implements TransportConfigurationTypeProvider {
     public static final int PORT = 44818;
     private static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
@@ -241,6 +244,15 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     public EipTag prepareTag(String query){
         return EipTag.of(query);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return EipTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

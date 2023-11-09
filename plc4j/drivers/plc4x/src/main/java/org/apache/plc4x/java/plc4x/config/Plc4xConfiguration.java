@@ -18,13 +18,11 @@
  */
 package org.apache.plc4x.java.plc4x.config;
 
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xConstants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class Plc4xConfiguration implements Configuration, TcpTransportConfiguration {
+public class Plc4xConfiguration implements Configuration {
 
     @ConfigurationParameter("remote-connection-string")
     private String remoteConnectionString;
@@ -47,11 +45,6 @@ public class Plc4xConfiguration implements Configuration, TcpTransportConfigurat
 
     public void setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return Plc4xConstants.PLC4XTCPDEFAULTPORT;
     }
 
 }

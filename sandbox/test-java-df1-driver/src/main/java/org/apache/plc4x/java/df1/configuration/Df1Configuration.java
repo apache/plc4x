@@ -20,9 +20,8 @@ package org.apache.plc4x.java.df1.configuration;
 
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
 
-public class Df1Configuration implements Configuration, SerialTransportConfiguration {
+public class Df1Configuration implements Configuration {
 
     @ConfigurationParameter("local-addr")
     private short localAddr;
@@ -30,9 +29,20 @@ public class Df1Configuration implements Configuration, SerialTransportConfigura
     @ConfigurationParameter("remote-addr")
     private short remoteAddr;
 
-    @Override
-    public int getBaudRate() {
-        return 57600;
+    public short getLocalAddr() {
+        return localAddr;
+    }
+
+    public void setLocalAddr(short localAddr) {
+        this.localAddr = localAddr;
+    }
+
+    public short getRemoteAddr() {
+        return remoteAddr;
+    }
+
+    public void setRemoteAddr(short remoteAddr) {
+        this.remoteAddr = remoteAddr;
     }
 
 }

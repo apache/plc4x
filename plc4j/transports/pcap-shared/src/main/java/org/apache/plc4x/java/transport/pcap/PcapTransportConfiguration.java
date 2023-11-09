@@ -19,22 +19,18 @@
 package org.apache.plc4x.java.transport.pcap;
 
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 public interface PcapTransportConfiguration extends TransportConfiguration {
+    int NO_DEFAULT_PORT = -1;
 
-    default boolean getSupportVlans() {
-        return false;
-    }
+    boolean getSupportVlans();
 
     default int getDefaultPort() {
-        return PcapChannelConfig.ALL_PORTS;
+        return NO_DEFAULT_PORT;
     }
 
-    default Integer getProtocolId() {
-        return PcapChannelConfig.ALL_PROTOCOLS;
-    }
+    int getProtocolId();
 
     PacketHandler getPcapPacketHandler();
 
