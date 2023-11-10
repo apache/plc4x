@@ -24,10 +24,11 @@ from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcResponse import PlcResponse
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder
+from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
+from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
@@ -74,12 +75,12 @@ class ModbusConnection(PlcConnection):
         """
         :return: read request builder.
         """
-        pass
+        return DefaultReadRequestBuilder()
 
-    def execute(self, PlcRequest) -> Awaitable[PlcResponse]:
+    def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
         """
         Executes a PlcRequest as long as it's already connected
-        :param PlcRequest: Plc Request to execute
+        :param request: Plc Request to execute
         :return: The response from the Plc/Device
         """
         pass

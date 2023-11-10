@@ -16,9 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from bitarray import bitarray
 
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADUBuilder
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
