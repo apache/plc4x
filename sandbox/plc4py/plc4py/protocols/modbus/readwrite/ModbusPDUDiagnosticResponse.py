@@ -27,7 +27,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-    
+
+
 @dataclass
 class ModbusPDUDiagnosticResponse(ModbusPDU):
     sub_function: int
@@ -36,8 +37,6 @@ class ModbusPDUDiagnosticResponse(ModbusPDU):
     error_flag: bool = False
     function_flag: int = 0x08
     response: bool = True
-
-
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUDiagnosticResponse")
@@ -49,7 +48,6 @@ class ModbusPDUDiagnosticResponse(ModbusPDU):
         write_buffer.write_unsigned_short(self.data, logical_name="data")
 
         write_buffer.pop_context("ModbusPDUDiagnosticResponse")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -66,19 +64,21 @@ class ModbusPDUDiagnosticResponse(ModbusPDU):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUDiagnosticResponse")
 
-        sub_function: int = read_buffer.read_unsigned_int(logical_name="subFunction")  
+        sub_function: int = read_buffer.read_unsigned_short(
+            logical_name="subFunction", bit_length=16, response=response
+        )
 
-        data: int = read_buffer.read_unsigned_int(logical_name="data")  
+        data: int = read_buffer.read_unsigned_short(
+            logical_name="data", bit_length=16, response=response
+        )
 
         read_buffer.pop_context("ModbusPDUDiagnosticResponse")
         # Create the instance
-        return ModbusPDUDiagnosticResponseBuilder(sub_function, data )
-
+        return ModbusPDUDiagnosticResponseBuilder(sub_function, data)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -88,20 +88,25 @@ class ModbusPDUDiagnosticResponse(ModbusPDU):
             return False
 
         that: ModbusPDUDiagnosticResponse = ModbusPDUDiagnosticResponse(o)
-        return (self.sub_function == that.sub_function) and (self.data == that.data) and super().equals(that) and True
+        return (
+            (self.sub_function == that.sub_function)
+            and (self.data == that.data)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -109,9 +114,10 @@ class ModbusPDUDiagnosticResponseBuilder(ModbusPDUBuilder):
     sub_function: int
     data: int
 
-    def build(self,) -> ModbusPDUDiagnosticResponse:
-        modbus_pdu_diagnostic_response: ModbusPDUDiagnosticResponse = ModbusPDUDiagnosticResponse(self.sub_function, self.data )
+    def build(
+        self,
+    ) -> ModbusPDUDiagnosticResponse:
+        modbus_pdu_diagnostic_response: ModbusPDUDiagnosticResponse = (
+            ModbusPDUDiagnosticResponse(self.sub_function, self.data)
+        )
         return modbus_pdu_diagnostic_response
-
-
-

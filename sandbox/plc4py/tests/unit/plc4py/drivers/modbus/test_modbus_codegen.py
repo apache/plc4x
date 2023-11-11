@@ -26,12 +26,12 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import
 from plc4py.utils.GenericTypes import ByteOrder
 
 
-async def test_modbus_discreate_inputs_request():
+async def test_modbus_discrete_inputs_request():
     request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
     assert request is not None
 
 
-async def test_modbus_discreate_inputs_request_serialize():
+async def test_modbus_discrete_inputs_request_serialize():
     request = ModbusPDUReadDiscreteInputsRequestBuilder(5, 2).build()
     size = request.length_in_bytes()
     write_buffer = WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN)
@@ -41,7 +41,7 @@ async def test_modbus_discreate_inputs_request_serialize():
     assert request is not None
     assert len(write_buffer.get_bytes()) * 8 == 40
     assert write_buffer.get_pos() == 40
-    assert write_buffer.get_bytes().tobytes() == b"\x01\x05\x00\x02\x00"
+    assert write_buffer.get_bytes().tobytes() == b"\x02\x00\x05\x00\x02"
 
 
 async def test_modbus_ModbusTcpADUBuilder_serialize():

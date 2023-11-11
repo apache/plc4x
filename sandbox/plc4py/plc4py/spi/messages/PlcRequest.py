@@ -21,11 +21,14 @@ from dataclasses import dataclass
 from typing import Union
 
 from plc4py.api.messages.PlcField import PlcField
-from plc4py.api.messages.PlcRequest import PlcFieldRequest, PlcReadRequest, ReadRequestBuilder
+from plc4py.api.messages.PlcRequest import (
+    PlcFieldRequest,
+    PlcReadRequest,
+    ReadRequestBuilder,
+)
 
 
 class DefaultReadRequestBuilder(ReadRequestBuilder):
-
     def __init__(self):
         super().__init__()
         self.read_request = PlcReadRequest()

@@ -27,7 +27,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-    
+
+
 @dataclass
 class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
     starting_address: int
@@ -37,19 +38,18 @@ class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
     function_flag: int = 0x0F
     response: bool = True
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUWriteMultipleCoilsResponse")
 
         # Simple Field (startingAddress)
-        write_buffer.write_unsigned_short(self.starting_address, logical_name="startingAddress")
+        write_buffer.write_unsigned_short(
+            self.starting_address, logical_name="startingAddress"
+        )
 
         # Simple Field (quantity)
         write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
 
         write_buffer.pop_context("ModbusPDUWriteMultipleCoilsResponse")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -66,19 +66,21 @@ class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUWriteMultipleCoilsResponse")
 
-        starting_address: int = read_buffer.read_unsigned_int(logical_name="startingAddress")  
+        starting_address: int = read_buffer.read_unsigned_short(
+            logical_name="startingAddress", bit_length=16, response=response
+        )
 
-        quantity: int = read_buffer.read_unsigned_int(logical_name="quantity")  
+        quantity: int = read_buffer.read_unsigned_short(
+            logical_name="quantity", bit_length=16, response=response
+        )
 
         read_buffer.pop_context("ModbusPDUWriteMultipleCoilsResponse")
         # Create the instance
-        return ModbusPDUWriteMultipleCoilsResponseBuilder(starting_address, quantity )
-
+        return ModbusPDUWriteMultipleCoilsResponseBuilder(starting_address, quantity)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -87,21 +89,28 @@ class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
         if not isinstance(o, ModbusPDUWriteMultipleCoilsResponse):
             return False
 
-        that: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(o)
-        return (self.starting_address == that.starting_address) and (self.quantity == that.quantity) and super().equals(that) and True
+        that: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(
+            o
+        )
+        return (
+            (self.starting_address == that.starting_address)
+            and (self.quantity == that.quantity)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -109,9 +118,10 @@ class ModbusPDUWriteMultipleCoilsResponseBuilder(ModbusPDUBuilder):
     starting_address: int
     quantity: int
 
-    def build(self,) -> ModbusPDUWriteMultipleCoilsResponse:
-        modbus_pdu_write_multiple_coils_response: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(self.starting_address, self.quantity )
+    def build(
+        self,
+    ) -> ModbusPDUWriteMultipleCoilsResponse:
+        modbus_pdu_write_multiple_coils_response: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(
+            self.starting_address, self.quantity
+        )
         return modbus_pdu_write_multiple_coils_response
-
-
-

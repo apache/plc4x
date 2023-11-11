@@ -29,7 +29,8 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
 from typing import List
 import math
-    
+
+
 @dataclass
 class ModbusPDUGetComEventLogResponse(ModbusPDU):
     status: int
@@ -41,13 +42,11 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
     function_flag: int = 0x0C
     response: bool = True
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventLogResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = (int(len(self.events))+ int(6))
+        byte_count: int = int(len(self.events)) + int(6)
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Simple Field (status)
@@ -57,13 +56,14 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
         write_buffer.write_unsigned_short(self.event_count, logical_name="eventCount")
 
         # Simple Field (messageCount)
-        write_buffer.write_unsigned_short(self.message_count, logical_name="messageCount")
+        write_buffer.write_unsigned_short(
+            self.message_count, logical_name="messageCount"
+        )
 
         # Array Field (events)
         write_buffer.write_byte_array(self.events, logical_name="events")
 
         write_buffer.pop_context("ModbusPDUGetComEventLogResponse")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -88,28 +88,40 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
         if self.events is not None:
             length_in_bits += 8 * len(self.events)
 
-
         return length_in_bits
-
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUGetComEventLogResponse")
 
-        byte_count: int = read_buffer.read_unsigned_short(logical_name="byteCount")
+        byte_count: int = read_buffer.read_unsigned_byte(
+            logical_name="byteCount", response=response
+        )
 
-        status: int = read_buffer.read_unsigned_int(logical_name="status")  
+        status: int = read_buffer.read_unsigned_short(
+            logical_name="status", bit_length=16, response=response
+        )
 
-        event_count: int = read_buffer.read_unsigned_int(logical_name="eventCount")  
+        event_count: int = read_buffer.read_unsigned_short(
+            logical_name="eventCount", bit_length=16, response=response
+        )
 
-        message_count: int = read_buffer.read_unsigned_int(logical_name="messageCount")  
+        message_count: int = read_buffer.read_unsigned_short(
+            logical_name="messageCount", bit_length=16, response=response
+        )
 
-        events: List[Any] = read_buffer.read_array_field(logical_name="events", read_function=read_buffer.read_byte, count=byte_count- int(6))
+        events: List[Any] = read_buffer.read_array_field(
+            logical_name="events",
+            read_function=read_buffer.read_byte,
+            count=byte_count - int(6),
+            response=response,
+        )
 
         read_buffer.pop_context("ModbusPDUGetComEventLogResponse")
         # Create the instance
-        return ModbusPDUGetComEventLogResponseBuilder(status, event_count, message_count, events )
-
+        return ModbusPDUGetComEventLogResponseBuilder(
+            status, event_count, message_count, events
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -119,20 +131,27 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
             return False
 
         that: ModbusPDUGetComEventLogResponse = ModbusPDUGetComEventLogResponse(o)
-        return (self.status == that.status) and (self.event_count == that.event_count) and (self.message_count == that.message_count) and (self.events == that.events) and super().equals(that) and True
+        return (
+            (self.status == that.status)
+            and (self.event_count == that.event_count)
+            and (self.message_count == that.message_count)
+            and (self.events == that.events)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -142,9 +161,12 @@ class ModbusPDUGetComEventLogResponseBuilder(ModbusPDUBuilder):
     message_count: int
     events: List[int]
 
-    def build(self,) -> ModbusPDUGetComEventLogResponse:
-        modbus_pdu_get_com_event_log_response: ModbusPDUGetComEventLogResponse = ModbusPDUGetComEventLogResponse(self.status, self.event_count, self.message_count, self.events )
+    def build(
+        self,
+    ) -> ModbusPDUGetComEventLogResponse:
+        modbus_pdu_get_com_event_log_response: ModbusPDUGetComEventLogResponse = (
+            ModbusPDUGetComEventLogResponse(
+                self.status, self.event_count, self.message_count, self.events
+            )
+        )
         return modbus_pdu_get_com_event_log_response
-
-
-

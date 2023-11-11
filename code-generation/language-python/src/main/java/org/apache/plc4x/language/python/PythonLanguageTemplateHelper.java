@@ -274,9 +274,9 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             case BYTE:
                 return "read_byte";
             case UINT:
-                if (sizeInBits <= 4) return "read_unsigned_byte";
-                if (sizeInBits <= 8) return "read_unsigned_short";
-                if (sizeInBits <= 16) return "read_unsigned_int";
+                if (sizeInBits <= 8) return "read_unsigned_byte";
+                if (sizeInBits <= 16) return "read_unsigned_short";
+                if (sizeInBits <= 32) return "read_unsigned_int";
                 return "read_unsigned_long";
             case INT:
                 if (sizeInBits <= 8) return "read_signed_byte";

@@ -27,7 +27,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-    
+
+
 @dataclass
 class ModbusPDUMaskWriteHoldingRegisterResponse(ModbusPDU):
     reference_address: int
@@ -38,13 +39,13 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(ModbusPDU):
     function_flag: int = 0x16
     response: bool = True
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterResponse")
 
         # Simple Field (referenceAddress)
-        write_buffer.write_unsigned_short(self.reference_address, logical_name="referenceAddress")
+        write_buffer.write_unsigned_short(
+            self.reference_address, logical_name="referenceAddress"
+        )
 
         # Simple Field (andMask)
         write_buffer.write_unsigned_short(self.and_mask, logical_name="andMask")
@@ -53,7 +54,6 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(ModbusPDU):
         write_buffer.write_unsigned_short(self.or_mask, logical_name="orMask")
 
         write_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterResponse")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -73,21 +73,27 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(ModbusPDU):
 
         return length_in_bits
 
-
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterResponse")
 
-        reference_address: int = read_buffer.read_unsigned_int(logical_name="referenceAddress")  
+        reference_address: int = read_buffer.read_unsigned_short(
+            logical_name="referenceAddress", bit_length=16, response=response
+        )
 
-        and_mask: int = read_buffer.read_unsigned_int(logical_name="andMask")  
+        and_mask: int = read_buffer.read_unsigned_short(
+            logical_name="andMask", bit_length=16, response=response
+        )
 
-        or_mask: int = read_buffer.read_unsigned_int(logical_name="orMask")  
+        or_mask: int = read_buffer.read_unsigned_short(
+            logical_name="orMask", bit_length=16, response=response
+        )
 
         read_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterResponse")
         # Create the instance
-        return ModbusPDUMaskWriteHoldingRegisterResponseBuilder(reference_address, and_mask, or_mask )
-
+        return ModbusPDUMaskWriteHoldingRegisterResponseBuilder(
+            reference_address, and_mask, or_mask
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -96,21 +102,29 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(ModbusPDU):
         if not isinstance(o, ModbusPDUMaskWriteHoldingRegisterResponse):
             return False
 
-        that: ModbusPDUMaskWriteHoldingRegisterResponse = ModbusPDUMaskWriteHoldingRegisterResponse(o)
-        return (self.reference_address == that.reference_address) and (self.and_mask == that.and_mask) and (self.or_mask == that.or_mask) and super().equals(that) and True
+        that: ModbusPDUMaskWriteHoldingRegisterResponse = (
+            ModbusPDUMaskWriteHoldingRegisterResponse(o)
+        )
+        return (
+            (self.reference_address == that.reference_address)
+            and (self.and_mask == that.and_mask)
+            and (self.or_mask == that.or_mask)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -119,9 +133,10 @@ class ModbusPDUMaskWriteHoldingRegisterResponseBuilder(ModbusPDUBuilder):
     and_mask: int
     or_mask: int
 
-    def build(self,) -> ModbusPDUMaskWriteHoldingRegisterResponse:
-        modbus_pdu_mask_write_holding_register_response: ModbusPDUMaskWriteHoldingRegisterResponse = ModbusPDUMaskWriteHoldingRegisterResponse(self.reference_address, self.and_mask, self.or_mask )
+    def build(
+        self,
+    ) -> ModbusPDUMaskWriteHoldingRegisterResponse:
+        modbus_pdu_mask_write_holding_register_response: ModbusPDUMaskWriteHoldingRegisterResponse = ModbusPDUMaskWriteHoldingRegisterResponse(
+            self.reference_address, self.and_mask, self.or_mask
+        )
         return modbus_pdu_mask_write_holding_register_response
-
-
-

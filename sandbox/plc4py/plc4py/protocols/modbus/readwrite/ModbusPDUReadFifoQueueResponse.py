@@ -29,7 +29,8 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
 from typing import List
 import math
-    
+
+
 @dataclass
 class ModbusPDUReadFifoQueueResponse(ModbusPDU):
     fifo_value: List[int]
@@ -38,24 +39,23 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
     function_flag: int = 0x18
     response: bool = True
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFifoQueueResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = ((int(len(self.fifo_value))* int(2))+ int(2))
+        byte_count: int = (int(len(self.fifo_value)) * int(2)) + int(2)
         write_buffer.write_unsigned_short(byte_count, logical_name="byteCount")
 
         # Implicit Field (fifo_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        fifo_count: int = ((int(len(self.fifo_value))* int(2))/ int(2))
+        fifo_count: int = (int(len(self.fifo_value)) * int(2)) / int(2)
         write_buffer.write_unsigned_short(fifo_count, logical_name="fifoCount")
 
         # Array Field (fifoValue)
-        write_buffer.write_simple_array(self.fifo_value, write_unsigned_short, logical_name="fifoValue")
+        write_buffer.write_simple_array(
+            self.fifo_value, write_unsigned_short, logical_name="fifoValue"
+        )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueResponse")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -74,24 +74,30 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
         if self.fifo_value is not None:
             length_in_bits += 16 * len(self.fifo_value)
 
-
         return length_in_bits
-
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFifoQueueResponse")
 
-        byte_count: int = read_buffer.read_unsigned_int(logical_name="byteCount")
+        byte_count: int = read_buffer.read_unsigned_short(
+            logical_name="byteCount", response=response
+        )
 
-        fifo_count: int = read_buffer.read_unsigned_int(logical_name="fifoCount")
+        fifo_count: int = read_buffer.read_unsigned_short(
+            logical_name="fifoCount", response=response
+        )
 
-        fifo_value: List[Any] = read_buffer.read_array_field(logical_name="fifoValue", read_function=read_buffer.read_unsigned_int, count=fifo_count)
+        fifo_value: List[Any] = read_buffer.read_array_field(
+            logical_name="fifoValue",
+            read_function=read_buffer.read_unsigned_short,
+            count=fifo_count,
+            response=response,
+        )
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueResponse")
         # Create the instance
-        return ModbusPDUReadFifoQueueResponseBuilder(fifo_value )
-
+        return ModbusPDUReadFifoQueueResponseBuilder(fifo_value)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -108,22 +114,23 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadFifoQueueResponseBuilder(ModbusPDUBuilder):
     fifo_value: List[int]
 
-    def build(self,) -> ModbusPDUReadFifoQueueResponse:
-        modbus_pdu_read_fifo_queue_response: ModbusPDUReadFifoQueueResponse = ModbusPDUReadFifoQueueResponse(self.fifo_value )
+    def build(
+        self,
+    ) -> ModbusPDUReadFifoQueueResponse:
+        modbus_pdu_read_fifo_queue_response: ModbusPDUReadFifoQueueResponse = (
+            ModbusPDUReadFifoQueueResponse(self.fifo_value)
+        )
         return modbus_pdu_read_fifo_queue_response
-
-
-

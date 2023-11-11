@@ -29,7 +29,8 @@ from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
 from typing import List
 import math
-    
+
+
 @dataclass
 class ModbusPDUWriteMultipleHoldingRegistersRequest(ModbusPDU):
     starting_address: int
@@ -40,26 +41,25 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(ModbusPDU):
     function_flag: int = 0x10
     response: bool = False
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUWriteMultipleHoldingRegistersRequest")
 
         # Simple Field (startingAddress)
-        write_buffer.write_unsigned_short(self.starting_address, logical_name="startingAddress")
+        write_buffer.write_unsigned_short(
+            self.starting_address, logical_name="startingAddress"
+        )
 
         # Simple Field (quantity)
         write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = (int(len(self.value)))
+        byte_count: int = int(len(self.value))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (value)
         write_buffer.write_byte_array(self.value, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUWriteMultipleHoldingRegistersRequest")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -81,26 +81,36 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(ModbusPDU):
         if self.value is not None:
             length_in_bits += 8 * len(self.value)
 
-
         return length_in_bits
-
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUWriteMultipleHoldingRegistersRequest")
 
-        starting_address: int = read_buffer.read_unsigned_int(logical_name="startingAddress")  
+        starting_address: int = read_buffer.read_unsigned_short(
+            logical_name="startingAddress", bit_length=16, response=response
+        )
 
-        quantity: int = read_buffer.read_unsigned_int(logical_name="quantity")  
+        quantity: int = read_buffer.read_unsigned_short(
+            logical_name="quantity", bit_length=16, response=response
+        )
 
-        byte_count: int = read_buffer.read_unsigned_short(logical_name="byteCount")
+        byte_count: int = read_buffer.read_unsigned_byte(
+            logical_name="byteCount", response=response
+        )
 
-        value: List[Any] = read_buffer.read_array_field(logical_name="value", read_function=read_buffer.read_byte, count=byte_count)
+        value: List[Any] = read_buffer.read_array_field(
+            logical_name="value",
+            read_function=read_buffer.read_byte,
+            count=byte_count,
+            response=response,
+        )
 
         read_buffer.pop_context("ModbusPDUWriteMultipleHoldingRegistersRequest")
         # Create the instance
-        return ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(starting_address, quantity, value )
-
+        return ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
+            starting_address, quantity, value
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,21 +119,29 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUWriteMultipleHoldingRegistersRequest):
             return False
 
-        that: ModbusPDUWriteMultipleHoldingRegistersRequest = ModbusPDUWriteMultipleHoldingRegistersRequest(o)
-        return (self.starting_address == that.starting_address) and (self.quantity == that.quantity) and (self.value == that.value) and super().equals(that) and True
+        that: ModbusPDUWriteMultipleHoldingRegistersRequest = (
+            ModbusPDUWriteMultipleHoldingRegistersRequest(o)
+        )
+        return (
+            (self.starting_address == that.starting_address)
+            and (self.quantity == that.quantity)
+            and (self.value == that.value)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -132,9 +150,10 @@ class ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUBuilder):
     quantity: int
     value: List[int]
 
-    def build(self,) -> ModbusPDUWriteMultipleHoldingRegistersRequest:
-        modbus_pdu_write_multiple_holding_registers_request: ModbusPDUWriteMultipleHoldingRegistersRequest = ModbusPDUWriteMultipleHoldingRegistersRequest(self.starting_address, self.quantity, self.value )
+    def build(
+        self,
+    ) -> ModbusPDUWriteMultipleHoldingRegistersRequest:
+        modbus_pdu_write_multiple_holding_registers_request: ModbusPDUWriteMultipleHoldingRegistersRequest = ModbusPDUWriteMultipleHoldingRegistersRequest(
+            self.starting_address, self.quantity, self.value
+        )
         return modbus_pdu_write_multiple_holding_registers_request
-
-
-

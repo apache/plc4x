@@ -24,14 +24,17 @@ from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordRequestItem import ModbusPDUReadFileRecordRequestItem
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordRequestItem import (
+    ModbusPDUReadFileRecordRequestItem,
+)
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from sys import getsizeof
 from typing import Any
 from typing import List
 import math
-    
+
+
 @dataclass
 class ModbusPDUReadFileRecordRequest(ModbusPDU):
     items: List[ModbusPDUReadFileRecordRequestItem]
@@ -40,20 +43,17 @@ class ModbusPDUReadFileRecordRequest(ModbusPDU):
     function_flag: int = 0x14
     response: bool = False
 
-
-
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFileRecordRequest")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = (int(getsizeof(self.items)))
+        byte_count: int = int(getsizeof(self.items))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (items)
         write_buffer.write_complex_array(self.items, logical_name="items")
 
         write_buffer.pop_context("ModbusPDUReadFileRecordRequest")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -70,23 +70,26 @@ class ModbusPDUReadFileRecordRequest(ModbusPDU):
             for element in self.items:
                 length_in_bits += element.length_in_bits()
 
-
-
         return length_in_bits
-
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFileRecordRequest")
 
-        byte_count: int = read_buffer.read_unsigned_short(logical_name="byteCount")
+        byte_count: int = read_buffer.read_unsigned_byte(
+            logical_name="byteCount", response=response
+        )
 
-        items: List[Any] = read_buffer.read_array_field(logical_name="items", read_function=ModbusPDUReadFileRecordRequestItem.static_parse, length=byte_count)
+        items: List[Any] = read_buffer.read_array_field(
+            logical_name="items",
+            read_function=ModbusPDUReadFileRecordRequestItem.static_parse,
+            length=byte_count,
+            response=response,
+        )
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequest")
         # Create the instance
-        return ModbusPDUReadFileRecordRequestBuilder(items )
-
+        return ModbusPDUReadFileRecordRequestBuilder(items)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -103,22 +106,23 @@ class ModbusPDUReadFileRecordRequest(ModbusPDU):
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadFileRecordRequestBuilder(ModbusPDUBuilder):
     items: List[ModbusPDUReadFileRecordRequestItem]
 
-    def build(self,) -> ModbusPDUReadFileRecordRequest:
-        modbus_pdu_read_file_record_request: ModbusPDUReadFileRecordRequest = ModbusPDUReadFileRecordRequest(self.items )
+    def build(
+        self,
+    ) -> ModbusPDUReadFileRecordRequest:
+        modbus_pdu_read_file_record_request: ModbusPDUReadFileRecordRequest = (
+            ModbusPDUReadFileRecordRequest(self.items)
+        )
         return modbus_pdu_read_file_record_request
-
-
-

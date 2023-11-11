@@ -31,7 +31,8 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
 import math
-    
+
+
 @dataclass
 class ModbusAsciiADU(ModbusADU):
     address: int
@@ -40,8 +41,6 @@ class ModbusAsciiADU(ModbusADU):
     response: bool
     # Accessors for discriminator values.
     driver_type: DriverType = DriverType.MODBUS_ASCII
-
-
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusAsciiADU")
@@ -53,10 +52,11 @@ class ModbusAsciiADU(ModbusADU):
         write_buffer.write_serializable(self.pdu, logical_name="pdu")
 
         # Checksum Field (checksum) (Calculated)
-        write_buffer.write_unsigned_byte(int(StaticHelper.ascii_lrc_check(address, pdu)), logical_name="crc")
+        write_buffer.write_unsigned_byte(
+            int(StaticHelper.ascii_lrc_check(address, pdu)), logical_name="crc"
+        )
 
         write_buffer.pop_context("ModbusAsciiADU")
-
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -76,21 +76,38 @@ class ModbusAsciiADU(ModbusADU):
 
         return length_in_bits
 
-
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, driver_type: DriverType, response: bool):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
+    ):
         read_buffer.push_context("ModbusAsciiADU")
 
-        address: int = read_buffer.read_unsigned_short(logical_name="address", byte_order=ByteOrder.BIG_ENDIAN)  
+        address: int = read_buffer.read_unsigned_byte(
+            logical_name="address",
+            bit_length=8,
+            byte_order=ByteOrder.BIG_ENDIAN,
+            driver_type=driver_type,
+            response=response,
+        )
 
-        pdu: ModbusPDU = read_buffer.read_complex(read_function=ModbusPDU.static_parse, logical_name="pdu", byte_order=ByteOrder.BIG_ENDIAN)
+        pdu: ModbusPDU = read_buffer.read_complex(
+            read_function=ModbusPDU.static_parse,
+            logical_name="pdu",
+            byte_order=ByteOrder.BIG_ENDIAN,
+            driver_type=driver_type,
+            response=response,
+        )
 
-        crc: int = read_buffer.read_unsigned_short(logical_name="crc", byte_order=ByteOrder.BIG_ENDIAN)
+        crc: int = read_buffer.read_unsigned_byte(
+            logical_name="crc",
+            byte_order=ByteOrder.BIG_ENDIAN,
+            driver_type=driver_type,
+            response=response,
+        )
 
         read_buffer.pop_context("ModbusAsciiADU")
         # Create the instance
-        return ModbusAsciiADUBuilder(address, pdu , response )
-
+        return ModbusAsciiADUBuilder(address, pdu)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -100,20 +117,25 @@ class ModbusAsciiADU(ModbusADU):
             return False
 
         that: ModbusAsciiADU = ModbusAsciiADU(o)
-        return (self.address == that.address) and (self.pdu == that.pdu) and super().equals(that) and True
+        return (
+            (self.address == that.address)
+            and (self.pdu == that.pdu)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)
 
     def __str__(self) -> str:
         pass
-        #write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        #try:
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
         #    write_buffer_box_based.writeSerializable(self)
-        #except SerializationException as e:
+        # except SerializationException as e:
         #    raise PlcRuntimeException(e)
 
-        #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
@@ -121,9 +143,11 @@ class ModbusAsciiADUBuilder(ModbusADUBuilder):
     address: int
     pdu: ModbusPDU
 
-    def build(self,response: bool , ) -> ModbusAsciiADU:
-        modbus_ascii_adu: ModbusAsciiADU = ModbusAsciiADU(response , self.address, self.pdu )
+    def build(
+        self,
+        response: bool,
+    ) -> ModbusAsciiADU:
+        modbus_ascii_adu: ModbusAsciiADU = ModbusAsciiADU(
+            response, self.address, self.pdu
+        )
         return modbus_ascii_adu
-
-
-
