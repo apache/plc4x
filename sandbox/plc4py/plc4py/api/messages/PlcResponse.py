@@ -19,7 +19,7 @@
 from dataclasses import dataclass
 from typing import cast, List, Dict
 
-from plc4py.api.messages.PlcField import PlcField
+from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
@@ -36,11 +36,11 @@ class PlcResponse(PlcMessage):
 
 
 @dataclass
-class PlcFieldResponse(PlcResponse):
-    fields: List[PlcField]
+class PlcTagResponse(PlcResponse):
+    fields: List[PlcTag]
 
     @property
-    def field_names(self):
+    def tag_names(self):
         return [fld.name for fld in self.fields]
 
     def response_code(self, name: str) -> PlcResponseCode:
@@ -48,7 +48,7 @@ class PlcFieldResponse(PlcResponse):
 
 
 @dataclass
-class PlcReadResponse(PlcFieldResponse):
+class PlcReadResponse(PlcTagResponse):
     """
     Response to a {@link PlcReadRequest}.
     """

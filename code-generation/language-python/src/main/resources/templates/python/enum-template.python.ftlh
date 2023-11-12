@@ -58,13 +58,13 @@ ${import}
 </#macro>
 <#macro emitImport import>${helper.emitRequiredImport(import)}</#macro>
 <@importSectionWithContentBelow>
-<@emitImport import="from enum import IntEnum" />
+<@emitImport import="from aenum import AutoNumberEnum" />
 
-class ${type.name}(IntEnum):
+class ${type.name}(AutoNumberEnum):
     <#list type.enumValues as enumValue>
-    ${enumValue.name}: <@compress single_line=true>
+    ${enumValue.name}<#if !type.constantNames?has_content>:</#if> <@compress single_line=true>
             <#if type.type.isPresent()>
-                ${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}
+                <#if !type.constantNames?has_content>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}</#if>
                 <#if type.type.orElseThrow().isNonSimpleTypeReference()>
                     <#if type.type.orElseThrow().isEnumTypeReference()>
                          = <#if type.constantNames?has_content>(</#if>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow(), true)}.${enumValue.value}
@@ -91,20 +91,6 @@ class ${type.name}(IntEnum):
     </@compress>
 
     </#list>
-
-    <#if type.constantNames?has_content>
-    def __new__(cls, value, <@compress single_line=true>
-        <#list type.constantNames as constantName>
-            ${helper.camelCaseToSnakeCase(constantName)}
-            <#sep>, </#sep>
-        </#list>):
-        </@compress>
-
-        obj = object.__new__(cls)
-        obj._value_ = value
-        <#list type.constantNames as constantName>obj.${constantName} = ${constantName}</#list>
-        return obj
-    </#if>
 
 </@importSectionWithContentBelow>
 

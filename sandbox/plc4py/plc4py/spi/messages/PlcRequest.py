@@ -16,27 +16,28 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from abc import abstractmethod
-from dataclasses import dataclass
-from typing import Union
 
-from plc4py.api.messages.PlcField import PlcField
 from plc4py.api.messages.PlcRequest import (
-    PlcFieldRequest,
     PlcReadRequest,
     ReadRequestBuilder,
 )
 
 
+class TagBuilder:
+    @staticmethod
+    def create(address_string: str):
+        raise NotImplementedError
+
+
 class DefaultReadRequestBuilder(ReadRequestBuilder):
-    def __init__(self):
+    def __init__(self, tag_builder: TagBuilder):
         super().__init__()
         self.read_request = PlcReadRequest()
+        self.tag_builder = tag_builder
 
     def build(self) -> PlcReadRequest:
         return self.read_request
 
-    def add_item(self, field_query: Union[str, PlcField]) -> None:
-        if isinstance(field_query, str):
-            field_query = PlcField(field_query)
-        self.read_request.fields.append(field_query)
+    def add_item(self, tag_name: str, address_string: str) -> None:
+        tag = self.tag_builder.create(address_string)
+        self.read_request.tags[tag_name] = tag

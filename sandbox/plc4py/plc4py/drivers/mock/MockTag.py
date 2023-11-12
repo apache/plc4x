@@ -18,10 +18,18 @@
 #
 from dataclasses import dataclass
 
-from plc4py.api.value.PlcValue import PlcValue
+from plc4py.api.messages.PlcField import PlcTag
+from plc4py.spi.messages.PlcRequest import TagBuilder
 
 
 @dataclass
-class ModbusField:
-    name: str
-    value: PlcValue
+class MockTag(PlcTag):
+    address: str
+    data_type: str
+
+
+class MockTagBuilder(TagBuilder):
+    @staticmethod
+    def create(address_string: str) -> MockTag:
+        address, data_type = address_string.split(":")
+        return MockTag(address, data_type)

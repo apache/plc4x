@@ -35,6 +35,7 @@ from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusDevice import ModbusDevice
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
+from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
@@ -83,7 +84,7 @@ class ModbusConnection(PlcConnection):
         """
         :return: read request builder.
         """
-        return DefaultReadRequestBuilder()
+        return DefaultReadRequestBuilder(ModbusTagBuilder)
 
     def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
         """
