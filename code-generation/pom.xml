@@ -34,7 +34,7 @@
   <description>Home of the PLC4X code-generation framework.</description>
 
   <properties>
-    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
   </properties>
 
   <modules>

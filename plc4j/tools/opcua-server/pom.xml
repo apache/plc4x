@@ -31,7 +31,7 @@
   <name>PLC4J: Integrations: Eclipse Milo OPC UA Server</name>
 
   <properties>
-    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
   </properties>
 
