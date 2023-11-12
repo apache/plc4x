@@ -28,8 +28,13 @@
   </parent>
 
   <artifactId>plc4j-driver-mock</artifactId>
+
   <name>PLC4J: Driver: Mock</name>
   <description>Implementation of a PLC4X driver Mock usable in Unit-Tests.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <dependencies>
     <dependency>

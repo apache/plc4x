@@ -34,6 +34,10 @@
     S7Event capture, MODE, SYS, USR &amp; ALARM events from S7-300 &amp; S7-400
   </description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <!-- TODO: This is only needed, because the example accesses direct types of the S7 driver we should refactor this to something that is a pure PLC4X API type of thing -->
   <build>
     <plugins>

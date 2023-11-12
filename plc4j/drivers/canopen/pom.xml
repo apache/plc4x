@@ -27,10 +27,14 @@
   </parent>
 
   <artifactId>plc4j-driver-canopen</artifactId>
+  <packaging>bundle</packaging>
+
   <name>PLC4J: Driver: CANopen</name>
   <description>Implementation of CANopen driver.</description>
 
-  <packaging>bundle</packaging>
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

@@ -32,8 +32,9 @@
 	<name>PLC4J: Integrations: Apache Nifi</name>
 	<description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
-	<properties>
-		<nifi.version>1.23.2</nifi.version>
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  	<nifi.version>1.23.2</nifi.version>
 		<avro.version>1.11.1</avro.version>
 	</properties>
 

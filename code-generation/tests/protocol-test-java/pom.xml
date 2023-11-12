@@ -31,6 +31,10 @@
 
   <name>Code-Generation: Protocol Test: Test Java</name>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

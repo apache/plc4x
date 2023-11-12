@@ -27,8 +27,13 @@
   </parent>
 
   <artifactId>plc4j-driver-open-protocol</artifactId>
+
   <name>PLC4J: Driver: Open-Protocol</name>
   <description>Implementation of a PLC4X driver for the Open-Protocol protocol.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

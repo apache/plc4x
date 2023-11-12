@@ -29,8 +29,13 @@
   </parent>
 
   <artifactId>plc4j-driver-simulated</artifactId>
+
   <name>PLC4J: Driver: Simulated</name>
   <description>Implementation of a PLC4X driver able to speak a simulated device.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

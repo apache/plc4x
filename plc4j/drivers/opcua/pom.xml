@@ -28,8 +28,13 @@
   </parent>
 
   <artifactId>plc4j-driver-opcua</artifactId>
+
   <name>PLC4J: Driver: OPC UA</name>
   <description>Implementation of a PLC4X driver able to speak with devices using the OPC UA protocol.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

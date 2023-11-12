@@ -27,8 +27,13 @@
   </parent>
 
   <artifactId>plc4j-driver-profinet-ng</artifactId>
+
   <name>PLC4J: Driver: Profinet (NG)</name>
   <description>Implementation of a PLC4X driver for the Profinet protocol.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

@@ -30,7 +30,11 @@
 
 	<name>PLC4J: Integrations: Apache Nifi: Processors</name>
 
-	<dependencies>
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
+  <dependencies>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-api</artifactId>

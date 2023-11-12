@@ -30,6 +30,10 @@
 
   <name>PLC4J: Driver: Beckhoff TwinCat ADS Driver</name>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

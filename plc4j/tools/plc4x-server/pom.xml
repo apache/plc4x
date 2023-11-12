@@ -32,6 +32,10 @@
   <name>PLC4J: Tools: Plc4x Server</name>
   <description>Server that can be used by drivers of the 'plc4x' protocol to relay requests which are then executed on this machine.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <!-- Build a fat jar containing all dependencies -->

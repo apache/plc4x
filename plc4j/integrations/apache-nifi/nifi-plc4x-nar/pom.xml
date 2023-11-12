@@ -31,7 +31,8 @@
 
 	<name>PLC4J: Integrations: Apache Nifi: NAR</name>
 
-	<properties>
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<source.skip>true</source.skip>
 	</properties>

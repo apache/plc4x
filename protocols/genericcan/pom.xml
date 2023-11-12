@@ -32,6 +32,10 @@
   <name>Protocols: Generic CAN</name>
   <description>Protocol specifications for the Generic CAN protocol.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

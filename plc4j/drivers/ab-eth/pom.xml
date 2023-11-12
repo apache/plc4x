@@ -27,8 +27,13 @@
   </parent>
 
   <artifactId>plc4j-driver-ab-eth</artifactId>
+
   <name>PLC4J: Driver: AB-ETH</name>
   <description>Implementation of a PLC4X driver able to speak using the Allen Bradley AB-ETH protocol.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

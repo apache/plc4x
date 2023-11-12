@@ -32,6 +32,10 @@
   <name>PLC4J: Tools: Object PLC Mapping</name>
   <description>Layer on top of Plc4X that enables mapping between Objects and PLCs.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <!--Internal Dependencies-->
     <dependency>

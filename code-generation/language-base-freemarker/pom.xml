@@ -32,6 +32,10 @@
   <name>Code-Generation: Language Base: Freemarker</name>
   <description>Base code for building language outputs based on Freemarker</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>

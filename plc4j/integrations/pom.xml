@@ -33,6 +33,10 @@
   <name>PLC4J: Integrations</name>
   <description>Parent of all product specific integration modules.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>apache-calcite</module>
     <module>apache-nifi</module>

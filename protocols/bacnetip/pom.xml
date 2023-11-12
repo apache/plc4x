@@ -32,6 +32,10 @@
   <name>Protocols: BACNet/IP</name>
   <description>Base protocol specifications for the BACNet/IP protocol</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <resources>
       <resource>

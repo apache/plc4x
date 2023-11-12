@@ -27,10 +27,14 @@
   </parent>
 
   <artifactId>plc4j-driver-can</artifactId>
+  <packaging>bundle</packaging>
+
   <name>PLC4J: Driver: CAN</name>
   <description>Implementation of CAN driver.</description>
 
-  <packaging>bundle</packaging>
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

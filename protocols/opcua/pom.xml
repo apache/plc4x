@@ -32,6 +32,10 @@
   <name>Protocols: OPC UA</name>
   <description>Base protocol specifications for the OPC UA protocol</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <resources>
       <resource>

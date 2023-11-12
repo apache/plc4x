@@ -33,6 +33,10 @@
   <name>PLC4J: Transports</name>
   <description>Collection of base-types for implementing different types of drivers.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>can</module>
     <module>pcap-replay</module>

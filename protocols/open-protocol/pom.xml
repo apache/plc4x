@@ -32,6 +32,10 @@
   <name>Protocols: Open-Protocol</name>
   <description>Protocol specifications for the Atlas Copco: Open Protocol protocol</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

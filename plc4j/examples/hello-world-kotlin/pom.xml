@@ -30,6 +30,8 @@
   <name>PLC4J: Examples: Hello-World: Kotlin</name>
 
   <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
     <kotlin.version>1.7.22</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <app.main.class>org.apache.plc4x.java.examples.hellokotlin.ReadModbusPalKt</app.main.class>

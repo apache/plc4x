@@ -31,6 +31,10 @@
   <name>PLC4J: Transports: Serial</name>
   <description>Base classes needed to implement plc4x drivers based on Serial connections.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

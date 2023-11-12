@@ -33,6 +33,10 @@
   <name>PLC4J: Utils</name>
   <description>A collection of utilities used internally.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <!-- Non-default input options -->
     <module>pcap-replay</module>

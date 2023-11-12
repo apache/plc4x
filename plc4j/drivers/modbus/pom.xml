@@ -27,8 +27,13 @@
   </parent>
 
   <artifactId>plc4j-driver-modbus</artifactId>
+
   <name>PLC4J: Driver: Modbus</name>
   <description>Implementation of a PLC4X driver for the Modbus protocol.</description>
+
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>

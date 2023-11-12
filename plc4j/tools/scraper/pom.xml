@@ -32,6 +32,10 @@
   <name>PLC4J: Tools: Scraper</name>
   <description>Utility to efficiently collect a large number of items on multiple devices by different triggers.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <!--Jackson-->
     <dependency>

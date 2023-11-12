@@ -32,6 +32,10 @@
   <name>Code-Generation: Language: Python</name>
   <description>Code generation template for generating Python code</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

@@ -38,6 +38,10 @@
     <sonar.language>c#</sonar.language>
   </properties-->
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <!-- Copy the test-resources in here -->

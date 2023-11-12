@@ -31,6 +31,10 @@
   <name>PLC4J: Transports: SocketCAN</name>
   <description>Base classes needed to implement plc4x drivers based on SocketCAN connections. Powered by javacan library.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <!--

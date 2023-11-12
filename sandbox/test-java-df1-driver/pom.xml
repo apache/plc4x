@@ -30,6 +30,10 @@
 
   <name>Sandbox: Test Df1 Driver</name>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

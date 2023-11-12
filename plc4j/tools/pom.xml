@@ -33,6 +33,10 @@
   <name>PLC4J: Tools</name>
   <description>A collection of tools that provide additional services to users.</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>capture-replay</module>
     <module>connection-cache</module>

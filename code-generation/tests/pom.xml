@@ -33,6 +33,10 @@
   <name>Code-Generation Tests</name>
   <description>Tests for the various code-generation modules</description>
 
+  <properties>
+    <project.build.outputTimestamp>1696231389</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>protocol-test-java</module>
   </modules>
