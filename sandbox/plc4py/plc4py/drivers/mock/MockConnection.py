@@ -43,8 +43,8 @@ from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
-from plc4py.spi.values.PlcBOOL import PlcBOOL
-from plc4py.spi.values.PlcINT import PlcINT
+from plc4py.spi.values.PlcValues import PlcBOOL
+from plc4py.spi.values.PlcValues import PlcINT
 
 
 @dataclass
@@ -128,7 +128,6 @@ class MockConnection(PlcConnection, PlcReader):
             try:
                 response = PlcReadResponse(
                     PlcResponseCode.OK,
-                    req.tags,
                     {tag_name: device.read(tag) for tag_name, tag in req.tags.items()},
                 )
                 return response

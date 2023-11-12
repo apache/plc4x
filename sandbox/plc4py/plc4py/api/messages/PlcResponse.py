@@ -37,11 +37,11 @@ class PlcResponse(PlcMessage):
 
 @dataclass
 class PlcTagResponse(PlcResponse):
-    fields: List[PlcTag]
+    values: Dict[str, List[ResponseItem[PlcValue]]]
 
     @property
     def tag_names(self):
-        return [fld.name for fld in self.fields]
+        return [tag_name for tag_name in self.values.keys()]
 
     def response_code(self, name: str) -> PlcResponseCode:
         pass
@@ -52,8 +52,6 @@ class PlcReadResponse(PlcTagResponse):
     """
     Response to a {@link PlcReadRequest}.
     """
-
-    values: Dict[str, List[ResponseItem[PlcValue]]]
 
     def get_plc_value(self, name: str, index: int = 0) -> PlcValue:
         return self.values[name][index].value

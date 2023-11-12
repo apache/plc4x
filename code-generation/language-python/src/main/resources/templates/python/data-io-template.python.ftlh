@@ -61,9 +61,6 @@ ${import}
 <#-- TODO: the code below implies that parserArguments will be null if not present... not pretty  -->
 <#if type.parserArguments.isPresent()><#assign parserArguments=type.parserArguments.orElseThrow()></#if>
 class ${type.name}:
-    <@emitImport import="from loguru import logging as log" />
-
-    <@emitImport import="from abc import staticmethod" />
     <@emitImport import="from plc4py.spi.generation.ReadBuffer import ReadBuffer" />
     @staticmethod
     def static_parse(read_buffer: ReadBuffer<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>):
@@ -189,7 +186,8 @@ class ${type.name}:
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: ${helper.getLanguageTypeNameForField(field)} = ${helper.getReadBufferReadMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), "", reservedField)}
             if reserved != ${helper.getReservedValue(reservedField)}:
-                log.info("Expected constant value " + str(${reservedField.referenceValue}) + " but got " + reserved + " for reserved field.")
+                <@emitImport import="import logging" />
+                logging.warning("Expected constant value " + str(${reservedField.referenceValue}) + " but got " + str(reserved) + " for reserved field.")
                     <#break>
                     <#case "simple">
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
@@ -220,49 +218,61 @@ class ${type.name}:
                 <#list case.fields as field>
                     <#if field.isArrayField()>
                         <#assign field=field.asArrayField().orElseThrow()>
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcList" />
             _map["${field.name}"] = PlcList(${field.name})
                     <#elseif field.isPropertyField()>
                         <#assign field=field.asPropertyField().orElseThrow()>
                         <#switch helper.getLanguageTypeNameForTypeReference(field.type)>
                             <#case "Boolean">
-            <@emitImport import="from plc4py.spi.values.PlcBOOL import PlcBOOL" />
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcBOOL" />
             _map["${field.name}"] = PlcBOOL(${field.name})
                                 <#break>
                             <#case "Byte">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcSINT" />
             _map["${field.name}"] = PlcSINT(${field.name})
                                 <#break>
                             <#case "Short">
-            <@emitImport import="from plc4py.spi.values.PlcINT import PlcINT" />
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcINT" />
             _map["${field.name}"] = PlcINT(${field.name})
                                 <#break>
                             <#case "Integer">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcDINT" />
             _map["${field.name}"] = PlcDINT(${field.name})
                                 <#break>
                             <#case "Long">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcLINT" />
             _map["${field.name}"] = PlcLINT(${field.name})
                                 <#break>
                             <#case "BigInteger">
-            _map["${field.name}"] = PlcBigInteger(${field.name})
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcLINT" />
+            _map["${field.name}"] = PlcLINT(${field.name})
                                 <#break>
                             <#case "Float">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcREAL" />
             _map["${field.name}"] = PlcREAL(${field.name})
                                 <#break>
                             <#case "Double">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcLREAL" />
             _map["${field.name}"] = PlcLREAL(${field.name})
                                 <#break>
                             <#case "BigDecimal">
-            _map["${field.name}"] = PlcBigDecimal(${field.name})
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcLREAL" />
+            _map["${field.name}"] = PlcLREAL(${field.name})
                                 <#break>
                             <#case "String">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcSTRING" />
             _map["${field.name}"] = PlcSTRING(${field.name})
                                 <#break>
                             <#case "LocalTime">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcTIME_OF_DAY" />
             _map["${field.name}"] =  PlcTIME_OF_DAY(${field.name})
                                 <#break>
                             <#case "LocalDate">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcDATE" />
             _map["${field.name}"] =  PlcDATE(${field.name})
                                 <#break>
                             <#case "LocalDateTime">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcDATE_AND_TIME" />
             _map["${field.name}"] = PlcDATE_AND_TIME(${field.name})
                                 <#break>
                         </#switch>
@@ -274,12 +284,14 @@ class ${type.name}:
             <#if valueDefined>
                 <#switch case.name>
                     <#case "TIME">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcTIME" />
             return PlcTIME(value)
                     <#break>
                     <#case "DATE">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day")>
             value: LocalDate = LocalDate(int(year), (month == 0) ? 1 : int(month), (day == 0) ? 1 : int(day))
                     </#if>
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcDATE" />
             return PlcDATE(value)
                     <#break>
                     <#case "TIME_OF_DAY">
@@ -288,6 +300,7 @@ class ${type.name}:
                     <#elseif helper.hasFieldsWithNames(case.fields, "hour", "minutes", "seconds")>
             value: LocalTime = LocalTime(int(hour), int(minutes), int(seconds))
                     </#if>
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcTIME_OF_DAY" />
             return PlcTIME_OF_DAY(value)
                     <#break>
                     <#case "DATE_AND_TIME">
@@ -298,15 +311,19 @@ class ${type.name}:
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
             value: LocalDateTime = LocalDateTime.ofEpochSecond(secondsSinceEpoch, 0, ZoneOffset.UTC)
                     </#if>
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcDATE_AND_TIME" />
             return PlcDATE_AND_TIME(value)
                     <#break>
                     <#case "Struct">
+            <@emitImport import="from plc4py.spi.values.PlcValues import PlcStruct" />
             return PlcStruct(_map)
                     <#break>
                     <#case "List">
+                    <@emitImport import="from plc4py.spi.values.PlcValues import PlcList" />
             return PlcList(value)
                     <#break>
                     <#default>
+            <@emitImport import="from plc4py.spi.values.PlcValues import Plc" + case.name />
             return Plc${case.name}(value)
                 </#switch>
             </#if>
@@ -316,9 +333,9 @@ class ${type.name}:
         </#if>
 
 <#if outputFlavor != "passive">
-    <@emitImport import="from abc import staticmethod" />
     <@emitImport import="from plc4py.spi.generation.WriteBuffer import WriteBuffer" />
     <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
+    <@emitImport import="from plc4py.utils.GenericTypes import ByteOrder" />
     @staticmethod
     def static_serialize(write_buffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>, byte_order: ByteOrder) -> None:
         <#assign defaultCaseOutput=false>
@@ -350,7 +367,7 @@ class ${type.name}:
             values: PlcList = _value
 
                         <#if case.name == "Struct">
-            for val in values.getStruct().get("${arrayField.name}").getList():
+            for val in values.getStruct().get("${arrayField.name}").get_list():
                 <#if elementTypeReference.isByteBased()>
                 value: ${helper.getLanguageTypeNameForField(arrayField)} = val.get_raw()
                 write_buffer.write_byte_array("", value)
@@ -359,7 +376,7 @@ class ${type.name}:
                 ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "value", arrayField)}
                 </#if>
                         <#else>
-            for val in values.getList():
+            for val in values.get_list():
                 <#if elementTypeReference.isByteBased()>
                 <@emitImport import="from typing import List" />
                 value: list[byte] = val.get_raw()
@@ -422,15 +439,13 @@ class ${type.name}:
         <#sep></#sep></#list>
 </#if>
 
-    <@emitImport import="from abc import staticmethod" />
     <@emitImport import="import math" />
     <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
     @staticmethod
     def get_length_in_bytes(_value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> int:
-        return int(math.ceil(float(get_length_in_bits(_value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}<#sep>, </#sep></#list></#if>)) / 8.0))
+        return int(math.ceil(float(${type.name}.get_length_in_bits(_value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}<#sep>, </#sep></#list></#if>)) / 8.0))
 
 
-    <@emitImport import="from abc import staticmethod" />
     <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
     @staticmethod
     def get_length_in_bits(_value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> int:
@@ -466,7 +481,7 @@ class ${type.name}:
                 <#elseif elementTypeReference.isComplexTypeReference()>
                 # TODO: Finish this!
                 <#else>
-                size_in_bits += values.get_list().size() * ${elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits}
+                size_in_bits += len(values.get_list()) * ${elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits}
                 </#if>
                 <#break>
             <#case "const">

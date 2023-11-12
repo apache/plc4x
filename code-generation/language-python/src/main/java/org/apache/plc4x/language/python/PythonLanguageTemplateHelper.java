@@ -287,10 +287,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 if (sizeInBits <= 32) return "read_float";
                 return "read_double";
             case STRING:
-                return "read_string";
+                return "read_str";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "read_string";
+                return "read_str";
             case TIME:
                 return "read_time";
             case DATE:
@@ -351,10 +351,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 if (sizeInBits <= 32) return "write_float";
                 return "write_double";
             case STRING:
-                return "write_string";
+                return "write_str";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "write_string";
+                return "write_str";
             case TIME:
                 return "write_time";
             case DATE:
@@ -377,35 +377,45 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcBOOL");
                 return "PlcBOOL";
             case BYTE:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSINT");
                 return "PlcSINT";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcUSINT");
                     return "PlcUSINT";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcUINT");
                     return "PlcUINT";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcUDINT");
                     return "PlcUDINT";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcULINT");
                     return "PlcULINT";
                 }
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSINT");
                     return "PlcSINT";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcINT");
                     return "PlcINT";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcDINT");
                     return "PlcDINT";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcLINT");
                     return "PlcLINT";
                 }
 
@@ -414,17 +424,21 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcREAL");
                     return "PlcREAL";
                 }
                 if (sizeInBits <= 64) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcLREAL");
                     return "PlcLREAL";
                 }
             case STRING:
             case VSTRING:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSTRING");
                 return "PlcSTRING";
             case TIME:
             case DATE:
             case DATETIME:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcTIME");
                 return "PlcTIME";
             default:
                 return "";
@@ -520,7 +534,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
                     unsignedIntegerType = "unsigned_long";
                 } else {
-                    unsignedIntegerType = "unsigned_big_integer";
+                    unsignedIntegerType = "unsigned_long";
                 }
                 return "read_buffer.read_" + unsignedIntegerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case INT:
@@ -534,7 +548,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else if (simpleTypeReference.getSizeInBits() <= 64) {
                     integerType = "long";
                 } else {
-                    integerType = "big_integer";
+                    integerType = "long";
                 }
                 return "read_buffer.read_" + integerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case FLOAT:
@@ -542,7 +556,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 return "read_buffer.read_" + floatType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case STRING:
             case VSTRING:
-                String stringType = "string";
+                String stringType = "str";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
@@ -641,7 +655,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .asStringLiteral()
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "write_buffer.write_str(" + fieldName + ", uint32(" + length + "), \"" +
+                return "write_buffer.write_str(" + fieldName + ", " + length + ", \"" +
                     encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
             }
             case VSTRING: {
@@ -653,7 +667,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "write_buffer.write_str(" + fieldName + ", uint32(" + lengthExpression + "), \"" +
+                return "write_buffer.write_str(" + fieldName + ", " + lengthExpression + ", \"" +
                     encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
             }
             case DATE:

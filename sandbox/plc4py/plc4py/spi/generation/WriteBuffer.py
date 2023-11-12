@@ -121,7 +121,12 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def write_str(
-        self, value: str, bit_length: int = -1, logical_name: str = "", **kwargs
+        self,
+        value: str,
+        bit_length: int = -1,
+        logical_name: str = "",
+        encoding: str = "UTF-8",
+        **kwargs
     ) -> None:
         raise NotImplementedError
 

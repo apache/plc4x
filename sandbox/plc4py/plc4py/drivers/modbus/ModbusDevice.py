@@ -22,6 +22,9 @@ from asyncio import Transport
 from dataclasses import dataclass, field
 from typing import Dict, List
 
+from plc4py.protocols.modbus.readwrite.DataItem import DataItem
+from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
+
 from plc4py.drivers.modbus.ModbusTag import (
     ModbusTagHoldingRegister,
     ModbusTagCoil,
@@ -49,6 +52,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest impo
     ModbusPDUReadHoldingRegistersRequest,
 )
 from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem
+from plc4py.spi.values.PlcValues import PlcList
 from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
 
 
@@ -111,6 +116,18 @@ class ModbusDevice:
         )
 
         await message_future
+        result = message_future.result()
 
-        response = PlcReadResponse(PlcResponseCode.OK, [], {})
+        read_buffer = ReadBufferByteBased(bytearray(result.value), ByteOrder.BIG_ENDIAN)
+        returned_value = DataItem.static_parse(
+            read_buffer,
+            request.tags[request.tag_names[0]].data_type,
+            request.tags[request.tag_names[0]].quantity,
+        )
+
+        response_items = [ResponseItem(PlcResponseCode.OK, returned_value)]
+
+        response = PlcReadResponse(
+            PlcResponseCode.OK, {request.tag_names[0]: response_items}
+        )
         return response

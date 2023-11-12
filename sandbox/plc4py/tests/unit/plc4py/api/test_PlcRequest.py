@@ -28,8 +28,8 @@ from plc4py.api.messages.PlcRequest import (
 from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
-from plc4py.spi.values.PlcBOOL import PlcBOOL
-from plc4py.spi.values.PlcINT import PlcINT
+from plc4py.spi.values.PlcValues import PlcBOOL
+from plc4py.spi.values.PlcValues import PlcINT
 from plc4py.drivers.mock.MockConnection import MockConnection
 
 
@@ -147,7 +147,6 @@ def test_read_response_boolean_response(mocker) -> None:
     """
     response = PlcReadResponse(
         PlcResponseCode.OK,
-        [PlcTag("1:BOOL")],
         {"1:BOOL": [ResponseItem(PlcResponseCode.OK, PlcBOOL(True))]},
     )
     assert response.get_boolean("1:BOOL")
@@ -162,7 +161,6 @@ def test_read_response_int_response(mocker) -> None:
     """
     response = PlcReadResponse(
         PlcResponseCode.OK,
-        [PlcTag("1:INT")],
         {"1:INT": [ResponseItem(PlcResponseCode.OK, PlcINT(10))]},
     )
     assert response.get_int("1:INT") == 10
