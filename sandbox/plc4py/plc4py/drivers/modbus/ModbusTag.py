@@ -18,8 +18,7 @@
 #
 import re
 from dataclasses import dataclass
-from re import Pattern
-from typing import AnyStr
+from typing import AnyStr, Pattern
 
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
 from plc4py.api.messages.PlcField import PlcTag
