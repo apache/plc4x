@@ -590,49 +590,49 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         }
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "writeBuffer.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_bit(" + fieldName + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case BYTE:
-                return "writeBuffer.WriteByte(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_byte(" + fieldName + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_byte(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_unsigned_short(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_unsigned_int(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_unsigned_long(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_unsigned_long(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_signed_byte(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_short(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_int(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_long(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_long(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_float(" + fieldName + ", " + floatTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_double(" + fieldName + ", " + floatTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_double(" + fieldName + ", " + floatTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
@@ -641,8 +641,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .asStringLiteral()
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_str(" + fieldName + ", uint32(" + length + "), \"" +
+                    encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -653,13 +653,13 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_str(" + fieldName + ", uint32(" + lengthExpression + "), \"" +
+                    encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
             }
             case DATE:
             case TIME:
             case DATETIME:
-                return "writeBuffer.WriteUint32(\"" + logicalName + "\", uint32(" + fieldName + ")" + writerArgsString + ")";
+                return "write_buffer.write_unsigned_int(uint32(" + fieldName + "), \"" + logicalName + "\")" + writerArgsString + ")";
             default:
                 throw new FreemarkerException("Unsupported base type " + simpleTypeReference.getBaseType());
         }

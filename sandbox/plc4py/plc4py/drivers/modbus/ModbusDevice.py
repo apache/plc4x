@@ -22,6 +22,24 @@ from asyncio import Transport
 from dataclasses import dataclass, field
 from typing import Dict, List
 
+from plc4py.drivers.modbus.ModbusTag import (
+    ModbusTagHoldingRegister,
+    ModbusTagCoil,
+    ModbusTagDiscreteInput,
+    ModbusTagInputRegister,
+)
+
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsRequest import (
+    ModbusPDUReadCoilsRequest,
+)
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
+    ModbusPDUReadDiscreteInputsRequest,
+)
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import (
+    ModbusPDUReadInputRegistersRequest,
+)
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
 from plc4py.api.messages.PlcRequest import PlcReadRequest
@@ -31,12 +49,17 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest impo
     ModbusPDUReadHoldingRegistersRequest,
 )
 from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
-from plc4py.utils.GenericTypes import ByteOrder
+from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
 
 
 @dataclass
 class ModbusDevice:
-    fields: Dict[str, PlcValue] = field(default_factory=lambda: {})
+    _configuration: ModbusConfiguration
+    tags: Dict[str, PlcValue] = field(default_factory=lambda: {})
+
+    _transaction_generator: AtomicInteger = field(
+        default_factory=lambda: AtomicInteger()
+    )
 
     async def read(
         self, request: PlcReadRequest, transport: Transport
@@ -44,12 +67,38 @@ class ModbusDevice:
         """
         Reads one field from the Mock Device
         """
-        logging.debug(f"Reading field {str(field)} from Modbus Device")
+        if len(request.tags) > 1:
+            raise NotImplementedError(
+                "The Modbus driver only supports reading single tags at once"
+            )
+        if len(request.tags) == 0:
+            raise PlcRuntimeException("No tags have been specified to read")
+        tag = request.tags[request.tag_names[0]]
+        logging.debug(f"Reading tag {str(tag)} from Modbus Device")
+
+        # Create future to be returned when a value is returned
         loop = asyncio.get_running_loop()
         message_future = loop.create_future()
 
-        pdu = ModbusPDUReadHoldingRegistersRequest(0, 2)
-        adu = ModbusTcpADU(False, 1, 1, pdu)
+        if isinstance(tag, ModbusTagCoil):
+            pdu = ModbusPDUReadCoilsRequest(tag.address, tag.quantity)
+        elif isinstance(tag, ModbusTagDiscreteInput):
+            pdu = ModbusPDUReadDiscreteInputsRequest(tag.address, tag.quantity)
+        elif isinstance(tag, ModbusTagInputRegister):
+            pdu = ModbusPDUReadInputRegistersRequest(tag.address, tag.quantity)
+        elif isinstance(tag, ModbusTagHoldingRegister):
+            pdu = ModbusPDUReadHoldingRegistersRequest(tag.address, tag.quantity)
+        else:
+            raise NotImplementedError(
+                "Modbus tag type not implemented " + str(tag.__class__)
+            )
+
+        adu = ModbusTcpADU(
+            False,
+            self._transaction_generator.increment(),
+            self._configuration.unit_identifier,
+            pdu,
+        )
         write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
         adu.serialize(write_buffer)
 
@@ -62,5 +111,6 @@ class ModbusDevice:
         )
 
         await message_future
+
         response = PlcReadResponse(PlcResponseCode.OK, [], {})
         return response

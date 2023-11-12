@@ -46,7 +46,7 @@ class ModbusConnection(PlcConnection):
 
     def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
         super().__init__(config)
-        self._device: ModbusDevice = ModbusDevice()
+        self._device: ModbusDevice = ModbusDevice(self._configuration)
         self._transport: Plc4xBaseTransport = transport
 
     @staticmethod

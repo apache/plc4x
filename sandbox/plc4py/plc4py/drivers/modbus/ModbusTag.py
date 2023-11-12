@@ -26,76 +26,78 @@ from plc4py.protocols.modbus.readwrite.ModbusDataType import ModbusDataType
 from plc4py.spi.messages.PlcRequest import TagBuilder
 
 
-@dataclass
 class ModbusTag(PlcTag):
-    address: int
-    quantity: int
-    data_type: ModbusDataType
-
-    ADDRESS_PATTERN: str = (
-        "(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?([(?P<quantity>\d+)])?"
+    _ADDRESS_PATTERN: str = (
+        "(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)\])?"
     )
-    FIXED_DIGIT_MODBUS_PATTERN: str = (
-        "(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?([(?P<quantity>\d+)])?"
+    _FIXED_DIGIT_MODBUS_PATTERN: str = (
+        "(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)\])?"
     )
-    PROTOCOL_ADDRESS_OFFSET: int = 1
-    REGISTER_MAX_ADDRESS: int = 65535
+    _PROTOCOL_ADDRESS_OFFSET: int = 1
+    _REGISTER_MAX_ADDRESS: int = 65535
 
-    ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(FIXED_DIGIT_MODBUS_PATTERN)
-    ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(FIXED_DIGIT_MODBUS_PATTERN)
-    DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.INT
+    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(_FIXED_DIGIT_MODBUS_PATTERN)
+    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(_FIXED_DIGIT_MODBUS_PATTERN)
+    _DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.INT
 
-    QUANTITY_MAX: int = 120
+    _QUANTITY_MAX: int = 120
+
+    def __init__(self, address: int, quantity: int, data_type: ModbusDataType):
+        self.address: int = address
+        self.quantity: int = quantity
+        self.data_type: ModbusDataType = data_type
 
     @classmethod
     def matches(cls, address_string: str):
         return (
-            cls.ADDRESS_PATTERN.match(address_string) is not None
-            or cls.ADDRESS_SHORTER_PATTERN.match(address_string) is not None
-            or cls.ADDRESS_SHORT_PATTERN.match(address_string) is not None
+            cls._ADDRESS_PATTERN.match(address_string) is not None
+            or cls._ADDRESS_SHORTER_PATTERN.match(address_string) is not None
+            or cls._ADDRESS_SHORT_PATTERN.match(address_string) is not None
         )
 
     @classmethod
     def _matcher(cls, address_string):
-        match = cls.ADDRESS_PATTERN.match(address_string)
+        match = cls._ADDRESS_PATTERN.match(address_string)
         if match is not None:
             return match
-        match = cls.ADDRESS_SHORTER_PATTERN.match(address_string)
+        match = cls._ADDRESS_SHORTER_PATTERN.match(address_string)
         if match is not None:
             return match
-        match = cls.ADDRESS_SHORT_PATTERN.match(address_string)
+        match = cls._ADDRESS_SHORT_PATTERN.match(address_string)
         if match is not None:
             return match
 
     @classmethod
     def create(cls, address_string):
         matcher = cls._matcher(address_string)
-        address: int = int(matcher.group("address")) - ModbusTag.PROTOCOL_ADDRESS_OFFSET
-        if address > cls.REGISTER_MAX_ADDRESS:
+        address: int = (
+            int(matcher.group("address")) - ModbusTag._PROTOCOL_ADDRESS_OFFSET
+        )
+        if address > cls._REGISTER_MAX_ADDRESS:
             raise PlcFieldParseException(
                 "Address must be less than or equal to "
-                + str(cls.REGISTER_MAX_ADDRESS)
+                + str(cls._REGISTER_MAX_ADDRESS)
                 + ". Was "
-                + str(address + cls.PROTOCOL_ADDRESS_OFFSET)
+                + str(address + cls._PROTOCOL_ADDRESS_OFFSET)
             )
 
         quantity: int = (
             int(matcher.group("quantity"))
             if "quantity" in matcher.groupdict()
-            and matcher.group("datatype") is not None
+            and matcher.group("quantity") is not None
             else 1
         )
-        if (address + quantity) > cls.REGISTER_MAX_ADDRESS:
+        if (address + quantity) > cls._REGISTER_MAX_ADDRESS:
             raise PlcFieldParseException(
                 "Last requested address is out of range, should be between "
-                + str(cls.PROTOCOL_ADDRESS_OFFSET)
+                + str(cls._PROTOCOL_ADDRESS_OFFSET)
                 + " and "
-                + str(cls.REGISTER_MAX_ADDRESS)
+                + str(cls._REGISTER_MAX_ADDRESS)
                 + ". Was "
-                + str(address + cls.PROTOCOL_ADDRESS_OFFSET + (quantity - 1))
+                + str(address + cls._PROTOCOL_ADDRESS_OFFSET + (quantity - 1))
             )
 
-        if quantity > cls.QUANTITY_MAX:
+        if quantity > cls._QUANTITY_MAX:
             raise PlcFieldParseException(
                 "quantity may not be larger than 2000. Was " + str(quantity)
             )
@@ -110,54 +112,56 @@ class ModbusTag(PlcTag):
 
 
 class ModbusTagCoil(ModbusTag):
-    ADDRESS_PREFIX: str = "0x"
-    ADDRESS_PATTERN: Pattern[AnyStr] = re.compile("coil:" + ModbusTag.ADDRESS_PATTERN)
-    ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
-        "0" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_PREFIX: str = "0x"
+    _ADDRESS_PATTERN: Pattern[AnyStr] = re.compile("coil:" + ModbusTag._ADDRESS_PATTERN)
+    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
+        "0" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
-    ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
-        "0x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
+        "0x" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
-    DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.BOOL
+    _DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.BOOL
+    _QUANTITY_MAX: int = 2000
 
 
 class ModbusTagDiscreteInput(ModbusTag):
-    ADDRESS_PREFIX: str = "1x"
-    ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
-        "discrete-input:" + ModbusTag.ADDRESS_PATTERN
+    _ADDRESS_PREFIX: str = "1x"
+    _ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
+        "discrete-input:" + ModbusTag._ADDRESS_PATTERN
     )
-    ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
-        "1" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
+        "1" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
-    ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
-        "1x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
+        "1x" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
-    DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.BOOL
+    _DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.BOOL
+    _QUANTITY_MAX: int = 2000
 
 
 class ModbusTagInputRegister(ModbusTag):
-    ADDRESS_PREFIX: str = "3x"
-    ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
-        "input-register:" + ModbusTag.ADDRESS_PATTERN
+    _ADDRESS_PREFIX: str = "3x"
+    _ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
+        "input-register:" + ModbusTag._ADDRESS_PATTERN
     )
-    ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
-        "3" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
+        "3" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
-    ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
-        "3x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
+        "3x" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
 
 
 class ModbusTagHoldingRegister(ModbusTag):
-    ADDRESS_PREFIX: str = "4x"
-    ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
-        "holding-register:" + ModbusTag.ADDRESS_PATTERN
+    _ADDRESS_PREFIX: str = "4x"
+    _ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
+        "holding-register:" + ModbusTag._ADDRESS_PATTERN
     )
-    ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
-        "4" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
+        "4" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
-    ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
-        "4x" + ModbusTag.FIXED_DIGIT_MODBUS_PATTERN
+    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
+        "4x" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
 
 

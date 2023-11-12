@@ -22,6 +22,7 @@ from aenum import AutoNumberEnum
 
 
 class SimulatedDataTypeSizes(AutoNumberEnum):
+    _init_ = "value, data_type_size"
     BOOL = (1, int(1))
     BYTE = (2, int(1))
     WORD = (3, int(2))

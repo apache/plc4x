@@ -28,11 +28,11 @@ async def manual_test_plc_driver_modbus_connect():
     assert not connection.is_connected()
 
 
-async def manual_test_plc_driver_modbus_read():
+async def test_plc_driver_modbus_read():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("modbus://127.0.0.1:5555") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item("Random Tag", "holding-register:1")
+            builder.add_item("Random Tag", "holding-register:1[10]")
             request = builder.build()
         future = connection.execute(request)
         await future

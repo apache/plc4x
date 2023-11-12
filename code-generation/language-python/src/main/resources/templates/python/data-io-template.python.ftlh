@@ -64,6 +64,7 @@ class ${type.name}:
     <@emitImport import="from loguru import logging as log" />
 
     <@emitImport import="from abc import staticmethod" />
+    <@emitImport import="from plc4py.spi.generation.ReadBuffer import ReadBuffer" />
     @staticmethod
     def static_parse(read_buffer: ReadBuffer<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>):
         <#assign defaultCaseOutput=false>
@@ -74,14 +75,12 @@ class ${type.name}:
                     <#list case.discriminatorValueTerms as discriminatorValueTerm>
                         <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                         <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
-                        EvaluationHelper.equals(
-                        ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments))},
+                        ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments))} ==
                         <#if discriminatorType.isEnumTypeReference()>
                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         <#else>
                         ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments))}
                         </#if>
-                    )
                         <#sep> and </#sep>
                     </#list>
                     :</@compress>  # ${case.name}
@@ -102,10 +101,9 @@ class ${type.name}:
             <#-- If this is a count array, we can directly initialize an array with the given size -->
                         <#if field.isCountArrayField()>
             # Count array
-            if ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)} > Integer.MAX_VALUE:
-                raise ParseException("Array count of " + (${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)}) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE)
-
             item_count: int = int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)})
+            <@emitImport import="from typing import List" />
+            <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
             ${helper.camelCaseToSnakeCase(arrayField.name)}: List[PlcValue] = []
             for cur_item in range(item_count):
                 ${helper.camelCaseToSnakeCase(arrayField.name)}.append(${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getLanguageTypeNameForTypeReference(elementTypeReference, false)}(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.static_parse(read_buffer<#if elementTypeReference.params.isPresent()>, <#list elementTypeReference.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>))
@@ -117,6 +115,8 @@ class ${type.name}:
             # Length array
             _${helper.camelCaseToSnakeCase(arrayField.name)}_length: long = ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression,parserArguments)}
             ${helper.camelCaseToSnakeCase(arrayField.name)}_end_pos: long = read_buffer.get_pos() + _${helper.camelCaseToSnakeCase(arrayField.name)}_length
+            <@emitImport import="from typing import List" />
+            <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
             value: List[PlcValue]= []
             while read_buffer.get_pos() < ${helper.camelCaseToSnakeCase(arrayField.name)}_end_pos):
                 value.append(<@compress single_line=true>
@@ -158,6 +158,7 @@ class ${type.name}:
             # Const Field (${helper.camelCaseToSnakeCase(constField.name)})
             ${helper.camelCaseToSnakeCase(constField.name)}: ${helper.getNonPrimitiveLanguageTypeNameForField(constField)} = ${helper.getReadBufferReadMethodCall(constField.type.asSimpleTypeReference().orElseThrow(), "", constField)}
             if ${helper.camelCaseToSnakeCase(constField.name)} != ${dataIoTypeDefinition.name}.${constField.name?upper_case}):
+                <@emitImport import="from plc4py.api.exceptions.exceptions import ParseException" />
                 raise ParseException("Expected constant value " + ${dataIoTypeDefinition.name}.${constField.name?upper_case} + " but got " + ${helper.camelCaseToSnakeCase(constField.name)})
 
                         <#if constField.name == "value">
@@ -214,6 +215,7 @@ class ${type.name}:
             <#if case.name == "Struct">
 
                 <#-- In this case we need to wrap each field in a PlcValue that matches it's natural type -->
+            <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
             _map: Dict[str, PlcValue] = {}
                 <#list case.fields as field>
                     <#if field.isArrayField()>
@@ -223,12 +225,14 @@ class ${type.name}:
                         <#assign field=field.asPropertyField().orElseThrow()>
                         <#switch helper.getLanguageTypeNameForTypeReference(field.type)>
                             <#case "Boolean">
+            <@emitImport import="from plc4py.spi.values.PlcBOOL import PlcBOOL" />
             _map["${field.name}"] = PlcBOOL(${field.name})
                                 <#break>
                             <#case "Byte">
             _map["${field.name}"] = PlcSINT(${field.name})
                                 <#break>
                             <#case "Short">
+            <@emitImport import="from plc4py.spi.values.PlcINT import PlcINT" />
             _map["${field.name}"] = PlcINT(${field.name})
                                 <#break>
                             <#case "Integer">
@@ -313,13 +317,10 @@ class ${type.name}:
 
 <#if outputFlavor != "passive">
     <@emitImport import="from abc import staticmethod" />
+    <@emitImport import="from plc4py.spi.generation.WriteBuffer import WriteBuffer" />
+    <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
     @staticmethod
-    def static_serialize(writeBuffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> None:
-        static_serialize(writeBuffer, _value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>, ByteOrder.BIG_ENDIAN)
-
-    <@emitImport import="from abc import staticmethod" />
-    @staticmethod
-    def static_serialize(writeBuffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>, byteOrder: ByteOrder) -> None:
+    def static_serialize(write_buffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>, byte_order: ByteOrder) -> None:
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
         <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
@@ -328,13 +329,12 @@ class ${type.name}:
                 <#list case.discriminatorValueTerms as discriminatorValueTerm>
                     <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
-                    EvaluationHelper.equals(
-                    ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)},
+                    ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)} ==
                     <#if discriminatorType.isEnumTypeReference()>
                     ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
-                    </#if>)
+                    </#if>
                     <#sep> and </#sep>
                 </#list>
                 : # ${case.name}</@compress>
@@ -352,26 +352,27 @@ class ${type.name}:
                         <#if case.name == "Struct">
             for val in values.getStruct().get("${arrayField.name}").getList():
                 <#if elementTypeReference.isByteBased()>
-                value: ${helper.getLanguageTypeNameForField(arrayField)} = val.getRaw()
-                writeBuffer.writeByteArray("", value)
+                value: ${helper.getLanguageTypeNameForField(arrayField)} = val.get_raw()
+                write_buffer.write_byte_array("", value)
                 <#else>
-                value: ${helper.getLanguageTypeNameForField(arrayField)} = val.get${helper.getLanguageTypeNameForField(arrayField)?cap_first}()
+                value: ${helper.getLanguageTypeNameForField(arrayField)} = val.get_${helper.camelCaseToSnakeCase(helper.getLanguageTypeNameForField(arrayField)?cap_first)}()
                 ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "value", arrayField)}
                 </#if>
                         <#else>
             for val in values.getList():
                 <#if elementTypeReference.isByteBased()>
-                value: list[byte] = val.getRaw()
-                writeBuffer.writeByteArray("", value)
+                <@emitImport import="from typing import List" />
+                value: list[byte] = val.get_raw()
+                    write_buffer.write_byte_array("", value)
                 <#else>
-                value: ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} = val.get${helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first}()
+                value: ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)} = val.get_${helper.camelCaseToSnakeCase(helper.getLanguageTypeNameForTypeReference(elementTypeReference)?cap_first)}()
                 ${helper.getWriteBufferWriteMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "(" + arrayField.name + ")", arrayField)}
                 </#if>
                         </#if>
 
                     <#if case.name == "BOOL">
-            while writeBuffer.getPos() < len(writeBuffer.getData()):
-                writeBuffer.writeBit(false)
+            while write_buffer.getPos() < len(write_buffer.get_data()):
+                        write_buffer.write_bit(false)
                     </#if>
                     <#break>
                     <#case "const">
@@ -382,8 +383,8 @@ class ${type.name}:
                     <#case "enum">
                         <#assign enumField=field.asEnumField().orElseThrow()>
             # Enum field (${enumField.name})
-            ${enumField.name}: ${helper.getLanguageTypeNameForField(field)} = _value.get${enumField.name?cap_first}()
-            ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.asTypedField().orElseThrow().type), "(" + enumField.name + ".getValue())", enumField)}
+            ${enumField.name}: ${helper.getLanguageTypeNameForField(field)} = _value.get_${helper.camelCaseToSnakeCase(enumField.name?cap_first)}()
+            ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.asTypedField().orElseThrow().type), "(" + enumField.name + ".value)", enumField)}
                     <#break>
                     <#case "manual">
                         <#assign manualField=field.asManualField().orElseThrow()>
@@ -399,12 +400,12 @@ class ${type.name}:
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
             # Simple Field (${simpleField.name})
                         <#if case.name == "Struct">
-            ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = _value.getStruct().get("${simpleField.name}").get${helper.getLanguageTypeNameForField(simpleField)?cap_first}()
+            ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = _value.get_struct().get("${simpleField.name}").get${helper.getLanguageTypeNameForField(simpleField)?cap_first}()
                         <#else>
                             <#if simpleField.name == "value">
-            ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}()
+            ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = _value.get_${helper.camelCaseToSnakeCase(helper.getLanguageTypeNameForField(simpleField)?cap_first)}()
                             <#elseif simpleField.name == "secondsSinceEpoch">
-            ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = _value.get${helper.getLanguageTypeNameForField(simpleField)?cap_first}()
+            ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = _value.get_${helper.camelCaseToSnakeCase(helper.getLanguageTypeNameForField(simpleField)?cap_first)}()
                             <#else>
                                 <#-- Just for now -->
             ${simpleField.name}: ${helper.getLanguageTypeNameForField(simpleField)} = ${helper.getNullValueForTypeReference(simpleField.type)}
@@ -413,7 +414,7 @@ class ${type.name}:
                         <#if simpleField.type.isSimpleTypeReference()>
             ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)}
                         <#else>
-            ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.staticSerialize(writeBuffer, ${simpleField.name})
+            ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.static_serialize(write_buffer, ${helper.camelCaseToSnakeCase(simpleField.name)})
                         </#if>
                     <#break>
                 </#switch>
@@ -423,15 +424,17 @@ class ${type.name}:
 
     <@emitImport import="from abc import staticmethod" />
     <@emitImport import="import math" />
+    <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
     @staticmethod
-    def get_length_in_bytes(_value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> int:
-        return int(math.ceil(float(getLengthInBits(_value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>)) / 8.0))
+    def get_length_in_bytes(_value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> int:
+        return int(math.ceil(float(get_length_in_bits(_value<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}<#sep>, </#sep></#list></#if>)) / 8.0))
 
 
     <@emitImport import="from abc import staticmethod" />
+    <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
     @staticmethod
-    def get_length_in_bits(_value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${parserArgument.name}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> int:
-        sizeInBits: int = 0
+    def get_length_in_bits(_value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>) -> int:
+        size_in_bits: int = 0
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
         <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
@@ -440,14 +443,12 @@ class ${type.name}:
             <#list case.discriminatorValueTerms as discriminatorValueTerm>
             <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
             <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
-                EvaluationHelper.equals(
-                    ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)},
+                    ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorExpression, parserArguments)} ==
                     <#if discriminatorType.isEnumTypeReference()>
                     ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     </#if>
-                )
             <#sep> and </#sep>
             </#list>
         </@compress>: # ${case.name}
@@ -465,39 +466,39 @@ class ${type.name}:
                 <#elseif elementTypeReference.isComplexTypeReference()>
                 # TODO: Finish this!
                 <#else>
-                sizeInBits += values.getList().size() * ${elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits}
+                size_in_bits += values.get_list().size() * ${elementTypeReference.asSimpleTypeReference().orElseThrow().sizeInBits}
                 </#if>
                 <#break>
             <#case "const">
                 <#assign constField=field.asConstField().orElseThrow()>
                 # Const Field (${constField.name})
                 <#-- const fields are only simple type -->
-                sizeInBits += ${constField.type.asSimpleTypeReference().orElseThrow().sizeInBits}
+                size_in_bits += ${constField.type.asSimpleTypeReference().orElseThrow().sizeInBits}
                 <#break>
             <#case "enum">
                 <#assign enumField=field.asEnumField().orElseThrow()>
                 # Enum field (${enumField.name})
-                sizeInBits += ${helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName).sizeInBits}
+                size_in_bits += ${helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName).sizeInBits}
                 <#break>
             <#case "manual">
                 <#assign manualField=field.asManualField().orElseThrow()>
                 # Manual Field (${manualField.name})
-                sizeInBits += ${helper.toSerializationExpression(manualField, helper.intTypeReference, manualField.lengthExpression, type.parserArguments.orElse(null))}
+                size_in_bits += ${helper.toSerializationExpression(manualField, helper.intTypeReference, manualField.lengthExpression, type.parserArguments.orElse(null))}
                 <#break>
             <#case "reserved">
                 <#assign reservedField=field.asReservedField().orElseThrow()>
                 # Reserved Field
-                sizeInBits += ${reservedField.type.asSimpleTypeReference().orElseThrow().sizeInBits}
+                size_in_bits += ${reservedField.type.asSimpleTypeReference().orElseThrow().sizeInBits}
                 <#break>
             <#case "simple">
                 <#assign simpleField=field.asSimpleField().orElseThrow()>
                 # Simple Field (${simpleField.name})
-                sizeInBits += ${simpleField.type.asSimpleTypeReference().orElseThrow().sizeInBits}
+                size_in_bits += ${simpleField.type.asSimpleTypeReference().orElseThrow().sizeInBits}
                 <#break>
             </#switch>
             </#list>
         <#sep></#sep></#list>
-        return sizeInBits
+        return size_in_bits
 
 
 </@importSectionWithContentBelow>

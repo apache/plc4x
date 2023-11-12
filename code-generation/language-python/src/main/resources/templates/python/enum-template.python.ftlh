@@ -61,6 +61,7 @@ ${import}
 <@emitImport import="from aenum import AutoNumberEnum" />
 
 class ${type.name}(AutoNumberEnum):
+    <#if type.constantNames?has_content>_init_ = "value, <#list type.constantNames as constantName>${helper.camelCaseToSnakeCase(constantName)}<#sep>, </#sep></#list>"</#if>
     <#list type.enumValues as enumValue>
     ${enumValue.name}<#if !type.constantNames?has_content>:</#if> <@compress single_line=true>
             <#if type.type.isPresent()>

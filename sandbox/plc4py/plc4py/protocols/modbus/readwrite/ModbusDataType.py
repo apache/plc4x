@@ -22,6 +22,7 @@ from aenum import AutoNumberEnum
 
 
 class ModbusDataType(AutoNumberEnum):
+    _init_ = "value, data_type_size"
     BOOL = (1, int(2))
     BYTE = (2, int(2))
     WORD = (3, int(2))
