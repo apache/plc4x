@@ -136,8 +136,9 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
             logical_name="meiType", response=response
         )
 
-        level: ModbusDeviceInformationLevel = read_buffer.read_complex(
+        level: ModbusDeviceInformationLevel = read_buffer.read_enum(
             read_function=ModbusDeviceInformationLevel,
+            bit_length=8,
             logical_name="level",
             response=response,
         )
@@ -147,15 +148,17 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         )
 
         conformity_level: ModbusDeviceInformationConformityLevel = (
-            read_buffer.read_complex(
+            read_buffer.read_enum(
                 read_function=ModbusDeviceInformationConformityLevel,
+                bit_length=7,
                 logical_name="conformityLevel",
                 response=response,
             )
         )
 
-        more_follows: ModbusDeviceInformationMoreFollows = read_buffer.read_complex(
+        more_follows: ModbusDeviceInformationMoreFollows = read_buffer.read_enum(
             read_function=ModbusDeviceInformationMoreFollows,
+            bit_length=8,
             logical_name="moreFollows",
             response=response,
         )

@@ -226,7 +226,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "read_complex(read_function=" + languageTypeName + ",";
+            return "read_enum(read_function=" + languageTypeName + ",";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod, true);

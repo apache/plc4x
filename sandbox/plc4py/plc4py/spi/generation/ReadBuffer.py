@@ -15,6 +15,7 @@
 #  specific language governing permissions and limitations
 #  under the License.
 import struct
+import types
 from ctypes import (
     c_byte,
     c_ubyte,
@@ -32,6 +33,7 @@ from ctypes import (
 from dataclasses import dataclass
 from typing import List, Union, Any
 
+import aenum
 from bitarray import bitarray
 from bitarray.util import zeros, ba2int, ba2base
 
@@ -123,6 +125,11 @@ class ReadBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+        raise NotImplementedError
+
+    def read_enum(
+        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
         raise NotImplementedError
 
     def read_array_field(
@@ -341,7 +348,18 @@ class ReadBufferByteBased(ReadBuffer):
             return result
 
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
-        return read_function(self, **kwargs)
+        if isinstance(read_function, types.FunctionType):
+            return read_function(self, **kwargs)
+        pass
+
+    def read_enum(
+        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
+        if isinstance(read_function, aenum._enum.EnumType):
+            enum_return_value = read_function(ba2int(self.bb[self.position : self.position + bit_length], signed=False))
+            return enum_return_value
+        else:
+            raise RuntimeError("read_enum called but read_function wasn't an enum")
 
     def read_array_field(
         self,

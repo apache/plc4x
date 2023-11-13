@@ -114,7 +114,7 @@ class ModbusConnection(PlcConnection):
                 return response
             except Exception as e:
                 # TODO:- This exception is very general and probably should be replaced
-                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.fields, {})
+                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
         logging.debug("Sending read request to ModbusDevice")
         future = asyncio.ensure_future(_request(request, self._device))

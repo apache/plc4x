@@ -17,7 +17,6 @@
 # under the License.
 #
 import re
-from dataclasses import dataclass
 from typing import AnyStr, Pattern
 
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
@@ -60,10 +59,10 @@ class ModbusTag(PlcTag):
         match = cls._ADDRESS_PATTERN.match(address_string)
         if match is not None:
             return match
-        match = cls._ADDRESS_SHORTER_PATTERN.match(address_string)
+        match = cls._ADDRESS_SHORT_PATTERN.match(address_string)
         if match is not None:
             return match
-        match = cls._ADDRESS_SHORT_PATTERN.match(address_string)
+        match = cls._ADDRESS_SHORTER_PATTERN.match(address_string)
         if match is not None:
             return match
 
@@ -106,7 +105,7 @@ class ModbusTag(PlcTag):
             ModbusDataType(matcher.group("datatype"))
             if "datatype" in matcher.groupdict()
             and matcher.group("datatype") is not None
-            else ModbusDataType.INT
+            else cls._DEFAULT_DATA_TYPE
         )
         return cls(address, quantity, data_type)
 

@@ -82,8 +82,9 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
             logical_name="meiType", response=response
         )
 
-        level: ModbusDeviceInformationLevel = read_buffer.read_complex(
+        level: ModbusDeviceInformationLevel = read_buffer.read_enum(
             read_function=ModbusDeviceInformationLevel,
+            bit_length=8,
             logical_name="level",
             response=response,
         )
