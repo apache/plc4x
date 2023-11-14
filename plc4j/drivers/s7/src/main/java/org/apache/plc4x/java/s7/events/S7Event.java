@@ -46,7 +46,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 public interface S7Event extends PlcSubscriptionEvent{
     
         
-    Map<String, Object> getMap();
+    public Map<String, Object> getMap();
     
     
 }

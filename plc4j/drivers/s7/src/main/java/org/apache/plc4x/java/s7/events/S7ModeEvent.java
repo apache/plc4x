@@ -56,6 +56,7 @@ public class S7ModeEvent  implements S7Event {
       map.put(Fields.CURRENT_MODE.name(), parameter.getCurrentMode());
       this.timeStamp = Instant.now();
       map.put(Fields.TIMESTAMP .name(), this.timeStamp );
+      map.put(Fields.MAP.name(), map);
     }    
     
     

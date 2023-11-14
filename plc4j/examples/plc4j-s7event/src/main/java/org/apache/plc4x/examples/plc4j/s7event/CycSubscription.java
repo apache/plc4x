@@ -18,16 +18,23 @@
  */
 package org.apache.plc4x.examples.plc4j.s7event;
 
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.listener.ConnectionStateListener;
+import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
+import org.apache.plc4x.java.s7.readwrite.connection.S7HDefaultNettyPlcConnection;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7HPlcConnection;
 
 
 /**
@@ -37,23 +44,48 @@ import java.util.Map;
  * Each consumer shows the tags and associated values of the "map" containing
  * the event parameters.
  */
-public class CycSubscription {
+public class CycSubscription implements ConnectionStateListener {
 
     private static final Logger logger = LoggerFactory.getLogger(CycSubscription.class);
-
+    
+    private S7HPlcConnection connection = null;
+    private PlcSubscriptionResponse subresponse  = null;
+    private boolean shutdown        = false;
+    private boolean subscricted     = false; 
+    private boolean unsubscricted   = false;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception {
 
-        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
-            final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
+        System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "Debug");        
+        
+        CycSubscription myapp = new CycSubscription();
+        myapp.run(args);
+      
+                
+    }
+    
+    public void makeconnection() {
+        try {                
+            connection =(S7HPlcConnection) new DefaultPlcDriverManager().getConnection("s7://10.10.1.80/10.10.1.81?remote-rack=0&remote-slot=3&remote-rack2=0&remote-slot=4&controller-type=S7_400&read-timeout=8&ping=true&ping-time=4&retry-time=5");
+            connection.addEventListener(this);
+            while(!connection.isConnected()){
+                System.out.println("Conectando...");
+            };
+        } catch (PlcConnectionException ex) {
+           System.out.println("RUNSCAN: " + ex.getMessage());
+        }
+    } 
+    
+    public void makesubscription() throws Exception {
+        final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
+        //subscription.addEventTagAddress("myCYC", "CYC(B01SEC:5):%DB9002.DBB0[1]");
+        subscription.addEventTagAddress("myCYC_01", "CYC(B01SEC:5):%MB190:BYTE");
+        subscription.addEventTagAddress("myCYC_02", "CYC(B01SEC:5):%MW190:INT");            
 
-            //subscription.addEventTagAddress("myCYC", "CYC(B01SEC:5):%DB9002.DBB0[1]");
-            subscription.addEventTagAddress("myCYC", "CYC(B01SEC:5):%MB190:BYTE");
-
-            final PlcSubscriptionRequest sub = subscription.build();
-            final PlcSubscriptionResponse subresponse = sub.execute().get();
+        final PlcSubscriptionRequest sub = subscription.build();
+        subresponse = sub.execute().get();
 
             //Si todo va bien con la subscripción puedo
 //            subresponse
@@ -93,28 +125,108 @@ public class CycSubscription {
 //                    System.out.println("****************************");
 //                });
 
-            subresponse
-                .getSubscriptionHandle("myCYC")
-                .register(msg -> {
-                    System.out.println("******** CYC Event *********");
-                    Map<String, Object> map = ((S7CyclicEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        if (x.startsWith("DATA_", 0)) {
-                            System.out.println("Longitud de datos: " + ((byte[]) y).length);
-                            System.out.println(x + ": " + Hex.encodeHexString((byte[]) y));
-                        } else
-                            System.out.println(x + " : " + y);
-                    });
-                    System.out.println("****************************");
-                });
+         subresponse.getSubscriptionHandles().forEach( a -> {
+             System.out.println(a.toString());
+         });
 
+        subresponse.getRequest().getTagNames().forEach(s -> {
+            System.out.println("Tag " + s + " Tipo: " + subresponse.getRequest().getTag(s).getPlcValueType()); 
+        });
+
+        
+             
+        subresponse
+            .getSubscriptionHandle("myCYC_01")
+            .register(msg -> {
+                if (null == msg) return;
+                System.out.println("******** CYC Event *********");
+                Map<String, Object> map = ((S7CyclicEvent) msg).getMap();
+                map.forEach((x, y) -> {
+                    if (x.startsWith("DATA_", 0)) {
+                        System.out.println("Longitud de datos: " + ((byte[]) y).length);
+                        System.out.println(x + ": " + Hex.encodeHexString((byte[]) y));
+                    } else
+                       System.out.println(x + " : " + y);
+                });
+                System.out.println("****************************");
+            });
+        
+    }    
+
+    @Override
+    public void connected() {
+        System.out.println("*************** CONECTADO *****************");
+    }
+
+    @Override
+    public void disconnected() {
+       System.out.println("*************** DESCONECTADO *****************");
+       subscricted = false;        
+    }
+    
+    
+    public void makeunsubscription() throws Exception {
+       System.out.println("*************** ELIMINANDO SUSCRIPCION *****************");        
+        final PlcUnsubscriptionRequest.Builder unsubscription = connection.unsubscriptionRequestBuilder();
+        
+        unsubscription.addHandles(subresponse.getSubscriptionHandle("myCYC_01"));
+        
+        final PlcUnsubscriptionRequest res = unsubscription.build();
+        
+        res.execute().get();
+        
+    }    
+
+    public void run (String[] args) throws Exception {
+        try {
+        
+            makeconnection();
+            
             System.out.println("Waiting for events");
 
-            Thread.sleep(10000);
+            DefaultThreadFactory  tf = new
+            DefaultThreadFactory("CYC", true);             
 
+            Thread th01 = tf.newThread(() -> {
+                      
+                    while(!shutdown){
+                        try {
+                            
+                            if ((connection.isConnected() == true) && (subscricted == false)) {
+                                System.out.println("REALIZO LA SUSCRIPCION..." + connection.isConnected() + " : " + subscricted);
+                                makesubscription();
+                                subscricted = true;
+                            } else if (connection.isConnected() == false) {
+                                subscricted = false;    
+                            } 
+                            Thread.sleep(1000);
+                        } catch (Exception ex){
+                            System.out.println("Algo fallo aqui..." + ex.getMessage());
+                            subscricted = false;
+                        }
+                    }
+                }
+            );
+            
+            th01.start();
+            
+            System.in.read();
+            shutdown = true;
+            
             System.out.println("Bye...");
+            
+            makeunsubscription();
 
-        }
-    }
+            Thread.sleep(2000);
+            
+            connection.close();
+            
+
+        } catch (Exception ex) {
+            System.out.println("Finaliza la ejecución...");
+            ex.printStackTrace();
+        };  
+    }    
+    
 
 }

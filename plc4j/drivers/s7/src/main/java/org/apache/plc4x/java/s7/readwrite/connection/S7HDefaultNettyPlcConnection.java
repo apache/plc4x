@@ -26,7 +26,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -47,6 +46,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.apache.plc4x.java.api.messages.PlcPingResponse;
 
 /**
  * @author cgarcia
@@ -78,14 +78,15 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
                                         Configuration configuration,
                                         ChannelFactory channelFactory,
                                         ChannelFactory secondaryChannelFactory,
-                                        boolean fireDiscoverEvent,
+                                        boolean fireDiscoverEvent,  
                                         boolean awaitSessionSetupComplete,
                                         boolean awaitSessionDisconnectComplete,
                                         boolean awaitSessionDiscoverComplete,
                                         ProtocolStackConfigurer<TPKTPacket> stackConfigurer,
                                         BaseOptimizer optimizer,
                                         PlcAuthentication authentication) {
-        super(canPing,
+        super(
+            canPing,
             canRead,
             canWrite,
             canSubscribe,
@@ -94,7 +95,7 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
             valueHandler,
             configuration,
             channelFactory,
-            fireDiscoverEvent,
+            fireDiscoverEvent, 
             awaitSessionSetupComplete,
             awaitSessionDisconnectComplete,
             awaitSessionDiscoverComplete,
@@ -303,7 +304,6 @@ public class S7HDefaultNettyPlcConnection extends DefaultNettyPlcConnection impl
     }
 
     @Override
-    // TODO: This method needs some cleaning up ...
     public CompletableFuture<? extends PlcPingResponse> ping() {
         if (channel.attr(S7HMuxImpl.IS_CONNECTED).get()) {
             channel.eventLoop().execute(() -> {

@@ -47,6 +47,8 @@ public class SzlRequest {
      */
     public static void main(String[] args) throws Exception {
 
+        System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "Debug");           
+                
         System.out.println("******************************************************************************************");
         System.out.println("Before using, take a look at:");
         System.out.println("System Software for S7-300/400.\r\nSystem and Standard Functions - Volume 1/2");
@@ -55,7 +57,7 @@ public class SzlRequest {
         System.out.println("URL: https://cache.industry.siemens.com/dl/files/604/44240604/att_67003/v1/s7sfc_en-EN.pdf");
         System.out.println("******************************************************************************************");
 
-        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) { //(01)
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.80?remote-rack=0&remote-slot=3&controller-type=S7_400")) { //(01)
 
             final PlcReadRequest.Builder readrequest = connection.readRequestBuilder(); //(02)
 

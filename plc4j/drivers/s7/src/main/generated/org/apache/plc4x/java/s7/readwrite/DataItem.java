@@ -491,10 +491,10 @@ public class DataItem {
       sizeInBits += 16;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (((stringLength) * (8))) + (16);
+      sizeInBits += (STR_LEN(_value)) + (2);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (((stringLength) * (16))) + (32);
+      sizeInBits += (((STR_LEN(_value)) * (2))) + (2);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;
