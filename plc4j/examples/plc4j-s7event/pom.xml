@@ -40,6 +40,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+           <configuration>
+                <usedDependencies>
+                    <dependency>org.slf4j:slf4j-simple</dependency>
+                </usedDependencies>
+            </configuration>        
       </plugin>
     </plugins>
   </build>
@@ -84,7 +89,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>2.0.9</version>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${netty.version}</version>
     </dependency>
   </dependencies>
 </project>

@@ -157,11 +157,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 channel.pipeline().addFirst("Multiplexor",s7hmux); 
             }
             
-            channel.pipeline().names().forEach( s -> {
-                System.out.println("Nombre tuberia: " + s);
-            });
-
-            ((S7HMux) s7hmux).setEmbededhannel(channel);
+            ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
             //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO))); 
             /*
             channel.closeFuture().addListener(future -> {

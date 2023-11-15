@@ -31,6 +31,8 @@ import io.netty.util.AttributeKey;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
+import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
@@ -272,15 +274,18 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
 
 
     @Override
-    public void setEmbededhannel(Channel embeded_channel) {
+    public void setEmbededhannel(Channel embeded_channel, Configuration configuration) {
+        final S7Configuration conf = (S7Configuration) configuration;
         this.embeded_channel = embeded_channel;
         this.embeded_channel.attr(IS_CONNECTED).set(false); 
         this.embeded_channel.attr(WAS_CONNECTED).set(false);        
-        this.embeded_channel.attr(IS_PRIMARY).set(true);         
-        this.embeded_channel.attr(READ_TIME_OUT).set(8);
-        this.embeded_channel.attr(IS_PING_ACTIVE).set(false); 
-        this.embeded_channel.attr(PING_TIME).set(-1); 
-        this.embeded_channel.attr(RETRY_TIME).set(8); 
+        this.embeded_channel.attr(IS_PRIMARY).set(true); 
+        
+        //From the URL
+        this.embeded_channel.attr(READ_TIME_OUT).set(conf.getReadTimeout());
+        this.embeded_channel.attr(IS_PING_ACTIVE).set(conf.getPing()); 
+        this.embeded_channel.attr(PING_TIME).set(conf.getPingTime()); 
+        this.embeded_channel.attr(RETRY_TIME).set(conf.getRetryTime()); 
     }        
     
     @Override   
