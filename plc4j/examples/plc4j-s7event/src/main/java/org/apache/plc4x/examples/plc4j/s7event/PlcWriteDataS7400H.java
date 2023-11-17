@@ -19,7 +19,7 @@
 package org.apache.plc4x.examples.plc4j.s7event;
 
 
-public class PlcReadData {
+public class PlcWriteDataS7400H {
 
     /**
      * @param args the command line arguments

@@ -18,14 +18,25 @@
  */
 package org.apache.plc4x.examples.plc4j.s7event;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PlcWriteData {
+/**
+ *
+ * @author cgarcia
+ */
+public class PlcReadAndWriteVIPA {
 
+    private static final Logger logger = LoggerFactory.getLogger(PlcReadAndWriteVIPA.class);       
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        logger.info("*****************************************************"); 
+        logger.info("* 1. I need a real VIPA CPU.."); 
+        logger.info("*    Press [ENTER]");        
+        logger.info("*****************************************************");  
     }
     
 }

@@ -19,9 +19,7 @@
 package org.apache.plc4x.examples.plc4j.s7event;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -33,49 +31,60 @@ import org.apache.plc4x.java.s7.readwrite.protocol.S7HPlcConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
-* Example of connection to a Simatic S7-1200.
-* The connection is supervised.
-* Plc:              SIMATIC S7-1200
-* Model:            CPU 1214C DC/DC/DC
-* Part number:      6ES7 214-1AE30-0XB0
-* Firmware version: 2.2
-*/
-public class PlcReadS71200 implements ConnectionStateListener {
 
+/*
+* 
+* Example of connection to a S7-400.
+* The connection is supervised.
+* Plc:              SIMATIC S7-400
+* Model:            CPU 417
+* Part number:      6ES7 417-4XT05-0AB0
+* Firmware version: 5.1.0
+* CP1: 6GK7 443-1EX11-0XE0
+* CP2: 6GK7 443-1EX20-0XB0
+*/
+public class PlcReadDataS7400H implements ConnectionStateListener {
+    
     private static final Logger logger = LoggerFactory.getLogger(PlcReadS71200.class);   
     
     private S7HPlcConnection connection = null; 
-    private AtomicBoolean isConnected = new AtomicBoolean(false);
-    
-    
+    private AtomicBoolean isConnected = new AtomicBoolean(false);    
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws Exception{
-        // TODO code application logic here
-        PlcReadS71200 device = new PlcReadS71200();
+    public static void main(String[] args) throws Exception {
+        PlcReadDataS7400H device = new PlcReadDataS7400H();
         device.run();
     }
+    
     
     public void run() throws IOException {
         logger.info("*****************************************************");
         logger.info("* Example of connection and read to a Simatic S7-1200");        
-        logger.info("* Plc:              SIMATIC S7-1200");
-        logger.info("* Model:            CPU 1214C DC/DC/DC");
-        logger.info("* Part number:      6ES7 214-1AE30-0XB0");
-        logger.info("* Firmware version: 2.2");        
-        logger.info("*");     
-        logger.info("* Note: . All DBs must be non-optimized.");  
-        logger.info("*       . PLC can be pinged.");         
+        logger.info("* Plc:              SIMATIC S7-400");
+        logger.info("* Model:            CPU 417");
+        logger.info("* Part number:      6ES7 417-4XT05-0AB0");
+        logger.info("* Firmware version: 5.1.0");        
+        logger.info("* CP1: 6GK7 443-1EX11-0XE0");   
+        logger.info("* CP2: 6GK7 443-1EX20-0XB0");   
+        logger.info("*");           
+        logger.info("* Note: . ");  
+        logger.info("*       . ");         
         logger.info("*****************************************************"); 
         
-        OpenConnection("s7://10.10.1.46"); //(01)
+        OpenConnection("s7://10.10.1.80/10.10.1.81?remote-rack=0&"
+                + "remote-slot=3&remote-rack2=0&remote-slot=4&"
+                + "controller-type=S7_400&read-timeout=8&"
+                + "ping=true&ping-time=2&retry-time=3"); //(01)
            
         logger.info("*****************************************************"); 
         logger.info("* 1. Once the connection is executed, it must read"); 
         logger.info("*    the data contained in the address.");
-        logger.info("*    URL to: s7://10.10.1.46.");
+        logger.info("*    URL to:s7://10.10.1.80/10.10.1.81?remote-rack=0&");
+        logger.info("            remote-slot=3&remote-rack2=0&remote-slot=4&");
+        logger.info("            controller-type=S7_400&read-timeout=8&");
+        logger.info("            ping=true&ping-time=2&retry-time=3");
         logger.info("*    Press [ENTER]");        
         logger.info("*****************************************************"); 
         System.in.read();
@@ -97,32 +106,25 @@ public class PlcReadS71200 implements ConnectionStateListener {
                 
         Read(); //(02.1)        
         
-        while (!isConnected.get());  //(04)
-
         logger.info("*****************************************************"); 
         logger.info("* 3. The connection must be reestablished."); 
-        logger.info("*    You must be able to read the value from the PLC..");         
+        logger.info("*    Remove primary connection.");         
         logger.info("*    Press [ENTER]");        
         logger.info("*****************************************************"); 
         System.in.read(); 
         
         Read(); //(03.1)     
-        
+
         logger.info("*****************************************************"); 
-        logger.info("* 4. Now we close the connection and open it using"); 
-        logger.info("*    other parameters.");    
-        logger.info("*    The new connection is given by");            
-        logger.info("*    URL to: s7://10.10.1.46?read-timeout=6&ping=true&ping-time=2");        
+        logger.info("* 4. Remove secondary connection.");        
         logger.info("*    Press [ENTER]");        
-        logger.info("*****************************************************");         
-        System.in.read();     
+        logger.info("*****************************************************"); 
+        System.in.read(); 
         
-        CloseConnection(); //(04.1)
-        OpenConnection("s7://10.10.1.46?read-timeout=6&ping=true&ping-time=2"); //(04.2)  
-        
+        Read(); //(03.1)         
         
         logger.info("*****************************************************"); 
-        logger.info("* 5. Once the connection is executed, it must read."); 
+        logger.info("* 5. Place primary connection."); 
         logger.info("*    Press [ENTER]");        
         logger.info("*****************************************************"); 
         System.in.read();  
@@ -130,14 +132,11 @@ public class PlcReadS71200 implements ConnectionStateListener {
         Read(); //(05.1)    
         
         logger.info("*****************************************************"); 
-        logger.info("* 6. Turn off/on PLC! This will cause the connection"); 
-        logger.info("*    handlers to be lost. ");
-        logger.info("*    The driver will try to reconnect. ");        
+        logger.info("* 6. Place secondary connection."); 
         logger.info("*    Press [ENTER]");        
-        logger.info("*****************************************************");  
+        logger.info("*****************************************************"); 
         System.in.read();  
         
-        while (!isConnected.get());          
         Read(); //(06.1)    
         
         logger.info("*****************************************************"); 
@@ -156,7 +155,8 @@ public class PlcReadS71200 implements ConnectionStateListener {
            
         CloseConnection(); //(08.1)        
                 
-    }
+    }    
+    
     
     /***************************************************************************
     * Under normal conditions, the driver expects you to have the PLC 
@@ -193,7 +193,6 @@ public class PlcReadS71200 implements ConnectionStateListener {
         
     }
 
-
     /***************************************************************************
     * When the connection is closed, pending tasks and transactions are 
     * completed.
@@ -217,9 +216,10 @@ public class PlcReadS71200 implements ConnectionStateListener {
     * the connection":
     ***************************************************************************/    
     private void Read() {
+        if (!isConnected.get()) return;
         try {
             final PlcReadRequest.Builder readrequest = connection.readRequestBuilder();  //(01)
-            readrequest.addTagAddress("TEST", "%DB100:10:INT"); //(02) 
+            readrequest.addTagAddress("TEST", "%DB1000:4:INT"); //(02) 
             
             final PlcReadRequest rr = readrequest.build(); //(03)
             final PlcReadResponse response; //(04)            
@@ -232,10 +232,9 @@ public class PlcReadS71200 implements ConnectionStateListener {
             }              
         } catch (Exception ex) { //(07)
             logger.info("Read: " + ex.getMessage());
-        };
-          
+        };          
     }    
-
+    
     /***************************************************************************
     * 
     ***************************************************************************/    
@@ -256,6 +255,7 @@ public class PlcReadS71200 implements ConnectionStateListener {
         logger.info("*************** Plc is disconnected. ****************");         
         logger.info("*****************************************************");         
         isConnected.set(false);
-    }
+    }    
+    
     
 }
