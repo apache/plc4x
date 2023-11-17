@@ -35,9 +35,9 @@ import java.util.Map;
  * Each consumer shows the tags and associated values of the "map" containing
  * the event parameters.
  */
-public class EventSubscription {
+public class PlcEventSubscriptionS7400H {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventSubscription.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlcEventSubscriptionS7400H.class);
 
     /**
      * @param args the command line arguments

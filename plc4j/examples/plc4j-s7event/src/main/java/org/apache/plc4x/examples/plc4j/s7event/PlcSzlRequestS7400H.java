@@ -38,9 +38,9 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
  * SZL_ID = 0x0011, allows to identify the device (PLC).
  */
 
-public class SzlRequest {
+public class PlcSzlRequestS7400H {
 
-    private static final Logger logger = LoggerFactory.getLogger(SzlRequest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlcSzlRequestS7400H.class);
 
     /**
      * @param args the command line arguments

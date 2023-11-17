@@ -61,7 +61,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
     
     public void run() throws IOException {
         logger.info("*****************************************************");
-        logger.info("* Example of connection and read to a Simatic S7-1200");        
+        logger.info("* Example of connection and read to a Simatic S7-400H");        
         logger.info("* Plc:              SIMATIC S7-400");
         logger.info("* Model:            CPU 417");
         logger.info("* Part number:      6ES7 417-4XT05-0AB0");
@@ -164,7 +164,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
     * If a connection to the PLC cannot be established, an exception of type 
     * "PlcConnectionException" is generated, which must be handled by your 
     * application. In this example it waits for a connection to exist.
-    * When you disconnect the connection, the S7 driver will take care of the 
+    * When you disconnect the "connection", the S7 driver will take care of the 
     * connection and reconnection process if necessary.
     * The internal wait time for the connection is one (01) second.
     ***************************************************************************/
@@ -236,7 +236,10 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
     }    
     
     /***************************************************************************
-    * 
+    * This method is called when the driver makes an internal TCP connection.
+    * The first connection of the driver does not generate this event.
+    * In the case of high availability systems, this signal should be used 
+    * to restart subscriptions to events, alarms, etc. 
     ***************************************************************************/    
     @Override
     public void connected() {
@@ -247,7 +250,8 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
     }
 
     /***************************************************************************
-    * 
+    * This method is called when there is a physical disconnection of the driver
+    * Check the monitoring parameters given in the URL during connection.
     ***************************************************************************/    
     @Override
     public void disconnected() {

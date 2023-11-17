@@ -44,9 +44,9 @@ import org.apache.plc4x.java.s7.readwrite.protocol.S7HPlcConnection;
  * Each consumer shows the tags and associated values of the "map" containing
  * the event parameters.
  */
-public class CycSubscription implements ConnectionStateListener {
+public class PlcCycSubscriptionS7400H implements ConnectionStateListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(CycSubscription.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlcCycSubscriptionS7400H.class);
     
     private S7HPlcConnection connection = null;
     private PlcSubscriptionResponse subresponse  = null;
@@ -60,7 +60,7 @@ public class CycSubscription implements ConnectionStateListener {
 
         System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "Debug");        
         
-        CycSubscription myapp = new CycSubscription();
+        PlcCycSubscriptionS7400H myapp = new PlcCycSubscriptionS7400H();
         myapp.run(args);
       
                 
