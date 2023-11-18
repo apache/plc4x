@@ -58,13 +58,13 @@ public class S7SubscriptionTag implements PlcTag {
 
     //All fields index 9
     private static final Pattern EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN =
-        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)((,?(" + ADDRESS_PATTERN + ")|(" + DATA_BLOCK_ADDRESS_PATTERN + "))+)");
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})((" + ADDRESS_PATTERN + ")|(" + DATA_BLOCK_ADDRESS_PATTERN + ")))+)");
 
     private static final Pattern EVENT_SUBSCRIPTION_DB_QUERY_PATTERN =
-        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)((,?(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>B?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
 
     private static final Pattern EVENT_CANCEL_JOB_QUERY_PATTERN =
-        Pattern.compile("(^CANCEL:)(,?(\\d{1,3}))+");
+        Pattern.compile("(^CANCEL:)((((?:,{0,1})(\\d+{1,3})))+)");    
     
     private static final String MEMORY_AREA = "memoryArea";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";

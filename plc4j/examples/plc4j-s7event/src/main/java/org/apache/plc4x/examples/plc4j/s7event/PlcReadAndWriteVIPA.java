@@ -16,14 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.types;
+package org.apache.plc4x.examples.plc4j.s7event;
 
-public enum S7SubscriptionType {
-    EVENT_SUBSCRIPTION,
-    EVENT_UNSUBSCRIPTION,
-    ALARM_ACK,
-    ALARM_QUERY,
-    CYCLIC_SUBSCRIPTION,
-    CYCLIC_DB_SUBSCRIPTION,    
-    CYCLIC_UNSUBSCRIPTION;    
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ *
+ * @author cgarcia
+ */
+public class PlcReadAndWriteVIPA {
+
+    private static final Logger logger = LoggerFactory.getLogger(PlcReadAndWriteVIPA.class);       
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        logger.info("*****************************************************"); 
+        logger.info("* 1. I need a real VIPA CPU.."); 
+        logger.info("*    Press [ENTER]");        
+        logger.info("*****************************************************");  
+    }
+    
 }

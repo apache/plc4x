@@ -23,7 +23,6 @@ import org.apache.plc4x.test.manual.ManualTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class ManualS7DriverTest extends ManualTest {
 
@@ -67,7 +66,7 @@ public class ManualS7DriverTest extends ManualTest {
      */
 
     public ManualS7DriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {
@@ -89,7 +88,7 @@ public class ManualS7DriverTest extends ManualTest {
         test.addTestCase("%DB4:46:REAL", new PlcREAL(3.141593F));
         // Not supported in S7 1200
         //test.addTestCase("%DB4:50:LREAL", new PlcLREAL(2.71828182846D));
-//        test.addTestCase("%DB4:58:TIME", "PT1.234S");
+        test.addTestCase("%DB4:58:TIME", "PT1.234S");
         test.addTestCase("%DB4:136:CHAR", new PlcCHAR("H"));
         test.addTestCase("%DB4:138:WCHAR", new PlcWCHAR("w"));
         test.addTestCase("%DB4:140:STRING(10)", new PlcSTRING("hurz"));
@@ -98,8 +97,8 @@ public class ManualS7DriverTest extends ManualTest {
         // Not supported in S7 1200
         //test.addTestCase("%DB4:62:LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S"));
         test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
-        test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123", DateTimeFormatter.ofPattern("HH:mm:ss.SSS"))));
-        //test.addTestCase("%DB4:76:TOD", new PlcTIME_OF_DAY(LocalTime.parse("16:17:18.123")));
+        test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        test.addTestCase("%DB4:76:TOD", new PlcTIME_OF_DAY(LocalTime.parse("16:17:18.123")));
         // Not supported in S7 1200
         //test.addTestCase("%DB4:96:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         // Not supported in S7 1200
@@ -109,10 +108,6 @@ public class ManualS7DriverTest extends ManualTest {
         // Not supported in S7 1200
         //test.addTestCase("%DB4:124:LDT", "1978-03-28T15:36:30");
         test.run();
-    }
-
-    static void testRead() {
-
     }
 
 }

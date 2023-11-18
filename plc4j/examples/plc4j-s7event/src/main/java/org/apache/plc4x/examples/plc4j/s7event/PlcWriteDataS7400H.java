@@ -16,14 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.types;
+package org.apache.plc4x.examples.plc4j.s7event;
 
-public enum S7SubscriptionType {
-    EVENT_SUBSCRIPTION,
-    EVENT_UNSUBSCRIPTION,
-    ALARM_ACK,
-    ALARM_QUERY,
-    CYCLIC_SUBSCRIPTION,
-    CYCLIC_DB_SUBSCRIPTION,    
-    CYCLIC_UNSUBSCRIPTION;    
+
+public class PlcWriteDataS7400H {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+    }
+    
 }

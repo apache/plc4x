@@ -37,7 +37,6 @@ import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -641,7 +640,7 @@ public class StaticHelper {
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            return sb.append(jsonszl);
+            return sb.append(jsonszl.toString());
         }        
         
         /*
@@ -679,7 +678,7 @@ public class StaticHelper {
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            return sb.append(jsonszl);
+            return sb.append(jsonszl.toString());
         }
 
         /*
@@ -714,7 +713,7 @@ public class StaticHelper {
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            return sb.append(jsonszl);
+            return sb.append(jsonszl.toString());
         }
 
         /*
@@ -760,7 +759,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());
             
             return sb;
         }
@@ -804,7 +803,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());            
             
             return sb;
         }
@@ -844,7 +843,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());              
             
             return sb;
         }
@@ -993,7 +992,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());                      
             
             return sb;
         }
@@ -1033,7 +1032,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
 
@@ -1073,7 +1072,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1113,7 +1112,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1162,7 +1161,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1203,7 +1202,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1247,7 +1246,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1296,7 +1295,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1343,7 +1342,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1398,7 +1397,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1441,7 +1440,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1496,7 +1495,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1550,7 +1549,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1595,7 +1594,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1665,7 +1664,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
 
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString()); 
             
             return sb;
         }
@@ -1708,7 +1707,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1748,7 +1747,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1787,7 +1786,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -1832,7 +1831,7 @@ public class StaticHelper {
                 sb.append(ex);
             }
             
-            sb.append(jsonszl);
+            sb.append(jsonszl.toString());             
             
             return sb;
         }
@@ -2065,13 +2064,13 @@ public class StaticHelper {
         res[4] = ByteToBcd(data.getMinute());
         res[5] = ByteToBcd(data.getSecond());
 
-        long ms = data.getNano() / 1_000_000;
+        long ms = (long) (data.getNano() / 1_000_000);
         res[6] = (byte) ((int) (((ms / 100) << 4) | ((ms / 10) % 10)));
         //Java:1 (Monday) to 7 (Sunday)->S7:1 (Sunday) to 7 (Saturday)
         byte dayofweek = (byte) ((data.getDayOfWeek().getValue() < 7) ?
             data.getDayOfWeek().getValue() + 1 :
             (byte) 0x01);
-        res[7] = (byte) (((ms % 10) << 4) | dayofweek);
+        res[7] = (byte) (((ms % 10) << 4) | ((byte) (dayofweek)));
 
         return res;
     }
@@ -2139,7 +2138,8 @@ public class StaticHelper {
     
     public static int RightShift3(final ReadBuffer buffer, DataTransportSize tsize) throws ParseException {
         int value = 0;
-        if (tsize == DataTransportSize.OCTET_STRING){
+        if ((tsize == DataTransportSize.OCTET_STRING) ||
+            (tsize == DataTransportSize.REAL))    {
             value = buffer.readUnsignedInt(16);
         } else {
             value = buffer.readUnsignedInt(16) >> 3;
@@ -2177,7 +2177,7 @@ public class StaticHelper {
     private static byte[] wordToBytes(long data) {
         return new byte[]{
             (byte) ((data >> 8) & 0xff),
-            (byte) ((data) & 0xff),
+            (byte) ((data >> 0) & 0xff),
         };
     }
 
@@ -2186,7 +2186,7 @@ public class StaticHelper {
             (byte) ((data >> 24) & 0xff),
             (byte) ((data >> 16) & 0xff),
             (byte) ((data >> 8) & 0xff),
-            (byte) ((data) & 0xff),
+            (byte) ((data >> 0) & 0xff),
         };
     }
 
@@ -2240,6 +2240,7 @@ public class StaticHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
@@ -2258,6 +2259,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "C":
                     if (format.contains("%T#")) {
@@ -2269,10 +2271,11 @@ public class StaticHelper {
                             length = Integer.parseInt(fieldformat.group(1));
                             length = (length > bytebuf.capacity()) ? bytebuf.capacity() : length;
                             strField =
-                                bytebuf.readCharSequence(length, StandardCharsets.UTF_8).toString();
+                                bytebuf.readCharSequence(length, Charset.forName("utf-8")).toString();
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
@@ -2291,6 +2294,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -2352,6 +2356,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
+                    ;
                     break;
             }
         }
@@ -2419,7 +2424,7 @@ public class StaticHelper {
         int length = 0;
         int sig = 0;
         long value = 0;
-        String strOut = alarmText;
+        String strOut = new String(alarmText);
         String strField = null;
 
         while (matcher.find()) {
@@ -2436,6 +2441,7 @@ public class StaticHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
@@ -2454,6 +2460,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "C":
                     if (format.contains("%T#")) {
@@ -2465,10 +2472,11 @@ public class StaticHelper {
                             length = Integer.parseInt(fieldformat.group(1));
                             length = (length > bytebuf.capacity()) ? bytebuf.capacity() : length;
                             strField =
-                                bytebuf.readCharSequence(length, StandardCharsets.UTF_8).toString();
+                                bytebuf.readCharSequence(length, Charset.forName("utf-8")).toString();
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
@@ -2487,6 +2495,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
@@ -2504,7 +2513,9 @@ public class StaticHelper {
                         value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     }
+                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "X":
                     if (bytebuf.capacity() < Long.BYTES) break;
@@ -2522,7 +2533,9 @@ public class StaticHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
+                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;
@@ -2540,7 +2553,9 @@ public class StaticHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
+                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
+                    ;
                     break;
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break;
@@ -2548,6 +2563,7 @@ public class StaticHelper {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
+                    ;
                     break;
 
             }
@@ -2746,46 +2762,23 @@ public class StaticHelper {
      * If your application does not handle S7string, you can handle
      * the String as char arrays from your application.
      */
-    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) throws SerializationException {
+    public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
         int k = 0xFF & ((stringLength > 250) ? 250 : stringLength);
         int m = 0xFF & value.getString().length();
         m = (m > k) ? k : m;
-        byte[] chars;
-        if("UTF-8".equals(encoding)) {
-            chars = new byte[k];
-            for (int i = 0; i < m; ++i) {
-                char c = value.getString().charAt(i);
-                chars[i] = (byte) c;
-            }
-            try {
-                io.writeByte((byte)(k & 0xFF));
-                io.writeByte((byte)(m & 0xFF));
-                io.writeByteArray(chars);
-            } catch (SerializationException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else if ("UTF-16".equals(encoding)) {
-            chars = new byte[k*2];
-            try {
-                byte[] rawBytes = value.getString().getBytes("UTF-16");
-                for (int i = 0; i < m * 2; ++i) {
-                    // For some reason the first two bytes are "-2" and "-1".
-                    chars[i] = rawBytes[i + 2];
-                }
-            } catch (UnsupportedEncodingException e) {
-                throw new SerializationException("Unsupported string encoding '%s'" + encoding, e);
-            }
-            try {
-                io.writeUnsignedInt(16, (short)(k & 0xFFFF));
-                io.writeUnsignedInt(16, (short)(m & 0xFFFF));
-                io.writeByteArray(chars);
-            } catch (SerializationException ex) {
-                Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            throw new SerializationException("Unsupported string encoding '%s'" + encoding);
+        byte[] chars = new byte[m];
+        for (int i = 0; i < m; ++i) {
+            char c = value.getString().charAt(i);
+            chars[i] = (byte) c;
         }
 
+        try {
+            io.writeByte((byte)(k & 0xFF));
+            io.writeByte((byte)(m & 0xFF));
+            io.writeByteArray(chars);
+        } catch (SerializationException ex) {
+            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
