@@ -656,7 +656,7 @@ public enum KnxManufacturer {
   M_VIEGA_GMBH_AND_CO__KG((int) 572, (int) 628, (String) "Viega GmbH & Co. KG"),
   M_FREDON_DIGITAL_BUILDINGS((int) 573, (int) 629, (String) "Fredon Digital Buildings"),
   M_HELUKABEL_THAILAND_CO__LTD_((int) 574, (int) 630, (String) "Helukabel (Thailand) Co.,Ltd."),
-  M_ACE_TECHNOLOGY((int) 575, (int) 631, (String) "ACE Technology"),
+  M_SICS((int) 575, (int) 631, (String) "SICS"),
   M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD(
       (int) 576, (int) 632, (String) "MEX Electric Technology (Shanghai) Co., Ltd"),
   M_SUMAMO((int) 577, (int) 633, (String) "SUMAMO"),
@@ -747,9 +747,10 @@ public enum KnxManufacturer {
   M_ATOUCH((int) 648, (int) 706, (String) "Atouch"),
   M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD(
       (int) 649, (int) 707, (String) "Panasonic Life Solutions India Pvt. Ltd"),
-  M_ABB___RESERVED((int) 650, (int) 43954, (String) "ABB - reserved"),
+  M_WALLYONS((int) 650, (int) 708, (String) "WallYons"),
+  M_ABB___RESERVED((int) 651, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 651, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 652, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

@@ -687,11 +687,17 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
     } else     if(strcmp(dataProtocolId, "IEC61131_STRING") == 0) { /* STRING */
 
         // Manual Field (value)
-        lengthInBits += (((stringLength) * (8))) + (16);
+        {
+            char* _value = data_item->data.string_value;
+            lengthInBits += (plc4c_spi_evaluation_helper_str_len(_value)) + (2);
+        }
     } else     if(strcmp(dataProtocolId, "IEC61131_WSTRING") == 0) { /* STRING */
 
         // Manual Field (value)
-        lengthInBits += (((stringLength) * (16))) + (32);
+        {
+            char* _value = data_item->data.string_value;
+            lengthInBits += (((plc4c_spi_evaluation_helper_str_len(_value)) * (2))) + (2);
+        }
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
         // Simple field (milliseconds)

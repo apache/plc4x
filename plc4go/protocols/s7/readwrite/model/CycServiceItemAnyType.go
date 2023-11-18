@@ -145,7 +145,7 @@ func (m *_CycServiceItemAnyType) GetTypeName() string {
 func (m *_CycServiceItemAnyType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (transportSize)
+	// Enum Field (transportSize)
 	lengthInBits += 8
 
 	// Simple field (length)
@@ -182,15 +182,18 @@ func CycServiceItemAnyTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (transportSize)
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := TransportSizeParseWithBuffer(ctx, readBuffer)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of CycServiceItemAnyType")
+	// Enum field (transportSize)
+	transportSizeCode, _transportSizeCodeErr := readBuffer.ReadUint8("TransportSize", 8)
+	if _transportSizeCodeErr != nil {
+		return nil, errors.Wrap(_transportSizeCodeErr, "Error serializing 'transportSize' field")
 	}
-	transportSize := _transportSize
+	transportSize, _transportSizeErr := TransportSizeFirstEnumForFieldCode(transportSizeCode)
+	if _transportSizeErr != nil {
+		return nil, errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+	}
 	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
@@ -264,16 +267,16 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CycServiceItemAnyType")
 		}
 
-		// Simple Field (transportSize)
 		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
-		_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
-		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for transportSize")
-		}
+		// Enum field (transportSize)
+		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, m.TransportSize.Code(), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
+		}
+		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for transportSize")
 		}
 
 		// Simple Field (length)

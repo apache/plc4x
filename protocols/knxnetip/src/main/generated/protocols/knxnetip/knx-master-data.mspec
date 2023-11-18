@@ -1323,7 +1323,7 @@
     ['572' M_VIEGA_GMBH_AND_CO__KG ['628', '"Viega GmbH & Co. KG"']]
     ['573' M_FREDON_DIGITAL_BUILDINGS ['629', '"Fredon Digital Buildings"']]
     ['574' M_HELUKABEL_THAILAND_CO__LTD_ ['630', '"Helukabel (Thailand) Co.,Ltd."']]
-    ['575' M_ACE_TECHNOLOGY ['631', '"ACE Technology"']]
+    ['575' M_SICS ['631', '"SICS"']]
     ['576' M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD ['632', '"MEX Electric Technology (Shanghai) Co., Ltd"']]
     ['577' M_SUMAMO ['633', '"SUMAMO"']]
     ['578' M_SVIT ['634', '"SVIT"']]
@@ -1398,8 +1398,9 @@
     ['647' M_ROOMIO ['705', '"ROOMIO"']]
     ['648' M_ATOUCH ['706', '"Atouch"']]
     ['649' M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD ['707', '"Panasonic Life Solutions India Pvt. Ltd"']]
-    ['650' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['651' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['650' M_WALLYONS ['708', '"WallYons"']]
+    ['651' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['652' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

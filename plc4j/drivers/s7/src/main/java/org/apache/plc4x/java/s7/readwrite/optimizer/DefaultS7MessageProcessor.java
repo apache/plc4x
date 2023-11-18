@@ -31,19 +31,19 @@ import java.util.concurrent.atomic.AtomicInteger;
  * situations could arise that have to be handled. The following situations have to
  * be handled:
  * - The number of request items is so big, that the resulting PDU would exceed the
- *   agreed upon PDU size: The request has to be split up into multiple requests.
+ * agreed upon PDU size: The request has to be split up into multiple requests.
  * - If large blocks of data are requested by request items the result of a request
- *   could exceed the PDU size: The requests has to be split up into multiple requests
- *   where each requests response doesn't exceed the PDU size.
- *
+ * could exceed the PDU size: The requests has to be split up into multiple requests
+ * where each requests response doesn't exceed the PDU size.
+ * <p>
  * The following optimizations should be implemented:
  * - If blocks are read which are in near proximity to each other it could be better
- *   to replace multiple requests by one that includes multiple blocks.
+ * to replace multiple requests by one that includes multiple blocks.
  * - Rearranging the order of request items could reduce the number of needed PDUs.
  */
 public class DefaultS7MessageProcessor implements S7MessageProcessor {
 
-    private AtomicInteger tpduRefGen;
+    private final AtomicInteger tpduRefGen;
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
         Collections.emptyList()), null).getLengthInBytes();
@@ -82,7 +82,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         }
         // If this is a write operation, split up every array item into single value items
         // and every item into a separate message.
-        else if(parameter instanceof S7ParameterWriteVarRequest) {
+        else if (parameter instanceof S7ParameterWriteVarRequest) {
             return processWriteVarParameter(request, pduSize);
         }
 
@@ -113,7 +113,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
             // payload data size.
             int readResponseItemSize = 4 + (address.getNumberOfElements() * address.getTransportSize().getSizeInBytes());
             // If it's an odd number of bytes, add one to make it even
-            if(readResponseItemSize % 2 == 1) {
+            if (readResponseItemSize % 2 == 1) {
                 readResponseItemSize++;
             }
 
@@ -174,7 +174,7 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
         }
 
         // Add the remaining items to a final sub-request.
-        if(!curRequestItems.isEmpty()) {
+        if (!curRequestItems.isEmpty()) {
             // Create a new sub message.
             S7MessageRequest subMessage = new S7MessageRequest((short) tpduRefGen.getAndIncrement(),
                 new S7ParameterReadVarRequest(
@@ -187,14 +187,14 @@ public class DefaultS7MessageProcessor implements S7MessageProcessor {
     }
 
     private Collection<S7MessageRequest> processWriteVarParameter(S7MessageRequest request, int pduSize)
-            throws PlcProtocolException {
+        throws PlcProtocolException {
         // TODO: Really find out the constraints ... do S7 devices all just accept single element write requests?
         return Collections.singletonList(request);
     }
 
     @Override
     public S7MessageResponseData processResponse(S7MessageRequest originalRequest,
-                                             Map<S7MessageRequest, Either<S7MessageResponseData, Throwable>> result) {
+                                                 Map<S7MessageRequest, Either<S7MessageResponseData, Throwable>> result) {
         /*MessageType messageType = null;
         short tpduReference = requestMessage.getTpduReference();
         List<S7Parameter> s7Parameters = new LinkedList<>();

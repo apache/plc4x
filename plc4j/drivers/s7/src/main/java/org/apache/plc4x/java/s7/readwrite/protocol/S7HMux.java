@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,10 +22,13 @@ import io.netty.channel.Channel;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 
 public interface S7HMux {
-    
-public void setEmbededhannel(Channel embeded_channel, Configuration configuration);     
-public void setPrimaryChannel(Channel primary_channel);  
-public void setSecondaryChannel(Channel secondary_channel); 
-public Channel getTCPChannel();
-    
+
+    void setEmbededhannel(Channel embeded_channel, Configuration configuration);
+
+    void setPrimaryChannel(Channel primary_channel);
+
+    void setSecondaryChannel(Channel secondary_channel);
+
+    Channel getTCPChannel();
+
 }

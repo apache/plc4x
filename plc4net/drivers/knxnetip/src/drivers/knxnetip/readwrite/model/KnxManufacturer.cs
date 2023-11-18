@@ -599,7 +599,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_VIEGA_GMBH_AND_CO__KG = 572,
         M_FREDON_DIGITAL_BUILDINGS = 573,
         M_HELUKABEL_THAILAND_CO__LTD_ = 574,
-        M_ACE_TECHNOLOGY = 575,
+        M_SICS = 575,
         M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD = 576,
         M_SUMAMO = 577,
         M_SVIT = 578,
@@ -674,8 +674,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ROOMIO = 647,
         M_ATOUCH = 648,
         M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD = 649,
-        M_ABB___RESERVED = 650,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 651,
+        M_WALLYONS = 650,
+        M_ABB___RESERVED = 651,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 652,
     }
 
     public static class KnxManufacturerInfo
@@ -2272,7 +2273,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_HELUKABEL_THAILAND_CO__LTD_: { /* '574' */
                     return 630;
                 }
-                case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '575' */
+                case KnxManufacturer.M_SICS: { /* '575' */
                     return 631;
                 }
                 case KnxManufacturer.M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD: { /* '576' */
@@ -2524,10 +2525,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
                     return 104;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '650' */
+                case KnxManufacturer.M_WALLYONS: { /* '650' */
+                    return 708;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '651' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '651' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '652' */
                     return 43959;
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
@@ -4238,8 +4242,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_HELUKABEL_THAILAND_CO__LTD_: { /* '574' */
                     return "Helukabel (Thailand) Co.,Ltd.";
                 }
-                case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '575' */
-                    return "ACE Technology";
+                case KnxManufacturer.M_SICS: { /* '575' */
+                    return "SICS";
                 }
                 case KnxManufacturer.M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD: { /* '576' */
                     return "MEX Electric Technology (Shanghai) Co., Ltd";
@@ -4490,10 +4494,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
                     return "JEPAZ";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '650' */
+                case KnxManufacturer.M_WALLYONS: { /* '650' */
+                    return "WallYons";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '651' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '651' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '652' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */

@@ -152,8 +152,24 @@
       <artifactId>netty-transport</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-handler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
     </dependency>
 
     <dependency>
@@ -165,31 +181,14 @@
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
-      <version>1.5.1</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>com.vaadin.external.google</groupId>
-          <artifactId>android-json</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
@@ -198,32 +197,53 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-handler</artifactId>
-      <version>${netty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-codec</artifactId>
-      <version>${netty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-common</artifactId>
-      <version>${netty.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20230618</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>s7</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-s7</artifactId>
+          <version>0.12.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

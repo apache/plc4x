@@ -18,16 +18,6 @@
  */
 package org.apache.plc4x.java.s7.events;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -35,9 +25,16 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
 
-public class S7SysEvent  implements S7Event{
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-    public enum Fields{
+public class S7SysEvent implements S7Event {
+
+    public enum Fields {
         TIMESTAMP,
         TYPE,
         EVENT_ID,
@@ -45,12 +42,12 @@ public class S7SysEvent  implements S7Event{
         OB_NUMBER,
         DAT_ID,
         INFO1,
-        INFO2       
+        INFO2
     }
-        
+
     private final Instant timeStamp;
-    protected final Map<String, Object> map;    
-    
+    protected final Map<String, Object> map;
+
     public S7SysEvent(S7PayloadDiagnosticMessage payload) {
         this.map = new HashMap();
         map.put(Fields.TYPE.name(), "SYS");
@@ -60,23 +57,23 @@ public class S7SysEvent  implements S7Event{
         map.put(Fields.DAT_ID.name(), payload.getDatId());
         map.put(Fields.INFO1.name(), payload.getInfo1());
         map.put(Fields.INFO2.name(), payload.getInfo2());
-        
+
         DateAndTime dt = payload.getTimeStamp();
-        int year = (dt.getYear()>=90)?dt.getYear()+1900:dt.getYear()+2000;
+        int year = (dt.getYear() >= 90) ? dt.getYear() + 1900 : dt.getYear() + 2000;
         LocalDateTime ldt = LocalDateTime.of(year,
-                dt.getMonth(),
-                dt.getDay(),
-                dt.getHour(),
-                dt.getMinutes(), 
-                dt.getSeconds(), 
-                dt.getMsec()*1000000);
+            dt.getMonth(),
+            dt.getDay(),
+            dt.getHour(),
+            dt.getMinutes(),
+            dt.getSeconds(),
+            dt.getMsec() * 1000000);
         this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
-        map.put(Fields.TIMESTAMP.name(),this.timeStamp);
-    }    
-    
+        map.put(Fields.TIMESTAMP.name(), this.timeStamp);
+    }
+
     @Override
     public Map<String, Object> getMap() {
-         return map;
+        return map;
     }
 
     @Override
@@ -458,5 +455,5 @@ public class S7SysEvent  implements S7Event{
     public PlcResponseCode getResponseCode(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
 }

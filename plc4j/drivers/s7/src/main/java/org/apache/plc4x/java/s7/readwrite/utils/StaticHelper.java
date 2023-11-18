@@ -29,6 +29,7 @@ import org.apache.plc4x.java.s7.events.S7AlarmEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.readwrite.DataTransportErrorCode;
+import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
 import org.apache.plc4x.java.s7.utils.S7DiagnosticEventId;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -36,6 +37,8 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -50,9 +53,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -401,15 +401,15 @@ public class StaticHelper {
      *
      */
     public enum SZL {
-        
+
         ID_0x0000(0x0000, "SZL list.") {
             @Override
             public StringBuilder execute(ByteBuf data) {
                 return ID_0xXY00(data);
             }
 
-        }, 
-        
+        },
+
         ID_0x0011(0x0011, "Module identification.") {
             @Override
             public StringBuilder execute(ByteBuf data) {
@@ -611,20 +611,20 @@ public class StaticHelper {
         public abstract StringBuilder execute(ByteBuf data);
 
         /*
-        * Module identification. SZL-ID = W#16#xy00
-        * Generates a complete list of SZLs supported by the device.
-        */
+         * Module identification. SZL-ID = W#16#xy00
+         * Generates a complete list of SZLs supported by the device.
+         */
         private static StringBuilder ID_0xXY00(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
+            JSONObject jsonszl = new JSONObject();
             JSONArray ja = new JSONArray();
-            int szl_id = data.readShort(); 
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-          
+
             try {
-                    
+
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
@@ -632,31 +632,31 @@ public class StaticHelper {
 
                 for (int i = 1; i <= szl_n_dr; i++) {
                     JSONObject jo = new JSONObject();
-                    jo.put("SZL", data.readShort());                 
+                    jo.put("SZL", data.readShort());
                     ja.put(jo);
                 }
-                
+
                 jsonszl.put("RECORDS", ja);
             } catch (Exception ex) {
                 sb.append(ex);
             }
             return sb.append(jsonszl.toString());
-        }        
-        
+        }
+
         /*
-        * Module identification. SZL-ID = W#16#xy11  
-        */
+         * Module identification. SZL-ID = W#16#xy11
+         */
         private static StringBuilder ID_0xXY11(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
+            JSONObject jsonszl = new JSONObject();
             JSONArray ja = new JSONArray();
-            int szl_id = data.readShort(); 
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-          
+
             try {
-                    
+
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
@@ -670,10 +670,10 @@ public class StaticHelper {
                     jo.put("MIFB", new String(bytestr));
                     jo.put("BGTYP", data.readShort());
                     jo.put("AUSBG1", data.readShort());
-                    jo.put("AUSBG2", data.readShort());                    
+                    jo.put("AUSBG2", data.readShort());
                     ja.put(jo);
                 }
-                
+
                 jsonszl.put("RECORDS", ja);
             } catch (Exception ex) {
                 sb.append(ex);
@@ -682,34 +682,34 @@ public class StaticHelper {
         }
 
         /*
-        * CPU characteristics. SZL-ID = W#16#xy12 
-        *
-        * szl_n_dr  -> szl_n_dr - 1 
-        */
+         * CPU characteristics. SZL-ID = W#16#xy12
+         *
+         * szl_n_dr  -> szl_n_dr - 1
+         */
         private static StringBuilder ID_0xXY12(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
+            JSONObject jsonszl = new JSONObject();
             JSONArray ja = new JSONArray();
             int code = 0;
-            int szl_id = data.readShort(); 
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= (szl_n_dr - 1); i++) {
                     code = data.readShort();
                     JSONObject jo = new JSONObject();
                     jo.put(CPU_CHARACTERISTICS.valueOf(code).name(), CPU_CHARACTERISTICS.valueOf(code).getDescription());
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja);                
+
+                jsonszl.put("RECORDS", ja);
             } catch (Exception ex) {
                 sb.append(ex);
             }
@@ -717,24 +717,24 @@ public class StaticHelper {
         }
 
         /*
-        * User memory areas. SZL-ID = W#16#xy13
-        */
+         * User memory areas. SZL-ID = W#16#xy13
+         */
         private static StringBuilder ID_0xXY13(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
+            JSONObject jsonszl = new JSONObject();
             JSONArray ja = new JSONArray();
             int code = 0;
-            int szl_id = data.readShort(); 
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
                     JSONObject jo = new JSONObject();
                     jo.put("INDEX", data.readShort());
@@ -747,79 +747,79 @@ public class StaticHelper {
                     jo.put("BLOCK1", data.readInt());
                     jo.put("BER2", data.readInt());
                     jo.put("BELEGT2", data.readInt());
-                    jo.put("BLOCK2", data.readInt());                    
+                    jo.put("BLOCK2", data.readInt());
 
                     ja.put(jo);
 
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
+
             sb.append(jsonszl.toString());
-            
+
             return sb;
         }
 
         /*
-        * System areas. SZL-ID = W#16#xy14
-        */
+         * System areas. SZL-ID = W#16#xy14
+         */
         private static StringBuilder ID_0xXY14(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
+            JSONObject jsonszl = new JSONObject();
             JSONArray ja = new JSONArray();
             int index = 0;
             int code = 0;
             int quantity = 0;
             int reman = 0;
-            
-            int szl_id = data.readShort(); 
+
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();   
+                    JSONObject jo = new JSONObject();
                     jo.put("INDEX", data.readShort());
                     jo.put("CODE", data.readShort());
                     jo.put("QUANTITY", data.readShort());
-                    jo.put("REMAN", data.readShort());                    
-                    
+                    jo.put("REMAN", data.readShort());
+
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());            
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Block types. W#16#xy15
-        */
+         * Block types. W#16#xy15
+         */
         private static StringBuilder ID_0xXY15(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray();            
-            int szl_id = data.readShort(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
@@ -827,43 +827,43 @@ public class StaticHelper {
                 jsonszl.put("N_DR", szl_n_dr);
 
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();   
+                    JSONObject jo = new JSONObject();
                     jo.put("INDEX", data.readShort());
                     jo.put("MAXANZ", data.readShort());
                     jo.put("MAXLNG", data.readShort());
-                    jo.put("MAXABL", data.readInt());                    
-                    
+                    jo.put("MAXABL", data.readInt());
+
                     ja.put(jo);
 
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());              
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        *  Component Identification. SZL-ID = W#16#xy1C
-        */
+         *  Component Identification. SZL-ID = W#16#xy1C
+         */
         private static StringBuilder ID_0xXY1C(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray();  
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             int index = 0;
             int index_b0 = 0;
             int index_b1 = 0;
-            
-            int szl_id = data.readShort(); 
+
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
@@ -871,12 +871,12 @@ public class StaticHelper {
                 jsonszl.put("N_DR", szl_n_dr);
 
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();                      
+                    JSONObject jo = new JSONObject();
                     index = data.getShort(data.readerIndex());
                     index_b0 = data.readByte();
                     index_b1 = data.readByte();
 
-                    jo.put("INDEX", data.readShort());                    
+                    jo.put("INDEX", data.readShort());
 
                     switch (index_b1) {
                         case 0x01:
@@ -884,7 +884,7 @@ public class StaticHelper {
                             byte[] strbyte = new byte[24];
                             data.readBytes(strbyte, 0, 24);
                             jo.put("NAME", new String(strbyte));
-                            jo.put("RESERVED", data.readInt());  
+                            jo.put("RESERVED", data.readInt());
                         }
                         break;
                         case 0x03: {
@@ -906,7 +906,7 @@ public class StaticHelper {
                             data.readBytes(strbyte, 0, 24);
                             jo.put("SERIALN", new String(strbyte));
                             ByteBuf data2 = data.readSlice(8);
-                            jo.put("RESERVED",ByteBufUtil.hexDump(data2));
+                            jo.put("RESERVED", ByteBufUtil.hexDump(data2));
                         }
                         break;
                         case 0x06: {
@@ -937,7 +937,7 @@ public class StaticHelper {
                             byte[] strbyte = new byte[26];
                             data.readBytes(strbyte, 0, 26);
                             jo.put("OEM_COPYRIGHT", new String(strbyte));
-                            jo.put("OEM_ID",data.readShort());
+                            jo.put("OEM_ID", data.readShort());
                             jo.put("OEM_ADD_ID", data.readInt());
                         }
                         break;
@@ -985,29 +985,29 @@ public class StaticHelper {
 
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());                      
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        *  Interrupt status. SZL-ID = W#16#xy22
-        */        
+         *  Interrupt status. SZL-ID = W#16#xy22
+         */
         private static StringBuilder ID_0xXY22(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray();  
-            
-            int szl_id = data.readShort(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
 
             try {
@@ -1017,7 +1017,7 @@ public class StaticHelper {
                 jsonszl.put("N_DR", szl_n_dr);
 
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();  
+                    JSONObject jo = new JSONObject();
                     ByteBuf infobytes = data.readSlice(20);
                     jo.put("INFO", ByteBufUtil.hexDump(infobytes));
                     jo.put("AL_1", data.readShort());
@@ -1025,30 +1025,30 @@ public class StaticHelper {
                     jo.put("AL_3", data.readInt());
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
 
         }
 
         /*
-        *  Assignment of Process Image Partitions to OBs. SZL-ID = W#16#xy25
-        */  
+         *  Assignment of Process Image Partitions to OBs. SZL-ID = W#16#xy25
+         */
         private static StringBuilder ID_0xXY25(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray();  
-            
-            int szl_id = data.readShort(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
 
             try {
@@ -1058,38 +1058,38 @@ public class StaticHelper {
                 jsonszl.put("N_DR", szl_n_dr);
 
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();  
+                    JSONObject jo = new JSONObject();
                     jo.put("TPA_NR", Short.toUnsignedInt(data.readByte()));
                     jo.put("TPA_USE", Short.toUnsignedInt(data.readByte()));
                     jo.put("OB_NR", Short.toUnsignedInt(data.readByte()));
                     jo.put("RESERVED", Short.toUnsignedInt(data.readByte()));
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Communication Status Data. SZL-ID = W#16#xy32
-        * TODO: Handle error from CPU.
-        */          
+         * Communication Status Data. SZL-ID = W#16#xy32
+         * TODO: Handle error from CPU.
+         */
         private static StringBuilder ID_0xXY32(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray();  
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             ByteBuf infobytes = null;
-            
-            int szl_id = data.readShort(); 
+
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
 
             try {
@@ -1099,37 +1099,37 @@ public class StaticHelper {
                 jsonszl.put("N_DR", szl_n_dr);
 
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();  
+                    JSONObject jo = new JSONObject();
                     infobytes = data.readSlice(40);
                     jo.put("DATA", ByteBufUtil.hexDump(infobytes));
 
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * H CPU Group Information. SZL-ID = W#16#xy71
-        * TODO: Message assembly fails.
-        */          
+         * H CPU Group Information. SZL-ID = W#16#xy71
+         * TODO: Message assembly fails.
+         */
         private static StringBuilder ID_0xXY71(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray();  
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             ByteBuf infobytes = null;
-            
-            int szl_id = data.readShort(); 
+
+            int szl_id = data.readShort();
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = data.readShort();
 
             try {
@@ -1140,392 +1140,392 @@ public class StaticHelper {
 
                 //Must be only one.
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    JSONObject jo = new JSONObject();  
+                    JSONObject jo = new JSONObject();
                     jo.put("REDINF", Short.toUnsignedInt(data.readShort()));
-                    jo.put("MWSTAT1", Short.toUnsignedInt(data.readByte()));                    
-                    jo.put("MWSTAT2", Short.toUnsignedInt(data.readByte())); 
-                    jo.put("HSFCINFO", Short.toUnsignedInt(data.readShort())); 
-                    jo.put("SAMFEHL", Short.toUnsignedInt(data.readShort())); 
-                    jo.put("BZ_CPU_0", Short.toUnsignedInt(data.readShort()));                     
-                    jo.put("BZ_CPU_1", Short.toUnsignedInt(data.readShort())); 
-                    jo.put("BZ_CPU_2", Short.toUnsignedInt(data.readShort()));                     
-                    jo.put("CPU_VALID", Short.toUnsignedInt(data.readByte()));    
-                    jo.put("HSYNC_F", Short.toUnsignedInt(data.readByte()));                      
-                    
+                    jo.put("MWSTAT1", Short.toUnsignedInt(data.readByte()));
+                    jo.put("MWSTAT2", Short.toUnsignedInt(data.readByte()));
+                    jo.put("HSFCINFO", Short.toUnsignedInt(data.readShort()));
+                    jo.put("SAMFEHL", Short.toUnsignedInt(data.readShort()));
+                    jo.put("BZ_CPU_0", Short.toUnsignedInt(data.readShort()));
+                    jo.put("BZ_CPU_1", Short.toUnsignedInt(data.readShort()));
+                    jo.put("BZ_CPU_2", Short.toUnsignedInt(data.readShort()));
+                    jo.put("CPU_VALID", Short.toUnsignedInt(data.readByte()));
+                    jo.put("HSYNC_F", Short.toUnsignedInt(data.readByte()));
+
                     ja.put(jo);
                 }
-                
-                jsonszl.put("RECORDS", ja); 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Status of the module LEDs. SZL-ID = W#16#xy74 
-        */
+         * Status of the module LEDs. SZL-ID = W#16#xy74
+         */
         private static StringBuilder ID_0xXY74(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
+
+                    jo = new JSONObject();
                     jo.put("CPU_LED_ID", Short.toUnsignedInt(data.readShort()));
                     jo.put("LED_ON", Short.toUnsignedInt(data.readByte()));
                     jo.put("LED_BLINK", Short.toUnsignedInt(data.readByte()));
-                    
+
                     ja.put(jo);
                 }
-               
-                jsonszl.put("RECORDS", ja);  
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        *  Switched DP Slaves in the H System. SZL-ID = W#16#xy75 
-        */
+         *  Switched DP Slaves in the H System. SZL-ID = W#16#xy75
+         */
         private static StringBuilder ID_0xXY75(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
+
+                    jo = new JSONObject();
                     jo.put("ADR1_BGT0", Short.toUnsignedInt(data.readShort()));
                     jo.put("ADR2_BGT0", Short.toUnsignedInt(data.readShort()));
                     jo.put("ADR1_BGT1", Short.toUnsignedInt(data.readShort()));
                     jo.put("ADR2_BGT1", Short.toUnsignedInt(data.readShort()));
-                    jo.put("RESERVED", data.readInt());  
-                    jo.put("LOGADR", Short.toUnsignedInt(data.readShort())); 
-                    jo.put("SLAVESTATUS", Short.toUnsignedInt(data.readShort()));                     
+                    jo.put("RESERVED", data.readInt());
+                    jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));
+                    jo.put("SLAVESTATUS", Short.toUnsignedInt(data.readShort()));
                     ja.put(jo);
                 }
-               
-                jsonszl.put("RECORDS", ja);  
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        *  DP Master System Information. SZL-ID = W#16#xy90 
-        */          
+         *  DP Master System Information. SZL-ID = W#16#xy90
+         */
         private static StringBuilder ID_0xXY90(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
+
+                    jo = new JSONObject();
                     jo.put("DP_M_ID", Short.toUnsignedInt(data.readByte()));
-                    jo.put("RACK_DP_M", Short.toUnsignedInt(data.readByte()));                     
-                    jo.put("STECKPL_DP_M", Short.toUnsignedInt(data.readByte())); 
-                    jo.put("SUBM_DP_M", Short.toUnsignedInt(data.readByte())); 
-                    jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));                    
-                    jo.put("DP_M_SYS_CPU", Short.toUnsignedInt(data.readShort())); 
-                    jo.put("DP_M_SYS_DPM", Short.toUnsignedInt(data.readShort()));
-                    jo.put("DP_M_STATE", Short.toUnsignedInt(data.readByte()));
-                    infobytes = data.readSlice(3);
-                    jo.put("RESERVED", ByteBufUtil.hexDump(infobytes));
-                    
-                    ja.put(jo);
-                }
-               
-                jsonszl.put("RECORDS", ja);  
-                
-            } catch (Exception ex) {
-                sb.append(ex);
-            }
-            
-            sb.append(jsonszl.toString());             
-            
-            return sb;
-        }
-
-        /*
-        * Module Status Information. SZL-ID = W#16#xy91
-        */        
-        private static StringBuilder ID_0xXY91(ByteBuf data) {
-            StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
-            JSONObject jo = null;
-            ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
-            int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
-            try {
-                jsonszl.put("SZL-ID", szl_id);
-                jsonszl.put("INDEX", szl_index);
-                jsonszl.put("LENGTHDR", szl_lengthdr);
-                jsonszl.put("N_DR", szl_n_dr);
-                
-                for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
-                    jo.put("ADR1", Short.toUnsignedInt(data.readShort()));
-                    jo.put("ADR2", Short.toUnsignedInt(data.readShort()));
-                    jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));                    
-                    jo.put("SOLLTYP", Short.toUnsignedInt(data.readShort()));                     
-                    jo.put("ISTTYP", Short.toUnsignedInt(data.readShort()));                     
-                    jo.put("RESERVIERT", Short.toUnsignedInt(data.readShort()));                     
-                    jo.put("EASTAT", Short.toUnsignedInt(data.readShort()));    
-                    jo.put("BER_BGBR", Short.toUnsignedInt(data.readShort()));                     
-                    
-                    ja.put(jo);
-                }
-               
-                jsonszl.put("RECORDS", ja);  
-                
-            } catch (Exception ex) {
-                sb.append(ex);
-            }
-            
-            sb.append(jsonszl.toString());             
-            
-            return sb;
-        }
-
-        /*
-        * Rack / Station Status Information. SZL-ID = W#16#xy92 
-        */
-        private static StringBuilder ID_0xXY92(ByteBuf data) {
-            StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
-            JSONObject jo = null;
-            ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
-            int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
-            try {
-                jsonszl.put("SZL-ID", szl_id);
-                jsonszl.put("INDEX", szl_index);
-                jsonszl.put("LENGTHDR", szl_lengthdr);
-                jsonszl.put("N_DR", szl_n_dr);
-                
-                for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
-                    jo.put("STATUS_00", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_01", Short.toUnsignedInt(data.readByte()));                    
-                    jo.put("STATUS_02", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_03", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_04", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_05", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_06", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_07", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_08", Short.toUnsignedInt(data.readByte()));  
-                    jo.put("STATUS_09", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_10", Short.toUnsignedInt(data.readByte()));                    
-                    jo.put("STATUS_11", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_12", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_13", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_14", Short.toUnsignedInt(data.readByte()));
-                    jo.put("STATUS_15", Short.toUnsignedInt(data.readByte()));
-                  
-                    ja.put(jo);
-                }
-               
-                jsonszl.put("RECORDS", ja);  
-                
-            } catch (Exception ex) {
-                sb.append(ex);
-            }
-            
-            sb.append(jsonszl.toString());             
-            
-            return sb;
-        }
-
-        /*
-        * Status Information for Rack/Station. SZL-ID = W#16#xy94 
-        */
-        private static StringBuilder ID_0xXY94(ByteBuf data) {
-            StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
-            JSONObject jo = null;
-            ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
-            int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
-            try {
-                jsonszl.put("SZL-ID", szl_id);
-                jsonszl.put("INDEX", szl_index);
-                jsonszl.put("LENGTHDR", szl_lengthdr);
-                jsonszl.put("N_DR", szl_n_dr);
-                
-                for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
-                    jo.put("INDEX", Short.toUnsignedInt(data.readShort()));
-
-                    infobytes = data.readSlice(256);
-                    jo.put("STATUS", ByteBufUtil.hexDump(infobytes));
-                    
-                    ja.put(jo);
-                }
-               
-                jsonszl.put("RECORDS", ja);  
-                
-            } catch (Exception ex) {
-                sb.append(ex);
-            }
-            
-            sb.append(jsonszl.toString());             
-            
-            return sb;
-        }
-
-        /*
-        * Extended DP Master System / PROFINET IO System Information. SZL-ID = W#16#xy94  
-        */
-        private static StringBuilder ID_0xXY95(ByteBuf data) {
-            StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
-            JSONObject jo = null;
-            ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
-            int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
-            try {
-                jsonszl.put("SZL-ID", szl_id);
-                jsonszl.put("INDEX", szl_index);
-                jsonszl.put("LENGTHDR", szl_lengthdr);
-                jsonszl.put("N_DR", szl_n_dr);
-                
-                for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
-                    jo.put("DP_M_ID", Short.toUnsignedInt(data.readByte()));
-                    jo.put("RACK_DP_M", Short.toUnsignedInt(data.readByte()));                    
+                    jo.put("RACK_DP_M", Short.toUnsignedInt(data.readByte()));
                     jo.put("STECKPL_DP_M", Short.toUnsignedInt(data.readByte()));
                     jo.put("SUBM_DP_M", Short.toUnsignedInt(data.readByte()));
                     jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));
                     jo.put("DP_M_SYS_CPU", Short.toUnsignedInt(data.readShort()));
                     jo.put("DP_M_SYS_DPM", Short.toUnsignedInt(data.readShort()));
                     jo.put("DP_M_STATE", Short.toUnsignedInt(data.readByte()));
-                    jo.put("DP_ADDRESS", Short.toUnsignedInt(data.readByte()));  
-                    jo.put("RESERVED01", Short.toUnsignedInt(data.readShort()));
-                    jo.put("TSAL_OB", Short.toUnsignedInt(data.readByte()));                     
-                    jo.put("BAUDRATE", data.readLong());    
-                    jo.put("RESERVED02", Short.toUnsignedInt(data.readByte()));                    
-                    jo.put("DP_ISO_TAKT", data.readLong());   
-                    infobytes = data.readSlice(16);
-                    jo.put("RESERVED03", ByteBufUtil.hexDump(infobytes));
-                  
+                    infobytes = data.readSlice(3);
+                    jo.put("RESERVED", ByteBufUtil.hexDump(infobytes));
+
                     ja.put(jo);
                 }
-               
-                jsonszl.put("RECORDS", ja);  
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * PROFINET IO and PROFIBUS DP Module Status Information. SZL-ID = W#16#xy94 
-        */
-        private static StringBuilder ID_0xXY96(ByteBuf data) {
+         * Module Status Information. SZL-ID = W#16#xy91
+         */
+        private static StringBuilder ID_0xXY91(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
+
+                    jo = new JSONObject();
+                    jo.put("ADR1", Short.toUnsignedInt(data.readShort()));
+                    jo.put("ADR2", Short.toUnsignedInt(data.readShort()));
                     jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));
-                    jo.put("SYSTEM", Short.toUnsignedInt(data.readShort()));                    
+                    jo.put("SOLLTYP", Short.toUnsignedInt(data.readShort()));
+                    jo.put("ISTTYP", Short.toUnsignedInt(data.readShort()));
+                    jo.put("RESERVIERT", Short.toUnsignedInt(data.readShort()));
+                    jo.put("EASTAT", Short.toUnsignedInt(data.readShort()));
+                    jo.put("BER_BGBR", Short.toUnsignedInt(data.readShort()));
+
+                    ja.put(jo);
+                }
+
+                jsonszl.put("RECORDS", ja);
+
+            } catch (Exception ex) {
+                sb.append(ex);
+            }
+
+            sb.append(jsonszl.toString());
+
+            return sb;
+        }
+
+        /*
+         * Rack / Station Status Information. SZL-ID = W#16#xy92
+         */
+        private static StringBuilder ID_0xXY92(ByteBuf data) {
+            StringBuilder sb = new StringBuilder();
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+            JSONObject jo = null;
+            ByteBuf infobytes = null;
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
+            int szl_n_dr = Short.toUnsignedInt(data.readShort());
+
+            try {
+                jsonszl.put("SZL-ID", szl_id);
+                jsonszl.put("INDEX", szl_index);
+                jsonszl.put("LENGTHDR", szl_lengthdr);
+                jsonszl.put("N_DR", szl_n_dr);
+
+                for (int i = 1; i <= szl_n_dr; i++) {
+
+                    jo = new JSONObject();
+                    jo.put("STATUS_00", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_01", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_02", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_03", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_04", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_05", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_06", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_07", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_08", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_09", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_10", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_11", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_12", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_13", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_14", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STATUS_15", Short.toUnsignedInt(data.readByte()));
+
+                    ja.put(jo);
+                }
+
+                jsonszl.put("RECORDS", ja);
+
+            } catch (Exception ex) {
+                sb.append(ex);
+            }
+
+            sb.append(jsonszl.toString());
+
+            return sb;
+        }
+
+        /*
+         * Status Information for Rack/Station. SZL-ID = W#16#xy94
+         */
+        private static StringBuilder ID_0xXY94(ByteBuf data) {
+            StringBuilder sb = new StringBuilder();
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+            JSONObject jo = null;
+            ByteBuf infobytes = null;
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
+            int szl_n_dr = Short.toUnsignedInt(data.readShort());
+
+            try {
+                jsonszl.put("SZL-ID", szl_id);
+                jsonszl.put("INDEX", szl_index);
+                jsonszl.put("LENGTHDR", szl_lengthdr);
+                jsonszl.put("N_DR", szl_n_dr);
+
+                for (int i = 1; i <= szl_n_dr; i++) {
+
+                    jo = new JSONObject();
+                    jo.put("INDEX", Short.toUnsignedInt(data.readShort()));
+
+                    infobytes = data.readSlice(256);
+                    jo.put("STATUS", ByteBufUtil.hexDump(infobytes));
+
+                    ja.put(jo);
+                }
+
+                jsonszl.put("RECORDS", ja);
+
+            } catch (Exception ex) {
+                sb.append(ex);
+            }
+
+            sb.append(jsonszl.toString());
+
+            return sb;
+        }
+
+        /*
+         * Extended DP Master System / PROFINET IO System Information. SZL-ID = W#16#xy94
+         */
+        private static StringBuilder ID_0xXY95(ByteBuf data) {
+            StringBuilder sb = new StringBuilder();
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+            JSONObject jo = null;
+            ByteBuf infobytes = null;
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
+            int szl_n_dr = Short.toUnsignedInt(data.readShort());
+
+            try {
+                jsonszl.put("SZL-ID", szl_id);
+                jsonszl.put("INDEX", szl_index);
+                jsonszl.put("LENGTHDR", szl_lengthdr);
+                jsonszl.put("N_DR", szl_n_dr);
+
+                for (int i = 1; i <= szl_n_dr; i++) {
+
+                    jo = new JSONObject();
+                    jo.put("DP_M_ID", Short.toUnsignedInt(data.readByte()));
+                    jo.put("RACK_DP_M", Short.toUnsignedInt(data.readByte()));
+                    jo.put("STECKPL_DP_M", Short.toUnsignedInt(data.readByte()));
+                    jo.put("SUBM_DP_M", Short.toUnsignedInt(data.readByte()));
+                    jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));
+                    jo.put("DP_M_SYS_CPU", Short.toUnsignedInt(data.readShort()));
+                    jo.put("DP_M_SYS_DPM", Short.toUnsignedInt(data.readShort()));
+                    jo.put("DP_M_STATE", Short.toUnsignedInt(data.readByte()));
+                    jo.put("DP_ADDRESS", Short.toUnsignedInt(data.readByte()));
+                    jo.put("RESERVED01", Short.toUnsignedInt(data.readShort()));
+                    jo.put("TSAL_OB", Short.toUnsignedInt(data.readByte()));
+                    jo.put("BAUDRATE", data.readLong());
+                    jo.put("RESERVED02", Short.toUnsignedInt(data.readByte()));
+                    jo.put("DP_ISO_TAKT", data.readLong());
+                    infobytes = data.readSlice(16);
+                    jo.put("RESERVED03", ByteBufUtil.hexDump(infobytes));
+
+                    ja.put(jo);
+                }
+
+                jsonszl.put("RECORDS", ja);
+
+            } catch (Exception ex) {
+                sb.append(ex);
+            }
+
+            sb.append(jsonszl.toString());
+
+            return sb;
+        }
+
+        /*
+         * PROFINET IO and PROFIBUS DP Module Status Information. SZL-ID = W#16#xy94
+         */
+        private static StringBuilder ID_0xXY96(ByteBuf data) {
+            StringBuilder sb = new StringBuilder();
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
+            JSONObject jo = null;
+            ByteBuf infobytes = null;
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
+            int szl_n_dr = Short.toUnsignedInt(data.readShort());
+
+            try {
+                jsonszl.put("SZL-ID", szl_id);
+                jsonszl.put("INDEX", szl_index);
+                jsonszl.put("LENGTHDR", szl_lengthdr);
+                jsonszl.put("N_DR", szl_n_dr);
+
+                for (int i = 1; i <= szl_n_dr; i++) {
+
+                    jo = new JSONObject();
+                    jo.put("LOGADR", Short.toUnsignedInt(data.readShort()));
+                    jo.put("SYSTEM", Short.toUnsignedInt(data.readShort()));
                     jo.put("API", data.readInt());
                     jo.put("STATION", Short.toUnsignedInt(data.readShort()));
                     jo.put("SLOT", Short.toUnsignedInt(data.readShort()));
@@ -1533,87 +1533,87 @@ public class StaticHelper {
                     jo.put("OFFSET", Short.toUnsignedInt(data.readShort()));
                     infobytes = data.readSlice(14);
                     jo.put("SOLLTYP", ByteBufUtil.hexDump(infobytes));
-                    jo.put("SOLL_UNGLEIC_LST_TYP", Short.toUnsignedInt(data.readShort()));  
+                    jo.put("SOLL_UNGLEIC_LST_TYP", Short.toUnsignedInt(data.readShort()));
                     jo.put("RESERVED01", Short.toUnsignedInt(data.readShort()));
-                    jo.put("EASTAT", Short.toUnsignedInt(data.readShort()));                     
-                    jo.put("BER_BGBR", Short.toUnsignedInt(data.readShort()));     
+                    jo.put("EASTAT", Short.toUnsignedInt(data.readShort()));
+                    jo.put("BER_BGBR", Short.toUnsignedInt(data.readShort()));
                     infobytes = data.readSlice(10);
                     jo.put("RESERVED02", ByteBufUtil.hexDump(infobytes));
-                  
+
                     ja.put(jo);
                 }
-               
-                jsonszl.put("RECORDS", ja);  
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Tool Changer Information (PROFINET IO). SZL-ID = W#16#xy9C    
-        */
+         * Tool Changer Information (PROFINET IO). SZL-ID = W#16#xy9C
+         */
         private static StringBuilder ID_0xXY9C(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
+
+                    jo = new JSONObject();
                     jo.put("STATIONW", Short.toUnsignedInt(data.readShort()));
-                    jo.put("LOGADRW", Short.toUnsignedInt(data.readShort()));                    
+                    jo.put("LOGADRW", Short.toUnsignedInt(data.readShort()));
                     jo.put("STATIONWZK", Short.toUnsignedInt(data.readShort()));
                     jo.put("STATIONWZW", Short.toUnsignedInt(data.readShort()));
                     jo.put("SLOTWZW", Short.toUnsignedInt(data.readShort()));
                     jo.put("SUBSLOTWZW", Short.toUnsignedInt(data.readShort()));
-                 
+
                     ja.put(jo);
                 }
-               
-                jsonszl.put("RECORDS", ja);  
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
-        
+
         /*
-        * Diagnostic buffer of the CPU. SZL-ID = W#16#xyA0 
-        */
+         * Diagnostic buffer of the CPU. SZL-ID = W#16#xyA0
+         */
         private static StringBuilder ID_0xXYA0(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             short id = 0;
             ByteBuf infobytes = null;
             int n_dr = 0;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
             int szl_index = data.readShort();
-            int szl_lengthdr = data.readShort();              
+            int szl_lengthdr = data.readShort();
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
 
 
@@ -1622,10 +1622,10 @@ public class StaticHelper {
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 switch (szl_id) {
                     case 0x00A0:
-                     while (data.isReadable()) {
+                        while (data.isReadable()) {
                             jo = new JSONObject();
                             id = data.readShort();
                             jo.put("EVENT_ID", id);
@@ -1634,16 +1634,16 @@ public class StaticHelper {
                             infobytes = data.readSlice(8);
                             jo.put("TIMESTAMP", readDateAndTime(infobytes).toString());
                             jo.put("DESCRIPTION", S7DiagnosticEventId.valueOf(id).getDescription());
-                            
+
                             ja.put(jo);
                             n_dr++;
-                        }       
+                        }
                         jsonszl.put("N_DR", n_dr);
                         break;
                     case 0x01A0:
-                        for (int i=0; i < szl_n_dr; i++){
+                        for (int i = 0; i < szl_n_dr; i++) {
                             jo = new JSONObject();
-                            id = data.readShort();                        
+                            id = data.readShort();
                             jo.put("EVENT_ID", id);
                             infobytes = data.readSlice(10);
                             jo.put("INFO", ByteBufUtil.hexDump(infobytes));
@@ -1651,188 +1651,188 @@ public class StaticHelper {
                             jo.put("TIMESTAMP", readDateAndTime(infobytes).toString());
                             jo.put("DESCRIPTION", S7DiagnosticEventId.valueOf(id).getDescription());
 
-                            ja.put(jo);                            
+                            ja.put(jo);
                         }
                         break;
                     case 0x0FA0:
-                        
+
                 }
-               
-                jsonszl.put("RECORDS", ja);                 
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
 
-            sb.append(jsonszl.toString()); 
-            
+            sb.append(jsonszl.toString());
+
             return sb;
         }
-        
+
         /*
-        * Module Diagnostic Information. SZL-ID = W#16#xyB1  
-        */
+         * Module Diagnostic Information. SZL-ID = W#16#xyB1
+         */
         private static StringBuilder ID_0xXYB1(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
+
                 for (int i = 1; i <= szl_n_dr; i++) {
-                    
-                    jo = new JSONObject();   
+
+                    jo = new JSONObject();
                     jo.put("BYTE0", Short.toUnsignedInt(data.readByte()));
-                    jo.put("BYTE1", Short.toUnsignedInt(data.readByte()));                    
+                    jo.put("BYTE1", Short.toUnsignedInt(data.readByte()));
                     jo.put("BYTE2", Short.toUnsignedInt(data.readByte()));
                     jo.put("BYTE3", Short.toUnsignedInt(data.readByte()));
-                 
+
                     ja.put(jo);
                 }
-               
-                jsonszl.put("RECORDS", ja);  
-                
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Diagnostic Data Record 1 with Physical Address. SZL-ID = W#16#xyB2  
-        * TODO: Falla al armar el mensaje.
-        */
+         * Diagnostic Data Record 1 with Physical Address. SZL-ID = W#16#xyB2
+         * TODO: Falla al armar el mensaje.
+         */
         private static StringBuilder ID_0xXYB2(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
-                jo = new JSONObject();   
+
+                jo = new JSONObject();
 
                 infobytes = data.readSlice(szl_lengthdr);
                 jo.put("DATA", ByteBufUtil.hexDump(infobytes));
 
-                ja.put(jo);                
-                             
-                jsonszl.put("RECORDS", ja);  
-                
+                ja.put(jo);
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Module Diagnostic Data with Logical Base Address. SZL-ID = W#16#xyB3
-        */
+         * Module Diagnostic Data with Logical Base Address. SZL-ID = W#16#xyB3
+         */
         private static StringBuilder ID_0xXYB3(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
-                jo = new JSONObject();   
+
+                jo = new JSONObject();
 
                 infobytes = data.readSlice(szl_lengthdr);
                 jo.put("DATA", ByteBufUtil.hexDump(infobytes));
 
-                ja.put(jo);                
-                             
-                jsonszl.put("RECORDS", ja);  
-                
+                ja.put(jo);
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
         /*
-        * Diagnostic Data of a DP Slave. SZL-ID = W#16#xyB4
-        */
+         * Diagnostic Data of a DP Slave. SZL-ID = W#16#xyB4
+         */
         private static StringBuilder ID_0xXYB4(ByteBuf data) {
             StringBuilder sb = new StringBuilder();
-            JSONObject jsonszl = new JSONObject();            
-            JSONArray ja = new JSONArray(); 
+            JSONObject jsonszl = new JSONObject();
+            JSONArray ja = new JSONArray();
             JSONObject jo = null;
             ByteBuf infobytes = null;
-            
-            int szl_id = Short.toUnsignedInt(data.readShort()); 
-            int szl_index = Short.toUnsignedInt(data.readShort()); 
-            int szl_lengthdr = Short.toUnsignedInt(data.readShort());              
+
+            int szl_id = Short.toUnsignedInt(data.readShort());
+            int szl_index = Short.toUnsignedInt(data.readShort());
+            int szl_lengthdr = Short.toUnsignedInt(data.readShort());
             int szl_n_dr = Short.toUnsignedInt(data.readShort());
-            
+
             try {
                 jsonszl.put("SZL-ID", szl_id);
                 jsonszl.put("INDEX", szl_index);
                 jsonszl.put("LENGTHDR", szl_lengthdr);
                 jsonszl.put("N_DR", szl_n_dr);
-                
-                jo = new JSONObject();   
+
+                jo = new JSONObject();
 
                 jo.put("STATUS1", Short.toUnsignedInt(data.readByte()));
                 jo.put("STATUS2", Short.toUnsignedInt(data.readByte()));
                 jo.put("STATUS3", Short.toUnsignedInt(data.readByte()));
-                jo.put("STAT_NR", Short.toUnsignedInt(data.readByte())); 
+                jo.put("STAT_NR", Short.toUnsignedInt(data.readByte()));
                 jo.put("KEN_HI", Short.toUnsignedInt(data.readByte()));
-                jo.put("KEN_LO", Short.toUnsignedInt(data.readByte()));                 
+                jo.put("KEN_LO", Short.toUnsignedInt(data.readByte()));
                 infobytes = data.readSlice(szl_lengthdr - 6);
                 jo.put("DATA", ByteBufUtil.hexDump(infobytes));
 
-                ja.put(jo);                
-                             
-                jsonszl.put("RECORDS", ja);  
-                
+                ja.put(jo);
+
+                jsonszl.put("RECORDS", ja);
+
             } catch (Exception ex) {
                 sb.append(ex);
             }
-            
-            sb.append(jsonszl.toString());             
-            
+
+            sb.append(jsonszl.toString());
+
             return sb;
         }
 
@@ -2135,16 +2135,16 @@ public class StaticHelper {
     public static int RightShift3(final ReadBuffer buffer) throws ParseException {
         return buffer.readUnsignedInt(16) >> 3;
     }
-    
+
     public static int RightShift3(final ReadBuffer buffer, DataTransportSize tsize) throws ParseException {
         int value = 0;
         if ((tsize == DataTransportSize.OCTET_STRING) ||
-            (tsize == DataTransportSize.REAL))    {
+            (tsize == DataTransportSize.REAL)) {
             value = buffer.readUnsignedInt(16);
         } else {
             value = buffer.readUnsignedInt(16) >> 3;
         }
-        return value;    
+        return value;
     }
 
     //TODO: apply only if not the last item
@@ -2773,8 +2773,8 @@ public class StaticHelper {
         }
 
         try {
-            io.writeByte((byte)(k & 0xFF));
-            io.writeByte((byte)(m & 0xFF));
+            io.writeByte((byte) (k & 0xFF));
+            io.writeByte((byte) (m & 0xFF));
             io.writeByteArray(chars);
         } catch (SerializationException ex) {
             Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);

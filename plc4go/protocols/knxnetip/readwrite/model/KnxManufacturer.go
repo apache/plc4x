@@ -618,7 +618,7 @@ const (
 	KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG                              KnxManufacturer = 572
 	KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS                           KnxManufacturer = 573
 	KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_                        KnxManufacturer = 574
-	KnxManufacturer_M_ACE_TECHNOLOGY                                     KnxManufacturer = 575
+	KnxManufacturer_M_SICS                                               KnxManufacturer = 575
 	KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD          KnxManufacturer = 576
 	KnxManufacturer_M_SUMAMO                                             KnxManufacturer = 577
 	KnxManufacturer_M_SVIT                                               KnxManufacturer = 578
@@ -693,8 +693,9 @@ const (
 	KnxManufacturer_M_ROOMIO                                             KnxManufacturer = 647
 	KnxManufacturer_M_ATOUCH                                             KnxManufacturer = 648
 	KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD            KnxManufacturer = 649
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 650
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 651
+	KnxManufacturer_M_WALLYONS                                           KnxManufacturer = 650
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 651
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 652
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1277,7 +1278,7 @@ func init() {
 		KnxManufacturer_M_VIEGA_GMBH_AND_CO__KG,
 		KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS,
 		KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_,
-		KnxManufacturer_M_ACE_TECHNOLOGY,
+		KnxManufacturer_M_SICS,
 		KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD,
 		KnxManufacturer_M_SUMAMO,
 		KnxManufacturer_M_SVIT,
@@ -1352,6 +1353,7 @@ func init() {
 		KnxManufacturer_M_ROOMIO,
 		KnxManufacturer_M_ATOUCH,
 		KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD,
+		KnxManufacturer_M_WALLYONS,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3813,10 +3815,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 650:
 		{ /* '650' */
-			return 43954
+			return 708
 		}
 	case 651:
 		{ /* '651' */
+			return 43954
+		}
+	case 652:
+		{ /* '652' */
 			return 43959
 		}
 	case 66:
@@ -6103,7 +6109,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 575:
 		{ /* '575' */
-			return "ACE Technology"
+			return "SICS"
 		}
 	case 576:
 		{ /* '576' */
@@ -6439,10 +6445,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 650:
 		{ /* '650' */
-			return "ABB - reserved"
+			return "WallYons"
 		}
 	case 651:
 		{ /* '651' */
+			return "ABB - reserved"
+		}
+	case 652:
+		{ /* '652' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 66:
@@ -7669,7 +7679,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 574:
 		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_, true
 	case 575:
-		return KnxManufacturer_M_ACE_TECHNOLOGY, true
+		return KnxManufacturer_M_SICS, true
 	case 576:
 		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD, true
 	case 577:
@@ -7837,8 +7847,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 65:
 		return KnxManufacturer_M_JEPAZ, true
 	case 650:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_WALLYONS, true
 	case 651:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 652:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 66:
 		return KnxManufacturer_M_RTS_AUTOMATION, true
@@ -8978,8 +8990,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_FREDON_DIGITAL_BUILDINGS, true
 	case "M_HELUKABEL_THAILAND_CO__LTD_":
 		return KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_, true
-	case "M_ACE_TECHNOLOGY":
-		return KnxManufacturer_M_ACE_TECHNOLOGY, true
+	case "M_SICS":
+		return KnxManufacturer_M_SICS, true
 	case "M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD":
 		return KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD, true
 	case "M_SUMAMO":
@@ -9146,6 +9158,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD, true
 	case "M_JEPAZ":
 		return KnxManufacturer_M_JEPAZ, true
+	case "M_WALLYONS":
+		return KnxManufacturer_M_WALLYONS, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10349,8 +10363,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_FREDON_DIGITAL_BUILDINGS"
 	case KnxManufacturer_M_HELUKABEL_THAILAND_CO__LTD_:
 		return "M_HELUKABEL_THAILAND_CO__LTD_"
-	case KnxManufacturer_M_ACE_TECHNOLOGY:
-		return "M_ACE_TECHNOLOGY"
+	case KnxManufacturer_M_SICS:
+		return "M_SICS"
 	case KnxManufacturer_M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD:
 		return "M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD"
 	case KnxManufacturer_M_SUMAMO:
@@ -10517,6 +10531,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD"
 	case KnxManufacturer_M_JEPAZ:
 		return "M_JEPAZ"
+	case KnxManufacturer_M_WALLYONS:
+		return "M_WALLYONS"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

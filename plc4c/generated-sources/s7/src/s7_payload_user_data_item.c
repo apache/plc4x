@@ -85,7 +85,19 @@ const plc4c_s7_read_write_s7_payload_user_data_item_discriminator plc4c_s7_read_
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_request */
    .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x04, .cpuSubfunction = 0x13, .dataLength = -1 },
   {/* plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response */
-   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x13, .dataLength = -1 }
+   .cpuFunctionGroup = 0x04, .cpuFunctionType = 0x08, .cpuSubfunction = 0x13, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_clk_request */
+   .cpuFunctionGroup = 0x07, .cpuFunctionType = 0x04, .cpuSubfunction = 0x01, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_clk_response */
+   .cpuFunctionGroup = 0x07, .cpuFunctionType = 0x08, .cpuSubfunction = 0x01, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_clk_f_request */
+   .cpuFunctionGroup = 0x07, .cpuFunctionType = 0x04, .cpuSubfunction = 0x03, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response */
+   .cpuFunctionGroup = 0x07, .cpuFunctionType = 0x08, .cpuSubfunction = 0x03, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_clk_set_request */
+   .cpuFunctionGroup = 0x07, .cpuFunctionType = 0x04, .cpuSubfunction = 0x04, .dataLength = -1 },
+  {/* plc4c_s7_read_write_s7_payload_user_data_item_clk_set_response */
+   .cpuFunctionGroup = 0x07, .cpuFunctionType = 0x08, .cpuSubfunction = 0x04, .dataLength = -1 }
 
 };
 
@@ -897,6 +909,110 @@ if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunct
     }
   }
   (*_message)->s7_payload_user_data_item_cpu_function_alarm_query_response_items = items;
+  } else 
+if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemClkRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_request;
+  } else 
+if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemClkResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response;
+
+  // Simple Field (Reserved)
+  uint8_t Reserved = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Reserved);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_response_reserved = Reserved;
+
+
+  // Simple Field (Year1)
+  uint8_t Year1 = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Year1);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_response_year1 = Year1;
+
+
+  // Simple Field (TimeStamp)
+  plc4c_s7_read_write_date_and_time* TimeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_response_time_stamp = TimeStamp;
+  } else 
+if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadUserDataItemClkFRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_request;
+  } else 
+if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadUserDataItemClkFResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response;
+
+  // Simple Field (Reserved)
+  uint8_t Reserved = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Reserved);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_f_response_reserved = Reserved;
+
+
+  // Simple Field (Year1)
+  uint8_t Year1 = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Year1);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_f_response_year1 = Year1;
+
+
+  // Simple Field (TimeStamp)
+  plc4c_s7_read_write_date_and_time* TimeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_f_response_time_stamp = TimeStamp;
+  } else 
+if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x04 ) ) { /* S7PayloadUserDataItemClkSetRequest */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_request;
+
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    uint8_t _reserved = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
+    if(_res != OK) {
+      return _res;
+    }
+    if(_reserved != 0x00) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+    }
+  }
+
+
+  // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+  {
+    uint8_t _reserved = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_reserved);
+    if(_res != OK) {
+      return _res;
+    }
+    if(_reserved != 0x00) {
+      printf("Expected constant value '%d' but got '%d' for reserved field.", 0x00, _reserved);
+    }
+  }
+
+
+  // Simple Field (TimeStamp)
+  plc4c_s7_read_write_date_and_time* TimeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  if(_res != OK) {
+    return _res;
+  }
+  (*_message)->s7_payload_user_data_item_clk_set_request_time_stamp = TimeStamp;
+  } else 
+if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x04 ) ) { /* S7PayloadUserDataItemClkSetResponse */
+    (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_response;
   }
 
   return OK;
@@ -1425,6 +1541,84 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
 
       break;
     }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_request: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response: {
+
+  // Simple Field (Reserved)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_response_reserved);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (Year1)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_response_year1);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (TimeStamp)
+  _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_clk_response_time_stamp);
+  if(_res != OK) {
+    return _res;
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_request: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response: {
+
+  // Simple Field (Reserved)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_f_response_reserved);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (Year1)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_f_response_year1);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (TimeStamp)
+  _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_clk_f_response_time_stamp);
+  if(_res != OK) {
+    return _res;
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_request: {
+
+  // Reserved Field
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Reserved Field
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, 0x00);
+  if(_res != OK) {
+    return _res;
+  }
+
+  // Simple Field (TimeStamp)
+  _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_clk_set_request_time_stamp);
+  if(_res != OK) {
+    return _res;
+  }
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_response: {
+
+      break;
+    }
   }
 
   return OK;
@@ -1810,6 +2004,63 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
 
   // Array field
   lengthInBits += 8 * plc4c_utils_list_size(_message->s7_payload_user_data_item_cpu_function_alarm_query_response_items);
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_request: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response: {
+
+  // Simple field (Reserved)
+  lengthInBits += 8;
+
+
+  // Simple field (Year1)
+  lengthInBits += 8;
+
+
+  // Simple field (TimeStamp)
+  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_user_data_item_clk_response_time_stamp);
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_request: {
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response: {
+
+  // Simple field (Reserved)
+  lengthInBits += 8;
+
+
+  // Simple field (Year1)
+  lengthInBits += 8;
+
+
+  // Simple field (TimeStamp)
+  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_user_data_item_clk_f_response_time_stamp);
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_request: {
+
+  // Reserved Field (reserved)
+  lengthInBits += 8;
+
+
+  // Reserved Field (reserved)
+  lengthInBits += 8;
+
+
+  // Simple field (TimeStamp)
+  lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_user_data_item_clk_set_request_time_stamp);
+
+      break;
+    }
+    case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_response: {
 
       break;
     }

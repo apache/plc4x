@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
@@ -30,6 +28,9 @@ import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
@@ -41,9 +42,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
-import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 /**
  * Builds a Protocol Stack.
@@ -60,7 +60,7 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
     private final Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass;
     private final MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler;
     private final Object[] parserArgs;
-    
+
     private Plc4xProtocolBase<BASE_PACKET_CLASS> protocol = null;
 
     public static <BPC extends Message> S7HSingleProtocolStackBuilder<BPC> builder(Class<BPC> basePacketClass, MessageInput<BPC> messageInput) {
@@ -75,15 +75,15 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
      * Only accessible via Builder
      */
     S7HSingleProtocolStackConfigurer(Class<BASE_PACKET_CLASS> basePacketClass,
-                                  ByteOrder byteOrder,
-                                  Object[] parserArgs,
-                                  Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
-                                  Class<? extends DriverContext> driverContextClass,
-                                  MessageInput<BASE_PACKET_CLASS> messageInput,
-                                  MessageOutput<BASE_PACKET_CLASS> messageOutput,
-                                  Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
-                                  Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass,
-                                  MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
+                                     ByteOrder byteOrder,
+                                     Object[] parserArgs,
+                                     Class<? extends Plc4xProtocolBase<BASE_PACKET_CLASS>> protocol,
+                                     Class<? extends DriverContext> driverContextClass,
+                                     MessageInput<BASE_PACKET_CLASS> messageInput,
+                                     MessageOutput<BASE_PACKET_CLASS> messageOutput,
+                                     Class<? extends ToIntFunction<ByteBuf>> packetSizeEstimatorClass,
+                                     Class<? extends Consumer<ByteBuf>> corruptPacketRemoverClass,
+                                     MessageToMessageCodec<ByteBuf, ByteBuf> encryptionHandler) {
         this.basePacketClass = basePacketClass;
         this.byteOrder = byteOrder;
         this.parserArgs = parserArgs;
@@ -111,20 +111,20 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
                                                                   List<EventListener> ignore) {
         if (null == protocol) {
             if (this.encryptionHandler != null) {
-                pipeline.addLast("ENCRYPT",this.encryptionHandler);
+                pipeline.addLast("ENCRYPT", this.encryptionHandler);
             }
-            pipeline.addLast("CODEC",getMessageCodec(configuration));
+            pipeline.addLast("CODEC", getMessageCodec(configuration));
             protocol = configure(configuration, createInstance(protocolClass));
             if (driverContextClass != null) {
                 protocol.setDriverContext(configure(configuration, createInstance(driverContextClass)));
             }
             Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, protocol,
                 authentication, basePacketClass);
-            pipeline.addLast("WRAPPER",context);
-        };
-        
+            pipeline.addLast("WRAPPER", context);
+        }
+
         return protocol;
-                                                                  
+
     }
 
     private <T> T createInstance(Class<T> clazz, Object... args) {
@@ -134,7 +134,8 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
                 parameterTypes[i] = args[i].getClass();
             }
             return clazz.getDeclaredConstructor(parameterTypes).newInstance(args);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
             throw new PlcRuntimeException("Error creating instance of class " + clazz.getName());
         }
     }

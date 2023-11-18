@@ -18,39 +18,40 @@
  */
 package org.apache.plc4x.java.s7.readwrite.tag;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
 public class S7ClkTag implements PlcTag {
 
     private static final Pattern CLK_ADDRESS_PATTERN =
-        Pattern.compile("^CLK\\b");  
-    
+        Pattern.compile("^CLK\\b");
+
     private static final Pattern CLKF_ADDRESS_PATTERN =
-        Pattern.compile("^CLKF\\b"); 
-           
+        Pattern.compile("^CLKF\\b");
+
     private final String address;
     private DateAndTime dat;
-      
+
     public S7ClkTag(String address) {
         this.address = address;
         LocalDateTime ldt = LocalDateTime.now();
         this.dat = new DateAndTime(
-                ((short) (ldt.getYear() - 2000)),
-                (short) ldt.getMonthValue(),
-                (short) ldt.getDayOfMonth(),
-                (short) ldt.getHour(),
-                (short) ldt.getMinute(),
-                (short) ldt.getSecond(),
-                (short) TimeUnit.NANOSECONDS.toMillis(ldt.getNano()),
-                (byte) ldt.getDayOfWeek().plus(1).getValue()                
+            ((short) (ldt.getYear() - 2000)),
+            (short) ldt.getMonthValue(),
+            (short) ldt.getDayOfMonth(),
+            (short) ldt.getHour(),
+            (short) ldt.getMinute(),
+            (short) ldt.getSecond(),
+            (short) TimeUnit.NANOSECONDS.toMillis(ldt.getNano()),
+            (byte) ldt.getDayOfWeek().plus(1).getValue()
         );
     }
 
@@ -64,36 +65,31 @@ public class S7ClkTag implements PlcTag {
         return PlcValueType.DATE_AND_TIME;
     }
 
-    @Override
-    public List<ArrayInfo> getArrayInfo() {
-        return Collections.emptyList();
-    }
-    
     public DateAndTime getDateAndTime() {
         return this.dat;
     }
-    
+
     public void setDateAndTime(LocalDateTime ldt) {
         this.dat = new DateAndTime(
-                ((short) (ldt.getYear() - 2000)),
-                (short) ldt.getMonthValue(),
-                (short) ldt.getDayOfMonth(),
-                (short) ldt.getHour(),
-                (short) ldt.getMinute(),
-                (short) ldt.getSecond(),
-                (short) TimeUnit.NANOSECONDS.toMillis(ldt.getNano()),
-                (byte) ldt.getDayOfWeek().plus(1).getValue()                
-        );    
+            ((short) (ldt.getYear() - 2000)),
+            (short) ldt.getMonthValue(),
+            (short) ldt.getDayOfMonth(),
+            (short) ldt.getHour(),
+            (short) ldt.getMinute(),
+            (short) ldt.getSecond(),
+            (short) TimeUnit.NANOSECONDS.toMillis(ldt.getNano()),
+            (byte) ldt.getDayOfWeek().plus(1).getValue()
+        );
     }
-          
+
     public static boolean matches(String address) {
         return CLK_ADDRESS_PATTERN.matcher(address).matches() ||
-               CLKF_ADDRESS_PATTERN.matcher(address).matches();
-    }   
-    
-    public static S7ClkTag of(String address) {        
-            return new S7ClkTag(address);
+            CLKF_ADDRESS_PATTERN.matcher(address).matches();
+    }
 
-    }       
+    public static S7ClkTag of(String address) {
+        return new S7ClkTag(address);
+
+    }
 
 }

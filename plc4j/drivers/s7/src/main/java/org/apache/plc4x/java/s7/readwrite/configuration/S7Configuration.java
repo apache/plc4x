@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,14 +18,12 @@
  */
 package org.apache.plc4x.java.s7.readwrite.configuration;
 
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class S7Configuration extends S7TcpTransportConfiguration implements Configuration {
+public class S7Configuration implements Configuration {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -34,7 +32,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
     @ConfigurationParameter("local-slot")
     @IntDefaultValue(1)
     public int localSlot = 1;
-    
+
     @ConfigurationParameter("local-tsap")
     @IntDefaultValue(0)
     public int localTsap = 0;
@@ -46,15 +44,15 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
     @ConfigurationParameter("remote-slot")
     @IntDefaultValue(0)
     public int remoteSlot = 0;
-    
+
     @ConfigurationParameter("remote-rack2")
     @IntDefaultValue(0)
     public int remoteRack2 = 0;
 
     @ConfigurationParameter("remote-slot2")
     @IntDefaultValue(0)
-    public int remoteSlot2 = 0;    
-    
+    public int remoteSlot2 = 0;
+
 
     @ConfigurationParameter("remote-tsap")
     @IntDefaultValue(0)
@@ -74,23 +72,23 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
 
     @ConfigurationParameter("controller-type")
     public String controllerType;
-    
+
     @ConfigurationParameter("read-timeout")
-    @IntDefaultValue(0)    
+    @IntDefaultValue(0)
     public int readTimeout = 0;
 
-    @ConfigurationParameter("ping")  
-    @BooleanDefaultValue(false)    
-    public boolean ping = false;    
-    
-    @ConfigurationParameter("ping-time")  
-    @IntDefaultValue(0)      
-    public int pingTime = 0; 
-    
-    @ConfigurationParameter("retry-time")  
-    @IntDefaultValue(0)      
-    public int retryTime = 0;    
-    
+    @ConfigurationParameter("ping")
+    @BooleanDefaultValue(false)
+    public boolean ping = false;
+
+    @ConfigurationParameter("ping-time")
+    @IntDefaultValue(0)
+    public int pingTime = 0;
+
+    @ConfigurationParameter("retry-time")
+    @IntDefaultValue(0)
+    public int retryTime = 0;
+
 
     public int getLocalRack() {
         return localRack;
@@ -115,7 +113,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
     public void setLocalTsap(int localTsap) {
         this.localTsap = localTsap;
     }
-    
+
     public int getRemoteRack() {
         return remoteRack;
     }
@@ -131,7 +129,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
     public void setRemoteSlot(int remoteSlot) {
         this.remoteSlot = remoteSlot;
     }
-    
+
     public int getRemoteRack2() {
         return remoteRack2;
     }
@@ -146,7 +144,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
 
     public void setRemoteSlot2(int remoteSlot2) {
         this.remoteSlot2 = remoteSlot2;
-    }    
+    }
 
     public int getRemoteTsap() {
         return remoteTsap;
@@ -155,7 +153,7 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
     public void setRemoteTsap(int remoteTsap) {
         this.remoteTsap = remoteTsap;
     }
-    
+
     public int getPduSize() {
         return pduSize;
     }
@@ -187,47 +185,37 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
     public void setControllerType(String controllerType) {
         this.controllerType = controllerType;
     }
-    
+
     public int getReadTimeout() {
         return readTimeout;
     }
 
     public void setReadTimeout(int readTimeOut) {
         this.readTimeout = readTimeOut;
-    } 
-    
+    }
+
     public boolean getPing() {
         return ping;
     }
 
     public void setPing(boolean ping) {
         this.ping = ping;
-    }      
-    
+    }
+
     public int getPingTime() {
         return pingTime;
     }
 
     public void setPingTime(int pingTime) {
         this.pingTime = pingTime;
-    }      
-       
+    }
+
     public int getRetryTime() {
         return retryTime;
     }
 
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
-    }      
-    
-    
-    /**
-     * Per default port for the S7 protocol is 102.
-     * @return 102
-     */
-    @Override
-    public int getDefaultPort() {
-        return S7Driver.ISO_ON_TCP_PORT;
     }
 
     @Override
@@ -239,17 +227,17 @@ public class S7Configuration extends S7TcpTransportConfiguration implements Conf
             ", remote-rack=" + remoteRack +
             ", remote-slot=" + remoteSlot +
             ", remote-rack2=" + remoteRack2 +
-            ", remote-slot2=" + remoteSlot2 +                
+            ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
-            ", controllerType='" + controllerType +                
-            ", readTimeOut='" + readTimeout +                
-            ", ping='" + ping +                
+            ", controllerType='" + controllerType +
+            ", readTimeOut='" + readTimeout +
+            ", ping='" + ping +
             ", pingTime='" + pingTime +
-            ", retryTime='" + retryTime +                
-                '\'' +
+            ", retryTime='" + retryTime +
+            '\'' +
             '}';
     }
 

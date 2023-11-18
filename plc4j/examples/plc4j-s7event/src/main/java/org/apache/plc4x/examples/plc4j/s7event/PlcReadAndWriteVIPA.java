@@ -21,10 +21,6 @@ package org.apache.plc4x.examples.plc4j.s7event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author cgarcia
- */
 public class PlcReadAndWriteVIPA {
 
     private static final Logger logger = LoggerFactory.getLogger(PlcReadAndWriteVIPA.class);       

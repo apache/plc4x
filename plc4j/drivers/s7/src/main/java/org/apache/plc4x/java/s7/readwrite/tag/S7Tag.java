@@ -24,9 +24,9 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.S7Address;
 import org.apache.plc4x.java.s7.readwrite.S7AddressAny;
-import org.apache.plc4x.java.s7.readwrite.MemoryArea;
 import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.*;
@@ -100,7 +100,7 @@ public class S7Tag implements PlcTag, Serializable {
 
     @Override
     public List<ArrayInfo> getArrayInfo() {
-        if(numElements != 1) {
+        if (numElements != 1) {
             return Collections.singletonList(new DefaultArrayInfo(0, numElements));
         }
         return Collections.emptyList();
@@ -150,7 +150,7 @@ public class S7Tag implements PlcTag, Serializable {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
@@ -174,7 +174,7 @@ public class S7Tag implements PlcTag, Serializable {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             int stringLength = Integer.parseInt(matcher.group(STRING_LENGTH));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             int numElements = 1;
@@ -188,7 +188,7 @@ public class S7Tag implements PlcTag, Serializable {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
             Short transferSizeCode = getSizeCode(matcher.group(TRANSFER_SIZE_CODE));
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
@@ -210,7 +210,7 @@ public class S7Tag implements PlcTag, Serializable {
         } else if ((matcher = DATA_BLOCK_SHORT_PATTERN.matcher(tagString)).matches()) {
             TransportSize dataType = TransportSize.valueOf(matcher.group(DATA_TYPE));
             MemoryArea memoryArea = MemoryArea.DATA_BLOCKS;
-            int blockNumber = checkDatablockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
+            int blockNumber = checkDataBlockNumber(Integer.parseInt(matcher.group(BLOCK_NUMBER)));
             int byteOffset = checkByteOffset(Integer.parseInt(matcher.group(BYTE_OFFSET)));
             byte bitOffset = 0;
             if (matcher.group(BIT_OFFSET) != null) {
@@ -275,15 +275,15 @@ public class S7Tag implements PlcTag, Serializable {
     }
 
     /**
-     * checks if DatablockNumber of S7Tag is in valid range
+     * checks if DataBlockNumber of S7Tag is in valid range
      *
-     * @param blockNumber given DatablockNumber
+     * @param blockNumber given DataBlockNumber
      * @return given blockNumber if Ok, throws PlcInvalidTagException otherwise
      */
-    private static int checkDatablockNumber(int blockNumber) {
-        //ToDo check the value or add reference - limit eventually depending on active S7 --> make a case selection
+    private static int checkDataBlockNumber(int blockNumber) {
+        // TODO: check the value or add reference - limit eventually depending on active S7 --> make a case selection
         if (blockNumber > 64000 || blockNumber < 1) {
-            throw new PlcInvalidTagException("Datablock numbers larger than 64000 or smaller than 1 are not supported.");
+            throw new PlcInvalidTagException("DataBlock numbers larger than 64000 or smaller than 1 are not supported.");
         }
         return blockNumber;
     }
@@ -295,7 +295,7 @@ public class S7Tag implements PlcTag, Serializable {
      * @return given byteOffset if Ok, throws PlcInvalidTagException otherwise
      */
     private static int checkByteOffset(int byteOffset) {
-        //ToDo check the value or add reference
+        // TODO: check the value or add reference
         if (byteOffset > 2097151 || byteOffset < 0) {
             throw new PlcInvalidTagException("ByteOffset must be smaller than 2097151 and positive.");
         }

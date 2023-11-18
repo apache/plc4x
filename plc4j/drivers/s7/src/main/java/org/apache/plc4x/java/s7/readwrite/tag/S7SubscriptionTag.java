@@ -24,9 +24,9 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.s7.readwrite.AlarmType;
 import org.apache.plc4x.java.s7.readwrite.EventType;
-import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.TimeBase;
-        
+import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +47,7 @@ public class S7SubscriptionTag implements PlcTag {
     //TODO: Query SCAN 
     private static final Pattern EVENT_ALARM_QUERY_PATTERN =
         Pattern.compile("(^QUERY:)((ALARM_S)|(ALARM_8))");
-    
+
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
         Pattern.compile("%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
@@ -64,8 +64,8 @@ public class S7SubscriptionTag implements PlcTag {
         Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
 
     private static final Pattern EVENT_CANCEL_JOB_QUERY_PATTERN =
-        Pattern.compile("(^CANCEL:)((((?:,{0,1})(\\d+{1,3})))+)");    
-    
+        Pattern.compile("(^CANCEL:)((((?:,{0,1})(\\d{1,3}+)))+)");
+
     private static final String MEMORY_AREA = "memoryArea";
     private static final String TRANSFER_SIZE_CODE = "transferSizeCode";
     private static final String BYTE_OFFSET = "byteOffset";
@@ -83,48 +83,48 @@ public class S7SubscriptionTag implements PlcTag {
     private static final String STRING_LENGTH = "stringLength";
     private static final String TIME_BASE = "timeBase";
     private static final String TIME_BASE_MULTIPLIER = "multiplier";
-    
-    
-//    private final String address;
+
+
+    //    private final String address;
     private final S7SubscriptionType subscriptionType;
-    private final EventType eventtype;
+    private final EventType eventType;
     private final S7Tag[] s7tags;
     private final ArrayList<Integer> ackAlarms;
     private final AlarmType alarmQueryType;
-    private final TimeBase timebase;
-    private final short multiplier;    
+    private final TimeBase timeBase;
+    private final short multiplier;
 
-    public S7SubscriptionTag(S7SubscriptionType subscriptionType, EventType eventtype) {
+    public S7SubscriptionTag(S7SubscriptionType subscriptionType, EventType eventType) {
 //        this.address = address;
         this.subscriptionType = subscriptionType;
-        this.eventtype = eventtype;
+        this.eventType = eventType;
         this.s7tags = null;
         this.ackAlarms = null;
         this.alarmQueryType = null;
-        this.timebase = null;
+        this.timeBase = null;
         this.multiplier = 0;
     }
 
     public S7SubscriptionTag(S7SubscriptionType subscriptionType, ArrayList<Integer> ackAlarms) {
 //        this.address = address;
         this.subscriptionType = subscriptionType;
-        this.eventtype = null;
+        this.eventType = null;
         this.s7tags = null;
         this.ackAlarms = ackAlarms;
         this.alarmQueryType = null;
-        this.timebase = null;
-        this.multiplier = 0;        
+        this.timeBase = null;
+        this.multiplier = 0;
     }
 
     public S7SubscriptionTag(S7SubscriptionType subscriptionType, AlarmType alarmQueryType) {
 //        this.address = address;
         this.subscriptionType = subscriptionType;
-        this.eventtype = null;
+        this.eventType = null;
         this.s7tags = null;
         this.ackAlarms = null;
         this.alarmQueryType = alarmQueryType;
-        this.timebase = null;
-        this.multiplier = 0;        
+        this.timeBase = null;
+        this.multiplier = 0;
     }
 
 //    public S7SubscriptionTag(S7SubscriptionType subscriptionType, S7Tag s7Tag) {
@@ -137,17 +137,17 @@ public class S7SubscriptionTag implements PlcTag {
 //        this.timebase = null;
 //        this.multiplier = 0;        
 //    }
-    
-    public S7SubscriptionTag(S7SubscriptionType subscriptionType, S7Tag[] s7tags, TimeBase timebase, short multiplier) {
+
+    public S7SubscriptionTag(S7SubscriptionType subscriptionType, S7Tag[] s7tags, TimeBase timeBase, short multiplier) {
 //        this.address = address;
         this.subscriptionType = subscriptionType;
-        this.eventtype  = null;
-        this.s7tags   = s7tags;
-        this.ackAlarms   = null;  
+        this.eventType = null;
+        this.s7tags = s7tags;
+        this.ackAlarms = null;
         this.alarmQueryType = null;
-        this.timebase   = timebase;
+        this.timeBase = timeBase;
         this.multiplier = multiplier;
-    }      
+    }
 
     @Override
     public String getAddressString() {
@@ -169,7 +169,7 @@ public class S7SubscriptionTag implements PlcTag {
     }
 
     public EventType getEventType() {
-        return eventtype;
+        return eventType;
     }
 
     public S7Tag[] getS7Tags() {
@@ -183,24 +183,24 @@ public class S7SubscriptionTag implements PlcTag {
     public AlarmType getAlarmQueryType() {
         return alarmQueryType;
     }
-    
+
     public TimeBase getTimeBase() {
-        return timebase;
+        return timeBase;
     }
 
     public short getMultiplier() {
         return multiplier;
-    }        
+    }
 
     public static boolean matches(String tagString) {
-        
+
         return EVENT_SUBSCRIPTION_TYPE_PATTERN.matcher(tagString).matches() ||
             EVENT_ALARM_ACK_PATTERN.matcher(tagString).matches() ||
             EVENT_ALARM_QUERY_PATTERN.matcher(tagString).matches() ||
             EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(tagString).matches() ||
             EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(tagString).matches() ||
             EVENT_CANCEL_JOB_QUERY_PATTERN.matcher(tagString).matches();
-        
+
 //        return EVENT_SUBSCRIPTION_TYPE_PATTERN.matcher(tagString).matches() ||
 //            EVENT_ALARM_ACK_PATTERN.matcher(tagString).matches() ||
 //            EVENT_ALARM_QUERY_PATTERN.matcher(tagString).matches() ||
@@ -219,96 +219,91 @@ public class S7SubscriptionTag implements PlcTag {
         {
             //TODO: Actually only ALARM_S (SIG_1)
             Matcher matcher = EVENT_ALARM_ACK_PATTERN.matcher(tagString);
-            if (matcher.matches()){
+            if (matcher.matches()) {
                 String[] arrIdAndSig;
                 String EventIds = matcher.group(2);
                 String[] arrStrEventId = EventIds.split(",");
                 ArrayList<Integer> arrEventId = new ArrayList<>();
-                for (String EventId:arrStrEventId){
+                for (String EventId : arrStrEventId) {
                     EventId = EventId.replaceAll("16#", "");
-                    arrIdAndSig =  EventId.split(";");
+                    arrIdAndSig = EventId.split(";");
                     arrEventId.add(Integer.parseInt(arrIdAndSig[0], 16));
-                    arrEventId.add(Integer.parseInt(arrIdAndSig[1], 16));                    
+                    arrEventId.add(Integer.parseInt(arrIdAndSig[1], 16));
                 }
                 return new S7SubscriptionTag(S7SubscriptionType.ALARM_ACK,
-                            arrEventId);
-                
-            }            
+                    arrEventId);
+
+            }
         }
 
         {
             //TODO: Support for ALARM_8            
-            Matcher matcher = EVENT_ALARM_QUERY_PATTERN.matcher(tagString); 
-            TimeBase tb = null;
-            short multi = 0;            
-            if (matcher.matches()){
-
+            Matcher matcher = EVENT_ALARM_QUERY_PATTERN.matcher(tagString);
+            if (matcher.matches()) {
                 return new S7SubscriptionTag(S7SubscriptionType.ALARM_QUERY,
-                            AlarmType.ALARM_S);    
+                    AlarmType.ALARM_S);
             }
         }
 
         {
-            Matcher matcher = EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(tagString);          
-            if (matcher.matches()){
-                TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
-                short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));                
-                String strAddress = matcher.group(9);
-                strAddress = strAddress.replaceAll("\\[", ".0:BYTE[");
-                String[] dbAddress = strAddress.split(",");       
-                S7Tag[] s7tags = new S7Tag[dbAddress.length];
-                int i=0;
-                for (String address:dbAddress) {
-                    s7tags[i] = S7Tag.of(address);
-                    i++;
-                }                
-                return new S7SubscriptionTag(S7SubscriptionType.CYCLIC_DB_SUBSCRIPTION,
-                            s7tags,
-                            tb,
-                            multi);    
-            }            
-            
-        }   
-        
-        {
-            Matcher matcher = EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(tagString);
-            if (matcher.matches()){     
+            Matcher matcher = EVENT_SUBSCRIPTION_DB_QUERY_PATTERN.matcher(tagString);
+            if (matcher.matches()) {
                 TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
                 short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));
-                S7Tag[] myTags = null;
-                String strAddress = matcher.group(9);  
-                String[] fieldAddress = strAddress.split(","); 
-                myTags = new S7Tag[fieldAddress.length];            
-                int i=0;
-                for (String address:fieldAddress) {
+                String strAddress = matcher.group(9);
+                strAddress = strAddress.replaceAll("\\[", ".0:BYTE[");
+                String[] dbAddress = strAddress.split(",");
+                S7Tag[] s7tags = new S7Tag[dbAddress.length];
+                int i = 0;
+                for (String address : dbAddress) {
+                    s7tags[i] = S7Tag.of(address);
+                    i++;
+                }
+                return new S7SubscriptionTag(S7SubscriptionType.CYCLIC_DB_SUBSCRIPTION,
+                    s7tags,
+                    tb,
+                    multi);
+            }
+
+        }
+
+        {
+            Matcher matcher = EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN.matcher(tagString);
+            if (matcher.matches()) {
+                TimeBase tb = TimeBase.valueOf(matcher.group(TIME_BASE));
+                short multi = Short.parseShort(matcher.group(TIME_BASE_MULTIPLIER));
+                S7Tag[] myTags;
+                String strAddress = matcher.group(9);
+                String[] fieldAddress = strAddress.split(",");
+                myTags = new S7Tag[fieldAddress.length];
+                int i = 0;
+                for (String address : fieldAddress) {
                     myTags[i] = S7Tag.of(address);
                     i++;
-                }         
+                }
                 return new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION,
-                            myTags,
-                tb,
-                multi);                
+                    myTags,
+                    tb,
+                    multi);
             }
         }
 
-         {
+        {
             Matcher matcher = EVENT_CANCEL_JOB_QUERY_PATTERN.matcher(tagString);
-            if (matcher.matches()){
-                String[] arrIdAndSig;
+            if (matcher.matches()) {
                 String strJobIds = matcher.group(2);
                 String[] arrStrEventId = strJobIds.split(",");
                 ArrayList<Integer> arrJobId = new ArrayList<>();
-                for (String jobId:arrStrEventId){
-                    arrJobId.add(Integer.parseInt(jobId));                   
+                for (String jobId : arrStrEventId) {
+                    arrJobId.add(Integer.parseInt(jobId));
                 }
                 return new S7SubscriptionTag(S7SubscriptionType.CYCLIC_UNSUBSCRIPTION,
-                            arrJobId);
-                
-            }            
-        } 
-        
-        
-        
+                    arrJobId);
+
+            }
+        }
+
+
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
     }
 
