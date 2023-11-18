@@ -53,7 +53,8 @@ public class PlcReadS71200 implements ConnectionStateListener {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws Exception{
-        // TODO code application logic here
+        System.setProperty(org.slf4j.simple.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "Debug"); 
+        
         PlcReadS71200 device = new PlcReadS71200();
         device.run();
     }
@@ -193,7 +194,6 @@ public class PlcReadS71200 implements ConnectionStateListener {
         
     }
 
-
     /***************************************************************************
     * When the connection is closed, pending tasks and transactions are 
     * completed.
@@ -237,7 +237,10 @@ public class PlcReadS71200 implements ConnectionStateListener {
     }    
 
     /***************************************************************************
-    * 
+    * This method is called when the driver makes an internal TCP connection.
+    * The first connection of the driver does not generate this event.
+    * In the case of high availability systems, this signal should be used 
+    * to restart subscriptions to events, alarms, etc. 
     ***************************************************************************/    
     @Override
     public void connected() {
@@ -248,7 +251,8 @@ public class PlcReadS71200 implements ConnectionStateListener {
     }
 
     /***************************************************************************
-    * 
+    * This method is called when there is a physical disconnection of the driver
+    * Check the monitoring parameters given in the URL during connection.
     ***************************************************************************/    
     @Override
     public void disconnected() {
