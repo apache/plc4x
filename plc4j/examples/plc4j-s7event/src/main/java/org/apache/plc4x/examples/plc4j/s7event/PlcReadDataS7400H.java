@@ -77,7 +77,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         
         OpenConnection("s7://10.10.1.80/10.10.1.81?remote-rack=0&"
                 + "remote-slot=3&remote-rack2=0&remote-slot=4&"
-                + "controller-type=S7_400&read-timeout=8&"
+                + "controller-type=S7_400&read-timeout=8&"                
                 + "ping=true&ping-time=2&retry-time=3"); //(01)
            
         logger.info("*****************************************************"); 
