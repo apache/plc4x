@@ -30,6 +30,7 @@ import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.Consumer;
