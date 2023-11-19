@@ -23,11 +23,13 @@ import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.api.DataLayerInformationAndSettingsApi;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.model.BrowseData;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class BrowseTest {
 
     @Test
+    @Disabled("Only made to run locally")
     public void browseTest() throws Exception {
         ApiClient apiClient = ApiClientFactory.getApiClient("https://192.168.42.100", "boschrexroth", "TimechoEurope2023");
         //
