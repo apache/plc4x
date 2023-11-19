@@ -44,6 +44,7 @@
     <module>c-bus</module>
     <module>can</module>
     <module>canopen</module>
+    <module>ctrlx</module>
     <module>eip</module>
     <module>firmata</module>
     <module>iec-60870</module>
