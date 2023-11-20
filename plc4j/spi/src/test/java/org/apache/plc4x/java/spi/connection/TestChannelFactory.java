@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,20 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.spi.connection;
 
-import io.netty.channel.ChannelPipeline;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.listener.EventListener;
-import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.generation.Message;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.embedded.EmbeddedChannel;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
-import java.util.Collections;
-import java.util.List;
+public class TestChannelFactory implements ChannelFactory {
 
-public interface ProtocolStackConfigurer<T extends Message> {
+    private EmbeddedChannel channel;
 
-    Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners);
+    @Override
+    public Channel createChannel(ChannelHandler channelHandler) throws PlcConnectionException {
+        this.channel = new EmbeddedChannel(channelHandler);
+        return channel;
+    }
+
+    @Override
+    public boolean isPassive() {
+        return false;
+    }
+
+    public EmbeddedChannel getChannel() {
+        return channel;
+    }
 
 }
