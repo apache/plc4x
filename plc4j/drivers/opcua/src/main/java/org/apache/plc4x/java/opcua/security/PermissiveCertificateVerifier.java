@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,15 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.opcua;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
-import org.junit.jupiter.api.Disabled;
+package org.apache.plc4x.java.opcua.security;
 
-public class OpcuaDriverIT extends DriverTestsuiteRunner {
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
-    public OpcuaDriverIT() {
-        super("/protocols/opcua/DriverTestsuite.xml", false);
+/**
+ * The trust manager which does trust all certificates and does not complain on anything.
+ */
+public class PermissiveCertificateVerifier implements CertificateVerifier {
+
+    @Override
+    public void checkCertificateTrusted(X509Certificate certificate) throws CertificateException {
     }
+
 
 }

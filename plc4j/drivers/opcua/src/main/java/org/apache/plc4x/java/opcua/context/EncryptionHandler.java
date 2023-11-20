@@ -18,29 +18,24 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
-import static org.apache.plc4x.java.spi.generation.ByteOrder.LITTLE_ENDIAN;
-
 import io.vavr.control.Try;
-import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Security;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.util.List;
+import java.util.function.Supplier;
 import javax.crypto.Cipher;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
+import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
+import org.apache.plc4x.java.opcua.protocol.chunk.ChunkFactory;
 import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenRequest;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenResponse;
+import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
 import org.apache.plc4x.java.opcua.readwrite.PascalString;
 import org.apache.plc4x.java.opcua.readwrite.SignatureData;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,113 +43,79 @@ import org.slf4j.LoggerFactory;
 
 public class EncryptionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
+    private final Logger logger = LoggerFactory.getLogger(EncryptionHandler.class);
 
     static {
         // Required for SecurityPolicy.Aes128_Sha128_RsaPss
         Security.addProvider(new BouncyCastleProvider());
     }
 
+    private final Conversation conversation;
 
-    private X509Certificate serverCertificate;
-    private X509Certificate clientCertificate;
-    private PrivateKey clientPrivateKey;
-    private PublicKey clientPublicKey;
-    private final SecurityPolicy securitypolicy;
-
-    private byte[] clientNonce = null;
-    private byte[] serverNonce = null;
     private final SymmetricEncryptionHandler symmetricEncryptionHandler;
     private final AsymmetricEncryptionHandler asymmetricEncryptionHandler;
 
-    public EncryptionHandler(CertificateKeyPair ckp, byte[] senderCertificate, SecurityPolicy securityPolicy) {
-        if (ckp != null) {
-            this.clientPrivateKey = ckp.getKeyPair().getPrivate();
-            this.clientPublicKey = ckp.getKeyPair().getPublic();
-            this.clientCertificate = ckp.getCertificate();
-        }
-        if (senderCertificate != null) {
-            this.serverCertificate = getCertificateX509(senderCertificate);
-        }
-        this.securitypolicy = securityPolicy;
-        this.symmetricEncryptionHandler = new SymmetricEncryptionHandler(securityPolicy);
-        this.asymmetricEncryptionHandler = new AsymmetricEncryptionHandler(serverCertificate, clientCertificate, clientPrivateKey, clientPublicKey, securitypolicy);
+    public EncryptionHandler(Conversation conversation, PrivateKey senderPrivateKey) {
+        this.conversation = conversation;
+        this.symmetricEncryptionHandler = new SymmetricEncryptionHandler(conversation, conversation.getSecurityPolicy());
+        this.asymmetricEncryptionHandler = new AsymmetricEncryptionHandler(conversation, conversation.getSecurityPolicy(), senderPrivateKey);
     }
 
-    public void setServerCertificate(X509Certificate serverCertificate) {
-        this.serverCertificate = serverCertificate;
-    }
+    public List<MessagePDU> encodeMessage(MessagePDU message, Supplier<Integer> sequenceSupplier) {
+        OpcuaProtocolLimits limits = conversation.getLimits();
+        logger.debug("Encoding Message with Security policy {} and encoding limits {}", conversation.getSecurityPolicy(), limits);
 
-    public ReadBuffer encodeMessage(MessagePDU pdu, byte[] message) {
-        switch (securitypolicy) {
-            case NONE:
-                return new ReadBufferByteBased(message, LITTLE_ENDIAN);
-            case Basic256Sha256:
-            case Basic128Rsa15:
-                if (pdu instanceof OpcuaOpenRequest) {
-                    return asymmetricEncryptionHandler.encodeMessage(pdu, message);
-                } else {
-                    return symmetricEncryptionHandler.encodeMessage(pdu, message, clientNonce, serverNonce);
-                }
-            default:
-                throw new IllegalStateException("Driver doesn't support security policy: " + securitypolicy);
+        if (message instanceof OpcuaOpenRequest || message instanceof OpcuaOpenResponse) {
+            Chunk chunk = new ChunkFactory().create(true, conversation.isSymmetricEncryptionEnabled(), conversation.isSymmetricSigningEnabled(),
+                conversation.getSecurityPolicy(), limits,
+                conversation.getLocalCertificate(), conversation.getRemoteCertificate()
+            );
+            return asymmetricEncryptionHandler.encodeMessage(chunk, message, sequenceSupplier);
         }
+
+        Chunk chunk = new ChunkFactory().create(false, conversation.isSymmetricEncryptionEnabled(), conversation.isSymmetricSigningEnabled(),
+            conversation.getSecurityPolicy(), limits,
+            conversation.getLocalCertificate(), conversation.getRemoteCertificate()
+        );
+        return symmetricEncryptionHandler.encodeMessage(chunk, message, sequenceSupplier);
     }
 
+    public MessagePDU decodeMessage(MessagePDU message) {
+        OpcuaProtocolLimits limits = conversation.getLimits();
+        logger.debug("Decoding Message with Security policy {} and encoding limits {}", conversation.getSecurityPolicy(), limits);
 
-    public SignatureData createClientSignature(byte[] lastServerNonce) {
-        byte[] cert = Try.of(() -> serverCertificate.getEncoded()).getOrElse(new byte[0]);
-        byte[] bytes = ByteBuffer.allocate(cert.length+lastServerNonce.length).put(cert).put(lastServerNonce).array();
+        if (message instanceof OpcuaOpenResponse || message instanceof OpcuaOpenRequest) {
+            Chunk chunk = new ChunkFactory().create(true, conversation.isSymmetricEncryptionEnabled(), conversation.isSymmetricSigningEnabled(),
+                conversation.getSecurityPolicy(), limits,
+                conversation.getRemoteCertificate(), conversation.getLocalCertificate()
+            );
+            return asymmetricEncryptionHandler.decodeMessage(chunk, message);
+        }
+        Chunk chunk = new ChunkFactory().create(false, conversation.isSymmetricEncryptionEnabled(), conversation.isSymmetricSigningEnabled(),
+            conversation.getSecurityPolicy(), limits,
+            conversation.getRemoteCertificate(), conversation.getLocalCertificate()
+        );
+        return symmetricEncryptionHandler.decodeMessage(chunk, message);
+    }
+
+    public SignatureData createClientSignature() throws GeneralSecurityException {
+        SecurityPolicy securityPolicy = conversation.getSecurityPolicy();
+        byte[] lastServerNonce = conversation.getRemoteNonce();
+        byte[] cert = Try.of(() -> conversation.getRemoteCertificate().getEncoded()).getOrElse(new byte[0]);
+        byte[] bytes = ByteBuffer.allocate(cert.length + lastServerNonce.length).put(cert).put(lastServerNonce).array();
         byte[] signed = asymmetricEncryptionHandler.sign(bytes);
-        return new SignatureData(new PascalString(securitypolicy.getAsymmetricSignatureAlgorithm().getUri()), new PascalByteString(signed.length, signed));
-    }
-
-    public OpcuaAPU decodeMessage(OpcuaAPU pdu) {
-        LOGGER.info("Decoding Message with Security policy {}", securitypolicy);
-
-        switch (securitypolicy) {
-            case NONE:
-                return pdu;
-            case Basic128Rsa15:
-            case Basic256Sha256:
-                if (pdu.getMessage() instanceof OpcuaOpenResponse) {
-                    return asymmetricEncryptionHandler.decodeMessage(pdu);
-                } else {
-                    return symmetricEncryptionHandler.decodeMessage(pdu, clientNonce, serverNonce);
-                }
-            default:
-                throw new IllegalStateException("Driver doesn't support security policy: " + securitypolicy);
-        }
+        return new SignatureData(new PascalString(securityPolicy.getAsymmetricSignatureAlgorithm().getUri()), new PascalByteString(signed.length, signed));
     }
 
     public byte[] encryptPassword(byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, this.serverCertificate.getPublicKey());
+            cipher.init(Cipher.ENCRYPT_MODE, this.conversation.getRemoteCertificate().getPublicKey());
             return cipher.doFinal(data);
         } catch (Exception e) {
-            LOGGER.error("Unable to encrypt Data", e);
+            logger.error("Unable to encrypt Data", e);
             return null;
         }
     }
 
-    public static X509Certificate getCertificateX509(byte[] senderCertificate) {
-        try {
-            CertificateFactory factory = CertificateFactory.getInstance("X.509");
-            LOGGER.info("Public Key Length {}", senderCertificate.length);
-            return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(senderCertificate));
-        } catch (Exception e) {
-            LOGGER.error("Unable to get certificate from String {}", senderCertificate);
-            return null;
-        }
-    }
-
-    public void setClientNonce(byte[] clientNonce) {
-        this.clientNonce = clientNonce;
-    }
-
-
-    public void setServerNonce(byte[] serverNonce) {
-        this.serverNonce = serverNonce;
-    }
 }

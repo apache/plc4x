@@ -1,5 +1,24 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.opcua.security;
 
+import java.util.Arrays;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy.MacSignatureAlgorithm;
 
 import javax.crypto.Mac;
@@ -9,40 +28,56 @@ public class SymmetricKeys {
 
 
     private final Keys clientKeys;
+    private final byte[] senderNonce;
     private final Keys serverKeys;
+    private final byte[] receiverNonce;
 
 
-    public SymmetricKeys(Keys clientKeys, Keys serverKeys) {
+    public SymmetricKeys(Keys clientKeys, byte[] senderNonce, Keys serverKeys, byte[] receiverNonce) {
         this.clientKeys = clientKeys;
+        this.senderNonce = senderNonce;
         this.serverKeys = serverKeys;
+        this.receiverNonce = receiverNonce;
     }
 
     public Keys getClientKeys() {
         return clientKeys;
     }
 
+    public byte[] getSenderNonce() {
+        return senderNonce;
+    }
+
     public Keys getServerKeys() {
         return serverKeys;
     }
 
-    public static SymmetricKeys generateKeyPair(byte[] clientNonce, byte[] serverNonce, MacSignatureAlgorithm policy) {
-        int signatureKeySize = policy.getKeySize();
-        int encryptionKeySize = policy.getKeySize();
-        int cipherTextBlockSize = 16;
+    public byte[] getReceiverNonce() {
+        return receiverNonce;
+    }
 
+    // make sure that keys are
+    public boolean matches(byte[] senderNonce, byte[] receiverNonce) {
+        return Arrays.equals(this.senderNonce, senderNonce) && Arrays.equals(this.receiverNonce, receiverNonce);
+    }
 
-        byte[] clientSignatureKey = createKey(serverNonce, clientNonce, 0, signatureKeySize, policy);
-        byte[] clientEncryptionKey = createKey(serverNonce, clientNonce, signatureKeySize, encryptionKeySize, policy);
-        byte[] clientInitializationVector = createKey(serverNonce, clientNonce, signatureKeySize + encryptionKeySize, cipherTextBlockSize, policy);
+    public static SymmetricKeys generateKeyPair(byte[] senderNonce, byte[] receiverNonce, SecurityPolicy securityPolicy) {
+        int signatureKeySize = securityPolicy.getSignatureKeySize();
+        int encryptionKeySize = securityPolicy.getEncryptionKeySize();
+        int cipherTextBlockSize = securityPolicy.getEncryptionBlockSize();
 
+        MacSignatureAlgorithm policy = securityPolicy.getSymmetricSignatureAlgorithm();
+        byte[] senderSignatureKey = createKey(receiverNonce, senderNonce, 0, signatureKeySize, policy);
+        byte[] senderEncryptionKey = createKey(receiverNonce, senderNonce, signatureKeySize, encryptionKeySize, policy);
+        byte[] senderInitializationVector = createKey(receiverNonce, senderNonce, signatureKeySize + encryptionKeySize, cipherTextBlockSize, policy);
 
-        byte[] serverSignatureKey = createKey(clientNonce, serverNonce, 0, signatureKeySize, policy);
-        byte[] serverEncryptionKey = createKey(clientNonce, serverNonce, signatureKeySize, encryptionKeySize, policy);
-        byte[] serverInitializationVector = createKey(clientNonce, serverNonce, signatureKeySize + encryptionKeySize, cipherTextBlockSize, policy);
+        byte[] receiverSignatureKey = createKey(senderNonce, receiverNonce, 0, signatureKeySize, policy);
+        byte[] receiverEncryptionKey = createKey(senderNonce, receiverNonce, signatureKeySize, encryptionKeySize, policy);
+        byte[] receiverInitializationVector = createKey(senderNonce, receiverNonce, signatureKeySize + encryptionKeySize, cipherTextBlockSize, policy);
 
         return new SymmetricKeys(
-            new Keys(clientSignatureKey, clientEncryptionKey, clientInitializationVector),
-            new Keys(serverSignatureKey, serverEncryptionKey, serverInitializationVector)
+            new Keys(senderSignatureKey, senderEncryptionKey, senderInitializationVector), senderNonce,
+            new Keys(receiverSignatureKey, receiverEncryptionKey, receiverInitializationVector), receiverNonce
         );
     }
 

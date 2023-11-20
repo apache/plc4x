@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,15 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.opcua;
 
-import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
-import org.junit.jupiter.api.Disabled;
+package org.apache.plc4x.java.opcua.security;
 
-public class OpcuaDriverIT extends DriverTestsuiteRunner {
+import org.apache.plc4x.java.opcua.readwrite.MessageSecurityMode;
 
-    public OpcuaDriverIT() {
-        super("/protocols/opcua/DriverTestsuite.xml", false);
+public enum MessageSecurity {
+
+    NONE (MessageSecurityMode.messageSecurityModeNone),
+    SIGN (MessageSecurityMode.messageSecurityModeSign),
+    SIGN_ENCRYPT (MessageSecurityMode.messageSecurityModeSignAndEncrypt);
+
+    private final MessageSecurityMode mode;
+
+    MessageSecurity(MessageSecurityMode mode) {
+        this.mode = mode;
+    }
+
+    public MessageSecurityMode getMode() {
+        return mode;
     }
 
 }

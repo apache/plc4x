@@ -18,44 +18,18 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-
 public class SecureChannelTransactionManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecureChannel.class);
     public static final int DEFAULT_MAX_REQUEST_ID = 0xFFFFFFFF;
-    private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(0);
-    private final AtomicInteger requestIdentifierGenerator = new AtomicInteger(0);
-    private final AtomicInteger activeTransactionId = new AtomicInteger(0);
-    private final Map<Integer, Transaction> queue = new HashMap<>();
 
-    public synchronized void submit(Consumer<Integer> onSend, Integer transactionId) {
-        LOGGER.info("Active transaction Number {}", activeTransactionId.get());
-        if (activeTransactionId.get() == transactionId) {
-            onSend.accept(transactionId);
-            int newTransactionId = getActiveTransactionIdentifier();
-            if (!queue.isEmpty()) {
-                Transaction t = queue.remove(newTransactionId);
-                if (t == null) {
-                    LOGGER.info("Length of Queue is {}", queue.size());
-                    LOGGER.info("Transaction ID is {}", newTransactionId);
-                    LOGGER.info("Map  is {}", queue);
-                    throw new PlcRuntimeException("Transaction Id not found in queued messages {}");
-                }
-                submit(t.getConsumer(), t.getTransactionId());
-            }
-        } else {
-            LOGGER.info("Storing out of order transaction {}", transactionId);
-            queue.put(transactionId, new Transaction(onSend, transactionId));
-        }
-    }
+    private final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
+    private final AtomicInteger sequenceIdGenerator = new AtomicInteger(1);
+    private final AtomicInteger requestHandleGenerator = new AtomicInteger(1);
 
     /**
      * Returns the next transaction identifier.
@@ -63,43 +37,47 @@ public class SecureChannelTransactionManager {
      * @return the next sequential transaction identifier
      */
     public int getTransactionIdentifier() {
+        // transaction identifier must begin with 1, otherwise .NET standard server fails!
         int transactionId = transactionIdentifierGenerator.getAndIncrement();
-        if(transactionIdentifierGenerator.get() == DEFAULT_MAX_REQUEST_ID) {
-            transactionIdentifierGenerator.set(1);
+        if (transactionId == DEFAULT_MAX_REQUEST_ID) {
+            transactionIdentifierGenerator.set(0);
         }
         return transactionId;
     }
 
     /**
-     * Returns the next transaction identifier.
+     * Returns the next sequence identifier.
      *
-     * @return the next sequential transaction identifier
+     * @return the next sequential identifier
      */
-    private int getActiveTransactionIdentifier() {
-        int transactionId = activeTransactionId.incrementAndGet();
-        if(activeTransactionId.get() == DEFAULT_MAX_REQUEST_ID) {
-            activeTransactionId.set(1);
+    private int getSequenceIdentifier() {
+        int sequenceId = sequenceIdGenerator.getAndIncrement();
+        if (sequenceId == DEFAULT_MAX_REQUEST_ID) {
+            sequenceIdGenerator.set(0);
         }
-        return transactionId;
+        return sequenceId;
     }
 
-    public static class Transaction {
+    /**
+     * Creates sequence supplier for temporary use by message sender.
+     *
+     * @return Sequence supplier.
+     */
+    public Supplier<Integer> getSequenceSupplier() {
+        return this::getSequenceIdentifier;
+    }
 
-        private final Integer transactionId;
-        private final Consumer<Integer> consumer;
-
-        public Transaction(Consumer<Integer> consumer, Integer transactionId) {
-            this.consumer = consumer;
-            this.transactionId = transactionId;
+    /**
+     * Returns the next request handle
+     *
+     * @return the next sequential request handle
+     */
+    public int getRequestHandle() {
+        int transactionId = requestHandleGenerator.getAndIncrement();
+        if (requestHandleGenerator.get() == SecureChannelTransactionManager.DEFAULT_MAX_REQUEST_ID) {
+            requestHandleGenerator.set(0);
         }
-
-        public Integer getTransactionId() {
-            return transactionId;
-        }
-
-        public Consumer<Integer> getConsumer() {
-            return consumer;
-        }
+        return transactionId;
     }
 
 }

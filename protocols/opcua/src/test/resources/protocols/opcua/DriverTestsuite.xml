@@ -27,6 +27,12 @@
   <protocolName>opcua</protocolName>
   <outputFlavor>read-write</outputFlavor>
   <driver-name>opcua</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>discovery</name>
+      <value>false</value>
+    </parameter>
+  </driver-parameters>
 
   <testcase>
     <name>Hello Request Response</name>

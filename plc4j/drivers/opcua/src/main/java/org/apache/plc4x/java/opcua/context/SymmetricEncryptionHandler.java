@@ -1,9 +1,26 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.opcua.context;
 
-import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
-import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageResponse;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy.EncryptionAlgorithm;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy.MacSignatureAlgorithm;
@@ -15,158 +32,85 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 
-public class SymmetricEncryptionHandler {
-    private static final int SECURE_MESSAGE_HEADER_SIZE = 12;
-    private static final int SEQUENCE_HEADER_SIZE = 8;
-    private static final int SYMMETRIC_SECURITY_HEADER_SIZE = 4;
-
-    private final SecurityPolicy policy;
-
+public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
 
     private SymmetricKeys keys = null;
 
-    public SymmetricEncryptionHandler(SecurityPolicy policy) {
-        this.policy = policy;
+    public SymmetricEncryptionHandler(Conversation channel, SecurityPolicy policy) {
+        super(channel, policy);
     }
 
-    /**
-     * Docs: https://reference.opcfoundation.org/Core/Part6/v104/docs/6.7
-     *
-     * @param pdu
-     * @param message
-     * @param clientNonce
-     * @param serverNonce
-     * @return
-     */
-    public ReadBuffer encodeMessage(MessagePDU pdu, byte[] message, byte[] clientNonce, byte[] serverNonce) {
-        int unencryptedLength = pdu.getLengthInBytes();
-        int messageLength = message.length;
+    protected void verify(WriteBufferByteBased buffer, Chunk chunk, int messageLength) throws Exception {
+        int signatureStart = messageLength - chunk.getSignatureSize();
+        byte[] message = buffer.getBytes(0, signatureStart);
+        byte[] signatureData = buffer.getBytes(signatureStart, signatureStart + chunk.getSignatureSize());
 
-        int beforeBodyLength = unencryptedLength - messageLength; // message header, security header, sequence header
+        SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
+        MacSignatureAlgorithm algorithm = securityPolicy.getSymmetricSignatureAlgorithm();
+        Mac signature = algorithm.getSignature();
+        signature.init(new SecretKeySpec(symmetricKeys.getServerKeys().getSignatureKey(), algorithm.getName()));
+        signature.update(message);
+        byte[] signatureBytes = signature.doFinal();
 
-        int cipherTextBlockSize = 16;
-        int plainTextBlockSize = 16;
-        int signatureSize = policy.getSymmetricSignatureAlgorithm().getSymmetricSignatureSize();
-
-
-        int maxChunkSize = 8196;
-        int paddingOverhead = 1;
-
-
-        int securityHeaderSize = SYMMETRIC_SECURITY_HEADER_SIZE;
-        int maxCipherTextSize = maxChunkSize - securityHeaderSize;
-        int maxCipherTextBlocks = maxCipherTextSize / cipherTextBlockSize;
-        int maxPlainTextSize = maxCipherTextBlocks * plainTextBlockSize;
-        int maxBodySize = maxPlainTextSize - SEQUENCE_HEADER_SIZE - paddingOverhead - signatureSize;
-
-        int bodySize = Math.min(message.length, maxBodySize);
-
-        int plainTextSize = SEQUENCE_HEADER_SIZE + bodySize + paddingOverhead + signatureSize;
-        int remaining = plainTextSize % plainTextBlockSize;
-        int paddingSize = remaining > 0 ? plainTextBlockSize - remaining : 0;
-
-        int plainTextContentSize = SEQUENCE_HEADER_SIZE + bodySize +
-            signatureSize + paddingSize + paddingOverhead;
-
-        int frameSize = SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize +
-            (plainTextContentSize / plainTextBlockSize) * cipherTextBlockSize;
-
-        SymmetricKeys symmetricKeys = getSymmetricKeys(clientNonce, serverNonce);
-
-        try {
-            WriteBufferByteBased buf = new WriteBufferByteBased(frameSize, ByteOrder.LITTLE_ENDIAN);
-            OpcuaAPU opcuaAPU = new OpcuaAPU(pdu);
-            opcuaAPU.serialize(buf);
-
-            writePadding(paddingSize, buf);
-            updateFrameSize(frameSize, buf);
-
-            byte[] sign = sign(buf.getBytes(), symmetricKeys.getClientKeys());
-            buf.writeByteArray(sign);
-
-            buf.setPos(SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize);
-
-            byte[] encrypted = encrypt(securityHeaderSize, frameSize, buf, symmetricKeys);
-            buf.writeByteArray(encrypted);
-
-            return new ReadBufferByteBased(buf.getBytes(), ByteOrder.LITTLE_ENDIAN);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (!MessageDigest.isEqual(signatureData, signatureBytes)) {
+            throw new IllegalArgumentException("Invalid signature");
         }
     }
 
-    public OpcuaAPU decodeMessage(OpcuaAPU pdu, byte[] clientNonce, byte[] serverNonce) {
-        MessagePDU message = pdu.getMessage();
+    protected int decrypt(WriteBufferByteBased chunkBuffer, Chunk chunk, int messageLength) throws Exception {
+        int bodyStart = 12 + chunk.getSecurityHeaderSize();
 
-        OpcuaMessageResponse a = (OpcuaMessageResponse) message;
+        int bodySize = messageLength - bodyStart;
+        int blockCount = bodySize / chunk.getCipherTextBlockSize();
+        assert(bodySize % chunk.getCipherTextBlockSize() == 0);
 
+        byte[] encrypted = chunkBuffer.getBytes(bodyStart, bodyStart + bodySize);
+        byte[] plainText = new byte[chunk.getCipherTextBlockSize() * blockCount];
 
-        int cipherTextBlockSize = 16; // different for aes256
+        SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
+        Cipher cipher = getCipher(symmetricKeys.getServerKeys(), securityPolicy.getSymmetricEncryptionAlgorithm(), Cipher.DECRYPT_MODE);
 
-        if (!(a.getMessage() instanceof BinaryPayload)) {
-            throw new IllegalArgumentException("Unexpected payload");
-        }
-        byte[] textMessage = ((BinaryPayload) a.getMessage()).getPayload();
+        int bodyLength = cipher.doFinal(encrypted, 0, encrypted.length, plainText, 0);
 
-
-        int blockCount = (SEQUENCE_HEADER_SIZE + textMessage.length) / cipherTextBlockSize;
-        int plainTextBufferSize = cipherTextBlockSize * blockCount;
-
-
-        try {
-            WriteBufferByteBased buf = new WriteBufferByteBased(pdu.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            pdu.serialize(buf);
-
-            EncryptionAlgorithm transformation = policy.getSymmetricEncryptionAlgorithm();
-            SymmetricKeys symmetricKeys = getSymmetricKeys(clientNonce, serverNonce);
-            Cipher cipher = getCipher(symmetricKeys.getServerKeys(), transformation, Cipher.DECRYPT_MODE);
-
-            ByteBuffer buffer = ByteBuffer.allocate(plainTextBufferSize);
-            byte[] bytes = buf.getBytes(pdu.getLengthInBytes() - plainTextBufferSize, pdu.getLengthInBytes());
-            ByteBuffer originalMessage = ByteBuffer.wrap(bytes);
-
-
-            cipher.doFinal(originalMessage, buffer);
-
-            buffer.flip();
-
-            buf.setPos(pdu.getLengthInBytes() - plainTextBufferSize);
-            buf.writeByteArray(buffer.array());
-
-
-            int frameSize = pdu.getLengthInBytes() - plainTextBufferSize + buffer.limit();
-
-            updateFrameSize(frameSize, buf);
-
-            byte[] decryptedMessage = buf.getBytes(0, frameSize);
-            ReadBuffer readBuffer = new ReadBufferByteBased(decryptedMessage, ByteOrder.LITTLE_ENDIAN);
-            OpcuaAPU opcuaAPU = OpcuaAPU.staticParse(readBuffer, true);
-            return opcuaAPU;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
+        chunkBuffer.setPos(bodyStart);
+        chunkBuffer.writeByteArray("payload", plainText);
+        return bodyLength;
     }
 
-    private byte[] encrypt(int securityHeaderSize, int frameSize, WriteBufferByteBased buf, SymmetricKeys symmetricKeys) throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(frameSize - buf.getPos());
-        ByteBuffer originalMessage = ByteBuffer.wrap(buf.getBytes(SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize, frameSize));
+    protected void encrypt(WriteBufferByteBased buffer, int securityHeaderSize, int plainTextBlockSize, int cipherTextBlockSize, int blockCount) throws Exception {
+        SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
 
+        int bodyStart = 12 + securityHeaderSize;
+        byte[] copy = buffer.getBytes(bodyStart, bodyStart + (plainTextBlockSize * blockCount));
+        byte[] encrypted = new byte[cipherTextBlockSize * blockCount];
 
-        EncryptionAlgorithm transformation = policy.getSymmetricEncryptionAlgorithm();
+        EncryptionAlgorithm transformation = securityPolicy.getSymmetricEncryptionAlgorithm();
         Cipher cipher = getCipher(symmetricKeys.getClientKeys(), transformation, Cipher.ENCRYPT_MODE);
+        cipher.doFinal(copy, 0, copy.length, encrypted, 0);
 
+        buffer.setPos(bodyStart);
+        buffer.writeByteArray("encrypted", encrypted);
+    }
 
-        cipher.doFinal(originalMessage, buffer);
+    protected byte[] sign(byte[] data)throws GeneralSecurityException {
+        SymmetricKeys symmetricKeys = getSymmetricKeys(conversation.getLocalNonce(), conversation.getRemoteNonce());
+        MacSignatureAlgorithm algorithm = securityPolicy.getSymmetricSignatureAlgorithm();
+        Mac signature = algorithm.getSignature();
+        signature.init(new SecretKeySpec(symmetricKeys.getClientKeys().getSignatureKey(), algorithm.getName()));
+        signature.update(data);
+        return signature.doFinal();
+    }
 
-        return buffer.array();
+    private SymmetricKeys getSymmetricKeys(byte[] senderNonce, byte[] receiverNonce) {
+        if (keys == null) {
+            keys = SymmetricKeys.generateKeyPair(senderNonce, receiverNonce, securityPolicy);
+        }
+        return keys;
     }
 
     private static Cipher getCipher(SymmetricKeys.Keys symmetricKeys, EncryptionAlgorithm transformation, int mode) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
@@ -179,37 +123,4 @@ public class SymmetricEncryptionHandler {
         return cipher;
     }
 
-    private static void updateFrameSize(int frameSize, WriteBufferByteBased buf) throws SerializationException {
-        int initPosition = buf.getPos();
-        buf.setPos(4);
-        buf.writeInt(32, frameSize);
-        buf.setPos(initPosition);
-    }
-
-
-    public byte[] sign(byte[] data, SymmetricKeys.Keys symmetricKeys) {
-        try {
-            MacSignatureAlgorithm algorithm = policy.getSymmetricSignatureAlgorithm();
-            Mac signature = algorithm.getSignature();
-            signature.init(new SecretKeySpec(symmetricKeys.getSignatureKey(), algorithm.getName()));
-            signature.update(data);
-            return signature.doFinal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void writePadding(int paddingSize, WriteBufferByteBased buffer) throws Exception {
-        buffer.writeByte((byte) paddingSize);
-        for (int i = 0; i < paddingSize; i++) {
-            buffer.writeByte((byte) paddingSize);
-        }
-    }
-
-    private SymmetricKeys getSymmetricKeys(byte[] clientNonce, byte[] serverNonce) {
-        if (keys == null) {
-            keys = SymmetricKeys.generateKeyPair(clientNonce, serverNonce, policy.getSymmetricSignatureAlgorithm());
-        }
-        return keys;
-    }
 }

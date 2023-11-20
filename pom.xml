@@ -786,6 +786,9 @@
             <exclude>**/*.json</exclude>
             <exclude>**/*.avsc</exclude>
 
+            <!-- comments are trouble some for CSVs which are static -->
+            <exclude>**/*.csv</exclude>
+
             <!-- Output of the profiler maven extension -->
             <exclude>**/.profiler/**</exclude>
 

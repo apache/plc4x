@@ -1,208 +1,108 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.plc4x.java.opcua.context;
 
-import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
-import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenResponse;
-import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.apache.plc4x.java.spi.generation.*;
-
-import javax.crypto.Cipher;
-import java.nio.ByteBuffer;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Signature;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPublicKey;
+import java.security.SignatureException;
+import javax.crypto.Cipher;
+import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
+import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 
-public class AsymmetricEncryptionHandler {
-    private static final int SECURE_MESSAGE_HEADER_SIZE = 12;
-    private static final int SEQUENCE_HEADER_SIZE = 8;
+public class AsymmetricEncryptionHandler extends BaseEncryptionHandler {
 
-    private final SecurityPolicy policy;
+    private final PrivateKey senderPrivateKey;
 
-    private final X509Certificate serverCertificate;
-    private final X509Certificate clientCertificate;
-
-    private final PrivateKey clientPrivateKey;
-
-    public AsymmetricEncryptionHandler(X509Certificate serverCertificate, X509Certificate clientCertificate, PrivateKey clientPrivateKey, PublicKey clientPublicKey, SecurityPolicy policy) {
-        this.serverCertificate = serverCertificate;
-        this.clientCertificate = clientCertificate;
-        this.clientPrivateKey = clientPrivateKey;
-        this.policy = policy;
+    public AsymmetricEncryptionHandler(Conversation conversation, SecurityPolicy securityPolicy, PrivateKey senderPrivateKey) {
+        super(conversation, securityPolicy);
+        this.senderPrivateKey = senderPrivateKey;
     }
 
-    /**
-     * Docs: https://reference.opcfoundation.org/Core/Part6/v104/docs/6.7
-     *
-     * @param pdu
-     * @param message
-     * @return
-     */
-    public ReadBuffer encodeMessage(MessagePDU pdu, byte[] message) {
-        int unencryptedLength = pdu.getLengthInBytes();
-        int messageLength = message.length;
+    protected void verify(WriteBufferByteBased buffer, Chunk chunk, int messageLength) throws Exception {
+        int signatureStart = messageLength - chunk.getSignatureSize();
+        byte[] message = buffer.getBytes(0, signatureStart);
+        byte[] signatureData = buffer.getBytes(signatureStart, signatureStart + chunk.getSignatureSize());
 
-        int beforeBodyLength = unencryptedLength - messageLength; // message header, security header, sequence header
-
-        int cipherTextBlockSize = (getAsymmetricKeyLength(serverCertificate) + 7) / 8;
-        int plainTextBlockSize = (getAsymmetricKeyLength(serverCertificate) + 7) / 8 - policy.getAsymmetricPlainBlock();
-        int signatureSize = (getAsymmetricKeyLength(clientCertificate) + 7) / 8;
-
-
-        int maxChunkSize = 8196;
-        int paddingOverhead = cipherTextBlockSize > 256 ? 2 : 1;
-
-
-        int securityHeaderSize = beforeBodyLength - SEQUENCE_HEADER_SIZE - SECURE_MESSAGE_HEADER_SIZE;
-        int maxCipherTextSize = maxChunkSize - securityHeaderSize;
-        int maxCipherTextBlocks = maxCipherTextSize / cipherTextBlockSize;
-        int maxPlainTextSize = maxCipherTextBlocks * plainTextBlockSize;
-        int maxBodySize = maxPlainTextSize - SEQUENCE_HEADER_SIZE - paddingOverhead - signatureSize;
-
-        int bodySize = Math.min(message.length, maxBodySize);
-
-        int plainTextSize = SEQUENCE_HEADER_SIZE + bodySize + paddingOverhead + signatureSize;
-        int remaining = plainTextSize % plainTextBlockSize;
-        int paddingSize = remaining > 0 ? plainTextBlockSize - remaining : 0;
-
-        int plainTextContentSize = SEQUENCE_HEADER_SIZE + bodySize +
-            signatureSize + paddingSize + paddingOverhead;
-
-        int frameSize = SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize +
-            (plainTextContentSize / plainTextBlockSize) * cipherTextBlockSize;
-
-        try {
-            WriteBufferByteBased buf = new WriteBufferByteBased(frameSize, ByteOrder.LITTLE_ENDIAN);
-            OpcuaAPU opcuaAPU = new OpcuaAPU(pdu);
-            opcuaAPU.serialize(buf);
-
-            writePadding(paddingSize, buf);
-            updateFrameSize(frameSize, buf);
-
-            byte[] sign = sign(buf.getBytes());
-            buf.writeByteArray(sign);
-
-            buf.setPos(SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize);
-
-            int blockCount = (frameSize - buf.getPos()) / plainTextBlockSize;// -> plainTextContentSize / plainTextBlockSize
-
-            byte[] encrypted = encrypt(plainTextBlockSize, securityHeaderSize, frameSize, buf, blockCount);
-            buf.writeByteArray(encrypted);
-
-            return new ReadBufferByteBased(buf.getBytes(), ByteOrder.LITTLE_ENDIAN);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        Signature signature = securityPolicy.getAsymmetricSignatureAlgorithm().getSignature();
+        signature.initVerify(conversation.getRemoteCertificate().getPublicKey());
+        signature.update(message);
+        if (signature.verify(signatureData)) {
+            throw new IllegalArgumentException("Invalid signature");
         }
     }
 
-    public OpcuaAPU decodeMessage(OpcuaAPU pdu) {
-        MessagePDU message = pdu.getMessage();
+    protected int decrypt(WriteBufferByteBased chunkBuffer, Chunk chunk, int messageLength) throws Exception {
+        int bodyStart = 12 + chunk.getSecurityHeaderSize();
 
-        OpcuaOpenResponse a = (OpcuaOpenResponse) message;
+        int bodySize = messageLength - bodyStart;
+        int blockCount = bodySize / chunk.getCipherTextBlockSize();
+        assert(bodySize % chunk.getCipherTextBlockSize() == 0);
 
+        byte[] encrypted = chunkBuffer.getBytes(bodyStart, bodyStart + bodySize);
+        byte[] plainText = new byte[chunk.getCipherTextBlockSize() * blockCount];
 
-        int cipherTextBlockSize = (getAsymmetricKeyLength(serverCertificate) + 7) / 8;
-        int signatureSize = (getAsymmetricKeyLength(clientCertificate) + 7) / 8;
+        Cipher cipher = securityPolicy.getAsymmetricEncryptionAlgorithm().getCipher();
+        cipher.init(Cipher.DECRYPT_MODE, senderPrivateKey);
 
-        if (!(a.getMessage() instanceof BinaryPayload)) {
-            throw new IllegalArgumentException("Unexpected payload");
-        }
-        byte[] textMessage = ((BinaryPayload) a.getMessage()).getPayload();
+        int bodyLength = 0;
+        for (int block = 0; block < blockCount; block++) {
+            int pos = block * chunk.getCipherTextBlockSize();
 
-        int blockCount = (SEQUENCE_HEADER_SIZE + textMessage.length) / cipherTextBlockSize;
-        int plainTextBufferSize = cipherTextBlockSize * blockCount;
-
-        try {
-            WriteBufferByteBased buf = new WriteBufferByteBased(pdu.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
-            pdu.serialize(buf);
-
-            Cipher cipher = policy.getAsymmetricEncryptionAlgorithm().getCipher();
-            cipher.init(Cipher.DECRYPT_MODE, clientPrivateKey);
-
-            ByteBuffer buffer = ByteBuffer.allocate(plainTextBufferSize);
-            byte[] bytes = buf.getBytes(pdu.getLengthInBytes() - plainTextBufferSize, pdu.getLengthInBytes());
-            //byte[] bytes = textMessage;
-            ByteBuffer originalMessage = ByteBuffer.wrap(bytes);
-
-            for (int blockNumber = 0; blockNumber < blockCount; blockNumber++) {
-                originalMessage.limit(originalMessage.position() + cipherTextBlockSize);
-                cipher.doFinal(originalMessage, buffer);
-            }
-
-            buffer.flip();
-            buf.setPos(pdu.getLengthInBytes() - plainTextBufferSize);
-            buf.writeByteArray(buffer.array());
-            int frameSize = pdu.getLengthInBytes() - plainTextBufferSize + buffer.limit();
-            updateFrameSize(frameSize, buf);
-
-            byte[] decryptedMessage = buf.getBytes(0, frameSize);
-
-            ReadBuffer readBuffer = new ReadBufferByteBased(decryptedMessage, ByteOrder.LITTLE_ENDIAN);
-            OpcuaAPU opcuaAPU = OpcuaAPU.staticParse(readBuffer, true);
-            return opcuaAPU;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            bodyLength += cipher.doFinal(encrypted, pos, chunk.getCipherTextBlockSize(), plainText, pos);
         }
 
-
+        chunkBuffer.setPos(bodyStart);
+        byte[] decrypted = new byte[bodyLength];
+        System.arraycopy(plainText, 0, decrypted, 0, bodyLength);
+        chunkBuffer.writeByteArray("payload", decrypted);
+        return bodyLength;
     }
 
-    private byte[] encrypt(int plainTextBlockSize, int securityHeaderSize, int frameSize, WriteBufferByteBased buf, int blockCount) throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(frameSize - buf.getPos());
-        ByteBuffer originalMessage = ByteBuffer.wrap(buf.getBytes(SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize, frameSize));
+    protected void encrypt(WriteBufferByteBased buffer, int securityHeaderSize, int plainTextBlockSize, int cipherTextBlockSize, int blockCount) throws Exception {
+        int bodyStart = 12 + securityHeaderSize;
+        byte[] copy = buffer.getBytes(bodyStart, bodyStart + (plainTextBlockSize * blockCount));
+        byte[] encrypted = new byte[cipherTextBlockSize * blockCount];
 
-
-        Cipher cipher = policy.getAsymmetricEncryptionAlgorithm().getCipher();
-        cipher.init(Cipher.ENCRYPT_MODE, serverCertificate.getPublicKey());
+        // copy of bytes from sequence header over payload, padding bytes and signature
+        Cipher cipher = securityPolicy.getAsymmetricEncryptionAlgorithm().getCipher();
+        cipher.init(Cipher.ENCRYPT_MODE, conversation.getRemoteCertificate().getPublicKey());
 
         for (int block = 0; block < blockCount; block++) {
-            int position = block * plainTextBlockSize;
-            int limit = (block + 1) * plainTextBlockSize;
-            originalMessage.position(position);
-            originalMessage.limit(limit);
+            int pos = block * plainTextBlockSize;
+            int target = block * cipherTextBlockSize;
 
-            cipher.doFinal(originalMessage, buffer);
-
+            cipher.doFinal(copy, pos, plainTextBlockSize, encrypted, target);
         }
-        return buffer.array();
+
+        buffer.setPos(bodyStart);
+        buffer.writeByteArray("encrypted", encrypted);
     }
 
-    private static void updateFrameSize(int frameSize, WriteBufferByteBased buf) throws SerializationException {
-        int initPosition = buf.getPos();
-        buf.setPos(4);
-        buf.writeInt(32, frameSize);
-        buf.setPos(initPosition);
-    }
-
-
-    public byte[] sign(byte[] data) {
-        try {
-            Signature signature = policy.getAsymmetricSignatureAlgorithm().getSignature();
-            signature.initSign(clientPrivateKey);
-            signature.update(data);
-            return signature.sign();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void writePadding(int paddingSize, WriteBufferByteBased buffer) throws Exception {
-        buffer.writeByte((byte) paddingSize);
-        for (int i = 0; i < paddingSize; i++) {
-            buffer.writeByte((byte) paddingSize);
-        }
-    }
-
-
-    static int getAsymmetricKeyLength(Certificate certificate) {
-        PublicKey publicKey = certificate != null ?
-            certificate.getPublicKey() : null;
-
-        return (publicKey instanceof RSAPublicKey) ?
-            ((RSAPublicKey) publicKey).getModulus().bitLength() : 0;
+    public byte[] sign(byte[] contentsToSign) throws GeneralSecurityException {
+        Signature signature = securityPolicy.getAsymmetricSignatureAlgorithm().getSignature();
+        signature.initSign(senderPrivateKey);
+        signature.update(contentsToSign);
+        return signature.sign();
     }
 
 }
