@@ -1,5 +1,6 @@
 package org.apache.plc4x.java.opcua.context;
 
+import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
 import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaMessageResponse;
@@ -108,7 +109,10 @@ public class SymmetricEncryptionHandler {
 
         int cipherTextBlockSize = 16; // different for aes256
 
-        byte[] textMessage = a.getMessage();
+        if (!(a.getMessage() instanceof BinaryPayload)) {
+            throw new IllegalArgumentException("Unexpected payload");
+        }
+        byte[] textMessage = ((BinaryPayload) a.getMessage()).getPayload();
 
 
         int blockCount = (SEQUENCE_HEADER_SIZE + textMessage.length) / cipherTextBlockSize;

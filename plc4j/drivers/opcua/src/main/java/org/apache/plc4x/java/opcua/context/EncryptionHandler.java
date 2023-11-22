@@ -127,7 +127,6 @@ public class EncryptionHandler {
         }
     }
 
-
     public byte[] encryptPassword(byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");

@@ -1,5 +1,6 @@
 package org.apache.plc4x.java.opcua.context;
 
+import org.apache.plc4x.java.opcua.readwrite.BinaryPayload;
 import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaOpenResponse;
@@ -106,12 +107,13 @@ public class AsymmetricEncryptionHandler {
         int cipherTextBlockSize = (getAsymmetricKeyLength(serverCertificate) + 7) / 8;
         int signatureSize = (getAsymmetricKeyLength(clientCertificate) + 7) / 8;
 
-        byte[] textMessage = a.getMessage();
-
+        if (!(a.getMessage() instanceof BinaryPayload)) {
+            throw new IllegalArgumentException("Unexpected payload");
+        }
+        byte[] textMessage = ((BinaryPayload) a.getMessage()).getPayload();
 
         int blockCount = (SEQUENCE_HEADER_SIZE + textMessage.length) / cipherTextBlockSize;
         int plainTextBufferSize = cipherTextBlockSize * blockCount;
-
 
         try {
             WriteBufferByteBased buf = new WriteBufferByteBased(pdu.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
@@ -122,23 +124,22 @@ public class AsymmetricEncryptionHandler {
 
             ByteBuffer buffer = ByteBuffer.allocate(plainTextBufferSize);
             byte[] bytes = buf.getBytes(pdu.getLengthInBytes() - plainTextBufferSize, pdu.getLengthInBytes());
+            //byte[] bytes = textMessage;
             ByteBuffer originalMessage = ByteBuffer.wrap(bytes);
 
             for (int blockNumber = 0; blockNumber < blockCount; blockNumber++) {
                 originalMessage.limit(originalMessage.position() + cipherTextBlockSize);
                 cipher.doFinal(originalMessage, buffer);
             }
-            buffer.flip();
 
+            buffer.flip();
             buf.setPos(pdu.getLengthInBytes() - plainTextBufferSize);
             buf.writeByteArray(buffer.array());
-
-
             int frameSize = pdu.getLengthInBytes() - plainTextBufferSize + buffer.limit();
-
             updateFrameSize(frameSize, buf);
 
             byte[] decryptedMessage = buf.getBytes(0, frameSize);
+
             ReadBuffer readBuffer = new ReadBufferByteBased(decryptedMessage, ByteOrder.LITTLE_ENDIAN);
             OpcuaAPU opcuaAPU = OpcuaAPU.staticParse(readBuffer, true);
             return opcuaAPU;
