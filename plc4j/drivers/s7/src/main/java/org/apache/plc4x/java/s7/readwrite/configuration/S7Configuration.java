@@ -23,7 +23,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParamete
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class S7Configuration implements Configuration {
+public class S7Configuration extends S7TcpTransportConfiguration {
 
     @ConfigurationParameter("local-rack")
     @IntDefaultValue(1)
@@ -88,7 +88,6 @@ public class S7Configuration implements Configuration {
     @ConfigurationParameter("retry-time")
     @IntDefaultValue(0)
     public int retryTime = 0;
-
 
     public int getLocalRack() {
         return localRack;
@@ -217,7 +216,7 @@ public class S7Configuration implements Configuration {
     public void setRetryTime(int retryTime) {
         this.retryTime = retryTime;
     }
-
+    
     @Override
     public String toString() {
         return "Configuration{" +
@@ -229,6 +228,7 @@ public class S7Configuration implements Configuration {
             ", remote-rack2=" + remoteRack2 +
             ", remote-slot2=" + remoteSlot2 +
             ", remote-tsap=" + remoteTsap +
+            ", port=" + getDefaultPort() +                
             ", pduSize=" + pduSize +
             ", maxAmqCaller=" + maxAmqCaller +
             ", maxAmqCallee=" + maxAmqCallee +
@@ -240,6 +240,6 @@ public class S7Configuration implements Configuration {
             '\'' +
             '}';
     }
-
+            
 }
 

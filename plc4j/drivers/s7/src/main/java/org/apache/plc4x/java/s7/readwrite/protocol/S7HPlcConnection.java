@@ -72,12 +72,12 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         .build());
 
     protected final ChannelFactory secondaryChannelFactory;
-    protected Channel primary_channel = null;
-    protected Channel secondary_channel = null;
+    protected Channel primaryChannel = null;
+    protected Channel secondaryChannel = null;
     protected final MessageToMessageCodec<ByteBuf, ByteBuf> s7hmux;
 
-    protected int slice_ping = 0;
-    protected int slice_retry_time = 0;
+    protected int slicePing = 0;
+    protected int sliceRetryTime = 0;
 
     public S7HPlcConnection(
         boolean canPing,
@@ -164,9 +164,9 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             }
 
             //If it is not possible to generate a TCP connection.
-            //Safety shutdownn all executors in the channels.
-            if (primary_channel == null) {
-                if (secondary_channel == null) {
+            //Safety shutdown all executors in the channels.
+            if (primaryChannel == null) {
+                if (secondaryChannel == null) {
                     sendChannelDisconectEvent();
                     throw new PlcConnectionException("Connection is not possible.");
                 }
@@ -217,12 +217,12 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         } catch (Exception ex) {
             logger.info(ex.toString());
         }
-        if (primary_channel != null) {
-            if (primary_channel.isActive()) {
+        if (primaryChannel != null) {
+            if (primaryChannel.isActive()) {
                 try {
-                    primary_channel.pipeline().remove(MULTIPLEXER);
-                    primary_channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-                    primary_channel.eventLoop().shutdownGracefully();
+                    primaryChannel.pipeline().remove(MULTIPLEXER);
+                    primaryChannel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
+                    primaryChannel.eventLoop().shutdownGracefully();
 
                 } catch (Exception ex) {
                     logger.info(ex.toString());
@@ -230,11 +230,11 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             }
         }
 
-        if (secondary_channel != null) {
-            if (secondary_channel.isActive()) {
-                secondary_channel.pipeline().remove(MULTIPLEXER);
-                secondary_channel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
-                secondary_channel.eventLoop().shutdownGracefully();
+        if (secondaryChannel != null) {
+            if (secondaryChannel.isActive()) {
+                secondaryChannel.pipeline().remove(MULTIPLEXER);
+                secondaryChannel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
+                secondaryChannel.eventLoop().shutdownGracefully();
             }
         }
 
@@ -252,30 +252,30 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
 
     public void doPrimaryTcpConnections() {
         try {
-            primary_channel = channelFactory.createChannel(new LoggingHandler(LogLevel.TRACE));
+            primaryChannel = channelFactory.createChannel(new LoggingHandler(LogLevel.TRACE));
         } catch (Exception ex) {
-            primary_channel = null;
+            primaryChannel = null;
             logger.info(ex.toString());
         }
-        if (primary_channel != null) {
-            if (primary_channel.isActive()) {
-                primary_channel.pipeline().addFirst(MULTIPLEXER, s7hmux);
-                ((S7HMux) s7hmux).setPrimaryChannel(primary_channel);
+        if (primaryChannel != null) {
+            if (primaryChannel.isActive()) {
+                primaryChannel.pipeline().addFirst(MULTIPLEXER, s7hmux);
+                ((S7HMux) s7hmux).setPrimaryChannel(primaryChannel);
             }
         }
     }
 
     public void doSecondaryTcpConnections() {
         try {
-            secondary_channel = secondaryChannelFactory.createChannel(new LoggingHandler(LogLevel.TRACE));
+            secondaryChannel = secondaryChannelFactory.createChannel(new LoggingHandler(LogLevel.TRACE));
         } catch (Exception ex) {
-            secondary_channel = null;
+            secondaryChannel = null;
             logger.info(ex.toString());
         }
-        if (secondary_channel != null) {
-            if (secondary_channel.isActive()) {
-                secondary_channel.pipeline().addFirst(MULTIPLEXER, s7hmux);
-                ((S7HMux) s7hmux).setSecondaryChannel(secondary_channel);
+        if (secondaryChannel != null) {
+            if (secondaryChannel.isActive()) {
+                secondaryChannel.pipeline().addFirst(MULTIPLEXER, s7hmux);
+                ((S7HMux) s7hmux).setSecondaryChannel(secondaryChannel);
             }
         }
     }
@@ -317,13 +317,13 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
          * the TCP channel active, for very long sampling periods.
          */
         if (channel.attr(S7HMuxImpl.IS_PING_ACTIVE).get()) {
-            if (slice_ping >= channel.attr(S7HMuxImpl.PING_TIME).get()) {
+            if (slicePing >= channel.attr(S7HMuxImpl.PING_TIME).get()) {
                 ping();
-                slice_ping = 0;
+                slicePing = 0;
             }
-            slice_ping++;
+            slicePing++;
         } else {
-            slice_ping = 0;
+            slicePing = 0;
         }
 
         /*
@@ -333,19 +333,19 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
          * and if the other is down, the connection must be lifted.
          * S7HMuxImpl, includes the switching logic between the TCP links.
          */
-        if (slice_retry_time >= channel.attr(S7HMuxImpl.RETRY_TIME).get()) {
+        if (sliceRetryTime >= channel.attr(S7HMuxImpl.RETRY_TIME).get()) {
 
-            if (primary_channel != null) {
-                if (!primary_channel.isActive()) {
+            if (primaryChannel != null) {
+                if (!primaryChannel.isActive()) {
                     logger.info("Creating prymary connection.");
-                    primary_channel.eventLoop().shutdownGracefully();
+                    primaryChannel.eventLoop().shutdownGracefully();
                     doPrimaryTcpConnections();
-                } else if (null == secondary_channel) {
+                } else if (null == secondaryChannel) {
                     if (channel.attr(S7HMuxImpl.WAS_CONNECTED).get() &&
                         !channel.attr(S7HMuxImpl.IS_CONNECTED).get()) {
                         logger.info("Reconnecting primary channel.");
                         if (null != ((S7HMux) s7hmux).getTCPChannel()) {
-                            ((S7HMux) s7hmux).setPrimaryChannel(primary_channel);
+                            ((S7HMux) s7hmux).setPrimaryChannel(primaryChannel);
                         }
                     }
                 }
@@ -354,17 +354,17 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 doPrimaryTcpConnections();
             }
 
-            if (secondary_channel != null) {
-                if (!secondary_channel.isActive()) {
+            if (secondaryChannel != null) {
+                if (!secondaryChannel.isActive()) {
                     logger.info("Creating secondary connection.");
-                    secondary_channel.eventLoop().shutdownGracefully();
+                    secondaryChannel.eventLoop().shutdownGracefully();
                     doSecondaryTcpConnections();
-                } else if (null == primary_channel) {
+                } else if (null == primaryChannel) {
                     if ((channel.attr(S7HMuxImpl.WAS_CONNECTED).get()) &&
                         (!channel.attr(S7HMuxImpl.IS_CONNECTED).get())) {
                         logger.info("Reconnecting secondary channel.");
                         if (null != ((S7HMux) s7hmux).getTCPChannel()) {
-                            ((S7HMux) s7hmux).setSecondaryChannel(secondary_channel);
+                            ((S7HMux) s7hmux).setSecondaryChannel(secondaryChannel);
                         }
                     }
                 }
@@ -374,22 +374,22 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     doSecondaryTcpConnections();
                 }
             }
-            slice_retry_time = 0;
+            sliceRetryTime = 0;
         }
 
         if (channel.attr(S7HMuxImpl.RETRY_TIME).get() > 0) {
-            slice_retry_time++;
+            sliceRetryTime++;
         }
 
         connected = channel.attr(S7HMuxImpl.IS_CONNECTED).get();
         logger.trace("*************************************************\r\n"
-            + "INSTAMCIA PRIMARIO      : " + ((null == primary_channel) ? "NULL" : primary_channel.toString()) + "\r\n"
-            + "ACTIVO PRIMARIO         : " + ((null == primary_channel) ? "NULL" : primary_channel.isActive()) + "\r\n"
-            + "INSTAMCIA SECUNDARIO    : " + ((null == secondary_channel) ? "NULL" : secondary_channel.toString()) + "\r\n"
-            + "ACTIVO SECUNDARIO       : " + ((null == secondary_channel) ? "NULL" : secondary_channel.isActive()) + "\r\n"
+            + "INSTAMCIA PRIMARIO      : " + ((null == primaryChannel) ? "NULL" : primaryChannel.toString()) + "\r\n"
+            + "ACTIVO PRIMARIO         : " + ((null == primaryChannel) ? "NULL" : primaryChannel.isActive()) + "\r\n"
+            + "INSTAMCIA SECUNDARIO    : " + ((null == secondaryChannel) ? "NULL" : secondaryChannel.toString()) + "\r\n"
+            + "ACTIVO SECUNDARIO       : " + ((null == secondaryChannel) ? "NULL" : secondaryChannel.isActive()) + "\r\n"
             + "CANAL CONECTADO?        : " + channel.attr(S7HMuxImpl.IS_CONNECTED).get() + "\r\n"
             + "CANAL ESTUVO CONECTADO? : " + channel.attr(S7HMuxImpl.WAS_CONNECTED).get() + "\r\n"
-            + "CONTADORES              : " + slice_ping + " : " + slice_retry_time + "\r\n"
+            + "CONTADORES              : " + slicePing + " : " + sliceRetryTime + "\r\n"
             + "*************************************************");
     }
 
