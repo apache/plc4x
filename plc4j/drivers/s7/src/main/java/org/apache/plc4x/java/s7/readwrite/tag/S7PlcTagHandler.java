@@ -27,14 +27,16 @@ public class S7PlcTagHandler implements PlcTagHandler {
 
     @Override
     public PlcTag parseTag(String tagAddress) {
-        if (S7Tag.matches(tagAddress)) {
-            return S7Tag.of(tagAddress);
+        if (S7StringTag.matches(tagAddress)) {
+            return S7StringTag.of(tagAddress);
         } else if (S7SubscriptionTag.matches(tagAddress)) {
             return S7SubscriptionTag.of(tagAddress);
         } else if (S7ClkTag.matches(tagAddress)) {
             return S7ClkTag.of(tagAddress);
         } else if (S7SzlTag.matches(tagAddress)) {
             return S7SzlTag.of(tagAddress);
+        } else if (S7Tag.matches(tagAddress)) {
+            return S7Tag.of(tagAddress);
         }
         throw new PlcInvalidTagException(tagAddress);
     }

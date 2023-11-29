@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -61,6 +62,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -306,6 +308,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 new S7PayloadUserData(payloadItems));
             return toPlcReadResponse(readRequest, readInternal(s7MessageRequest));
 
+        }  else if (request.getTags().get(0) instanceof S7StringTag) {
+            
+            List<S7ParameterReadVarRequest> parameterItems = new ArrayList<>(request.getNumberOfTags());
+            List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());            
+            encodePlcStringReadRequest(request, parameterItems, payloadItems);
+            
+            final S7MessageRequest s7MessageRequest = new S7MessageRequest(-1,
+                parameterItems.get(0),
+                null);
+            
+            return toPlcReadResponse(readRequest, readInternal(s7MessageRequest));
         }
 
 
@@ -414,6 +427,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         if (!clkTags.isEmpty()) {
             return writeClk(writeRequest);
         }
+        
+        List<String> strTags = request.getTagNames().stream()
+            .filter(t -> request.getTag(t) instanceof S7StringTag)
+            .collect(Collectors.toList());
+        if (!strTags.isEmpty()) {
+            return writeString(writeRequest);
+        }        
 
         List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
@@ -524,6 +544,56 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         return future;
     }
 
+    //TODO: Clean code
+    public CompletableFuture<PlcWriteResponse> writeString(PlcWriteRequest writeRequest) {
+        CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
+        DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
+
+        List<S7VarRequestParameterItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
+        List<S7VarPayloadDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());
+
+        encodePlcStringWriteRequest((DefaultPlcWriteRequest) writeRequest,
+            parameterItems, payloadItems);
+
+        final int tpduId = tpduGenerator.getAndIncrement();
+        // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
+        if (tpduGenerator.get() == 0xFFFF) {
+            tpduGenerator.set(1);
+        }
+
+        TPKTPacket tpktPacket = new TPKTPacket(
+            new COTPPacketData(
+                null,
+                new S7MessageRequest(tpduId,
+                    new S7ParameterWriteVarRequest(parameterItems),
+                    new S7PayloadWriteVarRequest(payloadItems)
+                ),
+                true,
+                (byte) tpduId
+            )
+        );
+
+        // Start a new request-transaction (Is ended in the response-handler)
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(tpktPacket)
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .check(p -> p.getPayload() instanceof COTPPacketData)
+            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+            .unwrap(COTPPacket::getPayload)
+            .check(p -> p.getTpduReference() == tpduId)
+            .handle(p -> {
+                try {
+                    future.complete(((PlcWriteResponse) decodeWriteResponse(p, writeRequest)));
+                } catch (PlcProtocolException e) {
+                    logger.warn("Error sending 'write' message: '{}'", e.getMessage(), e);
+                }
+                // Finish the request-transaction.
+                transaction.endRequest();
+            }));
+        return future;
+    }
 
     @Override
     public CompletableFuture<PlcSubscriptionResponse> subscribe(PlcSubscriptionRequest subscriptionRequest) {
@@ -1340,6 +1410,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 //            });
     }
 
+    /*
+    *
+    */
     private void encodePlcClkRequest(DefaultPlcReadRequest request,
                                      List<S7ParameterUserDataItem> parameterItems,
                                      List<S7PayloadUserDataItem> payloadItems) {
@@ -1370,11 +1443,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         payloadItems.add(payload);
     }
 
-
+    /*
+    *
+    */
     private void encodePlcClkSetRequest(DefaultPlcWriteRequest request,
                                         List<S7ParameterUserDataItem> parameterItems,
                                         List<S7PayloadUserDataItem> payloadItems) {
-
 
         S7ParameterUserDataItemCPUFunctions parameter = new S7ParameterUserDataItemCPUFunctions(
             (short) 0x11,   //Method
@@ -1404,6 +1478,207 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
 
+    /*
+     *            +-------------------+
+     * Byte n     | Maximum length    | (intMaxChars)
+     *            +-------------------+
+     * Byte n+1   | Current Length    | (intActualChars)
+     *            +-------------------+
+     * Byte n+2   | 1st character     | \         \
+     *            +-------------------+  |         |
+     * Byte n+3   | 2st character     |  | Current |
+     *            +-------------------+   >        |
+     * Byte ...   | ...               |  | length  |  Maximum
+     *            +-------------------+  |          >
+     * Byte n+m+1 | mth character     | /          |  length
+     *            +-------------------+            |
+     * Byte ...   | ...               |            |
+     *            +-------------------+            |
+     * Byte ...   | ...               |           /
+     *            +-------------------+
+     * Reading text strings in two steps:
+     * 1. For the operation on texts, you must first evaluate the 
+     *    space created on DB of type STRING or WSTRING.
+     * 2. The first two bytes have the maximum number of characters (bytes) 
+     *    available to store text strings (intMaxChars) and the number of 
+     *    characters available (intActualChars).
+     * 3. In the specific case of reading, only the characters defined 
+     *    by "intActualChars" are recovered.
+     * TODO: Maximum waiting time managed by system variables.
+    */
+    private void encodePlcStringReadRequest(DefaultPlcReadRequest request,
+                                     List<S7ParameterReadVarRequest> parameterItems,
+                                     List<S7PayloadUserDataItem> payloadItems) {
+        
+        int intMaxChars = 0;
+        int intActualChars = 0;
+        
+        final S7StringTag tag = (S7StringTag) request.getTags().get(0);
+        
+        //Read the max length and actual size.
+        
+        final S7MessageRequest readRequest = new S7MessageRequest(1,new S7ParameterReadVarRequest(
+                List.of(new S7VarRequestParameterItemAddress(
+                        new S7AddressAny(
+                                TransportSize.BYTE,
+                                2,
+                                tag.getBlockNumber(),
+                                MemoryArea.DATA_BLOCKS,
+                                tag.getByteOffset(),
+                                tag.getBitOffset()
+                        ))
+            
+        )), null);
+                
+        CompletableFuture<S7Message> future = readInternal(readRequest);
+        
+        try {
+            S7Message get = future.get(2000, TimeUnit.MILLISECONDS);
+            final S7VarPayloadDataItem payload = (S7VarPayloadDataItem)((S7PayloadReadVarResponse) get.getPayload()).getItems().get(0);
+            //intMaxChars = Byte.toUnsignedInt(payload.getData()[0]);
+            intActualChars = Byte.toUnsignedInt(payload.getData()[1]);            
+        } catch (InterruptedException ex) {
+            logger.info(ex.getMessage());
+        } catch (ExecutionException ex) {
+            logger.info(ex.getMessage());
+        } catch (TimeoutException ex) {
+            logger.info(ex.getMessage());
+        }
+        
+        //Create the message structure for the user request.          
+        
+        S7ParameterReadVarRequest parameter = new S7ParameterReadVarRequest(
+                List.of(new S7VarRequestParameterItemAddress(
+                        new S7AddressAny(
+                                TransportSize.BYTE,
+                                intActualChars,
+                                tag.getBlockNumber(),
+                                MemoryArea.DATA_BLOCKS,
+                                tag.getByteOffset()+2,
+                                tag.getBitOffset()
+                        ))
+            
+        ));
+
+        parameterItems.clear();
+        parameterItems.add(parameter);
+
+        payloadItems.clear();
+
+    }
+
+
+    /*
+     *            +-------------------+
+     * Byte n     | Maximum length    | (intMaxChars)
+     *            +-------------------+
+     * Byte n+1   | Current Length    | (intActualChars)
+     *            +-------------------+
+     * Byte n+2   | 1st character     | \         \
+     *            +-------------------+  |         |
+     * Byte n+3   | 2st character     |  | Current |
+     *            +-------------------+   >        |
+     * Byte ...   | ...               |  | length  |  Maximum
+     *            +-------------------+  |          >
+     * Byte n+m+1 | mth character     | /          |  length
+     *            +-------------------+            |
+     * Byte ...   | ...               |            |
+     *            +-------------------+            |
+     * Byte ...   | ...               |           /
+     *            +-------------------+
+     * Reading text strings in two steps:
+     * 1. For the operation on texts, you must first evaluate the 
+     *    space created on DB of type STRING or WSTRING.
+     * 2. The first two bytes have the maximum number of characters (bytes) 
+     *    available to store text strings (intMaxChars) and the number of 
+     *    characters available (intActualChars).
+     * 3. In the specific case of write string, only the max characters defined 
+     *    by "intMaxChars" are writed.
+     * TODO: Maximum waiting time managed by system variables.
+    */
+    private void encodePlcStringWriteRequest(DefaultPlcWriteRequest request,
+                                        List<S7VarRequestParameterItem> parameterItems,
+                                        List<S7VarPayloadDataItem> payloadItems) {
+
+        int intMaxChars = 0;
+        int intActualChars = 0;
+        
+        final S7StringTag tag = (S7StringTag) request.getTags().get(0);
+        
+        //Read the max length and actual size.
+        
+        final S7MessageRequest readRequest = new S7MessageRequest(1,new S7ParameterReadVarRequest(
+                List.of(new S7VarRequestParameterItemAddress(
+                        new S7AddressAny(
+                                TransportSize.BYTE,
+                                2,
+                                tag.getBlockNumber(),
+                                MemoryArea.DATA_BLOCKS,
+                                tag.getByteOffset(),
+                                tag.getBitOffset()
+                        ))
+            
+        )), null);
+                
+        CompletableFuture<S7Message> future = readInternal(readRequest);
+        
+        try {
+            S7Message get = future.get(2000, TimeUnit.MILLISECONDS);
+            final S7VarPayloadDataItem payload = (S7VarPayloadDataItem)((S7PayloadReadVarResponse) get.getPayload()).getItems().get(0);
+            intMaxChars = Byte.toUnsignedInt(payload.getData()[0]); //payload.getData()[0] & 0xFF
+            intActualChars = Byte.toUnsignedInt(payload.getData()[1]);            
+        } catch (InterruptedException ex) {
+            logger.info(ex.getMessage());
+        } catch (ExecutionException ex) {
+            logger.info(ex.getMessage());
+        } catch (TimeoutException ex) {        
+            logger.info(ex.getMessage());
+        }
+
+        //Create the message structure for the user request.       
+        
+        parameterItems.clear();
+        payloadItems.clear();
+        
+        Iterator<String> iter = request.getTagNames().iterator();
+
+        String tagName;
+        PlcValue plcValue;
+        while (iter.hasNext()) {
+            tagName = iter.next();
+            final S7StringTag tagRef = (S7StringTag) request.getTag(tagName);
+            plcValue = request.getPlcValue(tagName);
+                        
+            //Check if String 
+            String strValue = plcValue.getString();
+            if (strValue.length() > intMaxChars) {
+                strValue = strValue.substring(0, intMaxChars);
+                plcValue = new PlcSTRING(strValue);
+            }
+            
+            S7Address s7Address = new S7AddressAny(
+                                        tagRef.getDataType().BYTE,
+                                        strValue.length() + 2,
+                                        tagRef.getBlockNumber(),
+                                        tagRef.getMemoryArea(),
+                                        tagRef.getByteOffset(),
+                                        tagRef.getBitOffset());
+            
+            parameterItems.add(new S7VarRequestParameterItemAddress(s7Address));            
+                                    
+            ByteBuffer byteBuffer = ByteBuffer.allocate(strValue.length() + 2);
+            byteBuffer.put((byte) intMaxChars);
+            byteBuffer.put((byte) strValue.length());
+            byteBuffer.put(strValue.getBytes());
+           
+            DataTransportSize transportSize = DataTransportSize.BYTE_WORD_DWORD;
+            
+            payloadItems.add(new S7VarPayloadDataItem(DataTransportErrorCode.OK, transportSize, byteBuffer.array()/*, hasNext*/));
+        }
+        
+    }    
+    
+    
     /**
      * This method is only called when there is no Response Handler.
      */
@@ -1622,7 +1897,17 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         }
 
         //TODO: Reemsambling message.
-        if (responseMessage instanceof S7MessageUserData) {
+        if (responseMessage instanceof S7MessageResponseData) {
+            for (String tagName : plcReadRequest.getTagNames()) {        
+                if (plcReadRequest.getTag(tagName) instanceof S7StringTag) { 
+                    PlcValue plcValue = null;    
+                    PlcResponseCode responseCode = PlcResponseCode.INTERNAL_ERROR;
+                    List<PlcValue> plcValues = new LinkedList<>();
+                    ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+                    values.put(tagName, result);                     
+                }              
+            }            
+        } else if (responseMessage instanceof S7MessageUserData) {
 
             S7PayloadUserData payload = (S7PayloadUserData) responseMessage.getPayload();
             if (plcReadRequest.getNumberOfTags() != payload.getItems().size()) {
@@ -1725,15 +2010,18 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         dt.getMsec() * 1000000)));
                     plcValue = new PlcList(plcValues);
                 }
-
+                
                 ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
                 values.put(tagName, result);
                 index++;
             }
+            
+
 
             return new DefaultPlcReadResponse(plcReadRequest, values);
 
         }
+        
 
         // In all other cases all went well.
         S7PayloadReadVarResponse payload = (S7PayloadReadVarResponse) responseMessage.getPayload();
@@ -1748,20 +2036,32 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         List<S7VarPayloadDataItem> payloadItems = payload.getItems();
         int index = 0;
+        PlcResponseCode responseCode = null;
+        PlcValue plcValue = null;
         for (String tagName : plcReadRequest.getTagNames()) {
-            S7Tag tag = (S7Tag) plcReadRequest.getTag(tagName);
-            S7VarPayloadDataItem payloadItem = payloadItems.get(index);
+            
+            if (plcReadRequest.getTag(tagName) instanceof S7StringTag) {
+                
+                final S7VarPayloadDataItem payloadItem = payloadItems.get(index);
+                responseCode = decodeResponseCode(payloadItem.getReturnCode());                
+                plcValue = new PlcSTRING(new String(payloadItem.getData(), StandardCharsets.UTF_8));
+                
+            } else {
+                S7Tag tag = (S7Tag) plcReadRequest.getTag(tagName);
+                S7VarPayloadDataItem payloadItem = payloadItems.get(index);
 
-            PlcResponseCode responseCode = decodeResponseCode(payloadItem.getReturnCode());
-            PlcValue plcValue = null;
-            ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
-            if (responseCode == PlcResponseCode.OK) {
-                try {
-                    plcValue = parsePlcValue(tag, data);
-                } catch (Exception e) {
-                    throw new PlcProtocolException("Error decoding PlcValue", e);
+                responseCode = decodeResponseCode(payloadItem.getReturnCode());
+                plcValue = null;
+                
+                ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
+                if (responseCode == PlcResponseCode.OK) {
+                    try {
+                        plcValue = parsePlcValue(tag, data);
+                    } catch (Exception e) {
+                        throw new PlcProtocolException("Error decoding PlcValue", e);
+                    }
                 }
-            }
+            };
             ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
             values.put(tagName, result);
             index++;
