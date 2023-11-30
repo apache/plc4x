@@ -89,7 +89,7 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
 
     @Override
     public long getLong() {
-        return value.get(ChronoUnit.NANOS) / 1000000;
+        return value.toMillis();
     }
 
     @Override

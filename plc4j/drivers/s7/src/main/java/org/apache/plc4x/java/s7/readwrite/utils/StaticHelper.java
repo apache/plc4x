@@ -2715,7 +2715,7 @@ public class StaticHelper {
                         break;
                     }
                 }
-                return new String(byteArray, StandardCharsets.UTF_16);
+                return new String(byteArray, StandardCharsets.UTF_16BE);
             } else {
                 throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
@@ -2763,22 +2763,41 @@ public class StaticHelper {
      * the String as char arrays from your application.
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        int k = 0xFF & ((stringLength > 250) ? 250 : stringLength);
-        int m = 0xFF & value.getString().length();
-        m = (m > k) ? k : m;
-        byte[] chars = new byte[m];
-        for (int i = 0; i < m; ++i) {
-            char c = value.getString().charAt(i);
-            chars[i] = (byte) c;
+        int maxStringLength = 0xFF & Math.min(stringLength, 250);
+        int actStringLength = 0xFF & value.getString().length();
+        actStringLength = Math.min(maxStringLength, actStringLength);
+
+        switch (encoding) {
+            case "UTF-8": {
+                byte[] chars = new byte[maxStringLength];
+                byte[] actChars = value.getString().substring(0, actStringLength).getBytes(StandardCharsets.UTF_8);
+                System.arraycopy(actChars, 0, chars, 0, actChars.length);
+                try {
+                    io.writeUnsignedInt(8, maxStringLength);
+                    io.writeUnsignedInt(8, actStringLength);
+                    io.writeByteArray(chars);
+                } catch (SerializationException ex) {
+                    Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "UTF-16": {
+                byte[] chars = new byte[maxStringLength * 2];
+                byte[] actChars = value.getString().substring(0, actStringLength).getBytes(StandardCharsets.UTF_16BE);
+                System.arraycopy(actChars, 0, chars, 0, actChars.length);
+                try {
+                    io.writeUnsignedInt(16, maxStringLength);
+                    io.writeUnsignedInt(16, actStringLength);
+                    io.writeByteArray(chars);
+                } catch (SerializationException ex) {
+                    Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            default:
+                throw new PlcRuntimeException("Unsupported encoding: " + encoding);
         }
 
-        try {
-            io.writeByte((byte) (k & 0xFF));
-            io.writeByte((byte) (m & 0xFF));
-            io.writeByteArray(chars);
-        } catch (SerializationException ex) {
-            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }
