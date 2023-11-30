@@ -42,7 +42,7 @@ public abstract class ManualTest {
     private final List<TestCase> testCases;
 
     public ManualTest(String connectionString) {
-        this(connectionString, false);
+        this(connectionString, true);
     }
 
     public ManualTest(String connectionString, boolean testWrite) {
