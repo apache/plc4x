@@ -38,8 +38,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import org.apache.plc4x.java.s7.readwrite.tag.S7StringTag;
+
+import org.apache.plc4x.java.s7.readwrite.tag.S7StringVarLengthTag;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -77,7 +77,7 @@ public class S7Optimizer extends BaseOptimizer {
                 continue;
             }
             
-            if ((readRequest.getTag(tagName) instanceof S7StringTag)) { 
+            if ((readRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
                 LinkedHashMap<String, PlcTag> strTags = new LinkedHashMap<>();
                 strTags.put(tagName, readRequest.getTag(tagName));
                 processedRequests.add(new DefaultPlcReadRequest(
@@ -155,7 +155,7 @@ public class S7Optimizer extends BaseOptimizer {
 
         for (String tagName : writeRequest.getTagNames()) {
             
-            if ((writeRequest.getTag(tagName) instanceof S7StringTag)) { 
+            if ((writeRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
                 LinkedHashMap<String, TagValueItem> strTags = new LinkedHashMap<>();
                 strTags.put(tagName, 
                         new TagValueItem(writeRequest.getTag(tagName), 

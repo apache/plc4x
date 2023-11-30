@@ -49,7 +49,7 @@ public class S7TagTest {
         Assertions.assertEquals(38, s7Tag.getByteOffset());
         Assertions.assertEquals(0, s7Tag.getBitOffset());
         Assertions.assertEquals("S7StringTag", s7Tag.getClass().getSimpleName());
-        S7StringTag s7StringTag = (S7StringTag) s7Tag;
+        S7StringFixedLengthTag s7StringTag = (S7StringFixedLengthTag) s7Tag;
         Assertions.assertEquals(8, s7StringTag.getStringLength());
     }
 

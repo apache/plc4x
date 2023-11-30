@@ -93,6 +93,8 @@ public class ManualS7DriverTest extends ManualTest {
         test.addTestCase("%DB4:138:WCHAR", new PlcWCHAR("w"));
         test.addTestCase("%DB4:140:STRING(10)", new PlcSTRING("hurz"));
         test.addTestCase("%DB4:396:WSTRING(10)", new PlcWSTRING("wolf"));
+        test.addTestCase("%DB4:140:STRING", new PlcSTRING("hurz"));
+        test.addTestCase("%DB4:396:WSTRING", new PlcWSTRING("wolf"));
         //test.addTestCase("%DB4:70:TIME", new PlcTIME(Duration.parse("PT1.234S"));
         // Not supported in S7 1200
         //test.addTestCase("%DB4:62:LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S"));
@@ -107,7 +109,11 @@ public class ManualS7DriverTest extends ManualTest {
         //test.addTestCase("%DB4:112:LDATE_AND_TIME", "1978-03-28T15:36:30");
         // Not supported in S7 1200
         //test.addTestCase("%DB4:124:LDT", "1978-03-28T15:36:30");
+
+        long start = System.currentTimeMillis();
         test.run();
+        long end = System.currentTimeMillis();
+        System.out.printf("Finished in %d ms", end - start);
     }
 
 }
