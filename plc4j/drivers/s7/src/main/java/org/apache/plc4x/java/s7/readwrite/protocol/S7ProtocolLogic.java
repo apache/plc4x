@@ -252,8 +252,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         CompletableFuture<S7Message> responseFuture;
         if (request.getTagNames().stream().anyMatch(t -> request.getTag(t) instanceof S7SzlTag)) {
+            // TODO: Is it correct, that there can only be one szl tag?
             S7SzlTag szlTag = (S7SzlTag) request.getTags().get(0);
-            // TODO: Is the tpduReference of 1 correct here?
             S7Message s7Message = new S7MessageUserData(getTpduId(),
                 new S7ParameterUserData(List.of(
                     new S7ParameterUserDataItemCPUFunctions(
@@ -440,26 +440,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
                 valuesResponse.put(Integer.toString(msgParameter.getSequenceNumber()),
                     decodeEventSubscriptionResponse(Integer.toString(msgParameter.getSequenceNumber()), subscriptionRequest, futures.get("DATA_").get()));
-
             } catch (Exception ex) {
                 logger.warn(ex.toString());
             }
 
-
             try {
                 HashMap<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
-
                 valuesResponse.forEach((s, p) -> {
                     if (p != null)
                         values.putAll(((DefaultPlcSubscriptionResponse) p).getValues());
                 });
-
                 response.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, values));
-
             } catch (Exception ex) {
                 logger.warn(ex.getMessage());
             }
-
         });
 
         t1.start();
