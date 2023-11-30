@@ -1399,8 +1399,11 @@
     ['648' M_ATOUCH ['706', '"Atouch"']]
     ['649' M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD ['707', '"Panasonic Life Solutions India Pvt. Ltd"']]
     ['650' M_WALLYONS ['708', '"WallYons"']]
-    ['651' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['652' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['651' M_ZIMMEX ['709', '"Zimmex"']]
+    ['652' M_RHOMBUS_EUROPE ['710', '"Rhombus Europe"']]
+    ['653' M_TURING_THINK ['711', '"Turing-Think"']]
+    ['654' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['655' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
