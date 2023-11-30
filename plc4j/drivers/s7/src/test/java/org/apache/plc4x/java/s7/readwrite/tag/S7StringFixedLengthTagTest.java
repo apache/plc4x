@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.s7.readwrite.tag;
 
 import org.apache.plc4x.java.s7.readwrite.MemoryArea;
@@ -23,17 +24,21 @@ import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class S7TagTest {
-
+public class S7StringFixedLengthTagTest {
+    /**
+     * PLC4X-312 - CAN NOT READ STRING FROM S7 PLC
+     */
     @Test
-    public void testPlcProxyAddress() {
-        final S7Tag s7Tag = S7Tag.of("10-01-00-01-00-2D-84-00-00-08");
-        Assertions.assertEquals(TransportSize.BOOL, s7Tag.getDataType());
-        Assertions.assertEquals(1, s7Tag.getNumberOfElements());
-        Assertions.assertEquals(45, s7Tag.getBlockNumber());
-        Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7Tag.getMemoryArea());
-        Assertions.assertEquals(1, s7Tag.getByteOffset());
-        Assertions.assertEquals(0, s7Tag.getBitOffset());
+    public void testStringAddress() {
+        final S7StringFixedLengthTag s7StringFixedLengthTag = S7StringFixedLengthTag.of("%DB145.DBX38:STRING(8)[1]");
+        Assertions.assertEquals(TransportSize.STRING, s7StringFixedLengthTag.getDataType());
+        Assertions.assertEquals(1, s7StringFixedLengthTag.getNumberOfElements());
+        Assertions.assertEquals(145, s7StringFixedLengthTag.getBlockNumber());
+        Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7StringFixedLengthTag.getMemoryArea());
+        Assertions.assertEquals(38, s7StringFixedLengthTag.getByteOffset());
+        Assertions.assertEquals(0, s7StringFixedLengthTag.getBitOffset());
+        Assertions.assertEquals("S7StringFixedLengthTag", s7StringFixedLengthTag.getClass().getSimpleName());
+        Assertions.assertEquals(8, s7StringFixedLengthTag.getStringLength());
     }
 
 }
