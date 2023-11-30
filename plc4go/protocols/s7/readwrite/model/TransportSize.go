@@ -1154,19 +1154,19 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x10:
 		{ /* '0x10' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x11:
 		{ /* '0x11' */
-			return 0
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x12:
 		{ /* '0x12' */
-			return DataTransportSize_BYTE_WORD_DWORD
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x13:
 		{ /* '0x13' */
-			return 0
+			return DataTransportSize_OCTET_STRING
 		}
 	case 0x14:
 		{ /* '0x14' */
