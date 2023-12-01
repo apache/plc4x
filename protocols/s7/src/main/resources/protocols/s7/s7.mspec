@@ -772,7 +772,7 @@
         // -----------------------------------------
         // - Duration: Interpreted as "milliseconds"
         ['"IEC61131_TIME"' TIME
-            [simple uint 32 milliseconds]
+            [simple int 32 milliseconds]
         ]
         //['"S7_S5TIME"' TIME
         //    [reserved uint 2  '0x00']

@@ -181,7 +181,7 @@ public class DataItem {
 
       // Simple Field (milliseconds)
       Long milliseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
+          readBuffer.readLong("", 32);
 
       return PlcTIME.ofMilliseconds(milliseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
@@ -367,7 +367,7 @@ public class DataItem {
       // Simple Field (milliseconds)
       long milliseconds = (long) _value.getLong();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
+      /*TODO: migrate me*/ writeBuffer.writeLong(
           "", 32, ((Number) (milliseconds)).longValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
