@@ -26,8 +26,11 @@ import org.apache.plc4x.java.transport.pcap.DefaultPcapTransportConfiguration;
 public abstract class DefaultRawSocketTransportConfiguration extends DefaultPcapTransportConfiguration implements RawSocketTransportConfiguration {
 
     @ConfigurationParameter("resolve-mac-address")
-    @BooleanDefaultValue(false)
     private boolean resolveMacAddress;
+
+    public DefaultRawSocketTransportConfiguration() {
+        resolveMacAddress = false;
+    }
 
     @Override
     public boolean isResolveMacAccess() {
