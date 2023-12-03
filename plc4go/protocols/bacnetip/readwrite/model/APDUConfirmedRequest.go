@@ -537,7 +537,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 2, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -569,7 +569,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (invokeId)
 		invokeId := uint8(m.GetInvokeId())
-		_invokeIdErr := writeBuffer.WriteUint8("invokeId", 8, (invokeId))
+		_invokeIdErr := writeBuffer.WriteUint8("invokeId", 8, uint8((invokeId)))
 		if _invokeIdErr != nil {
 			return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 		}
@@ -578,7 +578,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		var sequenceNumber *uint8 = nil
 		if m.GetSequenceNumber() != nil {
 			sequenceNumber = m.GetSequenceNumber()
-			_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, *(sequenceNumber))
+			_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8(*(sequenceNumber)))
 			if _sequenceNumberErr != nil {
 				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 			}
@@ -588,7 +588,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		var proposedWindowSize *uint8 = nil
 		if m.GetProposedWindowSize() != nil {
 			proposedWindowSize = m.GetProposedWindowSize()
-			_proposedWindowSizeErr := writeBuffer.WriteUint8("proposedWindowSize", 8, *(proposedWindowSize))
+			_proposedWindowSizeErr := writeBuffer.WriteUint8("proposedWindowSize", 8, uint8(*(proposedWindowSize)))
 			if _proposedWindowSizeErr != nil {
 				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}

@@ -254,21 +254,21 @@ func (m *_PubSubConfigurationRefDataType) SerializeWithWriteBuffer(ctx context.C
 
 		// Simple Field (elementIndex)
 		elementIndex := uint16(m.GetElementIndex())
-		_elementIndexErr := writeBuffer.WriteUint16("elementIndex", 16, (elementIndex))
+		_elementIndexErr := writeBuffer.WriteUint16("elementIndex", 16, uint16((elementIndex)))
 		if _elementIndexErr != nil {
 			return errors.Wrap(_elementIndexErr, "Error serializing 'elementIndex' field")
 		}
 
 		// Simple Field (connectionIndex)
 		connectionIndex := uint16(m.GetConnectionIndex())
-		_connectionIndexErr := writeBuffer.WriteUint16("connectionIndex", 16, (connectionIndex))
+		_connectionIndexErr := writeBuffer.WriteUint16("connectionIndex", 16, uint16((connectionIndex)))
 		if _connectionIndexErr != nil {
 			return errors.Wrap(_connectionIndexErr, "Error serializing 'connectionIndex' field")
 		}
 
 		// Simple Field (groupIndex)
 		groupIndex := uint16(m.GetGroupIndex())
-		_groupIndexErr := writeBuffer.WriteUint16("groupIndex", 16, (groupIndex))
+		_groupIndexErr := writeBuffer.WriteUint16("groupIndex", 16, uint16((groupIndex)))
 		if _groupIndexErr != nil {
 			return errors.Wrap(_groupIndexErr, "Error serializing 'groupIndex' field")
 		}

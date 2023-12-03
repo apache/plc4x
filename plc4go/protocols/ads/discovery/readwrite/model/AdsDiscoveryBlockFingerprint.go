@@ -190,7 +190,7 @@ func (m *_AdsDiscoveryBlockFingerprint) SerializeWithWriteBuffer(ctx context.Con
 
 		// Implicit Field (dataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLen := uint16(uint16(len(m.GetData())))
-		_dataLenErr := writeBuffer.WriteUint16("dataLen", 16, (dataLen))
+		_dataLenErr := writeBuffer.WriteUint16("dataLen", 16, uint16((dataLen)))
 		if _dataLenErr != nil {
 			return errors.Wrap(_dataLenErr, "Error serializing 'dataLen' field")
 		}

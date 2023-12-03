@@ -327,7 +327,7 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var serverIndex *uint32 = nil
 	if m.GetServerIndex() != nil {
 		serverIndex = m.GetServerIndex()
-		_serverIndexErr := writeBuffer.WriteUint32("serverIndex", 32, *(serverIndex))
+		_serverIndexErr := writeBuffer.WriteUint32("serverIndex", 32, uint32(*(serverIndex)))
 		if _serverIndexErr != nil {
 			return errors.Wrap(_serverIndexErr, "Error serializing 'serverIndex' field")
 		}

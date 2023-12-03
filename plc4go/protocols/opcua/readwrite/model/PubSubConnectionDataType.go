@@ -542,7 +542,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -593,7 +593,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfConnectionProperties)
 		noOfConnectionProperties := int32(m.GetNoOfConnectionProperties())
-		_noOfConnectionPropertiesErr := writeBuffer.WriteInt32("noOfConnectionProperties", 32, (noOfConnectionProperties))
+		_noOfConnectionPropertiesErr := writeBuffer.WriteInt32("noOfConnectionProperties", 32, int32((noOfConnectionProperties)))
 		if _noOfConnectionPropertiesErr != nil {
 			return errors.Wrap(_noOfConnectionPropertiesErr, "Error serializing 'noOfConnectionProperties' field")
 		}
@@ -629,7 +629,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfWriterGroups)
 		noOfWriterGroups := int32(m.GetNoOfWriterGroups())
-		_noOfWriterGroupsErr := writeBuffer.WriteInt32("noOfWriterGroups", 32, (noOfWriterGroups))
+		_noOfWriterGroupsErr := writeBuffer.WriteInt32("noOfWriterGroups", 32, int32((noOfWriterGroups)))
 		if _noOfWriterGroupsErr != nil {
 			return errors.Wrap(_noOfWriterGroupsErr, "Error serializing 'noOfWriterGroups' field")
 		}
@@ -653,7 +653,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfReaderGroups)
 		noOfReaderGroups := int32(m.GetNoOfReaderGroups())
-		_noOfReaderGroupsErr := writeBuffer.WriteInt32("noOfReaderGroups", 32, (noOfReaderGroups))
+		_noOfReaderGroupsErr := writeBuffer.WriteInt32("noOfReaderGroups", 32, int32((noOfReaderGroups)))
 		if _noOfReaderGroupsErr != nil {
 			return errors.Wrap(_noOfReaderGroupsErr, "Error serializing 'noOfReaderGroups' field")
 		}

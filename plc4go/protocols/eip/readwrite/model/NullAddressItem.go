@@ -181,7 +181,7 @@ func (m *_NullAddressItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

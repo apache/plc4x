@@ -262,7 +262,7 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (noOfSubscriptionAcknowledgements)
 		noOfSubscriptionAcknowledgements := int32(m.GetNoOfSubscriptionAcknowledgements())
-		_noOfSubscriptionAcknowledgementsErr := writeBuffer.WriteInt32("noOfSubscriptionAcknowledgements", 32, (noOfSubscriptionAcknowledgements))
+		_noOfSubscriptionAcknowledgementsErr := writeBuffer.WriteInt32("noOfSubscriptionAcknowledgements", 32, int32((noOfSubscriptionAcknowledgements)))
 		if _noOfSubscriptionAcknowledgementsErr != nil {
 			return errors.Wrap(_noOfSubscriptionAcknowledgementsErr, "Error serializing 'noOfSubscriptionAcknowledgements' field")
 		}

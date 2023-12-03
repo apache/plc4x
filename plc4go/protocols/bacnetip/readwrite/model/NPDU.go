@@ -543,7 +543,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber := uint8(m.GetProtocolVersionNumber())
-	_protocolVersionNumberErr := writeBuffer.WriteUint8("protocolVersionNumber", 8, (protocolVersionNumber))
+	_protocolVersionNumberErr := writeBuffer.WriteUint8("protocolVersionNumber", 8, uint8((protocolVersionNumber)))
 	if _protocolVersionNumberErr != nil {
 		return errors.Wrap(_protocolVersionNumberErr, "Error serializing 'protocolVersionNumber' field")
 	}
@@ -564,7 +564,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var destinationNetworkAddress *uint16 = nil
 	if m.GetDestinationNetworkAddress() != nil {
 		destinationNetworkAddress = m.GetDestinationNetworkAddress()
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, *(destinationNetworkAddress))
+		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
@@ -574,7 +574,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var destinationLength *uint8 = nil
 	if m.GetDestinationLength() != nil {
 		destinationLength = m.GetDestinationLength()
-		_destinationLengthErr := writeBuffer.WriteUint8("destinationLength", 8, *(destinationLength))
+		_destinationLengthErr := writeBuffer.WriteUint8("destinationLength", 8, uint8(*(destinationLength)))
 		if _destinationLengthErr != nil {
 			return errors.Wrap(_destinationLengthErr, "Error serializing 'destinationLength' field")
 		}
@@ -586,7 +586,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	}
 	for _curItem, _element := range m.GetDestinationAddress() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 		}
@@ -605,7 +605,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var sourceNetworkAddress *uint16 = nil
 	if m.GetSourceNetworkAddress() != nil {
 		sourceNetworkAddress = m.GetSourceNetworkAddress()
-		_sourceNetworkAddressErr := writeBuffer.WriteUint16("sourceNetworkAddress", 16, *(sourceNetworkAddress))
+		_sourceNetworkAddressErr := writeBuffer.WriteUint16("sourceNetworkAddress", 16, uint16(*(sourceNetworkAddress)))
 		if _sourceNetworkAddressErr != nil {
 			return errors.Wrap(_sourceNetworkAddressErr, "Error serializing 'sourceNetworkAddress' field")
 		}
@@ -615,7 +615,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var sourceLength *uint8 = nil
 	if m.GetSourceLength() != nil {
 		sourceLength = m.GetSourceLength()
-		_sourceLengthErr := writeBuffer.WriteUint8("sourceLength", 8, *(sourceLength))
+		_sourceLengthErr := writeBuffer.WriteUint8("sourceLength", 8, uint8(*(sourceLength)))
 		if _sourceLengthErr != nil {
 			return errors.Wrap(_sourceLengthErr, "Error serializing 'sourceLength' field")
 		}
@@ -627,7 +627,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	}
 	for _curItem, _element := range m.GetSourceAddress() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 		}
@@ -646,7 +646,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var hopCount *uint8 = nil
 	if m.GetHopCount() != nil {
 		hopCount = m.GetHopCount()
-		_hopCountErr := writeBuffer.WriteUint8("hopCount", 8, *(hopCount))
+		_hopCountErr := writeBuffer.WriteUint8("hopCount", 8, uint8(*(hopCount)))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}

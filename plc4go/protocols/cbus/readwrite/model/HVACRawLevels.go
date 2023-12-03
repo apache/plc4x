@@ -172,7 +172,7 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (rawValue)
 	rawValue := int16(m.GetRawValue())
-	_rawValueErr := writeBuffer.WriteInt16("rawValue", 16, (rawValue))
+	_rawValueErr := writeBuffer.WriteInt16("rawValue", 16, int16((rawValue)))
 	if _rawValueErr != nil {
 		return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 	}

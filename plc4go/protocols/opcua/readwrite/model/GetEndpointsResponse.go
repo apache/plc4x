@@ -262,7 +262,7 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfEndpoints)
 		noOfEndpoints := int32(m.GetNoOfEndpoints())
-		_noOfEndpointsErr := writeBuffer.WriteInt32("noOfEndpoints", 32, (noOfEndpoints))
+		_noOfEndpointsErr := writeBuffer.WriteInt32("noOfEndpoints", 32, int32((noOfEndpoints)))
 		if _noOfEndpointsErr != nil {
 			return errors.Wrap(_noOfEndpointsErr, "Error serializing 'noOfEndpoints' field")
 		}

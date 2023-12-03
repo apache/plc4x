@@ -262,7 +262,7 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (noOfMethodsToCall)
 		noOfMethodsToCall := int32(m.GetNoOfMethodsToCall())
-		_noOfMethodsToCallErr := writeBuffer.WriteInt32("noOfMethodsToCall", 32, (noOfMethodsToCall))
+		_noOfMethodsToCallErr := writeBuffer.WriteInt32("noOfMethodsToCall", 32, int32((noOfMethodsToCall)))
 		if _noOfMethodsToCallErr != nil {
 			return errors.Wrap(_noOfMethodsToCallErr, "Error serializing 'noOfMethodsToCall' field")
 		}

@@ -262,7 +262,7 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfNetworkPaths)
 		noOfNetworkPaths := int32(m.GetNoOfNetworkPaths())
-		_noOfNetworkPathsErr := writeBuffer.WriteInt32("noOfNetworkPaths", 32, (noOfNetworkPaths))
+		_noOfNetworkPathsErr := writeBuffer.WriteInt32("noOfNetworkPaths", 32, int32((noOfNetworkPaths)))
 		if _noOfNetworkPathsErr != nil {
 			return errors.Wrap(_noOfNetworkPathsErr, "Error serializing 'noOfNetworkPaths' field")
 		}

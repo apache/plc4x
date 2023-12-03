@@ -262,7 +262,7 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfNodesToWrite)
 		noOfNodesToWrite := int32(m.GetNoOfNodesToWrite())
-		_noOfNodesToWriteErr := writeBuffer.WriteInt32("noOfNodesToWrite", 32, (noOfNodesToWrite))
+		_noOfNodesToWriteErr := writeBuffer.WriteInt32("noOfNodesToWrite", 32, int32((noOfNodesToWrite)))
 		if _noOfNodesToWriteErr != nil {
 			return errors.Wrap(_noOfNodesToWriteErr, "Error serializing 'noOfNodesToWrite' field")
 		}

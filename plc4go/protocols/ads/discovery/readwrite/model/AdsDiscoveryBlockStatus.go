@@ -212,7 +212,7 @@ func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(ctx context.Context,
 		}
 
 		// Const Field (statusLength)
-		_statusLengthErr := writeBuffer.WriteUint16("statusLength", 16, 0x0004)
+		_statusLengthErr := writeBuffer.WriteUint16("statusLength", 16, uint16(0x0004))
 		if _statusLengthErr != nil {
 			return errors.Wrap(_statusLengthErr, "Error serializing 'statusLength' field")
 		}

@@ -198,7 +198,7 @@ func (e SyntaxIdType) Serialize() ([]byte, error) {
 func (e SyntaxIdType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("SyntaxIdType", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

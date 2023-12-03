@@ -591,7 +591,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		requestPathSize := uint8(uint8((uint8(m.GetClassSegment().GetLengthInBytes(ctx)) + uint8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
@@ -622,63 +622,63 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 4, (priority))
+		_priorityErr := writeBuffer.WriteUint8("priority", 4, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}
 
 		// Simple Field (tickTime)
 		tickTime := uint8(m.GetTickTime())
-		_tickTimeErr := writeBuffer.WriteUint8("tickTime", 4, (tickTime))
+		_tickTimeErr := writeBuffer.WriteUint8("tickTime", 4, uint8((tickTime)))
 		if _tickTimeErr != nil {
 			return errors.Wrap(_tickTimeErr, "Error serializing 'tickTime' field")
 		}
 
 		// Simple Field (timeoutTicks)
 		timeoutTicks := uint8(m.GetTimeoutTicks())
-		_timeoutTicksErr := writeBuffer.WriteUint8("timeoutTicks", 8, (timeoutTicks))
+		_timeoutTicksErr := writeBuffer.WriteUint8("timeoutTicks", 8, uint8((timeoutTicks)))
 		if _timeoutTicksErr != nil {
 			return errors.Wrap(_timeoutTicksErr, "Error serializing 'timeoutTicks' field")
 		}
 
 		// Simple Field (otConnectionId)
 		otConnectionId := uint32(m.GetOtConnectionId())
-		_otConnectionIdErr := writeBuffer.WriteUint32("otConnectionId", 32, (otConnectionId))
+		_otConnectionIdErr := writeBuffer.WriteUint32("otConnectionId", 32, uint32((otConnectionId)))
 		if _otConnectionIdErr != nil {
 			return errors.Wrap(_otConnectionIdErr, "Error serializing 'otConnectionId' field")
 		}
 
 		// Simple Field (toConnectionId)
 		toConnectionId := uint32(m.GetToConnectionId())
-		_toConnectionIdErr := writeBuffer.WriteUint32("toConnectionId", 32, (toConnectionId))
+		_toConnectionIdErr := writeBuffer.WriteUint32("toConnectionId", 32, uint32((toConnectionId)))
 		if _toConnectionIdErr != nil {
 			return errors.Wrap(_toConnectionIdErr, "Error serializing 'toConnectionId' field")
 		}
 
 		// Simple Field (connectionSerialNumber)
 		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, (connectionSerialNumber))
+		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
 		if _connectionSerialNumberErr != nil {
 			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
 		}
 
 		// Simple Field (originatorVendorId)
 		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, (originatorVendorId))
+		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
 		if _originatorVendorIdErr != nil {
 			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
 		}
 
 		// Simple Field (originatorSerialNumber)
 		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, (originatorSerialNumber))
+		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
 		if _originatorSerialNumberErr != nil {
 			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
 		}
 
 		// Simple Field (timeoutMultiplier)
 		timeoutMultiplier := uint8(m.GetTimeoutMultiplier())
-		_timeoutMultiplierErr := writeBuffer.WriteUint8("timeoutMultiplier", 8, (timeoutMultiplier))
+		_timeoutMultiplierErr := writeBuffer.WriteUint8("timeoutMultiplier", 8, uint8((timeoutMultiplier)))
 		if _timeoutMultiplierErr != nil {
 			return errors.Wrap(_timeoutMultiplierErr, "Error serializing 'timeoutMultiplier' field")
 		}
@@ -693,7 +693,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint32("reserved", 24, reserved)
+			_err := writeBuffer.WriteUint32("reserved", 24, uint32(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -701,7 +701,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (otRpi)
 		otRpi := uint32(m.GetOtRpi())
-		_otRpiErr := writeBuffer.WriteUint32("otRpi", 32, (otRpi))
+		_otRpiErr := writeBuffer.WriteUint32("otRpi", 32, uint32((otRpi)))
 		if _otRpiErr != nil {
 			return errors.Wrap(_otRpiErr, "Error serializing 'otRpi' field")
 		}
@@ -720,7 +720,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (toRpi)
 		toRpi := uint32(m.GetToRpi())
-		_toRpiErr := writeBuffer.WriteUint32("toRpi", 32, (toRpi))
+		_toRpiErr := writeBuffer.WriteUint32("toRpi", 32, uint32((toRpi)))
 		if _toRpiErr != nil {
 			return errors.Wrap(_toRpiErr, "Error serializing 'toRpi' field")
 		}
@@ -751,7 +751,7 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (connectionPathSize)
 		connectionPathSize := uint8(m.GetConnectionPathSize())
-		_connectionPathSizeErr := writeBuffer.WriteUint8("connectionPathSize", 8, (connectionPathSize))
+		_connectionPathSizeErr := writeBuffer.WriteUint8("connectionPathSize", 8, uint8((connectionPathSize)))
 		if _connectionPathSizeErr != nil {
 			return errors.Wrap(_connectionPathSizeErr, "Error serializing 'connectionPathSize' field")
 		}

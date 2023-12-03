@@ -790,14 +790,14 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 8, (priority))
+		_priorityErr := writeBuffer.WriteUint8("priority", 8, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}
@@ -811,21 +811,21 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (maxKeepAliveCount)
 		maxKeepAliveCount := uint32(m.GetMaxKeepAliveCount())
-		_maxKeepAliveCountErr := writeBuffer.WriteUint32("maxKeepAliveCount", 32, (maxKeepAliveCount))
+		_maxKeepAliveCountErr := writeBuffer.WriteUint32("maxKeepAliveCount", 32, uint32((maxKeepAliveCount)))
 		if _maxKeepAliveCountErr != nil {
 			return errors.Wrap(_maxKeepAliveCountErr, "Error serializing 'maxKeepAliveCount' field")
 		}
 
 		// Simple Field (maxLifetimeCount)
 		maxLifetimeCount := uint32(m.GetMaxLifetimeCount())
-		_maxLifetimeCountErr := writeBuffer.WriteUint32("maxLifetimeCount", 32, (maxLifetimeCount))
+		_maxLifetimeCountErr := writeBuffer.WriteUint32("maxLifetimeCount", 32, uint32((maxLifetimeCount)))
 		if _maxLifetimeCountErr != nil {
 			return errors.Wrap(_maxLifetimeCountErr, "Error serializing 'maxLifetimeCount' field")
 		}
 
 		// Simple Field (maxNotificationsPerPublish)
 		maxNotificationsPerPublish := uint32(m.GetMaxNotificationsPerPublish())
-		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, (maxNotificationsPerPublish))
+		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
 		if _maxNotificationsPerPublishErr != nil {
 			return errors.Wrap(_maxNotificationsPerPublishErr, "Error serializing 'maxNotificationsPerPublish' field")
 		}
@@ -840,7 +840,7 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -855,161 +855,161 @@ func (m *_SubscriptionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (modifyCount)
 		modifyCount := uint32(m.GetModifyCount())
-		_modifyCountErr := writeBuffer.WriteUint32("modifyCount", 32, (modifyCount))
+		_modifyCountErr := writeBuffer.WriteUint32("modifyCount", 32, uint32((modifyCount)))
 		if _modifyCountErr != nil {
 			return errors.Wrap(_modifyCountErr, "Error serializing 'modifyCount' field")
 		}
 
 		// Simple Field (enableCount)
 		enableCount := uint32(m.GetEnableCount())
-		_enableCountErr := writeBuffer.WriteUint32("enableCount", 32, (enableCount))
+		_enableCountErr := writeBuffer.WriteUint32("enableCount", 32, uint32((enableCount)))
 		if _enableCountErr != nil {
 			return errors.Wrap(_enableCountErr, "Error serializing 'enableCount' field")
 		}
 
 		// Simple Field (disableCount)
 		disableCount := uint32(m.GetDisableCount())
-		_disableCountErr := writeBuffer.WriteUint32("disableCount", 32, (disableCount))
+		_disableCountErr := writeBuffer.WriteUint32("disableCount", 32, uint32((disableCount)))
 		if _disableCountErr != nil {
 			return errors.Wrap(_disableCountErr, "Error serializing 'disableCount' field")
 		}
 
 		// Simple Field (republishRequestCount)
 		republishRequestCount := uint32(m.GetRepublishRequestCount())
-		_republishRequestCountErr := writeBuffer.WriteUint32("republishRequestCount", 32, (republishRequestCount))
+		_republishRequestCountErr := writeBuffer.WriteUint32("republishRequestCount", 32, uint32((republishRequestCount)))
 		if _republishRequestCountErr != nil {
 			return errors.Wrap(_republishRequestCountErr, "Error serializing 'republishRequestCount' field")
 		}
 
 		// Simple Field (republishMessageRequestCount)
 		republishMessageRequestCount := uint32(m.GetRepublishMessageRequestCount())
-		_republishMessageRequestCountErr := writeBuffer.WriteUint32("republishMessageRequestCount", 32, (republishMessageRequestCount))
+		_republishMessageRequestCountErr := writeBuffer.WriteUint32("republishMessageRequestCount", 32, uint32((republishMessageRequestCount)))
 		if _republishMessageRequestCountErr != nil {
 			return errors.Wrap(_republishMessageRequestCountErr, "Error serializing 'republishMessageRequestCount' field")
 		}
 
 		// Simple Field (republishMessageCount)
 		republishMessageCount := uint32(m.GetRepublishMessageCount())
-		_republishMessageCountErr := writeBuffer.WriteUint32("republishMessageCount", 32, (republishMessageCount))
+		_republishMessageCountErr := writeBuffer.WriteUint32("republishMessageCount", 32, uint32((republishMessageCount)))
 		if _republishMessageCountErr != nil {
 			return errors.Wrap(_republishMessageCountErr, "Error serializing 'republishMessageCount' field")
 		}
 
 		// Simple Field (transferRequestCount)
 		transferRequestCount := uint32(m.GetTransferRequestCount())
-		_transferRequestCountErr := writeBuffer.WriteUint32("transferRequestCount", 32, (transferRequestCount))
+		_transferRequestCountErr := writeBuffer.WriteUint32("transferRequestCount", 32, uint32((transferRequestCount)))
 		if _transferRequestCountErr != nil {
 			return errors.Wrap(_transferRequestCountErr, "Error serializing 'transferRequestCount' field")
 		}
 
 		// Simple Field (transferredToAltClientCount)
 		transferredToAltClientCount := uint32(m.GetTransferredToAltClientCount())
-		_transferredToAltClientCountErr := writeBuffer.WriteUint32("transferredToAltClientCount", 32, (transferredToAltClientCount))
+		_transferredToAltClientCountErr := writeBuffer.WriteUint32("transferredToAltClientCount", 32, uint32((transferredToAltClientCount)))
 		if _transferredToAltClientCountErr != nil {
 			return errors.Wrap(_transferredToAltClientCountErr, "Error serializing 'transferredToAltClientCount' field")
 		}
 
 		// Simple Field (transferredToSameClientCount)
 		transferredToSameClientCount := uint32(m.GetTransferredToSameClientCount())
-		_transferredToSameClientCountErr := writeBuffer.WriteUint32("transferredToSameClientCount", 32, (transferredToSameClientCount))
+		_transferredToSameClientCountErr := writeBuffer.WriteUint32("transferredToSameClientCount", 32, uint32((transferredToSameClientCount)))
 		if _transferredToSameClientCountErr != nil {
 			return errors.Wrap(_transferredToSameClientCountErr, "Error serializing 'transferredToSameClientCount' field")
 		}
 
 		// Simple Field (publishRequestCount)
 		publishRequestCount := uint32(m.GetPublishRequestCount())
-		_publishRequestCountErr := writeBuffer.WriteUint32("publishRequestCount", 32, (publishRequestCount))
+		_publishRequestCountErr := writeBuffer.WriteUint32("publishRequestCount", 32, uint32((publishRequestCount)))
 		if _publishRequestCountErr != nil {
 			return errors.Wrap(_publishRequestCountErr, "Error serializing 'publishRequestCount' field")
 		}
 
 		// Simple Field (dataChangeNotificationsCount)
 		dataChangeNotificationsCount := uint32(m.GetDataChangeNotificationsCount())
-		_dataChangeNotificationsCountErr := writeBuffer.WriteUint32("dataChangeNotificationsCount", 32, (dataChangeNotificationsCount))
+		_dataChangeNotificationsCountErr := writeBuffer.WriteUint32("dataChangeNotificationsCount", 32, uint32((dataChangeNotificationsCount)))
 		if _dataChangeNotificationsCountErr != nil {
 			return errors.Wrap(_dataChangeNotificationsCountErr, "Error serializing 'dataChangeNotificationsCount' field")
 		}
 
 		// Simple Field (eventNotificationsCount)
 		eventNotificationsCount := uint32(m.GetEventNotificationsCount())
-		_eventNotificationsCountErr := writeBuffer.WriteUint32("eventNotificationsCount", 32, (eventNotificationsCount))
+		_eventNotificationsCountErr := writeBuffer.WriteUint32("eventNotificationsCount", 32, uint32((eventNotificationsCount)))
 		if _eventNotificationsCountErr != nil {
 			return errors.Wrap(_eventNotificationsCountErr, "Error serializing 'eventNotificationsCount' field")
 		}
 
 		// Simple Field (notificationsCount)
 		notificationsCount := uint32(m.GetNotificationsCount())
-		_notificationsCountErr := writeBuffer.WriteUint32("notificationsCount", 32, (notificationsCount))
+		_notificationsCountErr := writeBuffer.WriteUint32("notificationsCount", 32, uint32((notificationsCount)))
 		if _notificationsCountErr != nil {
 			return errors.Wrap(_notificationsCountErr, "Error serializing 'notificationsCount' field")
 		}
 
 		// Simple Field (latePublishRequestCount)
 		latePublishRequestCount := uint32(m.GetLatePublishRequestCount())
-		_latePublishRequestCountErr := writeBuffer.WriteUint32("latePublishRequestCount", 32, (latePublishRequestCount))
+		_latePublishRequestCountErr := writeBuffer.WriteUint32("latePublishRequestCount", 32, uint32((latePublishRequestCount)))
 		if _latePublishRequestCountErr != nil {
 			return errors.Wrap(_latePublishRequestCountErr, "Error serializing 'latePublishRequestCount' field")
 		}
 
 		// Simple Field (currentKeepAliveCount)
 		currentKeepAliveCount := uint32(m.GetCurrentKeepAliveCount())
-		_currentKeepAliveCountErr := writeBuffer.WriteUint32("currentKeepAliveCount", 32, (currentKeepAliveCount))
+		_currentKeepAliveCountErr := writeBuffer.WriteUint32("currentKeepAliveCount", 32, uint32((currentKeepAliveCount)))
 		if _currentKeepAliveCountErr != nil {
 			return errors.Wrap(_currentKeepAliveCountErr, "Error serializing 'currentKeepAliveCount' field")
 		}
 
 		// Simple Field (currentLifetimeCount)
 		currentLifetimeCount := uint32(m.GetCurrentLifetimeCount())
-		_currentLifetimeCountErr := writeBuffer.WriteUint32("currentLifetimeCount", 32, (currentLifetimeCount))
+		_currentLifetimeCountErr := writeBuffer.WriteUint32("currentLifetimeCount", 32, uint32((currentLifetimeCount)))
 		if _currentLifetimeCountErr != nil {
 			return errors.Wrap(_currentLifetimeCountErr, "Error serializing 'currentLifetimeCount' field")
 		}
 
 		// Simple Field (unacknowledgedMessageCount)
 		unacknowledgedMessageCount := uint32(m.GetUnacknowledgedMessageCount())
-		_unacknowledgedMessageCountErr := writeBuffer.WriteUint32("unacknowledgedMessageCount", 32, (unacknowledgedMessageCount))
+		_unacknowledgedMessageCountErr := writeBuffer.WriteUint32("unacknowledgedMessageCount", 32, uint32((unacknowledgedMessageCount)))
 		if _unacknowledgedMessageCountErr != nil {
 			return errors.Wrap(_unacknowledgedMessageCountErr, "Error serializing 'unacknowledgedMessageCount' field")
 		}
 
 		// Simple Field (discardedMessageCount)
 		discardedMessageCount := uint32(m.GetDiscardedMessageCount())
-		_discardedMessageCountErr := writeBuffer.WriteUint32("discardedMessageCount", 32, (discardedMessageCount))
+		_discardedMessageCountErr := writeBuffer.WriteUint32("discardedMessageCount", 32, uint32((discardedMessageCount)))
 		if _discardedMessageCountErr != nil {
 			return errors.Wrap(_discardedMessageCountErr, "Error serializing 'discardedMessageCount' field")
 		}
 
 		// Simple Field (monitoredItemCount)
 		monitoredItemCount := uint32(m.GetMonitoredItemCount())
-		_monitoredItemCountErr := writeBuffer.WriteUint32("monitoredItemCount", 32, (monitoredItemCount))
+		_monitoredItemCountErr := writeBuffer.WriteUint32("monitoredItemCount", 32, uint32((monitoredItemCount)))
 		if _monitoredItemCountErr != nil {
 			return errors.Wrap(_monitoredItemCountErr, "Error serializing 'monitoredItemCount' field")
 		}
 
 		// Simple Field (disabledMonitoredItemCount)
 		disabledMonitoredItemCount := uint32(m.GetDisabledMonitoredItemCount())
-		_disabledMonitoredItemCountErr := writeBuffer.WriteUint32("disabledMonitoredItemCount", 32, (disabledMonitoredItemCount))
+		_disabledMonitoredItemCountErr := writeBuffer.WriteUint32("disabledMonitoredItemCount", 32, uint32((disabledMonitoredItemCount)))
 		if _disabledMonitoredItemCountErr != nil {
 			return errors.Wrap(_disabledMonitoredItemCountErr, "Error serializing 'disabledMonitoredItemCount' field")
 		}
 
 		// Simple Field (monitoringQueueOverflowCount)
 		monitoringQueueOverflowCount := uint32(m.GetMonitoringQueueOverflowCount())
-		_monitoringQueueOverflowCountErr := writeBuffer.WriteUint32("monitoringQueueOverflowCount", 32, (monitoringQueueOverflowCount))
+		_monitoringQueueOverflowCountErr := writeBuffer.WriteUint32("monitoringQueueOverflowCount", 32, uint32((monitoringQueueOverflowCount)))
 		if _monitoringQueueOverflowCountErr != nil {
 			return errors.Wrap(_monitoringQueueOverflowCountErr, "Error serializing 'monitoringQueueOverflowCount' field")
 		}
 
 		// Simple Field (nextSequenceNumber)
 		nextSequenceNumber := uint32(m.GetNextSequenceNumber())
-		_nextSequenceNumberErr := writeBuffer.WriteUint32("nextSequenceNumber", 32, (nextSequenceNumber))
+		_nextSequenceNumberErr := writeBuffer.WriteUint32("nextSequenceNumber", 32, uint32((nextSequenceNumber)))
 		if _nextSequenceNumberErr != nil {
 			return errors.Wrap(_nextSequenceNumberErr, "Error serializing 'nextSequenceNumber' field")
 		}
 
 		// Simple Field (eventQueueOverFlowCount)
 		eventQueueOverFlowCount := uint32(m.GetEventQueueOverFlowCount())
-		_eventQueueOverFlowCountErr := writeBuffer.WriteUint32("eventQueueOverFlowCount", 32, (eventQueueOverFlowCount))
+		_eventQueueOverFlowCountErr := writeBuffer.WriteUint32("eventQueueOverFlowCount", 32, uint32((eventQueueOverFlowCount)))
 		if _eventQueueOverFlowCountErr != nil {
 			return errors.Wrap(_eventQueueOverFlowCountErr, "Error serializing 'eventQueueOverFlowCount' field")
 		}

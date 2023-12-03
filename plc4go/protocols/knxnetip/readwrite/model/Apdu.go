@@ -215,7 +215,7 @@ func (pm *_Apdu) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.GetControl())
-	_controlErr := writeBuffer.WriteUint8("control", 1, (control))
+	_controlErr := writeBuffer.WriteUint8("control", 1, uint8((control)))
 
 	if _controlErr != nil {
 		return errors.Wrap(_controlErr, "Error serializing 'control' field")
@@ -230,7 +230,7 @@ func (pm *_Apdu) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 
 	// Simple Field (counter)
 	counter := uint8(m.GetCounter())
-	_counterErr := writeBuffer.WriteUint8("counter", 4, (counter))
+	_counterErr := writeBuffer.WriteUint8("counter", 4, uint8((counter)))
 	if _counterErr != nil {
 		return errors.Wrap(_counterErr, "Error serializing 'counter' field")
 	}

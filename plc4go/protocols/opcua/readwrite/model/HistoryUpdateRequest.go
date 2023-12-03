@@ -262,7 +262,7 @@ func (m *_HistoryUpdateRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfHistoryUpdateDetails)
 		noOfHistoryUpdateDetails := int32(m.GetNoOfHistoryUpdateDetails())
-		_noOfHistoryUpdateDetailsErr := writeBuffer.WriteInt32("noOfHistoryUpdateDetails", 32, (noOfHistoryUpdateDetails))
+		_noOfHistoryUpdateDetailsErr := writeBuffer.WriteInt32("noOfHistoryUpdateDetails", 32, int32((noOfHistoryUpdateDetails)))
 		if _noOfHistoryUpdateDetailsErr != nil {
 			return errors.Wrap(_noOfHistoryUpdateDetailsErr, "Error serializing 'noOfHistoryUpdateDetails' field")
 		}

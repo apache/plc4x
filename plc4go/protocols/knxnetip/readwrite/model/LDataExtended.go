@@ -314,14 +314,14 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (hopCount)
 		hopCount := uint8(m.GetHopCount())
-		_hopCountErr := writeBuffer.WriteUint8("hopCount", 3, (hopCount))
+		_hopCountErr := writeBuffer.WriteUint8("hopCount", 3, uint8((hopCount)))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}
 
 		// Simple Field (extendedFrameFormat)
 		extendedFrameFormat := uint8(m.GetExtendedFrameFormat())
-		_extendedFrameFormatErr := writeBuffer.WriteUint8("extendedFrameFormat", 4, (extendedFrameFormat))
+		_extendedFrameFormatErr := writeBuffer.WriteUint8("extendedFrameFormat", 4, uint8((extendedFrameFormat)))
 		if _extendedFrameFormatErr != nil {
 			return errors.Wrap(_extendedFrameFormatErr, "Error serializing 'extendedFrameFormat' field")
 		}
@@ -346,7 +346,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes(ctx)) - uint8(uint8(1)))
-		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, (dataLength))
+		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 		}

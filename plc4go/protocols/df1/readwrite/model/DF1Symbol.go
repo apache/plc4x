@@ -199,14 +199,14 @@ func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 
 	// Const Field (messageStart)
-	_messageStartErr := writeBuffer.WriteUint8("messageStart", 8, 0x10)
+	_messageStartErr := writeBuffer.WriteUint8("messageStart", 8, uint8(0x10))
 	if _messageStartErr != nil {
 		return errors.Wrap(_messageStartErr, "Error serializing 'messageStart' field")
 	}
 
 	// Discriminator Field (symbolType) (Used as input to a switch field)
 	symbolType := uint8(child.GetSymbolType())
-	_symbolTypeErr := writeBuffer.WriteUint8("symbolType", 8, (symbolType))
+	_symbolTypeErr := writeBuffer.WriteUint8("symbolType", 8, uint8((symbolType)))
 
 	if _symbolTypeErr != nil {
 		return errors.Wrap(_symbolTypeErr, "Error serializing 'symbolType' field")

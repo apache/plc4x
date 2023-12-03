@@ -252,8 +252,8 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
                 // Simple Field (milliseconds)
-                uint32_t milliseconds = 0;
-                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &milliseconds);
+                int32_t milliseconds = 0;
+                _res = plc4c_spi_read_signed_int(readBuffer, 32, (int32_t*) &milliseconds);
                 if(_res != OK) {
                     return _res;
                 }
@@ -522,7 +522,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
         } else         if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
                     // Simple field (milliseconds)
-                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.time_value);
+                    _res = plc4c_spi_write_signed_int(writeBuffer, 32, (*data_item)->data.time_value);
                     if(_res != OK) {
                         return _res;
                     }

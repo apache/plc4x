@@ -178,7 +178,7 @@ func (m *_MediaTransportControlDataSetCategory) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (categoryNumber)
 		categoryNumber := uint8(m.GetCategoryNumber())
-		_categoryNumberErr := writeBuffer.WriteUint8("categoryNumber", 8, (categoryNumber))
+		_categoryNumberErr := writeBuffer.WriteUint8("categoryNumber", 8, uint8((categoryNumber)))
 		if _categoryNumberErr != nil {
 			return errors.Wrap(_categoryNumberErr, "Error serializing 'categoryNumber' field")
 		}

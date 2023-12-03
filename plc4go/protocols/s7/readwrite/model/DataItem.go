@@ -198,12 +198,12 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_TIME": // TIME
 		// Simple Field (milliseconds)
-		milliseconds, _millisecondsErr := readBuffer.ReadUint32("milliseconds", 32)
+		milliseconds, _millisecondsErr := readBuffer.ReadInt32("milliseconds", 32)
 		if _millisecondsErr != nil {
 			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcTIMEFromMilliseconds(milliseconds), nil
+		return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
 		// Simple Field (nanoseconds)
 		nanoseconds, _nanosecondsErr := readBuffer.ReadUint64("nanoseconds", 64)
@@ -314,7 +314,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	switch {
 	case dataProtocolId == "IEC61131_BOOL": // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -324,62 +324,62 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_BYTE": // BYTE
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_WORD": // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DWORD": // DWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LWORD": // LWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_SINT": // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
+		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_USINT": // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_INT": // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
+		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_UINT": // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_DINT": // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
+		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_UDINT": // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_LINT": // LINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
+		if _err := writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_ULINT": // ULINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataProtocolId == "IEC61131_REAL": // REAL
@@ -416,67 +416,67 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_TIME": // TIME
 		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteUint32("milliseconds", 32, value.(values.PlcTIME).GetMilliseconds()); _err != nil {
+		if _err := writeBuffer.WriteInt32("milliseconds", 32, int32(value.(values.PlcTIME).GetMilliseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
 		}
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint64("nanoseconds", 64, value.(values.PlcLTIME).GetNanoseconds()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanoseconds", 64, uint64(value.(values.PlcLTIME).GetNanoseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case dataProtocolId == "IEC61131_DATE": // DATE
 		// Simple Field (daysSinceSiemensEpoch)
-		if _err := writeBuffer.WriteUint16("daysSinceSiemensEpoch", 16, value.(values.PlcDATE).GetDaysSinceSiemensEpoch()); _err != nil {
+		if _err := writeBuffer.WriteUint16("daysSinceSiemensEpoch", 16, uint16(value.(values.PlcDATE).GetDaysSinceSiemensEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'daysSinceSiemensEpoch' field")
 		}
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight()); _err != nil {
+		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, uint32(value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsSinceMidnight' field")
 		}
 	case dataProtocolId == "IEC61131_LTIME_OF_DAY": // LTIME_OF_DAY
 		// Simple Field (nanosecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, uint64(value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceMidnight' field")
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint16("year", 16, value.(values.PlcDATE_AND_TIME).GetYear()); _err != nil {
+		if _err := writeBuffer.WriteUint16("year", 16, uint16(value.(values.PlcDATE_AND_TIME).GetYear())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 8, value.(values.PlcDATE_AND_TIME).GetMonth()); _err != nil {
+		if _err := writeBuffer.WriteUint8("month", 8, uint8(value.(values.PlcDATE_AND_TIME).GetMonth())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
-		if _err := writeBuffer.WriteUint8("day", 8, value.(values.PlcDATE_AND_TIME).GetDay()); _err != nil {
+		if _err := writeBuffer.WriteUint8("day", 8, uint8(value.(values.PlcDATE_AND_TIME).GetDay())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
-		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, value.(values.PlcDATE_AND_TIME).GetDayOfWeek()); _err != nil {
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, uint8(value.(values.PlcDATE_AND_TIME).GetDayOfWeek())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
-		if _err := writeBuffer.WriteUint8("hour", 8, value.(values.PlcDATE_AND_TIME).GetHour()); _err != nil {
+		if _err := writeBuffer.WriteUint8("hour", 8, uint8(value.(values.PlcDATE_AND_TIME).GetHour())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 8, value.(values.PlcDATE_AND_TIME).GetMinutes()); _err != nil {
+		if _err := writeBuffer.WriteUint8("minutes", 8, uint8(value.(values.PlcDATE_AND_TIME).GetMinutes())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 8, value.(values.PlcDATE_AND_TIME).GetSeconds()); _err != nil {
+		if _err := writeBuffer.WriteUint8("seconds", 8, uint8(value.(values.PlcDATE_AND_TIME).GetSeconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint32("nanoseconds", 32, value.(values.PlcDATE_AND_TIME).GetNanoseconds()); _err != nil {
+		if _err := writeBuffer.WriteUint32("nanoseconds", 32, uint32(value.(values.PlcDATE_AND_TIME).GetNanoseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	default:

@@ -432,7 +432,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 2, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -516,7 +516,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var sourceTimestamp *int64 = nil
 	if m.GetSourceTimestamp() != nil {
 		sourceTimestamp = m.GetSourceTimestamp()
-		_sourceTimestampErr := writeBuffer.WriteInt64("sourceTimestamp", 64, *(sourceTimestamp))
+		_sourceTimestampErr := writeBuffer.WriteInt64("sourceTimestamp", 64, int64(*(sourceTimestamp)))
 		if _sourceTimestampErr != nil {
 			return errors.Wrap(_sourceTimestampErr, "Error serializing 'sourceTimestamp' field")
 		}
@@ -526,7 +526,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var sourcePicoseconds *uint16 = nil
 	if m.GetSourcePicoseconds() != nil {
 		sourcePicoseconds = m.GetSourcePicoseconds()
-		_sourcePicosecondsErr := writeBuffer.WriteUint16("sourcePicoseconds", 16, *(sourcePicoseconds))
+		_sourcePicosecondsErr := writeBuffer.WriteUint16("sourcePicoseconds", 16, uint16(*(sourcePicoseconds)))
 		if _sourcePicosecondsErr != nil {
 			return errors.Wrap(_sourcePicosecondsErr, "Error serializing 'sourcePicoseconds' field")
 		}
@@ -536,7 +536,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var serverTimestamp *int64 = nil
 	if m.GetServerTimestamp() != nil {
 		serverTimestamp = m.GetServerTimestamp()
-		_serverTimestampErr := writeBuffer.WriteInt64("serverTimestamp", 64, *(serverTimestamp))
+		_serverTimestampErr := writeBuffer.WriteInt64("serverTimestamp", 64, int64(*(serverTimestamp)))
 		if _serverTimestampErr != nil {
 			return errors.Wrap(_serverTimestampErr, "Error serializing 'serverTimestamp' field")
 		}
@@ -546,7 +546,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var serverPicoseconds *uint16 = nil
 	if m.GetServerPicoseconds() != nil {
 		serverPicoseconds = m.GetServerPicoseconds()
-		_serverPicosecondsErr := writeBuffer.WriteUint16("serverPicoseconds", 16, *(serverPicoseconds))
+		_serverPicosecondsErr := writeBuffer.WriteUint16("serverPicoseconds", 16, uint16(*(serverPicoseconds)))
 		if _serverPicosecondsErr != nil {
 			return errors.Wrap(_serverPicosecondsErr, "Error serializing 'serverPicoseconds' field")
 		}

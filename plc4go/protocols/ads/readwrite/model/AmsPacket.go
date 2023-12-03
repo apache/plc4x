@@ -541,7 +541,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort := uint16(m.GetTargetAmsPort())
-	_targetAmsPortErr := writeBuffer.WriteUint16("targetAmsPort", 16, (targetAmsPort))
+	_targetAmsPortErr := writeBuffer.WriteUint16("targetAmsPort", 16, uint16((targetAmsPort)))
 	if _targetAmsPortErr != nil {
 		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
 	}
@@ -560,7 +560,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort := uint16(m.GetSourceAmsPort())
-	_sourceAmsPortErr := writeBuffer.WriteUint16("sourceAmsPort", 16, (sourceAmsPort))
+	_sourceAmsPortErr := writeBuffer.WriteUint16("sourceAmsPort", 16, uint16((sourceAmsPort)))
 	if _sourceAmsPortErr != nil {
 		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
@@ -645,7 +645,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteInt8("reserved", 7, reserved)
+		_err := writeBuffer.WriteInt8("reserved", 7, int8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -653,21 +653,21 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(uint32(uint32(m.GetLengthInBytes(ctx))) - uint32(uint32(32)))
-	_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+	_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode := uint32(m.GetErrorCode())
-	_errorCodeErr := writeBuffer.WriteUint32("errorCode", 32, (errorCode))
+	_errorCodeErr := writeBuffer.WriteUint32("errorCode", 32, uint32((errorCode)))
 	if _errorCodeErr != nil {
 		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId := uint32(m.GetInvokeId())
-	_invokeIdErr := writeBuffer.WriteUint32("invokeId", 32, (invokeId))
+	_invokeIdErr := writeBuffer.WriteUint32("invokeId", 32, uint32((invokeId)))
 	if _invokeIdErr != nil {
 		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 	}

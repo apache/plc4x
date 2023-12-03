@@ -286,7 +286,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (timeFromLastRecoverOfMainsInSeconds)
 		timeFromLastRecoverOfMainsInSeconds := uint8(m.GetTimeFromLastRecoverOfMainsInSeconds())
-		_timeFromLastRecoverOfMainsInSecondsErr := writeBuffer.WriteUint8("timeFromLastRecoverOfMainsInSeconds", 8, (timeFromLastRecoverOfMainsInSeconds))
+		_timeFromLastRecoverOfMainsInSecondsErr := writeBuffer.WriteUint8("timeFromLastRecoverOfMainsInSeconds", 8, uint8((timeFromLastRecoverOfMainsInSeconds)))
 		if _timeFromLastRecoverOfMainsInSecondsErr != nil {
 			return errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error serializing 'timeFromLastRecoverOfMainsInSeconds' field")
 		}

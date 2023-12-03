@@ -181,7 +181,7 @@ func (m *_COTPParameterChecksum) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (crc)
 		crc := uint8(m.GetCrc())
-		_crcErr := writeBuffer.WriteUint8("crc", 8, (crc))
+		_crcErr := writeBuffer.WriteUint8("crc", 8, uint8((crc)))
 		if _crcErr != nil {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}

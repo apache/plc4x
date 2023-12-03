@@ -294,7 +294,7 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (recordId)
 		recordId := uint32(m.GetRecordId())
-		_recordIdErr := writeBuffer.WriteUint32("recordId", 32, (recordId))
+		_recordIdErr := writeBuffer.WriteUint32("recordId", 32, uint32((recordId)))
 		if _recordIdErr != nil {
 			return errors.Wrap(_recordIdErr, "Error serializing 'recordId' field")
 		}
@@ -325,7 +325,7 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfServerCapabilities)
 		noOfServerCapabilities := int32(m.GetNoOfServerCapabilities())
-		_noOfServerCapabilitiesErr := writeBuffer.WriteInt32("noOfServerCapabilities", 32, (noOfServerCapabilities))
+		_noOfServerCapabilitiesErr := writeBuffer.WriteInt32("noOfServerCapabilities", 32, int32((noOfServerCapabilities)))
 		if _noOfServerCapabilitiesErr != nil {
 			return errors.Wrap(_noOfServerCapabilitiesErr, "Error serializing 'noOfServerCapabilities' field")
 		}

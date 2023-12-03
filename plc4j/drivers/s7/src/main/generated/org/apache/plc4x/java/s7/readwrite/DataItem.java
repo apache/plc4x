@@ -180,8 +180,7 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
 
       // Simple Field (milliseconds)
-      Long milliseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readLong("", 32);
+      Integer milliseconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readInt("", 32);
 
       return PlcTIME.ofMilliseconds(milliseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
@@ -365,10 +364,9 @@ public class DataItem {
           writeBuffer, _value, stringLength, "UTF-16");
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
-      long milliseconds = (long) _value.getLong();
+      int milliseconds = (int) _value.getInt();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeLong(
-          "", 32, ((Number) (milliseconds)).longValue());
+      /*TODO: migrate me*/ writeBuffer.writeInt("", 32, ((Number) (milliseconds)).intValue());
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
       BigInteger nanoseconds = (BigInteger) _value.getBigInteger();

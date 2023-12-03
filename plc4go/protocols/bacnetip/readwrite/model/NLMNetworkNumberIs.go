@@ -223,7 +223,7 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (networkNumber)
 		networkNumber := uint16(m.GetNetworkNumber())
-		_networkNumberErr := writeBuffer.WriteUint16("networkNumber", 16, (networkNumber))
+		_networkNumberErr := writeBuffer.WriteUint16("networkNumber", 16, uint16((networkNumber)))
 		if _networkNumberErr != nil {
 			return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 		}
@@ -238,7 +238,7 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

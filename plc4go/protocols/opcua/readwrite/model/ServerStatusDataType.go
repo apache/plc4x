@@ -292,14 +292,14 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (startTime)
 		startTime := int64(m.GetStartTime())
-		_startTimeErr := writeBuffer.WriteInt64("startTime", 64, (startTime))
+		_startTimeErr := writeBuffer.WriteInt64("startTime", 64, int64((startTime)))
 		if _startTimeErr != nil {
 			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
 		}
 
 		// Simple Field (currentTime)
 		currentTime := int64(m.GetCurrentTime())
-		_currentTimeErr := writeBuffer.WriteInt64("currentTime", 64, (currentTime))
+		_currentTimeErr := writeBuffer.WriteInt64("currentTime", 64, int64((currentTime)))
 		if _currentTimeErr != nil {
 			return errors.Wrap(_currentTimeErr, "Error serializing 'currentTime' field")
 		}
@@ -330,7 +330,7 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (secondsTillShutdown)
 		secondsTillShutdown := uint32(m.GetSecondsTillShutdown())
-		_secondsTillShutdownErr := writeBuffer.WriteUint32("secondsTillShutdown", 32, (secondsTillShutdown))
+		_secondsTillShutdownErr := writeBuffer.WriteUint32("secondsTillShutdown", 32, uint32((secondsTillShutdown)))
 		if _secondsTillShutdownErr != nil {
 			return errors.Wrap(_secondsTillShutdownErr, "Error serializing 'secondsTillShutdown' field")
 		}

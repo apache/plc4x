@@ -262,7 +262,7 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfNodesToDelete)
 		noOfNodesToDelete := int32(m.GetNoOfNodesToDelete())
-		_noOfNodesToDeleteErr := writeBuffer.WriteInt32("noOfNodesToDelete", 32, (noOfNodesToDelete))
+		_noOfNodesToDeleteErr := writeBuffer.WriteInt32("noOfNodesToDelete", 32, int32((noOfNodesToDelete)))
 		if _noOfNodesToDeleteErr != nil {
 			return errors.Wrap(_noOfNodesToDeleteErr, "Error serializing 'noOfNodesToDelete' field")
 		}

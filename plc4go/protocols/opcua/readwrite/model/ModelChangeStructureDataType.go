@@ -253,7 +253,7 @@ func (m *_ModelChangeStructureDataType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (verb)
 		verb := uint8(m.GetVerb())
-		_verbErr := writeBuffer.WriteUint8("verb", 8, (verb))
+		_verbErr := writeBuffer.WriteUint8("verb", 8, uint8((verb)))
 		if _verbErr != nil {
 			return errors.Wrap(_verbErr, "Error serializing 'verb' field")
 		}

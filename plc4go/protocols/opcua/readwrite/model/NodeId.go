@@ -209,7 +209,7 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteInt8("reserved", 2, reserved)
+		_err := writeBuffer.WriteInt8("reserved", 2, int8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

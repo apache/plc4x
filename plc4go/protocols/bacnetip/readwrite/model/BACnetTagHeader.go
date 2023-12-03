@@ -414,7 +414,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (tagNumber)
 	tagNumber := uint8(m.GetTagNumber())
-	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, (tagNumber))
+	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, uint8((tagNumber)))
 	if _tagNumberErr != nil {
 		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
@@ -433,7 +433,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.GetLengthValueType())
-	_lengthValueTypeErr := writeBuffer.WriteUint8("lengthValueType", 3, (lengthValueType))
+	_lengthValueTypeErr := writeBuffer.WriteUint8("lengthValueType", 3, uint8((lengthValueType)))
 	if _lengthValueTypeErr != nil {
 		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
@@ -442,7 +442,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extTagNumber *uint8 = nil
 	if m.GetExtTagNumber() != nil {
 		extTagNumber = m.GetExtTagNumber()
-		_extTagNumberErr := writeBuffer.WriteUint8("extTagNumber", 8, *(extTagNumber))
+		_extTagNumberErr := writeBuffer.WriteUint8("extTagNumber", 8, uint8(*(extTagNumber)))
 		if _extTagNumberErr != nil {
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
@@ -476,7 +476,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extLength *uint8 = nil
 	if m.GetExtLength() != nil {
 		extLength = m.GetExtLength()
-		_extLengthErr := writeBuffer.WriteUint8("extLength", 8, *(extLength))
+		_extLengthErr := writeBuffer.WriteUint8("extLength", 8, uint8(*(extLength)))
 		if _extLengthErr != nil {
 			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
 		}
@@ -486,7 +486,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extExtLength *uint16 = nil
 	if m.GetExtExtLength() != nil {
 		extExtLength = m.GetExtExtLength()
-		_extExtLengthErr := writeBuffer.WriteUint16("extExtLength", 16, *(extExtLength))
+		_extExtLengthErr := writeBuffer.WriteUint16("extExtLength", 16, uint16(*(extExtLength)))
 		if _extExtLengthErr != nil {
 			return errors.Wrap(_extExtLengthErr, "Error serializing 'extExtLength' field")
 		}
@@ -496,7 +496,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extExtExtLength *uint32 = nil
 	if m.GetExtExtExtLength() != nil {
 		extExtExtLength = m.GetExtExtExtLength()
-		_extExtExtLengthErr := writeBuffer.WriteUint32("extExtExtLength", 32, *(extExtExtLength))
+		_extExtExtLengthErr := writeBuffer.WriteUint32("extExtExtLength", 32, uint32(*(extExtExtLength)))
 		if _extExtExtLengthErr != nil {
 			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
 		}

@@ -198,14 +198,14 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (totalCount)
 		totalCount := uint32(m.GetTotalCount())
-		_totalCountErr := writeBuffer.WriteUint32("totalCount", 32, (totalCount))
+		_totalCountErr := writeBuffer.WriteUint32("totalCount", 32, uint32((totalCount)))
 		if _totalCountErr != nil {
 			return errors.Wrap(_totalCountErr, "Error serializing 'totalCount' field")
 		}
 
 		// Simple Field (errorCount)
 		errorCount := uint32(m.GetErrorCount())
-		_errorCountErr := writeBuffer.WriteUint32("errorCount", 32, (errorCount))
+		_errorCountErr := writeBuffer.WriteUint32("errorCount", 32, uint32((errorCount)))
 		if _errorCountErr != nil {
 			return errors.Wrap(_errorCountErr, "Error serializing 'errorCount' field")
 		}

@@ -178,7 +178,7 @@ func (m *_MeteringDataOtherWaterConsumption) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (kL)
 		kL := uint32(m.GetKL())
-		_kLErr := writeBuffer.WriteUint32("kL", 32, (kL))
+		_kLErr := writeBuffer.WriteUint32("kL", 32, uint32((kL)))
 		if _kLErr != nil {
 			return errors.Wrap(_kLErr, "Error serializing 'kL' field")
 		}

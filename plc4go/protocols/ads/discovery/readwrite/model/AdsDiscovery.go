@@ -303,14 +303,14 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 
 	// Const Field (header)
-	_headerErr := writeBuffer.WriteUint32("header", 32, 0x71146603)
+	_headerErr := writeBuffer.WriteUint32("header", 32, uint32(0x71146603))
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
 	// Simple Field (requestId)
 	requestId := uint32(m.GetRequestId())
-	_requestIdErr := writeBuffer.WriteUint32("requestId", 32, (requestId))
+	_requestIdErr := writeBuffer.WriteUint32("requestId", 32, uint32((requestId)))
 	if _requestIdErr != nil {
 		return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
 	}
@@ -353,7 +353,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Implicit Field (numBlocks) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBlocks := uint32(uint32(len(m.GetBlocks())))
-	_numBlocksErr := writeBuffer.WriteUint32("numBlocks", 32, (numBlocks))
+	_numBlocksErr := writeBuffer.WriteUint32("numBlocks", 32, uint32((numBlocks)))
 	if _numBlocksErr != nil {
 		return errors.Wrap(_numBlocksErr, "Error serializing 'numBlocks' field")
 	}

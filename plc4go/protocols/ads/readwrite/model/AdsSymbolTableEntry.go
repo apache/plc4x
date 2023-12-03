@@ -667,35 +667,35 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Simple Field (entryLength)
 	entryLength := uint32(m.GetEntryLength())
-	_entryLengthErr := writeBuffer.WriteUint32("entryLength", 32, (entryLength))
+	_entryLengthErr := writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
 	if _entryLengthErr != nil {
 		return errors.Wrap(_entryLengthErr, "Error serializing 'entryLength' field")
 	}
 
 	// Simple Field (group)
 	group := uint32(m.GetGroup())
-	_groupErr := writeBuffer.WriteUint32("group", 32, (group))
+	_groupErr := writeBuffer.WriteUint32("group", 32, uint32((group)))
 	if _groupErr != nil {
 		return errors.Wrap(_groupErr, "Error serializing 'group' field")
 	}
 
 	// Simple Field (offset)
 	offset := uint32(m.GetOffset())
-	_offsetErr := writeBuffer.WriteUint32("offset", 32, (offset))
+	_offsetErr := writeBuffer.WriteUint32("offset", 32, uint32((offset)))
 	if _offsetErr != nil {
 		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 	}
 
 	// Simple Field (size)
 	size := uint32(m.GetSize())
-	_sizeErr := writeBuffer.WriteUint32("size", 32, (size))
+	_sizeErr := writeBuffer.WriteUint32("size", 32, uint32((size)))
 	if _sizeErr != nil {
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 	}
 
 	// Simple Field (dataType)
 	dataType := uint32(m.GetDataType())
-	_dataTypeErr := writeBuffer.WriteUint32("dataType", 32, (dataType))
+	_dataTypeErr := writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
 	if _dataTypeErr != nil {
 		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
 	}
@@ -766,7 +766,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 3, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 3, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -817,7 +817,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -825,21 +825,21 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Implicit Field (nameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	nameLength := uint16(uint16(len(m.GetName())))
-	_nameLengthErr := writeBuffer.WriteUint16("nameLength", 16, (nameLength))
+	_nameLengthErr := writeBuffer.WriteUint16("nameLength", 16, uint16((nameLength)))
 	if _nameLengthErr != nil {
 		return errors.Wrap(_nameLengthErr, "Error serializing 'nameLength' field")
 	}
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataTypeNameLength := uint16(uint16(len(m.GetDataTypeName())))
-	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, (dataTypeNameLength))
+	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
 	if _dataTypeNameLengthErr != nil {
 		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	commentLength := uint16(uint16(len(m.GetComment())))
-	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, (commentLength))
+	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
 	if _commentLengthErr != nil {
 		return errors.Wrap(_commentLengthErr, "Error serializing 'commentLength' field")
 	}
@@ -852,7 +852,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Const Field (nameTerminator)
-	_nameTerminatorErr := writeBuffer.WriteUint8("nameTerminator", 8, 0x00)
+	_nameTerminatorErr := writeBuffer.WriteUint8("nameTerminator", 8, uint8(0x00))
 	if _nameTerminatorErr != nil {
 		return errors.Wrap(_nameTerminatorErr, "Error serializing 'nameTerminator' field")
 	}
@@ -865,7 +865,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Const Field (dataTypeNameTerminator)
-	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, 0x00)
+	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
 	if _dataTypeNameTerminatorErr != nil {
 		return errors.Wrap(_dataTypeNameTerminatorErr, "Error serializing 'dataTypeNameTerminator' field")
 	}
@@ -878,7 +878,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Const Field (commentTerminator)
-	_commentTerminatorErr := writeBuffer.WriteUint8("commentTerminator", 8, 0x00)
+	_commentTerminatorErr := writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
 	if _commentTerminatorErr != nil {
 		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
 	}

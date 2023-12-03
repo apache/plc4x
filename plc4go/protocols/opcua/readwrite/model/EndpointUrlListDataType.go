@@ -225,7 +225,7 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfEndpointUrlList)
 		noOfEndpointUrlList := int32(m.GetNoOfEndpointUrlList())
-		_noOfEndpointUrlListErr := writeBuffer.WriteInt32("noOfEndpointUrlList", 32, (noOfEndpointUrlList))
+		_noOfEndpointUrlListErr := writeBuffer.WriteInt32("noOfEndpointUrlList", 32, int32((noOfEndpointUrlList)))
 		if _noOfEndpointUrlListErr != nil {
 			return errors.Wrap(_noOfEndpointUrlListErr, "Error serializing 'noOfEndpointUrlList' field")
 		}

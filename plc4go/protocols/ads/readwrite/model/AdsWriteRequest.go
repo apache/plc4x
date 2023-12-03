@@ -239,21 +239,21 @@ func (m *_AdsWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, (indexGroup))
+		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, (indexOffset))
+		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.GetData())))
-		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}

@@ -454,7 +454,7 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfUserIdentityTokens)
 		noOfUserIdentityTokens := int32(m.GetNoOfUserIdentityTokens())
-		_noOfUserIdentityTokensErr := writeBuffer.WriteInt32("noOfUserIdentityTokens", 32, (noOfUserIdentityTokens))
+		_noOfUserIdentityTokensErr := writeBuffer.WriteInt32("noOfUserIdentityTokens", 32, int32((noOfUserIdentityTokens)))
 		if _noOfUserIdentityTokensErr != nil {
 			return errors.Wrap(_noOfUserIdentityTokensErr, "Error serializing 'noOfUserIdentityTokens' field")
 		}
@@ -490,7 +490,7 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (securityLevel)
 		securityLevel := uint8(m.GetSecurityLevel())
-		_securityLevelErr := writeBuffer.WriteUint8("securityLevel", 8, (securityLevel))
+		_securityLevelErr := writeBuffer.WriteUint8("securityLevel", 8, uint8((securityLevel)))
 		if _securityLevelErr != nil {
 			return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
 		}

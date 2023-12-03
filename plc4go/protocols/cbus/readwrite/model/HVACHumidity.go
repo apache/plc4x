@@ -172,7 +172,7 @@ func (m *_HVACHumidity) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (humidityValue)
 	humidityValue := uint16(m.GetHumidityValue())
-	_humidityValueErr := writeBuffer.WriteUint16("humidityValue", 16, (humidityValue))
+	_humidityValueErr := writeBuffer.WriteUint16("humidityValue", 16, uint16((humidityValue)))
 	if _humidityValueErr != nil {
 		return errors.Wrap(_humidityValueErr, "Error serializing 'humidityValue' field")
 	}

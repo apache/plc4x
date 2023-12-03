@@ -285,7 +285,7 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (command) (Used as input to a switch field)
 	command := uint16(child.GetCommand())
-	_commandErr := writeBuffer.WriteUint16("command", 16, (command))
+	_commandErr := writeBuffer.WriteUint16("command", 16, uint16((command)))
 
 	if _commandErr != nil {
 		return errors.Wrap(_commandErr, "Error serializing 'command' field")
@@ -293,21 +293,21 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLength := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(24)))
-	_packetLengthErr := writeBuffer.WriteUint16("packetLength", 16, (packetLength))
+	_packetLengthErr := writeBuffer.WriteUint16("packetLength", 16, uint16((packetLength)))
 	if _packetLengthErr != nil {
 		return errors.Wrap(_packetLengthErr, "Error serializing 'packetLength' field")
 	}
 
 	// Simple Field (sessionHandle)
 	sessionHandle := uint32(m.GetSessionHandle())
-	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, (sessionHandle))
+	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
 	if _sessionHandleErr != nil {
 		return errors.Wrap(_sessionHandleErr, "Error serializing 'sessionHandle' field")
 	}
 
 	// Simple Field (status)
 	status := uint32(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint32("status", 32, (status))
+	_statusErr := writeBuffer.WriteUint32("status", 32, uint32((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
@@ -320,7 +320,7 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (options)
 	options := uint32(m.GetOptions())
-	_optionsErr := writeBuffer.WriteUint32("options", 32, (options))
+	_optionsErr := writeBuffer.WriteUint32("options", 32, uint32((options)))
 	if _optionsErr != nil {
 		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
 	}

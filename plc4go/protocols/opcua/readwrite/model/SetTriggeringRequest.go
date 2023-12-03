@@ -355,21 +355,21 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (triggeringItemId)
 		triggeringItemId := uint32(m.GetTriggeringItemId())
-		_triggeringItemIdErr := writeBuffer.WriteUint32("triggeringItemId", 32, (triggeringItemId))
+		_triggeringItemIdErr := writeBuffer.WriteUint32("triggeringItemId", 32, uint32((triggeringItemId)))
 		if _triggeringItemIdErr != nil {
 			return errors.Wrap(_triggeringItemIdErr, "Error serializing 'triggeringItemId' field")
 		}
 
 		// Simple Field (noOfLinksToAdd)
 		noOfLinksToAdd := int32(m.GetNoOfLinksToAdd())
-		_noOfLinksToAddErr := writeBuffer.WriteInt32("noOfLinksToAdd", 32, (noOfLinksToAdd))
+		_noOfLinksToAddErr := writeBuffer.WriteInt32("noOfLinksToAdd", 32, int32((noOfLinksToAdd)))
 		if _noOfLinksToAddErr != nil {
 			return errors.Wrap(_noOfLinksToAddErr, "Error serializing 'noOfLinksToAdd' field")
 		}
@@ -380,7 +380,7 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		for _curItem, _element := range m.GetLinksToAdd() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'linksToAdd' field")
 			}
@@ -391,7 +391,7 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfLinksToRemove)
 		noOfLinksToRemove := int32(m.GetNoOfLinksToRemove())
-		_noOfLinksToRemoveErr := writeBuffer.WriteInt32("noOfLinksToRemove", 32, (noOfLinksToRemove))
+		_noOfLinksToRemoveErr := writeBuffer.WriteInt32("noOfLinksToRemove", 32, int32((noOfLinksToRemove)))
 		if _noOfLinksToRemoveErr != nil {
 			return errors.Wrap(_noOfLinksToRemoveErr, "Error serializing 'noOfLinksToRemove' field")
 		}
@@ -402,7 +402,7 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		for _curItem, _element := range m.GetLinksToRemove() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'linksToRemove' field")
 			}

@@ -248,14 +248,14 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (numericCode)
 		numericCode := int16(m.GetNumericCode())
-		_numericCodeErr := writeBuffer.WriteInt16("numericCode", 16, (numericCode))
+		_numericCodeErr := writeBuffer.WriteInt16("numericCode", 16, int16((numericCode)))
 		if _numericCodeErr != nil {
 			return errors.Wrap(_numericCodeErr, "Error serializing 'numericCode' field")
 		}
 
 		// Simple Field (exponent)
 		exponent := int8(m.GetExponent())
-		_exponentErr := writeBuffer.WriteInt8("exponent", 8, (exponent))
+		_exponentErr := writeBuffer.WriteInt8("exponent", 8, int8((exponent)))
 		if _exponentErr != nil {
 			return errors.Wrap(_exponentErr, "Error serializing 'exponent' field")
 		}

@@ -262,7 +262,7 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfTargets)
 		noOfTargets := int32(m.GetNoOfTargets())
-		_noOfTargetsErr := writeBuffer.WriteInt32("noOfTargets", 32, (noOfTargets))
+		_noOfTargetsErr := writeBuffer.WriteInt32("noOfTargets", 32, int32((noOfTargets)))
 		if _noOfTargetsErr != nil {
 			return errors.Wrap(_noOfTargetsErr, "Error serializing 'noOfTargets' field")
 		}

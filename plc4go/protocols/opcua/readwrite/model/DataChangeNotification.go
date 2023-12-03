@@ -300,14 +300,14 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Implicit Field (notificationLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		notificationLength := int32(int32(m.GetLengthInBytes(ctx)))
-		_notificationLengthErr := writeBuffer.WriteInt32("notificationLength", 32, (notificationLength))
+		_notificationLengthErr := writeBuffer.WriteInt32("notificationLength", 32, int32((notificationLength)))
 		if _notificationLengthErr != nil {
 			return errors.Wrap(_notificationLengthErr, "Error serializing 'notificationLength' field")
 		}
 
 		// Simple Field (noOfMonitoredItems)
 		noOfMonitoredItems := int32(m.GetNoOfMonitoredItems())
-		_noOfMonitoredItemsErr := writeBuffer.WriteInt32("noOfMonitoredItems", 32, (noOfMonitoredItems))
+		_noOfMonitoredItemsErr := writeBuffer.WriteInt32("noOfMonitoredItems", 32, int32((noOfMonitoredItems)))
 		if _noOfMonitoredItemsErr != nil {
 			return errors.Wrap(_noOfMonitoredItemsErr, "Error serializing 'noOfMonitoredItems' field")
 		}
@@ -331,7 +331,7 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, (noOfDiagnosticInfos))
+		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

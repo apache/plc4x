@@ -284,7 +284,7 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (clientHandle)
 		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, (clientHandle))
+		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
 		if _clientHandleErr != nil {
 			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
 		}
@@ -310,7 +310,7 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (queueSize)
 		queueSize := uint32(m.GetQueueSize())
-		_queueSizeErr := writeBuffer.WriteUint32("queueSize", 32, (queueSize))
+		_queueSizeErr := writeBuffer.WriteUint32("queueSize", 32, uint32((queueSize)))
 		if _queueSizeErr != nil {
 			return errors.Wrap(_queueSizeErr, "Error serializing 'queueSize' field")
 		}
@@ -325,7 +325,7 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

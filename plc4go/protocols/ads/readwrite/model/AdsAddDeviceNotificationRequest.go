@@ -336,21 +336,21 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, (indexGroup))
+		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, (indexOffset))
+		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (length)
 		length := uint32(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
@@ -369,14 +369,14 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (maxDelayInMs)
 		maxDelayInMs := uint32(m.GetMaxDelayInMs())
-		_maxDelayInMsErr := writeBuffer.WriteUint32("maxDelayInMs", 32, (maxDelayInMs))
+		_maxDelayInMsErr := writeBuffer.WriteUint32("maxDelayInMs", 32, uint32((maxDelayInMs)))
 		if _maxDelayInMsErr != nil {
 			return errors.Wrap(_maxDelayInMsErr, "Error serializing 'maxDelayInMs' field")
 		}
 
 		// Simple Field (cycleTimeInMs)
 		cycleTimeInMs := uint32(m.GetCycleTimeInMs())
-		_cycleTimeInMsErr := writeBuffer.WriteUint32("cycleTimeInMs", 32, (cycleTimeInMs))
+		_cycleTimeInMsErr := writeBuffer.WriteUint32("cycleTimeInMs", 32, uint32((cycleTimeInMs)))
 		if _cycleTimeInMsErr != nil {
 			return errors.Wrap(_cycleTimeInMsErr, "Error serializing 'cycleTimeInMs' field")
 		}
@@ -391,7 +391,7 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint64("reserved", 64, reserved)
+			_err := writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -407,7 +407,7 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint64("reserved", 64, reserved)
+			_err := writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

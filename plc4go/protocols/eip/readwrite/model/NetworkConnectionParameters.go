@@ -287,7 +287,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (connectionSize)
 	connectionSize := uint16(m.GetConnectionSize())
-	_connectionSizeErr := writeBuffer.WriteUint16("connectionSize", 16, (connectionSize))
+	_connectionSizeErr := writeBuffer.WriteUint16("connectionSize", 16, uint16((connectionSize)))
 	if _connectionSizeErr != nil {
 		return errors.Wrap(_connectionSizeErr, "Error serializing 'connectionSize' field")
 	}
@@ -302,7 +302,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -317,7 +317,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (connectionType)
 	connectionType := uint8(m.GetConnectionType())
-	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 2, (connectionType))
+	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 2, uint8((connectionType)))
 	if _connectionTypeErr != nil {
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
 	}
@@ -340,7 +340,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (priority)
 	priority := uint8(m.GetPriority())
-	_priorityErr := writeBuffer.WriteUint8("priority", 2, (priority))
+	_priorityErr := writeBuffer.WriteUint8("priority", 2, uint8((priority)))
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}

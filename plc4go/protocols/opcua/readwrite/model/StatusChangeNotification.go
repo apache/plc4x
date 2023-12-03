@@ -220,7 +220,7 @@ func (m *_StatusChangeNotification) SerializeWithWriteBuffer(ctx context.Context
 
 		// Implicit Field (notificationLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		notificationLength := int32(int32(m.GetLengthInBytes(ctx)))
-		_notificationLengthErr := writeBuffer.WriteInt32("notificationLength", 32, (notificationLength))
+		_notificationLengthErr := writeBuffer.WriteInt32("notificationLength", 32, int32((notificationLength)))
 		if _notificationLengthErr != nil {
 			return errors.Wrap(_notificationLengthErr, "Error serializing 'notificationLength' field")
 		}

@@ -278,7 +278,7 @@ func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.GetCommunicationChannelId())
-		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, (communicationChannelId))
+		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}

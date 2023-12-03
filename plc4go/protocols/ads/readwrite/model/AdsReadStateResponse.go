@@ -246,14 +246,14 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (adsState)
 		adsState := uint16(m.GetAdsState())
-		_adsStateErr := writeBuffer.WriteUint16("adsState", 16, (adsState))
+		_adsStateErr := writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.GetDeviceState())
-		_deviceStateErr := writeBuffer.WriteUint16("deviceState", 16, (deviceState))
+		_deviceStateErr := writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}

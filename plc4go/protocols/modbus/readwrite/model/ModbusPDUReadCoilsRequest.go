@@ -206,14 +206,14 @@ func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.GetStartingAddress())
-		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, (startingAddress))
+		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.GetQuantity())
-		_quantityErr := writeBuffer.WriteUint16("quantity", 16, (quantity))
+		_quantityErr := writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}

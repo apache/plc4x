@@ -178,7 +178,7 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (mJ)
 		mJ := uint32(m.GetMJ())
-		_mJErr := writeBuffer.WriteUint32("mJ", 32, (mJ))
+		_mJErr := writeBuffer.WriteUint32("mJ", 32, uint32((mJ)))
 		if _mJErr != nil {
 			return errors.Wrap(_mJErr, "Error serializing 'mJ' field")
 		}

@@ -211,7 +211,7 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint16(uint16(len(m.GetTodoImplement())))
-		_itemLengthErr := writeBuffer.WriteUint16("itemLength", 16, (itemLength))
+		_itemLengthErr := writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
@@ -222,7 +222,7 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		for _curItem, _element := range m.GetTodoImplement() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'todoImplement' field")
 			}

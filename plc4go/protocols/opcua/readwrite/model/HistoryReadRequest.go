@@ -386,7 +386,7 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -401,7 +401,7 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfNodesToRead)
 		noOfNodesToRead := int32(m.GetNoOfNodesToRead())
-		_noOfNodesToReadErr := writeBuffer.WriteInt32("noOfNodesToRead", 32, (noOfNodesToRead))
+		_noOfNodesToReadErr := writeBuffer.WriteInt32("noOfNodesToRead", 32, int32((noOfNodesToRead)))
 		if _noOfNodesToReadErr != nil {
 			return errors.Wrap(_noOfNodesToReadErr, "Error serializing 'noOfNodesToRead' field")
 		}

@@ -229,21 +229,21 @@ func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer 
 	}
 
 	// Const Field (functionId)
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, 0x12)
+	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x12))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (byteLength)
 	byteLength := uint8(m.GetByteLength())
-	_byteLengthErr := writeBuffer.WriteUint8("byteLength", 8, (byteLength))
+	_byteLengthErr := writeBuffer.WriteUint8("byteLength", 8, uint8((byteLength)))
 	if _byteLengthErr != nil {
 		return errors.Wrap(_byteLengthErr, "Error serializing 'byteLength' field")
 	}
 
 	// Simple Field (syntaxId)
 	syntaxId := uint8(m.GetSyntaxId())
-	_syntaxIdErr := writeBuffer.WriteUint8("syntaxId", 8, (syntaxId))
+	_syntaxIdErr := writeBuffer.WriteUint8("syntaxId", 8, uint8((syntaxId)))
 	if _syntaxIdErr != nil {
 		return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
 	}

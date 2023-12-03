@@ -299,7 +299,7 @@ func (m *_RegisterServer2Request) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfDiscoveryConfiguration)
 		noOfDiscoveryConfiguration := int32(m.GetNoOfDiscoveryConfiguration())
-		_noOfDiscoveryConfigurationErr := writeBuffer.WriteInt32("noOfDiscoveryConfiguration", 32, (noOfDiscoveryConfiguration))
+		_noOfDiscoveryConfigurationErr := writeBuffer.WriteInt32("noOfDiscoveryConfiguration", 32, int32((noOfDiscoveryConfiguration)))
 		if _noOfDiscoveryConfigurationErr != nil {
 			return errors.Wrap(_noOfDiscoveryConfigurationErr, "Error serializing 'noOfDiscoveryConfiguration' field")
 		}

@@ -258,7 +258,7 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 	dataLength := uint16(uint16(uint16(len(m.GetData()))) * uint16((utils.InlineIf((bool((m.GetTransportSize()) == (DataTransportSize_BIT))), func() any { return uint16(uint16(1)) }, func() any {
 		return uint16((utils.InlineIf(m.GetTransportSize().SizeInBits(), func() any { return uint16(uint16(8)) }, func() any { return uint16(uint16(1)) }).(uint16)))
 	}).(uint16))))
-	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
+	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
@@ -277,7 +277,7 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		_timesPadding := uint8(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return int32((int32(int32(len(m.GetData()))) % int32(int32(2)))) }, func() any { return int32(int32(0)) }).(int32))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(0x00)
-			_paddingErr := writeBuffer.WriteUint8("", 8, (_paddingValue))
+			_paddingErr := writeBuffer.WriteUint8("", 8, uint8((_paddingValue)))
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}

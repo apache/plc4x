@@ -675,8 +675,11 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ATOUCH = 648,
         M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD = 649,
         M_WALLYONS = 650,
-        M_ABB___RESERVED = 651,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 652,
+        M_ZIMMEX = 651,
+        M_RHOMBUS_EUROPE = 652,
+        M_TURING_THINK = 653,
+        M_ABB___RESERVED = 654,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 655,
     }
 
     public static class KnxManufacturerInfo
@@ -2528,10 +2531,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_WALLYONS: { /* '650' */
                     return 708;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '651' */
+                case KnxManufacturer.M_ZIMMEX: { /* '651' */
+                    return 709;
+                }
+                case KnxManufacturer.M_RHOMBUS_EUROPE: { /* '652' */
+                    return 710;
+                }
+                case KnxManufacturer.M_TURING_THINK: { /* '653' */
+                    return 711;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '654' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '652' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '655' */
                     return 43959;
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
@@ -4497,10 +4509,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_WALLYONS: { /* '650' */
                     return "WallYons";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '651' */
+                case KnxManufacturer.M_ZIMMEX: { /* '651' */
+                    return "Zimmex";
+                }
+                case KnxManufacturer.M_RHOMBUS_EUROPE: { /* '652' */
+                    return "Rhombus Europe";
+                }
+                case KnxManufacturer.M_TURING_THINK: { /* '653' */
+                    return "Turing-Think";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '654' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '652' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '655' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */

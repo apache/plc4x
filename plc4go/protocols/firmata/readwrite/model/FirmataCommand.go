@@ -177,7 +177,7 @@ func (pm *_FirmataCommand) SerializeParent(ctx context.Context, writeBuffer util
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 4, (commandCode))
+	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 4, uint8((commandCode)))
 
 	if _commandCodeErr != nil {
 		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")

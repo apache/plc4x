@@ -191,14 +191,14 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (lowerBound)
 	lowerBound := uint32(m.GetLowerBound())
-	_lowerBoundErr := writeBuffer.WriteUint32("lowerBound", 32, (lowerBound))
+	_lowerBoundErr := writeBuffer.WriteUint32("lowerBound", 32, uint32((lowerBound)))
 	if _lowerBoundErr != nil {
 		return errors.Wrap(_lowerBoundErr, "Error serializing 'lowerBound' field")
 	}
 
 	// Simple Field (numElements)
 	numElements := uint32(m.GetNumElements())
-	_numElementsErr := writeBuffer.WriteUint32("numElements", 32, (numElements))
+	_numElementsErr := writeBuffer.WriteUint32("numElements", 32, uint32((numElements)))
 	if _numElementsErr != nil {
 		return errors.Wrap(_numElementsErr, "Error serializing 'numElements' field")
 	}

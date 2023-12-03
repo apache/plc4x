@@ -229,7 +229,7 @@ func (m *_EipListIdentityResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Implicit Field (itemCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemCount := uint16(uint16(len(m.GetItems())))
-		_itemCountErr := writeBuffer.WriteUint16("itemCount", 16, (itemCount))
+		_itemCountErr := writeBuffer.WriteUint16("itemCount", 16, uint16((itemCount)))
 		if _itemCountErr != nil {
 			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
 		}

@@ -545,7 +545,7 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfServerEndpoints)
 		noOfServerEndpoints := int32(m.GetNoOfServerEndpoints())
-		_noOfServerEndpointsErr := writeBuffer.WriteInt32("noOfServerEndpoints", 32, (noOfServerEndpoints))
+		_noOfServerEndpointsErr := writeBuffer.WriteInt32("noOfServerEndpoints", 32, int32((noOfServerEndpoints)))
 		if _noOfServerEndpointsErr != nil {
 			return errors.Wrap(_noOfServerEndpointsErr, "Error serializing 'noOfServerEndpoints' field")
 		}
@@ -569,7 +569,7 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfServerSoftwareCertificates)
 		noOfServerSoftwareCertificates := int32(m.GetNoOfServerSoftwareCertificates())
-		_noOfServerSoftwareCertificatesErr := writeBuffer.WriteInt32("noOfServerSoftwareCertificates", 32, (noOfServerSoftwareCertificates))
+		_noOfServerSoftwareCertificatesErr := writeBuffer.WriteInt32("noOfServerSoftwareCertificates", 32, int32((noOfServerSoftwareCertificates)))
 		if _noOfServerSoftwareCertificatesErr != nil {
 			return errors.Wrap(_noOfServerSoftwareCertificatesErr, "Error serializing 'noOfServerSoftwareCertificates' field")
 		}
@@ -605,7 +605,7 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (maxRequestMessageSize)
 		maxRequestMessageSize := uint32(m.GetMaxRequestMessageSize())
-		_maxRequestMessageSizeErr := writeBuffer.WriteUint32("maxRequestMessageSize", 32, (maxRequestMessageSize))
+		_maxRequestMessageSizeErr := writeBuffer.WriteUint32("maxRequestMessageSize", 32, uint32((maxRequestMessageSize)))
 		if _maxRequestMessageSizeErr != nil {
 			return errors.Wrap(_maxRequestMessageSizeErr, "Error serializing 'maxRequestMessageSize' field")
 		}

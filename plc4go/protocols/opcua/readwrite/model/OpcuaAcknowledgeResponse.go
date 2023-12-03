@@ -295,42 +295,42 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 
 		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, (messageSize))
+		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
 		if _messageSizeErr != nil {
 			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
 		}
 
 		// Simple Field (version)
 		version := int32(m.GetVersion())
-		_versionErr := writeBuffer.WriteInt32("version", 32, (version))
+		_versionErr := writeBuffer.WriteInt32("version", 32, int32((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
 		// Simple Field (receiveBufferSize)
 		receiveBufferSize := int32(m.GetReceiveBufferSize())
-		_receiveBufferSizeErr := writeBuffer.WriteInt32("receiveBufferSize", 32, (receiveBufferSize))
+		_receiveBufferSizeErr := writeBuffer.WriteInt32("receiveBufferSize", 32, int32((receiveBufferSize)))
 		if _receiveBufferSizeErr != nil {
 			return errors.Wrap(_receiveBufferSizeErr, "Error serializing 'receiveBufferSize' field")
 		}
 
 		// Simple Field (sendBufferSize)
 		sendBufferSize := int32(m.GetSendBufferSize())
-		_sendBufferSizeErr := writeBuffer.WriteInt32("sendBufferSize", 32, (sendBufferSize))
+		_sendBufferSizeErr := writeBuffer.WriteInt32("sendBufferSize", 32, int32((sendBufferSize)))
 		if _sendBufferSizeErr != nil {
 			return errors.Wrap(_sendBufferSizeErr, "Error serializing 'sendBufferSize' field")
 		}
 
 		// Simple Field (maxMessageSize)
 		maxMessageSize := int32(m.GetMaxMessageSize())
-		_maxMessageSizeErr := writeBuffer.WriteInt32("maxMessageSize", 32, (maxMessageSize))
+		_maxMessageSizeErr := writeBuffer.WriteInt32("maxMessageSize", 32, int32((maxMessageSize)))
 		if _maxMessageSizeErr != nil {
 			return errors.Wrap(_maxMessageSizeErr, "Error serializing 'maxMessageSize' field")
 		}
 
 		// Simple Field (maxChunkCount)
 		maxChunkCount := int32(m.GetMaxChunkCount())
-		_maxChunkCountErr := writeBuffer.WriteInt32("maxChunkCount", 32, (maxChunkCount))
+		_maxChunkCountErr := writeBuffer.WriteInt32("maxChunkCount", 32, int32((maxChunkCount)))
 		if _maxChunkCountErr != nil {
 			return errors.Wrap(_maxChunkCountErr, "Error serializing 'maxChunkCount' field")
 		}

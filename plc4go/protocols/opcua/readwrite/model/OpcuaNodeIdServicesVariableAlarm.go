@@ -2688,7 +2688,7 @@ func (e OpcuaNodeIdServicesVariableAlarm) Serialize() ([]byte, error) {
 func (e OpcuaNodeIdServicesVariableAlarm) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableAlarm", 32, int32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteInt32("OpcuaNodeIdServicesVariableAlarm", 32, int32(int32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

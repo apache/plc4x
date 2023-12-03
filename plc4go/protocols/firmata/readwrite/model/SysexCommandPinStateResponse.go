@@ -221,21 +221,21 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, (pin))
+		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
 
 		// Simple Field (pinMode)
 		pinMode := uint8(m.GetPinMode())
-		_pinModeErr := writeBuffer.WriteUint8("pinMode", 8, (pinMode))
+		_pinModeErr := writeBuffer.WriteUint8("pinMode", 8, uint8((pinMode)))
 		if _pinModeErr != nil {
 			return errors.Wrap(_pinModeErr, "Error serializing 'pinMode' field")
 		}
 
 		// Simple Field (pinState)
 		pinState := uint8(m.GetPinState())
-		_pinStateErr := writeBuffer.WriteUint8("pinState", 8, (pinState))
+		_pinStateErr := writeBuffer.WriteUint8("pinState", 8, uint8((pinState)))
 		if _pinStateErr != nil {
 			return errors.Wrap(_pinStateErr, "Error serializing 'pinState' field")
 		}

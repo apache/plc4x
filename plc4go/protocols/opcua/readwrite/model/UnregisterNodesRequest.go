@@ -262,7 +262,7 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfNodesToUnregister)
 		noOfNodesToUnregister := int32(m.GetNoOfNodesToUnregister())
-		_noOfNodesToUnregisterErr := writeBuffer.WriteInt32("noOfNodesToUnregister", 32, (noOfNodesToUnregister))
+		_noOfNodesToUnregisterErr := writeBuffer.WriteInt32("noOfNodesToUnregister", 32, int32((noOfNodesToUnregister)))
 		if _noOfNodesToUnregisterErr != nil {
 			return errors.Wrap(_noOfNodesToUnregisterErr, "Error serializing 'noOfNodesToUnregister' field")
 		}
