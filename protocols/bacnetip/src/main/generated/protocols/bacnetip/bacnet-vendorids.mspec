@@ -1466,6 +1466,9 @@
   ['1451' RYOBI_LIMITED ['1451', '"Ryobi Limited"']]
   ['1452' EKKO_SENSE_LTD ['1452', '"EkkoSense Ltd"']]
   ['1453' CLIMA_COOL ['1453', '"ClimaCool"']]
+  ['1454' GRID_CONNECT_INC ['1454', '"Grid Connect Inc."']]
+  ['1455' ZIEGLER_INSTRUMENTATIONUK_LTD ['1455', '"Ziegler Instrumentation UK Ltd"']]
+  ['1456' CONTROL_TECLLC ['1456', '"ControlTec, LLC"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

@@ -1488,6 +1488,9 @@ const (
 	BACnetVendorId_RYOBI_LIMITED                                                                BACnetVendorId = 1451
 	BACnetVendorId_EKKO_SENSE_LTD                                                               BACnetVendorId = 1452
 	BACnetVendorId_CLIMA_COOL                                                                   BACnetVendorId = 1453
+	BACnetVendorId_GRID_CONNECT_INC                                                             BACnetVendorId = 1454
+	BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD                                                BACnetVendorId = 1455
+	BACnetVendorId_CONTROL_TECLLC                                                               BACnetVendorId = 1456
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2941,6 +2944,9 @@ func init() {
 		BACnetVendorId_RYOBI_LIMITED,
 		BACnetVendorId_EKKO_SENSE_LTD,
 		BACnetVendorId_CLIMA_COOL,
+		BACnetVendorId_GRID_CONNECT_INC,
+		BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD,
+		BACnetVendorId_CONTROL_TECLLC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4966,6 +4972,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1453:
 		{ /* '1453' */
 			return 1453
+		}
+	case 1454:
+		{ /* '1454' */
+			return 1454
+		}
+	case 1455:
+		{ /* '1455' */
+			return 1455
+		}
+	case 1456:
+		{ /* '1456' */
+			return 1456
 		}
 	case 146:
 		{ /* '146' */
@@ -10769,6 +10787,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1453' */
 			return "ClimaCool"
 		}
+	case 1454:
+		{ /* '1454' */
+			return "Grid Connect Inc."
+		}
+	case 1455:
+		{ /* '1455' */
+			return "Ziegler Instrumentation UK Ltd"
+		}
+	case 1456:
+		{ /* '1456' */
+			return "ControlTec, LLC"
+		}
 	case 146:
 		{ /* '146' */
 			return "Sanyo Electric Co., Ltd."
@@ -15560,6 +15590,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EKKO_SENSE_LTD, true
 	case 1453:
 		return BACnetVendorId_CLIMA_COOL, true
+	case 1454:
+		return BACnetVendorId_GRID_CONNECT_INC, true
+	case 1455:
+		return BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD, true
+	case 1456:
+		return BACnetVendorId_CONTROL_TECLLC, true
 	case 146:
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
 	case 147:
@@ -18458,6 +18494,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EKKO_SENSE_LTD, true
 	case "CLIMA_COOL":
 		return BACnetVendorId_CLIMA_COOL, true
+	case "GRID_CONNECT_INC":
+		return BACnetVendorId_GRID_CONNECT_INC, true
+	case "ZIEGLER_INSTRUMENTATIONUK_LTD":
+		return BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD, true
+	case "CONTROL_TECLLC":
+		return BACnetVendorId_CONTROL_TECLLC, true
 	case "SANYO_ELECTRIC_CO_LTD":
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
 	case "INTEGRATED_INFORMATION_SYSTEMS_INC":
@@ -21417,6 +21459,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "EKKO_SENSE_LTD"
 	case BACnetVendorId_CLIMA_COOL:
 		return "CLIMA_COOL"
+	case BACnetVendorId_GRID_CONNECT_INC:
+		return "GRID_CONNECT_INC"
+	case BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD:
+		return "ZIEGLER_INSTRUMENTATIONUK_LTD"
+	case BACnetVendorId_CONTROL_TECLLC:
+		return "CONTROL_TECLLC"
 	case BACnetVendorId_SANYO_ELECTRIC_CO_LTD:
 		return "SANYO_ELECTRIC_CO_LTD"
 	case BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC:
