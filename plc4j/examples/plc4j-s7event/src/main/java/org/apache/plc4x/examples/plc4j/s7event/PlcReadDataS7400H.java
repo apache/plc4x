@@ -250,6 +250,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         if (!isConnected.get()) return;
         try {
             final PlcWriteRequest.Builder writeRequest = connection.writeRequestBuilder();  //(01)
+            writeRequest.addTagAddress("TAG00", "%DB400:4:DWORD",(long) 0x0001_0001); //(02)             
             writeRequest.addTagAddress("TAG01", "%DB400:4:TIME",Duration.ofDays(5)); //(02) 
           
             

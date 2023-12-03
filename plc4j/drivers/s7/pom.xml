@@ -36,11 +36,11 @@
   </properties>
 
   <build>
-    <plugins>
+    <plugins>    
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
-        <executions>
+        <executions>         
           <execution>
             <id>generate-feature-xml</id>
             <phase>compile</phase>
