@@ -587,7 +587,7 @@
       <dependency>
         <groupId>tel.schich</groupId>
         <artifactId>javacan-core</artifactId>
-        <version>3.2.4</version>
+        <version>3.3.0</version>
       </dependency>
 
       <dependency>
