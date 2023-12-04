@@ -379,8 +379,7 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 			"ping-success",
 		}, 1)
 
-	// Sleep for a 1000th of a millisecond.
-	time.Sleep(1000 * time.Nanosecond)
+	time.Sleep(10 * time.Millisecond)
 
 	// Almost instantly request the same connection for a second time.
 	// As the connection takes 100ms, the second connection request will come
