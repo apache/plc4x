@@ -263,6 +263,8 @@ func executeAndTestReadFromPlc(t *testing.T, cache plcConnectionCache, connectio
 		// In the log we should see one "Successfully connected" entry.
 		if len(traces) != len(expectedTraceEntries) {
 			t.Errorf("Expected %d 'Successfully connected' entries in the log but got %d", len(expectedTraceEntries), len(traces))
+			ch <- false
+			return
 		}
 		for i, expectedTraceEntry := range expectedTraceEntries {
 			currentTraceEntry := traces[i].Operation + "-" + traces[i].Message
@@ -377,7 +379,8 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 			"ping-success",
 		}, 1)
 
-	time.Sleep(1 * time.Millisecond)
+	// Sleep for a 1000th of a millisecond.
+	time.Sleep(1000 * time.Nanosecond)
 
 	// Almost instantly request the same connection for a second time.
 	// As the connection takes 100ms, the second connection request will come
