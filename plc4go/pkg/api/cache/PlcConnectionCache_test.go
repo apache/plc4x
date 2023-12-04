@@ -263,6 +263,8 @@ func executeAndTestReadFromPlc(t *testing.T, cache plcConnectionCache, connectio
 		// In the log we should see one "Successfully connected" entry.
 		if len(traces) != len(expectedTraceEntries) {
 			t.Errorf("Expected %d 'Successfully connected' entries in the log but got %d", len(expectedTraceEntries), len(traces))
+			ch <- false
+			return
 		}
 		for i, expectedTraceEntry := range expectedTraceEntries {
 			currentTraceEntry := traces[i].Operation + "-" + traces[i].Message
