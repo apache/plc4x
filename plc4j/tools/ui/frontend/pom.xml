@@ -34,6 +34,78 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>cz.habarta.typescript-generator</groupId>
+        <artifactId>typescript-generator-maven-plugin</artifactId>
+        <version>3.2.1263</version>
+        <executions>
+          <execution>
+            <id>generate-rest-client</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <jsonLibrary>jackson2</jsonLibrary>
+              <generateSpringApplicationClient>true</generateSpringApplicationClient>
+              <classes>
+                <!-- These are the PLC4J API types -->
+                <class>org.apache.plc4x.java.api.messages.PlcBrowseItem</class>
+                <class>org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo</class>
+                <class>org.apache.plc4x.java.api.messages.PlcBrowseRequest</class>
+                <class>org.apache.plc4x.java.api.messages.PlcBrowseResponse</class>
+                <class>org.apache.plc4x.java.api.messages.PlcDiscoveryItem</class>
+                <class>org.apache.plc4x.java.api.messages.PlcDiscoveryRequest</class>
+                <class>org.apache.plc4x.java.api.messages.PlcDiscoveryResponse</class>
+                <class>org.apache.plc4x.java.api.metadata.PlcConnectionMetadata</class>
+                <class>org.apache.plc4x.java.api.metadata.PlcDriverMetadata</class>
+                <class>org.apache.plc4x.java.api.model.ArrayInfo</class>
+                <class>org.apache.plc4x.java.api.model.PlcQuery</class>
+                <class>org.apache.plc4x.java.api.model.PlcTag</class>
+                <class>org.apache.plc4x.java.api.types.PlcResponseCode</class>
+                <class>org.apache.plc4x.java.api.types.PlcSubscriptionType</class>
+                <class>org.apache.plc4x.java.api.types.PlcValueType</class>
+                <class>org.apache.plc4x.java.api.value.PlcValue</class>
+                <!-- Here come the REST controllers -->
+                <class>org.apache.plc4x.java.tools.ui.controller.DriverController</class>
+              </classes>
+              <excludeClasses>
+                <excludeClass>java.lang.Comparable</excludeClass>
+              </excludeClasses>
+              <outputKind>module</outputKind>
+              <outputFileType>implementationFile</outputFileType>
+              <outputFile>frontend/src/generated/plc4j-tools-ui-frontend.ts</outputFile>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>cz.habarta.typescript-generator</groupId>
+            <artifactId>typescript-generator-spring</artifactId>
+            <version>3.2.1263</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>2.3.0</version>
+        <executions>
+          <execution>
+            <id>add-apache-headers</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>update-file-header</goal>
+            </goals>
+            <configuration>
+              <licenseName>apache_v2</licenseName>
+              <roots>
+                <root>frontend/src/generated</root>
+              </roots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
         <version>1.14.2</version>
@@ -105,5 +177,20 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-tools-ui-backend</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 
 </project>

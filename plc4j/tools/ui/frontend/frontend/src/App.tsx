@@ -16,8 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export class TreeItem {
-    id!: string;
-    name!: string;
-    children!: TreeItem[];
+
+import './App.css'
+
+function App() {
+  return (
+      <div>App</div>
+  )
 }
+
+export default App

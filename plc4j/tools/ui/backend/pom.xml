@@ -30,52 +30,6 @@
 
   <build>
     <plugins>
-      <!-- Unpack the Frontend, so it's served with the rest of the application -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.6.1</version>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.apache.plc4x</groupId>
-                  <artifactId>plc4j-tools-ui-frontend</artifactId>
-                  <version>${project.version}</version>
-                  <type>jar</type>
-                  <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/libs</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.1.2</version>
-        <configuration>
-          <profiles>
-            <profile>dev</profile>
-          </profiles>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -104,11 +58,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>3.1.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>6.0.13</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -157,14 +106,6 @@
       <artifactId>spring-security-test</artifactId>
       <version>6.1.5</version>
       <scope>test</scope>
-    </dependency>
-
-    <!-- For making sure this module is built first -->
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-tools-ui-frontend</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 

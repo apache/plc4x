@@ -16,10 +16,5 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Store } from '@/store';// path to store file
 
-declare module '@vue/runtime-core' {
-    interface ComponentCustomProperties {
-        $store: Store;
-    }
-}
+/// <reference types="vite/client" />

@@ -16,25 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Commit, createStore} from 'vuex'
-import {User} from "@/models/user";
 
-export default createStore({
-  state: {
-    user: new User()
-  },
-  getters: {
-  },
-  mutations: {
-    SET_USER(state: {
-      user: User
-    }, user: User) {
-      state.user = user
-    }
-  },
-  actions: {
-    setUser({commit}:{commit: Commit}, user: User) {
-      return commit('SET_USER', user)
-    }
-  },
-})
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)

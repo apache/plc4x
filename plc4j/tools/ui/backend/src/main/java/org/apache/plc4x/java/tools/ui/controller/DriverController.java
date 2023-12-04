@@ -35,8 +35,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-// Allow from the default port 8080 as well as the one node usually uses for it's dev-mode 8081
-@CrossOrigin(origins = {"http://localhost:8081", "http://localhost:8080"})
+// Allow from the default port 8080 as well as the one node usually uses for it's dev-mode 5173
+@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
 @RestController
 @RequestMapping("/api")
 public class DriverController {
