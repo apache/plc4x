@@ -224,7 +224,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         if (!isConnected.get()) return;
         try {
             final PlcReadRequest.Builder readrequest = connection.readRequestBuilder();  //(01)
-            readrequest.addTagAddress("TEST", "%DB406:4:TIME"); //(02) 
+            readrequest.addTagAddress("TEST", "%DB406:0:S5TIME"); //(02) 
             
             final PlcReadRequest rr = readrequest.build(); //(03)
             final PlcReadResponse response; //(04)            
@@ -252,7 +252,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
             final PlcWriteRequest.Builder writeRequest = connection.writeRequestBuilder();  //(01)
             //writeRequest.addTagAddress("TAG01", "%DB406:4:DWORD",(long) 0x0001_0001); //(02) 
             
-            writeRequest.addTagAddress("TAG02", "%DB406:4:TIME", Duration.ofDays(-11)); //(02) 
+            writeRequest.addTagAddress("TAG01", "%DB406:0:S5TIME", Duration.ofMinutes(15)); //(02) 
           
             
             final PlcWriteRequest wr = writeRequest.build(); //(03)
@@ -266,7 +266,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
             }            
             
         } catch (Exception ex) { //(07)
-            logger.info("Read: " + ex.getMessage());
+            logger.info("Write: " + ex.getMessage());
         };          
     }        
     /***************************************************************************

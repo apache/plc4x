@@ -53,6 +53,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.spi.values.PlcTIME;
 
 /**
  * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -1908,19 +1909,28 @@ public class StaticHelper {
 
     }
 
-    public static Duration S5TimeToDuration(Short data) {
+//    public static Duration S5TimeToDuration(Short data) {
+//        Duration res;
+//        short t = data;
+//        long tv = (short) (((t & 0x000F)) + ((t & 0x00F0) >> 4) * 10 + ((t & 0x0F00) >> 8) * 100);
+//        long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
+//        long totalms = tv * tb;
+//        if (totalms <= 9990000) {
+//            res = Duration.ofMillis(totalms);
+//        } else {
+//            res = Duration.ofMillis(9990000);
+//        }
+//        return res;
+//    }
+    
+    public static Long S5TimeToDuration(Short data) {
         Duration res;
         short t = data;
         long tv = (short) (((t & 0x000F)) + ((t & 0x00F0) >> 4) * 10 + ((t & 0x0F00) >> 8) * 100);
         long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
         long totalms = tv * tb;
-        if (totalms <= 9990000) {
-            res = Duration.ofMillis(totalms);
-        } else {
-            res = Duration.ofMillis(9990000);
-        }
-        return res;
-    }
+        return (totalms <= 9990000)?totalms:9990000;
+    }    
 
     public static Short DurationToS5Time(Duration duration) {
         short tv = 0;
@@ -2586,18 +2596,25 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME not implemented");
     }
 
-    public static LocalTime parseS5Time(ReadBuffer io) {
+    public static Long parseS5Time(ReadBuffer io) {
         try {
-            int stuff = io.readInt(16);
-            // TODO: Implement this correctly.
-            throw new NotImplementedException("S5TIME not implemented");
+            short s5time = (short) io.readInt(16);
+            return S5TimeToDuration(s5time);
         } catch (ParseException e) {
             return null;
         }
     }
 
-    public static void serializeS5Time(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing S5TIME not implemented");
+    public static void serializeS5Time(final WriteBuffer io, PlcValue value) {
+        final PlcTIME time = (PlcTIME) value;
+        Short shortValue = DurationToS5Time(time.getDuration());
+        System.out.println(">>>TIPO: " + value.getClass().getName() + " : " + shortValue);        
+        try {
+            io.writeUnsignedInt(16,shortValue);
+        } catch (SerializationException ex) {
+            ex.printStackTrace();
+            return;
+        }
 
     }
 

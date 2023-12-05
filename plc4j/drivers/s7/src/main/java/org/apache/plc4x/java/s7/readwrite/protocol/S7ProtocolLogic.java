@@ -1896,7 +1896,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
                 } else if(tag.getDataType() == TransportSize.WSTRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
-                }
+                } else if(tag.getDataType() == TransportSize.S5TIME) {
+                    lengthInBits = lengthInBits * 8;
+                }             
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
                 DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
                 // Allocate enough space for all items.

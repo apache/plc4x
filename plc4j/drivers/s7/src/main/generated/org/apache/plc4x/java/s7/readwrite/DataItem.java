@@ -184,6 +184,13 @@ public class DataItem {
           readBuffer.readUnsignedLong("", 32);
 
       return PlcTIME.ofMilliseconds(milliseconds);
+    } else if (EvaluationHelper.equals(dataProtocolId, "S7_S5TIME")) { // TIME
+
+      // Manual Field (milliseconds)
+      long milliseconds =
+          (long) (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS5Time(readBuffer));
+
+      return PlcTIME.ofMilliseconds(milliseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
 
       // Simple Field (nanoseconds)
@@ -369,6 +376,9 @@ public class DataItem {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (milliseconds)).longValue());
+    } else if (EvaluationHelper.equals(dataProtocolId, "S7_S5TIME")) { // TIME
+      // Manual Field (milliseconds)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS5Time(writeBuffer, _value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
       BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
@@ -498,6 +508,9 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;
+    } else if (EvaluationHelper.equals(dataProtocolId, "S7_S5TIME")) { // TIME
+      // Manual Field (milliseconds)
+      sizeInBits += 2;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
       sizeInBits += 64;

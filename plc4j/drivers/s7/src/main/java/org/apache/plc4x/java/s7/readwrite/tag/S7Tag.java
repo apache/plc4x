@@ -43,14 +43,14 @@ public class S7Tag implements PlcTag, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%(?<memoryArea>.)(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}).DB(?<transferSizeCode>[XBWD]?)(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern DATA_BLOCK_SHORT_PATTERN =
-        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");
 
     private static final Pattern PLC_PROXY_ADDRESS_PATTERN =
         Pattern.compile("[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}");
@@ -89,7 +89,9 @@ public class S7Tag implements PlcTag, Serializable {
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcValueType.valueOf(dataType.name());
+        //S5TIME is a specific type of Simatic S5/S7.
+        String name = dataType.name().equals("S5TIME")?"TIME":dataType.name();
+        return PlcValueType.valueOf(name);
     }
 
     @Override

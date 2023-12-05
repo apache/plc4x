@@ -774,11 +774,9 @@
         ['"IEC61131_TIME"' TIME
             [simple uint 32 milliseconds]
         ]
-        //['"S7_S5TIME"' TIME
-        //    [reserved uint 2  '0x00']
-        //    [uint     uint 2  'base']
-        //    [simple   uint 12 value]
-        //]
+        ['"S7_S5TIME"' TIME
+            [manual uint 32 milliseconds   'STATIC_CALL("parseS5Time", readBuffer)' 'STATIC_CALL("serializeS5Time", writeBuffer, _value)' '2']
+        ]
         // - Duration: Interpreted as "number of nanoseconds"
         ['"IEC61131_LTIME"' LTIME
             [simple uint 64 nanoseconds]
@@ -885,8 +883,8 @@
     ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
 
     // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
-    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'                         , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    //['0x15' S5TIME        ['0x0C'    , 'X'             , '4'                 , 'null'                  , 'null'                          , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x15' S5TIME        ['0x04'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x16' LTIME         ['0x00'     , 'X'             , '8'                 , 'TIME'                  , 'null'                         , 'IEC61131_LTIME'        , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x18' TIME_OF_DAY   ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
