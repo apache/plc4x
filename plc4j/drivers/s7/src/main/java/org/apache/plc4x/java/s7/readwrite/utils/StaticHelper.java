@@ -53,6 +53,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.spi.values.PlcDATE;
 import org.apache.plc4x.java.spi.values.PlcTIME;
 
 /**
@@ -2640,17 +2641,24 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     }
 
-    public static LocalDate parseTiaDate(ReadBuffer io) {
+    public static Integer parseTiaDate(ReadBuffer io) {
         try {
-            int daysSince1990 = io.readUnsignedInt(16);
-            return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
+            int daysSince1990 = io.readUnsignedInt(16) + 1;
+            //return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
+            return daysSince1990;
         } catch (ParseException e) {
             return null;
         }
     }
 
     public static void serializeTiaDate(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing DATE not implemented");
+        final PlcDATE userDate = (PlcDATE) value;
+        int daysSince1990 = userDate.getDaysSinceSiemensEpoch() - 1;
+        try {
+            io.writeUnsignedInt(16, daysSince1990);
+        } catch (SerializationException ex) {
+            return;
+        }
     }
 
     //TODO: Call BCD converter

@@ -200,9 +200,9 @@ public class DataItem {
       return PlcLTIME.ofNanoseconds(nanoseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
 
-      // Simple Field (daysSinceSiemensEpoch)
-      Integer daysSinceSiemensEpoch = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedInt("", 16);
+      // Manual Field (daysSinceSiemensEpoch)
+      int daysSinceSiemensEpoch =
+          (int) (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseTiaDate(readBuffer));
 
       return PlcDATE.ofDaysSinceSiemensEpoch(daysSinceSiemensEpoch);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
@@ -385,11 +385,8 @@ public class DataItem {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
-      // Simple Field (daysSinceSiemensEpoch)
-      int daysSinceSiemensEpoch = (int) ((PlcDATE) _value).getDaysSinceSiemensEpoch();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt(
-          "", 16, ((Number) (daysSinceSiemensEpoch)).intValue());
+      // Manual Field (daysSinceSiemensEpoch)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeTiaDate(writeBuffer, _value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
       long millisecondsSinceMidnight = (long) _value.getLong();
@@ -515,8 +512,8 @@ public class DataItem {
       // Simple Field (nanoseconds)
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
-      // Simple Field (daysSinceSiemensEpoch)
-      sizeInBits += 16;
+      // Manual Field (daysSinceSiemensEpoch)
+      sizeInBits += 2;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
       sizeInBits += 32;

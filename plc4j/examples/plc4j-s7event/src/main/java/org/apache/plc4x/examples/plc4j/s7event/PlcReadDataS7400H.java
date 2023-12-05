@@ -20,6 +20,7 @@ package org.apache.plc4x.examples.plc4j.s7event;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -224,7 +225,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         if (!isConnected.get()) return;
         try {
             final PlcReadRequest.Builder readrequest = connection.readRequestBuilder();  //(01)
-            readrequest.addTagAddress("TEST", "%DB406:0:S5TIME"); //(02) 
+            readrequest.addTagAddress("TEST", "%DB406:2:DATE"); //(02) 
             
             final PlcReadRequest rr = readrequest.build(); //(03)
             final PlcReadResponse response; //(04)            
@@ -252,7 +253,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
             final PlcWriteRequest.Builder writeRequest = connection.writeRequestBuilder();  //(01)
             //writeRequest.addTagAddress("TAG01", "%DB406:4:DWORD",(long) 0x0001_0001); //(02) 
             
-            writeRequest.addTagAddress("TAG01", "%DB406:0:S5TIME", Duration.ofMinutes(15)); //(02) 
+            writeRequest.addTagAddress("TAG01", "%DB406:2:DATE", LocalDate.now()); //(02) 
           
             
             final PlcWriteRequest wr = writeRequest.build(); //(03)
