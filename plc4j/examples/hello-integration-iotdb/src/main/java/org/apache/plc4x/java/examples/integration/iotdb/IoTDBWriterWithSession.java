@@ -46,7 +46,7 @@ public class IoTDBWriterWithSession implements  IIoTDBWriter {
         } catch (IoTDBConnectionException e) {
             LOGGER.error("Error", e);
         } catch (StatementExecutionException e) {
-            if (e.getStatusCode() != TSStatusCode.PATH_ALREADY_EXIST_ERROR.getStatusCode()) { // 300 means the storage group exist already.
+            if (e.getStatusCode() != TSStatusCode.PATH_ALREADY_EXIST.getStatusCode()) { // 300 means the storage group exist already.
                 LOGGER.error("Error", e);
             }
         }
@@ -79,7 +79,7 @@ public class IoTDBWriterWithSession implements  IIoTDBWriter {
         } catch (IoTDBConnectionException e) {
             LOGGER.error("Error", e);
         } catch (StatementExecutionException e) {
-            if (e.getStatusCode() != TSStatusCode.PATH_ALREADY_EXIST_ERROR.getStatusCode()) { // 300 means the time series exist already.
+            if (e.getStatusCode() != TSStatusCode.PATH_ALREADY_EXIST.getStatusCode()) { // 300 means the time series exist already.
                 LOGGER.error("Error", e);
             }
         }
