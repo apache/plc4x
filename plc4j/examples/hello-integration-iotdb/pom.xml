@@ -33,7 +33,7 @@
 
   <properties>
     <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
-    <iotdb.version>0.13.0</iotdb.version>
+    <iotdb.version>1.2.2</iotdb.version>
 
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>
   </properties>

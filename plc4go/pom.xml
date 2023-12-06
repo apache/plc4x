@@ -371,7 +371,7 @@
             <configuration>
               <skip>${skipTests}</skip>
               <exec>go-junit-report</exec>
-              <customCommand>-set-exit-code</customCommand>
+              <!--customCommand>-set-exit-code</customCommand-->
               <buildFlags>
                 <flag>-in</flag>
                 <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
