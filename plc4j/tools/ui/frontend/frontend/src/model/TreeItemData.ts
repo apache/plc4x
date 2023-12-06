@@ -17,31 +17,8 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.tools.ui.model;
-
-public class Driver {
-
-    private final String code;
-    private final String name;
-
-    private final boolean supportsDiscovery;
-
-    public Driver(String code, String name, boolean supportsDiscovery) {
-        this.code = code;
-        this.name = name;
-        this.supportsDiscovery = supportsDiscovery;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isSupportsDiscovery() {
-        return supportsDiscovery;
-    }
-
+export interface TreeItemData {
+    id: string;
+    name: string;
+    children?: readonly TreeItemData[]
 }

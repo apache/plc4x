@@ -42,7 +42,7 @@ import java.util.List;
 public class DriverController {
 
     @GetMapping("/drivers")
-    public ResponseEntity<List<Driver>> getConfiguration() {
+    public ResponseEntity<List<Driver>> getDriverList() {
         List<Driver> drivers = new ArrayList<>();
 
         // Build a list of driver objects.
@@ -51,7 +51,7 @@ public class DriverController {
             try {
                 PlcDriver driver = driverManager.getDriver(protocolCode);
                 PlcDriverMetadata metadata = driver.getMetadata();
-                drivers.add(new Driver(protocolCode, driver.getProtocolName()));
+                drivers.add(new Driver(protocolCode, driver.getProtocolName(), metadata.canDiscover()));
             } catch (PlcConnectionException e) {
                 // Ignore ...
             }

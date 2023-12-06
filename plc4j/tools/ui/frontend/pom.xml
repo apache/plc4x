@@ -45,8 +45,6 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <jsonLibrary>jackson2</jsonLibrary>
-              <generateSpringApplicationClient>true</generateSpringApplicationClient>
               <classes>
                 <!-- These are the PLC4J API types -->
                 <class>org.apache.plc4x.java.api.messages.PlcBrowseItem</class>
@@ -71,8 +69,17 @@
               <excludeClasses>
                 <excludeClass>java.lang.Comparable</excludeClass>
               </excludeClasses>
+              <extensions>
+                <extension>cz.habarta.typescript.generator.ext.AxiosClientExtension</extension>
+              </extensions>
               <outputKind>module</outputKind>
               <outputFileType>implementationFile</outputFileType>
+              <classesFromAutomaticJaxrsApplication>true</classesFromAutomaticJaxrsApplication>
+              <generateJaxrsApplicationClient>true</generateJaxrsApplicationClient>
+              <generateSpringApplicationClient>true</generateSpringApplicationClient>
+              <jsonLibrary>jackson2</jsonLibrary>
+              <restOptionsType>AxiosRequestConfig</restOptionsType>
+              <restResponseType>AxiosPromise</restResponseType>
               <outputFile>frontend/src/generated/plc4j-tools-ui-frontend.ts</outputFile>
             </configuration>
           </execution>

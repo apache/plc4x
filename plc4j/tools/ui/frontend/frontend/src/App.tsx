@@ -18,11 +18,38 @@
  */
 
 import './App.css'
+import NavigationTree from "./components/NavigationTree.tsx";
+import axios from 'axios';
+import {useState} from "react";
+import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
+import {TreeItemData} from "./model/TreeItemData.ts";
+
+axios.defaults.baseURL = 'http://localhost:8080';
 
 function App() {
-  return (
-      <div>App</div>
-  )
+    const [driverTreeRoots, setDriverTreeRoots] = useState<TreeItemData[]>([])
+    const restClient = new RestApplicationClient(axios);
+
+    function updateDriverList() {
+        var driverList = restClient.getDriverList()
+        driverList.then(value => {
+            var newDriverTreeRoots: TreeItemData[] = []
+            value.data.map(driverValue => {
+                newDriverTreeRoots = [...newDriverTreeRoots, {
+                    id: driverValue.code,
+                    name: driverValue.name,
+                }]
+            })
+            setDriverTreeRoots(newDriverTreeRoots)
+        })
+    }
+    if(driverTreeRoots.length == 0) {
+        updateDriverList()
+    }
+
+    return (
+        <NavigationTree treeItems={driverTreeRoots}/>
+    )
 }
 
 export default App

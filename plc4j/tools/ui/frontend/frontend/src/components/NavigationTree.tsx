@@ -17,31 +17,22 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.tools.ui.model;
+import {TreeItem, TreeView} from "@mui/x-tree-view";
+import {TreeItemData} from "../model/TreeItemData.ts";
 
-public class Driver {
+type NavigationTreeProps = {
+    treeItems: TreeItemData[];
+}
 
-    private final String code;
-    private final String name;
-
-    private final boolean supportsDiscovery;
-
-    public Driver(String code, String name, boolean supportsDiscovery) {
-        this.code = code;
-        this.name = name;
-        this.supportsDiscovery = supportsDiscovery;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isSupportsDiscovery() {
-        return supportsDiscovery;
-    }
-
+export default function NavigationTree({treeItems}: NavigationTreeProps) {
+    const renderTreeItem = (nodes: TreeItemData) => (
+        <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
+            {Array.isArray(nodes.children)
+                ? nodes.children.map((node) => renderTreeItem(node))
+                : null}
+        </TreeItem>
+    );
+    return <TreeView>
+        {treeItems.map(node => renderTreeItem(node))}
+    </TreeView>
 }
