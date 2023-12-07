@@ -125,12 +125,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-profinet</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-profinet-ng</artifactId>
       <version>0.12.0-SNAPSHOT</version>
       <scope>runtime</scope>

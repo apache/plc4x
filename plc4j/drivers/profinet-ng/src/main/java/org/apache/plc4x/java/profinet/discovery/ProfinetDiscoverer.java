@@ -189,7 +189,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
                     role += ",DEVICE";
                 }
                 // Cut off the first comma
-                if (role.length() > 0) {
+                if (!role.isEmpty()) {
                     role = role.substring(1);
                 } else {
                     role = "unknown";
