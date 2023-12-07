@@ -17,8 +17,17 @@
  * under the License.
  */
 
+export type TreeItemType = "DRIVER" | "CONNECTION" | "DEVICE";
+
 export interface TreeItemData {
-    id: string;
-    name: string;
+    id: string,
+    name: string,
+    type: TreeItemType,
+    supportsDiscovery: boolean,
+    supportsBrowsing: boolean,
+    supportsReading: boolean,
+    supportsWriting: boolean,
+    supportsSubscribing: boolean,
+    supportsPublishing: boolean,
     children?: readonly TreeItemData[]
 }

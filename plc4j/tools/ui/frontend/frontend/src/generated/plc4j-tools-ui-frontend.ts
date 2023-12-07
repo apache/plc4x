@@ -19,7 +19,7 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-12-06 20:47:04.
+// Generated using typescript-generator version 3.2.1263 on 2023-12-07 13:27:46.
 
 export interface PlcBrowseItem {
     name: string;
@@ -49,10 +49,10 @@ export interface PlcBrowseResponse extends PlcResponse {
 export interface PlcDiscoveryItem {
     name: string;
     attributes: { [index: string]: PlcValue };
-    protocolCode: string;
     transportCode: string;
     transportUrl: string;
     connectionUrl: string;
+    protocolCode: string;
     options: { [index: string]: string };
 }
 
@@ -82,16 +82,16 @@ export interface PlcQuery {
 }
 
 export interface PlcTag {
-    plcValueType: PlcValueType;
     arrayInfo: ArrayInfo[];
     addressString: string;
+    plcValueType: PlcValueType;
 }
 
 export interface PlcValue {
-    boolean: boolean;
     simple: boolean;
-    short: number;
     bigInteger: number;
+    short: number;
+    boolean: boolean;
     length: number;
     byte: number;
     int: number;
@@ -107,9 +107,9 @@ export interface PlcValue {
     duration: Duration;
     date: Date;
     keys: string[];
-    dateTime: Date;
-    metaDataNames: string[];
     plcValueType: PlcValueType;
+    metaDataNames: string[];
+    dateTime: Date;
     list: PlcValue[];
     nullable: boolean;
     raw: any;

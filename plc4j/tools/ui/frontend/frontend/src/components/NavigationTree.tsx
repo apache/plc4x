@@ -17,22 +17,43 @@
  * under the License.
  */
 
-import {TreeItem, TreeView} from "@mui/x-tree-view";
 import {TreeItemData} from "../model/TreeItemData.ts";
+import {Tree} from "primereact/tree";
+import {TreeNode} from "primereact/treenode";
+import {IconType} from "primereact/utils";
+import 'primeicons/primeicons.css';
 
 type NavigationTreeProps = {
     treeItems: TreeItemData[];
 }
 
 export default function NavigationTree({treeItems}: NavigationTreeProps) {
-    const renderTreeItem = (nodes: TreeItemData) => (
-        <TreeItem key={nodes.id} nodeId={nodes.id} label={nodes.name}>
-            {Array.isArray(nodes.children)
-                ? nodes.children.map((node) => renderTreeItem(node))
-                : null}
-        </TreeItem>
-    );
-    return <TreeView>
-        {treeItems.map(node => renderTreeItem(node))}
-    </TreeView>
+    function getIcon(curItem: TreeItemData):IconType<TreeNode> {
+        switch (curItem.type) {
+            case "DRIVER":
+                return "pi pi-fw pi-folder-open"//"material-icons md-18 folder_open"
+            case "CONNECTION":
+                return "pi pi-fw pi-phone"//"material-icons md-18 tty"
+            case "DEVICE":
+                return "pi pi-fw"//"material-icons md-18 computer"
+
+            // discover:  "Radar"
+            // browse:    "Manage Search"
+            // read:      "Keyboard Arrow Down"
+            // write:     "Keyboard Arrow Up"
+            // subscribe: "Keyboard Double Arrow Down"
+            // publish:   "Keyboard Double Arrow Up"
+        }
+    }
+    function createTreeNode(curItem:TreeItemData):TreeNode {
+        return {
+            id: curItem.id,
+            label: curItem.name,
+            icon: getIcon(curItem),
+            children: curItem.children?.map(value => createTreeNode(value))
+        }
+    }
+
+    let treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value))
+    return <Tree value={treeNodes} selectionMode="single"/>
 }

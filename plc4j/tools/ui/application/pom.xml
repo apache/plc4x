@@ -68,6 +68,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-tools-ui-backend</usedDependency>
+            <usedDependency>ch.qos.logback:logback-core</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

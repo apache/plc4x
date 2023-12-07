@@ -21,9 +21,7 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
-import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
+import org.apache.plc4x.java.api.messages.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -31,18 +29,27 @@ import java.util.concurrent.TimeUnit;
 public class ManualProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
+        // TODO:
         //try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.41")) {
         try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.31")) {
+            // Find out which values are available on this device.
             PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("all", "*").build();
             PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get();
+
+            // Build a subscription request to subscribe to all available fields.
+            PlcSubscriptionRequest.Builder subscriptionRequestBuilder = connection.subscriptionRequestBuilder();
             for (String queryName : plcBrowseResponse.getQueryNames()) {
                 List<PlcBrowseItem> values = plcBrowseResponse.getValues(queryName);
                 for (PlcBrowseItem value : values) {
                     System.out.println(value.getName() + ": " + value.getTag().getAddressString());
+                    subscriptionRequestBuilder.addChangeOfStateTag(value.getName(), value.getTag());
                 }
             }
-            /*PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get(30000, TimeUnit.MILLISECONDS);
-            System.out.println(plcBrowseResponse);*/
+            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.build();
+
+            // Execute the subscription request.
+            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(5000, TimeUnit.MILLISECONDS);
+            System.out.println(subscriptionResponse);
         }
     }
 
