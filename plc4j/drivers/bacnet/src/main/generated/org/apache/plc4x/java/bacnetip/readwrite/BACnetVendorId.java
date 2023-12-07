@@ -1670,6 +1670,8 @@ public enum BACnetVendorId {
   GRID_CONNECT_INC((int) 1454, (int) 1454, (String) "Grid Connect Inc."),
   ZIEGLER_INSTRUMENTATIONUK_LTD((int) 1455, (int) 1455, (String) "Ziegler Instrumentation UK Ltd"),
   CONTROL_TECLLC((int) 1456, (int) 1456, (String) "ControlTec, LLC"),
+  AETERLINK_CORPORATION((int) 1457, (int) 1457, (String) "Aeterlink Corporation"),
+  ALPHA_EPSILON_AUTOMATION((int) 1458, (int) 1458, (String) "Alpha Epsilon Automation"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

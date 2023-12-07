@@ -678,8 +678,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ZIMMEX = 651,
         M_RHOMBUS_EUROPE = 652,
         M_TURING_THINK = 653,
-        M_ABB___RESERVED = 654,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 655,
+        M_MICHOI = 654,
+        M_ABB___RESERVED = 655,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 656,
     }
 
     public static class KnxManufacturerInfo
@@ -2540,10 +2541,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TURING_THINK: { /* '653' */
                     return 711;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '654' */
+                case KnxManufacturer.M_MICHOI: { /* '654' */
+                    return 712;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '655' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '655' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '656' */
                     return 43959;
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
@@ -4518,10 +4522,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_TURING_THINK: { /* '653' */
                     return "Turing-Think";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '654' */
+                case KnxManufacturer.M_MICHOI: { /* '654' */
+                    return "Michoi";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '655' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '655' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '656' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
