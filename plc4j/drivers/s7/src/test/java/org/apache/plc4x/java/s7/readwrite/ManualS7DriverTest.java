@@ -21,7 +21,6 @@ package org.apache.plc4x.java.s7.readwrite;
 import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 

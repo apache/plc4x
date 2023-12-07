@@ -2641,11 +2641,13 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     }
 
+    private static final LocalDate siemensEpoch = LocalDate.of(1990, 1, 1);
+    private static final int daysBetweenUnixAndSiemensEpoch = (int) ChronoUnit.DAYS.between(LocalDate.EPOCH, siemensEpoch);
     public static Integer parseTiaDate(ReadBuffer io) {
         try {
-            int daysSince1990 = io.readUnsignedInt(16) + 1;
-            //return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
-            return daysSince1990;
+            // Dates in Siemens PLCs are stored relative to "Siemens Epoch", which is 1990-01-01
+            int daysSinceSiemensEpoch = io.readUnsignedInt(16);
+            return daysSinceSiemensEpoch + daysBetweenUnixAndSiemensEpoch;
         } catch (ParseException e) {
             return null;
         }
@@ -2653,7 +2655,8 @@ public class StaticHelper {
 
     public static void serializeTiaDate(WriteBuffer io, PlcValue value) {
         final PlcDATE userDate = (PlcDATE) value;
-        int daysSince1990 = userDate.getDaysSinceSiemensEpoch() - 1;
+
+        int daysSince1990 = userDate.getDaysSinceEpoch() - daysBetweenUnixAndSiemensEpoch;
         try {
             io.writeUnsignedInt(16, daysSince1990);
         } catch (SerializationException ex) {

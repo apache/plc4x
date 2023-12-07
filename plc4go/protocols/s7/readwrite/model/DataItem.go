@@ -198,7 +198,15 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataProtocolId == "IEC61131_TIME": // TIME
 		// Simple Field (milliseconds)
-		milliseconds, _millisecondsErr := readBuffer.ReadInt32("milliseconds", 32)
+		milliseconds, _millisecondsErr := readBuffer.ReadUint32("milliseconds", 32)
+		if _millisecondsErr != nil {
+			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
+		}
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
+	case dataProtocolId == "S7_S5TIME": // TIME
+		// Manual Field (milliseconds)
+		milliseconds, _millisecondsErr := ParseS5Time(ctx, readBuffer)
 		if _millisecondsErr != nil {
 			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
 		}
@@ -213,13 +221,13 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIMEFromNanoseconds(nanoseconds), nil
 	case dataProtocolId == "IEC61131_DATE": // DATE
-		// Simple Field (daysSinceSiemensEpoch)
-		daysSinceSiemensEpoch, _daysSinceSiemensEpochErr := readBuffer.ReadUint16("daysSinceSiemensEpoch", 16)
-		if _daysSinceSiemensEpochErr != nil {
-			return nil, errors.Wrap(_daysSinceSiemensEpochErr, "Error parsing 'daysSinceSiemensEpoch' field")
+		// Manual Field (daysSinceEpoch)
+		daysSinceEpoch, _daysSinceEpochErr := ParseTiaDate(ctx, readBuffer)
+		if _daysSinceEpochErr != nil {
+			return nil, errors.Wrap(_daysSinceEpochErr, "Error parsing 'daysSinceEpoch' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcDATEFromDaysSinceSiemensEpoch(daysSinceSiemensEpoch), nil
+		return values.NewPlcDATEFromDaysSinceEpoch(daysSinceEpoch), nil
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)
 		millisecondsSinceMidnight, _millisecondsSinceMidnightErr := readBuffer.ReadUint32("millisecondsSinceMidnight", 32)
@@ -416,8 +424,14 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_TIME": // TIME
 		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteInt32("milliseconds", 32, int32(value.(values.PlcTIME).GetMilliseconds())); _err != nil {
+		if _err := writeBuffer.WriteUint32("milliseconds", 32, uint32(value.(values.PlcTIME).GetMilliseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
+		}
+	case dataProtocolId == "S7_S5TIME": // TIME
+		// Manual Field (milliseconds)
+		_millisecondsErr := SerializeS5Time(ctx, writeBuffer, value)
+		if _millisecondsErr != nil {
+			return errors.Wrap(_millisecondsErr, "Error serializing 'milliseconds' field")
 		}
 	case dataProtocolId == "IEC61131_LTIME": // LTIME
 		// Simple Field (nanoseconds)
@@ -425,9 +439,10 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case dataProtocolId == "IEC61131_DATE": // DATE
-		// Simple Field (daysSinceSiemensEpoch)
-		if _err := writeBuffer.WriteUint16("daysSinceSiemensEpoch", 16, uint16(value.(values.PlcDATE).GetDaysSinceSiemensEpoch())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'daysSinceSiemensEpoch' field")
+		// Manual Field (daysSinceEpoch)
+		_daysSinceEpochErr := SerializeTiaDate(ctx, writeBuffer, value)
+		if _daysSinceEpochErr != nil {
+			return errors.Wrap(_daysSinceEpochErr, "Error serializing 'daysSinceEpoch' field")
 		}
 	case dataProtocolId == "IEC61131_TIME_OF_DAY": // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)

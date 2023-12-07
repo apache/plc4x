@@ -200,11 +200,11 @@ public class DataItem {
       return PlcLTIME.ofNanoseconds(nanoseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
 
-      // Manual Field (daysSinceSiemensEpoch)
-      int daysSinceSiemensEpoch =
+      // Manual Field (daysSinceEpoch)
+      int daysSinceEpoch =
           (int) (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseTiaDate(readBuffer));
 
-      return PlcDATE.ofDaysSinceSiemensEpoch(daysSinceSiemensEpoch);
+      return PlcDATE.ofDaysSinceEpoch(daysSinceEpoch);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
 
       // Simple Field (millisecondsSinceMidnight)
@@ -385,7 +385,7 @@ public class DataItem {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
-      // Manual Field (daysSinceSiemensEpoch)
+      // Manual Field (daysSinceEpoch)
       org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeTiaDate(writeBuffer, _value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
@@ -512,7 +512,7 @@ public class DataItem {
       // Simple Field (nanoseconds)
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
-      // Manual Field (daysSinceSiemensEpoch)
+      // Manual Field (daysSinceEpoch)
       sizeInBits += 2;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
