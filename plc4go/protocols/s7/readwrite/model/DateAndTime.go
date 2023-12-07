@@ -337,7 +337,7 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (dow)
 	dow := uint8(m.GetDow())
-	_dowErr := writeBuffer.WriteUint8("dow", 4, (dow))
+	_dowErr := writeBuffer.WriteUint8("dow", 4, uint8((dow)))
 	if _dowErr != nil {
 		return errors.Wrap(_dowErr, "Error serializing 'dow' field")
 	}

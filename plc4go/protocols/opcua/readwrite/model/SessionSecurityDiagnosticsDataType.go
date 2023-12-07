@@ -449,7 +449,7 @@ func (m *_SessionSecurityDiagnosticsDataType) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (noOfClientUserIdHistory)
 		noOfClientUserIdHistory := int32(m.GetNoOfClientUserIdHistory())
-		_noOfClientUserIdHistoryErr := writeBuffer.WriteInt32("noOfClientUserIdHistory", 32, (noOfClientUserIdHistory))
+		_noOfClientUserIdHistoryErr := writeBuffer.WriteInt32("noOfClientUserIdHistory", 32, int32((noOfClientUserIdHistory)))
 		if _noOfClientUserIdHistoryErr != nil {
 			return errors.Wrap(_noOfClientUserIdHistoryErr, "Error serializing 'noOfClientUserIdHistory' field")
 		}

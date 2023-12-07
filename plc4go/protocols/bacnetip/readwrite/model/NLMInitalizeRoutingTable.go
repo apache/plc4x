@@ -227,7 +227,7 @@ func (m *_NLMInitalizeRoutingTable) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (numberOfPorts)
 		numberOfPorts := uint8(m.GetNumberOfPorts())
-		_numberOfPortsErr := writeBuffer.WriteUint8("numberOfPorts", 8, (numberOfPorts))
+		_numberOfPortsErr := writeBuffer.WriteUint8("numberOfPorts", 8, uint8((numberOfPorts)))
 		if _numberOfPortsErr != nil {
 			return errors.Wrap(_numberOfPortsErr, "Error serializing 'numberOfPorts' field")
 		}

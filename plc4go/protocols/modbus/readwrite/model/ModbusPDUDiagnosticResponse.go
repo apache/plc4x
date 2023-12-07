@@ -206,14 +206,14 @@ func (m *_ModbusPDUDiagnosticResponse) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.GetSubFunction())
-		_subFunctionErr := writeBuffer.WriteUint16("subFunction", 16, (subFunction))
+		_subFunctionErr := writeBuffer.WriteUint16("subFunction", 16, uint16((subFunction)))
 		if _subFunctionErr != nil {
 			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.GetData())
-		_dataErr := writeBuffer.WriteUint16("data", 16, (data))
+		_dataErr := writeBuffer.WriteUint16("data", 16, uint16((data)))
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}

@@ -239,7 +239,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 		}
 
 		// Const Field (meiType)
-		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, 0x0E)
+		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
 		if _meiTypeErr != nil {
 			return errors.Wrap(_meiTypeErr, "Error serializing 'meiType' field")
 		}
@@ -258,7 +258,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 
 		// Simple Field (objectId)
 		objectId := uint8(m.GetObjectId())
-		_objectIdErr := writeBuffer.WriteUint8("objectId", 8, (objectId))
+		_objectIdErr := writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
 		if _objectIdErr != nil {
 			return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
 		}

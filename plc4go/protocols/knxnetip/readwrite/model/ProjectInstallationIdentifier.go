@@ -166,14 +166,14 @@ func (m *_ProjectInstallationIdentifier) SerializeWithWriteBuffer(ctx context.Co
 
 	// Simple Field (projectNumber)
 	projectNumber := uint8(m.GetProjectNumber())
-	_projectNumberErr := writeBuffer.WriteUint8("projectNumber", 8, (projectNumber))
+	_projectNumberErr := writeBuffer.WriteUint8("projectNumber", 8, uint8((projectNumber)))
 	if _projectNumberErr != nil {
 		return errors.Wrap(_projectNumberErr, "Error serializing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.GetInstallationNumber())
-	_installationNumberErr := writeBuffer.WriteUint8("installationNumber", 8, (installationNumber))
+	_installationNumberErr := writeBuffer.WriteUint8("installationNumber", 8, uint8((installationNumber)))
 	if _installationNumberErr != nil {
 		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}

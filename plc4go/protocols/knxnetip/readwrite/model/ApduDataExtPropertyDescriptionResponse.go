@@ -377,21 +377,21 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := writeBuffer.WriteUint8("objectIndex", 8, (objectIndex))
+		_objectIndexErr := writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, (propertyId))
+		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.GetIndex())
-		_indexErr := writeBuffer.WriteUint8("index", 8, (index))
+		_indexErr := writeBuffer.WriteUint8("index", 8, uint8((index)))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
@@ -413,7 +413,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -441,7 +441,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 4, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -449,7 +449,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 
 		// Simple Field (maxNrOfElements)
 		maxNrOfElements := uint16(m.GetMaxNrOfElements())
-		_maxNrOfElementsErr := writeBuffer.WriteUint16("maxNrOfElements", 12, (maxNrOfElements))
+		_maxNrOfElementsErr := writeBuffer.WriteUint16("maxNrOfElements", 12, uint16((maxNrOfElements)))
 		if _maxNrOfElementsErr != nil {
 			return errors.Wrap(_maxNrOfElementsErr, "Error serializing 'maxNrOfElements' field")
 		}

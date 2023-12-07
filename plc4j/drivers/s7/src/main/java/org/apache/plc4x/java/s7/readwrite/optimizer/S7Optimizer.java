@@ -39,6 +39,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.plc4x.java.s7.readwrite.tag.S7StringVarLengthTag;
+
 public class S7Optimizer extends BaseOptimizer {
 
     public static final int EMPTY_READ_REQUEST_SIZE = new S7MessageRequest(0, new S7ParameterReadVarRequest(
@@ -63,16 +65,26 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_READ_RESPONSE_SIZE;
 
         // List of all items in the current request.
+
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-
+           
+            //TODO: Individual processing of these types of tags. like S7StringTag
             if ((readRequest.getTag(tagName) instanceof S7SzlTag) ||
                 (readRequest.getTag(tagName) instanceof S7ClkTag)) {
                 curTags.put(tagName, readRequest.getTag(tagName));
                 continue;
             }
-
+            
+            if ((readRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
+                LinkedHashMap<String, PlcTag> strTags = new LinkedHashMap<>();
+                strTags.put(tagName, readRequest.getTag(tagName));
+                processedRequests.add(new DefaultPlcReadRequest(
+                ((DefaultPlcReadRequest) readRequest).getReader(), strTags));
+                continue;
+            }            
+            
             S7Tag tag = (S7Tag) readRequest.getTag(tagName);
 
             int readRequestItemSize = S7_ADDRESS_ANY_SIZE;
@@ -142,6 +154,17 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, TagValueItem> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
+            
+            if ((writeRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
+                LinkedHashMap<String, TagValueItem> strTags = new LinkedHashMap<>();
+                strTags.put(tagName, 
+                        new TagValueItem(writeRequest.getTag(tagName), 
+                                writeRequest.getPlcValue(tagName)));  
+                processedRequests.add(new DefaultPlcWriteRequest(
+                ((DefaultPlcWriteRequest) writeRequest).getWriter(), strTags));
+                continue;                
+            }
+                                    
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
             PlcValue value = writeRequest.getPlcValue(tagName);
 

@@ -206,7 +206,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

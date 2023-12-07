@@ -172,7 +172,7 @@ func (m *_GuidNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (namespaceIndex)
 	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, (namespaceIndex))
+	_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
 	if _namespaceIndexErr != nil {
 		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
 	}

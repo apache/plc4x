@@ -302,7 +302,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 		}
 
 		// Const Field (len)
-		_lenErr := writeBuffer.WriteUint8("len", 8, 1)
+		_lenErr := writeBuffer.WriteUint8("len", 8, uint8(1))
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
@@ -344,7 +344,7 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 3, (sequenceNumber))
+		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 3, uint8((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}

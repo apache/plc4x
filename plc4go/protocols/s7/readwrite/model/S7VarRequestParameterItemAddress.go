@@ -195,7 +195,7 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(m.GetAddress().GetLengthInBytes(ctx))
-		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
+		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}

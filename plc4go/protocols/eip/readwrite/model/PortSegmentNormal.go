@@ -198,14 +198,14 @@ func (m *_PortSegmentNormal) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (port)
 		port := uint8(m.GetPort())
-		_portErr := writeBuffer.WriteUint8("port", 4, (port))
+		_portErr := writeBuffer.WriteUint8("port", 4, uint8((port)))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		// Simple Field (linkAddress)
 		linkAddress := uint8(m.GetLinkAddress())
-		_linkAddressErr := writeBuffer.WriteUint8("linkAddress", 8, (linkAddress))
+		_linkAddressErr := writeBuffer.WriteUint8("linkAddress", 8, uint8((linkAddress)))
 		if _linkAddressErr != nil {
 			return errors.Wrap(_linkAddressErr, "Error serializing 'linkAddress' field")
 		}

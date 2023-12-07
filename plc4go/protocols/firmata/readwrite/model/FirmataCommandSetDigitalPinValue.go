@@ -223,7 +223,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, (pin))
+		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
@@ -238,7 +238,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

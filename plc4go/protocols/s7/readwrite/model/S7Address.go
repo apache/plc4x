@@ -166,7 +166,7 @@ func (pm *_S7Address) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.GetAddressType())
-	_addressTypeErr := writeBuffer.WriteUint8("addressType", 8, (addressType))
+	_addressTypeErr := writeBuffer.WriteUint8("addressType", 8, uint8((addressType)))
 
 	if _addressTypeErr != nil {
 		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")

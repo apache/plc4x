@@ -235,14 +235,14 @@ func (m *_RepublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (retransmitSequenceNumber)
 		retransmitSequenceNumber := uint32(m.GetRetransmitSequenceNumber())
-		_retransmitSequenceNumberErr := writeBuffer.WriteUint32("retransmitSequenceNumber", 32, (retransmitSequenceNumber))
+		_retransmitSequenceNumberErr := writeBuffer.WriteUint32("retransmitSequenceNumber", 32, uint32((retransmitSequenceNumber)))
 		if _retransmitSequenceNumberErr != nil {
 			return errors.Wrap(_retransmitSequenceNumberErr, "Error serializing 'retransmitSequenceNumber' field")
 		}

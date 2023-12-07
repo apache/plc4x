@@ -148,7 +148,7 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (statusCode)
 	statusCode := uint32(m.GetStatusCode())
-	_statusCodeErr := writeBuffer.WriteUint32("statusCode", 32, (statusCode))
+	_statusCodeErr := writeBuffer.WriteUint32("statusCode", 32, uint32((statusCode)))
 	if _statusCodeErr != nil {
 		return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
 	}

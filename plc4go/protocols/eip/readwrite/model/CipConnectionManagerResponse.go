@@ -366,7 +366,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint32("reserved", 24, reserved)
+			_err := writeBuffer.WriteUint32("reserved", 24, uint32(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -374,56 +374,56 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (otConnectionId)
 		otConnectionId := uint32(m.GetOtConnectionId())
-		_otConnectionIdErr := writeBuffer.WriteUint32("otConnectionId", 32, (otConnectionId))
+		_otConnectionIdErr := writeBuffer.WriteUint32("otConnectionId", 32, uint32((otConnectionId)))
 		if _otConnectionIdErr != nil {
 			return errors.Wrap(_otConnectionIdErr, "Error serializing 'otConnectionId' field")
 		}
 
 		// Simple Field (toConnectionId)
 		toConnectionId := uint32(m.GetToConnectionId())
-		_toConnectionIdErr := writeBuffer.WriteUint32("toConnectionId", 32, (toConnectionId))
+		_toConnectionIdErr := writeBuffer.WriteUint32("toConnectionId", 32, uint32((toConnectionId)))
 		if _toConnectionIdErr != nil {
 			return errors.Wrap(_toConnectionIdErr, "Error serializing 'toConnectionId' field")
 		}
 
 		// Simple Field (connectionSerialNumber)
 		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, (connectionSerialNumber))
+		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
 		if _connectionSerialNumberErr != nil {
 			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
 		}
 
 		// Simple Field (originatorVendorId)
 		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, (originatorVendorId))
+		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
 		if _originatorVendorIdErr != nil {
 			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
 		}
 
 		// Simple Field (originatorSerialNumber)
 		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, (originatorSerialNumber))
+		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
 		if _originatorSerialNumberErr != nil {
 			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
 		}
 
 		// Simple Field (otApi)
 		otApi := uint32(m.GetOtApi())
-		_otApiErr := writeBuffer.WriteUint32("otApi", 32, (otApi))
+		_otApiErr := writeBuffer.WriteUint32("otApi", 32, uint32((otApi)))
 		if _otApiErr != nil {
 			return errors.Wrap(_otApiErr, "Error serializing 'otApi' field")
 		}
 
 		// Simple Field (toApi)
 		toApi := uint32(m.GetToApi())
-		_toApiErr := writeBuffer.WriteUint32("toApi", 32, (toApi))
+		_toApiErr := writeBuffer.WriteUint32("toApi", 32, uint32((toApi)))
 		if _toApiErr != nil {
 			return errors.Wrap(_toApiErr, "Error serializing 'toApi' field")
 		}
 
 		// Implicit Field (replySize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		replySize := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(30)))
-		_replySizeErr := writeBuffer.WriteUint8("replySize", 8, (replySize))
+		_replySizeErr := writeBuffer.WriteUint8("replySize", 8, uint8((replySize)))
 		if _replySizeErr != nil {
 			return errors.Wrap(_replySizeErr, "Error serializing 'replySize' field")
 		}
@@ -438,7 +438,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

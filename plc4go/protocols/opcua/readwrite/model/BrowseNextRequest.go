@@ -312,7 +312,7 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -327,7 +327,7 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfContinuationPoints)
 		noOfContinuationPoints := int32(m.GetNoOfContinuationPoints())
-		_noOfContinuationPointsErr := writeBuffer.WriteInt32("noOfContinuationPoints", 32, (noOfContinuationPoints))
+		_noOfContinuationPointsErr := writeBuffer.WriteInt32("noOfContinuationPoints", 32, int32((noOfContinuationPoints)))
 		if _noOfContinuationPointsErr != nil {
 			return errors.Wrap(_noOfContinuationPointsErr, "Error serializing 'noOfContinuationPoints' field")
 		}

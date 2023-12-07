@@ -255,14 +255,14 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (length)
 		length := uint32(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (stamps)
 		stamps := uint32(m.GetStamps())
-		_stampsErr := writeBuffer.WriteUint32("stamps", 32, (stamps))
+		_stampsErr := writeBuffer.WriteUint32("stamps", 32, uint32((stamps)))
 		if _stampsErr != nil {
 			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}

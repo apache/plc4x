@@ -367,7 +367,7 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (lengthDataset)
 	lengthDataset := uint8(m.GetLengthDataset())
-	_lengthDatasetErr := writeBuffer.WriteUint8("lengthDataset", 8, (lengthDataset))
+	_lengthDatasetErr := writeBuffer.WriteUint8("lengthDataset", 8, uint8((lengthDataset)))
 	if _lengthDatasetErr != nil {
 		return errors.Wrap(_lengthDatasetErr, "Error serializing 'lengthDataset' field")
 	}
@@ -382,14 +382,14 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
 	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, 0x12)
+	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 	if _variableSpecErr != nil {
 		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 	}

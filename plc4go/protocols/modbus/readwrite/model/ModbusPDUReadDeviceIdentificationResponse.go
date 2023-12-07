@@ -364,7 +364,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 		}
 
 		// Const Field (meiType)
-		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, 0x0E)
+		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
 		if _meiTypeErr != nil {
 			return errors.Wrap(_meiTypeErr, "Error serializing 'meiType' field")
 		}
@@ -414,14 +414,14 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 
 		// Simple Field (nextObjectId)
 		nextObjectId := uint8(m.GetNextObjectId())
-		_nextObjectIdErr := writeBuffer.WriteUint8("nextObjectId", 8, (nextObjectId))
+		_nextObjectIdErr := writeBuffer.WriteUint8("nextObjectId", 8, uint8((nextObjectId)))
 		if _nextObjectIdErr != nil {
 			return errors.Wrap(_nextObjectIdErr, "Error serializing 'nextObjectId' field")
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetObjects())))
-		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
+		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 		if _numberOfObjectsErr != nil {
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 		}

@@ -235,14 +235,14 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (Reserved)
 		Reserved := uint8(m.GetReserved())
-		_ReservedErr := writeBuffer.WriteUint8("Reserved", 8, (Reserved))
+		_ReservedErr := writeBuffer.WriteUint8("Reserved", 8, uint8((Reserved)))
 		if _ReservedErr != nil {
 			return errors.Wrap(_ReservedErr, "Error serializing 'Reserved' field")
 		}
 
 		// Simple Field (Year1)
 		Year1 := uint8(m.GetYear1())
-		_Year1Err := writeBuffer.WriteUint8("Year1", 8, (Year1))
+		_Year1Err := writeBuffer.WriteUint8("Year1", 8, uint8((Year1)))
 		if _Year1Err != nil {
 			return errors.Wrap(_Year1Err, "Error serializing 'Year1' field")
 		}

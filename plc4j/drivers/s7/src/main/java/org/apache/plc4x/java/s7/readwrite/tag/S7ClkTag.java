@@ -84,7 +84,7 @@ public class S7ClkTag implements PlcTag {
 
     public static boolean matches(String address) {
         return CLK_ADDRESS_PATTERN.matcher(address).matches() ||
-            CLKF_ADDRESS_PATTERN.matcher(address).matches();
+                CLKF_ADDRESS_PATTERN.matcher(address).matches();
     }
 
     public static S7ClkTag of(String address) {

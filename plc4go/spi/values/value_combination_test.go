@@ -522,9 +522,6 @@ func TestExtraTests(t *testing.T) {
 			t.Run("FromDaysSinceEpoch", func(t *testing.T) {
 				assert.NotNil(t, NewPlcDATEFromDaysSinceEpoch(1))
 			})
-			t.Run("FromDaysSinceSiemensEpoch", func(t *testing.T) {
-				assert.NotNil(t, NewPlcDATEFromDaysSinceSiemensEpoch(1))
-			})
 		})
 		t.Run("GetSecondsSinceEpoch", func(t *testing.T) {
 			NewPlcDATE(time.Now()).GetSecondsSinceEpoch()

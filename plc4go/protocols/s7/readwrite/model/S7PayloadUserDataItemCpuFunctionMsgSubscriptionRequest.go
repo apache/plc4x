@@ -287,7 +287,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 
 		// Simple Field (Subscription)
 		Subscription := uint8(m.GetSubscription())
-		_SubscriptionErr := writeBuffer.WriteUint8("Subscription", 8, (Subscription))
+		_SubscriptionErr := writeBuffer.WriteUint8("Subscription", 8, uint8((Subscription)))
 		if _SubscriptionErr != nil {
 			return errors.Wrap(_SubscriptionErr, "Error serializing 'Subscription' field")
 		}
@@ -302,7 +302,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -335,7 +335,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 		var Reserve *uint8 = nil
 		if m.GetReserve() != nil {
 			Reserve = m.GetReserve()
-			_ReserveErr := writeBuffer.WriteUint8("Reserve", 8, *(Reserve))
+			_ReserveErr := writeBuffer.WriteUint8("Reserve", 8, uint8(*(Reserve)))
 			if _ReserveErr != nil {
 				return errors.Wrap(_ReserveErr, "Error serializing 'Reserve' field")
 			}

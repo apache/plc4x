@@ -717,7 +717,7 @@ func (e AdsDataType) Serialize() ([]byte, error) {
 func (e AdsDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteInt8("AdsDataType", 8, int8(int8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

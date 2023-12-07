@@ -299,7 +299,7 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfInputArguments)
 		noOfInputArguments := int32(m.GetNoOfInputArguments())
-		_noOfInputArgumentsErr := writeBuffer.WriteInt32("noOfInputArguments", 32, (noOfInputArguments))
+		_noOfInputArgumentsErr := writeBuffer.WriteInt32("noOfInputArguments", 32, int32((noOfInputArguments)))
 		if _noOfInputArgumentsErr != nil {
 			return errors.Wrap(_noOfInputArgumentsErr, "Error serializing 'noOfInputArguments' field")
 		}

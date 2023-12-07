@@ -201,7 +201,7 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (payloadLength)
 		payloadLength := uint16(m.GetPayloadLength())
-		_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, (payloadLength))
+		_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
 		if _payloadLengthErr != nil {
 			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 		}

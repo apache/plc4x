@@ -760,11 +760,11 @@
         ]
         ['"IEC61131_STRING"' STRING
             // TODO: Fix this length
-            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' 'STR_LEN(_value) + 2' encoding='"UTF-8"']
+            [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 8) + 16' encoding='"UTF-8"']
         ]
         ['"IEC61131_WSTRING"' STRING
             // TODO: Fix this length
-            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(STR_LEN(_value) * 2) + 2' encoding='"UTF-16"']
+            [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 16) + 32' encoding='"UTF-16"']
         ]
 
         // -----------------------------------------
@@ -774,20 +774,20 @@
         ['"IEC61131_TIME"' TIME
             [simple uint 32 milliseconds]
         ]
-        //['"S7_S5TIME"' TIME
-        //    [reserved uint 2  '0x00']
-        //    [uint     uint 2  'base']
-        //    [simple   uint 12 value]
-        //]
+        ['"S7_S5TIME"' TIME
+            [manual uint 32 milliseconds   'STATIC_CALL("parseS5Time", readBuffer)' 'STATIC_CALL("serializeS5Time", writeBuffer, _value)' '2']
+        ]
         // - Duration: Interpreted as "number of nanoseconds"
         ['"IEC61131_LTIME"' LTIME
             [simple uint 64 nanoseconds]
         ]
         // - Date: Interpreted as "number of days since 1990-01-01"
+        // - Range in PLC S7-300/400 Min -> D#1990-01-01 (W#16#0000)
+        //                           Max -> D#2168-12-31 (W#16#FF62)
+        // - 01. Serialization using PlcDATE offsets the day indication by +/- 1 day.
+        // - 02. Need to test with S7-1200/S7-1500.
         ['"IEC61131_DATE"' DATE
-            [simple uint 16 daysSinceSiemensEpoch]
-            // Number of days between 1990-01-01 and 1970-01-01 according to https://www.timeanddate.com/
-            //[virtual uint 16 daysSinceEpoch 'daysSinceSiemensEpoch + 7305']
+            [manual uint 16 daysSinceEpoch   'STATIC_CALL("parseTiaDate", readBuffer)' 'STATIC_CALL("serializeTiaDate", writeBuffer, _value)' '2']
         ]
         //['"IEC61131_LDATE"' LDATE
         //    [implicit uint 16 daysSinceSiemensEpoch 'daysSinceEpoch - 7305']
@@ -879,14 +879,14 @@
     ['0x0F' LREAL         ['0x30'     , 'X'             , '8'               , 'REAL'                , 'null'                             , 'IEC61131_LREAL'        , 'false'             , 'false'             , 'true'               , 'true'               , 'false'             ]]
 
     // Characters and Strings
-    ['0x10' CHAR          ['0x03'     , 'B'             , '1'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_CHAR'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x11' WCHAR         ['0x13'     , 'X'             , '2'               , 'null'                , 'null'                             , 'IEC61131_WCHAR'        , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
-    ['0x12' STRING        ['0x03'     , 'X'             , '1'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_STRING'       , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'null'                             , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
+    ['0x10' CHAR          ['0x03'     , 'B'             , '1'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_CHAR'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x11' WCHAR         ['0x13'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_WCHAR'        , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
+    ['0x12' STRING        ['0x03'     , 'X'             , '1'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_STRING'       , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
 
     // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
-    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'null'                         , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    //['0x15' S5TIME        ['0x0C'    , 'X'             , '4'                 , 'null'                  , 'null'                          , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x15' S5TIME        ['0x04'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x16' LTIME         ['0x00'     , 'X'             , '8'                 , 'TIME'                  , 'null'                         , 'IEC61131_LTIME'        , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x18' TIME_OF_DAY   ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
@@ -1027,7 +1027,7 @@
     ['0x12' UPDATE]
 ]
 
-[enum uint 8 'TimeBase'
+[enum uint 8 TimeBase
     ['0x00' B01SEC]
     ['0x01' B1SEC]
     ['0X02' B10SEC]

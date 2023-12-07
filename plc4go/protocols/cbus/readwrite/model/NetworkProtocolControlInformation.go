@@ -197,7 +197,7 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 2, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -205,14 +205,14 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 
 	// Simple Field (stackCounter)
 	stackCounter := uint8(m.GetStackCounter())
-	_stackCounterErr := writeBuffer.WriteUint8("stackCounter", 3, (stackCounter))
+	_stackCounterErr := writeBuffer.WriteUint8("stackCounter", 3, uint8((stackCounter)))
 	if _stackCounterErr != nil {
 		return errors.Wrap(_stackCounterErr, "Error serializing 'stackCounter' field")
 	}
 
 	// Simple Field (stackDepth)
 	stackDepth := uint8(m.GetStackDepth())
-	_stackDepthErr := writeBuffer.WriteUint8("stackDepth", 3, (stackDepth))
+	_stackDepthErr := writeBuffer.WriteUint8("stackDepth", 3, uint8((stackDepth)))
 	if _stackDepthErr != nil {
 		return errors.Wrap(_stackDepthErr, "Error serializing 'stackDepth' field")
 	}

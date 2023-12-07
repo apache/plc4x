@@ -223,7 +223,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (pinBlock)
 		pinBlock := uint8(m.GetPinBlock())
-		_pinBlockErr := writeBuffer.WriteUint8("pinBlock", 4, (pinBlock))
+		_pinBlockErr := writeBuffer.WriteUint8("pinBlock", 4, uint8((pinBlock)))
 		if _pinBlockErr != nil {
 			return errors.Wrap(_pinBlockErr, "Error serializing 'pinBlock' field")
 		}
@@ -234,7 +234,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			_elementErr := writeBuffer.WriteInt8("", 8, int8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

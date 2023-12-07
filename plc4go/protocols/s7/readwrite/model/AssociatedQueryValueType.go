@@ -260,7 +260,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (valueLength)
 	valueLength := uint16(m.GetValueLength())
-	_valueLengthErr := writeBuffer.WriteUint16("valueLength", 16, (valueLength))
+	_valueLengthErr := writeBuffer.WriteUint16("valueLength", 16, uint16((valueLength)))
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}
@@ -271,7 +271,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 	}
 	for _curItem, _element := range m.GetData() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}

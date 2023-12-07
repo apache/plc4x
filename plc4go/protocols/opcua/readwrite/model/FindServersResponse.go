@@ -262,7 +262,7 @@ func (m *_FindServersResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfServers)
 		noOfServers := int32(m.GetNoOfServers())
-		_noOfServersErr := writeBuffer.WriteInt32("noOfServers", 32, (noOfServers))
+		_noOfServersErr := writeBuffer.WriteInt32("noOfServers", 32, int32((noOfServers)))
 		if _noOfServersErr != nil {
 			return errors.Wrap(_noOfServersErr, "Error serializing 'noOfServers' field")
 		}

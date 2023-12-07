@@ -460,7 +460,7 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (month)
 	month := uint8(m.GetMonth())
-	_monthErr := writeBuffer.WriteUint8("month", 8, (month))
+	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
@@ -485,7 +485,7 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (weekOfMonth)
 	weekOfMonth := uint8(m.GetWeekOfMonth())
-	_weekOfMonthErr := writeBuffer.WriteUint8("weekOfMonth", 8, (weekOfMonth))
+	_weekOfMonthErr := writeBuffer.WriteUint8("weekOfMonth", 8, uint8((weekOfMonth)))
 	if _weekOfMonthErr != nil {
 		return errors.Wrap(_weekOfMonthErr, "Error serializing 'weekOfMonth' field")
 	}
@@ -552,7 +552,7 @@ func (m *_BACnetWeekNDayTagged) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (dayOfWeek)
 	dayOfWeek := uint8(m.GetDayOfWeek())
-	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, (dayOfWeek))
+	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
 	if _dayOfWeekErr != nil {
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}

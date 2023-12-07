@@ -178,7 +178,7 @@ func (m *_SecurityDataArmReadyNotReady) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (zoneNumber)
 		zoneNumber := uint8(m.GetZoneNumber())
-		_zoneNumberErr := writeBuffer.WriteUint8("zoneNumber", 8, (zoneNumber))
+		_zoneNumberErr := writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
 		if _zoneNumberErr != nil {
 			return errors.Wrap(_zoneNumberErr, "Error serializing 'zoneNumber' field")
 		}

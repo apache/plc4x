@@ -168,7 +168,7 @@ func (pm *_CEMIAdditionalInformation) SerializeParent(ctx context.Context, write
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(child.GetAdditionalInformationType())
-	_additionalInformationTypeErr := writeBuffer.WriteUint8("additionalInformationType", 8, (additionalInformationType))
+	_additionalInformationTypeErr := writeBuffer.WriteUint8("additionalInformationType", 8, uint8((additionalInformationType)))
 
 	if _additionalInformationTypeErr != nil {
 		return errors.Wrap(_additionalInformationTypeErr, "Error serializing 'additionalInformationType' field")

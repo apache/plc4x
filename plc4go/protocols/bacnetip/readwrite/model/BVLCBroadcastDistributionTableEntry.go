@@ -232,7 +232,7 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 	}
 	for _curItem, _element := range m.GetIp() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 		}
@@ -243,7 +243,7 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 
 	// Simple Field (port)
 	port := uint16(m.GetPort())
-	_portErr := writeBuffer.WriteUint16("port", 16, (port))
+	_portErr := writeBuffer.WriteUint16("port", 16, uint16((port)))
 	if _portErr != nil {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
@@ -254,7 +254,7 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 	}
 	for _curItem, _element := range m.GetBroadcastDistributionMap() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'broadcastDistributionMap' field")
 		}

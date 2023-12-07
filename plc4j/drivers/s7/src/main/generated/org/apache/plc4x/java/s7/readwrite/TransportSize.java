@@ -231,7 +231,7 @@ public enum TransportSize {
       (boolean) true,
       (short) 'B',
       (boolean) true,
-      DataTransportSize.BYTE_WORD_DWORD,
+      DataTransportSize.OCTET_STRING,
       (String) "IEC61131_CHAR",
       null),
   WCHAR(
@@ -244,7 +244,7 @@ public enum TransportSize {
       (boolean) true,
       (short) 'X',
       (boolean) true,
-      null,
+      DataTransportSize.OCTET_STRING,
       (String) "IEC61131_WCHAR",
       null),
   STRING(
@@ -257,7 +257,7 @@ public enum TransportSize {
       (boolean) true,
       (short) 'X',
       (boolean) true,
-      DataTransportSize.BYTE_WORD_DWORD,
+      DataTransportSize.OCTET_STRING,
       (String) "IEC61131_STRING",
       null),
   WSTRING(
@@ -270,7 +270,7 @@ public enum TransportSize {
       (boolean) true,
       (short) 'X',
       (boolean) true,
-      null,
+      DataTransportSize.OCTET_STRING,
       (String) "IEC61131_WSTRING",
       null),
   TIME(
@@ -283,8 +283,21 @@ public enum TransportSize {
       (boolean) true,
       (short) 'X',
       (boolean) true,
-      null,
+      DataTransportSize.BYTE_WORD_DWORD,
       (String) "IEC61131_TIME",
+      null),
+  S5TIME(
+      (short) 0x15,
+      (boolean) true,
+      (boolean) true,
+      (short) 0x04,
+      (short) 2,
+      (boolean) true,
+      (boolean) true,
+      (short) 'X',
+      (boolean) true,
+      DataTransportSize.BYTE_WORD_DWORD,
+      (String) "S7_S5TIME",
       null),
   LTIME(
       (short) 0x16,

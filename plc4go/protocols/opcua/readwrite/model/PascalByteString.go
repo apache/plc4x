@@ -167,7 +167,7 @@ func (m *_PascalByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 	// Simple Field (stringLength)
 	stringLength := int32(m.GetStringLength())
-	_stringLengthErr := writeBuffer.WriteInt32("stringLength", 32, (stringLength))
+	_stringLengthErr := writeBuffer.WriteInt32("stringLength", 32, int32((stringLength)))
 	if _stringLengthErr != nil {
 		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}

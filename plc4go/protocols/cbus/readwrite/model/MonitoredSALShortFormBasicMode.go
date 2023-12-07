@@ -314,7 +314,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 		var bridgeCount *uint8 = nil
 		if m.GetBridgeCount() != nil {
 			bridgeCount = m.GetBridgeCount()
-			_bridgeCountErr := writeBuffer.WriteUint8("bridgeCount", 8, *(bridgeCount))
+			_bridgeCountErr := writeBuffer.WriteUint8("bridgeCount", 8, uint8(*(bridgeCount)))
 			if _bridgeCountErr != nil {
 				return errors.Wrap(_bridgeCountErr, "Error serializing 'bridgeCount' field")
 			}
@@ -324,7 +324,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 		var networkNumber *uint8 = nil
 		if m.GetNetworkNumber() != nil {
 			networkNumber = m.GetNetworkNumber()
-			_networkNumberErr := writeBuffer.WriteUint8("networkNumber", 8, *(networkNumber))
+			_networkNumberErr := writeBuffer.WriteUint8("networkNumber", 8, uint8(*(networkNumber)))
 			if _networkNumberErr != nil {
 				return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 			}

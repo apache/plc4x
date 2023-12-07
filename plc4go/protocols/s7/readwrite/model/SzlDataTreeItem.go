@@ -221,7 +221,7 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (itemIndex)
 	itemIndex := uint16(m.GetItemIndex())
-	_itemIndexErr := writeBuffer.WriteUint16("itemIndex", 16, (itemIndex))
+	_itemIndexErr := writeBuffer.WriteUint16("itemIndex", 16, uint16((itemIndex)))
 	if _itemIndexErr != nil {
 		return errors.Wrap(_itemIndexErr, "Error serializing 'itemIndex' field")
 	}
@@ -234,21 +234,21 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (moduleTypeId)
 	moduleTypeId := uint16(m.GetModuleTypeId())
-	_moduleTypeIdErr := writeBuffer.WriteUint16("moduleTypeId", 16, (moduleTypeId))
+	_moduleTypeIdErr := writeBuffer.WriteUint16("moduleTypeId", 16, uint16((moduleTypeId)))
 	if _moduleTypeIdErr != nil {
 		return errors.Wrap(_moduleTypeIdErr, "Error serializing 'moduleTypeId' field")
 	}
 
 	// Simple Field (ausbg)
 	ausbg := uint16(m.GetAusbg())
-	_ausbgErr := writeBuffer.WriteUint16("ausbg", 16, (ausbg))
+	_ausbgErr := writeBuffer.WriteUint16("ausbg", 16, uint16((ausbg)))
 	if _ausbgErr != nil {
 		return errors.Wrap(_ausbgErr, "Error serializing 'ausbg' field")
 	}
 
 	// Simple Field (ausbe)
 	ausbe := uint16(m.GetAusbe())
-	_ausbeErr := writeBuffer.WriteUint16("ausbe", 16, (ausbe))
+	_ausbeErr := writeBuffer.WriteUint16("ausbe", 16, uint16((ausbe)))
 	if _ausbeErr != nil {
 		return errors.Wrap(_ausbeErr, "Error serializing 'ausbe' field")
 	}

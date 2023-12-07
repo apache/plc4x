@@ -544,7 +544,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var symbolicId *int32 = nil
 	if m.GetSymbolicId() != nil {
 		symbolicId = m.GetSymbolicId()
-		_symbolicIdErr := writeBuffer.WriteInt32("symbolicId", 32, *(symbolicId))
+		_symbolicIdErr := writeBuffer.WriteInt32("symbolicId", 32, int32(*(symbolicId)))
 		if _symbolicIdErr != nil {
 			return errors.Wrap(_symbolicIdErr, "Error serializing 'symbolicId' field")
 		}
@@ -554,7 +554,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var namespaceURI *int32 = nil
 	if m.GetNamespaceURI() != nil {
 		namespaceURI = m.GetNamespaceURI()
-		_namespaceURIErr := writeBuffer.WriteInt32("namespaceURI", 32, *(namespaceURI))
+		_namespaceURIErr := writeBuffer.WriteInt32("namespaceURI", 32, int32(*(namespaceURI)))
 		if _namespaceURIErr != nil {
 			return errors.Wrap(_namespaceURIErr, "Error serializing 'namespaceURI' field")
 		}
@@ -564,7 +564,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var locale *int32 = nil
 	if m.GetLocale() != nil {
 		locale = m.GetLocale()
-		_localeErr := writeBuffer.WriteInt32("locale", 32, *(locale))
+		_localeErr := writeBuffer.WriteInt32("locale", 32, int32(*(locale)))
 		if _localeErr != nil {
 			return errors.Wrap(_localeErr, "Error serializing 'locale' field")
 		}
@@ -574,7 +574,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var localizedText *int32 = nil
 	if m.GetLocalizedText() != nil {
 		localizedText = m.GetLocalizedText()
-		_localizedTextErr := writeBuffer.WriteInt32("localizedText", 32, *(localizedText))
+		_localizedTextErr := writeBuffer.WriteInt32("localizedText", 32, int32(*(localizedText)))
 		if _localizedTextErr != nil {
 			return errors.Wrap(_localizedTextErr, "Error serializing 'localizedText' field")
 		}

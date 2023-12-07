@@ -382,7 +382,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (yearMinus1900)
 	yearMinus1900 := uint8(m.GetYearMinus1900())
-	_yearMinus1900Err := writeBuffer.WriteUint8("yearMinus1900", 8, (yearMinus1900))
+	_yearMinus1900Err := writeBuffer.WriteUint8("yearMinus1900", 8, uint8((yearMinus1900)))
 	if _yearMinus1900Err != nil {
 		return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
 	}
@@ -401,7 +401,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (month)
 	month := uint8(m.GetMonth())
-	_monthErr := writeBuffer.WriteUint8("month", 8, (month))
+	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
@@ -426,7 +426,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (dayOfMonth)
 	dayOfMonth := uint8(m.GetDayOfMonth())
-	_dayOfMonthErr := writeBuffer.WriteUint8("dayOfMonth", 8, (dayOfMonth))
+	_dayOfMonthErr := writeBuffer.WriteUint8("dayOfMonth", 8, uint8((dayOfMonth)))
 	if _dayOfMonthErr != nil {
 		return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
 	}
@@ -457,7 +457,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (dayOfWeek)
 	dayOfWeek := uint8(m.GetDayOfWeek())
-	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, (dayOfWeek))
+	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
 	if _dayOfWeekErr != nil {
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}

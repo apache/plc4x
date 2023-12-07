@@ -216,7 +216,7 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (cancelCount)
 		cancelCount := uint32(m.GetCancelCount())
-		_cancelCountErr := writeBuffer.WriteUint32("cancelCount", 32, (cancelCount))
+		_cancelCountErr := writeBuffer.WriteUint32("cancelCount", 32, uint32((cancelCount)))
 		if _cancelCountErr != nil {
 			return errors.Wrap(_cancelCountErr, "Error serializing 'cancelCount' field")
 		}

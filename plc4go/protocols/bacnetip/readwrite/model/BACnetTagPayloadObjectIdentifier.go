@@ -232,7 +232,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context
 
 	// Simple Field (instanceNumber)
 	instanceNumber := uint32(m.GetInstanceNumber())
-	_instanceNumberErr := writeBuffer.WriteUint32("instanceNumber", 22, (instanceNumber))
+	_instanceNumberErr := writeBuffer.WriteUint32("instanceNumber", 22, uint32((instanceNumber)))
 	if _instanceNumberErr != nil {
 		return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
 	}

@@ -239,7 +239,7 @@ func (pm *_CipService) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Discriminator Field (service) (Used as input to a switch field)
 	service := uint8(child.GetService())
-	_serviceErr := writeBuffer.WriteUint8("service", 7, (service))
+	_serviceErr := writeBuffer.WriteUint8("service", 7, uint8((service)))
 
 	if _serviceErr != nil {
 		return errors.Wrap(_serviceErr, "Error serializing 'service' field")

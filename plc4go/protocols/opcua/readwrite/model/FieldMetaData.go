@@ -503,7 +503,7 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (builtInType)
 		builtInType := uint8(m.GetBuiltInType())
-		_builtInTypeErr := writeBuffer.WriteUint8("builtInType", 8, (builtInType))
+		_builtInTypeErr := writeBuffer.WriteUint8("builtInType", 8, uint8((builtInType)))
 		if _builtInTypeErr != nil {
 			return errors.Wrap(_builtInTypeErr, "Error serializing 'builtInType' field")
 		}
@@ -522,14 +522,14 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (valueRank)
 		valueRank := int32(m.GetValueRank())
-		_valueRankErr := writeBuffer.WriteInt32("valueRank", 32, (valueRank))
+		_valueRankErr := writeBuffer.WriteInt32("valueRank", 32, int32((valueRank)))
 		if _valueRankErr != nil {
 			return errors.Wrap(_valueRankErr, "Error serializing 'valueRank' field")
 		}
 
 		// Simple Field (noOfArrayDimensions)
 		noOfArrayDimensions := int32(m.GetNoOfArrayDimensions())
-		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, (noOfArrayDimensions))
+		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32((noOfArrayDimensions)))
 		if _noOfArrayDimensionsErr != nil {
 			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
 		}
@@ -540,7 +540,7 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 		for _curItem, _element := range m.GetArrayDimensions() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'arrayDimensions' field")
 			}
@@ -551,7 +551,7 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (maxStringLength)
 		maxStringLength := uint32(m.GetMaxStringLength())
-		_maxStringLengthErr := writeBuffer.WriteUint32("maxStringLength", 32, (maxStringLength))
+		_maxStringLengthErr := writeBuffer.WriteUint32("maxStringLength", 32, uint32((maxStringLength)))
 		if _maxStringLengthErr != nil {
 			return errors.Wrap(_maxStringLengthErr, "Error serializing 'maxStringLength' field")
 		}
@@ -570,7 +570,7 @@ func (m *_FieldMetaData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (noOfProperties)
 		noOfProperties := int32(m.GetNoOfProperties())
-		_noOfPropertiesErr := writeBuffer.WriteInt32("noOfProperties", 32, (noOfProperties))
+		_noOfPropertiesErr := writeBuffer.WriteInt32("noOfProperties", 32, int32((noOfProperties)))
 		if _noOfPropertiesErr != nil {
 			return errors.Wrap(_noOfPropertiesErr, "Error serializing 'noOfProperties' field")
 		}

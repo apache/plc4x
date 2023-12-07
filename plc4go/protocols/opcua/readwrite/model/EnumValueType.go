@@ -229,7 +229,7 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (value)
 		value := int64(m.GetValue())
-		_valueErr := writeBuffer.WriteInt64("value", 64, (value))
+		_valueErr := writeBuffer.WriteInt64("value", 64, int64((value)))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

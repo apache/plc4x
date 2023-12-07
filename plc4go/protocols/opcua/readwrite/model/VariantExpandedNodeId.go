@@ -237,7 +237,7 @@ func (m *_VariantExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, w
 		var arrayLength *int32 = nil
 		if m.GetArrayLength() != nil {
 			arrayLength = m.GetArrayLength()
-			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, *(arrayLength))
+			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
 			if _arrayLengthErr != nil {
 				return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
 			}

@@ -307,7 +307,7 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -322,7 +322,7 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfSubscriptionIds)
 		noOfSubscriptionIds := int32(m.GetNoOfSubscriptionIds())
-		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, (noOfSubscriptionIds))
+		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
 		if _noOfSubscriptionIdsErr != nil {
 			return errors.Wrap(_noOfSubscriptionIdsErr, "Error serializing 'noOfSubscriptionIds' field")
 		}
@@ -333,7 +333,7 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 		}
 		for _curItem, _element := range m.GetSubscriptionIds() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'subscriptionIds' field")
 			}

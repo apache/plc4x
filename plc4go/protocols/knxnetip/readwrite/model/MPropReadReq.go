@@ -257,35 +257,35 @@ func (m *_MPropReadReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.GetInterfaceObjectType())
-		_interfaceObjectTypeErr := writeBuffer.WriteUint16("interfaceObjectType", 16, (interfaceObjectType))
+		_interfaceObjectTypeErr := writeBuffer.WriteUint16("interfaceObjectType", 16, uint16((interfaceObjectType)))
 		if _interfaceObjectTypeErr != nil {
 			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.GetObjectInstance())
-		_objectInstanceErr := writeBuffer.WriteUint8("objectInstance", 8, (objectInstance))
+		_objectInstanceErr := writeBuffer.WriteUint8("objectInstance", 8, uint8((objectInstance)))
 		if _objectInstanceErr != nil {
 			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, (propertyId))
+		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.GetNumberOfElements())
-		_numberOfElementsErr := writeBuffer.WriteUint8("numberOfElements", 4, (numberOfElements))
+		_numberOfElementsErr := writeBuffer.WriteUint8("numberOfElements", 4, uint8((numberOfElements)))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.GetStartIndex())
-		_startIndexErr := writeBuffer.WriteUint16("startIndex", 12, (startIndex))
+		_startIndexErr := writeBuffer.WriteUint16("startIndex", 12, uint16((startIndex)))
 		if _startIndexErr != nil {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}

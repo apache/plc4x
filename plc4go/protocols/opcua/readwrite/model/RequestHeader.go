@@ -323,21 +323,21 @@ func (m *_RequestHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (timestamp)
 		timestamp := int64(m.GetTimestamp())
-		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, (timestamp))
+		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
 		if _timestampErr != nil {
 			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 		}
 
 		// Simple Field (requestHandle)
 		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, (requestHandle))
+		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
 		if _requestHandleErr != nil {
 			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
 		}
 
 		// Simple Field (returnDiagnostics)
 		returnDiagnostics := uint32(m.GetReturnDiagnostics())
-		_returnDiagnosticsErr := writeBuffer.WriteUint32("returnDiagnostics", 32, (returnDiagnostics))
+		_returnDiagnosticsErr := writeBuffer.WriteUint32("returnDiagnostics", 32, uint32((returnDiagnostics)))
 		if _returnDiagnosticsErr != nil {
 			return errors.Wrap(_returnDiagnosticsErr, "Error serializing 'returnDiagnostics' field")
 		}
@@ -356,7 +356,7 @@ func (m *_RequestHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (timeoutHint)
 		timeoutHint := uint32(m.GetTimeoutHint())
-		_timeoutHintErr := writeBuffer.WriteUint32("timeoutHint", 32, (timeoutHint))
+		_timeoutHintErr := writeBuffer.WriteUint32("timeoutHint", 32, uint32((timeoutHint)))
 		if _timeoutHintErr != nil {
 			return errors.Wrap(_timeoutHintErr, "Error serializing 'timeoutHint' field")
 		}

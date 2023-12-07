@@ -643,7 +643,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt8 *int8 = nil
 	if m.GetValueInt8() != nil {
 		valueInt8 = m.GetValueInt8()
-		_valueInt8Err := writeBuffer.WriteInt8("valueInt8", 8, *(valueInt8))
+		_valueInt8Err := writeBuffer.WriteInt8("valueInt8", 8, int8(*(valueInt8)))
 		if _valueInt8Err != nil {
 			return errors.Wrap(_valueInt8Err, "Error serializing 'valueInt8' field")
 		}
@@ -659,7 +659,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt16 *int16 = nil
 	if m.GetValueInt16() != nil {
 		valueInt16 = m.GetValueInt16()
-		_valueInt16Err := writeBuffer.WriteInt16("valueInt16", 16, *(valueInt16))
+		_valueInt16Err := writeBuffer.WriteInt16("valueInt16", 16, int16(*(valueInt16)))
 		if _valueInt16Err != nil {
 			return errors.Wrap(_valueInt16Err, "Error serializing 'valueInt16' field")
 		}
@@ -675,7 +675,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt24 *int32 = nil
 	if m.GetValueInt24() != nil {
 		valueInt24 = m.GetValueInt24()
-		_valueInt24Err := writeBuffer.WriteInt32("valueInt24", 24, *(valueInt24))
+		_valueInt24Err := writeBuffer.WriteInt32("valueInt24", 24, int32(*(valueInt24)))
 		if _valueInt24Err != nil {
 			return errors.Wrap(_valueInt24Err, "Error serializing 'valueInt24' field")
 		}
@@ -691,7 +691,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt32 *int32 = nil
 	if m.GetValueInt32() != nil {
 		valueInt32 = m.GetValueInt32()
-		_valueInt32Err := writeBuffer.WriteInt32("valueInt32", 32, *(valueInt32))
+		_valueInt32Err := writeBuffer.WriteInt32("valueInt32", 32, int32(*(valueInt32)))
 		if _valueInt32Err != nil {
 			return errors.Wrap(_valueInt32Err, "Error serializing 'valueInt32' field")
 		}
@@ -707,7 +707,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt40 *int64 = nil
 	if m.GetValueInt40() != nil {
 		valueInt40 = m.GetValueInt40()
-		_valueInt40Err := writeBuffer.WriteInt64("valueInt40", 40, *(valueInt40))
+		_valueInt40Err := writeBuffer.WriteInt64("valueInt40", 40, int64(*(valueInt40)))
 		if _valueInt40Err != nil {
 			return errors.Wrap(_valueInt40Err, "Error serializing 'valueInt40' field")
 		}
@@ -723,7 +723,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt48 *int64 = nil
 	if m.GetValueInt48() != nil {
 		valueInt48 = m.GetValueInt48()
-		_valueInt48Err := writeBuffer.WriteInt64("valueInt48", 48, *(valueInt48))
+		_valueInt48Err := writeBuffer.WriteInt64("valueInt48", 48, int64(*(valueInt48)))
 		if _valueInt48Err != nil {
 			return errors.Wrap(_valueInt48Err, "Error serializing 'valueInt48' field")
 		}
@@ -739,7 +739,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt56 *int64 = nil
 	if m.GetValueInt56() != nil {
 		valueInt56 = m.GetValueInt56()
-		_valueInt56Err := writeBuffer.WriteInt64("valueInt56", 56, *(valueInt56))
+		_valueInt56Err := writeBuffer.WriteInt64("valueInt56", 56, int64(*(valueInt56)))
 		if _valueInt56Err != nil {
 			return errors.Wrap(_valueInt56Err, "Error serializing 'valueInt56' field")
 		}
@@ -755,7 +755,7 @@ func (m *_BACnetTagPayloadSignedInteger) SerializeWithWriteBuffer(ctx context.Co
 	var valueInt64 *int64 = nil
 	if m.GetValueInt64() != nil {
 		valueInt64 = m.GetValueInt64()
-		_valueInt64Err := writeBuffer.WriteInt64("valueInt64", 64, *(valueInt64))
+		_valueInt64Err := writeBuffer.WriteInt64("valueInt64", 64, int64(*(valueInt64)))
 		if _valueInt64Err != nil {
 			return errors.Wrap(_valueInt64Err, "Error serializing 'valueInt64' field")
 		}

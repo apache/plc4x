@@ -364,7 +364,7 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, (noOfLocaleIds))
+		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
@@ -388,7 +388,7 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfProfileUris)
 		noOfProfileUris := int32(m.GetNoOfProfileUris())
-		_noOfProfileUrisErr := writeBuffer.WriteInt32("noOfProfileUris", 32, (noOfProfileUris))
+		_noOfProfileUrisErr := writeBuffer.WriteInt32("noOfProfileUris", 32, int32((noOfProfileUris)))
 		if _noOfProfileUrisErr != nil {
 			return errors.Wrap(_noOfProfileUrisErr, "Error serializing 'noOfProfileUris' field")
 		}

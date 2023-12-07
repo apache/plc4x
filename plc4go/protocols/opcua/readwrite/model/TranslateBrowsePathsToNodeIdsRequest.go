@@ -262,7 +262,7 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (noOfBrowsePaths)
 		noOfBrowsePaths := int32(m.GetNoOfBrowsePaths())
-		_noOfBrowsePathsErr := writeBuffer.WriteInt32("noOfBrowsePaths", 32, (noOfBrowsePaths))
+		_noOfBrowsePathsErr := writeBuffer.WriteInt32("noOfBrowsePaths", 32, int32((noOfBrowsePaths)))
 		if _noOfBrowsePathsErr != nil {
 			return errors.Wrap(_noOfBrowsePathsErr, "Error serializing 'noOfBrowsePaths' field")
 		}

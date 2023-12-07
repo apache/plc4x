@@ -297,7 +297,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 
 		// Simple Field (start)
 		start := uint8(m.GetStart())
-		_startErr := writeBuffer.WriteUint8("start", 8, (start))
+		_startErr := writeBuffer.WriteUint8("start", 8, uint8((start)))
 		if _startErr != nil {
 			return errors.Wrap(_startErr, "Error serializing 'start' field")
 		}

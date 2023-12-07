@@ -195,7 +195,7 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Implicit Field (packetSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		packetSize := uint16(m.GetService().GetLengthInBytes(ctx))
-		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, (packetSize))
+		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
 		if _packetSizeErr != nil {
 			return errors.Wrap(_packetSizeErr, "Error serializing 'packetSize' field")
 		}

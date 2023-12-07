@@ -354,7 +354,7 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		requestPathSize := uint8(uint8((uint8(m.GetClassSegment().GetLengthInBytes(ctx)) + uint8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
@@ -393,7 +393,7 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -401,7 +401,7 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		messageSize := uint16(uint16(uint16(uint16(m.GetLengthInBytes(ctx)))-uint16(uint16(10))) - uint16(uint16(4)))
-		_messageSizeErr := writeBuffer.WriteUint16("messageSize", 16, (messageSize))
+		_messageSizeErr := writeBuffer.WriteUint16("messageSize", 16, uint16((messageSize)))
 		if _messageSizeErr != nil {
 			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
 		}
@@ -419,21 +419,21 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 
 		// Const Field (route)
-		_routeErr := writeBuffer.WriteUint16("route", 16, 0x0001)
+		_routeErr := writeBuffer.WriteUint16("route", 16, uint16(0x0001))
 		if _routeErr != nil {
 			return errors.Wrap(_routeErr, "Error serializing 'route' field")
 		}
 
 		// Simple Field (backPlane)
 		backPlane := int8(m.GetBackPlane())
-		_backPlaneErr := writeBuffer.WriteInt8("backPlane", 8, (backPlane))
+		_backPlaneErr := writeBuffer.WriteInt8("backPlane", 8, int8((backPlane)))
 		if _backPlaneErr != nil {
 			return errors.Wrap(_backPlaneErr, "Error serializing 'backPlane' field")
 		}
 
 		// Simple Field (slot)
 		slot := int8(m.GetSlot())
-		_slotErr := writeBuffer.WriteInt8("slot", 8, (slot))
+		_slotErr := writeBuffer.WriteInt8("slot", 8, int8((slot)))
 		if _slotErr != nil {
 			return errors.Wrap(_slotErr, "Error serializing 'slot' field")
 		}

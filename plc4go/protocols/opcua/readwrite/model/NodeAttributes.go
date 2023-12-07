@@ -267,7 +267,7 @@ func (m *_NodeAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (specifiedAttributes)
 		specifiedAttributes := uint32(m.GetSpecifiedAttributes())
-		_specifiedAttributesErr := writeBuffer.WriteUint32("specifiedAttributes", 32, (specifiedAttributes))
+		_specifiedAttributesErr := writeBuffer.WriteUint32("specifiedAttributes", 32, uint32((specifiedAttributes)))
 		if _specifiedAttributesErr != nil {
 			return errors.Wrap(_specifiedAttributesErr, "Error serializing 'specifiedAttributes' field")
 		}
@@ -298,14 +298,14 @@ func (m *_NodeAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (writeMask)
 		writeMask := uint32(m.GetWriteMask())
-		_writeMaskErr := writeBuffer.WriteUint32("writeMask", 32, (writeMask))
+		_writeMaskErr := writeBuffer.WriteUint32("writeMask", 32, uint32((writeMask)))
 		if _writeMaskErr != nil {
 			return errors.Wrap(_writeMaskErr, "Error serializing 'writeMask' field")
 		}
 
 		// Simple Field (userWriteMask)
 		userWriteMask := uint32(m.GetUserWriteMask())
-		_userWriteMaskErr := writeBuffer.WriteUint32("userWriteMask", 32, (userWriteMask))
+		_userWriteMaskErr := writeBuffer.WriteUint32("userWriteMask", 32, uint32((userWriteMask)))
 		if _userWriteMaskErr != nil {
 			return errors.Wrap(_userWriteMaskErr, "Error serializing 'userWriteMask' field")
 		}

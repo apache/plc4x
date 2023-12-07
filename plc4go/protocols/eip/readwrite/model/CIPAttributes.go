@@ -251,7 +251,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Implicit Field (numberOfClasses) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numberOfClasses := uint16(uint16(len(m.GetClassId())))
-	_numberOfClassesErr := writeBuffer.WriteUint16("numberOfClasses", 16, (numberOfClasses))
+	_numberOfClassesErr := writeBuffer.WriteUint16("numberOfClasses", 16, uint16((numberOfClasses)))
 	if _numberOfClassesErr != nil {
 		return errors.Wrap(_numberOfClassesErr, "Error serializing 'numberOfClasses' field")
 	}
@@ -262,7 +262,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 	for _curItem, _element := range m.GetClassId() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint16("", 16, _element)
+		_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'classId' field")
 		}
@@ -275,7 +275,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	var numberAvailable *uint16 = nil
 	if m.GetNumberAvailable() != nil {
 		numberAvailable = m.GetNumberAvailable()
-		_numberAvailableErr := writeBuffer.WriteUint16("numberAvailable", 16, *(numberAvailable))
+		_numberAvailableErr := writeBuffer.WriteUint16("numberAvailable", 16, uint16(*(numberAvailable)))
 		if _numberAvailableErr != nil {
 			return errors.Wrap(_numberAvailableErr, "Error serializing 'numberAvailable' field")
 		}
@@ -285,7 +285,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	var numberActive *uint16 = nil
 	if m.GetNumberActive() != nil {
 		numberActive = m.GetNumberActive()
-		_numberActiveErr := writeBuffer.WriteUint16("numberActive", 16, *(numberActive))
+		_numberActiveErr := writeBuffer.WriteUint16("numberActive", 16, uint16(*(numberActive)))
 		if _numberActiveErr != nil {
 			return errors.Wrap(_numberActiveErr, "Error serializing 'numberActive' field")
 		}

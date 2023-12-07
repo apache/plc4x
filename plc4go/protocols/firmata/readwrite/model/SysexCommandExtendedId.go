@@ -209,7 +209,7 @@ func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		for _curItem, _element := range m.GetId() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			_elementErr := writeBuffer.WriteInt8("", 8, int8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'id' field")
 			}

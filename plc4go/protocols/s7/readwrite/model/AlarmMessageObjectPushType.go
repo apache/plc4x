@@ -376,14 +376,14 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 	}
 
 	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, 0x12)
+	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 	if _variableSpecErr != nil {
 		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 	}
 
 	// Simple Field (lengthSpec)
 	lengthSpec := uint8(m.GetLengthSpec())
-	_lengthSpecErr := writeBuffer.WriteUint8("lengthSpec", 8, (lengthSpec))
+	_lengthSpecErr := writeBuffer.WriteUint8("lengthSpec", 8, uint8((lengthSpec)))
 	if _lengthSpecErr != nil {
 		return errors.Wrap(_lengthSpecErr, "Error serializing 'lengthSpec' field")
 	}
@@ -402,14 +402,14 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 
 	// Simple Field (numberOfValues)
 	numberOfValues := uint8(m.GetNumberOfValues())
-	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, (numberOfValues))
+	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, uint8((numberOfValues)))
 	if _numberOfValuesErr != nil {
 		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
 	}
 
 	// Simple Field (eventId)
 	eventId := uint32(m.GetEventId())
-	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, (eventId))
+	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, uint32((eventId)))
 	if _eventIdErr != nil {
 		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
 	}

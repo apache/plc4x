@@ -181,7 +181,7 @@ func (m *_COTPParameterCalledTsap) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.GetTsapId())
-		_tsapIdErr := writeBuffer.WriteUint16("tsapId", 16, (tsapId))
+		_tsapIdErr := writeBuffer.WriteUint16("tsapId", 16, uint16((tsapId)))
 		if _tsapIdErr != nil {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}

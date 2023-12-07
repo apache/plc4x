@@ -261,14 +261,14 @@ func (m *_ModifySubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (revisedLifetimeCount)
 		revisedLifetimeCount := uint32(m.GetRevisedLifetimeCount())
-		_revisedLifetimeCountErr := writeBuffer.WriteUint32("revisedLifetimeCount", 32, (revisedLifetimeCount))
+		_revisedLifetimeCountErr := writeBuffer.WriteUint32("revisedLifetimeCount", 32, uint32((revisedLifetimeCount)))
 		if _revisedLifetimeCountErr != nil {
 			return errors.Wrap(_revisedLifetimeCountErr, "Error serializing 'revisedLifetimeCount' field")
 		}
 
 		// Simple Field (revisedMaxKeepAliveCount)
 		revisedMaxKeepAliveCount := uint32(m.GetRevisedMaxKeepAliveCount())
-		_revisedMaxKeepAliveCountErr := writeBuffer.WriteUint32("revisedMaxKeepAliveCount", 32, (revisedMaxKeepAliveCount))
+		_revisedMaxKeepAliveCountErr := writeBuffer.WriteUint32("revisedMaxKeepAliveCount", 32, uint32((revisedMaxKeepAliveCount)))
 		if _revisedMaxKeepAliveCountErr != nil {
 			return errors.Wrap(_revisedMaxKeepAliveCountErr, "Error serializing 'revisedMaxKeepAliveCount' field")
 		}

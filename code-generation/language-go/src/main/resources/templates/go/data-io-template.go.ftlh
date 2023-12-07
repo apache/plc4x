@@ -171,7 +171,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
             <#case "TIME">
 			readBuffer.CloseContext("${type.name}")
                 <#if helper.hasFieldsWithNames(case.fields, "milliseconds")>
-			return values.NewPlcTIMEFromMilliseconds(milliseconds), nil
+			return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
                 </#if>
                 <#break>
             <#case "LTIME">

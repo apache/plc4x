@@ -203,7 +203,7 @@ func (m *_NodeIdTwoByte) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (id)
 		id := uint8(m.GetId())
-		_idErr := writeBuffer.WriteUint8("id", 8, (id))
+		_idErr := writeBuffer.WriteUint8("id", 8, uint8((id)))
 		if _idErr != nil {
 			return errors.Wrap(_idErr, "Error serializing 'id' field")
 		}

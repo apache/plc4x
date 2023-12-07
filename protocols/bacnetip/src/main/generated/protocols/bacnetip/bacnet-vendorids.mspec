@@ -1469,7 +1469,9 @@
   ['1454' GRID_CONNECT_INC ['1454', '"Grid Connect Inc."']]
   ['1455' ZIEGLER_INSTRUMENTATIONUK_LTD ['1455', '"Ziegler Instrumentation UK Ltd"']]
   ['1456' CONTROL_TECLLC ['1456', '"ControlTec, LLC"']]
- 
+  ['1457' AETERLINK_CORPORATION ['1457', '"Aeterlink Corporation"']]
+  ['1458' ALPHA_EPSILON_AUTOMATION ['1458', '"Alpha Epsilon Automation"']]
+
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]
 

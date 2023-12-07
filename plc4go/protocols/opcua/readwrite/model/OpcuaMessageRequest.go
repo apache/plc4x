@@ -296,35 +296,35 @@ func (m *_OpcuaMessageRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, (messageSize))
+		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
 		if _messageSizeErr != nil {
 			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
 		}
 
 		// Simple Field (secureChannelId)
 		secureChannelId := int32(m.GetSecureChannelId())
-		_secureChannelIdErr := writeBuffer.WriteInt32("secureChannelId", 32, (secureChannelId))
+		_secureChannelIdErr := writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
 		if _secureChannelIdErr != nil {
 			return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
 		}
 
 		// Simple Field (secureTokenId)
 		secureTokenId := int32(m.GetSecureTokenId())
-		_secureTokenIdErr := writeBuffer.WriteInt32("secureTokenId", 32, (secureTokenId))
+		_secureTokenIdErr := writeBuffer.WriteInt32("secureTokenId", 32, int32((secureTokenId)))
 		if _secureTokenIdErr != nil {
 			return errors.Wrap(_secureTokenIdErr, "Error serializing 'secureTokenId' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := int32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteInt32("sequenceNumber", 32, (sequenceNumber))
+		_sequenceNumberErr := writeBuffer.WriteInt32("sequenceNumber", 32, int32((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Simple Field (requestId)
 		requestId := int32(m.GetRequestId())
-		_requestIdErr := writeBuffer.WriteInt32("requestId", 32, (requestId))
+		_requestIdErr := writeBuffer.WriteInt32("requestId", 32, int32((requestId)))
 		if _requestIdErr != nil {
 			return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
 		}

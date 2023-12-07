@@ -287,14 +287,14 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (destinationAddress)
 		destinationAddress := uint8(m.GetDestinationAddress())
-		_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, (destinationAddress))
+		_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
 		if _destinationAddressErr != nil {
 			return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
 		}
 
 		// Simple Field (sourceAddress)
 		sourceAddress := uint8(m.GetSourceAddress())
-		_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, (sourceAddress))
+		_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
@@ -312,13 +312,13 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 
 		// Const Field (messageEnd)
-		_messageEndErr := writeBuffer.WriteUint8("messageEnd", 8, 0x10)
+		_messageEndErr := writeBuffer.WriteUint8("messageEnd", 8, uint8(0x10))
 		if _messageEndErr != nil {
 			return errors.Wrap(_messageEndErr, "Error serializing 'messageEnd' field")
 		}
 
 		// Const Field (endTransaction)
-		_endTransactionErr := writeBuffer.WriteUint8("endTransaction", 8, 0x03)
+		_endTransactionErr := writeBuffer.WriteUint8("endTransaction", 8, uint8(0x03))
 		if _endTransactionErr != nil {
 			return errors.Wrap(_endTransactionErr, "Error serializing 'endTransaction' field")
 		}
@@ -329,7 +329,7 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Checksum calculation failed")
 			}
-			_checksumWriteErr := writeBuffer.WriteUint16("checksum", 16, (_checksum))
+			_checksumWriteErr := writeBuffer.WriteUint16("checksum", 16, uint16((_checksum)))
 			if _checksumWriteErr != nil {
 				return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
 			}

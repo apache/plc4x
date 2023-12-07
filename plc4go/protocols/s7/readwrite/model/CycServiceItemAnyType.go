@@ -271,7 +271,7 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
 		// Enum field (transportSize)
-		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, m.TransportSize.Code(), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
+		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, uint8(m.TransportSize.Code()), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
@@ -281,14 +281,14 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (length)
 		length := uint16(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint16("length", 16, (length))
+		_lengthErr := writeBuffer.WriteUint16("length", 16, uint16((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.GetDbNumber())
-		_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, (dbNumber))
+		_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
 		if _dbNumberErr != nil {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
@@ -307,7 +307,7 @@ func (m *_CycServiceItemAnyType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (address)
 		address := uint32(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint32("address", 24, (address))
+		_addressErr := writeBuffer.WriteUint32("address", 24, uint32((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

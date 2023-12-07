@@ -457,7 +457,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfAddResults)
 		noOfAddResults := int32(m.GetNoOfAddResults())
-		_noOfAddResultsErr := writeBuffer.WriteInt32("noOfAddResults", 32, (noOfAddResults))
+		_noOfAddResultsErr := writeBuffer.WriteInt32("noOfAddResults", 32, int32((noOfAddResults)))
 		if _noOfAddResultsErr != nil {
 			return errors.Wrap(_noOfAddResultsErr, "Error serializing 'noOfAddResults' field")
 		}
@@ -481,7 +481,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfAddDiagnosticInfos)
 		noOfAddDiagnosticInfos := int32(m.GetNoOfAddDiagnosticInfos())
-		_noOfAddDiagnosticInfosErr := writeBuffer.WriteInt32("noOfAddDiagnosticInfos", 32, (noOfAddDiagnosticInfos))
+		_noOfAddDiagnosticInfosErr := writeBuffer.WriteInt32("noOfAddDiagnosticInfos", 32, int32((noOfAddDiagnosticInfos)))
 		if _noOfAddDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfAddDiagnosticInfosErr, "Error serializing 'noOfAddDiagnosticInfos' field")
 		}
@@ -505,7 +505,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRemoveResults)
 		noOfRemoveResults := int32(m.GetNoOfRemoveResults())
-		_noOfRemoveResultsErr := writeBuffer.WriteInt32("noOfRemoveResults", 32, (noOfRemoveResults))
+		_noOfRemoveResultsErr := writeBuffer.WriteInt32("noOfRemoveResults", 32, int32((noOfRemoveResults)))
 		if _noOfRemoveResultsErr != nil {
 			return errors.Wrap(_noOfRemoveResultsErr, "Error serializing 'noOfRemoveResults' field")
 		}
@@ -529,7 +529,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRemoveDiagnosticInfos)
 		noOfRemoveDiagnosticInfos := int32(m.GetNoOfRemoveDiagnosticInfos())
-		_noOfRemoveDiagnosticInfosErr := writeBuffer.WriteInt32("noOfRemoveDiagnosticInfos", 32, (noOfRemoveDiagnosticInfos))
+		_noOfRemoveDiagnosticInfosErr := writeBuffer.WriteInt32("noOfRemoveDiagnosticInfos", 32, int32((noOfRemoveDiagnosticInfos)))
 		if _noOfRemoveDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error serializing 'noOfRemoveDiagnosticInfos' field")
 		}

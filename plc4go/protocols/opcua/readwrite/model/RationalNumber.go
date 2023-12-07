@@ -198,14 +198,14 @@ func (m *_RationalNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (numerator)
 		numerator := int32(m.GetNumerator())
-		_numeratorErr := writeBuffer.WriteInt32("numerator", 32, (numerator))
+		_numeratorErr := writeBuffer.WriteInt32("numerator", 32, int32((numerator)))
 		if _numeratorErr != nil {
 			return errors.Wrap(_numeratorErr, "Error serializing 'numerator' field")
 		}
 
 		// Simple Field (denominator)
 		denominator := uint32(m.GetDenominator())
-		_denominatorErr := writeBuffer.WriteUint32("denominator", 32, (denominator))
+		_denominatorErr := writeBuffer.WriteUint32("denominator", 32, uint32((denominator)))
 		if _denominatorErr != nil {
 			return errors.Wrap(_denominatorErr, "Error serializing 'denominator' field")
 		}

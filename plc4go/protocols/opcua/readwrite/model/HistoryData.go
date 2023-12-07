@@ -225,7 +225,7 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (noOfDataValues)
 		noOfDataValues := int32(m.GetNoOfDataValues())
-		_noOfDataValuesErr := writeBuffer.WriteInt32("noOfDataValues", 32, (noOfDataValues))
+		_noOfDataValuesErr := writeBuffer.WriteInt32("noOfDataValues", 32, int32((noOfDataValues)))
 		if _noOfDataValuesErr != nil {
 			return errors.Wrap(_noOfDataValuesErr, "Error serializing 'noOfDataValues' field")
 		}
