@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,22 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.protocol.plc4xapi.v0;
 
-import org.apache.plc4x.plugins.codegenerator.protocol.TypeContext;
-import org.junit.jupiter.api.Test;
+// Only if there's output, do we
+def file = new File("target/surefire-reports/go-junit-report.xml")
+if (file.exists()) {
+    // Read the go-junit-report.xml file.
+    def testResults = new XmlSlurper().parse(file)
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
-class Plc4xProtocolTest {
-
-    @Test
-    void getTypeContext() throws Exception {
-        TypeContext typeContext = new Plc4xApi().getTypeContext();
-        assertNotNull(typeContext);
-        assertNotNull(typeContext.getUnresolvedTypeReferences());
-        assertSame(0, typeContext.getUnresolvedTypeReferences().size());
+    // If there are errors, output the entries for these failed tests and fail the build after that.
+    if(testResults.@failures != "0" && testResults.@failures != "") {
+        def failedTestSuites = testResults.testsuite.find { node -> node.@failures != '0' || node.@errors != '0' }
+        for (failedTestSuite in failedTestSuites) {
+            print failedTestSuite
+        }
+        throw new RuntimeException("There were test failures in Go.")
     }
-
 }
+
+

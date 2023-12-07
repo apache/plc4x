@@ -97,7 +97,11 @@ public class RawSocketTransport implements Transport, HasConfiguration<RawSocket
         // Create the fully qualified remote socket address which we should connect to.
         SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
 
-        return new RawSocketChannelFactory(address);
+        RawSocketChannelFactory rawSocketChannelFactory = new RawSocketChannelFactory(address);
+        if(configuration != null) {
+            rawSocketChannelFactory.setConfiguration(configuration);
+        }
+        return rawSocketChannelFactory;
     }
 
     @Override

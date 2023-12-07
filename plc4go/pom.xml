@@ -65,6 +65,28 @@
     <sourceDirectory>pkg</sourceDirectory>
     <plugins>
       <!--
+        Create surefire folder for report, as this is required to exist.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="target${file.separator}surefire-reports" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
         Copy the test-resources in here
       -->
       <plugin>
@@ -282,6 +304,10 @@
           </execution>
 
           <!-- Processes code that uses old APIs and rewrites them use newer ones -->
+          <!--
+            REMARK: The default lifecycle defines this is run in the "validate" phase,
+            we redefine it to run in the process-sources so it also processes generated code.
+          -->
           <execution>
             <id>default-fix</id>
             <phase>process-sources</phase>
@@ -326,15 +352,22 @@
           <execution>
             <id>default-test</id>
             <phase>test</phase>
-            <!-- TODO: Which goal?!? -->
+            <goals>
+              <goal>test</goal>
+            </goals>
             <configuration>
               <buildFlags>
-                <flag>-v</flag>
+                <!--flag>-v</flag-->
                 <!-- TODO: race detection temporary disabled till root cause for the issue is found https://github.com/golang/go/issues/40343 -->
                 <!--flag>-race</flag-->
                 <flag>${go.cover.flag}</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
+              <!--
+                Don't fail the build if we have test failures as we'll have the results translated
+                to junit format and will have the failsafe-plugin then fail the build. This way Jenkins
+                can display the results better.
+              -->
               <ignoreErrorExitCode>true</ignoreErrorExitCode>
               <packages>
                 <package>./...</package>
@@ -342,9 +375,8 @@
             </configuration>
           </execution>
 
-          <execution>
+          <!--execution>
             <id>readable-test</id>
-            <!-- TODO: Possibly move to test or prepare-package -->
             <phase>test</phase>
             <goals>
               <goal>custom</goal>
@@ -359,11 +391,11 @@
                 <package>./...</package>
               </packages>
             </configuration>
-          </execution>
+          </execution-->
 
           <!-- Convert generated test report into go-junit-report format and save as file -->
-          <execution>
-            <id>makeJUnitReport</id>
+          <!--execution>
+            <id>make-junit-report</id>
             <phase>test</phase>
             <goals>
               <goal>custom</goal>
@@ -371,7 +403,11 @@
             <configuration>
               <skip>${skipTests}</skip>
               <exec>go-junit-report</exec>
-              <customCommand>-set-exit-code</customCommand>
+              <!- -
+                This is just stupid, I need to provide something here, or the build won't work ...
+                this should hopefully have very little side-effects
+              - ->
+              <customCommand>-no-xml-header</customCommand>
               <buildFlags>
                 <flag>-in</flag>
                 <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
@@ -386,7 +422,7 @@
                 <package>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</package>
               </packages>
             </configuration>
-          </execution>
+          </execution-->
 
           <execution>
             <id>run-go-vet</id>
@@ -406,27 +442,56 @@
         </configuration>
       </plugin>
 
-      <!--
-        Create surefire folder for report
-      -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>generate-sources</id>
-            <phase>generate-sources</phase>
+            <id>make-junit-report</id>
+            <!-- We need to ensure it's after test and before verify -->
+            <phase>prepare-package</phase>
             <goals>
-              <goal>run</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <target>
-                <mkdir dir="target${file.separator}surefire-reports" />
-              </target>
+              <executable>${project.build.directory}/go-junit-report</executable>
+              <arguments>
+                <argument>-in</argument>
+                <argument>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</argument>
+                <argument>-out</argument>
+                <argument>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</argument>
+              </arguments>
+              <successCodes>
+                <successCode>0</successCode>
+              </successCodes>
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>groovy-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>output-failing-tests</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <source>${project.basedir}/script/validate-go-test-results.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>4.0.16</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <!-- Ensure we don't deploy anything -->
