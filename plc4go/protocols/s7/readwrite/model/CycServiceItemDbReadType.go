@@ -224,7 +224,7 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (numberOfAreas)
 		numberOfAreas := uint8(m.GetNumberOfAreas())
-		_numberOfAreasErr := writeBuffer.WriteUint8("numberOfAreas", 8, (numberOfAreas))
+		_numberOfAreasErr := writeBuffer.WriteUint8("numberOfAreas", 8, uint8((numberOfAreas)))
 		if _numberOfAreasErr != nil {
 			return errors.Wrap(_numberOfAreasErr, "Error serializing 'numberOfAreas' field")
 		}

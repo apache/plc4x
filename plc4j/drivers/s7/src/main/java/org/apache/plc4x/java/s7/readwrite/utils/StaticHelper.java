@@ -53,6 +53,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.spi.values.PlcDATE;
+import org.apache.plc4x.java.spi.values.PlcTIME;
 
 /**
  * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -1908,19 +1910,28 @@ public class StaticHelper {
 
     }
 
-    public static Duration S5TimeToDuration(Short data) {
+//    public static Duration S5TimeToDuration(Short data) {
+//        Duration res;
+//        short t = data;
+//        long tv = (short) (((t & 0x000F)) + ((t & 0x00F0) >> 4) * 10 + ((t & 0x0F00) >> 8) * 100);
+//        long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
+//        long totalms = tv * tb;
+//        if (totalms <= 9990000) {
+//            res = Duration.ofMillis(totalms);
+//        } else {
+//            res = Duration.ofMillis(9990000);
+//        }
+//        return res;
+//    }
+    
+    public static Long S5TimeToDuration(Short data) {
         Duration res;
         short t = data;
         long tv = (short) (((t & 0x000F)) + ((t & 0x00F0) >> 4) * 10 + ((t & 0x0F00) >> 8) * 100);
         long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
         long totalms = tv * tb;
-        if (totalms <= 9990000) {
-            res = Duration.ofMillis(totalms);
-        } else {
-            res = Duration.ofMillis(9990000);
-        }
-        return res;
-    }
+        return (totalms <= 9990000)?totalms:9990000;
+    }    
 
     public static Short DurationToS5Time(Duration duration) {
         short tv = 0;
@@ -2586,18 +2597,25 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME not implemented");
     }
 
-    public static LocalTime parseS5Time(ReadBuffer io) {
+    public static Long parseS5Time(ReadBuffer io) {
         try {
-            int stuff = io.readInt(16);
-            // TODO: Implement this correctly.
-            throw new NotImplementedException("S5TIME not implemented");
+            short s5time = (short) io.readInt(16);
+            return S5TimeToDuration(s5time);
         } catch (ParseException e) {
             return null;
         }
     }
 
-    public static void serializeS5Time(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing S5TIME not implemented");
+    public static void serializeS5Time(final WriteBuffer io, PlcValue value) {
+        final PlcTIME time = (PlcTIME) value;
+        Short shortValue = DurationToS5Time(time.getDuration());
+        System.out.println(">>>TIPO: " + value.getClass().getName() + " : " + shortValue);        
+        try {
+            io.writeUnsignedInt(16,shortValue);
+        } catch (SerializationException ex) {
+            ex.printStackTrace();
+            return;
+        }
 
     }
 
@@ -2623,17 +2641,27 @@ public class StaticHelper {
         throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     }
 
-    public static LocalDate parseTiaDate(ReadBuffer io) {
+    private static final LocalDate siemensEpoch = LocalDate.of(1990, 1, 1);
+    private static final int daysBetweenUnixAndSiemensEpoch = (int) ChronoUnit.DAYS.between(LocalDate.EPOCH, siemensEpoch);
+    public static Integer parseTiaDate(ReadBuffer io) {
         try {
-            int daysSince1990 = io.readUnsignedInt(16);
-            return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
+            // Dates in Siemens PLCs are stored relative to "Siemens Epoch", which is 1990-01-01
+            int daysSinceSiemensEpoch = io.readUnsignedInt(16);
+            return daysSinceSiemensEpoch + daysBetweenUnixAndSiemensEpoch;
         } catch (ParseException e) {
             return null;
         }
     }
 
     public static void serializeTiaDate(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing DATE not implemented");
+        final PlcDATE userDate = (PlcDATE) value;
+
+        int daysSince1990 = userDate.getDaysSinceEpoch() - daysBetweenUnixAndSiemensEpoch;
+        try {
+            io.writeUnsignedInt(16, daysSince1990);
+        } catch (SerializationException ex) {
+            return;
+        }
     }
 
     //TODO: Call BCD converter
@@ -2715,7 +2743,7 @@ public class StaticHelper {
                         break;
                     }
                 }
-                return new String(byteArray, StandardCharsets.UTF_16);
+                return new String(byteArray, StandardCharsets.UTF_16BE);
             } else {
                 throw new PlcRuntimeException("Unsupported string encoding " + encoding);
             }
@@ -2763,22 +2791,41 @@ public class StaticHelper {
      * the String as char arrays from your application.
      */
     public static void serializeS7String(WriteBuffer io, PlcValue value, int stringLength, String encoding) {
-        int k = 0xFF & ((stringLength > 250) ? 250 : stringLength);
-        int m = 0xFF & value.getString().length();
-        m = (m > k) ? k : m;
-        byte[] chars = new byte[m];
-        for (int i = 0; i < m; ++i) {
-            char c = value.getString().charAt(i);
-            chars[i] = (byte) c;
+        int maxStringLength = 0xFF & Math.min(stringLength, 250);
+        int actStringLength = 0xFF & value.getString().length();
+        actStringLength = Math.min(maxStringLength, actStringLength);
+
+        switch (encoding) {
+            case "UTF-8": {
+                byte[] chars = new byte[maxStringLength];
+                byte[] actChars = value.getString().substring(0, actStringLength).getBytes(StandardCharsets.UTF_8);
+                System.arraycopy(actChars, 0, chars, 0, actChars.length);
+                try {
+                    io.writeUnsignedInt(8, maxStringLength);
+                    io.writeUnsignedInt(8, actStringLength);
+                    io.writeByteArray(chars);
+                } catch (SerializationException ex) {
+                    Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            case "UTF-16": {
+                byte[] chars = new byte[maxStringLength * 2];
+                byte[] actChars = value.getString().substring(0, actStringLength).getBytes(StandardCharsets.UTF_16BE);
+                System.arraycopy(actChars, 0, chars, 0, actChars.length);
+                try {
+                    io.writeUnsignedInt(16, maxStringLength);
+                    io.writeUnsignedInt(16, actStringLength);
+                    io.writeByteArray(chars);
+                } catch (SerializationException ex) {
+                    Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            }
+            default:
+                throw new PlcRuntimeException("Unsupported encoding: " + encoding);
         }
 
-        try {
-            io.writeByte((byte) (k & 0xFF));
-            io.writeByte((byte) (m & 0xFF));
-            io.writeByteArray(chars);
-        } catch (SerializationException ex) {
-            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
 }

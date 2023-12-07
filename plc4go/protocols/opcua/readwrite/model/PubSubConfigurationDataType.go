@@ -332,7 +332,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfPublishedDataSets)
 		noOfPublishedDataSets := int32(m.GetNoOfPublishedDataSets())
-		_noOfPublishedDataSetsErr := writeBuffer.WriteInt32("noOfPublishedDataSets", 32, (noOfPublishedDataSets))
+		_noOfPublishedDataSetsErr := writeBuffer.WriteInt32("noOfPublishedDataSets", 32, int32((noOfPublishedDataSets)))
 		if _noOfPublishedDataSetsErr != nil {
 			return errors.Wrap(_noOfPublishedDataSetsErr, "Error serializing 'noOfPublishedDataSets' field")
 		}
@@ -356,7 +356,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfConnections)
 		noOfConnections := int32(m.GetNoOfConnections())
-		_noOfConnectionsErr := writeBuffer.WriteInt32("noOfConnections", 32, (noOfConnections))
+		_noOfConnectionsErr := writeBuffer.WriteInt32("noOfConnections", 32, int32((noOfConnections)))
 		if _noOfConnectionsErr != nil {
 			return errors.Wrap(_noOfConnectionsErr, "Error serializing 'noOfConnections' field")
 		}
@@ -388,7 +388,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

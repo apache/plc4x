@@ -212,7 +212,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 		}
 
 		// Const Field (amsNetIdLength)
-		_amsNetIdLengthErr := writeBuffer.WriteUint16("amsNetIdLength", 16, 0x0006)
+		_amsNetIdLengthErr := writeBuffer.WriteUint16("amsNetIdLength", 16, uint16(0x0006))
 		if _amsNetIdLengthErr != nil {
 			return errors.Wrap(_amsNetIdLengthErr, "Error serializing 'amsNetIdLength' field")
 		}

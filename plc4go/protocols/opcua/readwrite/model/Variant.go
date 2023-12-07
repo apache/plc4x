@@ -336,7 +336,7 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 
 	// Discriminator Field (VariantType) (Used as input to a switch field)
 	VariantType := uint8(child.GetVariantType())
-	_VariantTypeErr := writeBuffer.WriteUint8("VariantType", 6, (VariantType))
+	_VariantTypeErr := writeBuffer.WriteUint8("VariantType", 6, uint8((VariantType)))
 
 	if _VariantTypeErr != nil {
 		return errors.Wrap(_VariantTypeErr, "Error serializing 'VariantType' field")
@@ -351,7 +351,7 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 	var noOfArrayDimensions *int32 = nil
 	if m.GetNoOfArrayDimensions() != nil {
 		noOfArrayDimensions = m.GetNoOfArrayDimensions()
-		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, *(noOfArrayDimensions))
+		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32(*(noOfArrayDimensions)))
 		if _noOfArrayDimensionsErr != nil {
 			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
 		}

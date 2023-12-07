@@ -286,7 +286,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -309,7 +309,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

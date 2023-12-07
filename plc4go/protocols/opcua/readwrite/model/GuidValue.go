@@ -222,21 +222,21 @@ func (m *_GuidValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	// Simple Field (data1)
 	data1 := uint32(m.GetData1())
-	_data1Err := writeBuffer.WriteUint32("data1", 32, (data1))
+	_data1Err := writeBuffer.WriteUint32("data1", 32, uint32((data1)))
 	if _data1Err != nil {
 		return errors.Wrap(_data1Err, "Error serializing 'data1' field")
 	}
 
 	// Simple Field (data2)
 	data2 := uint16(m.GetData2())
-	_data2Err := writeBuffer.WriteUint16("data2", 16, (data2))
+	_data2Err := writeBuffer.WriteUint16("data2", 16, uint16((data2)))
 	if _data2Err != nil {
 		return errors.Wrap(_data2Err, "Error serializing 'data2' field")
 	}
 
 	// Simple Field (data3)
 	data3 := uint16(m.GetData3())
-	_data3Err := writeBuffer.WriteUint16("data3", 16, (data3))
+	_data3Err := writeBuffer.WriteUint16("data3", 16, uint16((data3)))
 	if _data3Err != nil {
 		return errors.Wrap(_data3Err, "Error serializing 'data3' field")
 	}

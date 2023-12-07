@@ -245,7 +245,7 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		requestPathSize := uint8(uint8(uint8(len(m.GetPathSegments()))) / uint8(uint8(2)))
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
@@ -266,7 +266,7 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -282,7 +282,7 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint32("reserved", 32, reserved)
+			_err := writeBuffer.WriteUint32("reserved", 32, uint32(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

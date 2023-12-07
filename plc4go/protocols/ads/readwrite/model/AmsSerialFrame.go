@@ -262,35 +262,35 @@ func (m *_AmsSerialFrame) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.GetMagicCookie())
-	_magicCookieErr := writeBuffer.WriteUint16("magicCookie", 16, (magicCookie))
+	_magicCookieErr := writeBuffer.WriteUint16("magicCookie", 16, uint16((magicCookie)))
 	if _magicCookieErr != nil {
 		return errors.Wrap(_magicCookieErr, "Error serializing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
 	transmitterAddress := int8(m.GetTransmitterAddress())
-	_transmitterAddressErr := writeBuffer.WriteInt8("transmitterAddress", 8, (transmitterAddress))
+	_transmitterAddressErr := writeBuffer.WriteInt8("transmitterAddress", 8, int8((transmitterAddress)))
 	if _transmitterAddressErr != nil {
 		return errors.Wrap(_transmitterAddressErr, "Error serializing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
 	receiverAddress := int8(m.GetReceiverAddress())
-	_receiverAddressErr := writeBuffer.WriteInt8("receiverAddress", 8, (receiverAddress))
+	_receiverAddressErr := writeBuffer.WriteInt8("receiverAddress", 8, int8((receiverAddress)))
 	if _receiverAddressErr != nil {
 		return errors.Wrap(_receiverAddressErr, "Error serializing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
 	fragmentNumber := int8(m.GetFragmentNumber())
-	_fragmentNumberErr := writeBuffer.WriteInt8("fragmentNumber", 8, (fragmentNumber))
+	_fragmentNumberErr := writeBuffer.WriteInt8("fragmentNumber", 8, int8((fragmentNumber)))
 	if _fragmentNumberErr != nil {
 		return errors.Wrap(_fragmentNumberErr, "Error serializing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
 	length := int8(m.GetLength())
-	_lengthErr := writeBuffer.WriteInt8("length", 8, (length))
+	_lengthErr := writeBuffer.WriteInt8("length", 8, int8((length)))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
@@ -309,7 +309,7 @@ func (m *_AmsSerialFrame) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (crc)
 	crc := uint16(m.GetCrc())
-	_crcErr := writeBuffer.WriteUint16("crc", 16, (crc))
+	_crcErr := writeBuffer.WriteUint16("crc", 16, uint16((crc)))
 	if _crcErr != nil {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}

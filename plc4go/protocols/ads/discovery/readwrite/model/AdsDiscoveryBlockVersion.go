@@ -190,7 +190,7 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 
 		// Implicit Field (versionDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		versionDataLen := uint16(uint16(len(m.GetVersionData())))
-		_versionDataLenErr := writeBuffer.WriteUint16("versionDataLen", 16, (versionDataLen))
+		_versionDataLenErr := writeBuffer.WriteUint16("versionDataLen", 16, uint16((versionDataLen)))
 		if _versionDataLenErr != nil {
 			return errors.Wrap(_versionDataLenErr, "Error serializing 'versionDataLen' field")
 		}

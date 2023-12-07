@@ -170,7 +170,7 @@ func (pm *_LogicalSegmentType) SerializeParent(ctx context.Context, writeBuffer 
 
 	// Discriminator Field (logicalSegmentType) (Used as input to a switch field)
 	logicalSegmentType := uint8(child.GetLogicalSegmentType())
-	_logicalSegmentTypeErr := writeBuffer.WriteUint8("logicalSegmentType", 3, (logicalSegmentType))
+	_logicalSegmentTypeErr := writeBuffer.WriteUint8("logicalSegmentType", 3, uint8((logicalSegmentType)))
 
 	if _logicalSegmentTypeErr != nil {
 		return errors.Wrap(_logicalSegmentTypeErr, "Error serializing 'logicalSegmentType' field")

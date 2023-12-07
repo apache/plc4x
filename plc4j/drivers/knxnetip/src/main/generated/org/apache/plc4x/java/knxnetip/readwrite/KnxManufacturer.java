@@ -751,9 +751,10 @@ public enum KnxManufacturer {
   M_ZIMMEX((int) 651, (int) 709, (String) "Zimmex"),
   M_RHOMBUS_EUROPE((int) 652, (int) 710, (String) "Rhombus Europe"),
   M_TURING_THINK((int) 653, (int) 711, (String) "Turing-Think"),
-  M_ABB___RESERVED((int) 654, (int) 43954, (String) "ABB - reserved"),
+  M_MICHOI((int) 654, (int) 712, (String) "Michoi"),
+  M_ABB___RESERVED((int) 655, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 655, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 656, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

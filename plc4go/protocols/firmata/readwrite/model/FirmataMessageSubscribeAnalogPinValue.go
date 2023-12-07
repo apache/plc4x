@@ -224,7 +224,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 4, (pin))
+		_pinErr := writeBuffer.WriteUint8("pin", 4, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
@@ -239,7 +239,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

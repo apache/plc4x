@@ -237,7 +237,7 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 4, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -245,7 +245,7 @@ func (m *_APDUSimpleAck) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, (originalInvokeId))
+		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}

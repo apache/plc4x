@@ -368,7 +368,7 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfAxisSteps)
 		noOfAxisSteps := int32(m.GetNoOfAxisSteps())
-		_noOfAxisStepsErr := writeBuffer.WriteInt32("noOfAxisSteps", 32, (noOfAxisSteps))
+		_noOfAxisStepsErr := writeBuffer.WriteInt32("noOfAxisSteps", 32, int32((noOfAxisSteps)))
 		if _noOfAxisStepsErr != nil {
 			return errors.Wrap(_noOfAxisStepsErr, "Error serializing 'noOfAxisSteps' field")
 		}

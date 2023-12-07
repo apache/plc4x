@@ -178,7 +178,7 @@ func (pm *_FirmataMessage) SerializeParent(ctx context.Context, writeBuffer util
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteUint8("messageType", 4, (messageType))
+	_messageTypeErr := writeBuffer.WriteUint8("messageType", 4, uint8((messageType)))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")

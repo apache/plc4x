@@ -311,7 +311,7 @@ func (m *_ModifySubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
@@ -325,28 +325,28 @@ func (m *_ModifySubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (requestedLifetimeCount)
 		requestedLifetimeCount := uint32(m.GetRequestedLifetimeCount())
-		_requestedLifetimeCountErr := writeBuffer.WriteUint32("requestedLifetimeCount", 32, (requestedLifetimeCount))
+		_requestedLifetimeCountErr := writeBuffer.WriteUint32("requestedLifetimeCount", 32, uint32((requestedLifetimeCount)))
 		if _requestedLifetimeCountErr != nil {
 			return errors.Wrap(_requestedLifetimeCountErr, "Error serializing 'requestedLifetimeCount' field")
 		}
 
 		// Simple Field (requestedMaxKeepAliveCount)
 		requestedMaxKeepAliveCount := uint32(m.GetRequestedMaxKeepAliveCount())
-		_requestedMaxKeepAliveCountErr := writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, (requestedMaxKeepAliveCount))
+		_requestedMaxKeepAliveCountErr := writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, uint32((requestedMaxKeepAliveCount)))
 		if _requestedMaxKeepAliveCountErr != nil {
 			return errors.Wrap(_requestedMaxKeepAliveCountErr, "Error serializing 'requestedMaxKeepAliveCount' field")
 		}
 
 		// Simple Field (maxNotificationsPerPublish)
 		maxNotificationsPerPublish := uint32(m.GetMaxNotificationsPerPublish())
-		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, (maxNotificationsPerPublish))
+		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
 		if _maxNotificationsPerPublishErr != nil {
 			return errors.Wrap(_maxNotificationsPerPublishErr, "Error serializing 'maxNotificationsPerPublish' field")
 		}
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 8, (priority))
+		_priorityErr := writeBuffer.WriteUint8("priority", 8, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}

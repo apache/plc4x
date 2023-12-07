@@ -220,7 +220,7 @@ func (m *_UserIdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Implicit Field (policyLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		policyLength := int32(int32(m.GetPolicyId().GetLengthInBytes(ctx)) + int32(m.GetUserIdentityTokenDefinition().GetLengthInBytes(ctx)))
-		_policyLengthErr := writeBuffer.WriteInt32("policyLength", 32, (policyLength))
+		_policyLengthErr := writeBuffer.WriteInt32("policyLength", 32, int32((policyLength)))
 		if _policyLengthErr != nil {
 			return errors.Wrap(_policyLengthErr, "Error serializing 'policyLength' field")
 		}

@@ -216,7 +216,7 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (requestHandle)
 		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, (requestHandle))
+		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
 		if _requestHandleErr != nil {
 			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
 		}

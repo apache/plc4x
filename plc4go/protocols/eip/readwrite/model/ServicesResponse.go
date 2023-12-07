@@ -292,14 +292,14 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Implicit Field (serviceLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		serviceLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(4)))
-		_serviceLenErr := writeBuffer.WriteUint16("serviceLen", 16, (serviceLen))
+		_serviceLenErr := writeBuffer.WriteUint16("serviceLen", 16, uint16((serviceLen)))
 		if _serviceLenErr != nil {
 			return errors.Wrap(_serviceLenErr, "Error serializing 'serviceLen' field")
 		}
 
 		// Simple Field (encapsulationProtocol)
 		encapsulationProtocol := uint16(m.GetEncapsulationProtocol())
-		_encapsulationProtocolErr := writeBuffer.WriteUint16("encapsulationProtocol", 16, (encapsulationProtocol))
+		_encapsulationProtocolErr := writeBuffer.WriteUint16("encapsulationProtocol", 16, uint16((encapsulationProtocol)))
 		if _encapsulationProtocolErr != nil {
 			return errors.Wrap(_encapsulationProtocolErr, "Error serializing 'encapsulationProtocol' field")
 		}
@@ -314,7 +314,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 2, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -337,7 +337,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint16("reserved", 12, reserved)
+			_err := writeBuffer.WriteUint16("reserved", 12, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

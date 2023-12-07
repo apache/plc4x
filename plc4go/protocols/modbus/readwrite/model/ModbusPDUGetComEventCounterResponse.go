@@ -206,14 +206,14 @@ func (m *_ModbusPDUGetComEventCounterResponse) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (status)
 		status := uint16(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint16("status", 16, (status))
+		_statusErr := writeBuffer.WriteUint16("status", 16, uint16((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.GetEventCount())
-		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, (eventCount))
+		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
 		if _eventCountErr != nil {
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}

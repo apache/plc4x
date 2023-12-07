@@ -299,7 +299,7 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfValues)
 		noOfValues := int32(m.GetNoOfValues())
-		_noOfValuesErr := writeBuffer.WriteInt32("noOfValues", 32, (noOfValues))
+		_noOfValuesErr := writeBuffer.WriteInt32("noOfValues", 32, int32((noOfValues)))
 		if _noOfValuesErr != nil {
 			return errors.Wrap(_noOfValuesErr, "Error serializing 'noOfValues' field")
 		}

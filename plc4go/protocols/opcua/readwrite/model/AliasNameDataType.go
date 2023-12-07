@@ -262,7 +262,7 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfReferencedNodes)
 		noOfReferencedNodes := int32(m.GetNoOfReferencedNodes())
-		_noOfReferencedNodesErr := writeBuffer.WriteInt32("noOfReferencedNodes", 32, (noOfReferencedNodes))
+		_noOfReferencedNodesErr := writeBuffer.WriteInt32("noOfReferencedNodes", 32, int32((noOfReferencedNodes)))
 		if _noOfReferencedNodesErr != nil {
 			return errors.Wrap(_noOfReferencedNodesErr, "Error serializing 'noOfReferencedNodes' field")
 		}

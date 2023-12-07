@@ -414,7 +414,7 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfClientSoftwareCertificates)
 		noOfClientSoftwareCertificates := int32(m.GetNoOfClientSoftwareCertificates())
-		_noOfClientSoftwareCertificatesErr := writeBuffer.WriteInt32("noOfClientSoftwareCertificates", 32, (noOfClientSoftwareCertificates))
+		_noOfClientSoftwareCertificatesErr := writeBuffer.WriteInt32("noOfClientSoftwareCertificates", 32, int32((noOfClientSoftwareCertificates)))
 		if _noOfClientSoftwareCertificatesErr != nil {
 			return errors.Wrap(_noOfClientSoftwareCertificatesErr, "Error serializing 'noOfClientSoftwareCertificates' field")
 		}
@@ -438,7 +438,7 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, (noOfLocaleIds))
+		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}

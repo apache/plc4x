@@ -267,7 +267,7 @@ func (m *_MonitoredItemModifyResult) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (revisedQueueSize)
 		revisedQueueSize := uint32(m.GetRevisedQueueSize())
-		_revisedQueueSizeErr := writeBuffer.WriteUint32("revisedQueueSize", 32, (revisedQueueSize))
+		_revisedQueueSizeErr := writeBuffer.WriteUint32("revisedQueueSize", 32, uint32((revisedQueueSize)))
 		if _revisedQueueSizeErr != nil {
 			return errors.Wrap(_revisedQueueSizeErr, "Error serializing 'revisedQueueSize' field")
 		}

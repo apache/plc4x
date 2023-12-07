@@ -364,7 +364,7 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (buildDate)
 		buildDate := int64(m.GetBuildDate())
-		_buildDateErr := writeBuffer.WriteInt64("buildDate", 64, (buildDate))
+		_buildDateErr := writeBuffer.WriteInt64("buildDate", 64, int64((buildDate)))
 		if _buildDateErr != nil {
 			return errors.Wrap(_buildDateErr, "Error serializing 'buildDate' field")
 		}

@@ -206,7 +206,7 @@ func (m *_HPAIControlEndpoint) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
+	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
@@ -237,7 +237,7 @@ func (m *_HPAIControlEndpoint) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Simple Field (ipPort)
 	ipPort := uint16(m.GetIpPort())
-	_ipPortErr := writeBuffer.WriteUint16("ipPort", 16, (ipPort))
+	_ipPortErr := writeBuffer.WriteUint16("ipPort", 16, uint16((ipPort)))
 	if _ipPortErr != nil {
 		return errors.Wrap(_ipPortErr, "Error serializing 'ipPort' field")
 	}

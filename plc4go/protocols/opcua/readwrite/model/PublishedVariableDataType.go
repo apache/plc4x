@@ -388,7 +388,7 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (attributeId)
 		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, (attributeId))
+		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
 		if _attributeIdErr != nil {
 			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
 		}
@@ -402,7 +402,7 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (deadbandType)
 		deadbandType := uint32(m.GetDeadbandType())
-		_deadbandTypeErr := writeBuffer.WriteUint32("deadbandType", 32, (deadbandType))
+		_deadbandTypeErr := writeBuffer.WriteUint32("deadbandType", 32, uint32((deadbandType)))
 		if _deadbandTypeErr != nil {
 			return errors.Wrap(_deadbandTypeErr, "Error serializing 'deadbandType' field")
 		}
@@ -440,7 +440,7 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (noOfMetaDataProperties)
 		noOfMetaDataProperties := int32(m.GetNoOfMetaDataProperties())
-		_noOfMetaDataPropertiesErr := writeBuffer.WriteInt32("noOfMetaDataProperties", 32, (noOfMetaDataProperties))
+		_noOfMetaDataPropertiesErr := writeBuffer.WriteInt32("noOfMetaDataProperties", 32, int32((noOfMetaDataProperties)))
 		if _noOfMetaDataPropertiesErr != nil {
 			return errors.Wrap(_noOfMetaDataPropertiesErr, "Error serializing 'noOfMetaDataProperties' field")
 		}

@@ -182,7 +182,7 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 
 		// Const Field (nullIndicator)
-		_nullIndicatorErr := writeBuffer.WriteUint32("nullIndicator", 32, 0x6E756C6C)
+		_nullIndicatorErr := writeBuffer.WriteUint32("nullIndicator", 32, uint32(0x6E756C6C))
 		if _nullIndicatorErr != nil {
 			return errors.Wrap(_nullIndicatorErr, "Error serializing 'nullIndicator' field")
 		}

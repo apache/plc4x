@@ -262,7 +262,7 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfFilterOperands)
 		noOfFilterOperands := int32(m.GetNoOfFilterOperands())
-		_noOfFilterOperandsErr := writeBuffer.WriteInt32("noOfFilterOperands", 32, (noOfFilterOperands))
+		_noOfFilterOperandsErr := writeBuffer.WriteInt32("noOfFilterOperands", 32, int32((noOfFilterOperands)))
 		if _noOfFilterOperandsErr != nil {
 			return errors.Wrap(_noOfFilterOperandsErr, "Error serializing 'noOfFilterOperands' field")
 		}

@@ -222,14 +222,14 @@ func (m *_NodeIdNumeric) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (namespaceIndex)
 		namespaceIndex := uint16(m.GetNamespaceIndex())
-		_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, (namespaceIndex))
+		_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
 		if _namespaceIndexErr != nil {
 			return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
 		}
 
 		// Simple Field (id)
 		id := uint32(m.GetId())
-		_idErr := writeBuffer.WriteUint32("id", 32, (id))
+		_idErr := writeBuffer.WriteUint32("id", 32, uint32((id)))
 		if _idErr != nil {
 			return errors.Wrap(_idErr, "Error serializing 'id' field")
 		}

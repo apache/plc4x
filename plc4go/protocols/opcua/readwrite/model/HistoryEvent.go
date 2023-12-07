@@ -225,7 +225,7 @@ func (m *_HistoryEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfEvents)
 		noOfEvents := int32(m.GetNoOfEvents())
-		_noOfEventsErr := writeBuffer.WriteInt32("noOfEvents", 32, (noOfEvents))
+		_noOfEventsErr := writeBuffer.WriteInt32("noOfEvents", 32, int32((noOfEvents)))
 		if _noOfEventsErr != nil {
 			return errors.Wrap(_noOfEventsErr, "Error serializing 'noOfEvents' field")
 		}

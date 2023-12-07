@@ -359,7 +359,7 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -374,14 +374,14 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (nodeClassMask)
 		nodeClassMask := uint32(m.GetNodeClassMask())
-		_nodeClassMaskErr := writeBuffer.WriteUint32("nodeClassMask", 32, (nodeClassMask))
+		_nodeClassMaskErr := writeBuffer.WriteUint32("nodeClassMask", 32, uint32((nodeClassMask)))
 		if _nodeClassMaskErr != nil {
 			return errors.Wrap(_nodeClassMaskErr, "Error serializing 'nodeClassMask' field")
 		}
 
 		// Simple Field (resultMask)
 		resultMask := uint32(m.GetResultMask())
-		_resultMaskErr := writeBuffer.WriteUint32("resultMask", 32, (resultMask))
+		_resultMaskErr := writeBuffer.WriteUint32("resultMask", 32, uint32((resultMask)))
 		if _resultMaskErr != nil {
 			return errors.Wrap(_resultMaskErr, "Error serializing 'resultMask' field")
 		}

@@ -260,6 +260,13 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
                 *data_item = plc4c_data_create_time_data(milliseconds);
 
+    } else         if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* TIME */
+
+                // Manual Field (milliseconds)
+                uint32_t milliseconds = (uint32_t) (plc4c_s7_read_write_parse_s5_time(readBuffer));
+
+                *data_item = plc4c_data_create_time_data(milliseconds);
+
     } else         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
                 // Simple Field (nanoseconds)
@@ -273,14 +280,10 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
-                // Simple Field (daysSinceSiemensEpoch)
-                uint16_t daysSinceSiemensEpoch = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &daysSinceSiemensEpoch);
-                if(_res != OK) {
-                    return _res;
-                }
+                // Manual Field (daysSinceEpoch)
+                uint16_t daysSinceEpoch = (uint16_t) (plc4c_s7_read_write_parse_tia_date(readBuffer));
 
-                *data_item = plc4c_data_create_date_data(daysSinceSiemensEpoch);
+                *data_item = plc4c_data_create_date_data(daysSinceEpoch);
 
     } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
@@ -526,6 +529,9 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                     if(_res != OK) {
                         return _res;
                     }
+        } else         if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* TIME */
+
+                    // Manual Field (milliseconds)
         } else         if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
                     // Simple field (nanoseconds)
@@ -535,11 +541,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
-                    // Simple field (daysSinceSiemensEpoch)
-                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.date_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
+                    // Manual Field (daysSinceEpoch)
         } else         if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
                     // Simple field (millisecondsSinceMidnight)
@@ -687,29 +689,27 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
     } else     if(strcmp(dataProtocolId, "IEC61131_STRING") == 0) { /* STRING */
 
         // Manual Field (value)
-        {
-            char* _value = data_item->data.string_value;
-            lengthInBits += (plc4c_spi_evaluation_helper_str_len(_value)) + (2);
-        }
+        lengthInBits += (((stringLength) * (8))) + (16);
     } else     if(strcmp(dataProtocolId, "IEC61131_WSTRING") == 0) { /* STRING */
 
         // Manual Field (value)
-        {
-            char* _value = data_item->data.string_value;
-            lengthInBits += (((plc4c_spi_evaluation_helper_str_len(_value)) * (2))) + (2);
-        }
+        lengthInBits += (((stringLength) * (16))) + (32);
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME") == 0) { /* TIME */
 
         // Simple field (milliseconds)
         lengthInBits += 32;
+    } else     if(strcmp(dataProtocolId, "S7_S5TIME") == 0) { /* TIME */
+
+        // Manual Field (milliseconds)
+        lengthInBits += 2;
     } else     if(strcmp(dataProtocolId, "IEC61131_LTIME") == 0) { /* LTIME */
 
         // Simple field (nanoseconds)
         lengthInBits += 64;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
-        // Simple field (daysSinceSiemensEpoch)
-        lengthInBits += 16;
+        // Manual Field (daysSinceEpoch)
+        lengthInBits += 2;
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
         // Simple field (millisecondsSinceMidnight)

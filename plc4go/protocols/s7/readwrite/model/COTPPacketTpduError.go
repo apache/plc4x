@@ -203,14 +203,14 @@ func (m *_COTPPacketTpduError) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := writeBuffer.WriteUint16("destinationReference", 16, (destinationReference))
+		_destinationReferenceErr := writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
 		if _destinationReferenceErr != nil {
 			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (rejectCause)
 		rejectCause := uint8(m.GetRejectCause())
-		_rejectCauseErr := writeBuffer.WriteUint8("rejectCause", 8, (rejectCause))
+		_rejectCauseErr := writeBuffer.WriteUint8("rejectCause", 8, uint8((rejectCause)))
 		if _rejectCauseErr != nil {
 			return errors.Wrap(_rejectCauseErr, "Error serializing 'rejectCause' field")
 		}

@@ -232,7 +232,7 @@ func (m *_VariantInt64) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		var arrayLength *int32 = nil
 		if m.GetArrayLength() != nil {
 			arrayLength = m.GetArrayLength()
-			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, *(arrayLength))
+			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
 			if _arrayLengthErr != nil {
 				return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
 			}
@@ -244,7 +244,7 @@ func (m *_VariantInt64) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 		for _curItem, _element := range m.GetValue() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteInt64("", 64, _element)
+			_elementErr := writeBuffer.WriteInt64("", 64, int64(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'value' field")
 			}

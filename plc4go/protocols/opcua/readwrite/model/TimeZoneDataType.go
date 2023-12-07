@@ -221,7 +221,7 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (offset)
 		offset := int16(m.GetOffset())
-		_offsetErr := writeBuffer.WriteInt16("offset", 16, (offset))
+		_offsetErr := writeBuffer.WriteInt16("offset", 16, int16((offset)))
 		if _offsetErr != nil {
 			return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 		}
@@ -236,7 +236,7 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

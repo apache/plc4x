@@ -328,7 +328,7 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(ctx context.Context, writeBuff
 
 	// Simple Field (dataLength)
 	dataLength := uint16(m.GetDataLength())
-	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
+	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}

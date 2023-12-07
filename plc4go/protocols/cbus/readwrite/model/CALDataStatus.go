@@ -263,7 +263,7 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (blockStart)
 		blockStart := uint8(m.GetBlockStart())
-		_blockStartErr := writeBuffer.WriteUint8("blockStart", 8, (blockStart))
+		_blockStartErr := writeBuffer.WriteUint8("blockStart", 8, uint8((blockStart)))
 		if _blockStartErr != nil {
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}

@@ -210,14 +210,14 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeW
 
 		// Simple Field (result)
 		result := uint8(m.GetResult())
-		_resultErr := writeBuffer.WriteUint8("result", 8, (result))
+		_resultErr := writeBuffer.WriteUint8("result", 8, uint8((result)))
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (reserved01)
 		reserved01 := uint8(m.GetReserved01())
-		_reserved01Err := writeBuffer.WriteUint8("reserved01", 8, (reserved01))
+		_reserved01Err := writeBuffer.WriteUint8("reserved01", 8, uint8((reserved01)))
 		if _reserved01Err != nil {
 			return errors.Wrap(_reserved01Err, "Error serializing 'reserved01' field")
 		}

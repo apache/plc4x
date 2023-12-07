@@ -177,14 +177,14 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.GetData()))) + uint8(uint8(1)))
-	_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, (dataLength))
+	_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.GetReferenceType())
-	_referenceTypeErr := writeBuffer.WriteUint8("referenceType", 8, (referenceType))
+	_referenceTypeErr := writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
 	if _referenceTypeErr != nil {
 		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}

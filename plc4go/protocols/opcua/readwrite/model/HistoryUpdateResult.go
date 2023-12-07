@@ -327,7 +327,7 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfOperationResults)
 		noOfOperationResults := int32(m.GetNoOfOperationResults())
-		_noOfOperationResultsErr := writeBuffer.WriteInt32("noOfOperationResults", 32, (noOfOperationResults))
+		_noOfOperationResultsErr := writeBuffer.WriteInt32("noOfOperationResults", 32, int32((noOfOperationResults)))
 		if _noOfOperationResultsErr != nil {
 			return errors.Wrap(_noOfOperationResultsErr, "Error serializing 'noOfOperationResults' field")
 		}
@@ -351,7 +351,7 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, (noOfDiagnosticInfos))
+		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

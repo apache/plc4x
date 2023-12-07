@@ -201,7 +201,7 @@ func (m *_NLMRouterAvailableToNetwork) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		for _curItem, _element := range m.GetDestinationNetworkAddresses() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, _element)
+			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddresses' field")
 			}

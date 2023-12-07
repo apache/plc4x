@@ -446,7 +446,7 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -485,7 +485,7 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfSecurityKeyServices)
 		noOfSecurityKeyServices := int32(m.GetNoOfSecurityKeyServices())
-		_noOfSecurityKeyServicesErr := writeBuffer.WriteInt32("noOfSecurityKeyServices", 32, (noOfSecurityKeyServices))
+		_noOfSecurityKeyServicesErr := writeBuffer.WriteInt32("noOfSecurityKeyServices", 32, int32((noOfSecurityKeyServices)))
 		if _noOfSecurityKeyServicesErr != nil {
 			return errors.Wrap(_noOfSecurityKeyServicesErr, "Error serializing 'noOfSecurityKeyServices' field")
 		}
@@ -509,14 +509,14 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (maxNetworkMessageSize)
 		maxNetworkMessageSize := uint32(m.GetMaxNetworkMessageSize())
-		_maxNetworkMessageSizeErr := writeBuffer.WriteUint32("maxNetworkMessageSize", 32, (maxNetworkMessageSize))
+		_maxNetworkMessageSizeErr := writeBuffer.WriteUint32("maxNetworkMessageSize", 32, uint32((maxNetworkMessageSize)))
 		if _maxNetworkMessageSizeErr != nil {
 			return errors.Wrap(_maxNetworkMessageSizeErr, "Error serializing 'maxNetworkMessageSize' field")
 		}
 
 		// Simple Field (noOfGroupProperties)
 		noOfGroupProperties := int32(m.GetNoOfGroupProperties())
-		_noOfGroupPropertiesErr := writeBuffer.WriteInt32("noOfGroupProperties", 32, (noOfGroupProperties))
+		_noOfGroupPropertiesErr := writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
 		if _noOfGroupPropertiesErr != nil {
 			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
 		}

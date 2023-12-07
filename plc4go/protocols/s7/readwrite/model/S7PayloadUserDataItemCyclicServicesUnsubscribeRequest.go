@@ -210,14 +210,14 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 
 		// Simple Field (function)
 		function := uint8(m.GetFunction())
-		_functionErr := writeBuffer.WriteUint8("function", 8, (function))
+		_functionErr := writeBuffer.WriteUint8("function", 8, uint8((function)))
 		if _functionErr != nil {
 			return errors.Wrap(_functionErr, "Error serializing 'function' field")
 		}
 
 		// Simple Field (jobId)
 		jobId := uint8(m.GetJobId())
-		_jobIdErr := writeBuffer.WriteUint8("jobId", 8, (jobId))
+		_jobIdErr := writeBuffer.WriteUint8("jobId", 8, uint8((jobId)))
 		if _jobIdErr != nil {
 			return errors.Wrap(_jobIdErr, "Error serializing 'jobId' field")
 		}

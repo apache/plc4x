@@ -266,7 +266,7 @@ func (m *_EUInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (unitId)
 		unitId := int32(m.GetUnitId())
-		_unitIdErr := writeBuffer.WriteInt32("unitId", 32, (unitId))
+		_unitIdErr := writeBuffer.WriteInt32("unitId", 32, int32((unitId)))
 		if _unitIdErr != nil {
 			return errors.Wrap(_unitIdErr, "Error serializing 'unitId' field")
 		}

@@ -274,35 +274,35 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersRequest) SerializeWithWriteB
 
 		// Simple Field (readStartingAddress)
 		readStartingAddress := uint16(m.GetReadStartingAddress())
-		_readStartingAddressErr := writeBuffer.WriteUint16("readStartingAddress", 16, (readStartingAddress))
+		_readStartingAddressErr := writeBuffer.WriteUint16("readStartingAddress", 16, uint16((readStartingAddress)))
 		if _readStartingAddressErr != nil {
 			return errors.Wrap(_readStartingAddressErr, "Error serializing 'readStartingAddress' field")
 		}
 
 		// Simple Field (readQuantity)
 		readQuantity := uint16(m.GetReadQuantity())
-		_readQuantityErr := writeBuffer.WriteUint16("readQuantity", 16, (readQuantity))
+		_readQuantityErr := writeBuffer.WriteUint16("readQuantity", 16, uint16((readQuantity)))
 		if _readQuantityErr != nil {
 			return errors.Wrap(_readQuantityErr, "Error serializing 'readQuantity' field")
 		}
 
 		// Simple Field (writeStartingAddress)
 		writeStartingAddress := uint16(m.GetWriteStartingAddress())
-		_writeStartingAddressErr := writeBuffer.WriteUint16("writeStartingAddress", 16, (writeStartingAddress))
+		_writeStartingAddressErr := writeBuffer.WriteUint16("writeStartingAddress", 16, uint16((writeStartingAddress)))
 		if _writeStartingAddressErr != nil {
 			return errors.Wrap(_writeStartingAddressErr, "Error serializing 'writeStartingAddress' field")
 		}
 
 		// Simple Field (writeQuantity)
 		writeQuantity := uint16(m.GetWriteQuantity())
-		_writeQuantityErr := writeBuffer.WriteUint16("writeQuantity", 16, (writeQuantity))
+		_writeQuantityErr := writeBuffer.WriteUint16("writeQuantity", 16, uint16((writeQuantity)))
 		if _writeQuantityErr != nil {
 			return errors.Wrap(_writeQuantityErr, "Error serializing 'writeQuantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.GetValue())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
+		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}

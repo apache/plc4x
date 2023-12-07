@@ -185,14 +185,14 @@ func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (notificationHandle)
 	notificationHandle := uint32(m.GetNotificationHandle())
-	_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, (notificationHandle))
+	_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
 	if _notificationHandleErr != nil {
 		return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
 	sampleSize := uint32(m.GetSampleSize())
-	_sampleSizeErr := writeBuffer.WriteUint32("sampleSize", 32, (sampleSize))
+	_sampleSizeErr := writeBuffer.WriteUint32("sampleSize", 32, uint32((sampleSize)))
 	if _sampleSizeErr != nil {
 		return errors.Wrap(_sampleSizeErr, "Error serializing 'sampleSize' field")
 	}

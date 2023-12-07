@@ -262,7 +262,7 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfReferencesToDelete)
 		noOfReferencesToDelete := int32(m.GetNoOfReferencesToDelete())
-		_noOfReferencesToDeleteErr := writeBuffer.WriteInt32("noOfReferencesToDelete", 32, (noOfReferencesToDelete))
+		_noOfReferencesToDeleteErr := writeBuffer.WriteInt32("noOfReferencesToDelete", 32, int32((noOfReferencesToDelete)))
 		if _noOfReferencesToDeleteErr != nil {
 			return errors.Wrap(_noOfReferencesToDeleteErr, "Error serializing 'noOfReferencesToDelete' field")
 		}

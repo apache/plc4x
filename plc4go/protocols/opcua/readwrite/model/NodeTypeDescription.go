@@ -312,7 +312,7 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -327,7 +327,7 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfDataToReturn)
 		noOfDataToReturn := int32(m.GetNoOfDataToReturn())
-		_noOfDataToReturnErr := writeBuffer.WriteInt32("noOfDataToReturn", 32, (noOfDataToReturn))
+		_noOfDataToReturnErr := writeBuffer.WriteInt32("noOfDataToReturn", 32, int32((noOfDataToReturn)))
 		if _noOfDataToReturnErr != nil {
 			return errors.Wrap(_noOfDataToReturnErr, "Error serializing 'noOfDataToReturn' field")
 		}

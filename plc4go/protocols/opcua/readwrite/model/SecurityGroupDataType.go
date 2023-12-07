@@ -499,7 +499,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfSecurityGroupFolder)
 		noOfSecurityGroupFolder := int32(m.GetNoOfSecurityGroupFolder())
-		_noOfSecurityGroupFolderErr := writeBuffer.WriteInt32("noOfSecurityGroupFolder", 32, (noOfSecurityGroupFolder))
+		_noOfSecurityGroupFolderErr := writeBuffer.WriteInt32("noOfSecurityGroupFolder", 32, int32((noOfSecurityGroupFolder)))
 		if _noOfSecurityGroupFolderErr != nil {
 			return errors.Wrap(_noOfSecurityGroupFolderErr, "Error serializing 'noOfSecurityGroupFolder' field")
 		}
@@ -542,14 +542,14 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (maxFutureKeyCount)
 		maxFutureKeyCount := uint32(m.GetMaxFutureKeyCount())
-		_maxFutureKeyCountErr := writeBuffer.WriteUint32("maxFutureKeyCount", 32, (maxFutureKeyCount))
+		_maxFutureKeyCountErr := writeBuffer.WriteUint32("maxFutureKeyCount", 32, uint32((maxFutureKeyCount)))
 		if _maxFutureKeyCountErr != nil {
 			return errors.Wrap(_maxFutureKeyCountErr, "Error serializing 'maxFutureKeyCount' field")
 		}
 
 		// Simple Field (maxPastKeyCount)
 		maxPastKeyCount := uint32(m.GetMaxPastKeyCount())
-		_maxPastKeyCountErr := writeBuffer.WriteUint32("maxPastKeyCount", 32, (maxPastKeyCount))
+		_maxPastKeyCountErr := writeBuffer.WriteUint32("maxPastKeyCount", 32, uint32((maxPastKeyCount)))
 		if _maxPastKeyCountErr != nil {
 			return errors.Wrap(_maxPastKeyCountErr, "Error serializing 'maxPastKeyCount' field")
 		}
@@ -568,7 +568,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRolePermissions)
 		noOfRolePermissions := int32(m.GetNoOfRolePermissions())
-		_noOfRolePermissionsErr := writeBuffer.WriteInt32("noOfRolePermissions", 32, (noOfRolePermissions))
+		_noOfRolePermissionsErr := writeBuffer.WriteInt32("noOfRolePermissions", 32, int32((noOfRolePermissions)))
 		if _noOfRolePermissionsErr != nil {
 			return errors.Wrap(_noOfRolePermissionsErr, "Error serializing 'noOfRolePermissions' field")
 		}
@@ -592,7 +592,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfGroupProperties)
 		noOfGroupProperties := int32(m.GetNoOfGroupProperties())
-		_noOfGroupPropertiesErr := writeBuffer.WriteInt32("noOfGroupProperties", 32, (noOfGroupProperties))
+		_noOfGroupPropertiesErr := writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
 		if _noOfGroupPropertiesErr != nil {
 			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
 		}

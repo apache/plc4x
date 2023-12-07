@@ -174,7 +174,7 @@ func (pm *_TypeId) SerializeParent(ctx context.Context, writeBuffer utils.WriteB
 
 	// Discriminator Field (id) (Used as input to a switch field)
 	id := uint16(child.GetId())
-	_idErr := writeBuffer.WriteUint16("id", 16, (id))
+	_idErr := writeBuffer.WriteUint16("id", 16, uint16((id)))
 
 	if _idErr != nil {
 		return errors.Wrap(_idErr, "Error serializing 'id' field")

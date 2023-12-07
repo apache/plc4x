@@ -214,14 +214,14 @@ func (m *_ConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Implicit Field (packetSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		packetSize := uint16(uint16(m.GetService().GetLengthInBytes(ctx)) + uint16(uint16(2)))
-		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, (packetSize))
+		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
 		if _packetSizeErr != nil {
 			return errors.Wrap(_packetSizeErr, "Error serializing 'packetSize' field")
 		}
 
 		// Simple Field (sequenceCount)
 		sequenceCount := uint16(m.GetSequenceCount())
-		_sequenceCountErr := writeBuffer.WriteUint16("sequenceCount", 16, (sequenceCount))
+		_sequenceCountErr := writeBuffer.WriteUint16("sequenceCount", 16, uint16((sequenceCount)))
 		if _sequenceCountErr != nil {
 			return errors.Wrap(_sequenceCountErr, "Error serializing 'sequenceCount' field")
 		}

@@ -304,7 +304,7 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(ctx co
 
 	// Simple Field (dataAddress)
 	dataAddress := uint16(m.GetDataAddress())
-	_dataAddressErr := writeBuffer.WriteUint16("dataAddress", 16, (dataAddress))
+	_dataAddressErr := writeBuffer.WriteUint16("dataAddress", 16, uint16((dataAddress)))
 	if _dataAddressErr != nil {
 		return errors.Wrap(_dataAddressErr, "Error serializing 'dataAddress' field")
 	}

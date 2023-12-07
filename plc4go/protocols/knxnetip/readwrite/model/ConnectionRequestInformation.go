@@ -178,14 +178,14 @@ func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, wr
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
+	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(child.GetConnectionType())
-	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, (connectionType))
+	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, uint8((connectionType)))
 
 	if _connectionTypeErr != nil {
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")

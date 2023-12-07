@@ -439,14 +439,14 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (specifiedLists)
 		specifiedLists := uint32(m.GetSpecifiedLists())
-		_specifiedListsErr := writeBuffer.WriteUint32("specifiedLists", 32, (specifiedLists))
+		_specifiedListsErr := writeBuffer.WriteUint32("specifiedLists", 32, uint32((specifiedLists)))
 		if _specifiedListsErr != nil {
 			return errors.Wrap(_specifiedListsErr, "Error serializing 'specifiedLists' field")
 		}
 
 		// Simple Field (noOfTrustedCertificates)
 		noOfTrustedCertificates := int32(m.GetNoOfTrustedCertificates())
-		_noOfTrustedCertificatesErr := writeBuffer.WriteInt32("noOfTrustedCertificates", 32, (noOfTrustedCertificates))
+		_noOfTrustedCertificatesErr := writeBuffer.WriteInt32("noOfTrustedCertificates", 32, int32((noOfTrustedCertificates)))
 		if _noOfTrustedCertificatesErr != nil {
 			return errors.Wrap(_noOfTrustedCertificatesErr, "Error serializing 'noOfTrustedCertificates' field")
 		}
@@ -470,7 +470,7 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfTrustedCrls)
 		noOfTrustedCrls := int32(m.GetNoOfTrustedCrls())
-		_noOfTrustedCrlsErr := writeBuffer.WriteInt32("noOfTrustedCrls", 32, (noOfTrustedCrls))
+		_noOfTrustedCrlsErr := writeBuffer.WriteInt32("noOfTrustedCrls", 32, int32((noOfTrustedCrls)))
 		if _noOfTrustedCrlsErr != nil {
 			return errors.Wrap(_noOfTrustedCrlsErr, "Error serializing 'noOfTrustedCrls' field")
 		}
@@ -494,7 +494,7 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfIssuerCertificates)
 		noOfIssuerCertificates := int32(m.GetNoOfIssuerCertificates())
-		_noOfIssuerCertificatesErr := writeBuffer.WriteInt32("noOfIssuerCertificates", 32, (noOfIssuerCertificates))
+		_noOfIssuerCertificatesErr := writeBuffer.WriteInt32("noOfIssuerCertificates", 32, int32((noOfIssuerCertificates)))
 		if _noOfIssuerCertificatesErr != nil {
 			return errors.Wrap(_noOfIssuerCertificatesErr, "Error serializing 'noOfIssuerCertificates' field")
 		}
@@ -518,7 +518,7 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfIssuerCrls)
 		noOfIssuerCrls := int32(m.GetNoOfIssuerCrls())
-		_noOfIssuerCrlsErr := writeBuffer.WriteInt32("noOfIssuerCrls", 32, (noOfIssuerCrls))
+		_noOfIssuerCrlsErr := writeBuffer.WriteInt32("noOfIssuerCrls", 32, int32((noOfIssuerCrls)))
 		if _noOfIssuerCrlsErr != nil {
 			return errors.Wrap(_noOfIssuerCrlsErr, "Error serializing 'noOfIssuerCrls' field")
 		}

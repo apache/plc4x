@@ -306,7 +306,7 @@ func (m *_CreateMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
@@ -325,7 +325,7 @@ func (m *_CreateMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfItemsToCreate)
 		noOfItemsToCreate := int32(m.GetNoOfItemsToCreate())
-		_noOfItemsToCreateErr := writeBuffer.WriteInt32("noOfItemsToCreate", 32, (noOfItemsToCreate))
+		_noOfItemsToCreateErr := writeBuffer.WriteInt32("noOfItemsToCreate", 32, int32((noOfItemsToCreate)))
 		if _noOfItemsToCreateErr != nil {
 			return errors.Wrap(_noOfItemsToCreateErr, "Error serializing 'noOfItemsToCreate' field")
 		}

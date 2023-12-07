@@ -257,7 +257,7 @@ func (m *_DeleteSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfSubscriptionIds)
 		noOfSubscriptionIds := int32(m.GetNoOfSubscriptionIds())
-		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, (noOfSubscriptionIds))
+		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
 		if _noOfSubscriptionIdsErr != nil {
 			return errors.Wrap(_noOfSubscriptionIdsErr, "Error serializing 'noOfSubscriptionIds' field")
 		}
@@ -268,7 +268,7 @@ func (m *_DeleteSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		for _curItem, _element := range m.GetSubscriptionIds() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'subscriptionIds' field")
 			}

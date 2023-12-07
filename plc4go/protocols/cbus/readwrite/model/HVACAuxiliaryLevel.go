@@ -293,7 +293,7 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Simple Field (mode)
 	mode := uint8(m.GetMode())
-	_modeErr := writeBuffer.WriteUint8("mode", 6, (mode))
+	_modeErr := writeBuffer.WriteUint8("mode", 6, uint8((mode)))
 	if _modeErr != nil {
 		return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 	}

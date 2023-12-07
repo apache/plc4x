@@ -264,27 +264,27 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (transactionIdentifier)
 		transactionIdentifier := uint16(m.GetTransactionIdentifier())
-		_transactionIdentifierErr := writeBuffer.WriteUint16("transactionIdentifier", 16, (transactionIdentifier))
+		_transactionIdentifierErr := writeBuffer.WriteUint16("transactionIdentifier", 16, uint16((transactionIdentifier)))
 		if _transactionIdentifierErr != nil {
 			return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
 		}
 
 		// Const Field (protocolIdentifier)
-		_protocolIdentifierErr := writeBuffer.WriteUint16("protocolIdentifier", 16, 0x0000)
+		_protocolIdentifierErr := writeBuffer.WriteUint16("protocolIdentifier", 16, uint16(0x0000))
 		if _protocolIdentifierErr != nil {
 			return errors.Wrap(_protocolIdentifierErr, "Error serializing 'protocolIdentifier' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint16(uint16(m.GetPdu().GetLengthInBytes(ctx)) + uint16(uint16(1)))
-		_lengthErr := writeBuffer.WriteUint16("length", 16, (length))
+		_lengthErr := writeBuffer.WriteUint16("length", 16, uint16((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (unitIdentifier)
 		unitIdentifier := uint8(m.GetUnitIdentifier())
-		_unitIdentifierErr := writeBuffer.WriteUint8("unitIdentifier", 8, (unitIdentifier))
+		_unitIdentifierErr := writeBuffer.WriteUint8("unitIdentifier", 8, uint8((unitIdentifier)))
 		if _unitIdentifierErr != nil {
 			return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
 		}

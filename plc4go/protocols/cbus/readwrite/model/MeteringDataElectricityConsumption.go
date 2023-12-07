@@ -178,7 +178,7 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (kWhr)
 		kWhr := uint32(m.GetKWhr())
-		_kWhrErr := writeBuffer.WriteUint32("kWhr", 32, (kWhr))
+		_kWhrErr := writeBuffer.WriteUint32("kWhr", 32, uint32((kWhr)))
 		if _kWhrErr != nil {
 			return errors.Wrap(_kWhrErr, "Error serializing 'kWhr' field")
 		}

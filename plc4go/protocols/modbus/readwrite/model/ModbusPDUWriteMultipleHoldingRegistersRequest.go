@@ -236,21 +236,21 @@ func (m *_ModbusPDUWriteMultipleHoldingRegistersRequest) SerializeWithWriteBuffe
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.GetStartingAddress())
-		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, (startingAddress))
+		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.GetQuantity())
-		_quantityErr := writeBuffer.WriteUint16("quantity", 16, (quantity))
+		_quantityErr := writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.GetValue())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
+		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}

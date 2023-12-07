@@ -194,14 +194,14 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, (structureLength))
+	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.GetDescriptionType())
-	_descriptionTypeErr := writeBuffer.WriteUint8("descriptionType", 8, (descriptionType))
+	_descriptionTypeErr := writeBuffer.WriteUint8("descriptionType", 8, uint8((descriptionType)))
 	if _descriptionTypeErr != nil {
 		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
 	}

@@ -180,7 +180,7 @@ func (m *_ErrorReportingSystemCategoryTypeReserved) SerializeWithWriteBuffer(ctx
 
 		// Simple Field (reservedValue)
 		reservedValue := uint8(m.GetReservedValue())
-		_reservedValueErr := writeBuffer.WriteUint8("reservedValue", 4, (reservedValue))
+		_reservedValueErr := writeBuffer.WriteUint8("reservedValue", 4, uint8((reservedValue)))
 		if _reservedValueErr != nil {
 			return errors.Wrap(_reservedValueErr, "Error serializing 'reservedValue' field")
 		}

@@ -217,7 +217,7 @@ func (m *_CALDataGetStatus) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (count)
 		count := uint8(m.GetCount())
-		_countErr := writeBuffer.WriteUint8("count", 8, (count))
+		_countErr := writeBuffer.WriteUint8("count", 8, uint8((count)))
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}

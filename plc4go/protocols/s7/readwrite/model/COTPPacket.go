@@ -271,14 +271,14 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8((uint8((utils.InlineIf((bool((m.GetPayload()) != (nil))), func() any { return uint8((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint8(uint8(0)) }).(uint8))) + uint8(uint8(1)))))
-	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, (headerLength))
+	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, uint8((headerLength)))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Discriminator Field (tpduCode) (Used as input to a switch field)
 	tpduCode := uint8(child.GetTpduCode())
-	_tpduCodeErr := writeBuffer.WriteUint8("tpduCode", 8, (tpduCode))
+	_tpduCodeErr := writeBuffer.WriteUint8("tpduCode", 8, uint8((tpduCode)))
 
 	if _tpduCodeErr != nil {
 		return errors.Wrap(_tpduCodeErr, "Error serializing 'tpduCode' field")

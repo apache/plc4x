@@ -244,14 +244,14 @@ func (m *_EventFieldList) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (clientHandle)
 		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, (clientHandle))
+		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
 		if _clientHandleErr != nil {
 			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
 		}
 
 		// Simple Field (noOfEventFields)
 		noOfEventFields := int32(m.GetNoOfEventFields())
-		_noOfEventFieldsErr := writeBuffer.WriteInt32("noOfEventFields", 32, (noOfEventFields))
+		_noOfEventFieldsErr := writeBuffer.WriteInt32("noOfEventFields", 32, int32((noOfEventFields)))
 		if _noOfEventFieldsErr != nil {
 			return errors.Wrap(_noOfEventFieldsErr, "Error serializing 'noOfEventFields' field")
 		}

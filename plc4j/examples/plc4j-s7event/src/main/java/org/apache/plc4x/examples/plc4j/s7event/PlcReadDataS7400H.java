@@ -19,6 +19,8 @@
 package org.apache.plc4x.examples.plc4j.s7event;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
@@ -26,6 +28,8 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7HPlcConnection;
 import org.slf4j.Logger;
@@ -78,7 +82,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         OpenConnection("s7://10.10.1.80/10.10.1.81?remote-rack=0&"
                 + "remote-slot=3&remote-rack2=0&remote-slot=4&"
                 + "controller-type=S7_400&read-timeout=8&"                
-                + "ping=true&ping-time=2&retry-time=3"); //(01)
+                + "ping=false&ping-time=2&retry-time=3"); //(01)
            
         logger.info("*****************************************************"); 
         logger.info("* 1. Once the connection is executed, it must read"); 
@@ -90,7 +94,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         logger.info("*    Press [ENTER]");        
         logger.info("*****************************************************"); 
         System.in.read();
-        
+        Write();
         Read(); //(01.1)
                  
         logger.info("*****************************************************"); 
@@ -146,7 +150,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         logger.info("*    Press [ENTER]");        
         logger.info("*****************************************************");
         System.in.read();  
-        
+
         Read(); //(07.1)    
         
         
@@ -221,7 +225,7 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         if (!isConnected.get()) return;
         try {
             final PlcReadRequest.Builder readrequest = connection.readRequestBuilder();  //(01)
-            readrequest.addTagAddress("TEST", "%DB1000:4:INT"); //(02) 
+            readrequest.addTagAddress("TEST", "%DB406:2:DATE"); //(02) 
             
             final PlcReadRequest rr = readrequest.build(); //(03)
             final PlcReadResponse response; //(04)            
@@ -237,6 +241,35 @@ public class PlcReadDataS7400H implements ConnectionStateListener {
         };          
     }    
     
+    
+    /***************************************************************************
+    * The reading process is standard. In case of an exception, 
+    * the user must take the appropriate actions, but "do not close 
+    * the connection":
+    ***************************************************************************/    
+    private void Write() {
+        if (!isConnected.get()) return;
+        try {
+            final PlcWriteRequest.Builder writeRequest = connection.writeRequestBuilder();  //(01)
+            //writeRequest.addTagAddress("TAG01", "%DB406:4:DWORD",(long) 0x0001_0001); //(02) 
+            
+            writeRequest.addTagAddress("TAG01", "%DB406:2:DATE", LocalDate.now()); //(02) 
+          
+            
+            final PlcWriteRequest wr = writeRequest.build(); //(03)
+            final PlcWriteResponse response; //(04)            
+            response = wr.execute().get(); //(05)
+            
+            if (response.getResponseCode("TAG01") == PlcResponseCode.OK) { //(06)
+                logger.info("TAG01 Write sucefull...");
+            } else {
+                logger.info("TAG01 Problem reading...");                
+            }            
+            
+        } catch (Exception ex) { //(07)
+            logger.info("Write: " + ex.getMessage());
+        };          
+    }        
     /***************************************************************************
     * This method is called when the driver makes an internal TCP connection.
     * The first connection of the driver does not generate this event.

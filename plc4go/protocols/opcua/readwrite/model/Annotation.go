@@ -253,7 +253,7 @@ func (m *_Annotation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 		// Simple Field (annotationTime)
 		annotationTime := int64(m.GetAnnotationTime())
-		_annotationTimeErr := writeBuffer.WriteInt64("annotationTime", 64, (annotationTime))
+		_annotationTimeErr := writeBuffer.WriteInt64("annotationTime", 64, int64((annotationTime)))
 		if _annotationTimeErr != nil {
 			return errors.Wrap(_annotationTimeErr, "Error serializing 'annotationTime' field")
 		}

@@ -266,7 +266,7 @@ func (m *_ReadValueId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (attributeId)
 		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, (attributeId))
+		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
 		if _attributeIdErr != nil {
 			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
 		}

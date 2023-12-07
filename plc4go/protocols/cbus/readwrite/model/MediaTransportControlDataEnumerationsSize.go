@@ -316,14 +316,14 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 
 		// Simple Field (start)
 		start := uint8(m.GetStart())
-		_startErr := writeBuffer.WriteUint8("start", 8, (start))
+		_startErr := writeBuffer.WriteUint8("start", 8, uint8((start)))
 		if _startErr != nil {
 			return errors.Wrap(_startErr, "Error serializing 'start' field")
 		}
 
 		// Simple Field (size)
 		size := uint8(m.GetSize())
-		_sizeErr := writeBuffer.WriteUint8("size", 8, (size))
+		_sizeErr := writeBuffer.WriteUint8("size", 8, uint8((size)))
 		if _sizeErr != nil {
 			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 		}

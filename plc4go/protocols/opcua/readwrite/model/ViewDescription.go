@@ -235,14 +235,14 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (timestamp)
 		timestamp := int64(m.GetTimestamp())
-		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, (timestamp))
+		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
 		if _timestampErr != nil {
 			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 		}
 
 		// Simple Field (viewVersion)
 		viewVersion := uint32(m.GetViewVersion())
-		_viewVersionErr := writeBuffer.WriteUint32("viewVersion", 32, (viewVersion))
+		_viewVersionErr := writeBuffer.WriteUint32("viewVersion", 32, uint32((viewVersion)))
 		if _viewVersionErr != nil {
 			return errors.Wrap(_viewVersionErr, "Error serializing 'viewVersion' field")
 		}

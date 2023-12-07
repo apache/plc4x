@@ -287,7 +287,7 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfQueryDataSets)
 		noOfQueryDataSets := int32(m.GetNoOfQueryDataSets())
-		_noOfQueryDataSetsErr := writeBuffer.WriteInt32("noOfQueryDataSets", 32, (noOfQueryDataSets))
+		_noOfQueryDataSetsErr := writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
 		if _noOfQueryDataSetsErr != nil {
 			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
 		}

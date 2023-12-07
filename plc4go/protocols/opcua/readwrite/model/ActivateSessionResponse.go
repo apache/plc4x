@@ -364,7 +364,7 @@ func (m *_ActivateSessionResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfResults)
 		noOfResults := int32(m.GetNoOfResults())
-		_noOfResultsErr := writeBuffer.WriteInt32("noOfResults", 32, (noOfResults))
+		_noOfResultsErr := writeBuffer.WriteInt32("noOfResults", 32, int32((noOfResults)))
 		if _noOfResultsErr != nil {
 			return errors.Wrap(_noOfResultsErr, "Error serializing 'noOfResults' field")
 		}
@@ -388,7 +388,7 @@ func (m *_ActivateSessionResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, (noOfDiagnosticInfos))
+		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

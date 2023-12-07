@@ -228,7 +228,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) SerializeWithWriteBuff
 
 		// Simple Field (szlIndex)
 		szlIndex := uint16(m.GetSzlIndex())
-		_szlIndexErr := writeBuffer.WriteUint16("szlIndex", 16, (szlIndex))
+		_szlIndexErr := writeBuffer.WriteUint16("szlIndex", 16, uint16((szlIndex)))
 		if _szlIndexErr != nil {
 			return errors.Wrap(_szlIndexErr, "Error serializing 'szlIndex' field")
 		}

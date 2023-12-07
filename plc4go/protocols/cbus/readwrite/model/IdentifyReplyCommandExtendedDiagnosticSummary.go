@@ -658,14 +658,14 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 
 		// Simple Field (crc)
 		crc := uint16(m.GetCrc())
-		_crcErr := writeBuffer.WriteUint16("crc", 16, (crc))
+		_crcErr := writeBuffer.WriteUint16("crc", 16, uint16((crc)))
 		if _crcErr != nil {
 			return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 		}
 
 		// Simple Field (serialNumber)
 		serialNumber := uint32(m.GetSerialNumber())
-		_serialNumberErr := writeBuffer.WriteUint32("serialNumber", 32, (serialNumber))
+		_serialNumberErr := writeBuffer.WriteUint32("serialNumber", 32, uint32((serialNumber)))
 		if _serialNumberErr != nil {
 			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
 		}
@@ -714,7 +714,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -730,7 +730,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -746,7 +746,7 @@ func (m *_IdentifyReplyCommandExtendedDiagnosticSummary) SerializeWithWriteBuffe
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField2
 			}
-			_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -204,7 +204,7 @@ func (m *_MonitoredItemNotification) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (clientHandle)
 		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, (clientHandle))
+		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
 		if _clientHandleErr != nil {
 			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
 		}

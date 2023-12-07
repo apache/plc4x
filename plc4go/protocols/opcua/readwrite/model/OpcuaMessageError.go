@@ -250,7 +250,7 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, (messageSize))
+		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
 		if _messageSizeErr != nil {
 			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
 		}

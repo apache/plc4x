@@ -206,14 +206,14 @@ func (m *_AlarmMessageAckResponseType) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (functionId)
 	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, (functionId))
+	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (numberOfObjects)
 	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
+	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 	if _numberOfObjectsErr != nil {
 		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 	}
@@ -224,7 +224,7 @@ func (m *_AlarmMessageAckResponseType) SerializeWithWriteBuffer(ctx context.Cont
 	}
 	for _curItem, _element := range m.GetMessageObjects() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
