@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
@@ -76,6 +77,11 @@ public class OpcuaTag implements PlcSubscriptionTag {
         }
         OpcuaDataType dataType = OpcuaDataType.valueOf(dataTypeString);
 
+        return new OpcuaTag(namespace, identifier, identifierType, dataType);
+    }
+
+    @Override
+    public PlcTag getTag() {
         return new OpcuaTag(namespace, identifier, identifierType, dataType);
     }
 
