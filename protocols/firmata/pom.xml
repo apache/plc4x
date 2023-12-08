@@ -32,6 +32,10 @@
   <name>Protocols: Firmata</name>
   <description>Protocol specification for the Firmata protocol, mostly used for Arduino communication.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

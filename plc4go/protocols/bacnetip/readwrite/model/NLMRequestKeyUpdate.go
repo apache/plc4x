@@ -302,14 +302,14 @@ func (m *_NLMRequestKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (set1ActivationTime)
 		set1ActivationTime := uint32(m.GetSet1ActivationTime())
-		_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, (set1ActivationTime))
+		_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, uint32((set1ActivationTime)))
 		if _set1ActivationTimeErr != nil {
 			return errors.Wrap(_set1ActivationTimeErr, "Error serializing 'set1ActivationTime' field")
 		}
 
 		// Simple Field (set1ExpirationTime)
 		set1ExpirationTime := uint32(m.GetSet1ExpirationTime())
-		_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, (set1ExpirationTime))
+		_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32((set1ExpirationTime)))
 		if _set1ExpirationTimeErr != nil {
 			return errors.Wrap(_set1ExpirationTimeErr, "Error serializing 'set1ExpirationTime' field")
 		}
@@ -323,14 +323,14 @@ func (m *_NLMRequestKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (set2ActivationTime)
 		set2ActivationTime := uint32(m.GetSet2ActivationTime())
-		_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, (set2ActivationTime))
+		_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, uint32((set2ActivationTime)))
 		if _set2ActivationTimeErr != nil {
 			return errors.Wrap(_set2ActivationTimeErr, "Error serializing 'set2ActivationTime' field")
 		}
 
 		// Simple Field (set2ExpirationTime)
 		set2ExpirationTime := uint32(m.GetSet2ExpirationTime())
-		_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, (set2ExpirationTime))
+		_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32((set2ExpirationTime)))
 		if _set2ExpirationTimeErr != nil {
 			return errors.Wrap(_set2ExpirationTimeErr, "Error serializing 'set2ExpirationTime' field")
 		}

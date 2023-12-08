@@ -318,14 +318,14 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (requestedMaxReferencesPerNode)
 		requestedMaxReferencesPerNode := uint32(m.GetRequestedMaxReferencesPerNode())
-		_requestedMaxReferencesPerNodeErr := writeBuffer.WriteUint32("requestedMaxReferencesPerNode", 32, (requestedMaxReferencesPerNode))
+		_requestedMaxReferencesPerNodeErr := writeBuffer.WriteUint32("requestedMaxReferencesPerNode", 32, uint32((requestedMaxReferencesPerNode)))
 		if _requestedMaxReferencesPerNodeErr != nil {
 			return errors.Wrap(_requestedMaxReferencesPerNodeErr, "Error serializing 'requestedMaxReferencesPerNode' field")
 		}
 
 		// Simple Field (noOfNodesToBrowse)
 		noOfNodesToBrowse := int32(m.GetNoOfNodesToBrowse())
-		_noOfNodesToBrowseErr := writeBuffer.WriteInt32("noOfNodesToBrowse", 32, (noOfNodesToBrowse))
+		_noOfNodesToBrowseErr := writeBuffer.WriteInt32("noOfNodesToBrowse", 32, int32((noOfNodesToBrowse)))
 		if _noOfNodesToBrowseErr != nil {
 			return errors.Wrap(_noOfNodesToBrowseErr, "Error serializing 'noOfNodesToBrowse' field")
 		}

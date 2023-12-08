@@ -6,7 +6,7 @@
 #  "License"); you may not use this file except in compliance
 #  with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing,
 #  software distributed under the License is distributed on an
@@ -120,6 +120,17 @@ class ReadBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def read_complex_array(self, logical_name: str = "", **kwargs) -> List[PlcMessage]:
+        raise NotImplementedError
+
+    def read_array_field(
+        self,
+        logical_name: str = "",
+        read_function=None,
+        count: int = None,
+        length: int = None,
+        terminated=None,
+        **kwargs
+    ) -> List[PlcMessage]:
         raise NotImplementedError
 
 

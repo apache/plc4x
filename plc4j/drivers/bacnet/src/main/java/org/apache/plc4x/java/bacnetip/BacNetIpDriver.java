@@ -20,6 +20,9 @@ package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
+import org.apache.plc4x.java.bacnetip.configuration.BacNetPcapReplayTransportConfiguration;
+import org.apache.plc4x.java.bacnetip.configuration.BacNetRawSocketTransportConfiguration;
+import org.apache.plc4x.java.bacnetip.configuration.BacNetUdpTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.tag.BacNetIpTagHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
@@ -27,12 +30,14 @@ import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
+public class BacNetIpDriver extends GeneratedDriverBase<BVLC> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -110,4 +115,16 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
         }
     }
 
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return BacNetUdpTransportConfiguration.class;
+            case "raw":
+                return BacNetRawSocketTransportConfiguration.class;
+            case "pcap":
+                return BacNetPcapReplayTransportConfiguration.class;
+        }
+        return null;
+    }
 }

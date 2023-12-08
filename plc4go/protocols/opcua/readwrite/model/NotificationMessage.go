@@ -263,21 +263,21 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, (sequenceNumber))
+		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Simple Field (publishTime)
 		publishTime := int64(m.GetPublishTime())
-		_publishTimeErr := writeBuffer.WriteInt64("publishTime", 64, (publishTime))
+		_publishTimeErr := writeBuffer.WriteInt64("publishTime", 64, int64((publishTime)))
 		if _publishTimeErr != nil {
 			return errors.Wrap(_publishTimeErr, "Error serializing 'publishTime' field")
 		}
 
 		// Simple Field (noOfNotificationData)
 		noOfNotificationData := int32(m.GetNoOfNotificationData())
-		_noOfNotificationDataErr := writeBuffer.WriteInt32("noOfNotificationData", 32, (noOfNotificationData))
+		_noOfNotificationDataErr := writeBuffer.WriteInt32("noOfNotificationData", 32, int32((noOfNotificationData)))
 		if _noOfNotificationDataErr != nil {
 			return errors.Wrap(_noOfNotificationDataErr, "Error serializing 'noOfNotificationData' field")
 		}

@@ -86,9 +86,18 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         return new PlcValueHandler();
     }
 
+    protected boolean fireDiscoverEvent() {
+        return true;
+    }
+
     protected boolean awaitDisconnectComplete() {
         return true;
     }
+
+    protected boolean awaitDiscoverComplete() {
+        return true;
+    }
+
 
     @Override
     protected ProtocolStackConfigurer<OpcuaAPU> getStackConfigurer() {

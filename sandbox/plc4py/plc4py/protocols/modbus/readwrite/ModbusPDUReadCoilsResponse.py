@@ -26,30 +26,33 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
-
-
+    
 @dataclass
-class ModbusPDUReadCoilsResponse(PlcMessage, ModbusPDU):
+class ModbusPDUReadCoilsResponse(PlcMessage,ModbusPDU):
     value: List[int]
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x01
     response: bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadCoilsResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = int(len(self.value))
+        byte_count: int = (int(len(self.value)))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Array Field (value)
         write_buffer.write_byte_array(self.value, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUReadCoilsResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -65,7 +68,9 @@ class ModbusPDUReadCoilsResponse(PlcMessage, ModbusPDU):
         if self.value != None:
             length_in_bits += 8 * len(self.value)
 
+
         return length_in_bits
+
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
@@ -73,11 +78,12 @@ class ModbusPDUReadCoilsResponse(PlcMessage, ModbusPDU):
 
         byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
 
-        self.value = read_buffer.read_byte_array("value", int(byte_count))
+        value: List[int] = read_buffer.read_byte_array("value", int(byte_count))
 
         read_buffer.pop_context("ModbusPDUReadCoilsResponse")
         # Create the instance
-        return ModbusPDUReadCoilsResponseBuilder(value)
+        return ModbusPDUReadCoilsResponseBuilder(value )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -109,10 +115,9 @@ class ModbusPDUReadCoilsResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUReadCoilsResponse:
-        modbus_pdu_read_coils_response: ModbusPDUReadCoilsResponse = (
-            ModbusPDUReadCoilsResponse(self.value)
-        )
+    def build(self,) -> ModbusPDUReadCoilsResponse:
+        modbus_pdu_read_coils_response: ModbusPDUReadCoilsResponse = ModbusPDUReadCoilsResponse(self.value )
         return modbus_pdu_read_coils_response
+
+
+

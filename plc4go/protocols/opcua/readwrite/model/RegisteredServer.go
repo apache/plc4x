@@ -481,7 +481,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfServerNames)
 		noOfServerNames := int32(m.GetNoOfServerNames())
-		_noOfServerNamesErr := writeBuffer.WriteInt32("noOfServerNames", 32, (noOfServerNames))
+		_noOfServerNamesErr := writeBuffer.WriteInt32("noOfServerNames", 32, int32((noOfServerNames)))
 		if _noOfServerNamesErr != nil {
 			return errors.Wrap(_noOfServerNamesErr, "Error serializing 'noOfServerNames' field")
 		}
@@ -529,7 +529,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfDiscoveryUrls)
 		noOfDiscoveryUrls := int32(m.GetNoOfDiscoveryUrls())
-		_noOfDiscoveryUrlsErr := writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, (noOfDiscoveryUrls))
+		_noOfDiscoveryUrlsErr := writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
 		if _noOfDiscoveryUrlsErr != nil {
 			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
 		}
@@ -573,7 +573,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -442,7 +442,7 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfQueryDataSets)
 		noOfQueryDataSets := int32(m.GetNoOfQueryDataSets())
-		_noOfQueryDataSetsErr := writeBuffer.WriteInt32("noOfQueryDataSets", 32, (noOfQueryDataSets))
+		_noOfQueryDataSetsErr := writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
 		if _noOfQueryDataSetsErr != nil {
 			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
 		}
@@ -478,7 +478,7 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfParsingResults)
 		noOfParsingResults := int32(m.GetNoOfParsingResults())
-		_noOfParsingResultsErr := writeBuffer.WriteInt32("noOfParsingResults", 32, (noOfParsingResults))
+		_noOfParsingResultsErr := writeBuffer.WriteInt32("noOfParsingResults", 32, int32((noOfParsingResults)))
 		if _noOfParsingResultsErr != nil {
 			return errors.Wrap(_noOfParsingResultsErr, "Error serializing 'noOfParsingResults' field")
 		}
@@ -502,7 +502,7 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, (noOfDiagnosticInfos))
+		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

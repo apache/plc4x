@@ -20,9 +20,7 @@ package org.apache.plc4x.java.utils.rawsockets.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelConfig;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
 import io.netty.channel.oio.OioByteStreamChannel;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.net.util.SubnetUtils;
@@ -35,7 +33,6 @@ import org.pcap4j.core.*;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IllegalRawDataException;
 import org.pcap4j.packet.Packet;
-import org.pcap4j.packet.namednumber.ArpOperation;
 import org.pcap4j.util.MacAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +70,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         if((receiveHandle != null) && (receiveHandle.isOpen())){
             MacAddress tempRemoteMacAddress = remoteMacAddress != null ? remoteMacAddress : MacAddress.getByAddress(new byte[]{0,0,0,0,0,0});
             String filter = config.getMacBasedFilterString(localMacAddress, tempRemoteMacAddress);
-            if(filter.length() > 0) {
+            if(!filter.isEmpty()) {
                 try {
                     receiveHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
                 } catch (NotOpenException | PcapNativeException e) {
@@ -186,7 +183,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         // TODO: Make configurable, if we should accept from any source or not.
         MacAddress tempRemoteMacAddress = remoteMacAddress != null ? remoteMacAddress : MacAddress.getByAddress(new byte[]{0,0,0,0,0,0});
         String filter = config.getMacBasedFilterString(localMacAddress, tempRemoteMacAddress);
-        if(filter.length() > 0) {
+        if(!filter.isEmpty()) {
             receiveHandle.setFilter(filter, BpfProgram.BpfCompileMode.OPTIMIZE);
         }
 
@@ -204,8 +201,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
                 logger.error("Pcap4j loop thread died!", e);
                 pipeline().fireExceptionCaught(e);
             } catch (InterruptedException e) {
-                logger.warn("PCAP Loop Thread was interrupted (hopefully intentionally)", e);
-                Thread.currentThread().interrupt();
+                // This usually happens when the raw socket transport is closed.
             }
         });
         loopThread.start();
@@ -240,10 +236,16 @@ public class RawSocketChannel extends OioByteStreamChannel {
     }
 
     @Override
-    protected void doDisconnect() {
+    protected void doDisconnect() throws NotOpenException {
         this.loopThread.interrupt();
         if (this.receiveHandle != null) {
-            this.receiveHandle.close();
+            // Interrupt the receiving loop.
+            receiveHandle.breakLoop();
+            // Close the channel.
+            receiveHandle.close();
+            // Shutdown the loop-thread.
+            // (Doing it the graceful way, didn't work)
+            eventLoop().shutdownNow();
         }
     }
 
@@ -305,7 +307,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
      */
     private static class DiscardingOutputStream extends OutputStream {
         @Override
-        public void write(int b) throws IOException {
+        public void write(int b) {
             // discard
             logger.debug("Discarding {}", b);
         }
@@ -325,7 +327,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         }
 
         @Override
-        public void write(int b) throws IOException {
+        public void write(int b) {
             // This should actually not be called, as in contrast to TCP, Raw sockets are not a stream
             // messages which should be sent should be processed in total by the write(byte[]) method.
             throw new RuntimeException("write(byte) should never be called in a RawSocketChannel");
@@ -394,5 +396,16 @@ public class RawSocketChannel extends OioByteStreamChannel {
                 promise.setFailure(e);
             }
         }
+
+        @Override
+        public void close(ChannelPromise promise) {
+            try {
+                doDisconnect();
+                promise.setSuccess();
+            } catch (Exception e) {
+                promise.setFailure(e);
+            }
+        }
     }
+
 }

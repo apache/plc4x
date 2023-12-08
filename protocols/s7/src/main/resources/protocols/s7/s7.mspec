@@ -17,9 +17,6 @@
  * under the License.
  */
 
-// https://blog.viettelcybersecurity.com/security-wall-of-s7commplus-part-1/
-// https://blog.viettelcybersecurity.com/security-wall-of-s7commplus-3/
-
 ////////////////////////////////////////////////////////////////
 // IsoOnTcp/TPKT
 ////////////////////////////////////////////////////////////////
@@ -288,10 +285,10 @@
     ]
 ]
 
-//TODO: Se debe modificar el calculo para incluir el tipo
-//      . si es tipo 4 usa el desplazamiento
-//      . si es tipo 3, la longitud es la indicada
-//      . verificar calculo con los otros tipos
+//TODO: The calculation must be modified to include the type
+//      . if it is type 0x07(REAL) or 0x09 (OCTET_STRING), the length is indicated
+//      . another type uses scrolling
+//      . verify calculation with the other types
 [type AssociatedValueType
     [simple DataTransportErrorCode returnCode]
     [simple DataTransportSize      transportSize]
@@ -442,9 +439,10 @@
     [simple   uint 8 syntaxId]
     [typeSwitch syntaxId
         ['0x10' CycServiceItemAnyType
-            [simple  TransportSize   transportSize]
+            //[simple  TransportSize   transportSize]
+            [enum     TransportSize transportSize code]
             [simple uint 16 length]
-            [simple uint 16 dbNumber]
+            [simple uint 16 dbNumber]            
             [simple MemoryArea memoryArea]
             [simple uint 24 address]
         ]
@@ -493,7 +491,7 @@
 [discriminatedType S7PayloadUserDataItem(uint 4 cpuFunctionGroup, uint 4 cpuFunctionType, uint 8 cpuSubfunction)
     [simple     DataTransportErrorCode returnCode]
     [simple     DataTransportSize      transportSize]
-    [simple     uint 16                dataLength]
+    [simple         uint 16                dataLength]
     //[implicit   uint 16                dataLength    'lengthInBytes - 4']
 
     [typeSwitch cpuFunctionGroup, cpuFunctionType, cpuSubfunction, dataLength
@@ -579,7 +577,6 @@
             [simple   uint 16                szlIndex]
         ]
 
-        // TODO: carcia: explain why you out commented this? the byte array variant below looks hacky
         //['0x04', '0x08', '0x01' S7PayloadUserDataItemCpuFunctionReadSzlResponse
         //    [simple   SzlId           szlId]
         //    [simple   uint 16         szlIndex]
@@ -647,6 +644,34 @@
 
         ['0x04', '0x08', '0x13' S7PayloadUserDataItemCpuFunctionAlarmQueryResponse(uint 16 dataLength)
             [array byte items count 'dataLength']
+        ]
+
+        //Time Functions
+        ['0x07', '0x04', '0x01' S7PayloadUserDataItemClkRequest
+        ]
+
+        ['0x07', '0x08', '0x01' S7PayloadUserDataItemClkResponse(uint 16 dataLength)
+            [simple uint 8       Reserved]
+            [simple uint 8       Year1]
+            [simple DateAndTime TimeStamp]
+        ]
+
+        ['0x07', '0x04', '0x03' S7PayloadUserDataItemClkFRequest
+        ]
+
+        ['0x07', '0x08', '0x03' S7PayloadUserDataItemClkFResponse(uint 16 dataLength)
+            [simple uint 8       Reserved]
+            [simple uint 8       Year1]
+            [simple DateAndTime TimeStamp]
+        ]
+
+        ['0x07', '0x04', '0x04' S7PayloadUserDataItemClkSetRequest
+            [reserved uint 8       '0x00']
+            [reserved uint 8       '0x00']
+            [simple DateAndTime TimeStamp]
+        ]
+
+        ['0x07', '0x08', '0x04' S7PayloadUserDataItemClkSetResponse
         ]
 
     ]
@@ -734,9 +759,11 @@
             [simple string 16 value encoding='"UTF-16"']
         ]
         ['"IEC61131_STRING"' STRING
+            // TODO: Fix this length
             [manual vstring value  'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 8) + 16' encoding='"UTF-8"']
         ]
         ['"IEC61131_WSTRING"' STRING
+            // TODO: Fix this length
             [manual vstring value 'STATIC_CALL("parseS7String", readBuffer, stringLength, _type.encoding)' 'STATIC_CALL("serializeS7String", writeBuffer, _value, stringLength, _type.encoding)' '(stringLength * 16) + 32' encoding='"UTF-16"']
         ]
 
@@ -747,20 +774,20 @@
         ['"IEC61131_TIME"' TIME
             [simple uint 32 milliseconds]
         ]
-        //['"S7_S5TIME"' TIME
-        //    [reserved uint 2  '0x00']
-        //    [uint     uint 2  'base']
-        //    [simple   uint 12 value]
-        //]
+        ['"S7_S5TIME"' TIME
+            [manual uint 32 milliseconds   'STATIC_CALL("parseS5Time", readBuffer)' 'STATIC_CALL("serializeS5Time", writeBuffer, _value)' '2']
+        ]
         // - Duration: Interpreted as "number of nanoseconds"
         ['"IEC61131_LTIME"' LTIME
             [simple uint 64 nanoseconds]
         ]
         // - Date: Interpreted as "number of days since 1990-01-01"
+        // - Range in PLC S7-300/400 Min -> D#1990-01-01 (W#16#0000)
+        //                           Max -> D#2168-12-31 (W#16#FF62)
+        // - 01. Serialization using PlcDATE offsets the day indication by +/- 1 day.
+        // - 02. Need to test with S7-1200/S7-1500.
         ['"IEC61131_DATE"' DATE
-            [simple uint 16 daysSinceSiemensEpoch]
-            // Number of days between 1990-01-01 and 1970-01-01 according to https://www.timeanddate.com/
-            //[virtual uint 16 daysSinceEpoch 'daysSinceSiemensEpoch + 7305']
+            [manual uint 16 daysSinceEpoch   'STATIC_CALL("parseTiaDate", readBuffer)' 'STATIC_CALL("serializeTiaDate", writeBuffer, _value)' '2']
         ]
         //['"IEC61131_LDATE"' LDATE
         //    [implicit uint 16 daysSinceSiemensEpoch 'daysSinceEpoch - 7305']
@@ -858,14 +885,14 @@
     ['0x13' WSTRING       ['0x00'     , 'X'             , '2'               , 'null'                , 'OCTET_STRING'                     , 'IEC61131_WSTRING'      , 'false'             , 'false'             , 'true'               , 'true'               , 'true'              ]]
 
     // Dates and time values (Please note that we seem to have to rewrite queries for these types to reading bytes or we'll get "Data type not supported" errors)
-    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'null'                         , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    //['0x15' S5TIME        ['0x0C'    , 'X'             , '4'                 , 'null'                  , 'null'                          , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x14' TIME          ['0x0B'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x15' S5TIME        ['0x04'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'S7_S5TIME'             , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x16' LTIME         ['0x00'     , 'X'             , '8'                 , 'TIME'                  , 'null'                         , 'IEC61131_LTIME'        , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x18' TIME_OF_DAY   ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    //['0x19' TOD           ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
+    ['0x19' TOD           ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x1A' DATE_AND_TIME ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
-    //['0x1B' DT            ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
+    ['0x1B' DT            ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)

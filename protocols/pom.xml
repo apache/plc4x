@@ -33,6 +33,10 @@
   <name>Protocols</name>
   <description>Base protocol specifications.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>ab-eth</module>
     <module>ads</module>

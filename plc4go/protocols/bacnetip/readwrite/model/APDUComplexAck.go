@@ -461,7 +461,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 2, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -469,7 +469,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, (originalInvokeId))
+		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
@@ -478,7 +478,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		var sequenceNumber *uint8 = nil
 		if m.GetSequenceNumber() != nil {
 			sequenceNumber = m.GetSequenceNumber()
-			_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, *(sequenceNumber))
+			_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8(*(sequenceNumber)))
 			if _sequenceNumberErr != nil {
 				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 			}
@@ -488,7 +488,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		var proposedWindowSize *uint8 = nil
 		if m.GetProposedWindowSize() != nil {
 			proposedWindowSize = m.GetProposedWindowSize()
-			_proposedWindowSizeErr := writeBuffer.WriteUint8("proposedWindowSize", 8, *(proposedWindowSize))
+			_proposedWindowSizeErr := writeBuffer.WriteUint8("proposedWindowSize", 8, uint8(*(proposedWindowSize)))
 			if _proposedWindowSizeErr != nil {
 				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}

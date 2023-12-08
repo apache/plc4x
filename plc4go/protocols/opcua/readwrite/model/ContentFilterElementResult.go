@@ -327,7 +327,7 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfOperandStatusCodes)
 		noOfOperandStatusCodes := int32(m.GetNoOfOperandStatusCodes())
-		_noOfOperandStatusCodesErr := writeBuffer.WriteInt32("noOfOperandStatusCodes", 32, (noOfOperandStatusCodes))
+		_noOfOperandStatusCodesErr := writeBuffer.WriteInt32("noOfOperandStatusCodes", 32, int32((noOfOperandStatusCodes)))
 		if _noOfOperandStatusCodesErr != nil {
 			return errors.Wrap(_noOfOperandStatusCodesErr, "Error serializing 'noOfOperandStatusCodes' field")
 		}
@@ -351,7 +351,7 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfOperandDiagnosticInfos)
 		noOfOperandDiagnosticInfos := int32(m.GetNoOfOperandDiagnosticInfos())
-		_noOfOperandDiagnosticInfosErr := writeBuffer.WriteInt32("noOfOperandDiagnosticInfos", 32, (noOfOperandDiagnosticInfos))
+		_noOfOperandDiagnosticInfosErr := writeBuffer.WriteInt32("noOfOperandDiagnosticInfos", 32, int32((noOfOperandDiagnosticInfos)))
 		if _noOfOperandDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfOperandDiagnosticInfosErr, "Error serializing 'noOfOperandDiagnosticInfos' field")
 		}

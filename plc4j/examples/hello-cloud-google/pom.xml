@@ -33,6 +33,10 @@
     a PLC and making that available in an the Google Cloud IoT Core.
   </description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

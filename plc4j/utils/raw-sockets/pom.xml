@@ -33,6 +33,10 @@
   <description>An implementation of a Netty Channel that allows implementing protocols below the TCP and UCP level.
   </description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>

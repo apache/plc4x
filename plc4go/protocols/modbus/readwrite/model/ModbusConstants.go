@@ -147,7 +147,7 @@ func (m *_ModbusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 
 	// Const Field (modbusTcpDefaultPort)
-	_modbusTcpDefaultPortErr := writeBuffer.WriteUint16("modbusTcpDefaultPort", 16, 502)
+	_modbusTcpDefaultPortErr := writeBuffer.WriteUint16("modbusTcpDefaultPort", 16, uint16(502))
 	if _modbusTcpDefaultPortErr != nil {
 		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}

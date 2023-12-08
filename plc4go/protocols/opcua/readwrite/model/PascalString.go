@@ -182,7 +182,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Implicit Field (sLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	sLength := int32(Utf8LengthToPascalLength(ctx, m.GetStringValue()))
-	_sLengthErr := writeBuffer.WriteInt32("sLength", 32, (sLength))
+	_sLengthErr := writeBuffer.WriteInt32("sLength", 32, int32((sLength)))
 	if _sLengthErr != nil {
 		return errors.Wrap(_sLengthErr, "Error serializing 'sLength' field")
 	}

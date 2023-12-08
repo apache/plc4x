@@ -447,7 +447,7 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfDiscoveryUrls)
 		noOfDiscoveryUrls := int32(m.GetNoOfDiscoveryUrls())
-		_noOfDiscoveryUrlsErr := writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, (noOfDiscoveryUrls))
+		_noOfDiscoveryUrlsErr := writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
 		if _noOfDiscoveryUrlsErr != nil {
 			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
 		}

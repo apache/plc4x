@@ -201,14 +201,14 @@ func (m *_DF1UnprotectedReadRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (address)
 		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, (address))
+		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (size)
 		size := uint8(m.GetSize())
-		_sizeErr := writeBuffer.WriteUint8("size", 8, (size))
+		_sizeErr := writeBuffer.WriteUint8("size", 8, uint8((size)))
 		if _sizeErr != nil {
 			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 		}

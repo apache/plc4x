@@ -32,6 +32,7 @@
   <description>Sample application, that reads data from a connected PLC and publishes this information via MQTT.</description>
 
   <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.examples.connectivity.mqtt.MqttConnector</app.main.class>
   </properties>
 

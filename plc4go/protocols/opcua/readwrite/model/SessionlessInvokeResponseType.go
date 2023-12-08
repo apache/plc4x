@@ -309,7 +309,7 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (noOfNamespaceUris)
 		noOfNamespaceUris := int32(m.GetNoOfNamespaceUris())
-		_noOfNamespaceUrisErr := writeBuffer.WriteInt32("noOfNamespaceUris", 32, (noOfNamespaceUris))
+		_noOfNamespaceUrisErr := writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
 		if _noOfNamespaceUrisErr != nil {
 			return errors.Wrap(_noOfNamespaceUrisErr, "Error serializing 'noOfNamespaceUris' field")
 		}
@@ -333,7 +333,7 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (noOfServerUris)
 		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, (noOfServerUris))
+		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
 		if _noOfServerUrisErr != nil {
 			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
 		}
@@ -357,7 +357,7 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (serviceId)
 		serviceId := uint32(m.GetServiceId())
-		_serviceIdErr := writeBuffer.WriteUint32("serviceId", 32, (serviceId))
+		_serviceIdErr := writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
 		if _serviceIdErr != nil {
 			return errors.Wrap(_serviceIdErr, "Error serializing 'serviceId' field")
 		}

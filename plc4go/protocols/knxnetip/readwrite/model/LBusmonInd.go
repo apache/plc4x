@@ -267,7 +267,7 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.GetAdditionalInformationLength())
-		_additionalInformationLengthErr := writeBuffer.WriteUint8("additionalInformationLength", 8, (additionalInformationLength))
+		_additionalInformationLengthErr := writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
 		if _additionalInformationLengthErr != nil {
 			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}
@@ -305,7 +305,7 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		var crc *uint8 = nil
 		if m.GetCrc() != nil {
 			crc = m.GetCrc()
-			_crcErr := writeBuffer.WriteUint8("crc", 8, *(crc))
+			_crcErr := writeBuffer.WriteUint8("crc", 8, uint8(*(crc)))
 			if _crcErr != nil {
 				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 			}

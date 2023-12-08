@@ -262,7 +262,7 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfReferencesToAdd)
 		noOfReferencesToAdd := int32(m.GetNoOfReferencesToAdd())
-		_noOfReferencesToAddErr := writeBuffer.WriteInt32("noOfReferencesToAdd", 32, (noOfReferencesToAdd))
+		_noOfReferencesToAddErr := writeBuffer.WriteInt32("noOfReferencesToAdd", 32, int32((noOfReferencesToAdd)))
 		if _noOfReferencesToAddErr != nil {
 			return errors.Wrap(_noOfReferencesToAddErr, "Error serializing 'noOfReferencesToAdd' field")
 		}

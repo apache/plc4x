@@ -300,7 +300,7 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -308,14 +308,14 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 
 	// Simple Field (destinationAddress)
 	destinationAddress := uint8(m.GetDestinationAddress())
-	_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, (destinationAddress))
+	_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
 	if _destinationAddressErr != nil {
 		return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
 	}
 
 	// Simple Field (sourceAddress)
 	sourceAddress := uint8(m.GetSourceAddress())
-	_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, (sourceAddress))
+	_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
 	if _sourceAddressErr != nil {
 		return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 	}
@@ -330,7 +330,7 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField1
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -338,7 +338,7 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, (commandCode))
+	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
 
 	if _commandCodeErr != nil {
 		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")
@@ -346,14 +346,14 @@ func (pm *_DF1ResponseMessage) SerializeParent(ctx context.Context, writeBuffer 
 
 	// Simple Field (status)
 	status := uint8(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint8("status", 8, (status))
+	_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
 	// Simple Field (transactionCounter)
 	transactionCounter := uint16(m.GetTransactionCounter())
-	_transactionCounterErr := writeBuffer.WriteUint16("transactionCounter", 16, (transactionCounter))
+	_transactionCounterErr := writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
 	if _transactionCounterErr != nil {
 		return errors.Wrap(_transactionCounterErr, "Error serializing 'transactionCounter' field")
 	}

@@ -338,14 +338,14 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 		// Simple Field (valueRank)
 		valueRank := int32(m.GetValueRank())
-		_valueRankErr := writeBuffer.WriteInt32("valueRank", 32, (valueRank))
+		_valueRankErr := writeBuffer.WriteInt32("valueRank", 32, int32((valueRank)))
 		if _valueRankErr != nil {
 			return errors.Wrap(_valueRankErr, "Error serializing 'valueRank' field")
 		}
 
 		// Simple Field (noOfArrayDimensions)
 		noOfArrayDimensions := int32(m.GetNoOfArrayDimensions())
-		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, (noOfArrayDimensions))
+		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32((noOfArrayDimensions)))
 		if _noOfArrayDimensionsErr != nil {
 			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
 		}
@@ -356,7 +356,7 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		}
 		for _curItem, _element := range m.GetArrayDimensions() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'arrayDimensions' field")
 			}

@@ -444,21 +444,21 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (deviceId)
 		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, (deviceId))
+		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
 		if _deviceIdErr != nil {
 			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
 		}
 
 		// Simple Field (errorData1)
 		errorData1 := uint8(m.GetErrorData1())
-		_errorData1Err := writeBuffer.WriteUint8("errorData1", 8, (errorData1))
+		_errorData1Err := writeBuffer.WriteUint8("errorData1", 8, uint8((errorData1)))
 		if _errorData1Err != nil {
 			return errors.Wrap(_errorData1Err, "Error serializing 'errorData1' field")
 		}
 
 		// Simple Field (errorData2)
 		errorData2 := uint8(m.GetErrorData2())
-		_errorData2Err := writeBuffer.WriteUint8("errorData2", 8, (errorData2))
+		_errorData2Err := writeBuffer.WriteUint8("errorData2", 8, uint8((errorData2)))
 		if _errorData2Err != nil {
 			return errors.Wrap(_errorData2Err, "Error serializing 'errorData2' field")
 		}

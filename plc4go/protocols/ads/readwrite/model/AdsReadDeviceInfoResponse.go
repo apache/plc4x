@@ -285,21 +285,21 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (majorVersion)
 		majorVersion := uint8(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, (majorVersion))
+		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
 		if _majorVersionErr != nil {
 			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint8(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, (minorVersion))
+		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
 		if _minorVersionErr != nil {
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}
 
 		// Simple Field (version)
 		version := uint16(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint16("version", 16, (version))
+		_versionErr := writeBuffer.WriteUint16("version", 16, uint16((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

@@ -24,32 +24,33 @@ from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import List
 import math
-
-
+    
 @dataclass
 class ModbusPDUReadFileRecordResponseItem(PlcMessage):
     reference_type: int
     data: List[int]
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFileRecordResponseItem")
 
         # Implicit Field (data_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        data_length: int = int(len(self.data)) + int(1)
+        data_length: int = (int(len(self.data))+ int(1))
         write_buffer.write_unsigned_byte(data_length, logical_name="dataLength")
 
         # Simple Field (referenceType)
-        write_buffer.write_unsigned_byte(
-            self.reference_type, logical_name="referenceType"
-        )
+        write_buffer.write_unsigned_byte(self.reference_type, logical_name="referenceType")
 
         # Array Field (data)
         write_buffer.write_byte_array(self.data, logical_name="data")
 
         write_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -68,10 +69,13 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         if self.data != None:
             length_in_bits += 8 * len(self.data)
 
+
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
+
+    def static_parse(self, read_buffer: ReadBuffer , args):
         return self.static_parse_context(read_buffer)
+
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
@@ -79,16 +83,15 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
 
         data_length: int = read_implicit_field("dataLength", read_unsigned_short)
 
-        self.reference_type = read_simple_field("referenceType", read_unsigned_short)
+        self.reference_type= read_simple_field("referenceType", read_unsigned_short)
 
-        self.data = read_buffer.read_byte_array("data", int(data_length - int(1)))
+        data: List[int] = read_buffer.read_byte_array("data", int(data_length- int(1)))
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
         # Create the instance
-        _modbus_pdu_read_file_record_response_item: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(
-            reference_type, data
-        )
+        _modbus_pdu_read_file_record_response_item: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(reference_type, data )
         return _modbus_pdu_read_file_record_response_item
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -97,14 +100,8 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
         if not isinstance(o, ModbusPDUReadFileRecordResponseItem):
             return False
 
-        that: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(
-            o
-        )
-        return (
-            (self.reference_type == that.reference_type)
-            and (self.data == that.data)
-            and True
-        )
+        that: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(o)
+        return (self.reference_type == that.reference_type) and (self.data == that.data) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -117,3 +114,7 @@ class ModbusPDUReadFileRecordResponseItem(PlcMessage):
             raise RuntimeException(e)
 
         return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+
+
+
+

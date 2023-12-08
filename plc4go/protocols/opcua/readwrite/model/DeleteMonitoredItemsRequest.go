@@ -276,14 +276,14 @@ func (m *_DeleteMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (noOfMonitoredItemIds)
 		noOfMonitoredItemIds := int32(m.GetNoOfMonitoredItemIds())
-		_noOfMonitoredItemIdsErr := writeBuffer.WriteInt32("noOfMonitoredItemIds", 32, (noOfMonitoredItemIds))
+		_noOfMonitoredItemIdsErr := writeBuffer.WriteInt32("noOfMonitoredItemIds", 32, int32((noOfMonitoredItemIds)))
 		if _noOfMonitoredItemIdsErr != nil {
 			return errors.Wrap(_noOfMonitoredItemIdsErr, "Error serializing 'noOfMonitoredItemIds' field")
 		}
@@ -294,7 +294,7 @@ func (m *_DeleteMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 		}
 		for _curItem, _element := range m.GetMonitoredItemIds() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'monitoredItemIds' field")
 			}

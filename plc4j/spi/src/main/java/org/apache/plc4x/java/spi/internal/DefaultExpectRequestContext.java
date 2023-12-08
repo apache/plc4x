@@ -82,7 +82,7 @@ public class DefaultExpectRequestContext<T> implements ConversationContext.Expec
         this.packetConsumer = packetConsumer;
         registration = new HandlerRegistration(commands, expectClazz, packetConsumer, onTimeoutConsumer, errorConsumer, timeout);
         finisher.accept(registration);
-        return new DefaultContextHandler(registration::hasHandled, registration::cancel);
+        return new DefaultContextHandler(registration, registration::cancel);
     }
 
     @Override

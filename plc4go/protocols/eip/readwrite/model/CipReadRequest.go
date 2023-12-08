@@ -219,7 +219,7 @@ func (m *_CipReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		requestPathSize := uint8(uint8(uint8(len(m.GetTag()))) / uint8(uint8(2)))
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
@@ -232,7 +232,7 @@ func (m *_CipReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (elementNb)
 		elementNb := uint16(m.GetElementNb())
-		_elementNbErr := writeBuffer.WriteUint16("elementNb", 16, (elementNb))
+		_elementNbErr := writeBuffer.WriteUint16("elementNb", 16, uint16((elementNb)))
 		if _elementNbErr != nil {
 			return errors.Wrap(_elementNbErr, "Error serializing 'elementNb' field")
 		}

@@ -300,7 +300,7 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -308,42 +308,42 @@ func (m *_S7ParameterModeTransition) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
-		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
+		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (method)
 		method := uint8(m.GetMethod())
-		_methodErr := writeBuffer.WriteUint8("method", 8, (method))
+		_methodErr := writeBuffer.WriteUint8("method", 8, uint8((method)))
 		if _methodErr != nil {
 			return errors.Wrap(_methodErr, "Error serializing 'method' field")
 		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.GetCpuFunctionType())
-		_cpuFunctionTypeErr := writeBuffer.WriteUint8("cpuFunctionType", 4, (cpuFunctionType))
+		_cpuFunctionTypeErr := writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
 		if _cpuFunctionTypeErr != nil {
 			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
 		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.GetCpuFunctionGroup())
-		_cpuFunctionGroupErr := writeBuffer.WriteUint8("cpuFunctionGroup", 4, (cpuFunctionGroup))
+		_cpuFunctionGroupErr := writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
 		if _cpuFunctionGroupErr != nil {
 			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
 		}
 
 		// Simple Field (currentMode)
 		currentMode := uint8(m.GetCurrentMode())
-		_currentModeErr := writeBuffer.WriteUint8("currentMode", 8, (currentMode))
+		_currentModeErr := writeBuffer.WriteUint8("currentMode", 8, uint8((currentMode)))
 		if _currentModeErr != nil {
 			return errors.Wrap(_currentModeErr, "Error serializing 'currentMode' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, (sequenceNumber))
+		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}

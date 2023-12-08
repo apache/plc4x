@@ -21,6 +21,7 @@ package org.apache.plc4x.java.cbus;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
+import org.apache.plc4x.java.cbus.configuration.CBusTcpTransportConfiguration;
 import org.apache.plc4x.java.cbus.context.CBusDriverContext;
 import org.apache.plc4x.java.cbus.protocol.CBusProtocolLogic;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
@@ -29,11 +30,13 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
+public class CBusDriver extends GeneratedDriverBase<CBusCommand> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -116,6 +119,15 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
                 byteBuf.readByte();
             }
         }
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return CBusTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

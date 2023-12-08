@@ -310,7 +310,7 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (clientProtocolVersion)
 		clientProtocolVersion := uint32(m.GetClientProtocolVersion())
-		_clientProtocolVersionErr := writeBuffer.WriteUint32("clientProtocolVersion", 32, (clientProtocolVersion))
+		_clientProtocolVersionErr := writeBuffer.WriteUint32("clientProtocolVersion", 32, uint32((clientProtocolVersion)))
 		if _clientProtocolVersionErr != nil {
 			return errors.Wrap(_clientProtocolVersionErr, "Error serializing 'clientProtocolVersion' field")
 		}
@@ -353,7 +353,7 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (requestedLifetime)
 		requestedLifetime := uint32(m.GetRequestedLifetime())
-		_requestedLifetimeErr := writeBuffer.WriteUint32("requestedLifetime", 32, (requestedLifetime))
+		_requestedLifetimeErr := writeBuffer.WriteUint32("requestedLifetime", 32, uint32((requestedLifetime)))
 		if _requestedLifetimeErr != nil {
 			return errors.Wrap(_requestedLifetimeErr, "Error serializing 'requestedLifetime' field")
 		}

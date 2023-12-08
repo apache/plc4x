@@ -257,7 +257,7 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (noOfAvailableSequenceNumbers)
 		noOfAvailableSequenceNumbers := int32(m.GetNoOfAvailableSequenceNumbers())
-		_noOfAvailableSequenceNumbersErr := writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, (noOfAvailableSequenceNumbers))
+		_noOfAvailableSequenceNumbersErr := writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, int32((noOfAvailableSequenceNumbers)))
 		if _noOfAvailableSequenceNumbersErr != nil {
 			return errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
@@ -268,7 +268,7 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		for _curItem, _element := range m.GetAvailableSequenceNumbers() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, _element)
+			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'availableSequenceNumbers' field")
 			}

@@ -206,14 +206,14 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (address)
 		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, (address))
+		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.GetValue())
-		_valueErr := writeBuffer.WriteUint16("value", 16, (value))
+		_valueErr := writeBuffer.WriteUint16("value", 16, uint16((value)))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

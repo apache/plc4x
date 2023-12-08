@@ -185,14 +185,14 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) SerializeWithWriteBuffer(ctx context.Conte
 
 	// Simple Field (keyIdentifier)
 	keyIdentifier := uint16(m.GetKeyIdentifier())
-	_keyIdentifierErr := writeBuffer.WriteUint16("keyIdentifier", 16, (keyIdentifier))
+	_keyIdentifierErr := writeBuffer.WriteUint16("keyIdentifier", 16, uint16((keyIdentifier)))
 	if _keyIdentifierErr != nil {
 		return errors.Wrap(_keyIdentifierErr, "Error serializing 'keyIdentifier' field")
 	}
 
 	// Simple Field (keySize)
 	keySize := uint8(m.GetKeySize())
-	_keySizeErr := writeBuffer.WriteUint8("keySize", 8, (keySize))
+	_keySizeErr := writeBuffer.WriteUint8("keySize", 8, uint8((keySize)))
 	if _keySizeErr != nil {
 		return errors.Wrap(_keySizeErr, "Error serializing 'keySize' field")
 	}

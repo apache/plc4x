@@ -32,24 +32,51 @@
   <name>PLC4J: Tools: Plc4x Server</name>
   <description>Server that can be used by drivers of the 'plc4x' protocol to relay requests which are then executed on this machine.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
+      <!-- Build a fat jar containing all dependencies -->
       <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
-            <id>generate-driver</id>
-            <phase>generate-sources</phase>
+            <id>generate-uber-jar</id>
+            <phase>package</phase>
             <goals>
-              <goal>generate-driver</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <protocolName>plc4x</protocolName>
-              <protocolVersion>0</protocolVersion>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>src/main/generated</outputDir>
+              <transformers combine.children="append">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.apache.plc4x.java.tools.plc4xserver.Plc4xServer</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-uber-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.jar</file>
+                  <type>jar</type>
+                  <classifier>standalone</classifier>
+                </artifact>
+              </artifacts>
             </configuration>
           </execution>
         </executions>
@@ -58,9 +85,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
-          <usedDependencies>
+          <usedDependencies combine.children="append">
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-all</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -88,15 +115,17 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-simulated</artifactId>
+      <artifactId>plc4j-driver-plc4x</artifactId>
       <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
+    <!-- Include all other drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-driver-plc4x</artifactId>
+      <artifactId>plc4j-driver-all</artifactId>
       <version>0.12.0-SNAPSHOT</version>
-      <scope>test</scope>
+      <type>pom</type>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -126,22 +155,6 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <scope>runtime</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-plc4x</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 

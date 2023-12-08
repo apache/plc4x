@@ -327,7 +327,7 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (noOfDataStatusCodes)
 		noOfDataStatusCodes := int32(m.GetNoOfDataStatusCodes())
-		_noOfDataStatusCodesErr := writeBuffer.WriteInt32("noOfDataStatusCodes", 32, (noOfDataStatusCodes))
+		_noOfDataStatusCodesErr := writeBuffer.WriteInt32("noOfDataStatusCodes", 32, int32((noOfDataStatusCodes)))
 		if _noOfDataStatusCodesErr != nil {
 			return errors.Wrap(_noOfDataStatusCodesErr, "Error serializing 'noOfDataStatusCodes' field")
 		}
@@ -351,7 +351,7 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (noOfDataDiagnosticInfos)
 		noOfDataDiagnosticInfos := int32(m.GetNoOfDataDiagnosticInfos())
-		_noOfDataDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDataDiagnosticInfos", 32, (noOfDataDiagnosticInfos))
+		_noOfDataDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDataDiagnosticInfos", 32, int32((noOfDataDiagnosticInfos)))
 		if _noOfDataDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDataDiagnosticInfosErr, "Error serializing 'noOfDataDiagnosticInfos' field")
 		}

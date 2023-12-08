@@ -1287,7 +1287,7 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, (noOfLocaleIds))
+		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
@@ -1318,42 +1318,42 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (maxResponseMessageSize)
 		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, (maxResponseMessageSize))
+		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
 		if _maxResponseMessageSizeErr != nil {
 			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
 		}
 
 		// Simple Field (clientConnectionTime)
 		clientConnectionTime := int64(m.GetClientConnectionTime())
-		_clientConnectionTimeErr := writeBuffer.WriteInt64("clientConnectionTime", 64, (clientConnectionTime))
+		_clientConnectionTimeErr := writeBuffer.WriteInt64("clientConnectionTime", 64, int64((clientConnectionTime)))
 		if _clientConnectionTimeErr != nil {
 			return errors.Wrap(_clientConnectionTimeErr, "Error serializing 'clientConnectionTime' field")
 		}
 
 		// Simple Field (clientLastContactTime)
 		clientLastContactTime := int64(m.GetClientLastContactTime())
-		_clientLastContactTimeErr := writeBuffer.WriteInt64("clientLastContactTime", 64, (clientLastContactTime))
+		_clientLastContactTimeErr := writeBuffer.WriteInt64("clientLastContactTime", 64, int64((clientLastContactTime)))
 		if _clientLastContactTimeErr != nil {
 			return errors.Wrap(_clientLastContactTimeErr, "Error serializing 'clientLastContactTime' field")
 		}
 
 		// Simple Field (currentSubscriptionsCount)
 		currentSubscriptionsCount := uint32(m.GetCurrentSubscriptionsCount())
-		_currentSubscriptionsCountErr := writeBuffer.WriteUint32("currentSubscriptionsCount", 32, (currentSubscriptionsCount))
+		_currentSubscriptionsCountErr := writeBuffer.WriteUint32("currentSubscriptionsCount", 32, uint32((currentSubscriptionsCount)))
 		if _currentSubscriptionsCountErr != nil {
 			return errors.Wrap(_currentSubscriptionsCountErr, "Error serializing 'currentSubscriptionsCount' field")
 		}
 
 		// Simple Field (currentMonitoredItemsCount)
 		currentMonitoredItemsCount := uint32(m.GetCurrentMonitoredItemsCount())
-		_currentMonitoredItemsCountErr := writeBuffer.WriteUint32("currentMonitoredItemsCount", 32, (currentMonitoredItemsCount))
+		_currentMonitoredItemsCountErr := writeBuffer.WriteUint32("currentMonitoredItemsCount", 32, uint32((currentMonitoredItemsCount)))
 		if _currentMonitoredItemsCountErr != nil {
 			return errors.Wrap(_currentMonitoredItemsCountErr, "Error serializing 'currentMonitoredItemsCount' field")
 		}
 
 		// Simple Field (currentPublishRequestsInQueue)
 		currentPublishRequestsInQueue := uint32(m.GetCurrentPublishRequestsInQueue())
-		_currentPublishRequestsInQueueErr := writeBuffer.WriteUint32("currentPublishRequestsInQueue", 32, (currentPublishRequestsInQueue))
+		_currentPublishRequestsInQueueErr := writeBuffer.WriteUint32("currentPublishRequestsInQueue", 32, uint32((currentPublishRequestsInQueue)))
 		if _currentPublishRequestsInQueueErr != nil {
 			return errors.Wrap(_currentPublishRequestsInQueueErr, "Error serializing 'currentPublishRequestsInQueue' field")
 		}
@@ -1372,7 +1372,7 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (unauthorizedRequestCount)
 		unauthorizedRequestCount := uint32(m.GetUnauthorizedRequestCount())
-		_unauthorizedRequestCountErr := writeBuffer.WriteUint32("unauthorizedRequestCount", 32, (unauthorizedRequestCount))
+		_unauthorizedRequestCountErr := writeBuffer.WriteUint32("unauthorizedRequestCount", 32, uint32((unauthorizedRequestCount)))
 		if _unauthorizedRequestCountErr != nil {
 			return errors.Wrap(_unauthorizedRequestCountErr, "Error serializing 'unauthorizedRequestCount' field")
 		}

@@ -18,13 +18,11 @@
  */
 package org.apache.plc4x.java.modbus.ascii.config;
 
-import org.apache.plc4x.java.modbus.readwrite.ModbusConstants;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class ModbusAsciiConfiguration implements Configuration, TcpTransportConfiguration {
+public class ModbusAsciiConfiguration implements Configuration {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
@@ -48,11 +46,6 @@ public class ModbusAsciiConfiguration implements Configuration, TcpTransportConf
 
     public void setUnitIdentifier(int unitIdentifier) {
         this.unitIdentifier = unitIdentifier;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return ModbusConstants.MODBUSTCPDEFAULTPORT;
     }
 
     @Override

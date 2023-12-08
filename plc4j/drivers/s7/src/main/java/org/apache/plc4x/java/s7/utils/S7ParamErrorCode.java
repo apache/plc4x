@@ -228,42 +228,44 @@ public enum S7ParamErrorCode {
     ERROR_0xE205((short) 0xE205, "Connect/update aborted due to synchronization error"),
     ERROR_0xE206((short) 0xE206, "Connect/update denied due to coordination violation"),
     ERROR_0xEF01((short) 0xEF01, "S7 protocol error: Error at ID2; only 00H permitted in job"),
-    ERROR_0xEF02((short) 0xEF02, "S7 protocol error: Error at ID2; set of resources does not exist"),;
-    
+    ERROR_0xEF02((short) 0xEF02, "S7 protocol error: Error at ID2; set of resources does not exist"),
+    ;
+
     private static final Map<Short, S7ParamErrorCode> map;
-    
+
     static {
         map = new HashMap<>();
-        for (S7ParamErrorCode  subevent : S7ParamErrorCode .values()) {
+        for (S7ParamErrorCode subevent : S7ParamErrorCode.values()) {
             map.put(subevent.code, subevent);
         }
-    }    
-    
+    }
+
     private final String event;
     private final short code;
-    
-    S7ParamErrorCode(short code, String event){
+
+    S7ParamErrorCode(short code, String event) {
         this.event = event;
         this.code = code;
     }
-    
-    public String getEvent(){
+
+    public String getEvent() {
         return event;
-    }    
-    
+    }
+
     public short getCode() {
         return code;
-    }    
-    
-    public static S7ParamErrorCode  valueOfEvent(String event) {
-        for (S7ParamErrorCode  value : S7ParamErrorCode .values()) {
-            if(value.getEvent().equals(event)) {
+    }
+
+    public static S7ParamErrorCode valueOfEvent(String event) {
+        for (S7ParamErrorCode value : S7ParamErrorCode.values()) {
+            if (value.getEvent().equals(event)) {
                 return value;
             }
         }
         return null;
     }
-    public static S7ParamErrorCode  valueOf(short code) {
+
+    public static S7ParamErrorCode valueOf(short code) {
         return map.get(code);
-    }    
+    }
 }

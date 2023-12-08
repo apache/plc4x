@@ -86,7 +86,7 @@ class Plc4xNettyWrapperTest {
             .onError((value, throwable) -> error.set(true))
             .handle((answer) -> handled.set(true));
 
-        Thread.sleep(750);
+        handler.awaitResponse();
 
         verify(true, false, false);
         wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
@@ -104,6 +104,7 @@ class Plc4xNettyWrapperTest {
 
         verify(false, false, false);
         wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        handler.awaitResponse();
         verify(false, false, true);
     }
 

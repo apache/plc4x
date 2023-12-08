@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -21,12 +21,15 @@ package org.apache.plc4x.java.iec608705104.readwrite;
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
+import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014TcpTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.protocol.Iec608705104Protocol;
 import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104TagHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.Consumer;
@@ -38,7 +41,7 @@ import java.util.function.ToIntFunction;
  * - TCP
  * - Serial
  */
-public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> {
+public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -119,6 +122,15 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> {
                 byteBuf.readByte();
             }
         }
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Iec608705014TcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

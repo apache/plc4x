@@ -568,91 +568,91 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 
 	// Simple Field (entryLength)
 	entryLength := uint32(m.GetEntryLength())
-	_entryLengthErr := writeBuffer.WriteUint32("entryLength", 32, (entryLength))
+	_entryLengthErr := writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
 	if _entryLengthErr != nil {
 		return errors.Wrap(_entryLengthErr, "Error serializing 'entryLength' field")
 	}
 
 	// Simple Field (version)
 	version := uint32(m.GetVersion())
-	_versionErr := writeBuffer.WriteUint32("version", 32, (version))
+	_versionErr := writeBuffer.WriteUint32("version", 32, uint32((version)))
 	if _versionErr != nil {
 		return errors.Wrap(_versionErr, "Error serializing 'version' field")
 	}
 
 	// Simple Field (hashValue)
 	hashValue := uint32(m.GetHashValue())
-	_hashValueErr := writeBuffer.WriteUint32("hashValue", 32, (hashValue))
+	_hashValueErr := writeBuffer.WriteUint32("hashValue", 32, uint32((hashValue)))
 	if _hashValueErr != nil {
 		return errors.Wrap(_hashValueErr, "Error serializing 'hashValue' field")
 	}
 
 	// Simple Field (typeHashValue)
 	typeHashValue := uint32(m.GetTypeHashValue())
-	_typeHashValueErr := writeBuffer.WriteUint32("typeHashValue", 32, (typeHashValue))
+	_typeHashValueErr := writeBuffer.WriteUint32("typeHashValue", 32, uint32((typeHashValue)))
 	if _typeHashValueErr != nil {
 		return errors.Wrap(_typeHashValueErr, "Error serializing 'typeHashValue' field")
 	}
 
 	// Simple Field (size)
 	size := uint32(m.GetSize())
-	_sizeErr := writeBuffer.WriteUint32("size", 32, (size))
+	_sizeErr := writeBuffer.WriteUint32("size", 32, uint32((size)))
 	if _sizeErr != nil {
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 	}
 
 	// Simple Field (offset)
 	offset := uint32(m.GetOffset())
-	_offsetErr := writeBuffer.WriteUint32("offset", 32, (offset))
+	_offsetErr := writeBuffer.WriteUint32("offset", 32, uint32((offset)))
 	if _offsetErr != nil {
 		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 	}
 
 	// Simple Field (dataType)
 	dataType := uint32(m.GetDataType())
-	_dataTypeErr := writeBuffer.WriteUint32("dataType", 32, (dataType))
+	_dataTypeErr := writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
 	if _dataTypeErr != nil {
 		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
 	}
 
 	// Simple Field (flags)
 	flags := uint32(m.GetFlags())
-	_flagsErr := writeBuffer.WriteUint32("flags", 32, (flags))
+	_flagsErr := writeBuffer.WriteUint32("flags", 32, uint32((flags)))
 	if _flagsErr != nil {
 		return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
 	}
 
 	// Implicit Field (propertyNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	propertyNameLength := uint16(uint16(len(m.GetPropertyName())))
-	_propertyNameLengthErr := writeBuffer.WriteUint16("propertyNameLength", 16, (propertyNameLength))
+	_propertyNameLengthErr := writeBuffer.WriteUint16("propertyNameLength", 16, uint16((propertyNameLength)))
 	if _propertyNameLengthErr != nil {
 		return errors.Wrap(_propertyNameLengthErr, "Error serializing 'propertyNameLength' field")
 	}
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataTypeNameLength := uint16(uint16(len(m.GetDataTypeName())))
-	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, (dataTypeNameLength))
+	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
 	if _dataTypeNameLengthErr != nil {
 		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	commentLength := uint16(uint16(len(m.GetComment())))
-	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, (commentLength))
+	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
 	if _commentLengthErr != nil {
 		return errors.Wrap(_commentLengthErr, "Error serializing 'commentLength' field")
 	}
 
 	// Simple Field (arrayDimensions)
 	arrayDimensions := uint16(m.GetArrayDimensions())
-	_arrayDimensionsErr := writeBuffer.WriteUint16("arrayDimensions", 16, (arrayDimensions))
+	_arrayDimensionsErr := writeBuffer.WriteUint16("arrayDimensions", 16, uint16((arrayDimensions)))
 	if _arrayDimensionsErr != nil {
 		return errors.Wrap(_arrayDimensionsErr, "Error serializing 'arrayDimensions' field")
 	}
 
 	// Simple Field (numChildren)
 	numChildren := uint16(m.GetNumChildren())
-	_numChildrenErr := writeBuffer.WriteUint16("numChildren", 16, (numChildren))
+	_numChildrenErr := writeBuffer.WriteUint16("numChildren", 16, uint16((numChildren)))
 	if _numChildrenErr != nil {
 		return errors.Wrap(_numChildrenErr, "Error serializing 'numChildren' field")
 	}
@@ -665,7 +665,7 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 	}
 
 	// Const Field (propertyNameTerminator)
-	_propertyNameTerminatorErr := writeBuffer.WriteUint8("propertyNameTerminator", 8, 0x00)
+	_propertyNameTerminatorErr := writeBuffer.WriteUint8("propertyNameTerminator", 8, uint8(0x00))
 	if _propertyNameTerminatorErr != nil {
 		return errors.Wrap(_propertyNameTerminatorErr, "Error serializing 'propertyNameTerminator' field")
 	}
@@ -678,7 +678,7 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 	}
 
 	// Const Field (dataTypeNameTerminator)
-	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, 0x00)
+	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
 	if _dataTypeNameTerminatorErr != nil {
 		return errors.Wrap(_dataTypeNameTerminatorErr, "Error serializing 'dataTypeNameTerminator' field")
 	}
@@ -691,7 +691,7 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 	}
 
 	// Const Field (commentTerminator)
-	_commentTerminatorErr := writeBuffer.WriteUint8("commentTerminator", 8, 0x00)
+	_commentTerminatorErr := writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
 	if _commentTerminatorErr != nil {
 		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
 	}

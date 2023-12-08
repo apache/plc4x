@@ -308,7 +308,7 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 6, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -330,14 +330,14 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (percentDataBad)
 		percentDataBad := uint8(m.GetPercentDataBad())
-		_percentDataBadErr := writeBuffer.WriteUint8("percentDataBad", 8, (percentDataBad))
+		_percentDataBadErr := writeBuffer.WriteUint8("percentDataBad", 8, uint8((percentDataBad)))
 		if _percentDataBadErr != nil {
 			return errors.Wrap(_percentDataBadErr, "Error serializing 'percentDataBad' field")
 		}
 
 		// Simple Field (percentDataGood)
 		percentDataGood := uint8(m.GetPercentDataGood())
-		_percentDataGoodErr := writeBuffer.WriteUint8("percentDataGood", 8, (percentDataGood))
+		_percentDataGoodErr := writeBuffer.WriteUint8("percentDataGood", 8, uint8((percentDataGood)))
 		if _percentDataGoodErr != nil {
 			return errors.Wrap(_percentDataGoodErr, "Error serializing 'percentDataGood' field")
 		}
@@ -352,7 +352,7 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -25,10 +25,9 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
+class ModbusPDUGetComEventCounterResponse(PlcMessage,ModbusPDU):
     status: int
     event_count: int
     # Accessors for discriminator values.
@@ -36,8 +35,11 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
     function_flag: int = 0x0B
     response: bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventCounterResponse")
@@ -49,6 +51,7 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         write_buffer.write_unsigned_short(self.event_count, logical_name="eventCount")
 
         write_buffer.pop_context("ModbusPDUGetComEventCounterResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -65,17 +68,19 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUGetComEventCounterResponse")
 
-        self.status = read_simple_field("status", read_unsigned_int)
+        self.status= read_simple_field("status", read_unsigned_int)
 
-        self.event_count = read_simple_field("eventCount", read_unsigned_int)
+        self.event_count= read_simple_field("eventCount", read_unsigned_int)
 
         read_buffer.pop_context("ModbusPDUGetComEventCounterResponse")
         # Create the instance
-        return ModbusPDUGetComEventCounterResponseBuilder(status, event_count)
+        return ModbusPDUGetComEventCounterResponseBuilder(status, event_count )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -84,15 +89,8 @@ class ModbusPDUGetComEventCounterResponse(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUGetComEventCounterResponse):
             return False
 
-        that: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
-            o
-        )
-        return (
-            (self.status == that.status)
-            and (self.event_count == that.event_count)
-            and super().equals(that)
-            and True
-        )
+        that: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(o)
+        return (self.status == that.status) and (self.event_count == that.event_count) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -115,10 +113,9 @@ class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUGetComEventCounterResponse:
-        modbus_pdu_get_com_event_counter_response: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
-            self.status, self.event_count
-        )
+    def build(self,) -> ModbusPDUGetComEventCounterResponse:
+        modbus_pdu_get_com_event_counter_response: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(self.status, self.event_count )
         return modbus_pdu_get_com_event_counter_response
+
+
+

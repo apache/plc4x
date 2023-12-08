@@ -266,7 +266,7 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (serverProtocolVersion)
 		serverProtocolVersion := uint32(m.GetServerProtocolVersion())
-		_serverProtocolVersionErr := writeBuffer.WriteUint32("serverProtocolVersion", 32, (serverProtocolVersion))
+		_serverProtocolVersionErr := writeBuffer.WriteUint32("serverProtocolVersion", 32, uint32((serverProtocolVersion)))
 		if _serverProtocolVersionErr != nil {
 			return errors.Wrap(_serverProtocolVersionErr, "Error serializing 'serverProtocolVersion' field")
 		}

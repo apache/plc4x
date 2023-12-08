@@ -505,7 +505,7 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfPushTargetFolder)
 		noOfPushTargetFolder := int32(m.GetNoOfPushTargetFolder())
-		_noOfPushTargetFolderErr := writeBuffer.WriteInt32("noOfPushTargetFolder", 32, (noOfPushTargetFolder))
+		_noOfPushTargetFolderErr := writeBuffer.WriteInt32("noOfPushTargetFolder", 32, int32((noOfPushTargetFolder)))
 		if _noOfPushTargetFolderErr != nil {
 			return errors.Wrap(_noOfPushTargetFolderErr, "Error serializing 'noOfPushTargetFolder' field")
 		}
@@ -565,7 +565,7 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (requestedKeyCount)
 		requestedKeyCount := uint16(m.GetRequestedKeyCount())
-		_requestedKeyCountErr := writeBuffer.WriteUint16("requestedKeyCount", 16, (requestedKeyCount))
+		_requestedKeyCountErr := writeBuffer.WriteUint16("requestedKeyCount", 16, uint16((requestedKeyCount)))
 		if _requestedKeyCountErr != nil {
 			return errors.Wrap(_requestedKeyCountErr, "Error serializing 'requestedKeyCount' field")
 		}
@@ -579,7 +579,7 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfPushTargetProperties)
 		noOfPushTargetProperties := int32(m.GetNoOfPushTargetProperties())
-		_noOfPushTargetPropertiesErr := writeBuffer.WriteInt32("noOfPushTargetProperties", 32, (noOfPushTargetProperties))
+		_noOfPushTargetPropertiesErr := writeBuffer.WriteInt32("noOfPushTargetProperties", 32, int32((noOfPushTargetProperties)))
 		if _noOfPushTargetPropertiesErr != nil {
 			return errors.Wrap(_noOfPushTargetPropertiesErr, "Error serializing 'noOfPushTargetProperties' field")
 		}
@@ -603,7 +603,7 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfSecurityGroups)
 		noOfSecurityGroups := int32(m.GetNoOfSecurityGroups())
-		_noOfSecurityGroupsErr := writeBuffer.WriteInt32("noOfSecurityGroups", 32, (noOfSecurityGroups))
+		_noOfSecurityGroupsErr := writeBuffer.WriteInt32("noOfSecurityGroups", 32, int32((noOfSecurityGroups)))
 		if _noOfSecurityGroupsErr != nil {
 			return errors.Wrap(_noOfSecurityGroupsErr, "Error serializing 'noOfSecurityGroups' field")
 		}

@@ -36,21 +36,4 @@ public class S7TagTest {
         Assertions.assertEquals(0, s7Tag.getBitOffset());
     }
 
-    /**
-     * PLC4X-312 - CAN NOT READ STRING FROM S7 PLC
-     */
-    @Test
-    public void testStringAddress() {
-        final S7Tag s7Tag = S7Tag.of("%DB145.DBX38:STRING(8)[1]");
-        Assertions.assertEquals(TransportSize.STRING, s7Tag.getDataType());
-        Assertions.assertEquals(1, s7Tag.getNumberOfElements());
-        Assertions.assertEquals(145, s7Tag.getBlockNumber());
-        Assertions.assertEquals(MemoryArea.DATA_BLOCKS, s7Tag.getMemoryArea());
-        Assertions.assertEquals(38, s7Tag.getByteOffset());
-        Assertions.assertEquals(0, s7Tag.getBitOffset());
-        Assertions.assertEquals("S7StringTag", s7Tag.getClass().getSimpleName());
-        S7StringTag s7StringTag = (S7StringTag) s7Tag;
-        Assertions.assertEquals(8, s7StringTag.getStringLength());
-    }
-
 }

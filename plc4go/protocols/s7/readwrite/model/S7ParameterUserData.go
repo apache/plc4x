@@ -220,7 +220,7 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.GetItems())))
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, (numItems))
+		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}

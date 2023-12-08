@@ -311,42 +311,42 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (EventId)
 		EventId := uint16(m.GetEventId())
-		_EventIdErr := writeBuffer.WriteUint16("EventId", 16, (EventId))
+		_EventIdErr := writeBuffer.WriteUint16("EventId", 16, uint16((EventId)))
 		if _EventIdErr != nil {
 			return errors.Wrap(_EventIdErr, "Error serializing 'EventId' field")
 		}
 
 		// Simple Field (PriorityClass)
 		PriorityClass := uint8(m.GetPriorityClass())
-		_PriorityClassErr := writeBuffer.WriteUint8("PriorityClass", 8, (PriorityClass))
+		_PriorityClassErr := writeBuffer.WriteUint8("PriorityClass", 8, uint8((PriorityClass)))
 		if _PriorityClassErr != nil {
 			return errors.Wrap(_PriorityClassErr, "Error serializing 'PriorityClass' field")
 		}
 
 		// Simple Field (ObNumber)
 		ObNumber := uint8(m.GetObNumber())
-		_ObNumberErr := writeBuffer.WriteUint8("ObNumber", 8, (ObNumber))
+		_ObNumberErr := writeBuffer.WriteUint8("ObNumber", 8, uint8((ObNumber)))
 		if _ObNumberErr != nil {
 			return errors.Wrap(_ObNumberErr, "Error serializing 'ObNumber' field")
 		}
 
 		// Simple Field (DatId)
 		DatId := uint16(m.GetDatId())
-		_DatIdErr := writeBuffer.WriteUint16("DatId", 16, (DatId))
+		_DatIdErr := writeBuffer.WriteUint16("DatId", 16, uint16((DatId)))
 		if _DatIdErr != nil {
 			return errors.Wrap(_DatIdErr, "Error serializing 'DatId' field")
 		}
 
 		// Simple Field (Info1)
 		Info1 := uint16(m.GetInfo1())
-		_Info1Err := writeBuffer.WriteUint16("Info1", 16, (Info1))
+		_Info1Err := writeBuffer.WriteUint16("Info1", 16, uint16((Info1)))
 		if _Info1Err != nil {
 			return errors.Wrap(_Info1Err, "Error serializing 'Info1' field")
 		}
 
 		// Simple Field (Info2)
 		Info2 := uint32(m.GetInfo2())
-		_Info2Err := writeBuffer.WriteUint32("Info2", 32, (Info2))
+		_Info2Err := writeBuffer.WriteUint32("Info2", 32, uint32((Info2)))
 		if _Info2Err != nil {
 			return errors.Wrap(_Info2Err, "Error serializing 'Info2' field")
 		}

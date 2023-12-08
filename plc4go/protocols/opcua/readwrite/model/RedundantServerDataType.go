@@ -241,7 +241,7 @@ func (m *_RedundantServerDataType) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (serviceLevel)
 		serviceLevel := uint8(m.GetServiceLevel())
-		_serviceLevelErr := writeBuffer.WriteUint8("serviceLevel", 8, (serviceLevel))
+		_serviceLevelErr := writeBuffer.WriteUint8("serviceLevel", 8, uint8((serviceLevel)))
 		if _serviceLevelErr != nil {
 			return errors.Wrap(_serviceLevelErr, "Error serializing 'serviceLevel' field")
 		}

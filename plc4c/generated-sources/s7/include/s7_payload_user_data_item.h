@@ -83,7 +83,13 @@ enum plc4c_s7_read_write_s7_payload_user_data_item_type {
   plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_error_response = 24,
   plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_ack_response = 25,
   plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_request = 26,
-  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response = 27};
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_alarm_query_response = 27,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_request = 28,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response = 29,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_request = 30,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response = 31,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_request = 32,
+  plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_response = 33};
 typedef enum plc4c_s7_read_write_s7_payload_user_data_item_type plc4c_s7_read_write_s7_payload_user_data_item_type;
 
 // Function to get the discriminator values for a given type.
@@ -198,6 +204,19 @@ struct plc4c_s7_read_write_s7_payload_user_data_item {
     };
     struct { /* S7PayloadUserDataItemCpuFunctionAlarmQueryResponse */
       plc4c_list* s7_payload_user_data_item_cpu_function_alarm_query_response_items;
+    };
+    struct { /* S7PayloadUserDataItemClkResponse */
+      uint8_t s7_payload_user_data_item_clk_response_reserved;
+      uint8_t s7_payload_user_data_item_clk_response_year1;
+      plc4c_s7_read_write_date_and_time* s7_payload_user_data_item_clk_response_time_stamp;
+    };
+    struct { /* S7PayloadUserDataItemClkFResponse */
+      uint8_t s7_payload_user_data_item_clk_f_response_reserved;
+      uint8_t s7_payload_user_data_item_clk_f_response_year1;
+      plc4c_s7_read_write_date_and_time* s7_payload_user_data_item_clk_f_response_time_stamp;
+    };
+    struct { /* S7PayloadUserDataItemClkSetRequest */
+      plc4c_s7_read_write_date_and_time* s7_payload_user_data_item_clk_set_request_time_stamp;
     };
   };
 };

@@ -32,6 +32,10 @@
   <name>PLC4J: Utils: Test-Generator</name>
   <description>Generates tests.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

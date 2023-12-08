@@ -290,7 +290,7 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfElementResults)
 		noOfElementResults := int32(m.GetNoOfElementResults())
-		_noOfElementResultsErr := writeBuffer.WriteInt32("noOfElementResults", 32, (noOfElementResults))
+		_noOfElementResultsErr := writeBuffer.WriteInt32("noOfElementResults", 32, int32((noOfElementResults)))
 		if _noOfElementResultsErr != nil {
 			return errors.Wrap(_noOfElementResultsErr, "Error serializing 'noOfElementResults' field")
 		}
@@ -314,7 +314,7 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfElementDiagnosticInfos)
 		noOfElementDiagnosticInfos := int32(m.GetNoOfElementDiagnosticInfos())
-		_noOfElementDiagnosticInfosErr := writeBuffer.WriteInt32("noOfElementDiagnosticInfos", 32, (noOfElementDiagnosticInfos))
+		_noOfElementDiagnosticInfosErr := writeBuffer.WriteInt32("noOfElementDiagnosticInfos", 32, int32((noOfElementDiagnosticInfos)))
 		if _noOfElementDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfElementDiagnosticInfosErr, "Error serializing 'noOfElementDiagnosticInfos' field")
 		}

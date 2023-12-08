@@ -338,14 +338,14 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (timestamp)
 		timestamp := int64(m.GetTimestamp())
-		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, (timestamp))
+		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
 		if _timestampErr != nil {
 			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 		}
 
 		// Simple Field (requestHandle)
 		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, (requestHandle))
+		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
 		if _requestHandleErr != nil {
 			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
 		}
@@ -376,7 +376,7 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (noOfStringTable)
 		noOfStringTable := int32(m.GetNoOfStringTable())
-		_noOfStringTableErr := writeBuffer.WriteInt32("noOfStringTable", 32, (noOfStringTable))
+		_noOfStringTableErr := writeBuffer.WriteInt32("noOfStringTable", 32, int32((noOfStringTable)))
 		if _noOfStringTableErr != nil {
 			return errors.Wrap(_noOfStringTableErr, "Error serializing 'noOfStringTable' field")
 		}

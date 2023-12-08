@@ -237,7 +237,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeResponse) SerializeWithWri
 
 		// Simple Field (itemsCount)
 		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, (itemsCount))
+		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
 		if _itemsCountErr != nil {
 			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
 		}

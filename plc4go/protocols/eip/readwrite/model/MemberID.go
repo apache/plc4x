@@ -198,14 +198,14 @@ func (m *_MemberID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 		// Simple Field (format)
 		format := uint8(m.GetFormat())
-		_formatErr := writeBuffer.WriteUint8("format", 2, (format))
+		_formatErr := writeBuffer.WriteUint8("format", 2, uint8((format)))
 		if _formatErr != nil {
 			return errors.Wrap(_formatErr, "Error serializing 'format' field")
 		}
 
 		// Simple Field (instance)
 		instance := uint8(m.GetInstance())
-		_instanceErr := writeBuffer.WriteUint8("instance", 8, (instance))
+		_instanceErr := writeBuffer.WriteUint8("instance", 8, uint8((instance)))
 		if _instanceErr != nil {
 			return errors.Wrap(_instanceErr, "Error serializing 'instance' field")
 		}

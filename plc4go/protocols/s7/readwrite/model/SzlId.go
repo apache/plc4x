@@ -208,7 +208,7 @@ func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.GetSublistExtract())
-	_sublistExtractErr := writeBuffer.WriteUint8("sublistExtract", 4, (sublistExtract))
+	_sublistExtractErr := writeBuffer.WriteUint8("sublistExtract", 4, uint8((sublistExtract)))
 	if _sublistExtractErr != nil {
 		return errors.Wrap(_sublistExtractErr, "Error serializing 'sublistExtract' field")
 	}

@@ -216,7 +216,7 @@ func (m *_BrowsePathTarget) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (remainingPathIndex)
 		remainingPathIndex := uint32(m.GetRemainingPathIndex())
-		_remainingPathIndexErr := writeBuffer.WriteUint32("remainingPathIndex", 32, (remainingPathIndex))
+		_remainingPathIndexErr := writeBuffer.WriteUint32("remainingPathIndex", 32, uint32((remainingPathIndex)))
 		if _remainingPathIndexErr != nil {
 			return errors.Wrap(_remainingPathIndexErr, "Error serializing 'remainingPathIndex' field")
 		}

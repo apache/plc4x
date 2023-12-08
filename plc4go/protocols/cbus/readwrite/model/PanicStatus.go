@@ -202,7 +202,7 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (status)
 	status := uint8(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint8("status", 8, (status))
+	_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}

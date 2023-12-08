@@ -450,7 +450,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -465,7 +465,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (dataSetWriterId)
 		dataSetWriterId := uint16(m.GetDataSetWriterId())
-		_dataSetWriterIdErr := writeBuffer.WriteUint16("dataSetWriterId", 16, (dataSetWriterId))
+		_dataSetWriterIdErr := writeBuffer.WriteUint16("dataSetWriterId", 16, uint16((dataSetWriterId)))
 		if _dataSetWriterIdErr != nil {
 			return errors.Wrap(_dataSetWriterIdErr, "Error serializing 'dataSetWriterId' field")
 		}
@@ -484,7 +484,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (keyFrameCount)
 		keyFrameCount := uint32(m.GetKeyFrameCount())
-		_keyFrameCountErr := writeBuffer.WriteUint32("keyFrameCount", 32, (keyFrameCount))
+		_keyFrameCountErr := writeBuffer.WriteUint32("keyFrameCount", 32, uint32((keyFrameCount)))
 		if _keyFrameCountErr != nil {
 			return errors.Wrap(_keyFrameCountErr, "Error serializing 'keyFrameCount' field")
 		}
@@ -503,7 +503,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfDataSetWriterProperties)
 		noOfDataSetWriterProperties := int32(m.GetNoOfDataSetWriterProperties())
-		_noOfDataSetWriterPropertiesErr := writeBuffer.WriteInt32("noOfDataSetWriterProperties", 32, (noOfDataSetWriterProperties))
+		_noOfDataSetWriterPropertiesErr := writeBuffer.WriteInt32("noOfDataSetWriterProperties", 32, int32((noOfDataSetWriterProperties)))
 		if _noOfDataSetWriterPropertiesErr != nil {
 			return errors.Wrap(_noOfDataSetWriterPropertiesErr, "Error serializing 'noOfDataSetWriterProperties' field")
 		}

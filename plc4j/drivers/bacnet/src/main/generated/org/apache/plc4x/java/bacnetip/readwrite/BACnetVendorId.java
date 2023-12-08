@@ -1664,6 +1664,14 @@ public enum BACnetVendorId {
   SS_NORTHERN_LTD((int) 1448, (int) 1448, (String) "S&S Northern Ltd."),
   ULBIOS_TECHSENS((int) 1449, (int) 1449, (String) "Ulbios Techsens"),
   BOWERY_FARMING_INC((int) 1450, (int) 1450, (String) "Bowery Farming, Inc."),
+  RYOBI_LIMITED((int) 1451, (int) 1451, (String) "Ryobi Limited"),
+  EKKO_SENSE_LTD((int) 1452, (int) 1452, (String) "EkkoSense Ltd"),
+  CLIMA_COOL((int) 1453, (int) 1453, (String) "ClimaCool"),
+  GRID_CONNECT_INC((int) 1454, (int) 1454, (String) "Grid Connect Inc."),
+  ZIEGLER_INSTRUMENTATIONUK_LTD((int) 1455, (int) 1455, (String) "Ziegler Instrumentation UK Ltd"),
+  CONTROL_TECLLC((int) 1456, (int) 1456, (String) "ControlTec, LLC"),
+  AETERLINK_CORPORATION((int) 1457, (int) 1457, (String) "Aeterlink Corporation"),
+  ALPHA_EPSILON_AUTOMATION((int) 1458, (int) 1458, (String) "Alpha Epsilon Automation"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

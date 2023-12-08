@@ -170,7 +170,7 @@ func (pm *_PathSegment) SerializeParent(ctx context.Context, writeBuffer utils.W
 
 	// Discriminator Field (pathSegment) (Used as input to a switch field)
 	pathSegment := uint8(child.GetPathSegment())
-	_pathSegmentErr := writeBuffer.WriteUint8("pathSegment", 3, (pathSegment))
+	_pathSegmentErr := writeBuffer.WriteUint8("pathSegment", 3, uint8((pathSegment)))
 
 	if _pathSegmentErr != nil {
 		return errors.Wrap(_pathSegmentErr, "Error serializing 'pathSegment' field")

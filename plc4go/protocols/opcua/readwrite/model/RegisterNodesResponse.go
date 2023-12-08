@@ -262,7 +262,7 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRegisteredNodeIds)
 		noOfRegisteredNodeIds := int32(m.GetNoOfRegisteredNodeIds())
-		_noOfRegisteredNodeIdsErr := writeBuffer.WriteInt32("noOfRegisteredNodeIds", 32, (noOfRegisteredNodeIds))
+		_noOfRegisteredNodeIdsErr := writeBuffer.WriteInt32("noOfRegisteredNodeIds", 32, int32((noOfRegisteredNodeIds)))
 		if _noOfRegisteredNodeIdsErr != nil {
 			return errors.Wrap(_noOfRegisteredNodeIdsErr, "Error serializing 'noOfRegisteredNodeIds' field")
 		}

@@ -204,7 +204,7 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (monitoredItemId)
 		monitoredItemId := uint32(m.GetMonitoredItemId())
-		_monitoredItemIdErr := writeBuffer.WriteUint32("monitoredItemId", 32, (monitoredItemId))
+		_monitoredItemIdErr := writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
 		if _monitoredItemIdErr != nil {
 			return errors.Wrap(_monitoredItemIdErr, "Error serializing 'monitoredItemId' field")
 		}

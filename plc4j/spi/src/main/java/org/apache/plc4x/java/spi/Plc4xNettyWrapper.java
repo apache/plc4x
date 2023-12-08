@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -152,6 +153,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 continue;
             }
             // Timeout?
+            if (registration.isDone()) {
+                logger.debug("Removing {} as it's already done. Timed out?", registration);
+                iter.remove();
+                continue;
+            }
             logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
                 logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
@@ -231,6 +237,9 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             completionCallback.andThen(handler.getPacketConsumer()),
             handler.getOnTimeoutConsumer(),
             handler.getErrorConsumer(),
+            handler::confirmHandled,
+            handler::confirmError,
+            handler::cancel,
             handler.getTimeout()
         );
         deferred.set(registration);
@@ -238,12 +247,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     private Consumer<TimeoutException> onTimeout(AtomicReference<HandlerRegistration> reference, Consumer<TimeoutException> onTimeoutConsumer) {
-        return new Consumer<TimeoutException>() {
-            @Override
-            public void accept(TimeoutException e) {
-                registeredHandlers.remove(reference.get());
-                onTimeoutConsumer.accept(e);
-            }
+        return timeoutException -> {
+            final HandlerRegistration registration = reference.get();
+            registeredHandlers.remove(registration);
+            onTimeoutConsumer.accept(timeoutException);
+            registration.confirmError();
         };
     }
 

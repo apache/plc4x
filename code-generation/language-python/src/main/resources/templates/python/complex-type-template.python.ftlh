@@ -588,19 +588,21 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         raise ParseException("array fields of type byte only support 'count' and 'length' loop-types.")
                     </#if>
                     <@emitImport import="from typing import List" />
-        self.${helper.camelCaseToSnakeCase(namedField.name)} = read_buffer.read_byte_array("${namedField.name}", int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
+        ${helper.camelCaseToSnakeCase(namedField.name)}: List[int] = read_buffer.read_byte_array("${namedField.name}", int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
                 <#else>
                 <#-- If this is a count array, we can directly initialize an array with the given size -->
                     <#if field.isCountArrayField()>
-        self.${helper.camelCaseToSnakeCase(arrayField.name)} = read_count_array_field("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.camelCaseToSnakeCase(helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments))}${helper.getFieldOptions(typedField, parserArguments)})
+                    <@emitImport import="from typing import List" />
+                    <@emitImport import="from typing import Any" />
+        ${helper.camelCaseToSnakeCase(arrayField.name)}: List[Any] = read_buffer.read_array_field("${arrayField.name}", read_buffer.${helper.getDataReaderCall(arrayField.type)}, count=${helper.camelCaseToSnakeCase(helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments))}${helper.getFieldOptions(typedField, parserArguments)})
                     <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                     <#else>
                     <#-- For a length array, we read data till the read position of the buffer reaches a given position -->
                         <#if field.isLengthArrayField()>
-        self.${helper.camelCaseToSnakeCase(arrayField.name)} = read_length_array_field("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.camelCaseToSnakeCase(helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments))}${helper.getFieldOptions(typedField, parserArguments)})
+        ${helper.camelCaseToSnakeCase(arrayField.name)}: List[Any] = read_buffer.read_array_field("${arrayField.name}", read_buffer.${helper.getDataReaderCall(arrayField.type)}, length=${helper.camelCaseToSnakeCase(helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments))}${helper.getFieldOptions(typedField, parserArguments)})
                         <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
                         <#elseif field.isTerminatedArrayField()>
-        self.${helper.camelCaseToSnakeCase(arrayField.name)} = read_terminated_array_field("${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, lambda : (c_bool(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}))${helper.getFieldOptions(typedField, parserArguments)})
+        ${helper.camelCaseToSnakeCase(arrayField.name)}: List[Any] = read_buffer.read_array_field("${arrayField.name}", read_buffer.${helper.getDataReaderCall(arrayField.type)}, terminated=lambda : (c_bool(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}))${helper.getFieldOptions(typedField, parserArguments)})
                         </#if>
                     </#if>
                 </#if>

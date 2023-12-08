@@ -229,7 +229,7 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (modificationTime)
 		modificationTime := int64(m.GetModificationTime())
-		_modificationTimeErr := writeBuffer.WriteInt64("modificationTime", 64, (modificationTime))
+		_modificationTimeErr := writeBuffer.WriteInt64("modificationTime", 64, int64((modificationTime)))
 		if _modificationTimeErr != nil {
 			return errors.Wrap(_modificationTimeErr, "Error serializing 'modificationTime' field")
 		}

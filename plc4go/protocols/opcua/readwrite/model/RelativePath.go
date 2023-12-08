@@ -225,7 +225,7 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfElements)
 		noOfElements := int32(m.GetNoOfElements())
-		_noOfElementsErr := writeBuffer.WriteInt32("noOfElements", 32, (noOfElements))
+		_noOfElementsErr := writeBuffer.WriteInt32("noOfElements", 32, int32((noOfElements)))
 		if _noOfElementsErr != nil {
 			return errors.Wrap(_noOfElementsErr, "Error serializing 'noOfElements' field")
 		}

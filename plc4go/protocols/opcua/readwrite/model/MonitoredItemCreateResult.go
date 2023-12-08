@@ -279,7 +279,7 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (monitoredItemId)
 		monitoredItemId := uint32(m.GetMonitoredItemId())
-		_monitoredItemIdErr := writeBuffer.WriteUint32("monitoredItemId", 32, (monitoredItemId))
+		_monitoredItemIdErr := writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
 		if _monitoredItemIdErr != nil {
 			return errors.Wrap(_monitoredItemIdErr, "Error serializing 'monitoredItemId' field")
 		}
@@ -293,7 +293,7 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (revisedQueueSize)
 		revisedQueueSize := uint32(m.GetRevisedQueueSize())
-		_revisedQueueSizeErr := writeBuffer.WriteUint32("revisedQueueSize", 32, (revisedQueueSize))
+		_revisedQueueSizeErr := writeBuffer.WriteUint32("revisedQueueSize", 32, uint32((revisedQueueSize)))
 		if _revisedQueueSizeErr != nil {
 			return errors.Wrap(_revisedQueueSizeErr, "Error serializing 'revisedQueueSize' field")
 		}

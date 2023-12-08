@@ -491,7 +491,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_OSRAM = 464,
         M_LEBENOR = 465,
         M_AUTOMANENG = 466,
-        M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA = 467,
+        M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD = 467,
         M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD = 468,
         M_ETA_HEIZTECHNIK = 469,
         M_DIVUS_GMBH = 470,
@@ -599,7 +599,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_VIEGA_GMBH_AND_CO__KG = 572,
         M_FREDON_DIGITAL_BUILDINGS = 573,
         M_HELUKABEL_THAILAND_CO__LTD_ = 574,
-        M_ACE_TECHNOLOGY = 575,
+        M_SICS = 575,
         M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD = 576,
         M_SUMAMO = 577,
         M_SVIT = 578,
@@ -670,8 +670,17 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_MOX_CONTROL_IT_CHINA_LIMITED = 643,
         M_CLOWIRE = 644,
         M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD = 645,
-        M_ABB___RESERVED = 646,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 647,
+        M_NS_TOUCH = 646,
+        M_ROOMIO = 647,
+        M_ATOUCH = 648,
+        M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD = 649,
+        M_WALLYONS = 650,
+        M_ZIMMEX = 651,
+        M_RHOMBUS_EUROPE = 652,
+        M_TURING_THINK = 653,
+        M_MICHOI = 654,
+        M_ABB___RESERVED = 655,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 656,
     }
 
     public static class KnxManufacturerInfo
@@ -1908,7 +1917,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_AUTOMANENG: { /* '466' */
                     return 521;
                 }
-                case KnxManufacturer.M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA: { /* '467' */
+                case KnxManufacturer.M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD: { /* '467' */
                     return 522;
                 }
                 case KnxManufacturer.M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD: { /* '468' */
@@ -2268,7 +2277,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_HELUKABEL_THAILAND_CO__LTD_: { /* '574' */
                     return 630;
                 }
-                case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '575' */
+                case KnxManufacturer.M_SICS: { /* '575' */
                     return 631;
                 }
                 case KnxManufacturer.M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD: { /* '576' */
@@ -2505,14 +2514,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD: { /* '645' */
                     return 703;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '646' */
-                    return 43954;
+                case KnxManufacturer.M_NS_TOUCH: { /* '646' */
+                    return 704;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '647' */
-                    return 43959;
+                case KnxManufacturer.M_ROOMIO: { /* '647' */
+                    return 705;
+                }
+                case KnxManufacturer.M_ATOUCH: { /* '648' */
+                    return 706;
+                }
+                case KnxManufacturer.M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD: { /* '649' */
+                    return 707;
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
                     return 104;
+                }
+                case KnxManufacturer.M_WALLYONS: { /* '650' */
+                    return 708;
+                }
+                case KnxManufacturer.M_ZIMMEX: { /* '651' */
+                    return 709;
+                }
+                case KnxManufacturer.M_RHOMBUS_EUROPE: { /* '652' */
+                    return 710;
+                }
+                case KnxManufacturer.M_TURING_THINK: { /* '653' */
+                    return 711;
+                }
+                case KnxManufacturer.M_MICHOI: { /* '654' */
+                    return 712;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '655' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '656' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
                     return 105;
@@ -3862,8 +3898,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_AUTOMANENG: { /* '466' */
                     return "automaneng";
                 }
-                case KnxManufacturer.M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA: { /* '467' */
-                    return "Honeywell Automation Solution control(China)";
+                case KnxManufacturer.M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD: { /* '467' */
+                    return "Honeywell Automation Control Solutions(China)CoLtd";
                 }
                 case KnxManufacturer.M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD: { /* '468' */
                     return "Hangzhou binthen Intelligence Technology Co.,Ltd";
@@ -4222,8 +4258,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_HELUKABEL_THAILAND_CO__LTD_: { /* '574' */
                     return "Helukabel (Thailand) Co.,Ltd.";
                 }
-                case KnxManufacturer.M_ACE_TECHNOLOGY: { /* '575' */
-                    return "ACE Technology";
+                case KnxManufacturer.M_SICS: { /* '575' */
+                    return "SICS";
                 }
                 case KnxManufacturer.M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD: { /* '576' */
                     return "MEX Electric Technology (Shanghai) Co., Ltd";
@@ -4459,14 +4495,41 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_NINGBO_QIYUAN_LIGHTING_TECH_CO__LTD: { /* '645' */
                     return "NINGBO QIYUAN LIGHTING TECH CO.,LTD";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '646' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_NS_TOUCH: { /* '646' */
+                    return "NS Touch";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '647' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_ROOMIO: { /* '647' */
+                    return "ROOMIO";
+                }
+                case KnxManufacturer.M_ATOUCH: { /* '648' */
+                    return "Atouch";
+                }
+                case KnxManufacturer.M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD: { /* '649' */
+                    return "Panasonic Life Solutions India Pvt. Ltd";
                 }
                 case KnxManufacturer.M_JEPAZ: { /* '65' */
                     return "JEPAZ";
+                }
+                case KnxManufacturer.M_WALLYONS: { /* '650' */
+                    return "WallYons";
+                }
+                case KnxManufacturer.M_ZIMMEX: { /* '651' */
+                    return "Zimmex";
+                }
+                case KnxManufacturer.M_RHOMBUS_EUROPE: { /* '652' */
+                    return "Rhombus Europe";
+                }
+                case KnxManufacturer.M_TURING_THINK: { /* '653' */
+                    return "Turing-Think";
+                }
+                case KnxManufacturer.M_MICHOI: { /* '654' */
+                    return "Michoi";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '655' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '656' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
                     return "RTS Automation";

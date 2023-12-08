@@ -30,10 +30,6 @@ import java.util.List;
 
 public interface ProtocolStackConfigurer<T extends Message> {
 
-    default Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive) {
-        return configurePipeline(configuration, pipeline, authentication, passive, Collections.emptyList());
-    }
-
     Plc4xProtocolBase<T> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners);
 
 }

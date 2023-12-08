@@ -181,7 +181,7 @@ func (pm *_S7Parameter) SerializeParent(ctx context.Context, writeBuffer utils.W
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.GetParameterType())
-	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, (parameterType))
+	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, uint8((parameterType)))
 
 	if _parameterTypeErr != nil {
 		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")

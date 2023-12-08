@@ -341,21 +341,21 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (requestedLifetimeCount)
 		requestedLifetimeCount := uint32(m.GetRequestedLifetimeCount())
-		_requestedLifetimeCountErr := writeBuffer.WriteUint32("requestedLifetimeCount", 32, (requestedLifetimeCount))
+		_requestedLifetimeCountErr := writeBuffer.WriteUint32("requestedLifetimeCount", 32, uint32((requestedLifetimeCount)))
 		if _requestedLifetimeCountErr != nil {
 			return errors.Wrap(_requestedLifetimeCountErr, "Error serializing 'requestedLifetimeCount' field")
 		}
 
 		// Simple Field (requestedMaxKeepAliveCount)
 		requestedMaxKeepAliveCount := uint32(m.GetRequestedMaxKeepAliveCount())
-		_requestedMaxKeepAliveCountErr := writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, (requestedMaxKeepAliveCount))
+		_requestedMaxKeepAliveCountErr := writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, uint32((requestedMaxKeepAliveCount)))
 		if _requestedMaxKeepAliveCountErr != nil {
 			return errors.Wrap(_requestedMaxKeepAliveCountErr, "Error serializing 'requestedMaxKeepAliveCount' field")
 		}
 
 		// Simple Field (maxNotificationsPerPublish)
 		maxNotificationsPerPublish := uint32(m.GetMaxNotificationsPerPublish())
-		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, (maxNotificationsPerPublish))
+		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
 		if _maxNotificationsPerPublishErr != nil {
 			return errors.Wrap(_maxNotificationsPerPublishErr, "Error serializing 'maxNotificationsPerPublish' field")
 		}
@@ -370,7 +370,7 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -385,7 +385,7 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 8, (priority))
+		_priorityErr := writeBuffer.WriteUint8("priority", 8, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}

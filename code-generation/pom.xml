@@ -33,6 +33,10 @@
   <name>Code-Generation</name>
   <description>Home of the PLC4X code-generation framework.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>language-base-freemarker</module>
     <module>language-java</module>
@@ -76,24 +80,5 @@
       </modules>
     </profile>
   </profiles>
-
-  <dependencies>
-    <!-- JUnit 5 Support -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
 </project>

@@ -198,14 +198,14 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 		// Simple Field (format)
 		format := uint8(m.GetFormat())
-		_formatErr := writeBuffer.WriteUint8("format", 2, (format))
+		_formatErr := writeBuffer.WriteUint8("format", 2, uint8((format)))
 		if _formatErr != nil {
 			return errors.Wrap(_formatErr, "Error serializing 'format' field")
 		}
 
 		// Simple Field (segmentClass)
 		segmentClass := uint8(m.GetSegmentClass())
-		_segmentClassErr := writeBuffer.WriteUint8("segmentClass", 8, (segmentClass))
+		_segmentClassErr := writeBuffer.WriteUint8("segmentClass", 8, uint8((segmentClass)))
 		if _segmentClassErr != nil {
 			return errors.Wrap(_segmentClassErr, "Error serializing 'segmentClass' field")
 		}

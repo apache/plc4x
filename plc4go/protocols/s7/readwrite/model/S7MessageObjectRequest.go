@@ -324,13 +324,13 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 
 		// Const Field (variableSpec)
-		_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, 0x12)
+		_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 		if _variableSpecErr != nil {
 			return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 		}
 
 		// Const Field (length)
-		_lengthErr := writeBuffer.WriteUint8("length", 8, 0x08)
+		_lengthErr := writeBuffer.WriteUint8("length", 8, uint8(0x08))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
@@ -357,7 +357,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -385,7 +385,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

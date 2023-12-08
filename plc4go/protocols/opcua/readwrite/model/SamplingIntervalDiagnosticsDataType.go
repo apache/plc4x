@@ -243,21 +243,21 @@ func (m *_SamplingIntervalDiagnosticsDataType) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (monitoredItemCount)
 		monitoredItemCount := uint32(m.GetMonitoredItemCount())
-		_monitoredItemCountErr := writeBuffer.WriteUint32("monitoredItemCount", 32, (monitoredItemCount))
+		_monitoredItemCountErr := writeBuffer.WriteUint32("monitoredItemCount", 32, uint32((monitoredItemCount)))
 		if _monitoredItemCountErr != nil {
 			return errors.Wrap(_monitoredItemCountErr, "Error serializing 'monitoredItemCount' field")
 		}
 
 		// Simple Field (maxMonitoredItemCount)
 		maxMonitoredItemCount := uint32(m.GetMaxMonitoredItemCount())
-		_maxMonitoredItemCountErr := writeBuffer.WriteUint32("maxMonitoredItemCount", 32, (maxMonitoredItemCount))
+		_maxMonitoredItemCountErr := writeBuffer.WriteUint32("maxMonitoredItemCount", 32, uint32((maxMonitoredItemCount)))
 		if _maxMonitoredItemCountErr != nil {
 			return errors.Wrap(_maxMonitoredItemCountErr, "Error serializing 'maxMonitoredItemCount' field")
 		}
 
 		// Simple Field (disabledMonitoredItemCount)
 		disabledMonitoredItemCount := uint32(m.GetDisabledMonitoredItemCount())
-		_disabledMonitoredItemCountErr := writeBuffer.WriteUint32("disabledMonitoredItemCount", 32, (disabledMonitoredItemCount))
+		_disabledMonitoredItemCountErr := writeBuffer.WriteUint32("disabledMonitoredItemCount", 32, uint32((disabledMonitoredItemCount)))
 		if _disabledMonitoredItemCountErr != nil {
 			return errors.Wrap(_disabledMonitoredItemCountErr, "Error serializing 'disabledMonitoredItemCount' field")
 		}

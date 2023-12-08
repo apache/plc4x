@@ -229,7 +229,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 	// Implicit Field (serviceNb) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	serviceNb := uint16(uint16(len(m.GetOffsets())))
-	_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, (serviceNb))
+	_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
 	if _serviceNbErr != nil {
 		return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 	}
@@ -240,7 +240,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	}
 	for _curItem, _element := range m.GetOffsets() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint16("", 16, _element)
+		_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
 		}

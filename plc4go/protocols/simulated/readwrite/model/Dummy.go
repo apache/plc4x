@@ -149,7 +149,7 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 	// Simple Field (dummy)
 	dummy := uint16(m.GetDummy())
-	_dummyErr := writeBuffer.WriteUint16("dummy", 16, (dummy))
+	_dummyErr := writeBuffer.WriteUint16("dummy", 16, uint16((dummy)))
 	if _dummyErr != nil {
 		return errors.Wrap(_dummyErr, "Error serializing 'dummy' field")
 	}

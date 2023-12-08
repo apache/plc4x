@@ -207,11 +207,14 @@ func TestPlcConnectionCache_Close(t *testing.T) {
 	}
 }
 
-func readFromPlc(t *testing.T, cache plcConnectionCache, connectionString string, resourceString string) <-chan []tracer.TraceEntry {
+func (c *plcConnectionCache) readFromPlc(t *testing.T, preConnectJob func(), connectionString string, resourceString string) <-chan []tracer.TraceEntry {
 	ch := make(chan []tracer.TraceEntry)
 
+	if preConnectJob != nil {
+		preConnectJob()
+	}
 	// Get a connection
-	connectionResultChan := cache.GetConnection(connectionString)
+	connectionResultChan := c.GetConnection(connectionString)
 	select {
 	case connectResult := <-connectionResultChan:
 		if connectResult.GetErr() != nil {
@@ -253,16 +256,17 @@ func readFromPlc(t *testing.T, cache plcConnectionCache, connectionString string
 	return ch
 }
 
-func executeAndTestReadFromPlc(t *testing.T, cache plcConnectionCache, connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan bool {
-	ch := make(chan bool)
+func (c *plcConnectionCache) executeAndTestReadFromPlc(t *testing.T, preConnectJob func(), connectionString string, resourceString string, expectedTraceEntries []string, expectedNumTotalConnections int) <-chan struct{} {
+	ch := make(chan struct{})
 	go func() {
-		// Read once from the cache.
-		tracesChannel := readFromPlc(t, cache, connectionString, resourceString)
-		traces := <-tracesChannel
+		// Read once from the c.
+		traces := <-c.readFromPlc(t, preConnectJob, connectionString, resourceString)
 
 		// In the log we should see one "Successfully connected" entry.
 		if len(traces) != len(expectedTraceEntries) {
 			t.Errorf("Expected %d 'Successfully connected' entries in the log but got %d", len(expectedTraceEntries), len(traces))
+			ch <- struct{}{}
+			return
 		}
 		for i, expectedTraceEntry := range expectedTraceEntries {
 			currentTraceEntry := traces[i].Operation + "-" + traces[i].Message
@@ -270,11 +274,11 @@ func executeAndTestReadFromPlc(t *testing.T, cache plcConnectionCache, connectio
 				t.Errorf("Expected %s as trace entry but got %s", expectedTraceEntry, currentTraceEntry)
 			}
 		}
-		// Now there should be one connection in the cache.
-		if len(cache.connections) != expectedNumTotalConnections {
-			t.Errorf("Expected %d connections in the cache but got %d", expectedNumTotalConnections, len(cache.connections))
+		// Now there should be one connection in the c.
+		if len(c.connections) != expectedNumTotalConnections {
+			t.Errorf("Expected %d connections in the c but got %d", expectedNumTotalConnections, len(c.connections))
 		}
-		ch <- true
+		ch <- struct{}{}
 	}()
 	return ch
 }
@@ -302,7 +306,11 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	}
 
 	// Read once from the cache.
-	finishedChan := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?traceEnabled=true", "RANDOM/test_random:BOOL",
+	finishedChan := cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -310,7 +318,9 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 			"read-success",
 			"ping-started",
 			"ping-success",
-		}, 1)
+		},
+		1,
+	)
 	select {
 	case _ = <-finishedChan:
 	case <-time.After(500 * time.Millisecond * time.Duration(debugTimeout)):
@@ -318,13 +328,19 @@ func TestPlcConnectionCache_ReusingAnExistingConnection(t *testing.T) {
 	}
 
 	// Request the same connection for a second time.
-	finishedChan = executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?traceEnabled=true", "RANDOM/test_random:BOOL",
+	finishedChan = cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"read-started",
 			"read-success",
 			"ping-started",
 			"ping-success",
-		}, 1)
+		},
+		1,
+	)
 	select {
 	case _ = <-finishedChan:
 	case <-time.After(500 * time.Millisecond * time.Duration(debugTimeout)):
@@ -366,8 +382,18 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 		t.Errorf("Expected %d connections in the cache but got %d", 0, len(cache.connections))
 	}
 
+	floodGate := lock.NewCASMutex() // floodgate is use because we want both get connection to get executed in short order
+	floodGate.Lock()                // We use a cas mutex write lock to lock the floodgate
+
 	// Read once from the cache.
-	firstRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	firstRun := cache.executeAndTestReadFromPlc(
+		t,
+		func() {
+			floodGate.RLock()
+			defer floodGate.RUnlock()
+		},
+		"simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -375,21 +401,32 @@ func TestPlcConnectionCache_MultipleConcurrentConnectionRequests(t *testing.T) {
 			"read-success",
 			"ping-started",
 			"ping-success",
-		}, 1)
-
-	time.Sleep(1 * time.Millisecond)
+		},
+		1,
+	)
 
 	// Almost instantly request the same connection for a second time.
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
-	secondRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	secondRun := cache.executeAndTestReadFromPlc(
+		t,
+		func() {
+			floodGate.RLock()
+			defer floodGate.RUnlock()
+			time.Sleep(10 * time.Millisecond)
+		},
+		"simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"read-started",
 			"read-success",
 			"ping-started",
 			"ping-success",
-		}, 1)
+		},
+		1,
+	)
+	floodGate.Unlock()
 	select {
 	case _ = <-firstRun:
 		select {
@@ -542,7 +579,11 @@ func TestPlcConnectionCache_PingTimeout(t *testing.T) {
 	}
 
 	// Read once from the cache.
-	firstRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?pingDelay=10000&traceEnabled=true", "RANDOM/test_random:BOOL",
+	firstRun := cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?pingDelay=10000&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -587,7 +628,11 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 	}
 
 	// Read once from the cache.
-	firstRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	firstRun := cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -603,7 +648,11 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 	// As the connection takes 100ms, the second connection request will come
 	// in while the first is still not finished. So in theory it would have
 	// to wait for the first operation to be finished first.
-	secondRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	secondRun := cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?pingDelay=10000&connectionDelay=100&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -611,7 +660,9 @@ func TestPlcConnectionCache_SecondCallGetNewConnectionAfterPingTimeout(t *testin
 			"read-success",
 			"ping-started",
 			"ping-timeout",
-		}, 1)
+		},
+		1,
+	)
 	select {
 	case _ = <-firstRun:
 		select {
@@ -671,13 +722,19 @@ func TestPlcConnectionCache_FistReadGivesUpBeforeItGetsTheConnectionSoSecondOneT
 
 	// Read once from the cache.
 	// NOTE: It doesn't contain the connect-part, as the previous connection handled that.
-	firstRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	firstRun := cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"read-started",
 			"read-success",
 			"ping-started",
 			"ping-success",
-		}, 1)
+		},
+		1,
+	)
 
 	select {
 	case _ = <-firstRun:
@@ -710,7 +767,11 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 	}
 
 	// Read once from the cache.
-	firstRun := executeAndTestReadFromPlc(t, cache, "simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true", "RANDOM/test_random:BOOL",
+	firstRun := cache.executeAndTestReadFromPlc(
+		t,
+		nil,
+		"simulated://1.2.3.4:42?connectionDelay=100&traceEnabled=true",
+		"RANDOM/test_random:BOOL",
 		[]string{
 			"connect-started",
 			"connect-success",
@@ -718,7 +779,9 @@ func TestPlcConnectionCache_SecondConnectionGivenUpWaiting(t *testing.T) {
 			"read-success",
 			"ping-started",
 			"ping-success",
-		}, 1)
+		},
+		1,
+	)
 
 	time.Sleep(1 * time.Millisecond)
 

@@ -84,7 +84,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
         this.readTimeout = configuration.readTimeout;
         this.ping = configuration.ping;
-        this.pingTime = configuration.pingTime;
+        this.pingTime = (configuration.pingTime == 0) ? 10 : configuration.pingTime;
         this.retryTime = configuration.retryTime;
     }
 

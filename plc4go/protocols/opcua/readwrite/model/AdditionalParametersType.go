@@ -225,7 +225,7 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfParameters)
 		noOfParameters := int32(m.GetNoOfParameters())
-		_noOfParametersErr := writeBuffer.WriteInt32("noOfParameters", 32, (noOfParameters))
+		_noOfParametersErr := writeBuffer.WriteInt32("noOfParameters", 32, int32((noOfParameters)))
 		if _noOfParametersErr != nil {
 			return errors.Wrap(_noOfParametersErr, "Error serializing 'noOfParameters' field")
 		}

@@ -141,7 +141,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             // apply to them as well as which subslots are present and which submodule identifiers these have.
             // In this part of the code, we simply look up the gsd dap, modules and submodules that match these
             // identifiers and save them in an easily accessible format in the deviceContext.
-            else if(deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().size() > 0) {
+            else if(!deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().isEmpty()) {
                 // Build an index of the String names.
                 Map<String, String> textMapping = new HashMap<>();
                 for (ProfinetTextIdValue profinetTextIdValue : deviceProfile.getProfileBody().getApplicationProcess().getExternalTextList().getPrimaryLanguage().getText()) {
@@ -311,7 +311,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     @Override
     public void close(ConversationContext<Ethernet_Frame> context) {
-
+        context.getChannel().close();
     }
 
     @Override

@@ -32,6 +32,10 @@
   <name>Code-Generation: Language: Java</name>
   <description>Code generation template for generating Java code</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

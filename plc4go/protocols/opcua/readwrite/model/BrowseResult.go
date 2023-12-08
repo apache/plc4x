@@ -299,7 +299,7 @@ func (m *_BrowseResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfReferences)
 		noOfReferences := int32(m.GetNoOfReferences())
-		_noOfReferencesErr := writeBuffer.WriteInt32("noOfReferences", 32, (noOfReferences))
+		_noOfReferencesErr := writeBuffer.WriteInt32("noOfReferences", 32, int32((noOfReferences)))
 		if _noOfReferencesErr != nil {
 			return errors.Wrap(_noOfReferencesErr, "Error serializing 'noOfReferences' field")
 		}

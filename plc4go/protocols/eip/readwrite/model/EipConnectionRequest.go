@@ -208,13 +208,13 @@ func (m *_EipConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 
 		// Const Field (protocolVersion)
-		_protocolVersionErr := writeBuffer.WriteUint16("protocolVersion", 16, 0x01)
+		_protocolVersionErr := writeBuffer.WriteUint16("protocolVersion", 16, uint16(0x01))
 		if _protocolVersionErr != nil {
 			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 		}
 
 		// Const Field (flags)
-		_flagsErr := writeBuffer.WriteUint16("flags", 16, 0x00)
+		_flagsErr := writeBuffer.WriteUint16("flags", 16, uint16(0x00))
 		if _flagsErr != nil {
 			return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
 		}

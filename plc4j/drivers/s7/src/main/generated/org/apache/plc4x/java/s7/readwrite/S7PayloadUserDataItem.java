@@ -383,6 +383,42 @@ public abstract class S7PayloadUserDataItem implements Message {
           S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
               .staticParseS7PayloadUserDataItemBuilder(
                   readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
+    } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x07)
+        && EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
+        && EvaluationHelper.equals(cpuSubfunction, (short) 0x01)) {
+      builder =
+          S7PayloadUserDataItemClkRequest.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
+    } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x07)
+        && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
+        && EvaluationHelper.equals(cpuSubfunction, (short) 0x01)) {
+      builder =
+          S7PayloadUserDataItemClkResponse.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
+    } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x07)
+        && EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
+        && EvaluationHelper.equals(cpuSubfunction, (short) 0x03)) {
+      builder =
+          S7PayloadUserDataItemClkFRequest.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
+    } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x07)
+        && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
+        && EvaluationHelper.equals(cpuSubfunction, (short) 0x03)) {
+      builder =
+          S7PayloadUserDataItemClkFResponse.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
+    } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x07)
+        && EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
+        && EvaluationHelper.equals(cpuSubfunction, (short) 0x04)) {
+      builder =
+          S7PayloadUserDataItemClkSetRequest.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
+    } else if (EvaluationHelper.equals(cpuFunctionGroup, (byte) 0x07)
+        && EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
+        && EvaluationHelper.equals(cpuSubfunction, (short) 0x04)) {
+      builder =
+          S7PayloadUserDataItemClkSetResponse.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
     }
     if (builder == null) {
       throw new ParseException(

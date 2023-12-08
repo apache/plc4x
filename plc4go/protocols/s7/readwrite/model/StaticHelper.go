@@ -84,14 +84,14 @@ func SerializeTiaTimeOfDay(ctx context.Context, io utils.WriteBuffer, value valu
 	return nil
 }
 
-func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (uint16, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
 	  } catch (ParseException e) {
 	      return null;
 	  }*/
-	return time.Time{}, nil
+	return 0, nil
 }
 
 func SerializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
@@ -120,6 +120,14 @@ func ParseTiaDateTime(ctx context.Context, io utils.ReadBuffer) (time.Time, erro
 
 func SerializeTiaDateTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
+	return nil
+}
+
+func parseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
+	return time.Time{}, nil
+}
+
+func serializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	return nil
 }
 

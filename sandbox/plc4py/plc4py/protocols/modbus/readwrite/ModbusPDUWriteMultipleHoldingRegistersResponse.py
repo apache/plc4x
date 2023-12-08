@@ -25,10 +25,9 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
-
-
+    
 @dataclass
-class ModbusPDUWriteMultipleHoldingRegistersResponse(PlcMessage, ModbusPDU):
+class ModbusPDUWriteMultipleHoldingRegistersResponse(PlcMessage,ModbusPDU):
     starting_address: int
     quantity: int
     # Accessors for discriminator values.
@@ -36,21 +35,23 @@ class ModbusPDUWriteMultipleHoldingRegistersResponse(PlcMessage, ModbusPDU):
     function_flag: int = 0x10
     response: bool = True
 
+
     def __post_init__(self):
-        super().__init__()
+        super().__init__( )
+
+
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUWriteMultipleHoldingRegistersResponse")
 
         # Simple Field (startingAddress)
-        write_buffer.write_unsigned_short(
-            self.starting_address, logical_name="startingAddress"
-        )
+        write_buffer.write_unsigned_short(self.starting_address, logical_name="startingAddress")
 
         # Simple Field (quantity)
         write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
 
         write_buffer.pop_context("ModbusPDUWriteMultipleHoldingRegistersResponse")
+
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
@@ -67,19 +68,19 @@ class ModbusPDUWriteMultipleHoldingRegistersResponse(PlcMessage, ModbusPDU):
 
         return length_in_bits
 
+
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUWriteMultipleHoldingRegistersResponse")
 
-        self.starting_address = read_simple_field("startingAddress", read_unsigned_int)
+        self.starting_address= read_simple_field("startingAddress", read_unsigned_int)
 
-        self.quantity = read_simple_field("quantity", read_unsigned_int)
+        self.quantity= read_simple_field("quantity", read_unsigned_int)
 
         read_buffer.pop_context("ModbusPDUWriteMultipleHoldingRegistersResponse")
         # Create the instance
-        return ModbusPDUWriteMultipleHoldingRegistersResponseBuilder(
-            starting_address, quantity
-        )
+        return ModbusPDUWriteMultipleHoldingRegistersResponseBuilder(starting_address, quantity )
+
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -88,15 +89,8 @@ class ModbusPDUWriteMultipleHoldingRegistersResponse(PlcMessage, ModbusPDU):
         if not isinstance(o, ModbusPDUWriteMultipleHoldingRegistersResponse):
             return False
 
-        that: ModbusPDUWriteMultipleHoldingRegistersResponse = (
-            ModbusPDUWriteMultipleHoldingRegistersResponse(o)
-        )
-        return (
-            (self.starting_address == that.starting_address)
-            and (self.quantity == that.quantity)
-            and super().equals(that)
-            and True
-        )
+        that: ModbusPDUWriteMultipleHoldingRegistersResponse = ModbusPDUWriteMultipleHoldingRegistersResponse(o)
+        return (self.starting_address == that.starting_address) and (self.quantity == that.quantity) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -119,10 +113,9 @@ class ModbusPDUWriteMultipleHoldingRegistersResponseBuilder(ModbusPDUBuilder):
     def __post_init__(self):
         pass
 
-    def build(
-        self,
-    ) -> ModbusPDUWriteMultipleHoldingRegistersResponse:
-        modbus_pdu_write_multiple_holding_registers_response: ModbusPDUWriteMultipleHoldingRegistersResponse = ModbusPDUWriteMultipleHoldingRegistersResponse(
-            self.starting_address, self.quantity
-        )
+    def build(self,) -> ModbusPDUWriteMultipleHoldingRegistersResponse:
+        modbus_pdu_write_multiple_holding_registers_response: ModbusPDUWriteMultipleHoldingRegistersResponse = ModbusPDUWriteMultipleHoldingRegistersResponse(self.starting_address, self.quantity )
         return modbus_pdu_write_multiple_holding_registers_response
+
+
+

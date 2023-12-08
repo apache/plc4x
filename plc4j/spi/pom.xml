@@ -30,6 +30,10 @@
   <name>PLC4J: SPI</name>
   <description>Internal API Module.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.netty</groupId>

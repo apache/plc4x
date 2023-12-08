@@ -464,7 +464,7 @@ func (m *_CreateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (maxResponseMessageSize)
 		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, (maxResponseMessageSize))
+		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
 		if _maxResponseMessageSizeErr != nil {
 			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
 		}

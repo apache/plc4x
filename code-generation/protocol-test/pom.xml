@@ -32,6 +32,10 @@
   <name>Code-Generation: Protocol Test: Test Mspec</name>
   <description>Fake protocol intended for demonstrating the different features and aspects of MSpec.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

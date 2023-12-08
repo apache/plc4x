@@ -198,14 +198,14 @@ func (m *_SubscriptionAcknowledgement) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, (subscriptionId))
+		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, (sequenceNumber))
+		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}

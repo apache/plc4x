@@ -32,6 +32,7 @@
   <description>Data Collection with PLC4X and InfluxDB.</description>
 
   <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.examples.helloinflux.HelloInflux</app.main.class>
   </properties>
 

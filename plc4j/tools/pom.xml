@@ -33,9 +33,14 @@
   <name>PLC4J: Tools</name>
   <description>A collection of tools that provide additional services to users.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>capture-replay</module>
     <module>connection-cache</module>
+    <module>opcua-server</module>
     <module>opm</module>
     <module>plc4x-server</module>
     <module>scraper</module>

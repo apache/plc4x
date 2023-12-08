@@ -47,24 +47,22 @@ public class HelloDiscovery {
         PlcDriverManager plcDriverManager = PlcDriverManager.getDefault();
         Set<String> driverCodes = plcDriverManager.listDrivers();
         for (String driverCode : driverCodes) {
-            logger.info("Executing Discovery for Driver: {}", driverCode);
             PlcDriver driver = plcDriverManager.getDriver(driverCode);
 
             // Check if this driver supports discovery.
             if(driver.getMetadata().canDiscover()) {
+                logger.info("Executing Discovery for Driver: {}", driverCode);
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
                 PlcDiscoveryResponse discoveryResponse = discoveryRequest.executeWithHandler(
                     discoveryItem -> logger.info("Intercepted discovery of device with name: {} with connection url: {}",
                         discoveryItem.getName(), discoveryItem.getConnectionUrl())).get();
-                if(discoveryResponse.getResponseCode() == PlcResponseCode.OK) {
+                /*if(discoveryResponse.getResponseCode() == PlcResponseCode.OK) {
                     logger.info("Discovery finished successfully:");
                     for (PlcDiscoveryItem discoveryItem : discoveryResponse.getValues()) {
                         logger.info("Found device with name: {} with connection url: {}",
                             discoveryItem.getName(), discoveryItem.getConnectionUrl());
                     }
-                }
-            } else {
-                logger.info("This driver doesn't support discovery");
+                }*/
             }
         }
     }

@@ -18,12 +18,10 @@
  */
 package org.apache.plc4x.java.abeth.configuration;
 
-import org.apache.plc4x.java.abeth.AbEthDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class AbEthConfiguration implements Configuration, TcpTransportConfiguration {
+public class AbEthConfiguration implements Configuration {
 
     @ConfigurationParameter
     private int station;
@@ -34,11 +32,6 @@ public class AbEthConfiguration implements Configuration, TcpTransportConfigurat
 
     public void setStation(int station) {
         this.station = station;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return AbEthDriver.AB_ETH_PORT;
     }
 
 }

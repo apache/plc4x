@@ -187,7 +187,7 @@ func (m *_ModbusPDUReadFifoQueueRequest) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.GetFifoPointerAddress())
-		_fifoPointerAddressErr := writeBuffer.WriteUint16("fifoPointerAddress", 16, (fifoPointerAddress))
+		_fifoPointerAddressErr := writeBuffer.WriteUint16("fifoPointerAddress", 16, uint16((fifoPointerAddress)))
 		if _fifoPointerAddressErr != nil {
 			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}

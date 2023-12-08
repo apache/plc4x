@@ -1485,6 +1485,14 @@ const (
 	BACnetVendorId_SS_NORTHERN_LTD                                                              BACnetVendorId = 1448
 	BACnetVendorId_ULBIOS_TECHSENS                                                              BACnetVendorId = 1449
 	BACnetVendorId_BOWERY_FARMING_INC                                                           BACnetVendorId = 1450
+	BACnetVendorId_RYOBI_LIMITED                                                                BACnetVendorId = 1451
+	BACnetVendorId_EKKO_SENSE_LTD                                                               BACnetVendorId = 1452
+	BACnetVendorId_CLIMA_COOL                                                                   BACnetVendorId = 1453
+	BACnetVendorId_GRID_CONNECT_INC                                                             BACnetVendorId = 1454
+	BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD                                                BACnetVendorId = 1455
+	BACnetVendorId_CONTROL_TECLLC                                                               BACnetVendorId = 1456
+	BACnetVendorId_AETERLINK_CORPORATION                                                        BACnetVendorId = 1457
+	BACnetVendorId_ALPHA_EPSILON_AUTOMATION                                                     BACnetVendorId = 1458
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2935,6 +2943,14 @@ func init() {
 		BACnetVendorId_SS_NORTHERN_LTD,
 		BACnetVendorId_ULBIOS_TECHSENS,
 		BACnetVendorId_BOWERY_FARMING_INC,
+		BACnetVendorId_RYOBI_LIMITED,
+		BACnetVendorId_EKKO_SENSE_LTD,
+		BACnetVendorId_CLIMA_COOL,
+		BACnetVendorId_GRID_CONNECT_INC,
+		BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD,
+		BACnetVendorId_CONTROL_TECLLC,
+		BACnetVendorId_AETERLINK_CORPORATION,
+		BACnetVendorId_ALPHA_EPSILON_AUTOMATION,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4948,6 +4964,38 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1450:
 		{ /* '1450' */
 			return 1450
+		}
+	case 1451:
+		{ /* '1451' */
+			return 1451
+		}
+	case 1452:
+		{ /* '1452' */
+			return 1452
+		}
+	case 1453:
+		{ /* '1453' */
+			return 1453
+		}
+	case 1454:
+		{ /* '1454' */
+			return 1454
+		}
+	case 1455:
+		{ /* '1455' */
+			return 1455
+		}
+	case 1456:
+		{ /* '1456' */
+			return 1456
+		}
+	case 1457:
+		{ /* '1457' */
+			return 1457
+		}
+	case 1458:
+		{ /* '1458' */
+			return 1458
 		}
 	case 146:
 		{ /* '146' */
@@ -10739,6 +10787,38 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1450' */
 			return "Bowery Farming, Inc."
 		}
+	case 1451:
+		{ /* '1451' */
+			return "Ryobi Limited"
+		}
+	case 1452:
+		{ /* '1452' */
+			return "EkkoSense Ltd"
+		}
+	case 1453:
+		{ /* '1453' */
+			return "ClimaCool"
+		}
+	case 1454:
+		{ /* '1454' */
+			return "Grid Connect Inc."
+		}
+	case 1455:
+		{ /* '1455' */
+			return "Ziegler Instrumentation UK Ltd"
+		}
+	case 1456:
+		{ /* '1456' */
+			return "ControlTec, LLC"
+		}
+	case 1457:
+		{ /* '1457' */
+			return "Aeterlink Corporation"
+		}
+	case 1458:
+		{ /* '1458' */
+			return "Alpha Epsilon Automation"
+		}
 	case 146:
 		{ /* '146' */
 			return "Sanyo Electric Co., Ltd."
@@ -15524,6 +15604,22 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_PROJECT_ENGINEERING_SRL, true
 	case 1450:
 		return BACnetVendorId_BOWERY_FARMING_INC, true
+	case 1451:
+		return BACnetVendorId_RYOBI_LIMITED, true
+	case 1452:
+		return BACnetVendorId_EKKO_SENSE_LTD, true
+	case 1453:
+		return BACnetVendorId_CLIMA_COOL, true
+	case 1454:
+		return BACnetVendorId_GRID_CONNECT_INC, true
+	case 1455:
+		return BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD, true
+	case 1456:
+		return BACnetVendorId_CONTROL_TECLLC, true
+	case 1457:
+		return BACnetVendorId_AETERLINK_CORPORATION, true
+	case 1458:
+		return BACnetVendorId_ALPHA_EPSILON_AUTOMATION, true
 	case 146:
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
 	case 147:
@@ -18416,6 +18512,22 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_PROJECT_ENGINEERING_SRL, true
 	case "BOWERY_FARMING_INC":
 		return BACnetVendorId_BOWERY_FARMING_INC, true
+	case "RYOBI_LIMITED":
+		return BACnetVendorId_RYOBI_LIMITED, true
+	case "EKKO_SENSE_LTD":
+		return BACnetVendorId_EKKO_SENSE_LTD, true
+	case "CLIMA_COOL":
+		return BACnetVendorId_CLIMA_COOL, true
+	case "GRID_CONNECT_INC":
+		return BACnetVendorId_GRID_CONNECT_INC, true
+	case "ZIEGLER_INSTRUMENTATIONUK_LTD":
+		return BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD, true
+	case "CONTROL_TECLLC":
+		return BACnetVendorId_CONTROL_TECLLC, true
+	case "AETERLINK_CORPORATION":
+		return BACnetVendorId_AETERLINK_CORPORATION, true
+	case "ALPHA_EPSILON_AUTOMATION":
+		return BACnetVendorId_ALPHA_EPSILON_AUTOMATION, true
 	case "SANYO_ELECTRIC_CO_LTD":
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
 	case "INTEGRATED_INFORMATION_SYSTEMS_INC":
@@ -20359,7 +20471,7 @@ func (e BACnetVendorId) Serialize() ([]byte, error) {
 func (e BACnetVendorId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -21369,6 +21481,22 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "PROJECT_ENGINEERING_SRL"
 	case BACnetVendorId_BOWERY_FARMING_INC:
 		return "BOWERY_FARMING_INC"
+	case BACnetVendorId_RYOBI_LIMITED:
+		return "RYOBI_LIMITED"
+	case BACnetVendorId_EKKO_SENSE_LTD:
+		return "EKKO_SENSE_LTD"
+	case BACnetVendorId_CLIMA_COOL:
+		return "CLIMA_COOL"
+	case BACnetVendorId_GRID_CONNECT_INC:
+		return "GRID_CONNECT_INC"
+	case BACnetVendorId_ZIEGLER_INSTRUMENTATIONUK_LTD:
+		return "ZIEGLER_INSTRUMENTATIONUK_LTD"
+	case BACnetVendorId_CONTROL_TECLLC:
+		return "CONTROL_TECLLC"
+	case BACnetVendorId_AETERLINK_CORPORATION:
+		return "AETERLINK_CORPORATION"
+	case BACnetVendorId_ALPHA_EPSILON_AUTOMATION:
+		return "ALPHA_EPSILON_AUTOMATION"
 	case BACnetVendorId_SANYO_ELECTRIC_CO_LTD:
 		return "SANYO_ELECTRIC_CO_LTD"
 	case BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC:

@@ -166,14 +166,14 @@ func (m *_FourByteNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (namespaceIndex)
 	namespaceIndex := uint8(m.GetNamespaceIndex())
-	_namespaceIndexErr := writeBuffer.WriteUint8("namespaceIndex", 8, (namespaceIndex))
+	_namespaceIndexErr := writeBuffer.WriteUint8("namespaceIndex", 8, uint8((namespaceIndex)))
 	if _namespaceIndexErr != nil {
 		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
 	}
 
 	// Simple Field (identifier)
 	identifier := uint16(m.GetIdentifier())
-	_identifierErr := writeBuffer.WriteUint16("identifier", 16, (identifier))
+	_identifierErr := writeBuffer.WriteUint16("identifier", 16, uint16((identifier)))
 	if _identifierErr != nil {
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}
