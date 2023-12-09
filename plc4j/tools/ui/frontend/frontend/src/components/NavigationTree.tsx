@@ -54,6 +54,6 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         }
     }
 
-    let treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value))
+    const treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value))
     return <Tree value={treeNodes} selectionMode="single"/>
 }
