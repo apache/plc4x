@@ -116,11 +116,11 @@
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.25.0</commons-compress.version>
     <commons-configuration2.version>2.9.0</commons-configuration2.version>
-    <commons-io.version>2.11.0</commons-io.version>
-    <commons-lang3.version>3.12.0</commons-lang3.version>
+    <commons-io.version>2.15.1</commons-io.version>
+    <commons-lang3.version>3.14.0</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
-    <commons-net.version>3.9.0</commons-net.version>
+    <commons-net.version>3.10.0</commons-net.version>
     <commons-pool2.version>2.12.0</commons-pool2.version>
     <commons-text.version>1.11.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
@@ -1081,7 +1081,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.4.1</version>
         </plugin>
 
         <plugin>
@@ -1348,7 +1348,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>3.0.1</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>

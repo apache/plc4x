@@ -22,33 +22,38 @@ package org.apache.plc4x.java.profinet;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ManualProfinetIoTest {
 
     public static void main(String[] args) throws Exception {
-        // TODO:
         //try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.41")) {
         try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.31")) {
-            // Find out which values are available on this device.
             PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("all", "*").build();
-            PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get();
-
-            // Build a subscription request to subscribe to all available fields.
             PlcSubscriptionRequest.Builder subscriptionRequestBuilder = connection.subscriptionRequestBuilder();
+            PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get();
             for (String queryName : plcBrowseResponse.getQueryNames()) {
                 List<PlcBrowseItem> values = plcBrowseResponse.getValues(queryName);
                 for (PlcBrowseItem value : values) {
                     System.out.println(value.getName() + ": " + value.getTag().getAddressString());
-                    subscriptionRequestBuilder.addChangeOfStateTag(value.getName(), value.getTag());
+
+                    // If it's an INPUT tag, add it to the subscription request.
+                    if(value.getTag() instanceof ProfinetTag) {
+                        ProfinetTag profinetTag = (ProfinetTag) value.getTag();
+                        if(profinetTag.getDirection() == ProfinetTag.Direction.INPUT) {
+                            subscriptionRequestBuilder.addCyclicTag(value.getName(), value.getTag(), Duration.ofMillis(1000));
+                        }
+                    }
                 }
             }
-            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.build();
 
-            // Execute the subscription request.
-            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(5000, TimeUnit.MILLISECONDS);
+            // Create and execute the subscription request.
+            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.build();
+            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(10000, TimeUnit.MILLISECONDS);
             System.out.println(subscriptionResponse);
         }
     }

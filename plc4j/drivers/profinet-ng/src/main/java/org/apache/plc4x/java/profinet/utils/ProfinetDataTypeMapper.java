@@ -71,7 +71,18 @@ public class ProfinetDataTypeMapper {
                     break;
                 case "OctetString":
                     if(dataItem.isUseAsBits()) {
-                        return new DataTypeInformation(PlcValueType.List, dataItem.getLength() * 8);
+                        switch (dataItem.getLength()) {
+                            case 1:
+                                return new DataTypeInformation(PlcValueType.BYTE, 1);
+                            case 2:
+                                return new DataTypeInformation(PlcValueType.WORD, 1);
+                            case 4:
+                                return new DataTypeInformation(PlcValueType.DWORD, 1);
+                            case 8:
+                                return new DataTypeInformation(PlcValueType.LWORD, 1);
+                            default:
+                                return new DataTypeInformation(PlcValueType.List, dataItem.getLength() * 8);
+                        }
                     } else {
                         return new DataTypeInformation(PlcValueType.List, dataItem.getLength());
                     }
