@@ -410,11 +410,44 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         List<PnIoCm_IoCs> inputMessageCs = new ArrayList<>();
         List<PnIoCm_IoDataObject> outputMessageDataObjects = new ArrayList<>();
         List<PnIoCm_IoCs> outputMessageCs = new ArrayList<>();
-        // TODO: Create and fill the expectedSubmodules list.
+
+        // Add the inputMessageDataObjects and outputMessageDataObjects for the DAO object;
+        // TODO: Get the structure of this from the GSD file. This is currently just hard-coded.
+        inputMessageDataObjects.add(new PnIoCm_IoDataObject(0x00, 0x1, inputFrameOffset));
+        inputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+        outputMessageCs.add(new PnIoCm_IoCs(0x00, 0x1, outputFrameOffset));
+        outputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+
+        inputMessageDataObjects.add(new PnIoCm_IoDataObject(0x00, 0x8000, inputFrameOffset));
+        inputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+        outputMessageCs.add(new PnIoCm_IoCs(0x00, 0x8000, outputFrameOffset));
+        outputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+
+        inputMessageDataObjects.add(new PnIoCm_IoDataObject(0x00, 0x8001, inputFrameOffset));
+        inputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+        outputMessageCs.add(new PnIoCm_IoCs(0x00, 0x8001, outputFrameOffset));
+        outputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+
+        inputMessageDataObjects.add(new PnIoCm_IoDataObject(0x00, 0x8002, inputFrameOffset));
+        inputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+        outputMessageCs.add(new PnIoCm_IoCs(0x00, 0x8002, outputFrameOffset));
+        outputFrameOffset += 1; // TODO: Add this correctly (Possibly with data from the GSD file.
+
+        // TODO: this will probably need to be dynamic, based on data in the GSD file.
         List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmodules = new ArrayList<>();
+        expectedSubmodules.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0, Collections.singletonList(
+            new PnIoCm_ExpectedSubmoduleBlockReqApi((short)0x0000, (short) 0x00000010, 0,  Arrays.asList(
+                new PnIoCm_Submodule_NoInputNoOutputData((short) 0x0001, (short) 0x00000001, false, false, false, false),
+                new PnIoCm_Submodule_NoInputNoOutputData((short) 0x8000, (short) 0x00000002, false, false, false, false),
+                new PnIoCm_Submodule_NoInputNoOutputData((short) 0x8001, (short) 0x00000003, false, false, false, false),
+                new PnIoCm_Submodule_NoInputNoOutputData((short) 0x8002, (short) 0x00000003, false, false, false, false)
+            ))
+        )));
+
         for (Map.Entry<Integer, Map<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>>> slotEntry : slots.entrySet()) {
             int slotNumber = slotEntry.getKey();
             Map<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>> subslot = slotEntry.getValue();
+            List<PnIoCm_Submodule> expectedSubmoduleData = new ArrayList<>();
             for (Map.Entry<Integer, Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>>> subslotEntry : subslot.entrySet()) {
                 int subslotNumber = subslotEntry.getKey();
                 Map<ProfinetTag.Direction, Map<Integer, ProfinetTag>> direction = subslotEntry.getValue();
@@ -430,34 +463,58 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     iopsLength = 1;
                 }
 
+                PnIoCm_SubmoduleType submoduleType = PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA;
+                int inputDataLength = 0;
+                int outputDataLength = 0;
+
+                // Add one PnIoCm_IoDataObject for every input tag (Subscribe).
+                // These define the structure of the data in incoming messages from the device.
                 if (direction.containsKey(ProfinetTag.Direction.INPUT)) {
+                    // Update the type of submodule io.
+                    submoduleType = PnIoCm_SubmoduleType.INPUT_DATA;
+
                     Map<Integer, ProfinetTag> inputTags = direction.get(ProfinetTag.Direction.INPUT);
                     for (Map.Entry<Integer, ProfinetTag> inputTag : inputTags.entrySet()) {
                         ProfinetTag tag = inputTag.getValue();
                         int dataLength = (getDataTypeLengthInBytes(tag.getPlcValueType()) * tag.getNumElements());
+                        inputDataLength += dataLength;
 
                         PnIoCm_IoDataObject input = new PnIoCm_IoDataObject(slotNumber, subslotNumber, inputFrameOffset);
                         inputMessageDataObjects.add(input);
-                        PnIoCm_IoCs output = new PnIoCm_IoCs(slotNumber, subslotNumber, outputFrameOffset);
-                        outputMessageCs.add(output);
 
                         // Get the iops-length from the IoData element and the binary length of the input
                         inputFrameOffset += dataLength + iocsLength;
-                        // Get the data-length + iops-length
-                        outputFrameOffset += iocsLength;
+
+                        PnIoCm_IoCs output = new PnIoCm_IoCs(slotNumber, subslotNumber, inputFrameOffset);
+                        inputMessageCs.add(output);
                     }
                 }
 
+                // Add one PnIoCm_IoDataObject for every output tag (Publish)
+                // These define the structure of the data in outgoing messages sent to the device.
                 if (direction.containsKey(ProfinetTag.Direction.OUTPUT)) {
+                    // Update the type of submodule io.
+                    if(submoduleType == PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA) {
+                        submoduleType = PnIoCm_SubmoduleType.OUTPUT_DATA;
+                    } else if(submoduleType == PnIoCm_SubmoduleType.INPUT_DATA) {
+                        submoduleType = PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA;
+                    }
+
                     Map<Integer, ProfinetTag> outputTags = direction.get(ProfinetTag.Direction.OUTPUT);
                     for (Map.Entry<Integer, ProfinetTag> outputTag : outputTags.entrySet()) {
+                        // TODO: Here the offset is wrong (5 instead of 4)
+                        PnIoCm_IoCs input = new PnIoCm_IoCs(slotNumber, subslotNumber, outputFrameOffset);
+                        outputMessageCs.add(input);
+                        outputFrameOffset += iocsLength;
+
                         ProfinetTag tag = outputTag.getValue();
                         int dataLength = (getDataTypeLengthInBytes(tag.getPlcValueType()) * tag.getNumElements());
+                        outputDataLength += dataLength;
+                        outputFrameOffset += dataLength;
 
-                        PnIoCm_IoDataObject output = new PnIoCm_IoDataObject(slotNumber, subslotNumber, inputFrameOffset);
+                        // TODO: Hehe the offset is wrong (5 instead of 9)
+                        PnIoCm_IoDataObject output = new PnIoCm_IoDataObject(slotNumber, subslotNumber, outputFrameOffset);
                         outputMessageDataObjects.add(output);
-                        PnIoCm_IoCs input = new PnIoCm_IoCs(slotNumber, subslotNumber, outputFrameOffset);
-                        inputMessageCs.add(input);
 
                         // Get the data-length + iocs-length from the IoData element
                         inputFrameOffset += iopsLength;
@@ -465,7 +522,31 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                         outputFrameOffset += dataLength + iopsLength;
                     }
                 }
+
+                switch (submoduleType) {
+                    case NO_INPUT_NO_OUTPUT_DATA: {
+                        // TODO: Get the submodule ident number from the GSD file.
+                        expectedSubmoduleData.add(new PnIoCm_Submodule_NoInputNoOutputData((short) subslotNumber, (short) 0x00000010, false, false, false, false));
+                        break;
+                    }
+                    case INPUT_DATA: {
+                        // TODO: Get the submodule ident number from the GSD file.
+                        expectedSubmoduleData.add(new PnIoCm_Submodule_InputData((short) subslotNumber, (short) 0x00000010, false, false, false, false, inputDataLength));
+                        break;
+                    }
+                    case OUTPUT_DATA: {
+                        expectedSubmoduleData.add(new PnIoCm_Submodule_OutputData((short) subslotNumber, (short) 0x00000010, false, false, false, false, outputDataLength));
+                        break;
+                    }
+                    case INPUT_AND_OUTPUT_DATA: {
+                        expectedSubmoduleData.add(new PnIoCm_Submodule_InputAndOutputData((short) subslotNumber, (short) 0x00000010, false, false, false, false, inputDataLength, outputDataLength));
+                        break;
+                    }
+                }
             }
+
+            // TODO: Get the submodule ident number from the GSD file.
+            expectedSubmodules.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0, Collections.singletonList(new PnIoCm_ExpectedSubmoduleBlockReqApi(slotNumber, 0x00000020, 0x0000, expectedSubmoduleData))));
         }
 
         RawSocketChannel rawSocketChannel = (RawSocketChannel) context.getChannel();
@@ -482,7 +563,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             localMacAddress,
             profinetDriverContext.getCmInitiatorObjectUuid(),
             false,
-            profinetDriverContext.isNonLegacyStartupMode(),
+            profinetDriverContext.isAdvancedStartupMode(),
             false,
             false,
             PnIoCm_CompanionArType.SINGLE_AR,
@@ -493,6 +574,18 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             ProfinetDriverContext.DEFAULT_ACTIVITY_TIMEOUT,
             ProfinetDriverContext.UDP_RT_PORT,
             "plc4x"));
+        blocks.add(new PnIoCm_Block_AlarmCrReq(
+            ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
+            PnIoCm_AlarmCrType.ALARM_CR,
+            ProfinetDriverContext.UDP_RT_PORT,
+            false,
+            false,
+            1,
+            3,
+            0x0000,
+            200,
+            0xC000,
+            0xA000));
         if (!inputMessageDataObjects.isEmpty() || !inputMessageCs.isEmpty()) {
             blocks.add(new PnIoCm_Block_IoCrReq(
                 ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
@@ -505,7 +598,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 false,
                 PnIoCm_RtClass.RT_CLASS_2,
                 ProfinetDriverContext.DEFAULT_IO_DATA_SIZE,
-                profinetDriverContext.getAndIncrementIdentification(),
+                // TODO: This differs: Mine is 0x0002 and Ben's is 0x8002 (Probably doesn't matter)
+                0x8000 | profinetDriverContext.getAndIncrementIdentification(),
                 profinetDriverContext.getSendClockFactor(),
                 profinetDriverContext.getReductionRatio(),
                 1,
@@ -532,7 +626,8 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 false,
                 PnIoCm_RtClass.RT_CLASS_2,
                 ProfinetDriverContext.DEFAULT_IO_DATA_SIZE,
-                profinetDriverContext.getAndIncrementIdentification(),
+                // TODO: This differs: Mine is 0x0003 and Ben's is 0x8003 (Probably doesn't matter)
+                0x8000 | profinetDriverContext.getAndIncrementIdentification(),
                 profinetDriverContext.getSendClockFactor(),
                 profinetDriverContext.getReductionRatio(),
                 1,
@@ -548,28 +643,16 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             ));
         }
         blocks.addAll(expectedSubmodules);
-        blocks.add(new PnIoCm_Block_AlarmCrReq(
-            ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
-            PnIoCm_AlarmCrType.ALARM_CR,
-            ProfinetDriverContext.UDP_RT_PORT,
-            false,
-            false,
-            1,
-            3,
-            0x0000,
-            200,
-            0xC000,
-            0xA000));
         PnIoCm_Packet_Req request = new PnIoCm_Packet_Req(
             16696L, 16696L, 0L, blocks);
         DceRpc_Packet packet = new DceRpc_Packet(
-            DceRpc_PacketType.WORKING,
-            false, false, false,
+            DceRpc_PacketType.REQUEST,
+            true, false, false,
             IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
-            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, Integer.decode("0x" + profinetDriverContext.getDeviceId()), Integer.decode("0x" + profinetDriverContext.getVendorId())),
+            new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, profinetDriverContext.getDeviceId(), profinetDriverContext.getVendorId()),
             new DceRpc_InterfaceUuid_DeviceInterface(),
             profinetDriverContext.getActivityUuid(),
-            0L, 0L,
+            0L, 1L,
             DceRpc_Operation.CONNECT,
             (short) 0,
             request
@@ -587,7 +670,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             profinetDriverContext.getRemotePortImplicitCommunication(),
             packet
         );
-        Ethernet_Frame ethernetFrame = new Ethernet_Frame(
+        Ethernet_Frame requestEthernetFrame = new Ethernet_Frame(
             remoteMacAddress,
             localMacAddress,
             udpFrame);
@@ -595,18 +678,29 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
 
         // TODO: Send the packet to the device ...
-        context.sendRequest(ethernetFrame)
+        context.sendRequest(requestEthernetFrame)
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(1000))
             .onTimeout(future::completeExceptionally)
-            .onError((ethernetFrame1, throwable) -> future.completeExceptionally(throwable))
-            .check(ethernetFrame1 -> true)
-            .unwrap(ethernetFrame1 -> ethernetFrame1)
-            .handle(ethernetFrame1 -> {
+            .onError((responseEthernetFrame, throwable) -> future.completeExceptionally(throwable))
+            .check(responseEthernetFrame -> responseEthernetFrame.getPayload() instanceof Ethernet_FramePayload_IPv4)
+            .unwrap(responseEthernetFrame -> ((Ethernet_FramePayload_IPv4) responseEthernetFrame.getPayload()).getPayload())
+            .handle(dceRpcPacket -> {
                 // TODO: Continue from here ...
-                System.out.println(ethernetFrame1);
+                System.out.println(dceRpcPacket);
             });
 
         return future;
+    }
+
+    @Override
+    protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
+        if(msg.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
+            Ethernet_FramePayload_PnDcp dcpPacket = (Ethernet_FramePayload_PnDcp) msg.getPayload();
+            if (dcpPacket.getPdu() instanceof PnDcp_Pdu_RealTimeCyclic) {
+                PnDcp_Pdu_RealTimeCyclic realTimeCyclic = (PnDcp_Pdu_RealTimeCyclic) dcpPacket.getPdu();
+                System.out.println(realTimeCyclic);
+            }
+        }
     }
 
     protected void extractBlockInfo(List<PnDcp_Block> blocks) {
