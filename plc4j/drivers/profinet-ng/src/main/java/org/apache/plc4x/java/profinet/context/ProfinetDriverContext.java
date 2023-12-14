@@ -69,7 +69,6 @@ public class ProfinetDriverContext implements DriverContext {
     private int watchdogFactor = 3;
     private int dataHoldFactor = 3;
 
-    private String dapId;
     private ProfinetDeviceAccessPointItem dap;
     private Map<Integer, ProfinetModuleItem> moduleIndex;
     private Map<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> submoduleIndex;
@@ -203,14 +202,6 @@ public class ProfinetDriverContext implements DriverContext {
 
     public void setDataHoldFactor(int dataHoldFactor) {
         this.dataHoldFactor = dataHoldFactor;
-    }
-
-    public String getDapId() {
-        return dapId;
-    }
-
-    public void setDapId(String dapId) {
-        this.dapId = dapId;
     }
 
     public ProfinetDeviceAccessPointItem getDap() {

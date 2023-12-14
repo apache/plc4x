@@ -311,7 +311,7 @@ public class ProfinetDevice implements PlcSubscriber {
             if (payloadPacket instanceof PnIoCm_Packet_Req) {
                 PnIoCm_Packet_Req req = (PnIoCm_Packet_Req) payloadPacket;
                 for (PnIoCm_Block block : req.getBlocks()) {
-                    if (block instanceof PnIoCM_Block_Request) {
+                    if (block instanceof PnIoCm_Control_Request_ApplicationReady) {
                         deviceContext.setState(ProfinetDeviceState.APPLRDY);
                     }
                 }
@@ -802,7 +802,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 (short) 0,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
                     Collections.singletonList(
-                        new PnIoCm_Control_Request(
+                        new PnIoCm_Control_Request_ParameterEnd(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,
@@ -884,7 +884,7 @@ public class ProfinetDevice implements PlcSubscriber {
                     ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT,
                     0,
                     Collections.singletonList(
-                        new PnIoCM_Block_ResponseConnect(
+                        new PnIoCm_Control_Response_ApplicationReady(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,

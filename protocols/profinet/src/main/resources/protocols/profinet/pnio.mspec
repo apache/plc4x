@@ -199,7 +199,7 @@
             [simple   MacAddress             cmResponderMacAddr                                              ]
             [simple   uint 16                responderUDPRTPort                                              ]
         ]
-        ['IOD_BLOCK_REQ_CONNECTION_APPLICATION_READY' PnIoCm_Control_Request
+        ['IOD_BLOCK_REQ_CONNECTION_PARAMETER_END' PnIoCm_Control_Request_ParameterEnd
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
@@ -210,7 +210,18 @@
             [simple   uint 16                         controlCommand                                         ]
             [reserved uint 16                         '0x0000'                                               ]
         ]
-        ['IOX_BLOCK_REQ_CONNECTION'    PnIoCM_Block_Request
+        ['IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY' PnIoCm_Control_Request_ApplicationReady
+            [implicit      uint 16          blockLength      'lengthInBytes - 4']
+            [simple        uint 8           blockVersionHigh                    ]
+            [simple        uint 8           blockVersionLow                     ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   Uuid                            arUuid                                                 ]
+            [simple   uint 16                         sessionKey                                             ]
+            [reserved uint 16                         '0x0000'                                               ]
+            [simple   uint 16                         controlCommand                                         ]
+            [reserved uint 16                         '0x0000'                                               ]
+        ]
+        ['IOX_BLOCK_RES_CONNECTION_APPLICATION_READY'    PnIoCm_Control_Response_ApplicationReady
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
@@ -221,18 +232,7 @@
             [simple   uint 16                         controlCommand                                         ]
             [simple   uint 16                         controlBlockProperties                                 ]
         ]
-        ['IOX_BLOCK_RES_CONNECT'    PnIoCM_Block_ResponseConnect
-            [implicit      uint 16          blockLength      'lengthInBytes - 4']
-            [simple        uint 8           blockVersionHigh                    ]
-            [simple        uint 8           blockVersionLow                     ]
-            [reserved uint 16                         '0x0000'                                               ]
-            [simple   Uuid                            arUuid                                                 ]
-            [simple   uint 16                         sessionKey                                             ]
-            [reserved uint 16                         '0x0000'                                               ]
-            [simple   uint 16                         controlCommand                                         ]
-            [simple   uint 16                         controlBlockProperties                                 ]
-        ]
-        ['IOD_CONTROL_RES_CONNECT' PnIoCm_Control_ResponseConnect
+        ['IOD_BLOCK_RES_CONNECTION_PARAMETER_END' PnIoCm_Control_Response_ParameterEnd
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
@@ -335,7 +335,7 @@
             [implicit uint 16                      numApis          'COUNT(apis)'                ]
             [array    PnIoCm_RealIdentificationApi apis             count               'numApis']
         ]
-        ['IOD_BLOCK_REQ_PLUGIN_ALARM_APPLICATION_READY' PnIoCm_Block_ReqPluginAlarmApplicationReady
+        ['IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY_PLUG_ALARM' PnIoCm_Block_ReqPlugAlarmApplicationReady
             // TODO: Implement ...
         ]
 
@@ -560,10 +560,10 @@
     ['0x010A' SR_INFO_BLOCK                                 ]
     ['0x010B' ARFSU_BLOCK                                   ]
     ['0x010C' RS_INFO_BLOCK                                 ]
-    ['0x0110' IOD_BLOCK_REQ_CONNECTION_APPLICATION_READY    ]
-    ['0x0101' IOD_BLOCK_REQ_PLUGIN_ALARM_APPLICATION_READY  ]
-    ['0x0112' IOX_BLOCK_REQ_CONNECTION                      ]
-    ['0x0113' IOX_BLOCK_REQ_PLUGIN_ALARM                    ]
+    ['0x0110' IOD_BLOCK_REQ_CONNECTION_PARAMETER_END        ]
+    ['0x0111' IOD_BLOCK_REQ_CONNECTION_PARAMETER_END_PLUG_ALARM]
+    ['0x0112' IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY    ]
+    ['0x0113' IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY_PLUG_ALARM]
     ['0x0114' RELEASE_BLOCK_REQ                             ]
     ['0x0116' IOX_BLOCK_REQ_CONNECTION_READY_FOR_COMPANION  ]
     ['0x0117' IOX_BLOCK_REQ_CONNECTION_READY_FOR_RT_CLASS_3 ]
@@ -598,10 +598,10 @@
     ['0x8106' AR_SERVER_BLOCK                               ]
     ['0x8007' AR_RPC_BLOCK_RES                              ]
     ['0x8008' AR_VENDOR_BLOCK_RES                           ]
-    ['0x8110' IOD_CONTROL_RES_CONNECT                       ]
-    ['0x8111' IOD_CONTROL_RES_PLUG                          ]
-    ['0x8112' IOX_BLOCK_RES_CONNECT                         ]
-    ['0x8113' IOX_BLOCK_RES_PLUG                            ]
+    ['0x8110' IOD_BLOCK_RES_CONNECTION_PARAMETER_END        ]
+    ['0x8111' IOD_BLOCK_REs_CONNECTION_PARAMETER_END_PLUG_ALARM]
+    ['0x8112' IOX_BLOCK_RES_CONNECTION_APPLICATION_READY    ]
+    ['0x8113' IOX_BLOCK_REs_CONNECTION_APPLICATION_READY_PLUG_ALARM]
     ['0x8114' RELEASE_BLOCK_RES                             ]
     ['0x8116' IOX_BLOCK_RES_CONNECT_COMPANION_READY         ]
     ['0x8117' IOX_BLOCK_RES_CONNECT_RT_CLASS_3_READY        ]

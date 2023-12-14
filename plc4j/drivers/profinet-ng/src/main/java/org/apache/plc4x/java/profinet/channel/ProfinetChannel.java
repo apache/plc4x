@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class ProfinetChannel {
 
@@ -107,6 +106,8 @@ public class ProfinetChannel {
                     // Check if it's a PROFINET packet
                     if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getDstPort().value() == -15536 || payload.getHeader().getDstPort().value() == -15535) {
                         isPnPacket = true;
+                    } else {
+                        System.out.println("UDP Packet from port: " + payload.getHeader().getSrcPort().value());
                     }
                 }
 
@@ -207,7 +208,7 @@ public class ProfinetChannel {
                 // the compiling of the filter expression was causing errors. As
                 // currently there was no other way to detect this, this check seems
                 // to be sufficient.
-                if (dev.getAddresses().size() == 0) {
+                if (dev.getAddresses().isEmpty()) {
                     continue;
                 }
                 if (!dev.isLoopBack()) {

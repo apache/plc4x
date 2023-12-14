@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.profinet.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
@@ -116,33 +117,28 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             if (configuration.dapId != null) {
                 for (ProfinetDeviceAccessPointItem profinetDeviceAccessPointItem : deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList()) {
                     if (profinetDeviceAccessPointItem.getId().equalsIgnoreCase(configuration.dapId)) {
-                        profinetDriverContext.setDapId(profinetDeviceAccessPointItem.getId());
+                        profinetDriverContext.setDap(profinetDeviceAccessPointItem);
                         break;
                     }
                 }
-                if (profinetDriverContext.getDapId() == null) {
+                if (profinetDriverContext.getDap() == null) {
                     logger.error("Couldn't find requested device access points (DAP): {}", configuration.dapId);
                     context.getChannel().close();
                 }
             }
-
-            // In theory, we would need to resolve the details for the endpoint for implicit reading in order
-            // to correctly read and write asynchronously:
-            // https://cache.industry.siemens.com/dl/files/980/109810980/att_1107623/v4/109810980_ImplcitDataRecordHandling_DOC_de_V10.pdf
-            // Here and in the recordings of the PRONETA communication, we would
-            // - first request a "handle",
-            // - then in a second request using the handle request the port and object id
-            // - do a third request
-            // However it seems that we can simply send to the default udp port and we'll get a response from the
-            // correct port, and we can calculate the object id based on the vendor id and device id, which we
-            // already have from the discovery.
+            // If the user didn't define a dap, but the profile only has one, use that.
+            else if (deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().size() == 1) {
+                profinetDriverContext.setDap(deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().get(0));
+            }
+            // Otherwise we'll have to use the RealIdentificationDataRequest to fetch all of this information.
+            // However, this is not supported by all PN devices.
 
             // If we've found a device profile with at least one dap, we request the "real identification data" from the
             // device. The response contains information about which slots are present and which module identifiers
             // apply to them as well as which subslots are present and which submodule identifiers these have.
             // In this part of the code, we simply look up the gsd dap, modules and submodules that match these
             // identifiers and save them in an easily accessible format in the deviceContext.
-            else if (!deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().isEmpty()) {
+            if (!deviceProfile.getProfileBody().getApplicationProcess().getDeviceAccessPointList().isEmpty()) {
                 // Build an index of the String names.
                 Map<String, String> textMapping = new HashMap<>();
                 for (ProfinetTextIdValue profinetTextIdValue : deviceProfile.getProfileBody().getApplicationProcess().getExternalTextList().getPrimaryLanguage().getText()) {
@@ -154,9 +150,16 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 CompletableFuture<PnIoCm_Block_RealIdentificationData> future1 =
                     PnDcpPacketFactory.sendRealIdentificationDataRequest(context, pnChannel, profinetDriverContext);
                 future1.whenComplete((realIdentificationData, throwable1) -> {
+                    // If the device didn't support this, we'll have to handle the
+                    // module index and submodule indexes when trying to use them.
                     if (throwable1 != null) {
-                        logger.error("Unable to detect device access point, closing channel...", throwable1);
-                        context.getChannel().close();
+                        if(profinetDriverContext.getDap() != null) {
+                            context.fireConnected();
+                        } else {
+                            logger.error("Unable to auto-configure connection, please be sure to provide the 'dap-id' connection parameter");
+                            context.getChannel().close();
+                            return;
+                        }
                         return;
                     }
 
@@ -191,13 +194,18 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                         }
                         long moduleIdentNumber = Long.parseLong(moduleIdentNumberStr, 16);
                         if (moduleIdentNumber == dapModuleIdentificationNumber) {
+                            if((profinetDriverContext.getDap() != null) &&
+                                !profinetDriverContext.getDap().getId().equals(curDap.getId())) {
+                                logger.warn("DAP configured in connection string differs from device-configuration.");
+                            }
                             profinetDriverContext.setDap(curDap);
                             break;
                         }
                     }
                     // Abort, if we weren't able to detect a DAP.
                     if (profinetDriverContext.getDap() == null) {
-                        logger.error("Unable to auto-detect the device access point, closing channel...");
+                        logger.error("Unable to auto-detect the device access point, please provide \"dap-id\" " +
+                            "option in the connection-string. Closing channel...");
                         context.getChannel().close();
                         return;
                     }
@@ -207,7 +215,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     Map<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> submoduleIndex = new HashMap<>();
                     for (Map.Entry<Integer, Long> moduleEntry : slotModuleIdentificationNumbers.entrySet()) {
                         int curSlot = moduleEntry.getKey();
-                        // Slot 0 is the DAP, so we'll continue with the next one.
+                        // Slot 0 is the DAP, which we've already handled, so we'll continue with the next one.
                         if (curSlot == 0) {
                             continue;
                         }
@@ -265,6 +273,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
                     context.fireConnected();
                 });
+
                 // Try to read the I&M0 block
                 // * Commented out this code, as here it performed the same task as the ReadRealIdentificationData approach and If the other has side-effects, I can roll-back to this.
                 /*CompletableFuture<PnIoCm_Block_IAndM0> pnIoCmBlockIAndM0CompletableFuture = PnDcpPacketFactory.sendReadIAndM0BlockRequest(context, pnChannel, driverContext);
@@ -436,7 +445,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         // TODO: this will probably need to be dynamic, based on data in the GSD file.
         List<PnIoCm_Block_ExpectedSubmoduleReq> expectedSubmodules = new ArrayList<>();
         expectedSubmodules.add(new PnIoCm_Block_ExpectedSubmoduleReq((short) 1, (short) 0, Collections.singletonList(
-            new PnIoCm_ExpectedSubmoduleBlockReqApi((short)0x0000, (short) 0x00000010, 0,  Arrays.asList(
+            new PnIoCm_ExpectedSubmoduleBlockReqApi((short) 0x0000, (short) 0x00000010, 0, Arrays.asList(
                 new PnIoCm_Submodule_NoInputNoOutputData((short) 0x0001, (short) 0x00000001, false, false, false, false),
                 new PnIoCm_Submodule_NoInputNoOutputData((short) 0x8000, (short) 0x00000002, false, false, false, false),
                 new PnIoCm_Submodule_NoInputNoOutputData((short) 0x8001, (short) 0x00000003, false, false, false, false),
@@ -494,9 +503,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 // These define the structure of the data in outgoing messages sent to the device.
                 if (direction.containsKey(ProfinetTag.Direction.OUTPUT)) {
                     // Update the type of submodule io.
-                    if(submoduleType == PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA) {
+                    if (submoduleType == PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA) {
                         submoduleType = PnIoCm_SubmoduleType.OUTPUT_DATA;
-                    } else if(submoduleType == PnIoCm_SubmoduleType.INPUT_DATA) {
+                    } else if (submoduleType == PnIoCm_SubmoduleType.INPUT_DATA) {
                         submoduleType = PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA;
                     }
 
@@ -558,7 +567,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
         blocks.add(new PnIoCm_Block_ArReq(
             ProfinetDriverContext.BLOCK_VERSION_HIGH, ProfinetDriverContext.BLOCK_VERSION_LOW,
             PnIoCm_ArType.IO_CONTROLLER,
-            profinetDriverContext.generateUuid(),
+            profinetDriverContext.getApplicationRelationUuid(),
             profinetDriverContext.getSessionKey(),
             localMacAddress,
             profinetDriverContext.getCmInitiatorObjectUuid(),
@@ -676,8 +685,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             udpFrame);
 
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
-
-        // TODO: Send the packet to the device ...
         context.sendRequest(requestEthernetFrame)
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(1000))
             .onTimeout(future::completeExceptionally)
@@ -685,8 +692,35 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             .check(responseEthernetFrame -> responseEthernetFrame.getPayload() instanceof Ethernet_FramePayload_IPv4)
             .unwrap(responseEthernetFrame -> ((Ethernet_FramePayload_IPv4) responseEthernetFrame.getPayload()).getPayload())
             .handle(dceRpcPacket -> {
-                // TODO: Continue from here ...
-                System.out.println(dceRpcPacket);
+                if(dceRpcPacket.getPacketType() != DceRpc_PacketType.RESPONSE) {
+                    future.completeExceptionally(new PlcException("Expected a response"));
+                    return;
+                }
+                PnIoCm_Packet_Res payload = (PnIoCm_Packet_Res) dceRpcPacket.getPayload();
+                // TODO: Maybe do some checks on this.
+
+                // Now we wait for an incoming ApplicationReady request and confirm that.
+/*                context.expectRequest(Ethernet_Frame.class, Duration.ofMillis(500000))
+                    .onTimeout(future::completeExceptionally)
+                    .check(ethernetFrame -> ethernetFrame.getPayload() instanceof Ethernet_FramePayload_IPv4)
+                    .unwrap(ethernetFrame -> ((Ethernet_FramePayload_IPv4) ethernetFrame.getPayload()).getPayload())
+                    .check(dceRpc_packet -> dceRpcPacket.getPayload() instanceof PnIoCm_Packet_Req)
+                    .unwrap(dceRpc_packet -> (PnIoCm_Packet_Req) dceRpcPacket.getPayload())
+                    .handle(requestPacket -> {
+                        if(requestPacket.getBlocks().size() == 1) {
+                            if (requestPacket.getBlocks().get(0) instanceof PnIoCm_Control_Request_ApplicationReady) {
+                                // TODO: Send the response back to the udp port used in the request (It differs from the usual port)
+                                System.out.println("Got ApplicationStart Request: "+ requestPacket);
+                            }
+                        }
+                    });*/
+
+                // Now send the ParameterEnd request and wait for a response.
+                CompletableFuture<PnIoCm_Control_Response_ParameterEnd> parameterEndFuture = PnDcpPacketFactory.sendParameterEndRequest(context, rawSocketChannel, profinetDriverContext);
+                parameterEndFuture.whenComplete((parameterEnd, throwable) -> {
+                    // Not quite sure what to do with this ... we already set up the listener before sending this request.
+                    System.out.println("Got Parameter End Response: " + parameterEnd);
+                });
             });
 
         return future;
@@ -694,11 +728,30 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     @Override
     protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
-        if(msg.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
+        if (msg.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
             Ethernet_FramePayload_PnDcp dcpPacket = (Ethernet_FramePayload_PnDcp) msg.getPayload();
             if (dcpPacket.getPdu() instanceof PnDcp_Pdu_RealTimeCyclic) {
                 PnDcp_Pdu_RealTimeCyclic realTimeCyclic = (PnDcp_Pdu_RealTimeCyclic) dcpPacket.getPdu();
-                System.out.println(realTimeCyclic);
+//                System.out.println(realTimeCyclic);
+            } else {
+                System.out.println(dcpPacket);
+            }
+        } else if(msg.getPayload() instanceof Ethernet_FramePayload_IPv4) {
+            Ethernet_FramePayload_IPv4 payloadIPv4 = (Ethernet_FramePayload_IPv4) msg.getPayload();
+            if(payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Req) {
+                PnIoCm_Packet_Req pnIoCmPacketReq = (PnIoCm_Packet_Req) payloadIPv4.getPayload().getPayload();
+                if(pnIoCmPacketReq.getBlocks().size() == 1) {
+                    PnIoCm_Block pnIoCmBlock = pnIoCmPacketReq.getBlocks().get(0);
+                    if(pnIoCmBlock instanceof PnIoCm_Control_Request_ApplicationReady) {
+                        // TODO: Save these
+                        Uuid arUuid = ((PnIoCm_Control_Request_ApplicationReady) pnIoCmBlock).getArUuid();
+                        int sessionKey = ((PnIoCm_Control_Request_ApplicationReady) pnIoCmBlock).getSessionKey();
+
+                        // Send back a response, but this is just a hack ... we need to move this into the subscribe method or we can't complete the future that we're returning.
+                        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
+                        PnDcpPacketFactory.sendApplicationReadyResponse(context, pnChannel, profinetDriverContext, arUuid, sessionKey);
+                    }
+                }
             }
         }
     }

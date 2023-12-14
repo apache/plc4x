@@ -140,8 +140,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
         return SingleProtocolStackConfigurer.builder(Ethernet_Frame.class, Ethernet_Frame::staticParse)
             .withProtocol(ProfinetProtocolLogic.class)
             .withDriverContext(ProfinetDriverContext.class)
-            // Every incoming message is to be treated as a response.
-            .withParserArgs(true)
             .build();
     }
 
