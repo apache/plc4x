@@ -167,7 +167,7 @@ jobs:
             }
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: go
 
@@ -204,4 +204,4 @@ jobs:
             **/reports/test-out-verbose.log
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
