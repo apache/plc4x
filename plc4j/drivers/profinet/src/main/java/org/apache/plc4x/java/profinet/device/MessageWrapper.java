@@ -24,6 +24,6 @@ import org.apache.plc4x.java.profinet.readwrite.DceRpc_Packet;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 
 public interface MessageWrapper {
-    void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException;
+    void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context, int sourcePort, int destPort) throws RuntimeException;
     void sendPnioMessage(ProfinetCallable<Ethernet_Frame> callable, ProfinetDeviceContext context) throws RuntimeException;
 }
