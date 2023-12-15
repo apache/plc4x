@@ -135,7 +135,7 @@ jobs:
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'enable-all-checks,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report (first failure)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: "java-test-report-first-failure-${{ matrix.os }}-java-${{ matrix.java }}"
@@ -148,7 +148,7 @@ jobs:
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'skip-bacnet-regression-test,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: "java-test-report-${{ matrix.os }}-java-${{ matrix.java }}"
