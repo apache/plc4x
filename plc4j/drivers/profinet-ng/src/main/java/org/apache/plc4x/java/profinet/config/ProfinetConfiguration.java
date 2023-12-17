@@ -42,6 +42,9 @@ public class ProfinetConfiguration implements Configuration {
     @ConfigurationParameter("dap-id")
     public String dapId;
 
+    @ConfigurationParameter("ip-address")
+    public String ipAddress;
+
     public ProfinetISO15745Profile getGsdProfile(int vendorId, int deviceId) {
         String value = gsdDirectory;
         if(value.startsWith("~")) {

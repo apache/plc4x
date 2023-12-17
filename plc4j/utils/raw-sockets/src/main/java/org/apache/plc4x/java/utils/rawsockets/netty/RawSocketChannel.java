@@ -106,7 +106,7 @@ public class RawSocketChannel extends OioByteStreamChannel {
         if(remoteAddress instanceof RawSocketPassiveAddress) {
             RawSocketPassiveAddress rawSocketPassiveAddress = (RawSocketPassiveAddress) remoteAddress;
             String deviceName = getDeviceName(rawSocketPassiveAddress);
-            if(deviceName == null) {
+            if (deviceName == null) {
                 logger.error("Network device not specified and couldn't detect it automatically");
                 pipeline().fireExceptionCaught(
                     new PcapException("Network device not specified and couldn't detect it automatically"));

@@ -217,7 +217,7 @@ public class ProfinetChannel {
                         PcapHandle handle = dev.openLive(65536, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, 10);
                         openHandles.put(toPlc4xMacAddress(macAddress), handle);
 
-                        // Only react on PROFINET, UDP or LLDP packets targeted at our current MAC address.
+                        // Only react on PROFINET (0x8891), UDP (0x0800 ... actually IPv4) or LLDP (0x88CC) packets targeted at our current MAC address.
                         handle.setFilter(
                             "(ether proto 0x0800) or (((ether proto 0x8100) or (ether proto 0x8892)) and (ether dst " + Pcaps.toBpfString(macAddress) + ")) or (ether proto 0x88cc)",
                             BpfProgram.BpfCompileMode.OPTIMIZE);
