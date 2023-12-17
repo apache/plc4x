@@ -68,6 +68,7 @@ const (
 	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MaxByteStringLength         OpcuaNodeIdServicesVariableNamespace = 24246
 	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime            OpcuaNodeIdServicesVariableNamespace = 25202
 	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion                      OpcuaNodeIdServicesVariableNamespace = 25267
+	OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ModelVersion                              OpcuaNodeIdServicesVariableNamespace = 32419
 )
 
 var OpcuaNodeIdServicesVariableNamespaceValues []OpcuaNodeIdServicesVariableNamespace
@@ -102,6 +103,7 @@ func init() {
 		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime,
 		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion,
+		OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ModelVersion,
 	}
 }
 
@@ -161,6 +163,8 @@ func OpcuaNodeIdServicesVariableNamespaceByValue(value int32) (enum OpcuaNodeIdS
 		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime, true
 	case 25267:
 		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion, true
+	case 32419:
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ModelVersion, true
 	}
 	return 0, false
 }
@@ -221,6 +225,8 @@ func OpcuaNodeIdServicesVariableNamespaceByName(value string) (enum OpcuaNodeIdS
 		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_NamespaceFile_LastModifiedTime, true
 	case "NamespaceMetadataType_ConfigurationVersion":
 		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion, true
+	case "NamespaceMetadataType_ModelVersion":
+		return OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ModelVersion, true
 	}
 	return 0, false
 }
@@ -342,6 +348,8 @@ func (e OpcuaNodeIdServicesVariableNamespace) PLC4XEnumName() string {
 		return "NamespaceMetadataType_NamespaceFile_LastModifiedTime"
 	case OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ConfigurationVersion:
 		return "NamespaceMetadataType_ConfigurationVersion"
+	case OpcuaNodeIdServicesVariableNamespace_NamespaceMetadataType_ModelVersion:
+		return "NamespaceMetadataType_ModelVersion"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

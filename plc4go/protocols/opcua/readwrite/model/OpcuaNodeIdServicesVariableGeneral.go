@@ -41,20 +41,7 @@ type IOpcuaNodeIdServicesVariableGeneral interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Changes               OpcuaNodeIdServicesVariableGeneral = 2134
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventId               OpcuaNodeIdServicesVariableGeneral = 3680
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventType             OpcuaNodeIdServicesVariableGeneral = 3681
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceNode            OpcuaNodeIdServicesVariableGeneral = 3682
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceName            OpcuaNodeIdServicesVariableGeneral = 3683
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Time                  OpcuaNodeIdServicesVariableGeneral = 3684
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ReceiveTime           OpcuaNodeIdServicesVariableGeneral = 3685
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_LocalTime             OpcuaNodeIdServicesVariableGeneral = 3686
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Message               OpcuaNodeIdServicesVariableGeneral = 3687
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Severity              OpcuaNodeIdServicesVariableGeneral = 3688
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassId      OpcuaNodeIdServicesVariableGeneral = 31891
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassName    OpcuaNodeIdServicesVariableGeneral = 31892
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableGeneral = 31893
-	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassName OpcuaNodeIdServicesVariableGeneral = 31894
+	OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Changes OpcuaNodeIdServicesVariableGeneral = 2134
 )
 
 var OpcuaNodeIdServicesVariableGeneralValues []OpcuaNodeIdServicesVariableGeneral
@@ -63,19 +50,6 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableGeneralValues = []OpcuaNodeIdServicesVariableGeneral{
 		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Changes,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventId,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventType,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceNode,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceName,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Time,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_LocalTime,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Message,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Severity,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassName,
 	}
 }
 
@@ -83,32 +57,6 @@ func OpcuaNodeIdServicesVariableGeneralByValue(value int32) (enum OpcuaNodeIdSer
 	switch value {
 	case 2134:
 		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Changes, true
-	case 31891:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassId, true
-	case 31892:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassName, true
-	case 31893:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassId, true
-	case 31894:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassName, true
-	case 3680:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventId, true
-	case 3681:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventType, true
-	case 3682:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceNode, true
-	case 3683:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceName, true
-	case 3684:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Time, true
-	case 3685:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ReceiveTime, true
-	case 3686:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_LocalTime, true
-	case 3687:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Message, true
-	case 3688:
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Severity, true
 	}
 	return 0, false
 }
@@ -117,32 +65,6 @@ func OpcuaNodeIdServicesVariableGeneralByName(value string) (enum OpcuaNodeIdSer
 	switch value {
 	case "GeneralModelChangeEventType_Changes":
 		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Changes, true
-	case "GeneralModelChangeEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassId, true
-	case "GeneralModelChangeEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassName, true
-	case "GeneralModelChangeEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassId, true
-	case "GeneralModelChangeEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassName, true
-	case "GeneralModelChangeEventType_EventId":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventId, true
-	case "GeneralModelChangeEventType_EventType":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventType, true
-	case "GeneralModelChangeEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceNode, true
-	case "GeneralModelChangeEventType_SourceName":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceName, true
-	case "GeneralModelChangeEventType_Time":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Time, true
-	case "GeneralModelChangeEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ReceiveTime, true
-	case "GeneralModelChangeEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_LocalTime, true
-	case "GeneralModelChangeEventType_Message":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Message, true
-	case "GeneralModelChangeEventType_Severity":
-		return OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Severity, true
 	}
 	return 0, false
 }
@@ -212,32 +134,6 @@ func (e OpcuaNodeIdServicesVariableGeneral) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Changes:
 		return "GeneralModelChangeEventType_Changes"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassId:
-		return "GeneralModelChangeEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionClassName:
-		return "GeneralModelChangeEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassId:
-		return "GeneralModelChangeEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ConditionSubClassName:
-		return "GeneralModelChangeEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventId:
-		return "GeneralModelChangeEventType_EventId"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_EventType:
-		return "GeneralModelChangeEventType_EventType"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceNode:
-		return "GeneralModelChangeEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_SourceName:
-		return "GeneralModelChangeEventType_SourceName"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Time:
-		return "GeneralModelChangeEventType_Time"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_ReceiveTime:
-		return "GeneralModelChangeEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_LocalTime:
-		return "GeneralModelChangeEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Message:
-		return "GeneralModelChangeEventType_Message"
-	case OpcuaNodeIdServicesVariableGeneral_GeneralModelChangeEventType_Severity:
-		return "GeneralModelChangeEventType_Severity"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

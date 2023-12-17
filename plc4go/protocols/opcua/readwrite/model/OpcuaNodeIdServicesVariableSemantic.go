@@ -41,20 +41,7 @@ type IOpcuaNodeIdServicesVariableSemantic interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Changes               OpcuaNodeIdServicesVariableSemantic = 2739
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventId               OpcuaNodeIdServicesVariableSemantic = 3689
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventType             OpcuaNodeIdServicesVariableSemantic = 3690
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceNode            OpcuaNodeIdServicesVariableSemantic = 3691
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceName            OpcuaNodeIdServicesVariableSemantic = 3692
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Time                  OpcuaNodeIdServicesVariableSemantic = 3693
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ReceiveTime           OpcuaNodeIdServicesVariableSemantic = 3694
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_LocalTime             OpcuaNodeIdServicesVariableSemantic = 3695
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Message               OpcuaNodeIdServicesVariableSemantic = 3696
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Severity              OpcuaNodeIdServicesVariableSemantic = 3697
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassId      OpcuaNodeIdServicesVariableSemantic = 31895
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassName    OpcuaNodeIdServicesVariableSemantic = 31896
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableSemantic = 31897
-	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassName OpcuaNodeIdServicesVariableSemantic = 31898
+	OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Changes OpcuaNodeIdServicesVariableSemantic = 2739
 )
 
 var OpcuaNodeIdServicesVariableSemanticValues []OpcuaNodeIdServicesVariableSemantic
@@ -63,19 +50,6 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableSemanticValues = []OpcuaNodeIdServicesVariableSemantic{
 		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Changes,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventId,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventType,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceNode,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceName,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Time,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_LocalTime,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Message,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Severity,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassName,
 	}
 }
 
@@ -83,32 +57,6 @@ func OpcuaNodeIdServicesVariableSemanticByValue(value int32) (enum OpcuaNodeIdSe
 	switch value {
 	case 2739:
 		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Changes, true
-	case 31895:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassId, true
-	case 31896:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassName, true
-	case 31897:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassId, true
-	case 31898:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassName, true
-	case 3689:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventId, true
-	case 3690:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventType, true
-	case 3691:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceNode, true
-	case 3692:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceName, true
-	case 3693:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Time, true
-	case 3694:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ReceiveTime, true
-	case 3695:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_LocalTime, true
-	case 3696:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Message, true
-	case 3697:
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Severity, true
 	}
 	return 0, false
 }
@@ -117,32 +65,6 @@ func OpcuaNodeIdServicesVariableSemanticByName(value string) (enum OpcuaNodeIdSe
 	switch value {
 	case "SemanticChangeEventType_Changes":
 		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Changes, true
-	case "SemanticChangeEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassId, true
-	case "SemanticChangeEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassName, true
-	case "SemanticChangeEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassId, true
-	case "SemanticChangeEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassName, true
-	case "SemanticChangeEventType_EventId":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventId, true
-	case "SemanticChangeEventType_EventType":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventType, true
-	case "SemanticChangeEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceNode, true
-	case "SemanticChangeEventType_SourceName":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceName, true
-	case "SemanticChangeEventType_Time":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Time, true
-	case "SemanticChangeEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ReceiveTime, true
-	case "SemanticChangeEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_LocalTime, true
-	case "SemanticChangeEventType_Message":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Message, true
-	case "SemanticChangeEventType_Severity":
-		return OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Severity, true
 	}
 	return 0, false
 }
@@ -212,32 +134,6 @@ func (e OpcuaNodeIdServicesVariableSemantic) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Changes:
 		return "SemanticChangeEventType_Changes"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassId:
-		return "SemanticChangeEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionClassName:
-		return "SemanticChangeEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassId:
-		return "SemanticChangeEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ConditionSubClassName:
-		return "SemanticChangeEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventId:
-		return "SemanticChangeEventType_EventId"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_EventType:
-		return "SemanticChangeEventType_EventType"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceNode:
-		return "SemanticChangeEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_SourceName:
-		return "SemanticChangeEventType_SourceName"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Time:
-		return "SemanticChangeEventType_Time"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_ReceiveTime:
-		return "SemanticChangeEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_LocalTime:
-		return "SemanticChangeEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Message:
-		return "SemanticChangeEventType_Message"
-	case OpcuaNodeIdServicesVariableSemantic_SemanticChangeEventType_Severity:
-		return "SemanticChangeEventType_Severity"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

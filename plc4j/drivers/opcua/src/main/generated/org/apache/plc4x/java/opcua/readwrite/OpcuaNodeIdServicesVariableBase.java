@@ -33,28 +33,13 @@ public enum OpcuaNodeIdServicesVariableBase {
   BaseEventType_Message((int) 2050L),
   BaseEventType_Severity((int) 2051L),
   BaseEventType_LocalTime((int) 3190L),
-  BaseModelChangeEventType_EventId((int) 3671L),
-  BaseModelChangeEventType_EventType((int) 3672L),
-  BaseModelChangeEventType_SourceNode((int) 3673L),
-  BaseModelChangeEventType_SourceName((int) 3674L),
-  BaseModelChangeEventType_Time((int) 3675L),
-  BaseModelChangeEventType_ReceiveTime((int) 3676L),
-  BaseModelChangeEventType_LocalTime((int) 3677L),
-  BaseModelChangeEventType_Message((int) 3678L),
-  BaseModelChangeEventType_Severity((int) 3679L),
-  BaseAnalogType_Definition((int) 17565L),
-  BaseAnalogType_ValuePrecision((int) 17566L),
   BaseAnalogType_InstrumentRange((int) 17567L),
   BaseAnalogType_EURange((int) 17568L),
   BaseAnalogType_EngineeringUnits((int) 17569L),
   BaseEventType_ConditionClassId((int) 31771L),
   BaseEventType_ConditionClassName((int) 31772L),
   BaseEventType_ConditionSubClassId((int) 31773L),
-  BaseEventType_ConditionSubClassName((int) 31774L),
-  BaseModelChangeEventType_ConditionClassId((int) 31887L),
-  BaseModelChangeEventType_ConditionClassName((int) 31888L),
-  BaseModelChangeEventType_ConditionSubClassId((int) 31889L),
-  BaseModelChangeEventType_ConditionSubClassName((int) 31890L);
+  BaseEventType_ConditionSubClassName((int) 31774L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableBase> map;
 
   static {

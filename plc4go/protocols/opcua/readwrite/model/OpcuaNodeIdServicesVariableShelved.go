@@ -42,16 +42,6 @@ type IOpcuaNodeIdServicesVariableShelved interface {
 
 const (
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve_InputArguments                    OpcuaNodeIdServicesVariableShelved = 2991
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState                                  OpcuaNodeIdServicesVariableShelved = 6088
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Id                               OpcuaNodeIdServicesVariableShelved = 6089
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Name                             OpcuaNodeIdServicesVariableShelved = 6090
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Number                           OpcuaNodeIdServicesVariableShelved = 6091
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_EffectiveDisplayName             OpcuaNodeIdServicesVariableShelved = 6092
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition                                OpcuaNodeIdServicesVariableShelved = 6093
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Id                             OpcuaNodeIdServicesVariableShelved = 6094
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Name                           OpcuaNodeIdServicesVariableShelved = 6095
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Number                         OpcuaNodeIdServicesVariableShelved = 6096
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_TransitionTime                 OpcuaNodeIdServicesVariableShelved = 6097
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelved_StateNumber                         OpcuaNodeIdServicesVariableShelved = 6098
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelved_StateNumber                      OpcuaNodeIdServicesVariableShelved = 6100
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelved_StateNumber                    OpcuaNodeIdServicesVariableShelved = 6101
@@ -62,9 +52,6 @@ const (
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelvedToOneShotShelved_TransitionNumber OpcuaNodeIdServicesVariableShelved = 11325
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToUnshelved_TransitionNumber    OpcuaNodeIdServicesVariableShelved = 11326
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber OpcuaNodeIdServicesVariableShelved = 11327
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_EffectiveTransitionTime        OpcuaNodeIdServicesVariableShelved = 11465
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableStates                               OpcuaNodeIdServicesVariableShelved = 17662
-	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableTransitions                          OpcuaNodeIdServicesVariableShelved = 17663
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve2_InputArguments                   OpcuaNodeIdServicesVariableShelved = 24757
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelve2_InputArguments                      OpcuaNodeIdServicesVariableShelved = 24759
 	OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelve2_InputArguments                 OpcuaNodeIdServicesVariableShelved = 24761
@@ -76,16 +63,6 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableShelvedValues = []OpcuaNodeIdServicesVariableShelved{
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve_InputArguments,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Id,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Name,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Number,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Id,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Name,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Number,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_TransitionTime,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelved_StateNumber,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelved_StateNumber,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelved_StateNumber,
@@ -96,9 +73,6 @@ func init() {
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelvedToOneShotShelved_TransitionNumber,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToUnshelved_TransitionNumber,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableStates,
-		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableTransitions,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve2_InputArguments,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelve2_InputArguments,
 		OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelve2_InputArguments,
@@ -119,12 +93,6 @@ func OpcuaNodeIdServicesVariableShelvedByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToUnshelved_TransitionNumber, true
 	case 11327:
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber, true
-	case 11465:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_EffectiveTransitionTime, true
-	case 17662:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableStates, true
-	case 17663:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableTransitions, true
 	case 24757:
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve2_InputArguments, true
 	case 24759:
@@ -133,26 +101,6 @@ func OpcuaNodeIdServicesVariableShelvedByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelve2_InputArguments, true
 	case 2991:
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve_InputArguments, true
-	case 6088:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState, true
-	case 6089:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Id, true
-	case 6090:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Name, true
-	case 6091:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Number, true
-	case 6092:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_EffectiveDisplayName, true
-	case 6093:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition, true
-	case 6094:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Id, true
-	case 6095:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Name, true
-	case 6096:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Number, true
-	case 6097:
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_TransitionTime, true
 	case 6098:
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelved_StateNumber, true
 	case 6100:
@@ -179,12 +127,6 @@ func OpcuaNodeIdServicesVariableShelvedByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToUnshelved_TransitionNumber, true
 	case "ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber":
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber, true
-	case "ShelvedStateMachineType_LastTransition_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_EffectiveTransitionTime, true
-	case "ShelvedStateMachineType_AvailableStates":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableStates, true
-	case "ShelvedStateMachineType_AvailableTransitions":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableTransitions, true
 	case "ShelvedStateMachineType_TimedShelve2_InputArguments":
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve2_InputArguments, true
 	case "ShelvedStateMachineType_Unshelve2_InputArguments":
@@ -193,26 +135,6 @@ func OpcuaNodeIdServicesVariableShelvedByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelve2_InputArguments, true
 	case "ShelvedStateMachineType_TimedShelve_InputArguments":
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve_InputArguments, true
-	case "ShelvedStateMachineType_CurrentState":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState, true
-	case "ShelvedStateMachineType_CurrentState_Id":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Id, true
-	case "ShelvedStateMachineType_CurrentState_Name":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Name, true
-	case "ShelvedStateMachineType_CurrentState_Number":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Number, true
-	case "ShelvedStateMachineType_CurrentState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_EffectiveDisplayName, true
-	case "ShelvedStateMachineType_LastTransition":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition, true
-	case "ShelvedStateMachineType_LastTransition_Id":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Id, true
-	case "ShelvedStateMachineType_LastTransition_Name":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Name, true
-	case "ShelvedStateMachineType_LastTransition_Number":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Number, true
-	case "ShelvedStateMachineType_LastTransition_TransitionTime":
-		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_TransitionTime, true
 	case "ShelvedStateMachineType_Unshelved_StateNumber":
 		return OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelved_StateNumber, true
 	case "ShelvedStateMachineType_TimedShelved_StateNumber":
@@ -300,12 +222,6 @@ func (e OpcuaNodeIdServicesVariableShelved) PLC4XEnumName() string {
 		return "ShelvedStateMachineType_OneShotShelvedToUnshelved_TransitionNumber"
 	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber:
 		return "ShelvedStateMachineType_OneShotShelvedToTimedShelved_TransitionNumber"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_EffectiveTransitionTime:
-		return "ShelvedStateMachineType_LastTransition_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableStates:
-		return "ShelvedStateMachineType_AvailableStates"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_AvailableTransitions:
-		return "ShelvedStateMachineType_AvailableTransitions"
 	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve2_InputArguments:
 		return "ShelvedStateMachineType_TimedShelve2_InputArguments"
 	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelve2_InputArguments:
@@ -314,26 +230,6 @@ func (e OpcuaNodeIdServicesVariableShelved) PLC4XEnumName() string {
 		return "ShelvedStateMachineType_OneShotShelve2_InputArguments"
 	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelve_InputArguments:
 		return "ShelvedStateMachineType_TimedShelve_InputArguments"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState:
-		return "ShelvedStateMachineType_CurrentState"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Id:
-		return "ShelvedStateMachineType_CurrentState_Id"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Name:
-		return "ShelvedStateMachineType_CurrentState_Name"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_Number:
-		return "ShelvedStateMachineType_CurrentState_Number"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_CurrentState_EffectiveDisplayName:
-		return "ShelvedStateMachineType_CurrentState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition:
-		return "ShelvedStateMachineType_LastTransition"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Id:
-		return "ShelvedStateMachineType_LastTransition_Id"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Name:
-		return "ShelvedStateMachineType_LastTransition_Name"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_Number:
-		return "ShelvedStateMachineType_LastTransition_Number"
-	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_LastTransition_TransitionTime:
-		return "ShelvedStateMachineType_LastTransition_TransitionTime"
 	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_Unshelved_StateNumber:
 		return "ShelvedStateMachineType_Unshelved_StateNumber"
 	case OpcuaNodeIdServicesVariableShelved_ShelvedStateMachineType_TimedShelved_StateNumber:

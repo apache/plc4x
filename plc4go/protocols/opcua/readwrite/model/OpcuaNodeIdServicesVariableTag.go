@@ -41,10 +41,9 @@ type IOpcuaNodeIdServicesVariableTag interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments  OpcuaNodeIdServicesVariableTag = 23483
-	OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTag = 23484
-	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableTag = 23486
-	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableTag = 23487
+	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments  OpcuaNodeIdServicesVariableTag = 23486
+	OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTag = 23487
+	OpcuaNodeIdServicesVariableTag_TagVariables_LastChange                OpcuaNodeIdServicesVariableTag = 32854
 )
 
 var OpcuaNodeIdServicesVariableTagValues []OpcuaNodeIdServicesVariableTag
@@ -52,37 +51,32 @@ var OpcuaNodeIdServicesVariableTagValues []OpcuaNodeIdServicesVariableTag
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableTagValues = []OpcuaNodeIdServicesVariableTag{
-		OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments,
-		OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableTag_TagVariables_LastChange,
 	}
 }
 
 func OpcuaNodeIdServicesVariableTagByValue(value int32) (enum OpcuaNodeIdServicesVariableTag, ok bool) {
 	switch value {
-	case 23483:
-		return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case 23484:
-		return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
 	case 23486:
 		return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments, true
 	case 23487:
 		return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments, true
+	case 32854:
+		return OpcuaNodeIdServicesVariableTag_TagVariables_LastChange, true
 	}
 	return 0, false
 }
 
 func OpcuaNodeIdServicesVariableTagByName(value string) (enum OpcuaNodeIdServicesVariableTag, ok bool) {
 	switch value {
-	case "TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments":
-		return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case "TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments":
-		return OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
 	case "TagVariables_FindAlias_InputArguments":
 		return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments, true
 	case "TagVariables_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments, true
+	case "TagVariables_LastChange":
+		return OpcuaNodeIdServicesVariableTag_TagVariables_LastChange, true
 	}
 	return 0, false
 }
@@ -150,14 +144,12 @@ func (e OpcuaNodeIdServicesVariableTag) SerializeWithWriteBuffer(ctx context.Con
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableTag) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments:
-		return "TagVariables_SubAliasNameCategories_Placeholder_FindAlias_InputArguments"
-	case OpcuaNodeIdServicesVariableTag_TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments:
-		return "TagVariables_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments"
 	case OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_InputArguments:
 		return "TagVariables_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableTag_TagVariables_FindAlias_OutputArguments:
 		return "TagVariables_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableTag_TagVariables_LastChange:
+		return "TagVariables_LastChange"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

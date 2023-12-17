@@ -27,11 +27,7 @@ public enum OpcuaNodeIdServicesVariableNetwork {
   NetworkAddressType_NetworkInterface_Selections((int) 17582L),
   NetworkAddressType_NetworkInterface_SelectionDescriptions((int) 17583L),
   NetworkAddressType_NetworkInterface_RestrictToList((int) 17584L),
-  NetworkAddressUrlType_NetworkInterface_Selections((int) 17585L),
-  NetworkAddressUrlType_NetworkInterface_SelectionDescriptions((int) 17586L),
-  NetworkAddressUrlType_NetworkInterface_RestrictToList((int) 17587L),
   NetworkAddressType_NetworkInterface((int) 21146L),
-  NetworkAddressUrlType_NetworkInterface((int) 21148L),
   NetworkAddressUrlType_Url((int) 21149L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableNetwork> map;
 

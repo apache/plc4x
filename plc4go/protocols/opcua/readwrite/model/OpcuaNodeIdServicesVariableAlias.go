@@ -45,6 +45,8 @@ const (
 	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAlias = 23461
 	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableAlias = 23463
 	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableAlias = 23464
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange                OpcuaNodeIdServicesVariableAlias = 32849
+	OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange                                                   OpcuaNodeIdServicesVariableAlias = 32850
 )
 
 var OpcuaNodeIdServicesVariableAliasValues []OpcuaNodeIdServicesVariableAlias
@@ -56,6 +58,8 @@ func init() {
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange,
+		OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange,
 	}
 }
 
@@ -69,6 +73,10 @@ func OpcuaNodeIdServicesVariableAliasByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments, true
 	case 23464:
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments, true
+	case 32849:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange, true
+	case 32850:
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange, true
 	}
 	return 0, false
 }
@@ -83,6 +91,10 @@ func OpcuaNodeIdServicesVariableAliasByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_InputArguments, true
 	case "AliasNameCategoryType_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments, true
+	case "AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange, true
+	case "AliasNameCategoryType_LastChange":
+		return OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange, true
 	}
 	return 0, false
 }
@@ -158,6 +170,10 @@ func (e OpcuaNodeIdServicesVariableAlias) PLC4XEnumName() string {
 		return "AliasNameCategoryType_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_FindAlias_OutputArguments:
 		return "AliasNameCategoryType_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange:
+		return "AliasNameCategoryType_SubAliasNameCategories_Placeholder_LastChange"
+	case OpcuaNodeIdServicesVariableAlias_AliasNameCategoryType_LastChange:
+		return "AliasNameCategoryType_LastChange"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

@@ -181,6 +181,15 @@
             [simple PascalString transportProfileUri]
             
         ]
+        ['"32423"' BitFieldDefinition
+            [simple PascalString name]
+            [simple LocalizedText description]
+            [reserved uint 7 '0x00']
+            [reserved bit 'false']
+            [simple uint 32 startingBitPosition]
+            [simple uint 32 endingBitPosition]
+            
+        ]
         ['"18808"' RationalNumber
             [simple int 32 numerator]
             [simple uint 32 denominator]
@@ -208,6 +217,30 @@
             [simple int 8 exponent]
             [simple PascalString alphabeticCode]
             [simple LocalizedText currency]
+            
+        ]
+        ['"32436"' AnnotationDataType
+            [simple PascalString annotation]
+            [simple PascalString discipline]
+            [simple PascalString uri]
+            
+        ]
+        ['"32437"' LinearConversionDataType
+            [simple float 32 initialAddend]
+            [simple float 32 multiplicand]
+            [simple float 32 divisor]
+            [simple float 32 finalAddend]
+            
+        ]
+        ['"32440"' QuantityDimension
+            [simple int 8 massExponent]
+            [simple int 8 lengthExponent]
+            [simple int 8 timeExponent]
+            [simple int 8 electricCurrentExponent]
+            [simple int 8 amountOfSubstanceExponent]
+            [simple int 8 luminousIntensityExponent]
+            [simple int 8 absoluteTemperatureExponent]
+            [simple int 8 dimensionlessExponent]
             
         ]
         ['"12556"' TrustListDataType
@@ -1341,7 +1374,6 @@
                     
         ]
         ['"679"' HistoryUpdateDetails
-            [simple NodeId nodeId]
             
         ]
         ['"697"' HistoryUpdateResult
@@ -2352,6 +2384,16 @@
 ]
             
 
+[enum uint 32 RedundantServerMode
+
+    ['0' redundantServerModePrimaryWithBackup]
+    ['1' redundantServerModePrimaryOnly]
+    ['2' redundantServerModeBackupReady]
+    ['3' redundantServerModeBackupNotReady]
+    
+]
+            
+
 [enum uint 32 OpenFileMode
 
     ['1' openFileModeRead]
@@ -2372,6 +2414,15 @@
     ['6' identityCriteriaTypeAuthenticatedUser]
     ['7' identityCriteriaTypeApplication]
     ['8' identityCriteriaTypeX509Subject]
+    
+]
+            
+
+[enum uint 32 ConversionLimitEnum
+
+    ['0' conversionLimitEnumNoConversion]
+    ['1' conversionLimitEnumLimited]
+    ['2' conversionLimitEnumUnlimited]
     
 ]
             
@@ -2502,6 +2553,7 @@
     ['8' jsonNetworkMessageContentMaskPublisherId]
     ['16' jsonNetworkMessageContentMaskDataSetClassId]
     ['32' jsonNetworkMessageContentMaskReplyTo]
+    ['64' jsonNetworkMessageContentMaskWriterGroupName]
     
 ]
             
@@ -2517,6 +2569,9 @@
     ['32' jsonDataSetMessageContentMaskMessageType]
     ['64' jsonDataSetMessageContentMaskDataSetWriterName]
     ['128' jsonDataSetMessageContentMaskReversibleFieldEncoding]
+    ['256' jsonDataSetMessageContentMaskPublisherId]
+    ['512' jsonDataSetMessageContentMaskWriterGroupName]
+    ['1024' jsonDataSetMessageContentMaskMinorVersion]
     
 ]
             

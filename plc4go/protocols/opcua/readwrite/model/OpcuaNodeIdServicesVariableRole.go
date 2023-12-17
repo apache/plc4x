@@ -66,28 +66,8 @@ const (
 	OpcuaNodeIdServicesVariableRole_RoleType_RemoveApplication_InputArguments                         OpcuaNodeIdServicesVariableRole = 16179
 	OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments                               OpcuaNodeIdServicesVariableRole = 16181
 	OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments                            OpcuaNodeIdServicesVariableRole = 16183
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId                      OpcuaNodeIdServicesVariableRole = 17642
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType                    OpcuaNodeIdServicesVariableRole = 17643
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode                   OpcuaNodeIdServicesVariableRole = 17644
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName                   OpcuaNodeIdServicesVariableRole = 17645
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time                         OpcuaNodeIdServicesVariableRole = 17646
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime                  OpcuaNodeIdServicesVariableRole = 17647
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime                    OpcuaNodeIdServicesVariableRole = 17648
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message                      OpcuaNodeIdServicesVariableRole = 17649
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity                     OpcuaNodeIdServicesVariableRole = 17650
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp              OpcuaNodeIdServicesVariableRole = 17651
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status                       OpcuaNodeIdServicesVariableRole = 17652
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId                     OpcuaNodeIdServicesVariableRole = 17653
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId           OpcuaNodeIdServicesVariableRole = 17654
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId                 OpcuaNodeIdServicesVariableRole = 17655
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId                     OpcuaNodeIdServicesVariableRole = 17656
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments               OpcuaNodeIdServicesVariableRole = 17657
 	OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration              OpcuaNodeIdServicesVariableRole = 24138
 	OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration                                      OpcuaNodeIdServicesVariableRole = 24139
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId             OpcuaNodeIdServicesVariableRole = 31927
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName           OpcuaNodeIdServicesVariableRole = 31928
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId          OpcuaNodeIdServicesVariableRole = 31929
-	OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName        OpcuaNodeIdServicesVariableRole = 31930
 )
 
 var OpcuaNodeIdServicesVariableRoleValues []OpcuaNodeIdServicesVariableRole
@@ -120,28 +100,8 @@ func init() {
 		OpcuaNodeIdServicesVariableRole_RoleType_RemoveApplication_InputArguments,
 		OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments,
 		OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments,
 		OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration,
 		OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName,
 	}
 }
 
@@ -197,50 +157,10 @@ func OpcuaNodeIdServicesVariableRoleByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments, true
 	case 16183:
 		return OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments, true
-	case 17642:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId, true
-	case 17643:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType, true
-	case 17644:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode, true
-	case 17645:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName, true
-	case 17646:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time, true
-	case 17647:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime, true
-	case 17648:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime, true
-	case 17649:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message, true
-	case 17650:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity, true
-	case 17651:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp, true
-	case 17652:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status, true
-	case 17653:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId, true
-	case 17654:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId, true
-	case 17655:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId, true
-	case 17656:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId, true
-	case 17657:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments, true
 	case 24138:
 		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration, true
 	case 24139:
 		return OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration, true
-	case 31927:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId, true
-	case 31928:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName, true
-	case 31929:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId, true
-	case 31930:
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName, true
 	}
 	return 0, false
 }
@@ -297,50 +217,10 @@ func OpcuaNodeIdServicesVariableRoleByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableRole_RoleType_AddEndpoint_InputArguments, true
 	case "RoleType_RemoveEndpoint_InputArguments":
 		return OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments, true
-	case "RoleMappingRuleChangedAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId, true
-	case "RoleMappingRuleChangedAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType, true
-	case "RoleMappingRuleChangedAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode, true
-	case "RoleMappingRuleChangedAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName, true
-	case "RoleMappingRuleChangedAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time, true
-	case "RoleMappingRuleChangedAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime, true
-	case "RoleMappingRuleChangedAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime, true
-	case "RoleMappingRuleChangedAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message, true
-	case "RoleMappingRuleChangedAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity, true
-	case "RoleMappingRuleChangedAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp, true
-	case "RoleMappingRuleChangedAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status, true
-	case "RoleMappingRuleChangedAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId, true
-	case "RoleMappingRuleChangedAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId, true
-	case "RoleMappingRuleChangedAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId, true
-	case "RoleMappingRuleChangedAuditEventType_MethodId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId, true
-	case "RoleMappingRuleChangedAuditEventType_InputArguments":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments, true
 	case "RoleSetType_RoleName_Placeholder_CustomConfiguration":
 		return OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration, true
 	case "RoleType_CustomConfiguration":
 		return OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration, true
-	case "RoleMappingRuleChangedAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId, true
-	case "RoleMappingRuleChangedAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName, true
-	case "RoleMappingRuleChangedAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId, true
-	case "RoleMappingRuleChangedAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName, true
 	}
 	return 0, false
 }
@@ -458,50 +338,10 @@ func (e OpcuaNodeIdServicesVariableRole) PLC4XEnumName() string {
 		return "RoleType_AddEndpoint_InputArguments"
 	case OpcuaNodeIdServicesVariableRole_RoleType_RemoveEndpoint_InputArguments:
 		return "RoleType_RemoveEndpoint_InputArguments"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventId:
-		return "RoleMappingRuleChangedAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_EventType:
-		return "RoleMappingRuleChangedAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceNode:
-		return "RoleMappingRuleChangedAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_SourceName:
-		return "RoleMappingRuleChangedAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Time:
-		return "RoleMappingRuleChangedAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ReceiveTime:
-		return "RoleMappingRuleChangedAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_LocalTime:
-		return "RoleMappingRuleChangedAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Message:
-		return "RoleMappingRuleChangedAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Severity:
-		return "RoleMappingRuleChangedAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ActionTimeStamp:
-		return "RoleMappingRuleChangedAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_Status:
-		return "RoleMappingRuleChangedAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ServerId:
-		return "RoleMappingRuleChangedAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientAuditEntryId:
-		return "RoleMappingRuleChangedAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ClientUserId:
-		return "RoleMappingRuleChangedAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_MethodId:
-		return "RoleMappingRuleChangedAuditEventType_MethodId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_InputArguments:
-		return "RoleMappingRuleChangedAuditEventType_InputArguments"
 	case OpcuaNodeIdServicesVariableRole_RoleSetType_RoleName_Placeholder_CustomConfiguration:
 		return "RoleSetType_RoleName_Placeholder_CustomConfiguration"
 	case OpcuaNodeIdServicesVariableRole_RoleType_CustomConfiguration:
 		return "RoleType_CustomConfiguration"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassId:
-		return "RoleMappingRuleChangedAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionClassName:
-		return "RoleMappingRuleChangedAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassId:
-		return "RoleMappingRuleChangedAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableRole_RoleMappingRuleChangedAuditEventType_ConditionSubClassName:
-		return "RoleMappingRuleChangedAuditEventType_ConditionSubClassName"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

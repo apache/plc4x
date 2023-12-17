@@ -41,10 +41,9 @@ type IOpcuaNodeIdServicesVariableAliases interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments  OpcuaNodeIdServicesVariableAliases = 23474
-	OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAliases = 23475
-	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableAliases = 23477
-	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableAliases = 23478
+	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments  OpcuaNodeIdServicesVariableAliases = 23477
+	OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments OpcuaNodeIdServicesVariableAliases = 23478
+	OpcuaNodeIdServicesVariableAliases_Aliases_LastChange                OpcuaNodeIdServicesVariableAliases = 32852
 )
 
 var OpcuaNodeIdServicesVariableAliasesValues []OpcuaNodeIdServicesVariableAliases
@@ -52,37 +51,32 @@ var OpcuaNodeIdServicesVariableAliasesValues []OpcuaNodeIdServicesVariableAliase
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableAliasesValues = []OpcuaNodeIdServicesVariableAliases{
-		OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments,
-		OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableAliases_Aliases_LastChange,
 	}
 }
 
 func OpcuaNodeIdServicesVariableAliasesByValue(value int32) (enum OpcuaNodeIdServicesVariableAliases, ok bool) {
 	switch value {
-	case 23474:
-		return OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case 23475:
-		return OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
 	case 23477:
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments, true
 	case 23478:
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments, true
+	case 32852:
+		return OpcuaNodeIdServicesVariableAliases_Aliases_LastChange, true
 	}
 	return 0, false
 }
 
 func OpcuaNodeIdServicesVariableAliasesByName(value string) (enum OpcuaNodeIdServicesVariableAliases, ok bool) {
 	switch value {
-	case "Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments":
-		return OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case "Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments":
-		return OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
 	case "Aliases_FindAlias_InputArguments":
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments, true
 	case "Aliases_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments, true
+	case "Aliases_LastChange":
+		return OpcuaNodeIdServicesVariableAliases_Aliases_LastChange, true
 	}
 	return 0, false
 }
@@ -150,14 +144,12 @@ func (e OpcuaNodeIdServicesVariableAliases) SerializeWithWriteBuffer(ctx context
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableAliases) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments:
-		return "Aliases_SubAliasNameCategories_Placeholder_FindAlias_InputArguments"
-	case OpcuaNodeIdServicesVariableAliases_Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments:
-		return "Aliases_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments"
 	case OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_InputArguments:
 		return "Aliases_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableAliases_Aliases_FindAlias_OutputArguments:
 		return "Aliases_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableAliases_Aliases_LastChange:
+		return "Aliases_LastChange"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

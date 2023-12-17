@@ -41,14 +41,7 @@ type IOpcuaNodeIdServicesVariableX interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition       OpcuaNodeIdServicesVariableX = 12039
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision   OpcuaNodeIdServicesVariableX = 12040
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange  OpcuaNodeIdServicesVariableX = 12041
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange          OpcuaNodeIdServicesVariableX = 12042
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits OpcuaNodeIdServicesVariableX = 12043
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_Title            OpcuaNodeIdServicesVariableX = 12044
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType    OpcuaNodeIdServicesVariableX = 12045
-	OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition  OpcuaNodeIdServicesVariableX = 12046
+	OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition OpcuaNodeIdServicesVariableX = 12046
 )
 
 var OpcuaNodeIdServicesVariableXValues []OpcuaNodeIdServicesVariableX
@@ -56,33 +49,12 @@ var OpcuaNodeIdServicesVariableXValues []OpcuaNodeIdServicesVariableX
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableXValues = []OpcuaNodeIdServicesVariableX{
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition,
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision,
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange,
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange,
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits,
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_Title,
-		OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType,
 		OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition,
 	}
 }
 
 func OpcuaNodeIdServicesVariableXByValue(value int32) (enum OpcuaNodeIdServicesVariableX, ok bool) {
 	switch value {
-	case 12039:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition, true
-	case 12040:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision, true
-	case 12041:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange, true
-	case 12042:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange, true
-	case 12043:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits, true
-	case 12044:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_Title, true
-	case 12045:
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType, true
 	case 12046:
 		return OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition, true
 	}
@@ -91,20 +63,6 @@ func OpcuaNodeIdServicesVariableXByValue(value int32) (enum OpcuaNodeIdServicesV
 
 func OpcuaNodeIdServicesVariableXByName(value string) (enum OpcuaNodeIdServicesVariableX, ok bool) {
 	switch value {
-	case "XYArrayItemType_Definition":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition, true
-	case "XYArrayItemType_ValuePrecision":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision, true
-	case "XYArrayItemType_InstrumentRange":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange, true
-	case "XYArrayItemType_EURange":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange, true
-	case "XYArrayItemType_EngineeringUnits":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits, true
-	case "XYArrayItemType_Title":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_Title, true
-	case "XYArrayItemType_AxisScaleType":
-		return OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType, true
 	case "XYArrayItemType_XAxisDefinition":
 		return OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition, true
 	}
@@ -174,20 +132,6 @@ func (e OpcuaNodeIdServicesVariableX) SerializeWithWriteBuffer(ctx context.Conte
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableX) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_Definition:
-		return "XYArrayItemType_Definition"
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_ValuePrecision:
-		return "XYArrayItemType_ValuePrecision"
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_InstrumentRange:
-		return "XYArrayItemType_InstrumentRange"
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_EURange:
-		return "XYArrayItemType_EURange"
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_EngineeringUnits:
-		return "XYArrayItemType_EngineeringUnits"
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_Title:
-		return "XYArrayItemType_Title"
-	case OpcuaNodeIdServicesVariableX_XYArrayItemType_AxisScaleType:
-		return "XYArrayItemType_AxisScaleType"
 	case OpcuaNodeIdServicesVariableX_XYArrayItemType_XAxisDefinition:
 		return "XYArrayItemType_XAxisDefinition"
 	}

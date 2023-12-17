@@ -41,380 +41,193 @@ type IOpcuaNodeIdServicesVariableData interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableData_DataTypeDescriptionType_DataTypeVersion                                                                   OpcuaNodeIdServicesVariableData = 104
-	OpcuaNodeIdServicesVariableData_DataTypeDescriptionType_DictionaryFragment                                                                OpcuaNodeIdServicesVariableData = 105
-	OpcuaNodeIdServicesVariableData_DataTypeDictionaryType_DataTypeVersion                                                                    OpcuaNodeIdServicesVariableData = 106
-	OpcuaNodeIdServicesVariableData_DataTypeDictionaryType_NamespaceUri                                                                       OpcuaNodeIdServicesVariableData = 107
-	OpcuaNodeIdServicesVariableData_DataItemType_Definition                                                                                   OpcuaNodeIdServicesVariableData = 2366
-	OpcuaNodeIdServicesVariableData_DataItemType_ValuePrecision                                                                               OpcuaNodeIdServicesVariableData = 2367
-	OpcuaNodeIdServicesVariableData_DataChangeTrigger_EnumStrings                                                                             OpcuaNodeIdServicesVariableData = 7609
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItems_InputArguments                      OpcuaNodeIdServicesVariableData = 14480
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItems_OutputArguments                     OpcuaNodeIdServicesVariableData = 14481
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEvents_InputArguments                         OpcuaNodeIdServicesVariableData = 14483
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEvents_OutputArguments                        OpcuaNodeIdServicesVariableData = 14484
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_RemovePublishedDataSet_InputArguments                     OpcuaNodeIdServicesVariableData = 14486
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ConfigurationVersion                                   OpcuaNodeIdServicesVariableData = 14489
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItems_InputArguments                                                    OpcuaNodeIdServicesVariableData = 14494
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItems_OutputArguments                                                   OpcuaNodeIdServicesVariableData = 14495
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEvents_InputArguments                                                       OpcuaNodeIdServicesVariableData = 14497
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEvents_OutputArguments                                                      OpcuaNodeIdServicesVariableData = 14498
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_RemovePublishedDataSet_InputArguments                                                   OpcuaNodeIdServicesVariableData = 14500
-	OpcuaNodeIdServicesVariableData_DataTypeDictionaryType_Deprecated                                                                         OpcuaNodeIdServicesVariableData = 15001
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_DataSetMetaData                                        OpcuaNodeIdServicesVariableData = 15221
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Status_State                                                                            OpcuaNodeIdServicesVariableData = 15300
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Status_State                                                                            OpcuaNodeIdServicesVariableData = 15308
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_AddExtensionField_InputArguments       OpcuaNodeIdServicesVariableData = 15475
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_AddExtensionField_OutputArguments      OpcuaNodeIdServicesVariableData = 15476
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_RemoveExtensionField_InputArguments    OpcuaNodeIdServicesVariableData = 15478
-	OpcuaNodeIdServicesVariableData_DataSetFieldFlags_OptionSetValues                                                                         OpcuaNodeIdServicesVariableData = 15577
-	OpcuaNodeIdServicesVariableData_DataSetFieldContentMask_OptionSetValues                                                                   OpcuaNodeIdServicesVariableData = 15584
-	OpcuaNodeIdServicesVariableData_DataSetOrderingType_EnumStrings                                                                           OpcuaNodeIdServicesVariableData = 15641
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_SecurityMode                                                                            OpcuaNodeIdServicesVariableData = 15932
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_SecurityGroupId                                                                         OpcuaNodeIdServicesVariableData = 15933
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_SecurityKeyServices                                                                     OpcuaNodeIdServicesVariableData = 15934
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate_InputArguments              OpcuaNodeIdServicesVariableData = 16843
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate_OutputArguments             OpcuaNodeIdServicesVariableData = 16853
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate_InputArguments                 OpcuaNodeIdServicesVariableData = 16882
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate_OutputArguments                OpcuaNodeIdServicesVariableData = 16883
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder_InputArguments                           OpcuaNodeIdServicesVariableData = 16894
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder_OutputArguments                          OpcuaNodeIdServicesVariableData = 16922
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder_InputArguments                        OpcuaNodeIdServicesVariableData = 16924
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_DataSetClassId                                         OpcuaNodeIdServicesVariableData = 16925
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItemsTemplate_InputArguments                                            OpcuaNodeIdServicesVariableData = 16958
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItemsTemplate_OutputArguments                                           OpcuaNodeIdServicesVariableData = 16959
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEventsTemplate_InputArguments                                               OpcuaNodeIdServicesVariableData = 16961
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEventsTemplate_OutputArguments                                              OpcuaNodeIdServicesVariableData = 16971
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddDataSetFolder_InputArguments                                                         OpcuaNodeIdServicesVariableData = 16995
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddDataSetFolder_OutputArguments                                                        OpcuaNodeIdServicesVariableData = 16996
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_RemoveDataSetFolder_InputArguments                                                      OpcuaNodeIdServicesVariableData = 17007
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateTargetVariables_InputArguments                                                    OpcuaNodeIdServicesVariableData = 17387
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateTargetVariables_OutputArguments                                                   OpcuaNodeIdServicesVariableData = 17388
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateDataSetMirror_InputArguments                                                      OpcuaNodeIdServicesVariableData = 17390
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateDataSetMirror_OutputArguments                                                     OpcuaNodeIdServicesVariableData = 17391
-	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateTargetVariablesMethodType_InputArguments                                           OpcuaNodeIdServicesVariableData = 17393
-	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateTargetVariablesMethodType_OutputArguments                                          OpcuaNodeIdServicesVariableData = 17394
-	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateDataSetMirrorMethodType_InputArguments                                             OpcuaNodeIdServicesVariableData = 17396
-	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateDataSetMirrorMethodType_OutputArguments                                            OpcuaNodeIdServicesVariableData = 17397
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterProperties                                                                 OpcuaNodeIdServicesVariableData = 17493
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetReaderProperties                                                                 OpcuaNodeIdServicesVariableData = 17494
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_KeyFrameCount                                                                           OpcuaNodeIdServicesVariableData = 17563
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_HeaderLayoutUri                                                                         OpcuaNodeIdServicesVariableData = 17564
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_DiagnosticsLevel                                                            OpcuaNodeIdServicesVariableData = 19551
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation                                                            OpcuaNodeIdServicesVariableData = 19552
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_Active                                                     OpcuaNodeIdServicesVariableData = 19553
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_Classification                                             OpcuaNodeIdServicesVariableData = 19554
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_DiagnosticsLevel                                           OpcuaNodeIdServicesVariableData = 19555
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_TimeFirstChange                                            OpcuaNodeIdServicesVariableData = 19556
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError                                                                  OpcuaNodeIdServicesVariableData = 19557
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_Active                                                           OpcuaNodeIdServicesVariableData = 19558
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_Classification                                                   OpcuaNodeIdServicesVariableData = 19559
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_DiagnosticsLevel                                                 OpcuaNodeIdServicesVariableData = 19560
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_TimeFirstChange                                                  OpcuaNodeIdServicesVariableData = 19561
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_SubError                                                                    OpcuaNodeIdServicesVariableData = 19563
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError                                                         OpcuaNodeIdServicesVariableData = 19565
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_Active                                                  OpcuaNodeIdServicesVariableData = 19566
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_Classification                                          OpcuaNodeIdServicesVariableData = 19567
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_DiagnosticsLevel                                        OpcuaNodeIdServicesVariableData = 19568
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_TimeFirstChange                                         OpcuaNodeIdServicesVariableData = 19569
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod                                           OpcuaNodeIdServicesVariableData = 19570
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_Active                                    OpcuaNodeIdServicesVariableData = 19571
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_Classification                            OpcuaNodeIdServicesVariableData = 19572
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19573
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19574
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent                                           OpcuaNodeIdServicesVariableData = 19575
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_Active                                    OpcuaNodeIdServicesVariableData = 19576
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_Classification                            OpcuaNodeIdServicesVariableData = 19577
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19578
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19579
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError                                          OpcuaNodeIdServicesVariableData = 19580
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_Active                                   OpcuaNodeIdServicesVariableData = 19581
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_Classification                           OpcuaNodeIdServicesVariableData = 19582
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel                         OpcuaNodeIdServicesVariableData = 19583
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange                          OpcuaNodeIdServicesVariableData = 19584
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent                                                OpcuaNodeIdServicesVariableData = 19585
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_Active                                         OpcuaNodeIdServicesVariableData = 19586
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_Classification                                 OpcuaNodeIdServicesVariableData = 19587
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel                               OpcuaNodeIdServicesVariableData = 19588
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_TimeFirstChange                                OpcuaNodeIdServicesVariableData = 19589
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod                                              OpcuaNodeIdServicesVariableData = 19590
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_Active                                       OpcuaNodeIdServicesVariableData = 19591
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_Classification                               OpcuaNodeIdServicesVariableData = 19592
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel                             OpcuaNodeIdServicesVariableData = 19593
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange                              OpcuaNodeIdServicesVariableData = 19594
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages                                              OpcuaNodeIdServicesVariableData = 19596
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_Active                                       OpcuaNodeIdServicesVariableData = 19597
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_Classification                               OpcuaNodeIdServicesVariableData = 19598
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel                             OpcuaNodeIdServicesVariableData = 19599
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange                              OpcuaNodeIdServicesVariableData = 19600
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MessageSequenceNumber                                            OpcuaNodeIdServicesVariableData = 19601
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel                           OpcuaNodeIdServicesVariableData = 19602
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_StatusCode                                                       OpcuaNodeIdServicesVariableData = 19603
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel                                      OpcuaNodeIdServicesVariableData = 19604
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MajorVersion                                                     OpcuaNodeIdServicesVariableData = 19605
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel                                    OpcuaNodeIdServicesVariableData = 19606
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MinorVersion                                                     OpcuaNodeIdServicesVariableData = 19607
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel                                    OpcuaNodeIdServicesVariableData = 19608
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_DiagnosticsLevel                                                            OpcuaNodeIdServicesVariableData = 19610
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation                                                            OpcuaNodeIdServicesVariableData = 19611
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_Active                                                     OpcuaNodeIdServicesVariableData = 19612
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_Classification                                             OpcuaNodeIdServicesVariableData = 19613
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_DiagnosticsLevel                                           OpcuaNodeIdServicesVariableData = 19614
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_TimeFirstChange                                            OpcuaNodeIdServicesVariableData = 19615
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError                                                                  OpcuaNodeIdServicesVariableData = 19616
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_Active                                                           OpcuaNodeIdServicesVariableData = 19617
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_Classification                                                   OpcuaNodeIdServicesVariableData = 19618
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_DiagnosticsLevel                                                 OpcuaNodeIdServicesVariableData = 19619
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_TimeFirstChange                                                  OpcuaNodeIdServicesVariableData = 19620
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_SubError                                                                    OpcuaNodeIdServicesVariableData = 19622
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError                                                         OpcuaNodeIdServicesVariableData = 19624
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_Active                                                  OpcuaNodeIdServicesVariableData = 19625
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_Classification                                          OpcuaNodeIdServicesVariableData = 19626
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_DiagnosticsLevel                                        OpcuaNodeIdServicesVariableData = 19627
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_TimeFirstChange                                         OpcuaNodeIdServicesVariableData = 19628
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod                                           OpcuaNodeIdServicesVariableData = 19629
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_Active                                    OpcuaNodeIdServicesVariableData = 19630
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_Classification                            OpcuaNodeIdServicesVariableData = 19631
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19632
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19633
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent                                           OpcuaNodeIdServicesVariableData = 19634
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_Active                                    OpcuaNodeIdServicesVariableData = 19635
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_Classification                            OpcuaNodeIdServicesVariableData = 19636
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19637
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19638
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError                                          OpcuaNodeIdServicesVariableData = 19639
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_Active                                   OpcuaNodeIdServicesVariableData = 19640
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_Classification                           OpcuaNodeIdServicesVariableData = 19641
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel                         OpcuaNodeIdServicesVariableData = 19642
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange                          OpcuaNodeIdServicesVariableData = 19643
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent                                                OpcuaNodeIdServicesVariableData = 19644
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_Active                                         OpcuaNodeIdServicesVariableData = 19645
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_Classification                                 OpcuaNodeIdServicesVariableData = 19646
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel                               OpcuaNodeIdServicesVariableData = 19647
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_TimeFirstChange                                OpcuaNodeIdServicesVariableData = 19648
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod                                              OpcuaNodeIdServicesVariableData = 19649
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_Active                                       OpcuaNodeIdServicesVariableData = 19650
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_Classification                               OpcuaNodeIdServicesVariableData = 19651
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel                             OpcuaNodeIdServicesVariableData = 19652
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange                              OpcuaNodeIdServicesVariableData = 19653
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages                                              OpcuaNodeIdServicesVariableData = 19655
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_Active                                       OpcuaNodeIdServicesVariableData = 19656
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_Classification                               OpcuaNodeIdServicesVariableData = 19657
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel                             OpcuaNodeIdServicesVariableData = 19658
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange                              OpcuaNodeIdServicesVariableData = 19659
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors                                                   OpcuaNodeIdServicesVariableData = 19660
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_Active                                            OpcuaNodeIdServicesVariableData = 19661
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_Classification                                    OpcuaNodeIdServicesVariableData = 19662
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_DiagnosticsLevel                                  OpcuaNodeIdServicesVariableData = 19663
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_TimeFirstChange                                   OpcuaNodeIdServicesVariableData = 19664
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MessageSequenceNumber                                            OpcuaNodeIdServicesVariableData = 19665
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel                           OpcuaNodeIdServicesVariableData = 19666
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_StatusCode                                                       OpcuaNodeIdServicesVariableData = 19667
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel                                      OpcuaNodeIdServicesVariableData = 19668
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MajorVersion                                                     OpcuaNodeIdServicesVariableData = 19669
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel                                    OpcuaNodeIdServicesVariableData = 19670
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MinorVersion                                                     OpcuaNodeIdServicesVariableData = 19671
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel                                    OpcuaNodeIdServicesVariableData = 19672
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID                                                  OpcuaNodeIdServicesVariableData = 19673
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID_DiagnosticsLevel                                 OpcuaNodeIdServicesVariableData = 19674
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID                                                OpcuaNodeIdServicesVariableData = 19675
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel                               OpcuaNodeIdServicesVariableData = 19676
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId                                                                         OpcuaNodeIdServicesVariableData = 21092
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetFieldContentMask                                                                 OpcuaNodeIdServicesVariableData = 21093
-	OpcuaNodeIdServicesVariableData_DataSetWriterType_KeyFrameCount                                                                           OpcuaNodeIdServicesVariableData = 21094
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_PublisherId                                                                             OpcuaNodeIdServicesVariableData = 21097
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_WriterGroupId                                                                           OpcuaNodeIdServicesVariableData = 21098
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetWriterId                                                                         OpcuaNodeIdServicesVariableData = 21099
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetMetaData                                                                         OpcuaNodeIdServicesVariableData = 21100
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetFieldContentMask                                                                 OpcuaNodeIdServicesVariableData = 21101
-	OpcuaNodeIdServicesVariableData_DataSetReaderType_MessageReceiveTimeout                                                                   OpcuaNodeIdServicesVariableData = 21102
-	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet                                          OpcuaNodeIdServicesVariableData = 25524
-	OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_InputArguments                                                             OpcuaNodeIdServicesVariableData = 32407
-	OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_OutputArguments                                                            OpcuaNodeIdServicesVariableData = 32408
-	OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_InputArguments                                                            OpcuaNodeIdServicesVariableData = 32410
-	OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_OutputArguments                                                           OpcuaNodeIdServicesVariableData = 32411
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments                                             OpcuaNodeIdServicesVariableData = 32414
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments                                            OpcuaNodeIdServicesVariableData = 32415
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments                                          OpcuaNodeIdServicesVariableData = 32417
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments                                       OpcuaNodeIdServicesVariableData = 32419
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments                                      OpcuaNodeIdServicesVariableData = 32420
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments                                    OpcuaNodeIdServicesVariableData = 32422
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris                                                 OpcuaNodeIdServicesVariableData = 32423
-	OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments                                                OpcuaNodeIdServicesVariableData = 32426
-	OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments                                               OpcuaNodeIdServicesVariableData = 32427
-	OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments                                             OpcuaNodeIdServicesVariableData = 32429
-	OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments                                          OpcuaNodeIdServicesVariableData = 32431
-	OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments                                         OpcuaNodeIdServicesVariableData = 32432
-	OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments                                       OpcuaNodeIdServicesVariableData = 32434
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_PublisherId                                                     OpcuaNodeIdServicesVariableData = 32436
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri                                             OpcuaNodeIdServicesVariableData = 32437
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections                                  OpcuaNodeIdServicesVariableData = 32438
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions                       OpcuaNodeIdServicesVariableData = 32439
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList                              OpcuaNodeIdServicesVariableData = 32440
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_ConnectionProperties                                            OpcuaNodeIdServicesVariableData = 32441
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface                                        OpcuaNodeIdServicesVariableData = 32443
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections                             OpcuaNodeIdServicesVariableData = 32444
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions                  OpcuaNodeIdServicesVariableData = 32445
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList                         OpcuaNodeIdServicesVariableData = 32446
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Status_State                                                    OpcuaNodeIdServicesVariableData = 32449
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel                                    OpcuaNodeIdServicesVariableData = 32453
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation                                    OpcuaNodeIdServicesVariableData = 32454
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active                             OpcuaNodeIdServicesVariableData = 32455
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification                     OpcuaNodeIdServicesVariableData = 32456
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel                   OpcuaNodeIdServicesVariableData = 32457
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange                    OpcuaNodeIdServicesVariableData = 32458
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError                                          OpcuaNodeIdServicesVariableData = 32459
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active                                   OpcuaNodeIdServicesVariableData = 32460
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification                           OpcuaNodeIdServicesVariableData = 32461
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel                         OpcuaNodeIdServicesVariableData = 32462
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange                          OpcuaNodeIdServicesVariableData = 32463
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError                                            OpcuaNodeIdServicesVariableData = 32465
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError                                 OpcuaNodeIdServicesVariableData = 32467
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active                          OpcuaNodeIdServicesVariableData = 32468
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification                  OpcuaNodeIdServicesVariableData = 32469
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel                OpcuaNodeIdServicesVariableData = 32470
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange                 OpcuaNodeIdServicesVariableData = 32471
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod                   OpcuaNodeIdServicesVariableData = 32472
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active            OpcuaNodeIdServicesVariableData = 32473
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification    OpcuaNodeIdServicesVariableData = 32474
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel  OpcuaNodeIdServicesVariableData = 32475
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange   OpcuaNodeIdServicesVariableData = 32476
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent                   OpcuaNodeIdServicesVariableData = 32477
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active            OpcuaNodeIdServicesVariableData = 32478
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification    OpcuaNodeIdServicesVariableData = 32479
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel  OpcuaNodeIdServicesVariableData = 32480
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange   OpcuaNodeIdServicesVariableData = 32481
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError                  OpcuaNodeIdServicesVariableData = 32482
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active           OpcuaNodeIdServicesVariableData = 32483
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification   OpcuaNodeIdServicesVariableData = 32484
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel OpcuaNodeIdServicesVariableData = 32485
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange  OpcuaNodeIdServicesVariableData = 32486
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent                        OpcuaNodeIdServicesVariableData = 32487
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active                 OpcuaNodeIdServicesVariableData = 32488
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification         OpcuaNodeIdServicesVariableData = 32489
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel       OpcuaNodeIdServicesVariableData = 32490
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange        OpcuaNodeIdServicesVariableData = 32491
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod                      OpcuaNodeIdServicesVariableData = 32492
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active               OpcuaNodeIdServicesVariableData = 32493
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification       OpcuaNodeIdServicesVariableData = 32494
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel     OpcuaNodeIdServicesVariableData = 32495
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange      OpcuaNodeIdServicesVariableData = 32496
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress                          OpcuaNodeIdServicesVariableData = 32498
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel         OpcuaNodeIdServicesVariableData = 32499
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments                                   OpcuaNodeIdServicesVariableData = 32501
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments                                  OpcuaNodeIdServicesVariableData = 32502
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments                                   OpcuaNodeIdServicesVariableData = 32504
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments                                  OpcuaNodeIdServicesVariableData = 32505
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments                                      OpcuaNodeIdServicesVariableData = 32507
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SetSecurityKeys_InputArguments                                                             OpcuaNodeIdServicesVariableData = 32509
-	OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_InputArguments                                                               OpcuaNodeIdServicesVariableData = 32511
-	OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_OutputArguments                                                              OpcuaNodeIdServicesVariableData = 32512
-	OpcuaNodeIdServicesVariableData_DataSetClasses_RemoveConnection_InputArguments                                                            OpcuaNodeIdServicesVariableData = 32514
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments                                     OpcuaNodeIdServicesVariableData = 32517
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments                                    OpcuaNodeIdServicesVariableData = 32518
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments                                        OpcuaNodeIdServicesVariableData = 32520
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments                                       OpcuaNodeIdServicesVariableData = 32521
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments                             OpcuaNodeIdServicesVariableData = 32523
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments                            OpcuaNodeIdServicesVariableData = 32524
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments                                OpcuaNodeIdServicesVariableData = 32526
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments                               OpcuaNodeIdServicesVariableData = 32527
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments                                    OpcuaNodeIdServicesVariableData = 32529
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments                                          OpcuaNodeIdServicesVariableData = 32531
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments                                         OpcuaNodeIdServicesVariableData = 32532
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments                                       OpcuaNodeIdServicesVariableData = 32534
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments                                     OpcuaNodeIdServicesVariableData = 32537
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments                                    OpcuaNodeIdServicesVariableData = 32538
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments                                  OpcuaNodeIdServicesVariableData = 32540
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments                                         OpcuaNodeIdServicesVariableData = 32542
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments                                        OpcuaNodeIdServicesVariableData = 32543
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments                                      OpcuaNodeIdServicesVariableData = 32545
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Size                                                                   OpcuaNodeIdServicesVariableData = 32547
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Writable                                                               OpcuaNodeIdServicesVariableData = 32548
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_UserWritable                                                           OpcuaNodeIdServicesVariableData = 32549
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_OpenCount                                                              OpcuaNodeIdServicesVariableData = 32550
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MimeType                                                               OpcuaNodeIdServicesVariableData = 32551
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MaxByteStringLength                                                    OpcuaNodeIdServicesVariableData = 32552
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_LastModifiedTime                                                       OpcuaNodeIdServicesVariableData = 32553
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_InputArguments                                                    OpcuaNodeIdServicesVariableData = 32555
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_OutputArguments                                                   OpcuaNodeIdServicesVariableData = 32556
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Close_InputArguments                                                   OpcuaNodeIdServicesVariableData = 32558
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_InputArguments                                                    OpcuaNodeIdServicesVariableData = 32560
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_OutputArguments                                                   OpcuaNodeIdServicesVariableData = 32561
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Write_InputArguments                                                   OpcuaNodeIdServicesVariableData = 32563
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_InputArguments                                             OpcuaNodeIdServicesVariableData = 32565
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments                                            OpcuaNodeIdServicesVariableData = 32566
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_SetPosition_InputArguments                                             OpcuaNodeIdServicesVariableData = 32568
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments                                              OpcuaNodeIdServicesVariableData = 32570
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments                                             OpcuaNodeIdServicesVariableData = 32571
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments                                          OpcuaNodeIdServicesVariableData = 32573
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments                                         OpcuaNodeIdServicesVariableData = 32574
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Status_State                                                                               OpcuaNodeIdServicesVariableData = 32576
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_DiagnosticsLevel                                                               OpcuaNodeIdServicesVariableData = 32580
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation                                                               OpcuaNodeIdServicesVariableData = 32581
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Active                                                        OpcuaNodeIdServicesVariableData = 32582
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Classification                                                OpcuaNodeIdServicesVariableData = 32583
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel                                              OpcuaNodeIdServicesVariableData = 32584
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange                                               OpcuaNodeIdServicesVariableData = 32585
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError                                                                     OpcuaNodeIdServicesVariableData = 32586
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Active                                                              OpcuaNodeIdServicesVariableData = 32587
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Classification                                                      OpcuaNodeIdServicesVariableData = 32588
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel                                                    OpcuaNodeIdServicesVariableData = 32589
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_TimeFirstChange                                                     OpcuaNodeIdServicesVariableData = 32590
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_SubError                                                                       OpcuaNodeIdServicesVariableData = 32592
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError                                                            OpcuaNodeIdServicesVariableData = 32594
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Active                                                     OpcuaNodeIdServicesVariableData = 32595
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Classification                                             OpcuaNodeIdServicesVariableData = 32596
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel                                           OpcuaNodeIdServicesVariableData = 32597
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange                                            OpcuaNodeIdServicesVariableData = 32598
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod                                              OpcuaNodeIdServicesVariableData = 32599
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active                                       OpcuaNodeIdServicesVariableData = 32600
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification                               OpcuaNodeIdServicesVariableData = 32601
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel                             OpcuaNodeIdServicesVariableData = 32602
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange                              OpcuaNodeIdServicesVariableData = 32603
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent                                              OpcuaNodeIdServicesVariableData = 32604
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active                                       OpcuaNodeIdServicesVariableData = 32605
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification                               OpcuaNodeIdServicesVariableData = 32606
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel                             OpcuaNodeIdServicesVariableData = 32607
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange                              OpcuaNodeIdServicesVariableData = 32608
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError                                             OpcuaNodeIdServicesVariableData = 32609
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active                                      OpcuaNodeIdServicesVariableData = 32610
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification                              OpcuaNodeIdServicesVariableData = 32611
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel                            OpcuaNodeIdServicesVariableData = 32612
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange                             OpcuaNodeIdServicesVariableData = 32613
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent                                                   OpcuaNodeIdServicesVariableData = 32614
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active                                            OpcuaNodeIdServicesVariableData = 32615
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification                                    OpcuaNodeIdServicesVariableData = 32616
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel                                  OpcuaNodeIdServicesVariableData = 32617
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange                                   OpcuaNodeIdServicesVariableData = 32618
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod                                                 OpcuaNodeIdServicesVariableData = 32619
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active                                          OpcuaNodeIdServicesVariableData = 32620
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification                                  OpcuaNodeIdServicesVariableData = 32621
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel                                OpcuaNodeIdServicesVariableData = 32622
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange                                 OpcuaNodeIdServicesVariableData = 32623
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters                                            OpcuaNodeIdServicesVariableData = 32625
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel                           OpcuaNodeIdServicesVariableData = 32626
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders                                            OpcuaNodeIdServicesVariableData = 32627
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel                           OpcuaNodeIdServicesVariableData = 32628
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters                                           OpcuaNodeIdServicesVariableData = 32629
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 32630
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders                                           OpcuaNodeIdServicesVariableData = 32631
-	OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 32632
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxPubSubConnections                                                     OpcuaNodeIdServicesVariableData = 32634
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxWriterGroups                                                          OpcuaNodeIdServicesVariableData = 32635
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxReaderGroups                                                          OpcuaNodeIdServicesVariableData = 32636
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWriters                                                        OpcuaNodeIdServicesVariableData = 32637
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetReaders                                                        OpcuaNodeIdServicesVariableData = 32638
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup                                                OpcuaNodeIdServicesVariableData = 32639
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram                                            OpcuaNodeIdServicesVariableData = 32640
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker                                              OpcuaNodeIdServicesVariableData = 32641
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPull                                                   OpcuaNodeIdServicesVariableData = 32642
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPush                                                   OpcuaNodeIdServicesVariableData = 32643
-	OpcuaNodeIdServicesVariableData_DataSetClasses_DataSetClasses_DataSetName_Placeholder                                                     OpcuaNodeIdServicesVariableData = 32645
-	OpcuaNodeIdServicesVariableData_DataSetClasses_SupportedTransportProfiles                                                                 OpcuaNodeIdServicesVariableData = 32646
-	OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultDatagramPublisherId                                                                 OpcuaNodeIdServicesVariableData = 32647
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationVersion                                                                       OpcuaNodeIdServicesVariableData = 32648
-	OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultSecurityKeyServices                                                                 OpcuaNodeIdServicesVariableData = 32649
-	OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationProperties                                                                    OpcuaNodeIdServicesVariableData = 32650
-	OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet                                                      OpcuaNodeIdServicesVariableData = 32656
+	OpcuaNodeIdServicesVariableData_DataTypeDescriptionType_DataTypeVersion                                                                OpcuaNodeIdServicesVariableData = 104
+	OpcuaNodeIdServicesVariableData_DataTypeDescriptionType_DictionaryFragment                                                             OpcuaNodeIdServicesVariableData = 105
+	OpcuaNodeIdServicesVariableData_DataTypeDictionaryType_DataTypeVersion                                                                 OpcuaNodeIdServicesVariableData = 106
+	OpcuaNodeIdServicesVariableData_DataTypeDictionaryType_NamespaceUri                                                                    OpcuaNodeIdServicesVariableData = 107
+	OpcuaNodeIdServicesVariableData_DataItemType_Definition                                                                                OpcuaNodeIdServicesVariableData = 2366
+	OpcuaNodeIdServicesVariableData_DataItemType_ValuePrecision                                                                            OpcuaNodeIdServicesVariableData = 2367
+	OpcuaNodeIdServicesVariableData_DataChangeTrigger_EnumStrings                                                                          OpcuaNodeIdServicesVariableData = 7609
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItems_InputArguments                   OpcuaNodeIdServicesVariableData = 14480
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItems_OutputArguments                  OpcuaNodeIdServicesVariableData = 14481
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEvents_InputArguments                      OpcuaNodeIdServicesVariableData = 14483
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEvents_OutputArguments                     OpcuaNodeIdServicesVariableData = 14484
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_RemovePublishedDataSet_InputArguments                  OpcuaNodeIdServicesVariableData = 14486
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ConfigurationVersion                                OpcuaNodeIdServicesVariableData = 14489
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItems_InputArguments                                                 OpcuaNodeIdServicesVariableData = 14494
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItems_OutputArguments                                                OpcuaNodeIdServicesVariableData = 14495
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEvents_InputArguments                                                    OpcuaNodeIdServicesVariableData = 14497
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEvents_OutputArguments                                                   OpcuaNodeIdServicesVariableData = 14498
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_RemovePublishedDataSet_InputArguments                                                OpcuaNodeIdServicesVariableData = 14500
+	OpcuaNodeIdServicesVariableData_DataTypeDictionaryType_Deprecated                                                                      OpcuaNodeIdServicesVariableData = 15001
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_DataSetMetaData                                     OpcuaNodeIdServicesVariableData = 15221
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Status_State                                                                         OpcuaNodeIdServicesVariableData = 15300
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Status_State                                                                         OpcuaNodeIdServicesVariableData = 15308
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_AddExtensionField_InputArguments    OpcuaNodeIdServicesVariableData = 15475
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_AddExtensionField_OutputArguments   OpcuaNodeIdServicesVariableData = 15476
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_ExtensionFields_RemoveExtensionField_InputArguments OpcuaNodeIdServicesVariableData = 15478
+	OpcuaNodeIdServicesVariableData_DataSetFieldFlags_OptionSetValues                                                                      OpcuaNodeIdServicesVariableData = 15577
+	OpcuaNodeIdServicesVariableData_DataSetFieldContentMask_OptionSetValues                                                                OpcuaNodeIdServicesVariableData = 15584
+	OpcuaNodeIdServicesVariableData_DataSetOrderingType_EnumStrings                                                                        OpcuaNodeIdServicesVariableData = 15641
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_SecurityMode                                                                         OpcuaNodeIdServicesVariableData = 15932
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_SecurityGroupId                                                                      OpcuaNodeIdServicesVariableData = 15933
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_SecurityKeyServices                                                                  OpcuaNodeIdServicesVariableData = 15934
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate_InputArguments           OpcuaNodeIdServicesVariableData = 16843
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate_OutputArguments          OpcuaNodeIdServicesVariableData = 16853
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate_InputArguments              OpcuaNodeIdServicesVariableData = 16882
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate_OutputArguments             OpcuaNodeIdServicesVariableData = 16883
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder_InputArguments                        OpcuaNodeIdServicesVariableData = 16894
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder_OutputArguments                       OpcuaNodeIdServicesVariableData = 16922
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder_InputArguments                     OpcuaNodeIdServicesVariableData = 16924
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_DataSetClassId                                      OpcuaNodeIdServicesVariableData = 16925
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItemsTemplate_InputArguments                                         OpcuaNodeIdServicesVariableData = 16958
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedDataItemsTemplate_OutputArguments                                        OpcuaNodeIdServicesVariableData = 16959
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEventsTemplate_InputArguments                                            OpcuaNodeIdServicesVariableData = 16961
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddPublishedEventsTemplate_OutputArguments                                           OpcuaNodeIdServicesVariableData = 16971
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddDataSetFolder_InputArguments                                                      OpcuaNodeIdServicesVariableData = 16995
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_AddDataSetFolder_OutputArguments                                                     OpcuaNodeIdServicesVariableData = 16996
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_RemoveDataSetFolder_InputArguments                                                   OpcuaNodeIdServicesVariableData = 17007
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateTargetVariables_InputArguments                                                 OpcuaNodeIdServicesVariableData = 17387
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateTargetVariables_OutputArguments                                                OpcuaNodeIdServicesVariableData = 17388
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateDataSetMirror_InputArguments                                                   OpcuaNodeIdServicesVariableData = 17390
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_CreateDataSetMirror_OutputArguments                                                  OpcuaNodeIdServicesVariableData = 17391
+	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateTargetVariablesMethodType_InputArguments                                        OpcuaNodeIdServicesVariableData = 17393
+	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateTargetVariablesMethodType_OutputArguments                                       OpcuaNodeIdServicesVariableData = 17394
+	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateDataSetMirrorMethodType_InputArguments                                          OpcuaNodeIdServicesVariableData = 17396
+	OpcuaNodeIdServicesVariableData_DataSetReaderTypeCreateDataSetMirrorMethodType_OutputArguments                                         OpcuaNodeIdServicesVariableData = 17397
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterProperties                                                              OpcuaNodeIdServicesVariableData = 17493
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetReaderProperties                                                              OpcuaNodeIdServicesVariableData = 17494
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_KeyFrameCount                                                                        OpcuaNodeIdServicesVariableData = 17563
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_HeaderLayoutUri                                                                      OpcuaNodeIdServicesVariableData = 17564
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_DiagnosticsLevel                                                         OpcuaNodeIdServicesVariableData = 19551
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation                                                         OpcuaNodeIdServicesVariableData = 19552
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_Active                                                  OpcuaNodeIdServicesVariableData = 19553
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_Classification                                          OpcuaNodeIdServicesVariableData = 19554
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_DiagnosticsLevel                                        OpcuaNodeIdServicesVariableData = 19555
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalInformation_TimeFirstChange                                         OpcuaNodeIdServicesVariableData = 19556
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError                                                               OpcuaNodeIdServicesVariableData = 19557
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_Active                                                        OpcuaNodeIdServicesVariableData = 19558
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_Classification                                                OpcuaNodeIdServicesVariableData = 19559
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_DiagnosticsLevel                                              OpcuaNodeIdServicesVariableData = 19560
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_TotalError_TimeFirstChange                                               OpcuaNodeIdServicesVariableData = 19561
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_SubError                                                                 OpcuaNodeIdServicesVariableData = 19563
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError                                                      OpcuaNodeIdServicesVariableData = 19565
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_Active                                               OpcuaNodeIdServicesVariableData = 19566
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_Classification                                       OpcuaNodeIdServicesVariableData = 19567
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_DiagnosticsLevel                                     OpcuaNodeIdServicesVariableData = 19568
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateError_TimeFirstChange                                      OpcuaNodeIdServicesVariableData = 19569
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod                                        OpcuaNodeIdServicesVariableData = 19570
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_Active                                 OpcuaNodeIdServicesVariableData = 19571
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_Classification                         OpcuaNodeIdServicesVariableData = 19572
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel                       OpcuaNodeIdServicesVariableData = 19573
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange                        OpcuaNodeIdServicesVariableData = 19574
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent                                        OpcuaNodeIdServicesVariableData = 19575
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_Active                                 OpcuaNodeIdServicesVariableData = 19576
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_Classification                         OpcuaNodeIdServicesVariableData = 19577
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel                       OpcuaNodeIdServicesVariableData = 19578
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange                        OpcuaNodeIdServicesVariableData = 19579
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError                                       OpcuaNodeIdServicesVariableData = 19580
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_Active                                OpcuaNodeIdServicesVariableData = 19581
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_Classification                        OpcuaNodeIdServicesVariableData = 19582
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel                      OpcuaNodeIdServicesVariableData = 19583
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange                       OpcuaNodeIdServicesVariableData = 19584
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent                                             OpcuaNodeIdServicesVariableData = 19585
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_Active                                      OpcuaNodeIdServicesVariableData = 19586
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_Classification                              OpcuaNodeIdServicesVariableData = 19587
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel                            OpcuaNodeIdServicesVariableData = 19588
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StatePausedByParent_TimeFirstChange                             OpcuaNodeIdServicesVariableData = 19589
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod                                           OpcuaNodeIdServicesVariableData = 19590
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_Active                                    OpcuaNodeIdServicesVariableData = 19591
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_Classification                            OpcuaNodeIdServicesVariableData = 19592
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19593
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19594
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages                                           OpcuaNodeIdServicesVariableData = 19596
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_Active                                    OpcuaNodeIdServicesVariableData = 19597
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_Classification                            OpcuaNodeIdServicesVariableData = 19598
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19599
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19600
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MessageSequenceNumber                                         OpcuaNodeIdServicesVariableData = 19601
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel                        OpcuaNodeIdServicesVariableData = 19602
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_StatusCode                                                    OpcuaNodeIdServicesVariableData = 19603
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel                                   OpcuaNodeIdServicesVariableData = 19604
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MajorVersion                                                  OpcuaNodeIdServicesVariableData = 19605
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel                                 OpcuaNodeIdServicesVariableData = 19606
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MinorVersion                                                  OpcuaNodeIdServicesVariableData = 19607
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel                                 OpcuaNodeIdServicesVariableData = 19608
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_DiagnosticsLevel                                                         OpcuaNodeIdServicesVariableData = 19610
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation                                                         OpcuaNodeIdServicesVariableData = 19611
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_Active                                                  OpcuaNodeIdServicesVariableData = 19612
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_Classification                                          OpcuaNodeIdServicesVariableData = 19613
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_DiagnosticsLevel                                        OpcuaNodeIdServicesVariableData = 19614
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalInformation_TimeFirstChange                                         OpcuaNodeIdServicesVariableData = 19615
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError                                                               OpcuaNodeIdServicesVariableData = 19616
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_Active                                                        OpcuaNodeIdServicesVariableData = 19617
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_Classification                                                OpcuaNodeIdServicesVariableData = 19618
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_DiagnosticsLevel                                              OpcuaNodeIdServicesVariableData = 19619
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_TotalError_TimeFirstChange                                               OpcuaNodeIdServicesVariableData = 19620
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_SubError                                                                 OpcuaNodeIdServicesVariableData = 19622
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError                                                      OpcuaNodeIdServicesVariableData = 19624
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_Active                                               OpcuaNodeIdServicesVariableData = 19625
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_Classification                                       OpcuaNodeIdServicesVariableData = 19626
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_DiagnosticsLevel                                     OpcuaNodeIdServicesVariableData = 19627
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateError_TimeFirstChange                                      OpcuaNodeIdServicesVariableData = 19628
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod                                        OpcuaNodeIdServicesVariableData = 19629
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_Active                                 OpcuaNodeIdServicesVariableData = 19630
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_Classification                         OpcuaNodeIdServicesVariableData = 19631
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel                       OpcuaNodeIdServicesVariableData = 19632
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange                        OpcuaNodeIdServicesVariableData = 19633
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent                                        OpcuaNodeIdServicesVariableData = 19634
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_Active                                 OpcuaNodeIdServicesVariableData = 19635
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_Classification                         OpcuaNodeIdServicesVariableData = 19636
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel                       OpcuaNodeIdServicesVariableData = 19637
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange                        OpcuaNodeIdServicesVariableData = 19638
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError                                       OpcuaNodeIdServicesVariableData = 19639
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_Active                                OpcuaNodeIdServicesVariableData = 19640
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_Classification                        OpcuaNodeIdServicesVariableData = 19641
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel                      OpcuaNodeIdServicesVariableData = 19642
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange                       OpcuaNodeIdServicesVariableData = 19643
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent                                             OpcuaNodeIdServicesVariableData = 19644
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_Active                                      OpcuaNodeIdServicesVariableData = 19645
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_Classification                              OpcuaNodeIdServicesVariableData = 19646
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel                            OpcuaNodeIdServicesVariableData = 19647
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StatePausedByParent_TimeFirstChange                             OpcuaNodeIdServicesVariableData = 19648
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod                                           OpcuaNodeIdServicesVariableData = 19649
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_Active                                    OpcuaNodeIdServicesVariableData = 19650
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_Classification                            OpcuaNodeIdServicesVariableData = 19651
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19652
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19653
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages                                           OpcuaNodeIdServicesVariableData = 19655
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_Active                                    OpcuaNodeIdServicesVariableData = 19656
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_Classification                            OpcuaNodeIdServicesVariableData = 19657
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_DiagnosticsLevel                          OpcuaNodeIdServicesVariableData = 19658
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_FailedDataSetMessages_TimeFirstChange                           OpcuaNodeIdServicesVariableData = 19659
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors                                                OpcuaNodeIdServicesVariableData = 19660
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_Active                                         OpcuaNodeIdServicesVariableData = 19661
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_Classification                                 OpcuaNodeIdServicesVariableData = 19662
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_DiagnosticsLevel                               OpcuaNodeIdServicesVariableData = 19663
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_Counters_DecryptionErrors_TimeFirstChange                                OpcuaNodeIdServicesVariableData = 19664
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MessageSequenceNumber                                         OpcuaNodeIdServicesVariableData = 19665
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MessageSequenceNumber_DiagnosticsLevel                        OpcuaNodeIdServicesVariableData = 19666
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_StatusCode                                                    OpcuaNodeIdServicesVariableData = 19667
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_StatusCode_DiagnosticsLevel                                   OpcuaNodeIdServicesVariableData = 19668
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MajorVersion                                                  OpcuaNodeIdServicesVariableData = 19669
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MajorVersion_DiagnosticsLevel                                 OpcuaNodeIdServicesVariableData = 19670
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MinorVersion                                                  OpcuaNodeIdServicesVariableData = 19671
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_MinorVersion_DiagnosticsLevel                                 OpcuaNodeIdServicesVariableData = 19672
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID                                               OpcuaNodeIdServicesVariableData = 19673
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_SecurityTokenID_DiagnosticsLevel                              OpcuaNodeIdServicesVariableData = 19674
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID                                             OpcuaNodeIdServicesVariableData = 19675
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_Diagnostics_LiveValues_TimeToNextTokenID_DiagnosticsLevel                            OpcuaNodeIdServicesVariableData = 19676
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetWriterId                                                                      OpcuaNodeIdServicesVariableData = 21092
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_DataSetFieldContentMask                                                              OpcuaNodeIdServicesVariableData = 21093
+	OpcuaNodeIdServicesVariableData_DataSetWriterType_KeyFrameCount                                                                        OpcuaNodeIdServicesVariableData = 21094
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_PublisherId                                                                          OpcuaNodeIdServicesVariableData = 21097
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_WriterGroupId                                                                        OpcuaNodeIdServicesVariableData = 21098
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetWriterId                                                                      OpcuaNodeIdServicesVariableData = 21099
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetMetaData                                                                      OpcuaNodeIdServicesVariableData = 21100
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetFieldContentMask                                                              OpcuaNodeIdServicesVariableData = 21101
+	OpcuaNodeIdServicesVariableData_DataSetReaderType_MessageReceiveTimeout                                                                OpcuaNodeIdServicesVariableData = 21102
+	OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet                                       OpcuaNodeIdServicesVariableData = 25524
 )
 
 var OpcuaNodeIdServicesVariableDataValues []OpcuaNodeIdServicesVariableData
@@ -609,193 +422,6 @@ func init() {
 		OpcuaNodeIdServicesVariableData_DataSetReaderType_DataSetFieldContentMask,
 		OpcuaNodeIdServicesVariableData_DataSetReaderType_MessageReceiveTimeout,
 		OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_PublisherId,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_ConnectionProperties,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Status_State,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SetSecurityKeys_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_RemoveConnection_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Size,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Writable,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_UserWritable,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_OpenCount,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MimeType,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MaxByteStringLength,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_LastModifiedTime,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Close_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Write_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_SetPosition_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Status_State,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_SubError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxPubSubConnections,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxWriterGroups,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxReaderGroups,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWriters,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetReaders,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPull,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPush,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_DataSetClasses_DataSetName_Placeholder,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_SupportedTransportProfiles,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultDatagramPublisherId,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationVersion,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultSecurityKeyServices,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationProperties,
-		OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet,
 	}
 }
 
@@ -1173,380 +799,6 @@ func OpcuaNodeIdServicesVariableDataByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableData_DataItemType_ValuePrecision, true
 	case 25524:
 		return OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet, true
-	case 32407:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_InputArguments, true
-	case 32408:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_OutputArguments, true
-	case 32410:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_InputArguments, true
-	case 32411:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_OutputArguments, true
-	case 32414:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments, true
-	case 32415:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments, true
-	case 32417:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments, true
-	case 32419:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments, true
-	case 32420:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments, true
-	case 32422:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments, true
-	case 32423:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris, true
-	case 32426:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments, true
-	case 32427:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments, true
-	case 32429:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments, true
-	case 32431:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments, true
-	case 32432:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments, true
-	case 32434:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments, true
-	case 32436:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_PublisherId, true
-	case 32437:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri, true
-	case 32438:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections, true
-	case 32439:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions, true
-	case 32440:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList, true
-	case 32441:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_ConnectionProperties, true
-	case 32443:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface, true
-	case 32444:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections, true
-	case 32445:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions, true
-	case 32446:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList, true
-	case 32449:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Status_State, true
-	case 32453:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel, true
-	case 32454:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation, true
-	case 32455:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active, true
-	case 32456:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification, true
-	case 32457:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-	case 32458:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-	case 32459:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError, true
-	case 32460:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active, true
-	case 32461:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification, true
-	case 32462:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-	case 32463:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-	case 32465:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError, true
-	case 32467:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError, true
-	case 32468:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active, true
-	case 32469:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-	case 32470:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-	case 32471:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-	case 32472:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-	case 32473:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-	case 32474:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-	case 32475:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case 32476:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case 32477:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-	case 32478:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-	case 32479:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-	case 32480:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case 32481:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-	case 32482:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-	case 32483:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-	case 32484:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-	case 32485:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case 32486:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-	case 32487:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-	case 32488:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-	case 32489:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-	case 32490:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case 32491:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-	case 32492:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-	case 32493:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-	case 32494:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-	case 32495:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case 32496:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-	case 32498:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress, true
-	case 32499:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel, true
-	case 32501:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments, true
-	case 32502:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments, true
-	case 32504:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments, true
-	case 32505:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments, true
-	case 32507:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments, true
-	case 32509:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SetSecurityKeys_InputArguments, true
-	case 32511:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_InputArguments, true
-	case 32512:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_OutputArguments, true
-	case 32514:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_RemoveConnection_InputArguments, true
-	case 32517:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments, true
-	case 32518:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments, true
-	case 32520:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments, true
-	case 32521:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments, true
-	case 32523:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments, true
-	case 32524:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments, true
-	case 32526:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments, true
-	case 32527:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments, true
-	case 32529:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments, true
-	case 32531:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments, true
-	case 32532:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments, true
-	case 32534:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments, true
-	case 32537:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments, true
-	case 32538:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments, true
-	case 32540:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments, true
-	case 32542:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments, true
-	case 32543:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments, true
-	case 32545:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments, true
-	case 32547:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Size, true
-	case 32548:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Writable, true
-	case 32549:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_UserWritable, true
-	case 32550:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_OpenCount, true
-	case 32551:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MimeType, true
-	case 32552:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MaxByteStringLength, true
-	case 32553:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_LastModifiedTime, true
-	case 32555:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_InputArguments, true
-	case 32556:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_OutputArguments, true
-	case 32558:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Close_InputArguments, true
-	case 32560:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_InputArguments, true
-	case 32561:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_OutputArguments, true
-	case 32563:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Write_InputArguments, true
-	case 32565:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_InputArguments, true
-	case 32566:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments, true
-	case 32568:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_SetPosition_InputArguments, true
-	case 32570:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments, true
-	case 32571:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments, true
-	case 32573:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments, true
-	case 32574:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments, true
-	case 32576:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Status_State, true
-	case 32580:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_DiagnosticsLevel, true
-	case 32581:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation, true
-	case 32582:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Active, true
-	case 32583:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Classification, true
-	case 32584:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel, true
-	case 32585:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange, true
-	case 32586:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError, true
-	case 32587:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Active, true
-	case 32588:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Classification, true
-	case 32589:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel, true
-	case 32590:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_TimeFirstChange, true
-	case 32592:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_SubError, true
-	case 32594:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError, true
-	case 32595:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Active, true
-	case 32596:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Classification, true
-	case 32597:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-	case 32598:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange, true
-	case 32599:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod, true
-	case 32600:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active, true
-	case 32601:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-	case 32602:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case 32603:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case 32604:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent, true
-	case 32605:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active, true
-	case 32606:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification, true
-	case 32607:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case 32608:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-	case 32609:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError, true
-	case 32610:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active, true
-	case 32611:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification, true
-	case 32612:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case 32613:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-	case 32614:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent, true
-	case 32615:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active, true
-	case 32616:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification, true
-	case 32617:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case 32618:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-	case 32619:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod, true
-	case 32620:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active, true
-	case 32621:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-	case 32622:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case 32623:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-	case 32625:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters, true
-	case 32626:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel, true
-	case 32627:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders, true
-	case 32628:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel, true
-	case 32629:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters, true
-	case 32630:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel, true
-	case 32631:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders, true
-	case 32632:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel, true
-	case 32634:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxPubSubConnections, true
-	case 32635:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxWriterGroups, true
-	case 32636:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxReaderGroups, true
-	case 32637:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWriters, true
-	case 32638:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetReaders, true
-	case 32639:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup, true
-	case 32640:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram, true
-	case 32641:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker, true
-	case 32642:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPull, true
-	case 32643:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPush, true
-	case 32645:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_DataSetClasses_DataSetName_Placeholder, true
-	case 32646:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SupportedTransportProfiles, true
-	case 32647:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultDatagramPublisherId, true
-	case 32648:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationVersion, true
-	case 32649:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultSecurityKeyServices, true
-	case 32650:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationProperties, true
-	case 32656:
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet, true
 	case 7609:
 		return OpcuaNodeIdServicesVariableData_DataChangeTrigger_EnumStrings, true
 	}
@@ -1927,380 +1179,6 @@ func OpcuaNodeIdServicesVariableDataByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableData_DataItemType_ValuePrecision, true
 	case "DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet":
 		return OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet, true
-	case "DataSetClasses_GetSecurityKeys_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_InputArguments, true
-	case "DataSetClasses_GetSecurityKeys_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_OutputArguments, true
-	case "DataSetClasses_GetSecurityGroup_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_InputArguments, true
-	case "DataSetClasses_GetSecurityGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_OutputArguments, true
-	case "DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments, true
-	case "DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments, true
-	case "DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments, true
-	case "DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments, true
-	case "DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments, true
-	case "DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments, true
-	case "DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris, true
-	case "DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments, true
-	case "DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments, true
-	case "DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments, true
-	case "DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments, true
-	case "DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments, true
-	case "DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments, true
-	case "DataSetClasses_ConnectionName_Placeholder_PublisherId":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_PublisherId, true
-	case "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri, true
-	case "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections, true
-	case "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions, true
-	case "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList, true
-	case "DataSetClasses_ConnectionName_Placeholder_ConnectionProperties":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_ConnectionProperties, true
-	case "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface, true
-	case "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections, true
-	case "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions, true
-	case "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList, true
-	case "DataSetClasses_ConnectionName_Placeholder_Status_State":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Status_State, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress, true
-	case "DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel, true
-	case "DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments, true
-	case "DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments, true
-	case "DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments, true
-	case "DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments, true
-	case "DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments, true
-	case "DataSetClasses_SetSecurityKeys_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SetSecurityKeys_InputArguments, true
-	case "DataSetClasses_AddConnection_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_InputArguments, true
-	case "DataSetClasses_AddConnection_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_OutputArguments, true
-	case "DataSetClasses_RemoveConnection_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_RemoveConnection_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments, true
-	case "DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments, true
-	case "DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments, true
-	case "DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments, true
-	case "DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments, true
-	case "DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments, true
-	case "DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments, true
-	case "DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments, true
-	case "DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments, true
-	case "DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_Size":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Size, true
-	case "DataSetClasses_PubSubConfiguration_Writable":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Writable, true
-	case "DataSetClasses_PubSubConfiguration_UserWritable":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_UserWritable, true
-	case "DataSetClasses_PubSubConfiguration_OpenCount":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_OpenCount, true
-	case "DataSetClasses_PubSubConfiguration_MimeType":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MimeType, true
-	case "DataSetClasses_PubSubConfiguration_MaxByteStringLength":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MaxByteStringLength, true
-	case "DataSetClasses_PubSubConfiguration_LastModifiedTime":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_LastModifiedTime, true
-	case "DataSetClasses_PubSubConfiguration_Open_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_Open_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_OutputArguments, true
-	case "DataSetClasses_PubSubConfiguration_Close_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Close_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_Read_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_Read_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_OutputArguments, true
-	case "DataSetClasses_PubSubConfiguration_Write_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Write_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_GetPosition_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments, true
-	case "DataSetClasses_PubSubConfiguration_SetPosition_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_SetPosition_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments, true
-	case "DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments, true
-	case "DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments, true
-	case "DataSetClasses_Status_State":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Status_State, true
-	case "DataSetClasses_Diagnostics_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_TotalInformation":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation, true
-	case "DataSetClasses_Diagnostics_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Active, true
-	case "DataSetClasses_Diagnostics_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Classification, true
-	case "DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_TotalError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError, true
-	case "DataSetClasses_Diagnostics_TotalError_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Active, true
-	case "DataSetClasses_Diagnostics_TotalError_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Classification, true
-	case "DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_SubError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_SubError, true
-	case "DataSetClasses_Diagnostics_Counters_StateError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError, true
-	case "DataSetClasses_Diagnostics_Counters_StateError_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Active, true
-	case "DataSetClasses_Diagnostics_Counters_StateError_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Classification, true
-	case "DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByParent":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalFromError":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_Counters_StatePausedByParent":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent, true
-	case "DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active, true
-	case "DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification, true
-	case "DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod, true
-	case "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active, true
-	case "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-	case "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-	case "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters, true
-	case "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders, true
-	case "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters, true
-	case "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel, true
-	case "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders, true
-	case "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel, true
-	case "DataSetClasses_PubSubCapablities_MaxPubSubConnections":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxPubSubConnections, true
-	case "DataSetClasses_PubSubCapablities_MaxWriterGroups":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxWriterGroups, true
-	case "DataSetClasses_PubSubCapablities_MaxReaderGroups":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxReaderGroups, true
-	case "DataSetClasses_PubSubCapablities_MaxDataSetWriters":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWriters, true
-	case "DataSetClasses_PubSubCapablities_MaxDataSetReaders":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetReaders, true
-	case "DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup, true
-	case "DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram, true
-	case "DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker, true
-	case "DataSetClasses_PubSubCapablities_SupportSecurityKeyPull":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPull, true
-	case "DataSetClasses_PubSubCapablities_SupportSecurityKeyPush":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPush, true
-	case "DataSetClasses_DataSetClasses_DataSetName_Placeholder":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_DataSetClasses_DataSetName_Placeholder, true
-	case "DataSetClasses_SupportedTransportProfiles":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_SupportedTransportProfiles, true
-	case "DataSetClasses_DefaultDatagramPublisherId":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultDatagramPublisherId, true
-	case "DataSetClasses_ConfigurationVersion":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationVersion, true
-	case "DataSetClasses_DefaultSecurityKeyServices":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultSecurityKeyServices, true
-	case "DataSetClasses_ConfigurationProperties":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationProperties, true
-	case "DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet":
-		return OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet, true
 	case "DataChangeTrigger_EnumStrings":
 		return OpcuaNodeIdServicesVariableData_DataChangeTrigger_EnumStrings, true
 	}
@@ -2742,380 +1620,6 @@ func (e OpcuaNodeIdServicesVariableData) PLC4XEnumName() string {
 		return "DataItemType_ValuePrecision"
 	case OpcuaNodeIdServicesVariableData_DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet:
 		return "DataSetFolderType_PublishedDataSetName_Placeholder_CyclicDataSet"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_InputArguments:
-		return "DataSetClasses_GetSecurityKeys_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityKeys_OutputArguments:
-		return "DataSetClasses_GetSecurityKeys_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_InputArguments:
-		return "DataSetClasses_GetSecurityGroup_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_GetSecurityGroup_OutputArguments:
-		return "DataSetClasses_GetSecurityGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments:
-		return "DataSetClasses_SecurityGroups_AddSecurityGroup_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments:
-		return "DataSetClasses_SecurityGroups_AddSecurityGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments:
-		return "DataSetClasses_SecurityGroups_RemoveSecurityGroup_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments:
-		return "DataSetClasses_SecurityGroups_AddSecurityGroupFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments:
-		return "DataSetClasses_SecurityGroups_AddSecurityGroupFolder_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments:
-		return "DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris:
-		return "DataSetClasses_SecurityGroups_SupportedSecurityPolicyUris"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments:
-		return "DataSetClasses_KeyPushTargets_AddPushTarget_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments:
-		return "DataSetClasses_KeyPushTargets_AddPushTarget_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments:
-		return "DataSetClasses_KeyPushTargets_RemovePushTarget_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments:
-		return "DataSetClasses_KeyPushTargets_AddPushTargetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments:
-		return "DataSetClasses_KeyPushTargets_AddPushTargetFolder_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments:
-		return "DataSetClasses_KeyPushTargets_RemovePushTargetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_PublisherId:
-		return "DataSetClasses_ConnectionName_Placeholder_PublisherId"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri:
-		return "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections:
-		return "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_Selections"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions:
-		return "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList:
-		return "DataSetClasses_ConnectionName_Placeholder_TransportProfileUri_RestrictToList"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_ConnectionProperties:
-		return "DataSetClasses_ConnectionName_Placeholder_ConnectionProperties"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface:
-		return "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections:
-		return "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_Selections"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions:
-		return "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList:
-		return "DataSetClasses_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Status_State:
-		return "DataSetClasses_ConnectionName_Placeholder_Status_State"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_SubError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel:
-		return "DataSetClasses_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments:
-		return "DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments:
-		return "DataSetClasses_ConnectionName_Placeholder_AddWriterGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments:
-		return "DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments:
-		return "DataSetClasses_ConnectionName_Placeholder_AddReaderGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments:
-		return "DataSetClasses_ConnectionName_Placeholder_RemoveGroup_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SetSecurityKeys_InputArguments:
-		return "DataSetClasses_SetSecurityKeys_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_InputArguments:
-		return "DataSetClasses_AddConnection_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_AddConnection_OutputArguments:
-		return "DataSetClasses_AddConnection_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_RemoveConnection_InputArguments:
-		return "DataSetClasses_RemoveConnection_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedDataItems_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedDataItems_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedEvents_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedEvents_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments:
-		return "DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments:
-		return "DataSetClasses_PublishedDataSets_RemovePublishedDataSet_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments:
-		return "DataSetClasses_PublishedDataSets_AddDataSetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments:
-		return "DataSetClasses_PublishedDataSets_AddDataSetFolder_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments:
-		return "DataSetClasses_PublishedDataSets_RemoveDataSetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments:
-		return "DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments:
-		return "DataSetClasses_SubscribedDataSets_AddSubscribedDataSet_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments:
-		return "DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments:
-		return "DataSetClasses_SubscribedDataSets_AddDataSetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments:
-		return "DataSetClasses_SubscribedDataSets_AddDataSetFolder_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments:
-		return "DataSetClasses_SubscribedDataSets_RemoveDataSetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Size:
-		return "DataSetClasses_PubSubConfiguration_Size"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Writable:
-		return "DataSetClasses_PubSubConfiguration_Writable"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_UserWritable:
-		return "DataSetClasses_PubSubConfiguration_UserWritable"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_OpenCount:
-		return "DataSetClasses_PubSubConfiguration_OpenCount"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MimeType:
-		return "DataSetClasses_PubSubConfiguration_MimeType"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_MaxByteStringLength:
-		return "DataSetClasses_PubSubConfiguration_MaxByteStringLength"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_LastModifiedTime:
-		return "DataSetClasses_PubSubConfiguration_LastModifiedTime"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_Open_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Open_OutputArguments:
-		return "DataSetClasses_PubSubConfiguration_Open_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Close_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_Close_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_Read_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Read_OutputArguments:
-		return "DataSetClasses_PubSubConfiguration_Read_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_Write_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_Write_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_GetPosition_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments:
-		return "DataSetClasses_PubSubConfiguration_GetPosition_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_SetPosition_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_SetPosition_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_ReserveIds_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments:
-		return "DataSetClasses_PubSubConfiguration_ReserveIds_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments:
-		return "DataSetClasses_PubSubConfiguration_CloseAndUpdate_InputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments:
-		return "DataSetClasses_PubSubConfiguration_CloseAndUpdate_OutputArguments"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Status_State:
-		return "DataSetClasses_Status_State"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation:
-		return "DataSetClasses_Diagnostics_TotalInformation"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Active:
-		return "DataSetClasses_Diagnostics_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_Classification:
-		return "DataSetClasses_Diagnostics_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError:
-		return "DataSetClasses_Diagnostics_TotalError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Active:
-		return "DataSetClasses_Diagnostics_TotalError_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_Classification:
-		return "DataSetClasses_Diagnostics_TotalError_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_TotalError_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_SubError:
-		return "DataSetClasses_Diagnostics_SubError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError:
-		return "DataSetClasses_Diagnostics_Counters_StateError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Active:
-		return "DataSetClasses_Diagnostics_Counters_StateError_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_Classification:
-		return "DataSetClasses_Diagnostics_Counters_StateError_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_Counters_StateError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_Counters_StateError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByParent"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalFromError"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent:
-		return "DataSetClasses_Diagnostics_Counters_StatePausedByParent"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active:
-		return "DataSetClasses_Diagnostics_Counters_StatePausedByParent_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification:
-		return "DataSetClasses_Diagnostics_Counters_StatePausedByParent_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_Counters_StatePausedByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod:
-		return "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active:
-		return "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Active"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification:
-		return "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_Classification"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange:
-		return "DataSetClasses_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters:
-		return "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders:
-		return "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters:
-		return "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetWriters_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders:
-		return "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel:
-		return "DataSetClasses_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxPubSubConnections:
-		return "DataSetClasses_PubSubCapablities_MaxPubSubConnections"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxWriterGroups:
-		return "DataSetClasses_PubSubCapablities_MaxWriterGroups"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxReaderGroups:
-		return "DataSetClasses_PubSubCapablities_MaxReaderGroups"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWriters:
-		return "DataSetClasses_PubSubCapablities_MaxDataSetWriters"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetReaders:
-		return "DataSetClasses_PubSubCapablities_MaxDataSetReaders"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup:
-		return "DataSetClasses_PubSubCapablities_MaxDataSetWritersPerGroup"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram:
-		return "DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeDatagram"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker:
-		return "DataSetClasses_PubSubCapablities_MaxNetworkMessageSizeBroker"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPull:
-		return "DataSetClasses_PubSubCapablities_SupportSecurityKeyPull"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_SupportSecurityKeyPush:
-		return "DataSetClasses_PubSubCapablities_SupportSecurityKeyPush"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_DataSetClasses_DataSetName_Placeholder:
-		return "DataSetClasses_DataSetClasses_DataSetName_Placeholder"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_SupportedTransportProfiles:
-		return "DataSetClasses_SupportedTransportProfiles"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultDatagramPublisherId:
-		return "DataSetClasses_DefaultDatagramPublisherId"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationVersion:
-		return "DataSetClasses_ConfigurationVersion"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_DefaultSecurityKeyServices:
-		return "DataSetClasses_DefaultSecurityKeyServices"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_ConfigurationProperties:
-		return "DataSetClasses_ConfigurationProperties"
-	case OpcuaNodeIdServicesVariableData_DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet:
-		return "DataSetClasses_PubSubCapablities_MaxFieldsPerDataSet"
 	case OpcuaNodeIdServicesVariableData_DataChangeTrigger_EnumStrings:
 		return "DataChangeTrigger_EnumStrings"
 	}

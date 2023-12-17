@@ -50,49 +50,15 @@ const (
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_AddPublishedEvents_InputArguments                                        OpcuaNodeIdServicesVariablePublish = 14439
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_AddPublishedEvents_OutputArguments                                       OpcuaNodeIdServicesVariablePublish = 14440
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments                                    OpcuaNodeIdServicesVariablePublish = 14442
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_InputArguments                                                             OpcuaNodeIdServicesVariablePublish = 15213
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_OutputArguments                                                            OpcuaNodeIdServicesVariablePublish = 15214
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_InputArguments                                                                 OpcuaNodeIdServicesVariablePublish = 15216
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_OutputArguments                                                                OpcuaNodeIdServicesVariablePublish = 15217
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_InputArguments                                                            OpcuaNodeIdServicesVariablePublish = 15432
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_OutputArguments                                                           OpcuaNodeIdServicesVariablePublish = 15433
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments                                             OpcuaNodeIdServicesVariablePublish = 15436
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments                                            OpcuaNodeIdServicesVariablePublish = 15437
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments                                          OpcuaNodeIdServicesVariablePublish = 15439
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_InputArguments                                                                OpcuaNodeIdServicesVariablePublish = 15441
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_OutputArguments                                                               OpcuaNodeIdServicesVariablePublish = 15442
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_AddSecurityGroup_InputArguments                                                 OpcuaNodeIdServicesVariablePublish = 15445
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_AddSecurityGroup_OutputArguments                                                OpcuaNodeIdServicesVariablePublish = 15446
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_RemoveSecurityGroup_InputArguments                                              OpcuaNodeIdServicesVariablePublish = 15448
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface                                        OpcuaNodeIdServicesVariablePublish = 15533
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_PublisherId                                                         OpcuaNodeIdServicesVariablePublish = 15791
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri                                                 OpcuaNodeIdServicesVariablePublish = 15792
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_Status_State                                                                               OpcuaNodeIdServicesVariablePublish = 15845
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections                                      OpcuaNodeIdServicesVariablePublish = 15848
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions                           OpcuaNodeIdServicesVariablePublish = 15849
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList                                  OpcuaNodeIdServicesVariablePublish = 15850
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface                                            OpcuaNodeIdServicesVariablePublish = 15863
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Status_State                                                        OpcuaNodeIdServicesVariablePublish = 15892
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel                                        OpcuaNodeIdServicesVariablePublish = 15938
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation                                        OpcuaNodeIdServicesVariablePublish = 15939
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active                                 OpcuaNodeIdServicesVariablePublish = 15989
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification                         OpcuaNodeIdServicesVariablePublish = 15994
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel                       OpcuaNodeIdServicesVariablePublish = 16013
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange                        OpcuaNodeIdServicesVariablePublish = 16020
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError                                              OpcuaNodeIdServicesVariablePublish = 16059
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active                                       OpcuaNodeIdServicesVariablePublish = 16060
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification                               OpcuaNodeIdServicesVariablePublish = 16061
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel                             OpcuaNodeIdServicesVariablePublish = 16074
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange                              OpcuaNodeIdServicesVariablePublish = 16075
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError                                                OpcuaNodeIdServicesVariablePublish = 16101
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError                                     OpcuaNodeIdServicesVariablePublish = 16103
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active                              OpcuaNodeIdServicesVariablePublish = 16122
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification                      OpcuaNodeIdServicesVariablePublish = 16123
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel                    OpcuaNodeIdServicesVariablePublish = 16124
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange                     OpcuaNodeIdServicesVariablePublish = 16160
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod                       OpcuaNodeIdServicesVariablePublish = 16283
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active                OpcuaNodeIdServicesVariablePublish = 16322
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification        OpcuaNodeIdServicesVariablePublish = 16523
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments                                   OpcuaNodeIdServicesVariablePublish = 16558
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_OutputArguments                                  OpcuaNodeIdServicesVariablePublish = 16559
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddReaderGroup_InputArguments                                   OpcuaNodeIdServicesVariablePublish = 16561
@@ -109,35 +75,6 @@ const (
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri                                             OpcuaNodeIdServicesVariablePublish = 17292
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_RestrictToList                              OpcuaNodeIdServicesVariablePublish = 17295
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SetSecurityKeys_InputArguments                                                             OpcuaNodeIdServicesVariablePublish = 17297
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel      OpcuaNodeIdServicesVariablePublish = 17300
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange       OpcuaNodeIdServicesVariablePublish = 17303
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent                       OpcuaNodeIdServicesVariablePublish = 17304
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active                OpcuaNodeIdServicesVariablePublish = 17305
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification        OpcuaNodeIdServicesVariablePublish = 17320
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel      OpcuaNodeIdServicesVariablePublish = 17335
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange       OpcuaNodeIdServicesVariablePublish = 17336
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError                      OpcuaNodeIdServicesVariablePublish = 17337
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active               OpcuaNodeIdServicesVariablePublish = 17338
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification       OpcuaNodeIdServicesVariablePublish = 17339
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel     OpcuaNodeIdServicesVariablePublish = 17340
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange      OpcuaNodeIdServicesVariablePublish = 17341
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent                            OpcuaNodeIdServicesVariablePublish = 17342
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active                     OpcuaNodeIdServicesVariablePublish = 17343
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification             OpcuaNodeIdServicesVariablePublish = 17344
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel           OpcuaNodeIdServicesVariablePublish = 17345
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange            OpcuaNodeIdServicesVariablePublish = 17346
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod                          OpcuaNodeIdServicesVariablePublish = 17347
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active                   OpcuaNodeIdServicesVariablePublish = 17348
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification           OpcuaNodeIdServicesVariablePublish = 17349
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel         OpcuaNodeIdServicesVariablePublish = 17350
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange          OpcuaNodeIdServicesVariablePublish = 17351
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress                              OpcuaNodeIdServicesVariablePublish = 17353
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel             OpcuaNodeIdServicesVariablePublish = 17354
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments                                       OpcuaNodeIdServicesVariablePublish = 17357
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments                                      OpcuaNodeIdServicesVariablePublish = 17358
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments                                       OpcuaNodeIdServicesVariablePublish = 17360
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments                                      OpcuaNodeIdServicesVariablePublish = 17361
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments                                          OpcuaNodeIdServicesVariablePublish = 17363
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SetSecurityKeys_InputArguments                                                                 OpcuaNodeIdServicesVariablePublish = 17365
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_AddConnection_InputArguments                                                                   OpcuaNodeIdServicesVariablePublish = 17367
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_AddConnection_OutputArguments                                                                  OpcuaNodeIdServicesVariablePublish = 17368
@@ -207,14 +144,10 @@ const (
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel                              OpcuaNodeIdServicesVariablePublish = 17466
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_ConnectionProperties                                            OpcuaNodeIdServicesVariablePublish = 17478
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SupportedTransportProfiles                                                                 OpcuaNodeIdServicesVariablePublish = 17479
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties                                                OpcuaNodeIdServicesVariablePublish = 17480
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SupportedTransportProfiles                                                                     OpcuaNodeIdServicesVariablePublish = 17481
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_Selections                             OpcuaNodeIdServicesVariablePublish = 17503
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions                  OpcuaNodeIdServicesVariablePublish = 17504
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList                         OpcuaNodeIdServicesVariablePublish = 17505
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections                                 OpcuaNodeIdServicesVariablePublish = 17506
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions                      OpcuaNodeIdServicesVariablePublish = 17509
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList                             OpcuaNodeIdServicesVariablePublish = 17510
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections                                  OpcuaNodeIdServicesVariablePublish = 17706
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions                       OpcuaNodeIdServicesVariablePublish = 17707
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel                                    OpcuaNodeIdServicesVariablePublish = 18668
@@ -336,17 +269,6 @@ const (
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_InputArguments                                         OpcuaNodeIdServicesVariablePublish = 24011
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_OutputArguments                                        OpcuaNodeIdServicesVariablePublish = 24012
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments                                      OpcuaNodeIdServicesVariablePublish = 24014
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DataSetClasses_DataSetName_Placeholder                                                         OpcuaNodeIdServicesVariablePublish = 24015
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments                                       OpcuaNodeIdServicesVariablePublish = 25387
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments                                      OpcuaNodeIdServicesVariablePublish = 25388
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments                                    OpcuaNodeIdServicesVariablePublish = 25390
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris                                                 OpcuaNodeIdServicesVariablePublish = 25391
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments                                                OpcuaNodeIdServicesVariablePublish = 25394
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments                                               OpcuaNodeIdServicesVariablePublish = 25395
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments                                             OpcuaNodeIdServicesVariablePublish = 25397
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments                                          OpcuaNodeIdServicesVariablePublish = 25399
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments                                         OpcuaNodeIdServicesVariablePublish = 25400
-	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments                                       OpcuaNodeIdServicesVariablePublish = 25402
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Size                                                                   OpcuaNodeIdServicesVariablePublish = 25404
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Writable                                                               OpcuaNodeIdServicesVariablePublish = 25405
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_UserWritable                                                           OpcuaNodeIdServicesVariablePublish = 25406
@@ -415,6 +337,16 @@ const (
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyPush                                                       OpcuaNodeIdServicesVariablePublish = 32402
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DefaultSecurityKeyServices                                                                     OpcuaNodeIdServicesVariablePublish = 32403
 	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConfigurationProperties                                                                        OpcuaNodeIdServicesVariablePublish = 32404
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxSecurityGroups                                                        OpcuaNodeIdServicesVariablePublish = 32834
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPushTargets                                                           OpcuaNodeIdServicesVariablePublish = 32835
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets                                                     OpcuaNodeIdServicesVariablePublish = 32836
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets                                          OpcuaNodeIdServicesVariablePublish = 32837
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer                                                 OpcuaNodeIdServicesVariablePublish = 32838
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxSecurityGroups                                                            OpcuaNodeIdServicesVariablePublish = 32839
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPushTargets                                                               OpcuaNodeIdServicesVariablePublish = 32840
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPublishedDataSets                                                         OpcuaNodeIdServicesVariablePublish = 32841
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets                                              OpcuaNodeIdServicesVariablePublish = 32842
+	OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer                                                     OpcuaNodeIdServicesVariablePublish = 32843
 )
 
 var OpcuaNodeIdServicesVariablePublishValues []OpcuaNodeIdServicesVariablePublish
@@ -431,49 +363,15 @@ func init() {
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_AddPublishedEvents_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_AddPublishedEvents_OutputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_OutputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_OutputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_AddSecurityGroup_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_AddSecurityGroup_OutputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_RemoveSecurityGroup_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_PublisherId,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_Status_State,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Status_State,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_OutputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddReaderGroup_InputArguments,
@@ -490,35 +388,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_RestrictToList,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SetSecurityKeys_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SetSecurityKeys_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_AddConnection_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_AddConnection_OutputArguments,
@@ -588,14 +457,10 @@ func init() {
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_ConnectionProperties,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SupportedTransportProfiles,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SupportedTransportProfiles,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_Selections,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel,
@@ -717,17 +582,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_OutputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DataSetClasses_DataSetName_Placeholder,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments,
-		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Size,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Writable,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_UserWritable,
@@ -796,6 +650,16 @@ func init() {
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyPush,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DefaultSecurityKeyServices,
 		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConfigurationProperties,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxSecurityGroups,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPushTargets,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxSecurityGroups,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPushTargets,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPublishedDataSets,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets,
+		OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer,
 	}
 }
 
@@ -819,24 +683,10 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_AddPublishedEvents_OutputArguments, true
 	case 14442:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments, true
-	case 15213:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_InputArguments, true
-	case 15214:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_OutputArguments, true
 	case 15216:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_InputArguments, true
 	case 15217:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_OutputArguments, true
-	case 15432:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_InputArguments, true
-	case 15433:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_OutputArguments, true
-	case 15436:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments, true
-	case 15437:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments, true
-	case 15439:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments, true
 	case 15441:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_InputArguments, true
 	case 15442:
@@ -849,62 +699,8 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_RemoveSecurityGroup_InputArguments, true
 	case 15533:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface, true
-	case 15791:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_PublisherId, true
-	case 15792:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri, true
 	case 15845:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_Status_State, true
-	case 15848:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections, true
-	case 15849:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions, true
-	case 15850:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList, true
-	case 15863:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface, true
-	case 15892:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Status_State, true
-	case 15938:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel, true
-	case 15939:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation, true
-	case 15989:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active, true
-	case 15994:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification, true
-	case 16013:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-	case 16020:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-	case 16059:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError, true
-	case 16060:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active, true
-	case 16061:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification, true
-	case 16074:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-	case 16075:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-	case 16101:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError, true
-	case 16103:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError, true
-	case 16122:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active, true
-	case 16123:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-	case 16124:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-	case 16160:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-	case 16283:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-	case 16322:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-	case 16523:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
 	case 16558:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments, true
 	case 16559:
@@ -937,64 +733,6 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_RestrictToList, true
 	case 17297:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SetSecurityKeys_InputArguments, true
-	case 17300:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case 17303:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case 17304:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-	case 17305:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-	case 17320:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-	case 17335:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case 17336:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-	case 17337:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-	case 17338:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-	case 17339:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-	case 17340:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case 17341:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-	case 17342:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-	case 17343:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-	case 17344:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-	case 17345:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case 17346:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-	case 17347:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-	case 17348:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-	case 17349:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-	case 17350:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case 17351:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-	case 17353:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress, true
-	case 17354:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel, true
-	case 17357:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments, true
-	case 17358:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments, true
-	case 17360:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments, true
-	case 17361:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments, true
-	case 17363:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments, true
 	case 17365:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SetSecurityKeys_InputArguments, true
 	case 17367:
@@ -1133,8 +871,6 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_ConnectionProperties, true
 	case 17479:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SupportedTransportProfiles, true
-	case 17480:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties, true
 	case 17481:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SupportedTransportProfiles, true
 	case 17503:
@@ -1143,12 +879,6 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions, true
 	case 17505:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList, true
-	case 17506:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections, true
-	case 17509:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions, true
-	case 17510:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList, true
 	case 17706:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections, true
 	case 17707:
@@ -1391,28 +1121,6 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_OutputArguments, true
 	case 24014:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments, true
-	case 24015:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DataSetClasses_DataSetName_Placeholder, true
-	case 25387:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments, true
-	case 25388:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments, true
-	case 25390:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments, true
-	case 25391:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris, true
-	case 25394:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments, true
-	case 25395:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments, true
-	case 25397:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments, true
-	case 25399:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments, true
-	case 25400:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments, true
-	case 25402:
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments, true
 	case 25404:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Size, true
 	case 25405:
@@ -1549,6 +1257,26 @@ func OpcuaNodeIdServicesVariablePublishByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DefaultSecurityKeyServices, true
 	case 32404:
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConfigurationProperties, true
+	case 32834:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxSecurityGroups, true
+	case 32835:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPushTargets, true
+	case 32836:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets, true
+	case 32837:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets, true
+	case 32838:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer, true
+	case 32839:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxSecurityGroups, true
+	case 32840:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPushTargets, true
+	case 32841:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPublishedDataSets, true
+	case 32842:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets, true
+	case 32843:
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer, true
 	}
 	return 0, false
 }
@@ -1573,24 +1301,10 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_AddPublishedEvents_OutputArguments, true
 	case "PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments, true
-	case "PublishSubscribeType_GetSecurityKeys_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_InputArguments, true
-	case "PublishSubscribeType_GetSecurityKeys_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_OutputArguments, true
 	case "PublishSubscribe_GetSecurityKeys_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_InputArguments, true
 	case "PublishSubscribe_GetSecurityKeys_OutputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_OutputArguments, true
-	case "PublishSubscribeType_GetSecurityGroup_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_InputArguments, true
-	case "PublishSubscribeType_GetSecurityGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_OutputArguments, true
-	case "PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments, true
-	case "PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments, true
-	case "PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments, true
 	case "PublishSubscribe_GetSecurityGroup_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_InputArguments, true
 	case "PublishSubscribe_GetSecurityGroup_OutputArguments":
@@ -1603,62 +1317,8 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SecurityGroups_RemoveSecurityGroup_InputArguments, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface, true
-	case "PublishSubscribe_ConnectionName_Placeholder_PublisherId":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_PublisherId, true
-	case "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri, true
 	case "PublishSubscribeType_Status_State":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_Status_State, true
-	case "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections, true
-	case "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions, true
-	case "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Status_State":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Status_State, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_OutputArguments":
@@ -1691,64 +1351,6 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_RestrictToList, true
 	case "PublishSubscribeType_SetSecurityKeys_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SetSecurityKeys_InputArguments, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel, true
-	case "PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments, true
-	case "PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments, true
-	case "PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments, true
-	case "PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments, true
-	case "PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments, true
 	case "PublishSubscribe_SetSecurityKeys_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SetSecurityKeys_InputArguments, true
 	case "PublishSubscribe_AddConnection_InputArguments":
@@ -1887,8 +1489,6 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_ConnectionProperties, true
 	case "PublishSubscribeType_SupportedTransportProfiles":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SupportedTransportProfiles, true
-	case "PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties, true
 	case "PublishSubscribe_SupportedTransportProfiles":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SupportedTransportProfiles, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_Selections":
@@ -1897,12 +1497,6 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions, true
-	case "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections, true
 	case "PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions":
@@ -2145,28 +1739,6 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_OutputArguments, true
 	case "PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments, true
-	case "PublishSubscribe_DataSetClasses_DataSetName_Placeholder":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DataSetClasses_DataSetName_Placeholder, true
-	case "PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments, true
-	case "PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments, true
-	case "PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments, true
-	case "PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris, true
-	case "PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments, true
-	case "PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments, true
-	case "PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments, true
-	case "PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments, true
-	case "PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments, true
-	case "PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments":
-		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments, true
 	case "PublishSubscribeType_PubSubConfiguration_Size":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Size, true
 	case "PublishSubscribeType_PubSubConfiguration_Writable":
@@ -2303,6 +1875,26 @@ func OpcuaNodeIdServicesVariablePublishByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DefaultSecurityKeyServices, true
 	case "PublishSubscribe_ConfigurationProperties":
 		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConfigurationProperties, true
+	case "PublishSubscribeType_PubSubCapablities_MaxSecurityGroups":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxSecurityGroups, true
+	case "PublishSubscribeType_PubSubCapablities_MaxPushTargets":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPushTargets, true
+	case "PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets, true
+	case "PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets, true
+	case "PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer, true
+	case "PublishSubscribe_PubSubCapablities_MaxSecurityGroups":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxSecurityGroups, true
+	case "PublishSubscribe_PubSubCapablities_MaxPushTargets":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPushTargets, true
+	case "PublishSubscribe_PubSubCapablities_MaxPublishedDataSets":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPublishedDataSets, true
+	case "PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets, true
+	case "PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer":
+		return OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer, true
 	}
 	return 0, false
 }
@@ -2388,24 +1980,10 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribeType_PublishedDataSets_AddPublishedEvents_OutputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments:
 		return "PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_InputArguments:
-		return "PublishSubscribeType_GetSecurityKeys_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityKeys_OutputArguments:
-		return "PublishSubscribeType_GetSecurityKeys_OutputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_InputArguments:
 		return "PublishSubscribe_GetSecurityKeys_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityKeys_OutputArguments:
 		return "PublishSubscribe_GetSecurityKeys_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_InputArguments:
-		return "PublishSubscribeType_GetSecurityGroup_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_GetSecurityGroup_OutputArguments:
-		return "PublishSubscribeType_GetSecurityGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments:
-		return "PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments:
-		return "PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments:
-		return "PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_InputArguments:
 		return "PublishSubscribe_GetSecurityGroup_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_GetSecurityGroup_OutputArguments:
@@ -2418,62 +1996,8 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribe_SecurityGroups_RemoveSecurityGroup_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface:
 		return "PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_PublisherId:
-		return "PublishSubscribe_ConnectionName_Placeholder_PublisherId"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri:
-		return "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_Status_State:
 		return "PublishSubscribeType_Status_State"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections:
-		return "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions:
-		return "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList:
-		return "PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface:
-		return "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Status_State:
-		return "PublishSubscribe_ConnectionName_Placeholder_Status_State"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments:
 		return "PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_OutputArguments:
@@ -2506,64 +2030,6 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_RestrictToList"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SetSecurityKeys_InputArguments:
 		return "PublishSubscribeType_SetSecurityKeys_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel:
-		return "PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments:
-		return "PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments:
-		return "PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments:
-		return "PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments:
-		return "PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments:
-		return "PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SetSecurityKeys_InputArguments:
 		return "PublishSubscribe_SetSecurityKeys_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_AddConnection_InputArguments:
@@ -2702,8 +2168,6 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribeType_ConnectionName_Placeholder_ConnectionProperties"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SupportedTransportProfiles:
 		return "PublishSubscribeType_SupportedTransportProfiles"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties:
-		return "PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SupportedTransportProfiles:
 		return "PublishSubscribe_SupportedTransportProfiles"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_Selections:
@@ -2712,12 +2176,6 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList:
 		return "PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections:
-		return "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions:
-		return "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList:
-		return "PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections:
 		return "PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions:
@@ -2960,28 +2418,6 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_OutputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments:
 		return "PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_DataSetClasses_DataSetName_Placeholder:
-		return "PublishSubscribe_DataSetClasses_DataSetName_Placeholder"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments:
-		return "PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments:
-		return "PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments:
-		return "PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris:
-		return "PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments:
-		return "PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments:
-		return "PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments:
-		return "PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments:
-		return "PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments:
-		return "PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments"
-	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments:
-		return "PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Size:
 		return "PublishSubscribeType_PubSubConfiguration_Size"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubConfiguration_Writable:
@@ -3118,6 +2554,26 @@ func (e OpcuaNodeIdServicesVariablePublish) PLC4XEnumName() string {
 		return "PublishSubscribe_DefaultSecurityKeyServices"
 	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_ConfigurationProperties:
 		return "PublishSubscribe_ConfigurationProperties"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxSecurityGroups:
+		return "PublishSubscribeType_PubSubCapablities_MaxSecurityGroups"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPushTargets:
+		return "PublishSubscribeType_PubSubCapablities_MaxPushTargets"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets:
+		return "PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets:
+		return "PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer:
+		return "PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxSecurityGroups:
+		return "PublishSubscribe_PubSubCapablities_MaxSecurityGroups"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPushTargets:
+		return "PublishSubscribe_PubSubCapablities_MaxPushTargets"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxPublishedDataSets:
+		return "PublishSubscribe_PubSubCapablities_MaxPublishedDataSets"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets:
+		return "PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets"
+	case OpcuaNodeIdServicesVariablePublish_PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer:
+		return "PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

@@ -32,15 +32,6 @@ public enum OpcuaNodeIdServicesVariableTransition {
   TransitionEventType_Transition((int) 2774L),
   TransitionEventType_FromState((int) 2775L),
   TransitionEventType_ToState((int) 2776L),
-  TransitionEventType_EventId((int) 3737L),
-  TransitionEventType_EventType((int) 3738L),
-  TransitionEventType_SourceNode((int) 3739L),
-  TransitionEventType_SourceName((int) 3740L),
-  TransitionEventType_Time((int) 3741L),
-  TransitionEventType_ReceiveTime((int) 3742L),
-  TransitionEventType_LocalTime((int) 3743L),
-  TransitionEventType_Message((int) 3744L),
-  TransitionEventType_Severity((int) 3745L),
   TransitionEventType_FromState_Id((int) 3746L),
   TransitionEventType_FromState_Name((int) 3747L),
   TransitionEventType_FromState_Number((int) 3748L),
@@ -54,11 +45,7 @@ public enum OpcuaNodeIdServicesVariableTransition {
   TransitionEventType_Transition_Number((int) 3756L),
   TransitionEventType_Transition_TransitionTime((int) 3757L),
   TransitionVariableType_EffectiveTransitionTime((int) 11456L),
-  TransitionEventType_Transition_EffectiveTransitionTime((int) 11460L),
-  TransitionEventType_ConditionClassId((int) 31919L),
-  TransitionEventType_ConditionClassName((int) 31920L),
-  TransitionEventType_ConditionSubClassId((int) 31921L),
-  TransitionEventType_ConditionSubClassName((int) 31922L);
+  TransitionEventType_Transition_EffectiveTransitionTime((int) 11460L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableTransition> map;
 
   static {

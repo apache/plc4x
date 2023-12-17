@@ -42,19 +42,7 @@ type IOpcuaNodeIdServicesVariableAnalog interface {
 
 const (
 	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange               OpcuaNodeIdServicesVariableAnalog = 2369
-	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_InstrumentRange       OpcuaNodeIdServicesVariableAnalog = 2370
-	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EngineeringUnits      OpcuaNodeIdServicesVariableAnalog = 2371
-	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_Definition            OpcuaNodeIdServicesVariableAnalog = 3774
-	OpcuaNodeIdServicesVariableAnalog_AnalogItemType_ValuePrecision        OpcuaNodeIdServicesVariableAnalog = 3775
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_Definition            OpcuaNodeIdServicesVariableAnalog = 17498
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_ValuePrecision        OpcuaNodeIdServicesVariableAnalog = 17499
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_InstrumentRange       OpcuaNodeIdServicesVariableAnalog = 17500
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EURange               OpcuaNodeIdServicesVariableAnalog = 17501
 	OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits      OpcuaNodeIdServicesVariableAnalog = 17502
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_Definition       OpcuaNodeIdServicesVariableAnalog = 17571
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_ValuePrecision   OpcuaNodeIdServicesVariableAnalog = 17572
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_InstrumentRange  OpcuaNodeIdServicesVariableAnalog = 17573
-	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EURange          OpcuaNodeIdServicesVariableAnalog = 17574
 	OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits OpcuaNodeIdServicesVariableAnalog = 17575
 )
 
@@ -64,91 +52,31 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableAnalogValues = []OpcuaNodeIdServicesVariableAnalog{
 		OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange,
-		OpcuaNodeIdServicesVariableAnalog_AnalogItemType_InstrumentRange,
-		OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EngineeringUnits,
-		OpcuaNodeIdServicesVariableAnalog_AnalogItemType_Definition,
-		OpcuaNodeIdServicesVariableAnalog_AnalogItemType_ValuePrecision,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_Definition,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_ValuePrecision,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_InstrumentRange,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EURange,
 		OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_Definition,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_ValuePrecision,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_InstrumentRange,
-		OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EURange,
 		OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits,
 	}
 }
 
 func OpcuaNodeIdServicesVariableAnalogByValue(value int32) (enum OpcuaNodeIdServicesVariableAnalog, ok bool) {
 	switch value {
-	case 17498:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_Definition, true
-	case 17499:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_ValuePrecision, true
-	case 17500:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_InstrumentRange, true
-	case 17501:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EURange, true
 	case 17502:
 		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits, true
-	case 17571:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_Definition, true
-	case 17572:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_ValuePrecision, true
-	case 17573:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_InstrumentRange, true
-	case 17574:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EURange, true
 	case 17575:
 		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits, true
 	case 2369:
 		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange, true
-	case 2370:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_InstrumentRange, true
-	case 2371:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EngineeringUnits, true
-	case 3774:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_Definition, true
-	case 3775:
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_ValuePrecision, true
 	}
 	return 0, false
 }
 
 func OpcuaNodeIdServicesVariableAnalogByName(value string) (enum OpcuaNodeIdServicesVariableAnalog, ok bool) {
 	switch value {
-	case "AnalogUnitType_Definition":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_Definition, true
-	case "AnalogUnitType_ValuePrecision":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_ValuePrecision, true
-	case "AnalogUnitType_InstrumentRange":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_InstrumentRange, true
-	case "AnalogUnitType_EURange":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EURange, true
 	case "AnalogUnitType_EngineeringUnits":
 		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits, true
-	case "AnalogUnitRangeType_Definition":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_Definition, true
-	case "AnalogUnitRangeType_ValuePrecision":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_ValuePrecision, true
-	case "AnalogUnitRangeType_InstrumentRange":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_InstrumentRange, true
-	case "AnalogUnitRangeType_EURange":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EURange, true
 	case "AnalogUnitRangeType_EngineeringUnits":
 		return OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits, true
 	case "AnalogItemType_EURange":
 		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange, true
-	case "AnalogItemType_InstrumentRange":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_InstrumentRange, true
-	case "AnalogItemType_EngineeringUnits":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EngineeringUnits, true
-	case "AnalogItemType_Definition":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_Definition, true
-	case "AnalogItemType_ValuePrecision":
-		return OpcuaNodeIdServicesVariableAnalog_AnalogItemType_ValuePrecision, true
 	}
 	return 0, false
 }
@@ -216,36 +144,12 @@ func (e OpcuaNodeIdServicesVariableAnalog) SerializeWithWriteBuffer(ctx context.
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableAnalog) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_Definition:
-		return "AnalogUnitType_Definition"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_ValuePrecision:
-		return "AnalogUnitType_ValuePrecision"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_InstrumentRange:
-		return "AnalogUnitType_InstrumentRange"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EURange:
-		return "AnalogUnitType_EURange"
 	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitType_EngineeringUnits:
 		return "AnalogUnitType_EngineeringUnits"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_Definition:
-		return "AnalogUnitRangeType_Definition"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_ValuePrecision:
-		return "AnalogUnitRangeType_ValuePrecision"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_InstrumentRange:
-		return "AnalogUnitRangeType_InstrumentRange"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EURange:
-		return "AnalogUnitRangeType_EURange"
 	case OpcuaNodeIdServicesVariableAnalog_AnalogUnitRangeType_EngineeringUnits:
 		return "AnalogUnitRangeType_EngineeringUnits"
 	case OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EURange:
 		return "AnalogItemType_EURange"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogItemType_InstrumentRange:
-		return "AnalogItemType_InstrumentRange"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogItemType_EngineeringUnits:
-		return "AnalogItemType_EngineeringUnits"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogItemType_Definition:
-		return "AnalogItemType_Definition"
-	case OpcuaNodeIdServicesVariableAnalog_AnalogItemType_ValuePrecision:
-		return "AnalogItemType_ValuePrecision"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

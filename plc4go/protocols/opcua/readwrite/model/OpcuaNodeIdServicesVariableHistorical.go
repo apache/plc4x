@@ -55,6 +55,17 @@ const (
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive                                OpcuaNodeIdServicesVariableHistorical = 11499
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableHistorical = 11500
 	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported                      OpcuaNodeIdServicesVariableHistorical = 19092
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues                           OpcuaNodeIdServicesVariableHistorical = 32619
+	OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues                          OpcuaNodeIdServicesVariableHistorical = 32620
+	OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfArchive                               OpcuaNodeIdServicesVariableHistorical = 32623
+	OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfOnlineArchive                         OpcuaNodeIdServicesVariableHistorical = 32624
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_Server                                      OpcuaNodeIdServicesVariableHistorical = 32626
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_EndpointUrl                                 OpcuaNodeIdServicesVariableHistorical = 32627
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityMode                                OpcuaNodeIdServicesVariableHistorical = 32628
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityPolicyUri                           OpcuaNodeIdServicesVariableHistorical = 32629
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_IdentityTokenPolicy                         OpcuaNodeIdServicesVariableHistorical = 32630
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_TransportProfileUri                         OpcuaNodeIdServicesVariableHistorical = 32631
+	OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_HistoricalEventFilter                       OpcuaNodeIdServicesVariableHistorical = 32632
 )
 
 var OpcuaNodeIdServicesVariableHistoricalValues []OpcuaNodeIdServicesVariableHistorical
@@ -76,6 +87,17 @@ func init() {
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfArchive,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_StartOfOnlineArchive,
 		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ServerTimestampSupported,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfArchive,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfOnlineArchive,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_Server,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_EndpointUrl,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityMode,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityPolicyUri,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_IdentityTokenPolicy,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_TransportProfileUri,
+		OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_HistoricalEventFilter,
 	}
 }
 
@@ -109,6 +131,28 @@ func OpcuaNodeIdServicesVariableHistoricalByValue(value int32) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviation, true
 	case 2328:
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat, true
+	case 32619:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues, true
+	case 32620:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues, true
+	case 32623:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfArchive, true
+	case 32624:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfOnlineArchive, true
+	case 32626:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_Server, true
+	case 32627:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_EndpointUrl, true
+	case 32628:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityMode, true
+	case 32629:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityPolicyUri, true
+	case 32630:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_IdentityTokenPolicy, true
+	case 32631:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_TransportProfileUri, true
+	case 32632:
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_HistoricalEventFilter, true
 	}
 	return 0, false
 }
@@ -143,6 +187,28 @@ func OpcuaNodeIdServicesVariableHistoricalByName(value string) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviation, true
 	case "HistoricalDataConfigurationType_ExceptionDeviationFormat":
 		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat, true
+	case "HistoricalDataConfigurationType_MaxTimeStoredValues":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues, true
+	case "HistoricalDataConfigurationType_MaxCountStoredValues":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues, true
+	case "HistoricalEventConfigurationType_StartOfArchive":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfArchive, true
+	case "HistoricalEventConfigurationType_StartOfOnlineArchive":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfOnlineArchive, true
+	case "HistoricalExternalEventSourceType_Server":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_Server, true
+	case "HistoricalExternalEventSourceType_EndpointUrl":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_EndpointUrl, true
+	case "HistoricalExternalEventSourceType_SecurityMode":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityMode, true
+	case "HistoricalExternalEventSourceType_SecurityPolicyUri":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityPolicyUri, true
+	case "HistoricalExternalEventSourceType_IdentityTokenPolicy":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_IdentityTokenPolicy, true
+	case "HistoricalExternalEventSourceType_TransportProfileUri":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_TransportProfileUri, true
+	case "HistoricalExternalEventSourceType_HistoricalEventFilter":
+		return OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_HistoricalEventFilter, true
 	}
 	return 0, false
 }
@@ -238,6 +304,28 @@ func (e OpcuaNodeIdServicesVariableHistorical) PLC4XEnumName() string {
 		return "HistoricalDataConfigurationType_ExceptionDeviation"
 	case OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_ExceptionDeviationFormat:
 		return "HistoricalDataConfigurationType_ExceptionDeviationFormat"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxTimeStoredValues:
+		return "HistoricalDataConfigurationType_MaxTimeStoredValues"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalDataConfigurationType_MaxCountStoredValues:
+		return "HistoricalDataConfigurationType_MaxCountStoredValues"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfArchive:
+		return "HistoricalEventConfigurationType_StartOfArchive"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalEventConfigurationType_StartOfOnlineArchive:
+		return "HistoricalEventConfigurationType_StartOfOnlineArchive"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_Server:
+		return "HistoricalExternalEventSourceType_Server"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_EndpointUrl:
+		return "HistoricalExternalEventSourceType_EndpointUrl"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityMode:
+		return "HistoricalExternalEventSourceType_SecurityMode"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_SecurityPolicyUri:
+		return "HistoricalExternalEventSourceType_SecurityPolicyUri"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_IdentityTokenPolicy:
+		return "HistoricalExternalEventSourceType_IdentityTokenPolicy"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_TransportProfileUri:
+		return "HistoricalExternalEventSourceType_TransportProfileUri"
+	case OpcuaNodeIdServicesVariableHistorical_HistoricalExternalEventSourceType_HistoricalEventFilter:
+		return "HistoricalExternalEventSourceType_HistoricalEventFilter"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

@@ -41,20 +41,7 @@ type IOpcuaNodeIdServicesVariableEvent interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventId               OpcuaNodeIdServicesVariableEvent = 3191
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventType             OpcuaNodeIdServicesVariableEvent = 3192
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceNode            OpcuaNodeIdServicesVariableEvent = 3193
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceName            OpcuaNodeIdServicesVariableEvent = 3194
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Time                  OpcuaNodeIdServicesVariableEvent = 3195
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ReceiveTime           OpcuaNodeIdServicesVariableEvent = 3196
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_LocalTime             OpcuaNodeIdServicesVariableEvent = 3197
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Message               OpcuaNodeIdServicesVariableEvent = 3198
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Severity              OpcuaNodeIdServicesVariableEvent = 3199
-	OpcuaNodeIdServicesVariableEvent_EventNotifierType_OptionSetValues                 OpcuaNodeIdServicesVariableEvent = 15034
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassId      OpcuaNodeIdServicesVariableEvent = 31899
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassName    OpcuaNodeIdServicesVariableEvent = 31900
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassId   OpcuaNodeIdServicesVariableEvent = 31901
-	OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassName OpcuaNodeIdServicesVariableEvent = 31902
+	OpcuaNodeIdServicesVariableEvent_EventNotifierType_OptionSetValues OpcuaNodeIdServicesVariableEvent = 15034
 )
 
 var OpcuaNodeIdServicesVariableEventValues []OpcuaNodeIdServicesVariableEvent
@@ -62,20 +49,7 @@ var OpcuaNodeIdServicesVariableEventValues []OpcuaNodeIdServicesVariableEvent
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableEventValues = []OpcuaNodeIdServicesVariableEvent{
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventId,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventType,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceNode,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceName,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Time,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_LocalTime,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Message,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Severity,
 		OpcuaNodeIdServicesVariableEvent_EventNotifierType_OptionSetValues,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassName,
 	}
 }
 
@@ -83,32 +57,6 @@ func OpcuaNodeIdServicesVariableEventByValue(value int32) (enum OpcuaNodeIdServi
 	switch value {
 	case 15034:
 		return OpcuaNodeIdServicesVariableEvent_EventNotifierType_OptionSetValues, true
-	case 31899:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassId, true
-	case 31900:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassName, true
-	case 31901:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassId, true
-	case 31902:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassName, true
-	case 3191:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventId, true
-	case 3192:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventType, true
-	case 3193:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceNode, true
-	case 3194:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceName, true
-	case 3195:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Time, true
-	case 3196:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ReceiveTime, true
-	case 3197:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_LocalTime, true
-	case 3198:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Message, true
-	case 3199:
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Severity, true
 	}
 	return 0, false
 }
@@ -117,32 +65,6 @@ func OpcuaNodeIdServicesVariableEventByName(value string) (enum OpcuaNodeIdServi
 	switch value {
 	case "EventNotifierType_OptionSetValues":
 		return OpcuaNodeIdServicesVariableEvent_EventNotifierType_OptionSetValues, true
-	case "EventQueueOverflowEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassId, true
-	case "EventQueueOverflowEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassName, true
-	case "EventQueueOverflowEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassId, true
-	case "EventQueueOverflowEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassName, true
-	case "EventQueueOverflowEventType_EventId":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventId, true
-	case "EventQueueOverflowEventType_EventType":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventType, true
-	case "EventQueueOverflowEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceNode, true
-	case "EventQueueOverflowEventType_SourceName":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceName, true
-	case "EventQueueOverflowEventType_Time":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Time, true
-	case "EventQueueOverflowEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ReceiveTime, true
-	case "EventQueueOverflowEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_LocalTime, true
-	case "EventQueueOverflowEventType_Message":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Message, true
-	case "EventQueueOverflowEventType_Severity":
-		return OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Severity, true
 	}
 	return 0, false
 }
@@ -212,32 +134,6 @@ func (e OpcuaNodeIdServicesVariableEvent) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableEvent_EventNotifierType_OptionSetValues:
 		return "EventNotifierType_OptionSetValues"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassId:
-		return "EventQueueOverflowEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionClassName:
-		return "EventQueueOverflowEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassId:
-		return "EventQueueOverflowEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ConditionSubClassName:
-		return "EventQueueOverflowEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventId:
-		return "EventQueueOverflowEventType_EventId"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_EventType:
-		return "EventQueueOverflowEventType_EventType"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceNode:
-		return "EventQueueOverflowEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_SourceName:
-		return "EventQueueOverflowEventType_SourceName"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Time:
-		return "EventQueueOverflowEventType_Time"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_ReceiveTime:
-		return "EventQueueOverflowEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_LocalTime:
-		return "EventQueueOverflowEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Message:
-		return "EventQueueOverflowEventType_Message"
-	case OpcuaNodeIdServicesVariableEvent_EventQueueOverflowEventType_Severity:
-		return "EventQueueOverflowEventType_Severity"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

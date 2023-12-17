@@ -43,7 +43,6 @@ type IOpcuaNodeIdServicesVariableTransparent interface {
 const (
 	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId      OpcuaNodeIdServicesVariableTransparent = 2037
 	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray OpcuaNodeIdServicesVariableTransparent = 2038
-	OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport    OpcuaNodeIdServicesVariableTransparent = 3188
 )
 
 var OpcuaNodeIdServicesVariableTransparentValues []OpcuaNodeIdServicesVariableTransparent
@@ -53,7 +52,6 @@ func init() {
 	OpcuaNodeIdServicesVariableTransparentValues = []OpcuaNodeIdServicesVariableTransparent{
 		OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId,
 		OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray,
-		OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport,
 	}
 }
 
@@ -63,8 +61,6 @@ func OpcuaNodeIdServicesVariableTransparentByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId, true
 	case 2038:
 		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray, true
-	case 3188:
-		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport, true
 	}
 	return 0, false
 }
@@ -75,8 +71,6 @@ func OpcuaNodeIdServicesVariableTransparentByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_CurrentServerId, true
 	case "TransparentRedundancyType_RedundantServerArray":
 		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray, true
-	case "TransparentRedundancyType_RedundancySupport":
-		return OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport, true
 	}
 	return 0, false
 }
@@ -148,8 +142,6 @@ func (e OpcuaNodeIdServicesVariableTransparent) PLC4XEnumName() string {
 		return "TransparentRedundancyType_CurrentServerId"
 	case OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundantServerArray:
 		return "TransparentRedundancyType_RedundantServerArray"
-	case OpcuaNodeIdServicesVariableTransparent_TransparentRedundancyType_RedundancySupport:
-		return "TransparentRedundancyType_RedundancySupport"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

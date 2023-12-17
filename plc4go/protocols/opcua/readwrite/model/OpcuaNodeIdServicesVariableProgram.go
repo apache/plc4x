@@ -73,48 +73,6 @@ const (
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_SuspendedToHalted_TransitionNumber          OpcuaNodeIdServicesVariableProgram = 2421
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_SuspendedToReady_TransitionNumber           OpcuaNodeIdServicesVariableProgram = 2423
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ReadyToHalted_TransitionNumber              OpcuaNodeIdServicesVariableProgram = 2425
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventId                                  OpcuaNodeIdServicesVariableProgram = 3782
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventType                                OpcuaNodeIdServicesVariableProgram = 3783
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceNode                               OpcuaNodeIdServicesVariableProgram = 3784
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceName                               OpcuaNodeIdServicesVariableProgram = 3785
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Time                                     OpcuaNodeIdServicesVariableProgram = 3786
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ReceiveTime                              OpcuaNodeIdServicesVariableProgram = 3787
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_LocalTime                                OpcuaNodeIdServicesVariableProgram = 3788
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Message                                  OpcuaNodeIdServicesVariableProgram = 3789
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Severity                                 OpcuaNodeIdServicesVariableProgram = 3790
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState                                OpcuaNodeIdServicesVariableProgram = 3791
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Id                             OpcuaNodeIdServicesVariableProgram = 3792
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Name                           OpcuaNodeIdServicesVariableProgram = 3793
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Number                         OpcuaNodeIdServicesVariableProgram = 3794
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_EffectiveDisplayName           OpcuaNodeIdServicesVariableProgram = 3795
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState                                  OpcuaNodeIdServicesVariableProgram = 3796
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Id                               OpcuaNodeIdServicesVariableProgram = 3797
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Name                             OpcuaNodeIdServicesVariableProgram = 3798
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Number                           OpcuaNodeIdServicesVariableProgram = 3799
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_EffectiveDisplayName             OpcuaNodeIdServicesVariableProgram = 3800
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition                               OpcuaNodeIdServicesVariableProgram = 3801
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Id                            OpcuaNodeIdServicesVariableProgram = 3802
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Name                          OpcuaNodeIdServicesVariableProgram = 3803
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Number                        OpcuaNodeIdServicesVariableProgram = 3804
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_TransitionTime                OpcuaNodeIdServicesVariableProgram = 3805
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventId                             OpcuaNodeIdServicesVariableProgram = 3807
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventType                           OpcuaNodeIdServicesVariableProgram = 3808
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceNode                          OpcuaNodeIdServicesVariableProgram = 3809
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceName                          OpcuaNodeIdServicesVariableProgram = 3810
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Time                                OpcuaNodeIdServicesVariableProgram = 3811
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ReceiveTime                         OpcuaNodeIdServicesVariableProgram = 3812
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_LocalTime                           OpcuaNodeIdServicesVariableProgram = 3813
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Message                             OpcuaNodeIdServicesVariableProgram = 3814
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Severity                            OpcuaNodeIdServicesVariableProgram = 3815
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ActionTimeStamp                     OpcuaNodeIdServicesVariableProgram = 3816
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Status                              OpcuaNodeIdServicesVariableProgram = 3817
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ServerId                            OpcuaNodeIdServicesVariableProgram = 3818
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientAuditEntryId                  OpcuaNodeIdServicesVariableProgram = 3819
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientUserId                        OpcuaNodeIdServicesVariableProgram = 3820
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_MethodId                            OpcuaNodeIdServicesVariableProgram = 3821
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_InputArguments                      OpcuaNodeIdServicesVariableProgram = 3822
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_OldStateId                          OpcuaNodeIdServicesVariableProgram = 3823
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_NewStateId                          OpcuaNodeIdServicesVariableProgram = 3824
 	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition                          OpcuaNodeIdServicesVariableProgram = 3825
 	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_Id                       OpcuaNodeIdServicesVariableProgram = 3826
 	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_Name                     OpcuaNodeIdServicesVariableProgram = 3827
@@ -140,7 +98,6 @@ const (
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodOutputArguments OpcuaNodeIdServicesVariableProgram = 3847
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodCallTime        OpcuaNodeIdServicesVariableProgram = 3848
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodReturnStatus    OpcuaNodeIdServicesVariableProgram = 3849
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_EffectiveTransitionTime       OpcuaNodeIdServicesVariableProgram = 11462
 	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime  OpcuaNodeIdServicesVariableProgram = 11463
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_LastTransition_EffectiveTransitionTime      OpcuaNodeIdServicesVariableProgram = 11464
 	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodInputValues     OpcuaNodeIdServicesVariableProgram = 15038
@@ -157,16 +114,6 @@ const (
 	OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodOutputValues                       OpcuaNodeIdServicesVariableProgram = 15393
 	OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodCallTime                           OpcuaNodeIdServicesVariableProgram = 15394
 	OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodReturnStatus                       OpcuaNodeIdServicesVariableProgram = 15395
-	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableStates                             OpcuaNodeIdServicesVariableProgram = 17704
-	OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableTransitions                        OpcuaNodeIdServicesVariableProgram = 17705
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassId                         OpcuaNodeIdServicesVariableProgram = 31987
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassName                       OpcuaNodeIdServicesVariableProgram = 31988
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassId                      OpcuaNodeIdServicesVariableProgram = 31989
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassName                    OpcuaNodeIdServicesVariableProgram = 31990
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassId                    OpcuaNodeIdServicesVariableProgram = 31995
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassName                  OpcuaNodeIdServicesVariableProgram = 31996
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassId                 OpcuaNodeIdServicesVariableProgram = 31997
-	OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassName               OpcuaNodeIdServicesVariableProgram = 31998
 )
 
 var OpcuaNodeIdServicesVariableProgramValues []OpcuaNodeIdServicesVariableProgram
@@ -206,48 +153,6 @@ func init() {
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_SuspendedToHalted_TransitionNumber,
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_SuspendedToReady_TransitionNumber,
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ReadyToHalted_TransitionNumber,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventType,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceNode,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Time,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_LocalTime,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Message,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Severity,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Id,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Name,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Number,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Id,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Name,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Number,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Id,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Name,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Number,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_TransitionTime,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Time,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Message,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Status,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_MethodId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_InputArguments,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_OldStateId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_NewStateId,
 		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition,
 		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_Id,
 		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_Name,
@@ -273,7 +178,6 @@ func init() {
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodOutputArguments,
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodCallTime,
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodReturnStatus,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_LastTransition_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ProgramDiagnostic_LastMethodInputValues,
@@ -290,23 +194,11 @@ func init() {
 		OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodOutputValues,
 		OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodCallTime,
 		OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodReturnStatus,
-		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableStates,
-		OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableTransitions,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassName,
 	}
 }
 
 func OpcuaNodeIdServicesVariableProgramByValue(value int32) (enum OpcuaNodeIdServicesVariableProgram, ok bool) {
 	switch value {
-	case 11462:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_EffectiveTransitionTime, true
 	case 11463:
 		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime, true
 	case 11464:
@@ -339,10 +231,6 @@ func OpcuaNodeIdServicesVariableProgramByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodCallTime, true
 	case 15395:
 		return OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodReturnStatus, true
-	case 17704:
-		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableStates, true
-	case 17705:
-		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableTransitions, true
 	case 2379:
 		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_IntermediateResult, true
 	case 2381:
@@ -407,106 +295,6 @@ func OpcuaNodeIdServicesVariableProgramByValue(value int32) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_SuspendedToReady_TransitionNumber, true
 	case 2425:
 		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ReadyToHalted_TransitionNumber, true
-	case 31987:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassId, true
-	case 31988:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassName, true
-	case 31989:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassId, true
-	case 31990:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassName, true
-	case 31995:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassId, true
-	case 31996:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassName, true
-	case 31997:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassId, true
-	case 31998:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassName, true
-	case 3782:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventId, true
-	case 3783:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventType, true
-	case 3784:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceNode, true
-	case 3785:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceName, true
-	case 3786:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Time, true
-	case 3787:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ReceiveTime, true
-	case 3788:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_LocalTime, true
-	case 3789:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Message, true
-	case 3790:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Severity, true
-	case 3791:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState, true
-	case 3792:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Id, true
-	case 3793:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Name, true
-	case 3794:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Number, true
-	case 3795:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_EffectiveDisplayName, true
-	case 3796:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState, true
-	case 3797:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Id, true
-	case 3798:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Name, true
-	case 3799:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Number, true
-	case 3800:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_EffectiveDisplayName, true
-	case 3801:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition, true
-	case 3802:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Id, true
-	case 3803:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Name, true
-	case 3804:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Number, true
-	case 3805:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_TransitionTime, true
-	case 3807:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventId, true
-	case 3808:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventType, true
-	case 3809:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceNode, true
-	case 3810:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceName, true
-	case 3811:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Time, true
-	case 3812:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ReceiveTime, true
-	case 3813:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_LocalTime, true
-	case 3814:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Message, true
-	case 3815:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Severity, true
-	case 3816:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ActionTimeStamp, true
-	case 3817:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Status, true
-	case 3818:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ServerId, true
-	case 3819:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientAuditEntryId, true
-	case 3820:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientUserId, true
-	case 3821:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_MethodId, true
-	case 3822:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_InputArguments, true
-	case 3823:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_OldStateId, true
-	case 3824:
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_NewStateId, true
 	case 3825:
 		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition, true
 	case 3826:
@@ -563,8 +351,6 @@ func OpcuaNodeIdServicesVariableProgramByValue(value int32) (enum OpcuaNodeIdSer
 
 func OpcuaNodeIdServicesVariableProgramByName(value string) (enum OpcuaNodeIdServicesVariableProgram, ok bool) {
 	switch value {
-	case "ProgramTransitionEventType_Transition_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_EffectiveTransitionTime, true
 	case "ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime":
 		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime, true
 	case "ProgramStateMachineType_LastTransition_EffectiveTransitionTime":
@@ -597,10 +383,6 @@ func OpcuaNodeIdServicesVariableProgramByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodCallTime, true
 	case "ProgramDiagnostic2Type_LastMethodReturnStatus":
 		return OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodReturnStatus, true
-	case "ProgramStateMachineType_AvailableStates":
-		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableStates, true
-	case "ProgramStateMachineType_AvailableTransitions":
-		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableTransitions, true
 	case "ProgramTransitionEventType_IntermediateResult":
 		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_IntermediateResult, true
 	case "ProgramDiagnosticType_CreateSessionId":
@@ -665,106 +447,6 @@ func OpcuaNodeIdServicesVariableProgramByName(value string) (enum OpcuaNodeIdSer
 		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_SuspendedToReady_TransitionNumber, true
 	case "ProgramStateMachineType_ReadyToHalted_TransitionNumber":
 		return OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ReadyToHalted_TransitionNumber, true
-	case "ProgramTransitionEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassId, true
-	case "ProgramTransitionEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassName, true
-	case "ProgramTransitionEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassId, true
-	case "ProgramTransitionEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassName, true
-	case "ProgramTransitionAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassId, true
-	case "ProgramTransitionAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassName, true
-	case "ProgramTransitionAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassId, true
-	case "ProgramTransitionAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassName, true
-	case "ProgramTransitionEventType_EventId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventId, true
-	case "ProgramTransitionEventType_EventType":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventType, true
-	case "ProgramTransitionEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceNode, true
-	case "ProgramTransitionEventType_SourceName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceName, true
-	case "ProgramTransitionEventType_Time":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Time, true
-	case "ProgramTransitionEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ReceiveTime, true
-	case "ProgramTransitionEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_LocalTime, true
-	case "ProgramTransitionEventType_Message":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Message, true
-	case "ProgramTransitionEventType_Severity":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Severity, true
-	case "ProgramTransitionEventType_FromState":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState, true
-	case "ProgramTransitionEventType_FromState_Id":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Id, true
-	case "ProgramTransitionEventType_FromState_Name":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Name, true
-	case "ProgramTransitionEventType_FromState_Number":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Number, true
-	case "ProgramTransitionEventType_FromState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_EffectiveDisplayName, true
-	case "ProgramTransitionEventType_ToState":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState, true
-	case "ProgramTransitionEventType_ToState_Id":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Id, true
-	case "ProgramTransitionEventType_ToState_Name":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Name, true
-	case "ProgramTransitionEventType_ToState_Number":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Number, true
-	case "ProgramTransitionEventType_ToState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_EffectiveDisplayName, true
-	case "ProgramTransitionEventType_Transition":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition, true
-	case "ProgramTransitionEventType_Transition_Id":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Id, true
-	case "ProgramTransitionEventType_Transition_Name":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Name, true
-	case "ProgramTransitionEventType_Transition_Number":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Number, true
-	case "ProgramTransitionEventType_Transition_TransitionTime":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_TransitionTime, true
-	case "ProgramTransitionAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventId, true
-	case "ProgramTransitionAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventType, true
-	case "ProgramTransitionAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceNode, true
-	case "ProgramTransitionAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceName, true
-	case "ProgramTransitionAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Time, true
-	case "ProgramTransitionAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ReceiveTime, true
-	case "ProgramTransitionAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_LocalTime, true
-	case "ProgramTransitionAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Message, true
-	case "ProgramTransitionAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Severity, true
-	case "ProgramTransitionAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ActionTimeStamp, true
-	case "ProgramTransitionAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Status, true
-	case "ProgramTransitionAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ServerId, true
-	case "ProgramTransitionAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientAuditEntryId, true
-	case "ProgramTransitionAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientUserId, true
-	case "ProgramTransitionAuditEventType_MethodId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_MethodId, true
-	case "ProgramTransitionAuditEventType_InputArguments":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_InputArguments, true
-	case "ProgramTransitionAuditEventType_OldStateId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_OldStateId, true
-	case "ProgramTransitionAuditEventType_NewStateId":
-		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_NewStateId, true
 	case "ProgramTransitionAuditEventType_Transition":
 		return OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition, true
 	case "ProgramTransitionAuditEventType_Transition_Id":
@@ -882,8 +564,6 @@ func (e OpcuaNodeIdServicesVariableProgram) SerializeWithWriteBuffer(ctx context
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableProgram) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_EffectiveTransitionTime:
-		return "ProgramTransitionEventType_Transition_EffectiveTransitionTime"
 	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime:
 		return "ProgramTransitionAuditEventType_Transition_EffectiveTransitionTime"
 	case OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_LastTransition_EffectiveTransitionTime:
@@ -916,10 +596,6 @@ func (e OpcuaNodeIdServicesVariableProgram) PLC4XEnumName() string {
 		return "ProgramDiagnostic2Type_LastMethodCallTime"
 	case OpcuaNodeIdServicesVariableProgram_ProgramDiagnostic2Type_LastMethodReturnStatus:
 		return "ProgramDiagnostic2Type_LastMethodReturnStatus"
-	case OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableStates:
-		return "ProgramStateMachineType_AvailableStates"
-	case OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_AvailableTransitions:
-		return "ProgramStateMachineType_AvailableTransitions"
 	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_IntermediateResult:
 		return "ProgramTransitionEventType_IntermediateResult"
 	case OpcuaNodeIdServicesVariableProgram_ProgramDiagnosticType_CreateSessionId:
@@ -984,106 +660,6 @@ func (e OpcuaNodeIdServicesVariableProgram) PLC4XEnumName() string {
 		return "ProgramStateMachineType_SuspendedToReady_TransitionNumber"
 	case OpcuaNodeIdServicesVariableProgram_ProgramStateMachineType_ReadyToHalted_TransitionNumber:
 		return "ProgramStateMachineType_ReadyToHalted_TransitionNumber"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassId:
-		return "ProgramTransitionEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionClassName:
-		return "ProgramTransitionEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassId:
-		return "ProgramTransitionEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ConditionSubClassName:
-		return "ProgramTransitionEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassId:
-		return "ProgramTransitionAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionClassName:
-		return "ProgramTransitionAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassId:
-		return "ProgramTransitionAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ConditionSubClassName:
-		return "ProgramTransitionAuditEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventId:
-		return "ProgramTransitionEventType_EventId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_EventType:
-		return "ProgramTransitionEventType_EventType"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceNode:
-		return "ProgramTransitionEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_SourceName:
-		return "ProgramTransitionEventType_SourceName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Time:
-		return "ProgramTransitionEventType_Time"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ReceiveTime:
-		return "ProgramTransitionEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_LocalTime:
-		return "ProgramTransitionEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Message:
-		return "ProgramTransitionEventType_Message"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Severity:
-		return "ProgramTransitionEventType_Severity"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState:
-		return "ProgramTransitionEventType_FromState"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Id:
-		return "ProgramTransitionEventType_FromState_Id"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Name:
-		return "ProgramTransitionEventType_FromState_Name"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_Number:
-		return "ProgramTransitionEventType_FromState_Number"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_FromState_EffectiveDisplayName:
-		return "ProgramTransitionEventType_FromState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState:
-		return "ProgramTransitionEventType_ToState"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Id:
-		return "ProgramTransitionEventType_ToState_Id"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Name:
-		return "ProgramTransitionEventType_ToState_Name"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_Number:
-		return "ProgramTransitionEventType_ToState_Number"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_ToState_EffectiveDisplayName:
-		return "ProgramTransitionEventType_ToState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition:
-		return "ProgramTransitionEventType_Transition"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Id:
-		return "ProgramTransitionEventType_Transition_Id"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Name:
-		return "ProgramTransitionEventType_Transition_Name"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_Number:
-		return "ProgramTransitionEventType_Transition_Number"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionEventType_Transition_TransitionTime:
-		return "ProgramTransitionEventType_Transition_TransitionTime"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventId:
-		return "ProgramTransitionAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_EventType:
-		return "ProgramTransitionAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceNode:
-		return "ProgramTransitionAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_SourceName:
-		return "ProgramTransitionAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Time:
-		return "ProgramTransitionAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ReceiveTime:
-		return "ProgramTransitionAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_LocalTime:
-		return "ProgramTransitionAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Message:
-		return "ProgramTransitionAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Severity:
-		return "ProgramTransitionAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ActionTimeStamp:
-		return "ProgramTransitionAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Status:
-		return "ProgramTransitionAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ServerId:
-		return "ProgramTransitionAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientAuditEntryId:
-		return "ProgramTransitionAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_ClientUserId:
-		return "ProgramTransitionAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_MethodId:
-		return "ProgramTransitionAuditEventType_MethodId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_InputArguments:
-		return "ProgramTransitionAuditEventType_InputArguments"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_OldStateId:
-		return "ProgramTransitionAuditEventType_OldStateId"
-	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_NewStateId:
-		return "ProgramTransitionAuditEventType_NewStateId"
 	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition:
 		return "ProgramTransitionAuditEventType_Transition"
 	case OpcuaNodeIdServicesVariableProgram_ProgramTransitionAuditEventType_Transition_Id:

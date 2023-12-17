@@ -42,16 +42,8 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
     return (String) "679";
   }
 
-  // Properties.
-  protected final NodeId nodeId;
-
-  public HistoryUpdateDetails(NodeId nodeId) {
+  public HistoryUpdateDetails() {
     super();
-    this.nodeId = nodeId;
-  }
-
-  public NodeId getNodeId() {
-    return nodeId;
   }
 
   @Override
@@ -60,9 +52,6 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("HistoryUpdateDetails");
-
-    // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("HistoryUpdateDetails");
   }
@@ -78,9 +67,6 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
     HistoryUpdateDetails _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (nodeId)
-    lengthInBits += nodeId.getLengthInBits();
-
     return lengthInBits;
   }
 
@@ -90,26 +76,18 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
-
     readBuffer.closeContext("HistoryUpdateDetails");
     // Create the instance
-    return new HistoryUpdateDetailsBuilderImpl(nodeId);
+    return new HistoryUpdateDetailsBuilderImpl();
   }
 
   public static class HistoryUpdateDetailsBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final NodeId nodeId;
 
-    public HistoryUpdateDetailsBuilderImpl(NodeId nodeId) {
-      this.nodeId = nodeId;
-    }
+    public HistoryUpdateDetailsBuilderImpl() {}
 
     public HistoryUpdateDetails build() {
-      HistoryUpdateDetails historyUpdateDetails = new HistoryUpdateDetails(nodeId);
+      HistoryUpdateDetails historyUpdateDetails = new HistoryUpdateDetails();
       return historyUpdateDetails;
     }
   }
@@ -123,12 +101,12 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
       return false;
     }
     HistoryUpdateDetails that = (HistoryUpdateDetails) o;
-    return (getNodeId() == that.getNodeId()) && super.equals(that) && true;
+    return super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getNodeId());
+    return Objects.hash(super.hashCode());
   }
 
   @Override
