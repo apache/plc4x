@@ -1404,8 +1404,9 @@
     ['653' M_TURING_THINK ['711', '"Turing-Think"']]
     ['654' M_MICHOI ['712', '"Michoi"']]
     ['655' M_CAV_AUDIOGUANGZHOUCO__LTD ['713', '"CAV AUDIO(GUANGZHOU)CO.,LTD"']]
-    ['656' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['657' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['656' M_HELKAMA_BICA_OY ['714', '"Helkama Bica Oy"']]
+    ['657' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['658' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

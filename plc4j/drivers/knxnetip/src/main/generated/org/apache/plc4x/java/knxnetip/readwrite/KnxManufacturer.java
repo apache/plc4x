@@ -753,9 +753,10 @@ public enum KnxManufacturer {
   M_TURING_THINK((int) 653, (int) 711, (String) "Turing-Think"),
   M_MICHOI((int) 654, (int) 712, (String) "Michoi"),
   M_CAV_AUDIOGUANGZHOUCO__LTD((int) 655, (int) 713, (String) "CAV AUDIO(GUANGZHOU)CO.,LTD"),
-  M_ABB___RESERVED((int) 656, (int) 43954, (String) "ABB - reserved"),
+  M_HELKAMA_BICA_OY((int) 656, (int) 714, (String) "Helkama Bica Oy"),
+  M_ABB___RESERVED((int) 657, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 657, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 658, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
