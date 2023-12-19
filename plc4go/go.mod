@@ -39,7 +39,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.14.1
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
