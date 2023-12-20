@@ -36,6 +36,8 @@ New Features
 Incompatible changes
 --------------------
 
+- Java 1.8 is no longer supported and Java 11 is now the new
+  baseline version we support.
 - We've updated the APIs of both PLC4J and PLC4Go to be more in
   sync. We also refined some of the terminology.
 - We've also re-written the `connection-cache`, which now replaces
