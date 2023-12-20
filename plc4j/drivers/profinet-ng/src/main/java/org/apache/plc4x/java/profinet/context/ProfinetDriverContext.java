@@ -64,6 +64,8 @@ public class ProfinetDriverContext implements DriverContext {
 
     private boolean advancedStartupMode = true;
     private int sessionKey = 1;
+
+    // It seems that half of this time is going to be the interval in which the remote device will be sending data.
     private int sendClockFactor = 32;
     private int reductionRatio = 16;
     private int watchdogFactor = 3;

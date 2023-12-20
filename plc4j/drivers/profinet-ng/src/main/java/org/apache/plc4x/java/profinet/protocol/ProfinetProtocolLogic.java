@@ -50,6 +50,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
 
@@ -731,6 +732,45 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     // We needed to put the code to expect the ApplicationReady to subscribe before sending,
                     // as the device sends it within 4 ms, and we can't guarantee that we're done setting up
                     // the listener.
+
+                    // TODO: Start sending data.
+                    Thread task = new Thread(() -> {
+                        int curCounterValue = 0;
+                        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
+                        MacAddress srcAddress = new MacAddress(pnChannel.getLocalMacAddress().getAddress());
+                        MacAddress dstAddress = new MacAddress(pnChannel.getRemoteMacAddress().getAddress());
+                        byte[] data = new byte[40];
+                        data[0] = (byte) 0x80;
+                        data[1] = (byte) 0x80;
+                        data[2] = (byte) 0x80;
+                        data[3] = (byte) 0x80;
+                        long nextExecutionTime = System.currentTimeMillis();
+                        System.out.println("Starting Loop");
+                        while(context.getChannel().isOpen()) {
+                            if(nextExecutionTime < System.currentTimeMillis()) {
+                                curCounterValue += 512;
+                                Ethernet_Frame frame = new Ethernet_Frame(
+                                    dstAddress,
+                                    srcAddress,
+                                    new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.INTERNETWORK_CONTROL, false, (short) 0,
+                                        new Ethernet_FramePayload_PnDcp(
+                                            new PnDcp_Pdu_RealTimeCyclic(0x8003,
+                                                new PnIo_CyclicServiceDataUnit(data, (short) 40),
+                                                curCounterValue, false, true,
+                                                true, true, false, true)
+                                        )
+                                    )
+                                );
+                                System.out.println("Sending");
+                                context.sendToWire(frame);
+                                // Send a packet every 16ms
+                                nextExecutionTime += 16;
+                            }
+                        }
+                        System.out.println("Channel closed");
+                    });
+                    task.setPriority(Thread.MAX_PRIORITY);
+                    task.start();
                 });
             });
 
