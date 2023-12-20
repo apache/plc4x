@@ -51,6 +51,7 @@ public class PnDcpPacketFactory {
     public static CompletableFuture<PnDcp_Pdu_IdentifyRes> sendIdentificationRequest(ConversationContext<Ethernet_Frame> context, MacAddress localMacAddress, MacAddress remoteMacAddress) {
         CompletableFuture<PnDcp_Pdu_IdentifyRes> future = new CompletableFuture<>();
         context.sendRequest(PnDcpPacketFactory.createIdentificationRequest(localMacAddress, remoteMacAddress))
+            .name("Expect Identification response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
@@ -96,6 +97,7 @@ public class PnDcpPacketFactory {
         // TODO: Handle error responses quickly (If the device doesn't support PN CM, then we can abort a lot quicker.
         CompletableFuture<PnIoCm_Block_IAndM0> future = new CompletableFuture<>();
         context.sendRequest(PnDcpPacketFactory.createReadIAndM0BlockRequest(pnChannel, driverContext))
+            .name("Expect ReadIAndM0Block response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
@@ -155,6 +157,7 @@ public class PnDcpPacketFactory {
         // TODO: Handle error responses quickly (If the device doesn't support PN CM, then we can abort a lot quicker.
         CompletableFuture<PnIoCm_Block_IAndM1> future = new CompletableFuture<>();
         context.sendRequest(PnDcpPacketFactory.createReadIAndM1BlockRequest(pnChannel, driverContext))
+            .name("Expect ReadIAndM1Block response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
@@ -214,6 +217,7 @@ public class PnDcpPacketFactory {
     public static CompletableFuture<PnIoCm_Block_RealIdentificationData> sendRealIdentificationDataRequest(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
         CompletableFuture<PnIoCm_Block_RealIdentificationData> future = new CompletableFuture<>();
         context.sendRequest(createReadRealIdentificationDataRequest(pnChannel, driverContext))
+            .name("Expect RealIdentificationData response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
@@ -278,6 +282,7 @@ public class PnDcpPacketFactory {
     public static CompletableFuture<PnIoCm_Control_Response_ParameterEnd> sendParameterEndRequest(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
         CompletableFuture<PnIoCm_Control_Response_ParameterEnd> future = new CompletableFuture<>();
         context.sendRequest(createParameterEndRequest(pnChannel, driverContext))
+            .name("Expect ParameterEnd response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(6000))
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
@@ -312,15 +317,15 @@ public class PnDcpPacketFactory {
         return future;
     }
 
-    public static Ethernet_Frame createApplicationReadyResponse(RawSocketChannel pnChannel, ProfinetDriverContext driverContext, Uuid arUuid, int sessionKey) {
+    public static Ethernet_Frame createApplicationReadyResponse(RawSocketChannel pnChannel, ProfinetDriverContext driverContext, int sourcePort, DceRpc_ActivityUuid activityUuid, Uuid arUuid, int sessionKey) {
         DceRpc_Packet packet = new DceRpc_Packet(
             DceRpc_PacketType.RESPONSE, true, false, false,
             IntegerEncoding.LITTLE_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
             new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001, driverContext.getDeviceId(), driverContext.getVendorId()),
-            new DceRpc_InterfaceUuid_DeviceInterface(),
-            driverContext.getActivityUuid(),
+            new DceRpc_InterfaceUuid_ControllerInterface(),
+            activityUuid,
             0,
-            driverContext.getAndIncrementIdentification(),
+            0,
             DceRpc_Operation.CONTROL,
             (short) 0,
             new PnIoCm_Packet_Res((short) 0, (short) 0, (short) 0, (short) 0, 16696, (short) 0,
@@ -330,11 +335,69 @@ public class PnDcpPacketFactory {
                 )
         );
 
-        return createEthernetFrame(pnChannel, driverContext, packet);
+        InetSocketAddress localAddress = (InetSocketAddress) pnChannel.getLocalAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) pnChannel.getRemoteAddress();
+
+        // Serialize it to a byte-payload
+        Random rand = new Random();
+        Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
+            rand.nextInt(65536),
+            true,
+            false,
+            (short) 64,
+            new IpAddress(localAddress.getAddress().getAddress()),
+            new IpAddress(remoteAddress.getAddress().getAddress()),
+            driverContext.getLocalPort(),
+            sourcePort,
+            packet
+        );
+        MacAddress srcAddress = new MacAddress(pnChannel.getLocalMacAddress().getAddress());
+        MacAddress dstAddress = new MacAddress(pnChannel.getRemoteMacAddress().getAddress());
+        return new Ethernet_Frame(
+            dstAddress,
+            srcAddress,
+            udpFrame);
     }
 
-    public static void sendApplicationReadyResponse(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext, Uuid arUuid, int sessionKey) {
-        context.sendToWire(createApplicationReadyResponse(pnChannel, driverContext, arUuid, sessionKey));
+    public static void sendApplicationReadyResponse(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext, int sourcePort, DceRpc_ActivityUuid activityUuid, Uuid arUuid, int sessionKey) {
+        context.sendToWire(createApplicationReadyResponse(pnChannel, driverContext, sourcePort, activityUuid, arUuid, sessionKey));
+    }
+
+    public static Ethernet_Frame createPingResponse(RawSocketChannel pnChannel, ProfinetDriverContext driverContext, Ethernet_FramePayload_IPv4 payloadIPv4) {
+        DceRpc_Packet pingRequest = payloadIPv4.getPayload();
+
+        DceRpc_Packet packet = new DceRpc_Packet(DceRpc_PacketType.WORKING,
+            false, false, false,
+            IntegerEncoding.BIG_ENDIAN, CharacterEncoding.ASCII, FloatingPointEncoding.IEEE,
+            pingRequest.getObjectUuid(), pingRequest.getInterfaceUuid(), pingRequest.getActivityUuid(),
+            0L, 0L, DceRpc_Operation.CONNECT, (short) 0, new PnIoCm_Packet_Working());
+
+        InetSocketAddress localAddress = (InetSocketAddress) pnChannel.getLocalAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) pnChannel.getRemoteAddress();
+
+        // Serialize it to a byte-payload
+        Random rand = new Random();
+        Ethernet_FramePayload_IPv4 udpFrame = new Ethernet_FramePayload_IPv4(
+            rand.nextInt(65536),
+            true,
+            false,
+            (short) 64,
+            new IpAddress(localAddress.getAddress().getAddress()),
+            new IpAddress(remoteAddress.getAddress().getAddress()),
+            driverContext.getLocalPort(),
+            payloadIPv4.getSourcePort(),
+            packet
+        );
+        MacAddress srcAddress = new MacAddress(pnChannel.getLocalMacAddress().getAddress());
+        MacAddress dstAddress = new MacAddress(pnChannel.getRemoteMacAddress().getAddress());
+        return new Ethernet_Frame(
+            dstAddress,
+            srcAddress,
+            udpFrame);
+    }
+
+    public static void sendPingResponse(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext, Ethernet_FramePayload_IPv4 payloadIPv4) {
+        context.sendToWire(createPingResponse(pnChannel, driverContext, payloadIPv4));
     }
 
     /**

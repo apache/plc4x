@@ -82,7 +82,7 @@ public class ConversationContextWrapper<C, T> implements ConversationContext<T> 
 
     @Override
     public SendRequestContext<T> sendRequest(T packet) {
-        return new SendRequestContextWrapper<>(delegate.sendRequest(frameHandler.toCAN(packet)), wireType, adapter, frameHandler);
+        return new SendRequestContextWrapper<>("", delegate.sendRequest(frameHandler.toCAN(packet)), wireType, adapter, frameHandler);
     }
 
     @Override

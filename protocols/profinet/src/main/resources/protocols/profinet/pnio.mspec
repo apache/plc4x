@@ -61,6 +61,8 @@
         ]
         ['WORKING'  PnIoCm_Packet_Working
         ]
+        ['CONNECTIONLESS_CANCEL' PnIoCm_Packet_ConnectionlessCancel
+        ]
     ]
 ]
 

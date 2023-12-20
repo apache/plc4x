@@ -38,7 +38,7 @@ public class ManualProfinetIoTest {
                 .addCyclicTagAddress("inputs", "1.1.INPUT.0:BYTE[10]", Duration.ofMillis(400))
                 .addCyclicTagAddress("output", "1.1.OUTPUT.0:DWORD", Duration.ofMillis(400))
                 .build();
-            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(10000, TimeUnit.MILLISECONDS);
+            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(100000, TimeUnit.MILLISECONDS);
             System.out.println(subscriptionResponse);
         }
     }

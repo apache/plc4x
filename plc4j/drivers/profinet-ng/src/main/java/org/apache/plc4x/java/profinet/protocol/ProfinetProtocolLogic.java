@@ -40,6 +40,7 @@ import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -686,6 +687,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
         CompletableFuture<PlcSubscriptionResponse> future = new CompletableFuture<>();
         context.sendRequest(requestEthernetFrame)
+            .name("Expect Subscription response")
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(1000))
             .onTimeout(future::completeExceptionally)
             .onError((responseEthernetFrame, throwable) -> future.completeExceptionally(throwable))
@@ -700,26 +702,35 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                 // TODO: Maybe do some checks on this.
 
                 // Now we wait for an incoming ApplicationReady request and confirm that.
-/*                context.expectRequest(Ethernet_Frame.class, Duration.ofMillis(500000))
+                context.expectRequest(Ethernet_Frame.class, Duration.ofMillis(500000))
+                    .name("Expect ApplicationReady request")
                     .onTimeout(future::completeExceptionally)
                     .check(ethernetFrame -> ethernetFrame.getPayload() instanceof Ethernet_FramePayload_IPv4)
-                    .unwrap(ethernetFrame -> ((Ethernet_FramePayload_IPv4) ethernetFrame.getPayload()).getPayload())
-                    .check(dceRpc_packet -> dceRpcPacket.getPayload() instanceof PnIoCm_Packet_Req)
-                    .unwrap(dceRpc_packet -> (PnIoCm_Packet_Req) dceRpcPacket.getPayload())
-                    .handle(requestPacket -> {
-                        if(requestPacket.getBlocks().size() == 1) {
-                            if (requestPacket.getBlocks().get(0) instanceof PnIoCm_Control_Request_ApplicationReady) {
-                                // TODO: Send the response back to the udp port used in the request (It differs from the usual port)
-                                System.out.println("Got ApplicationStart Request: "+ requestPacket);
-                            }
-                        }
-                    });*/
+                    .unwrap(ethernetFrame -> ((Ethernet_FramePayload_IPv4) ethernetFrame.getPayload()))
+                    .check(payloadIPv4 -> payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Req)
+                    .check(payloadIPv4 -> ((PnIoCm_Packet_Req) payloadIPv4.getPayload().getPayload()).getBlocks().size() == 1 && ((PnIoCm_Packet_Req) payloadIPv4.getPayload().getPayload()).getBlocks().get(0) instanceof PnIoCm_Control_Request_ApplicationReady)
+                    .handle(payloadIPv4 -> {
+                        DceRpc_Packet dceRpc_packet = payloadIPv4.getPayload();
+                        PnIoCm_Control_Request_ApplicationReady pnIoCmBlock = (PnIoCm_Control_Request_ApplicationReady) ((PnIoCm_Packet_Req) dceRpc_packet.getPayload()).getBlocks().get(0);
+
+                        // TODO: Save these ...
+                        Uuid arUuid = pnIoCmBlock.getArUuid();
+                        int sessionKey = pnIoCmBlock.getSessionKey();
+
+                        // Send back a response, but this is just a hack ... we need to move this into the subscribe method, or we can't complete the future that we're returning.
+                        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
+                        PnDcpPacketFactory.sendApplicationReadyResponse(context, pnChannel, profinetDriverContext, payloadIPv4.getSourcePort(), dceRpc_packet.getActivityUuid(), arUuid, sessionKey);
+
+                        // TODO: Prepare the subscription response.
+//                        future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, ))
+                    });
 
                 // Now send the ParameterEnd request and wait for a response.
                 CompletableFuture<PnIoCm_Control_Response_ParameterEnd> parameterEndFuture = PnDcpPacketFactory.sendParameterEndRequest(context, rawSocketChannel, profinetDriverContext);
                 parameterEndFuture.whenComplete((parameterEnd, throwable) -> {
-                    // Not quite sure what to do with this ... we already set up the listener before sending this request.
-                    System.out.println("Got Parameter End Response: " + parameterEnd);
+                    // We needed to put the code to expect the ApplicationReady to subscribe before sending,
+                    // as the device sends it within 4 ms, and we can't guarantee that we're done setting up
+                    // the listener.
                 });
             });
 
@@ -738,20 +749,17 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             }
         } else if(msg.getPayload() instanceof Ethernet_FramePayload_IPv4) {
             Ethernet_FramePayload_IPv4 payloadIPv4 = (Ethernet_FramePayload_IPv4) msg.getPayload();
-            if(payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Req) {
-                PnIoCm_Packet_Req pnIoCmPacketReq = (PnIoCm_Packet_Req) payloadIPv4.getPayload().getPayload();
-                if(pnIoCmPacketReq.getBlocks().size() == 1) {
-                    PnIoCm_Block pnIoCmBlock = pnIoCmPacketReq.getBlocks().get(0);
-                    if(pnIoCmBlock instanceof PnIoCm_Control_Request_ApplicationReady) {
-                        // TODO: Save these
-                        Uuid arUuid = ((PnIoCm_Control_Request_ApplicationReady) pnIoCmBlock).getArUuid();
-                        int sessionKey = ((PnIoCm_Control_Request_ApplicationReady) pnIoCmBlock).getSessionKey();
-
-                        // Send back a response, but this is just a hack ... we need to move this into the subscribe method or we can't complete the future that we're returning.
-                        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
-                        PnDcpPacketFactory.sendApplicationReadyResponse(context, pnChannel, profinetDriverContext, arUuid, sessionKey);
-                    }
-                }
+            if(payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Ping) {
+                DceRpc_Packet pingPacket = payloadIPv4.getPayload();
+                // Send back a ping response
+                RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
+                PnDcpPacketFactory.sendPingResponse(context, pnChannel, profinetDriverContext, payloadIPv4);
+            }
+            // The remote device terminated the connection.
+            else if(payloadIPv4.getPayload().getPayload() instanceof  PnIoCm_Packet_ConnectionlessCancel) {
+                context.getChannel().close();
+            } else {
+                System.out.println(msg);
             }
         }
     }

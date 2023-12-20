@@ -38,6 +38,8 @@ public class HandlerRegistration implements Future<Void> {
 
     private final int id = counter++;
 
+    private final String name;
+
     private final Deque<Either<Function<?, ?>, Predicate<?>>> commands;
 
     private final Class<?> expectClazz;
@@ -54,8 +56,9 @@ public class HandlerRegistration implements Future<Void> {
 
     private final CompletableFuture<Void> handled = new CompletableFuture<>();
 
-    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Duration timeout) {
+    public HandlerRegistration(String name, Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Duration timeout) {
         this(
+            name,
             commands,
             expectClazz,
             packetConsumer,
@@ -68,7 +71,8 @@ public class HandlerRegistration implements Future<Void> {
         );
     }
 
-    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Runnable onHandled, Runnable onError, Runnable onCancelled, Duration timeout) {
+    public HandlerRegistration(String name, Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Runnable onHandled, Runnable onError, Runnable onCancelled, Duration timeout) {
+        this.name = name;
         this.commands = commands;
         this.expectClazz = expectClazz;
         this.packetConsumer = packetConsumer;
@@ -78,6 +82,10 @@ public class HandlerRegistration implements Future<Void> {
         this.onError = onError;
         this.onCancelled = onCancelled;
         this.timeout = timeout;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Deque<Either<Function<?, ?>, Predicate<?>>> getCommands() {

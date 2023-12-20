@@ -29,17 +29,26 @@ import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 
 public class DeferredRequestContextWrapper<T> implements SendRequestContext<T> {
 
+    private String name;
+
     private final SendRequestContext<T> delegate;
     private final Function<SendRequestContext<?>, SendRequestContext<?>> completer;
     protected final Consumer<TimeoutException> onTimeoutConsumer;
     protected final BiConsumer<?, ? extends Throwable> errorConsumer;
 
-    public DeferredRequestContextWrapper(SendRequestContext<T> delegate, Function<SendRequestContext<?>, SendRequestContext<?>> completer,
+    public DeferredRequestContextWrapper(String name, SendRequestContext<T> delegate, Function<SendRequestContext<?>, SendRequestContext<?>> completer,
         Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer) {
+        this.name = name;
         this.delegate = delegate;
         this.completer = completer;
         this.onTimeoutConsumer = onTimeoutConsumer;
         this.errorConsumer = errorConsumer;
+    }
+
+    @Override
+    public SendRequestContext<T> name(String name) {
+        this.name = name;
+        return this;
     }
 
     @Override
@@ -60,17 +69,17 @@ public class DeferredRequestContextWrapper<T> implements SendRequestContext<T> {
 
     @Override
     public SendRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer) {
-        return new DeferredRequestContextWrapper<>(delegate, completer, packetConsumer, errorConsumer);
+        return new DeferredRequestContextWrapper<>(name, delegate, completer, packetConsumer, errorConsumer);
     }
 
     @Override
     public <E extends Throwable> SendRequestContext<T> onError(BiConsumer<T, E> packetConsumer) {
-        return new DeferredRequestContextWrapper<>(delegate, completer, onTimeoutConsumer, errorConsumer);
+        return new DeferredRequestContextWrapper<>(name, delegate, completer, onTimeoutConsumer, errorConsumer);
     }
 
     @Override
     public <R> SendRequestContext<R> unwrap(Function<T, R> unwrapper) {
-        return resolve(new DeferredRequestContextWrapper<>(delegate.unwrap(unwrapper), completer, onTimeoutConsumer, errorConsumer));
+        return resolve(new DeferredRequestContextWrapper<>(name, delegate.unwrap(unwrapper), completer, onTimeoutConsumer, errorConsumer));
     }
 
     private <R> SendRequestContext<R> resolve(DeferredRequestContextWrapper<R> contextWrapper) {
@@ -82,6 +91,7 @@ public class DeferredRequestContextWrapper<T> implements SendRequestContext<T> {
 
     @Override
     public <R> SendRequestContext<R> only(Class<R> clazz) {
-        return resolve(new DeferredRequestContextWrapper<>(delegate.only(clazz), completer, onTimeoutConsumer, errorConsumer));
+        return resolve(new DeferredRequestContextWrapper<>(name, delegate.only(clazz), completer, onTimeoutConsumer, errorConsumer));
     }
+
 }

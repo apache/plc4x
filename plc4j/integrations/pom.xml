@@ -47,7 +47,7 @@
     <profile>
       <id>.below-java-21</id>
       <activation>
-        <jdk>[1.8,21)</jdk>
+        <jdk>[11,21)</jdk>
       </activation>
       <modules>
         <module>apache-kafka</module>

@@ -114,12 +114,12 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public SendRequestContext<T> sendRequest(T packet) {
-                return new DefaultSendRequestContext<>(Plc4xNettyWrapper.this::registerHandler, packet, this);
+                return new DefaultSendRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, packet, this);
             }
 
             @Override
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
-                return new DefaultExpectRequestContext<>(Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
+                return new DefaultExpectRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
             }
 
         });
@@ -232,6 +232,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         });
         // wrap handler, so we can catch packet consumer call and inform completion callback.
         HandlerRegistration registration = new HandlerRegistration(
+            handler.getName(),
             handler.getCommands(),
             handler.getExpectClazz(),
             completionCallback.andThen(handler.getPacketConsumer()),

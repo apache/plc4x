@@ -71,7 +71,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     private final Logger logger = LoggerFactory.getLogger(ProfinetDriver.class);
 
     public static final Pattern MAC_ADDRESS = Pattern.compile(
-        "^([0-9A-Fa-f]{2}[\\\\.:-]){5}?");
+        "^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})?");
 
     public static final String DRIVER_CODE = "profinet";
 
@@ -211,8 +211,8 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
         final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransport();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
-        Matcher macMatcher = MAC_ADDRESS.matcher(connectionString);
-        if (!macMatcher.matches()) {
+        Matcher macMatcher = MAC_ADDRESS.matcher(transportConfig);
+        if (macMatcher.matches()) {
             logger.info("Setting remote PROFINET device IP using DCP");
             ConfigurationFactory configurationFactory = new ConfigurationFactory();
             ProfinetConfiguration configuration = (ProfinetConfiguration) configurationFactory

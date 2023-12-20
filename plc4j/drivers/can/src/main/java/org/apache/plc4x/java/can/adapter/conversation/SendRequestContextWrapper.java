@@ -31,12 +31,15 @@ import org.apache.plc4x.java.transport.can.FrameData;
 
 public class SendRequestContextWrapper<C, T> implements SendRequestContext<T> {
 
+    private String name;
+
     private final SendRequestContext<C> delegate;
     private final Class<C> wireType;
     private final Function<C, FrameData> adapter;
     private final FrameHandler<C, T> frameHandler;
 
-    public SendRequestContextWrapper(SendRequestContext<C> delegate, Class<C> wireType, Function<C, FrameData> adapter, FrameHandler<C, T> frameHandler) {
+    public SendRequestContextWrapper(String name, SendRequestContext<C> delegate, Class<C> wireType, Function<C, FrameData> adapter, FrameHandler<C, T> frameHandler) {
+        this.name = name;
         this.delegate = delegate;
         this.wireType = wireType;
         this.adapter = adapter;
@@ -44,10 +47,16 @@ public class SendRequestContextWrapper<C, T> implements SendRequestContext<T> {
     }
 
     @Override
+    public SendRequestContext<T> name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    @Override
     public SendRequestContext<T> expectResponse(Class<T> clazz, Duration timeout) {
         DeferredErrorHandler<C, ?> errorHandler = new DeferredErrorHandler<>(null);
         DeferredTimeoutHandler<?> timeoutHandler = new DeferredTimeoutHandler<>(null);
-        return new ResolvedSendRequestContextWrapper<>(
+        return new ResolvedSendRequestContextWrapper<>(name,
             delegate.onError(errorHandler)
                 .onTimeout(timeoutHandler)
                 .expectResponse(wireType, timeout)
