@@ -90,7 +90,7 @@ public class DefaultConversationContext<T1> implements ConversationContext<T1> {
 
     @Override
     public SendRequestContext<T1> sendRequest(T1 packet) {
-        return new DefaultSendRequestContext<>(handler -> {
+        return new DefaultSendRequestContext<>(null, handler -> {
             logger.trace("Adding Response Handler ...");
             handlerRegistrar.accept(handler);
         }, packet, this);
@@ -98,7 +98,7 @@ public class DefaultConversationContext<T1> implements ConversationContext<T1> {
 
     @Override
     public ExpectRequestContext<T1> expectRequest(Class<T1> clazz, Duration timeout) {
-        return new DefaultExpectRequestContext<>(handler -> {
+        return new DefaultExpectRequestContext<>(null, handler -> {
             logger.trace("Adding Request Handler ...");
             handlerRegistrar.accept(handler);
         }, clazz, timeout, this);

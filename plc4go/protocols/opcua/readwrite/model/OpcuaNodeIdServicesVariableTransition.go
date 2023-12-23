@@ -49,15 +49,6 @@ const (
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition                         OpcuaNodeIdServicesVariableTransition = 2774
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState                          OpcuaNodeIdServicesVariableTransition = 2775
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState                            OpcuaNodeIdServicesVariableTransition = 2776
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId                            OpcuaNodeIdServicesVariableTransition = 3737
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType                          OpcuaNodeIdServicesVariableTransition = 3738
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode                         OpcuaNodeIdServicesVariableTransition = 3739
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName                         OpcuaNodeIdServicesVariableTransition = 3740
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time                               OpcuaNodeIdServicesVariableTransition = 3741
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime                        OpcuaNodeIdServicesVariableTransition = 3742
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime                          OpcuaNodeIdServicesVariableTransition = 3743
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message                            OpcuaNodeIdServicesVariableTransition = 3744
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity                           OpcuaNodeIdServicesVariableTransition = 3745
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id                       OpcuaNodeIdServicesVariableTransition = 3746
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name                     OpcuaNodeIdServicesVariableTransition = 3747
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Number                   OpcuaNodeIdServicesVariableTransition = 3748
@@ -72,10 +63,6 @@ const (
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_TransitionTime          OpcuaNodeIdServicesVariableTransition = 3757
 	OpcuaNodeIdServicesVariableTransition_TransitionVariableType_EffectiveTransitionTime         OpcuaNodeIdServicesVariableTransition = 11456
 	OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_EffectiveTransitionTime OpcuaNodeIdServicesVariableTransition = 11460
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId                   OpcuaNodeIdServicesVariableTransition = 31919
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName                 OpcuaNodeIdServicesVariableTransition = 31920
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId                OpcuaNodeIdServicesVariableTransition = 31921
-	OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName              OpcuaNodeIdServicesVariableTransition = 31922
 )
 
 var OpcuaNodeIdServicesVariableTransitionValues []OpcuaNodeIdServicesVariableTransition
@@ -91,15 +78,6 @@ func init() {
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition,
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState,
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity,
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id,
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name,
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Number,
@@ -114,10 +92,6 @@ func init() {
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_TransitionTime,
 		OpcuaNodeIdServicesVariableTransition_TransitionVariableType_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableTransition_TransitionEventType_Transition_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName,
 	}
 }
 
@@ -143,32 +117,6 @@ func OpcuaNodeIdServicesVariableTransitionByValue(value int32) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState, true
 	case 2776:
 		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState, true
-	case 31919:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId, true
-	case 31920:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName, true
-	case 31921:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId, true
-	case 31922:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName, true
-	case 3737:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId, true
-	case 3738:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType, true
-	case 3739:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode, true
-	case 3740:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName, true
-	case 3741:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time, true
-	case 3742:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime, true
-	case 3743:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime, true
-	case 3744:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message, true
-	case 3745:
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity, true
 	case 3746:
 		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id, true
 	case 3747:
@@ -219,32 +167,6 @@ func OpcuaNodeIdServicesVariableTransitionByName(value string) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState, true
 	case "TransitionEventType_ToState":
 		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState, true
-	case "TransitionEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId, true
-	case "TransitionEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName, true
-	case "TransitionEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId, true
-	case "TransitionEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName, true
-	case "TransitionEventType_EventId":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId, true
-	case "TransitionEventType_EventType":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType, true
-	case "TransitionEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode, true
-	case "TransitionEventType_SourceName":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName, true
-	case "TransitionEventType_Time":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time, true
-	case "TransitionEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime, true
-	case "TransitionEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime, true
-	case "TransitionEventType_Message":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message, true
-	case "TransitionEventType_Severity":
-		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity, true
 	case "TransitionEventType_FromState_Id":
 		return OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id, true
 	case "TransitionEventType_FromState_Name":
@@ -356,32 +278,6 @@ func (e OpcuaNodeIdServicesVariableTransition) PLC4XEnumName() string {
 		return "TransitionEventType_FromState"
 	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_ToState:
 		return "TransitionEventType_ToState"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassId:
-		return "TransitionEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionClassName:
-		return "TransitionEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassId:
-		return "TransitionEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_ConditionSubClassName:
-		return "TransitionEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventId:
-		return "TransitionEventType_EventId"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_EventType:
-		return "TransitionEventType_EventType"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceNode:
-		return "TransitionEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_SourceName:
-		return "TransitionEventType_SourceName"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_Time:
-		return "TransitionEventType_Time"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_ReceiveTime:
-		return "TransitionEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_LocalTime:
-		return "TransitionEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_Message:
-		return "TransitionEventType_Message"
-	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_Severity:
-		return "TransitionEventType_Severity"
 	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Id:
 		return "TransitionEventType_FromState_Id"
 	case OpcuaNodeIdServicesVariableTransition_TransitionEventType_FromState_Name:

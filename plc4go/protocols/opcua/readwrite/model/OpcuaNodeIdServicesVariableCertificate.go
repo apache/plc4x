@@ -41,108 +41,6 @@ type IOpcuaNodeIdServicesVariableCertificate interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventId                                                                                       OpcuaNodeIdServicesVariableCertificate = 12621
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventType                                                                                     OpcuaNodeIdServicesVariableCertificate = 12622
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceNode                                                                                    OpcuaNodeIdServicesVariableCertificate = 12623
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceName                                                                                    OpcuaNodeIdServicesVariableCertificate = 12624
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Time                                                                                          OpcuaNodeIdServicesVariableCertificate = 12625
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ReceiveTime                                                                                   OpcuaNodeIdServicesVariableCertificate = 12626
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_LocalTime                                                                                     OpcuaNodeIdServicesVariableCertificate = 12627
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Message                                                                                       OpcuaNodeIdServicesVariableCertificate = 12628
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Severity                                                                                      OpcuaNodeIdServicesVariableCertificate = 12629
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ActionTimeStamp                                                                               OpcuaNodeIdServicesVariableCertificate = 12630
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Status                                                                                        OpcuaNodeIdServicesVariableCertificate = 12631
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ServerId                                                                                      OpcuaNodeIdServicesVariableCertificate = 12632
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientAuditEntryId                                                                            OpcuaNodeIdServicesVariableCertificate = 12633
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientUserId                                                                                  OpcuaNodeIdServicesVariableCertificate = 12634
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventId                                                                                         OpcuaNodeIdServicesVariableCertificate = 13226
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventType                                                                                       OpcuaNodeIdServicesVariableCertificate = 13227
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceNode                                                                                      OpcuaNodeIdServicesVariableCertificate = 13228
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceName                                                                                      OpcuaNodeIdServicesVariableCertificate = 13229
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Time                                                                                            OpcuaNodeIdServicesVariableCertificate = 13230
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReceiveTime                                                                                     OpcuaNodeIdServicesVariableCertificate = 13231
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LocalTime                                                                                       OpcuaNodeIdServicesVariableCertificate = 13232
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Message                                                                                         OpcuaNodeIdServicesVariableCertificate = 13233
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Severity                                                                                        OpcuaNodeIdServicesVariableCertificate = 13234
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassId                                                                                OpcuaNodeIdServicesVariableCertificate = 13235
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassName                                                                              OpcuaNodeIdServicesVariableCertificate = 13236
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionName                                                                                   OpcuaNodeIdServicesVariableCertificate = 13237
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_BranchId                                                                                        OpcuaNodeIdServicesVariableCertificate = 13238
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Retain                                                                                          OpcuaNodeIdServicesVariableCertificate = 13239
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState                                                                                    OpcuaNodeIdServicesVariableCertificate = 13240
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Id                                                                                 OpcuaNodeIdServicesVariableCertificate = 13241
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Name                                                                               OpcuaNodeIdServicesVariableCertificate = 13242
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Number                                                                             OpcuaNodeIdServicesVariableCertificate = 13243
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName                                                               OpcuaNodeIdServicesVariableCertificate = 13244
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TransitionTime                                                                     OpcuaNodeIdServicesVariableCertificate = 13245
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime                                                            OpcuaNodeIdServicesVariableCertificate = 13246
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TrueState                                                                          OpcuaNodeIdServicesVariableCertificate = 13247
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_FalseState                                                                         OpcuaNodeIdServicesVariableCertificate = 13248
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality                                                                                         OpcuaNodeIdServicesVariableCertificate = 13249
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality_SourceTimestamp                                                                         OpcuaNodeIdServicesVariableCertificate = 13250
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity                                                                                    OpcuaNodeIdServicesVariableCertificate = 13251
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity_SourceTimestamp                                                                    OpcuaNodeIdServicesVariableCertificate = 13252
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment                                                                                         OpcuaNodeIdServicesVariableCertificate = 13253
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment_SourceTimestamp                                                                         OpcuaNodeIdServicesVariableCertificate = 13254
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ClientUserId                                                                                    OpcuaNodeIdServicesVariableCertificate = 13255
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AddComment_InputArguments                                                                       OpcuaNodeIdServicesVariableCertificate = 13259
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh_InputArguments                                                                 OpcuaNodeIdServicesVariableCertificate = 13261
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh2_InputArguments                                                                OpcuaNodeIdServicesVariableCertificate = 13263
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState                                                                                      OpcuaNodeIdServicesVariableCertificate = 13264
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Id                                                                                   OpcuaNodeIdServicesVariableCertificate = 13265
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Name                                                                                 OpcuaNodeIdServicesVariableCertificate = 13266
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Number                                                                               OpcuaNodeIdServicesVariableCertificate = 13267
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveDisplayName                                                                 OpcuaNodeIdServicesVariableCertificate = 13268
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TransitionTime                                                                       OpcuaNodeIdServicesVariableCertificate = 13269
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime                                                              OpcuaNodeIdServicesVariableCertificate = 13270
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TrueState                                                                            OpcuaNodeIdServicesVariableCertificate = 13271
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_FalseState                                                                           OpcuaNodeIdServicesVariableCertificate = 13272
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState                                                                                  OpcuaNodeIdServicesVariableCertificate = 13273
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Id                                                                               OpcuaNodeIdServicesVariableCertificate = 13274
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Name                                                                             OpcuaNodeIdServicesVariableCertificate = 13275
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Number                                                                           OpcuaNodeIdServicesVariableCertificate = 13276
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName                                                             OpcuaNodeIdServicesVariableCertificate = 13277
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TransitionTime                                                                   OpcuaNodeIdServicesVariableCertificate = 13278
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime                                                          OpcuaNodeIdServicesVariableCertificate = 13279
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TrueState                                                                        OpcuaNodeIdServicesVariableCertificate = 13280
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_FalseState                                                                       OpcuaNodeIdServicesVariableCertificate = 13281
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Acknowledge_InputArguments                                                                      OpcuaNodeIdServicesVariableCertificate = 13283
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Confirm_InputArguments                                                                          OpcuaNodeIdServicesVariableCertificate = 13285
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState                                                                                     OpcuaNodeIdServicesVariableCertificate = 13286
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Id                                                                                  OpcuaNodeIdServicesVariableCertificate = 13287
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Name                                                                                OpcuaNodeIdServicesVariableCertificate = 13288
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Number                                                                              OpcuaNodeIdServicesVariableCertificate = 13289
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName                                                                OpcuaNodeIdServicesVariableCertificate = 13290
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TransitionTime                                                                      OpcuaNodeIdServicesVariableCertificate = 13291
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime                                                             OpcuaNodeIdServicesVariableCertificate = 13292
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TrueState                                                                           OpcuaNodeIdServicesVariableCertificate = 13293
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_FalseState                                                                          OpcuaNodeIdServicesVariableCertificate = 13294
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_InputNode                                                                                       OpcuaNodeIdServicesVariableCertificate = 13295
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState                                                                                 OpcuaNodeIdServicesVariableCertificate = 13296
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Id                                                                              OpcuaNodeIdServicesVariableCertificate = 13297
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Name                                                                            OpcuaNodeIdServicesVariableCertificate = 13298
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Number                                                                          OpcuaNodeIdServicesVariableCertificate = 13299
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName                                                            OpcuaNodeIdServicesVariableCertificate = 13300
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TransitionTime                                                                  OpcuaNodeIdServicesVariableCertificate = 13301
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime                                                         OpcuaNodeIdServicesVariableCertificate = 13302
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TrueState                                                                       OpcuaNodeIdServicesVariableCertificate = 13303
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_FalseState                                                                      OpcuaNodeIdServicesVariableCertificate = 13304
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState                                                                      OpcuaNodeIdServicesVariableCertificate = 13306
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Id                                                                   OpcuaNodeIdServicesVariableCertificate = 13307
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Name                                                                 OpcuaNodeIdServicesVariableCertificate = 13308
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Number                                                               OpcuaNodeIdServicesVariableCertificate = 13309
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName                                                 OpcuaNodeIdServicesVariableCertificate = 13310
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition                                                                    OpcuaNodeIdServicesVariableCertificate = 13311
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Id                                                                 OpcuaNodeIdServicesVariableCertificate = 13312
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Name                                                               OpcuaNodeIdServicesVariableCertificate = 13313
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Number                                                             OpcuaNodeIdServicesVariableCertificate = 13314
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime                                                     OpcuaNodeIdServicesVariableCertificate = 13315
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime                                            OpcuaNodeIdServicesVariableCertificate = 13316
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_UnshelveTime                                                                      OpcuaNodeIdServicesVariableCertificate = 13317
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments                                                        OpcuaNodeIdServicesVariableCertificate = 13321
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedOrShelved                                                                             OpcuaNodeIdServicesVariableCertificate = 13322
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_MaxTimeShelved                                                                                  OpcuaNodeIdServicesVariableCertificate = 13323
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_NormalState                                                                                     OpcuaNodeIdServicesVariableCertificate = 13324
 	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationDate                                                                                  OpcuaNodeIdServicesVariableCertificate = 13325
 	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_CertificateType                                                                                 OpcuaNodeIdServicesVariableCertificate = 13326
 	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Certificate                                                                                     OpcuaNodeIdServicesVariableCertificate = 13327
@@ -259,47 +157,6 @@ const (
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_RemoveCertificate_InputArguments                              OpcuaNodeIdServicesVariableCertificate = 13948
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateTypes                                                        OpcuaNodeIdServicesVariableCertificate = 13949
 	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationLimit                                                                                 OpcuaNodeIdServicesVariableCertificate = 14900
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassId                                                                             OpcuaNodeIdServicesVariableCertificate = 17044
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassName                                                                           OpcuaNodeIdServicesVariableCertificate = 17045
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState                                                                               OpcuaNodeIdServicesVariableCertificate = 17046
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Id                                                                            OpcuaNodeIdServicesVariableCertificate = 17047
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Name                                                                          OpcuaNodeIdServicesVariableCertificate = 17048
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Number                                                                        OpcuaNodeIdServicesVariableCertificate = 17049
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName                                                          OpcuaNodeIdServicesVariableCertificate = 17050
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TransitionTime                                                                OpcuaNodeIdServicesVariableCertificate = 17051
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime                                                       OpcuaNodeIdServicesVariableCertificate = 17052
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TrueState                                                                     OpcuaNodeIdServicesVariableCertificate = 17053
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_FalseState                                                                    OpcuaNodeIdServicesVariableCertificate = 17054
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState                                                                                    OpcuaNodeIdServicesVariableCertificate = 17055
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Id                                                                                 OpcuaNodeIdServicesVariableCertificate = 17056
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Name                                                                               OpcuaNodeIdServicesVariableCertificate = 17057
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Number                                                                             OpcuaNodeIdServicesVariableCertificate = 17058
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName                                                               OpcuaNodeIdServicesVariableCertificate = 17059
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TransitionTime                                                                     OpcuaNodeIdServicesVariableCertificate = 17060
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime                                                            OpcuaNodeIdServicesVariableCertificate = 17061
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TrueState                                                                          OpcuaNodeIdServicesVariableCertificate = 17062
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_FalseState                                                                         OpcuaNodeIdServicesVariableCertificate = 17063
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleEnabled                                                                                  OpcuaNodeIdServicesVariableCertificate = 17064
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound                                                                                    OpcuaNodeIdServicesVariableCertificate = 17065
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OnDelay                                                                                         OpcuaNodeIdServicesVariableCertificate = 17070
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OffDelay                                                                                        OpcuaNodeIdServicesVariableCertificate = 17071
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_FirstInGroupFlag                                                                                OpcuaNodeIdServicesVariableCertificate = 17072
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmTime                                                                                     OpcuaNodeIdServicesVariableCertificate = 17075
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmRepeatCount                                                                              OpcuaNodeIdServicesVariableCertificate = 17076
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableStates                                                                   OpcuaNodeIdServicesVariableCertificate = 17700
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableTransitions                                                              OpcuaNodeIdServicesVariableCertificate = 17701
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_ListId                                                                             OpcuaNodeIdServicesVariableCertificate = 17970
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_AgencyId                                                                           OpcuaNodeIdServicesVariableCertificate = 17971
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_VersionId                                                                          OpcuaNodeIdServicesVariableCertificate = 17972
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState                                                                                    OpcuaNodeIdServicesVariableCertificate = 18645
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Id                                                                                 OpcuaNodeIdServicesVariableCertificate = 18646
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Name                                                                               OpcuaNodeIdServicesVariableCertificate = 18647
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Number                                                                             OpcuaNodeIdServicesVariableCertificate = 18648
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName                                                               OpcuaNodeIdServicesVariableCertificate = 18649
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TransitionTime                                                                     OpcuaNodeIdServicesVariableCertificate = 18650
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime                                                            OpcuaNodeIdServicesVariableCertificate = 18651
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TrueState                                                                          OpcuaNodeIdServicesVariableCertificate = 18652
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_FalseState                                                                         OpcuaNodeIdServicesVariableCertificate = 18653
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_UpdateFrequency                                                                                 OpcuaNodeIdServicesVariableCertificate = 19449
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_EventId                                                                                OpcuaNodeIdServicesVariableCertificate = 19451
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_EventType                                                                              OpcuaNodeIdServicesVariableCertificate = 19452
@@ -1625,11 +1482,6 @@ const (
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_MaxByteStringLength                                                     OpcuaNodeIdServicesVariableCertificate = 24253
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_MaxByteStringLength                                                 OpcuaNodeIdServicesVariableCertificate = 24254
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength                                           OpcuaNodeIdServicesVariableCertificate = 24255
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Suppress2_InputArguments                                                                        OpcuaNodeIdServicesVariableCertificate = 24489
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Unsuppress2_InputArguments                                                                      OpcuaNodeIdServicesVariableCertificate = 24491
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_RemoveFromService2_InputArguments                                                               OpcuaNodeIdServicesVariableCertificate = 24493
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_PlaceInService2_InputArguments                                                                  OpcuaNodeIdServicesVariableCertificate = 24495
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Reset2_InputArguments                                                                           OpcuaNodeIdServicesVariableCertificate = 24497
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Suppress2_InputArguments                                                               OpcuaNodeIdServicesVariableCertificate = 24519
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Unsuppress2_InputArguments                                                             OpcuaNodeIdServicesVariableCertificate = 24521
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_RemoveFromService2_InputArguments                                                      OpcuaNodeIdServicesVariableCertificate = 24523
@@ -1680,9 +1532,6 @@ const (
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableCertificate = 24613
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableCertificate = 24615
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments                                OpcuaNodeIdServicesVariableCertificate = 24617
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments                                                       OpcuaNodeIdServicesVariableCertificate = 24955
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments                                                          OpcuaNodeIdServicesVariableCertificate = 24957
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments                                                     OpcuaNodeIdServicesVariableCertificate = 24959
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments                                              OpcuaNodeIdServicesVariableCertificate = 24979
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2_InputArguments                                                 OpcuaNodeIdServicesVariableCertificate = 24981
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve2_InputArguments                                            OpcuaNodeIdServicesVariableCertificate = 24983
@@ -1713,7 +1562,6 @@ const (
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableCertificate = 25051
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableCertificate = 25053
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableCertificate = 25055
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments                                                             OpcuaNodeIdServicesVariableCertificate = 25174
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments                                                    OpcuaNodeIdServicesVariableCertificate = 25177
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustListOutOfDate_GetGroupMemberships_OutputArguments                                                    OpcuaNodeIdServicesVariableCertificate = 25178
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships_OutputArguments                      OpcuaNodeIdServicesVariableCertificate = 25179
@@ -1729,36 +1577,11 @@ const (
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_LastModifiedTime                                                        OpcuaNodeIdServicesVariableCertificate = 25209
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_LastModifiedTime                                                    OpcuaNodeIdServicesVariableCertificate = 25210
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime                                              OpcuaNodeIdServicesVariableCertificate = 25211
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassId                                                                              OpcuaNodeIdServicesVariableCertificate = 32031
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassName                                                                            OpcuaNodeIdServicesVariableCertificate = 32032
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassId                                                                           OpcuaNodeIdServicesVariableCertificate = 32033
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassName                                                                         OpcuaNodeIdServicesVariableCertificate = 32034
-	OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SupportsFilteredRetain                                                                          OpcuaNodeIdServicesVariableCertificate = 32242
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_ActivityTimeout                                                                                 OpcuaNodeIdServicesVariableCertificate = 32255
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_ActivityTimeout                                                   OpcuaNodeIdServicesVariableCertificate = 32256
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_ActivityTimeout                                                         OpcuaNodeIdServicesVariableCertificate = 32257
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_ActivityTimeout                                                     OpcuaNodeIdServicesVariableCertificate = 32258
 	OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout                                               OpcuaNodeIdServicesVariableCertificate = 32259
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventId                                                                               OpcuaNodeIdServicesVariableCertificate = 32307
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventType                                                                             OpcuaNodeIdServicesVariableCertificate = 32308
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceNode                                                                            OpcuaNodeIdServicesVariableCertificate = 32309
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceName                                                                            OpcuaNodeIdServicesVariableCertificate = 32310
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Time                                                                                  OpcuaNodeIdServicesVariableCertificate = 32311
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ReceiveTime                                                                           OpcuaNodeIdServicesVariableCertificate = 32312
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_LocalTime                                                                             OpcuaNodeIdServicesVariableCertificate = 32313
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Message                                                                               OpcuaNodeIdServicesVariableCertificate = 32314
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Severity                                                                              OpcuaNodeIdServicesVariableCertificate = 32315
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassId                                                                      OpcuaNodeIdServicesVariableCertificate = 32316
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassName                                                                    OpcuaNodeIdServicesVariableCertificate = 32317
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassId                                                                   OpcuaNodeIdServicesVariableCertificate = 32318
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassName                                                                 OpcuaNodeIdServicesVariableCertificate = 32319
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ActionTimeStamp                                                                       OpcuaNodeIdServicesVariableCertificate = 32320
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Status                                                                                OpcuaNodeIdServicesVariableCertificate = 32321
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ServerId                                                                              OpcuaNodeIdServicesVariableCertificate = 32322
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientAuditEntryId                                                                    OpcuaNodeIdServicesVariableCertificate = 32323
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientUserId                                                                          OpcuaNodeIdServicesVariableCertificate = 32324
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_MethodId                                                                              OpcuaNodeIdServicesVariableCertificate = 32325
-	OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_InputArguments                                                                        OpcuaNodeIdServicesVariableCertificate = 32326
 )
 
 var OpcuaNodeIdServicesVariableCertificateValues []OpcuaNodeIdServicesVariableCertificate
@@ -1766,108 +1589,6 @@ var OpcuaNodeIdServicesVariableCertificateValues []OpcuaNodeIdServicesVariableCe
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableCertificateValues = []OpcuaNodeIdServicesVariableCertificate{
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Time,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Message,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Status,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventType,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceNode,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Time,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReceiveTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LocalTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Message,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Severity,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_BranchId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Retain,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality_SourceTimestamp,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity_SourceTimestamp,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment_SourceTimestamp,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ClientUserId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AddComment_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Acknowledge_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Confirm_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_InputNode,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_UnshelveTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedOrShelved,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_MaxTimeShelved,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_NormalState,
 		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationDate,
 		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_CertificateType,
 		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Certificate,
@@ -1984,47 +1705,6 @@ func init() {
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_RemoveCertificate_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateTypes,
 		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationLimit,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_FalseState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleEnabled,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OnDelay,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OffDelay,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_FirstInGroupFlag,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmRepeatCount,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableStates,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableTransitions,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_ListId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_AgencyId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_VersionId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Id,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Name,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Number,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TrueState,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_FalseState,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_UpdateFrequency,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_EventId,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_EventType,
@@ -3350,11 +3030,6 @@ func init() {
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Suppress2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Unsuppress2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_RemoveFromService2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_PlaceInService2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Reset2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Suppress2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Unsuppress2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_RemoveFromService2_InputArguments,
@@ -3405,9 +3080,6 @@ func init() {
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_RemoveFromService2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve2_InputArguments,
@@ -3438,7 +3110,6 @@ func init() {
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_TimedShelve2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2_InputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustListOutOfDate_GetGroupMemberships_OutputArguments,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships_OutputArguments,
@@ -3454,245 +3125,16 @@ func init() {
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_LastModifiedTime,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_LastModifiedTime,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SupportsFilteredRetain,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_ActivityTimeout,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_ActivityTimeout,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultHttpsGroup_TrustList_ActivityTimeout,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_ActivityTimeout,
 		OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Time,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Message,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Status,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_MethodId,
-		OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_InputArguments,
 	}
 }
 
 func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeIdServicesVariableCertificate, ok bool) {
 	switch value {
-	case 12621:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventId, true
-	case 12622:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventType, true
-	case 12623:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceNode, true
-	case 12624:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceName, true
-	case 12625:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Time, true
-	case 12626:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ReceiveTime, true
-	case 12627:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_LocalTime, true
-	case 12628:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Message, true
-	case 12629:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Severity, true
-	case 12630:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ActionTimeStamp, true
-	case 12631:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Status, true
-	case 12632:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ServerId, true
-	case 12633:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientAuditEntryId, true
-	case 12634:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientUserId, true
-	case 13226:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventId, true
-	case 13227:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventType, true
-	case 13228:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceNode, true
-	case 13229:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceName, true
-	case 13230:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Time, true
-	case 13231:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReceiveTime, true
-	case 13232:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LocalTime, true
-	case 13233:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Message, true
-	case 13234:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Severity, true
-	case 13235:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassId, true
-	case 13236:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassName, true
-	case 13237:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionName, true
-	case 13238:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_BranchId, true
-	case 13239:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Retain, true
-	case 13240:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState, true
-	case 13241:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Id, true
-	case 13242:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Name, true
-	case 13243:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Number, true
-	case 13244:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName, true
-	case 13245:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TransitionTime, true
-	case 13246:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime, true
-	case 13247:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TrueState, true
-	case 13248:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_FalseState, true
-	case 13249:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality, true
-	case 13250:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality_SourceTimestamp, true
-	case 13251:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity, true
-	case 13252:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity_SourceTimestamp, true
-	case 13253:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment, true
-	case 13254:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment_SourceTimestamp, true
-	case 13255:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ClientUserId, true
-	case 13259:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AddComment_InputArguments, true
-	case 13261:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh_InputArguments, true
-	case 13263:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh2_InputArguments, true
-	case 13264:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState, true
-	case 13265:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Id, true
-	case 13266:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Name, true
-	case 13267:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Number, true
-	case 13268:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveDisplayName, true
-	case 13269:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TransitionTime, true
-	case 13270:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime, true
-	case 13271:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TrueState, true
-	case 13272:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_FalseState, true
-	case 13273:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState, true
-	case 13274:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Id, true
-	case 13275:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Name, true
-	case 13276:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Number, true
-	case 13277:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName, true
-	case 13278:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TransitionTime, true
-	case 13279:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime, true
-	case 13280:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TrueState, true
-	case 13281:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_FalseState, true
-	case 13283:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Acknowledge_InputArguments, true
-	case 13285:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Confirm_InputArguments, true
-	case 13286:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState, true
-	case 13287:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Id, true
-	case 13288:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Name, true
-	case 13289:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Number, true
-	case 13290:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName, true
-	case 13291:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TransitionTime, true
-	case 13292:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime, true
-	case 13293:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TrueState, true
-	case 13294:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_FalseState, true
-	case 13295:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_InputNode, true
-	case 13296:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState, true
-	case 13297:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Id, true
-	case 13298:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Name, true
-	case 13299:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Number, true
-	case 13300:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName, true
-	case 13301:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TransitionTime, true
-	case 13302:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime, true
-	case 13303:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TrueState, true
-	case 13304:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_FalseState, true
-	case 13306:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState, true
-	case 13307:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Id, true
-	case 13308:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Name, true
-	case 13309:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Number, true
-	case 13310:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-	case 13311:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition, true
-	case 13312:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Id, true
-	case 13313:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Name, true
-	case 13314:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Number, true
-	case 13315:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime, true
-	case 13316:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-	case 13317:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_UnshelveTime, true
-	case 13321:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments, true
-	case 13322:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedOrShelved, true
-	case 13323:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_MaxTimeShelved, true
-	case 13324:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_NormalState, true
 	case 13325:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationDate, true
 	case 13326:
@@ -3925,88 +3367,6 @@ func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateTypes, true
 	case 14900:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationLimit, true
-	case 17044:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassId, true
-	case 17045:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassName, true
-	case 17046:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState, true
-	case 17047:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Id, true
-	case 17048:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Name, true
-	case 17049:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Number, true
-	case 17050:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName, true
-	case 17051:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TransitionTime, true
-	case 17052:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-	case 17053:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TrueState, true
-	case 17054:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_FalseState, true
-	case 17055:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState, true
-	case 17056:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Id, true
-	case 17057:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Name, true
-	case 17058:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Number, true
-	case 17059:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName, true
-	case 17060:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TransitionTime, true
-	case 17061:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime, true
-	case 17062:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TrueState, true
-	case 17063:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_FalseState, true
-	case 17064:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleEnabled, true
-	case 17065:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound, true
-	case 17070:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OnDelay, true
-	case 17071:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OffDelay, true
-	case 17072:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_FirstInGroupFlag, true
-	case 17075:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmTime, true
-	case 17076:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmRepeatCount, true
-	case 17700:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableStates, true
-	case 17701:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableTransitions, true
-	case 17970:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_ListId, true
-	case 17971:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_AgencyId, true
-	case 17972:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_VersionId, true
-	case 18645:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState, true
-	case 18646:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Id, true
-	case 18647:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Name, true
-	case 18648:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Number, true
-	case 18649:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName, true
-	case 18650:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TransitionTime, true
-	case 18651:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime, true
-	case 18652:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TrueState, true
-	case 18653:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_FalseState, true
 	case 19449:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_UpdateFrequency, true
 	case 19451:
@@ -6657,16 +6017,6 @@ func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_MaxByteStringLength, true
 	case 24255:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength, true
-	case 24489:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Suppress2_InputArguments, true
-	case 24491:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Unsuppress2_InputArguments, true
-	case 24493:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_RemoveFromService2_InputArguments, true
-	case 24495:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_PlaceInService2_InputArguments, true
-	case 24497:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Reset2_InputArguments, true
 	case 24519:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Suppress2_InputArguments, true
 	case 24521:
@@ -6767,12 +6117,6 @@ func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2_InputArguments, true
 	case 24617:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments, true
-	case 24955:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-	case 24957:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments, true
-	case 24959:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
 	case 24979:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments, true
 	case 24981:
@@ -6833,8 +6177,6 @@ func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2_InputArguments, true
 	case 25055:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments, true
-	case 25174:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments, true
 	case 25177:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments, true
 	case 25178:
@@ -6865,16 +6207,6 @@ func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_LastModifiedTime, true
 	case 25211:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime, true
-	case 32031:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassId, true
-	case 32032:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassName, true
-	case 32033:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassId, true
-	case 32034:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassName, true
-	case 32242:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SupportsFilteredRetain, true
 	case 32255:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_ActivityTimeout, true
 	case 32256:
@@ -6885,256 +6217,12 @@ func OpcuaNodeIdServicesVariableCertificateByValue(value int32) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_ActivityTimeout, true
 	case 32259:
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout, true
-	case 32307:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventId, true
-	case 32308:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventType, true
-	case 32309:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceNode, true
-	case 32310:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceName, true
-	case 32311:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Time, true
-	case 32312:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ReceiveTime, true
-	case 32313:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_LocalTime, true
-	case 32314:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Message, true
-	case 32315:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Severity, true
-	case 32316:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassId, true
-	case 32317:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassName, true
-	case 32318:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassId, true
-	case 32319:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassName, true
-	case 32320:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ActionTimeStamp, true
-	case 32321:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Status, true
-	case 32322:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ServerId, true
-	case 32323:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientAuditEntryId, true
-	case 32324:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientUserId, true
-	case 32325:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_MethodId, true
-	case 32326:
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_InputArguments, true
 	}
 	return 0, false
 }
 
 func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeIdServicesVariableCertificate, ok bool) {
 	switch value {
-	case "CertificateUpdatedAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventId, true
-	case "CertificateUpdatedAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventType, true
-	case "CertificateUpdatedAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceNode, true
-	case "CertificateUpdatedAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceName, true
-	case "CertificateUpdatedAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Time, true
-	case "CertificateUpdatedAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ReceiveTime, true
-	case "CertificateUpdatedAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_LocalTime, true
-	case "CertificateUpdatedAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Message, true
-	case "CertificateUpdatedAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Severity, true
-	case "CertificateUpdatedAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ActionTimeStamp, true
-	case "CertificateUpdatedAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Status, true
-	case "CertificateUpdatedAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ServerId, true
-	case "CertificateUpdatedAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientAuditEntryId, true
-	case "CertificateUpdatedAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientUserId, true
-	case "CertificateExpirationAlarmType_EventId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventId, true
-	case "CertificateExpirationAlarmType_EventType":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventType, true
-	case "CertificateExpirationAlarmType_SourceNode":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceNode, true
-	case "CertificateExpirationAlarmType_SourceName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceName, true
-	case "CertificateExpirationAlarmType_Time":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Time, true
-	case "CertificateExpirationAlarmType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReceiveTime, true
-	case "CertificateExpirationAlarmType_LocalTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LocalTime, true
-	case "CertificateExpirationAlarmType_Message":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Message, true
-	case "CertificateExpirationAlarmType_Severity":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Severity, true
-	case "CertificateExpirationAlarmType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassId, true
-	case "CertificateExpirationAlarmType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassName, true
-	case "CertificateExpirationAlarmType_ConditionName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionName, true
-	case "CertificateExpirationAlarmType_BranchId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_BranchId, true
-	case "CertificateExpirationAlarmType_Retain":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Retain, true
-	case "CertificateExpirationAlarmType_EnabledState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState, true
-	case "CertificateExpirationAlarmType_EnabledState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Id, true
-	case "CertificateExpirationAlarmType_EnabledState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Name, true
-	case "CertificateExpirationAlarmType_EnabledState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Number, true
-	case "CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_EnabledState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TransitionTime, true
-	case "CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_EnabledState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TrueState, true
-	case "CertificateExpirationAlarmType_EnabledState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_FalseState, true
-	case "CertificateExpirationAlarmType_Quality":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality, true
-	case "CertificateExpirationAlarmType_Quality_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality_SourceTimestamp, true
-	case "CertificateExpirationAlarmType_LastSeverity":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity, true
-	case "CertificateExpirationAlarmType_LastSeverity_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity_SourceTimestamp, true
-	case "CertificateExpirationAlarmType_Comment":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment, true
-	case "CertificateExpirationAlarmType_Comment_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment_SourceTimestamp, true
-	case "CertificateExpirationAlarmType_ClientUserId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ClientUserId, true
-	case "CertificateExpirationAlarmType_AddComment_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AddComment_InputArguments, true
-	case "CertificateExpirationAlarmType_ConditionRefresh_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh_InputArguments, true
-	case "CertificateExpirationAlarmType_ConditionRefresh2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh2_InputArguments, true
-	case "CertificateExpirationAlarmType_AckedState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState, true
-	case "CertificateExpirationAlarmType_AckedState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Id, true
-	case "CertificateExpirationAlarmType_AckedState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Name, true
-	case "CertificateExpirationAlarmType_AckedState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Number, true
-	case "CertificateExpirationAlarmType_AckedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_AckedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TransitionTime, true
-	case "CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_AckedState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TrueState, true
-	case "CertificateExpirationAlarmType_AckedState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_FalseState, true
-	case "CertificateExpirationAlarmType_ConfirmedState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState, true
-	case "CertificateExpirationAlarmType_ConfirmedState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Id, true
-	case "CertificateExpirationAlarmType_ConfirmedState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Name, true
-	case "CertificateExpirationAlarmType_ConfirmedState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Number, true
-	case "CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_ConfirmedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TransitionTime, true
-	case "CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_ConfirmedState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TrueState, true
-	case "CertificateExpirationAlarmType_ConfirmedState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_FalseState, true
-	case "CertificateExpirationAlarmType_Acknowledge_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Acknowledge_InputArguments, true
-	case "CertificateExpirationAlarmType_Confirm_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Confirm_InputArguments, true
-	case "CertificateExpirationAlarmType_ActiveState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState, true
-	case "CertificateExpirationAlarmType_ActiveState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Id, true
-	case "CertificateExpirationAlarmType_ActiveState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Name, true
-	case "CertificateExpirationAlarmType_ActiveState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Number, true
-	case "CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_ActiveState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TransitionTime, true
-	case "CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_ActiveState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TrueState, true
-	case "CertificateExpirationAlarmType_ActiveState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_FalseState, true
-	case "CertificateExpirationAlarmType_InputNode":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_InputNode, true
-	case "CertificateExpirationAlarmType_SuppressedState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState, true
-	case "CertificateExpirationAlarmType_SuppressedState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Id, true
-	case "CertificateExpirationAlarmType_SuppressedState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Name, true
-	case "CertificateExpirationAlarmType_SuppressedState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Number, true
-	case "CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_SuppressedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TransitionTime, true
-	case "CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_SuppressedState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TrueState, true
-	case "CertificateExpirationAlarmType_SuppressedState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_FalseState, true
-	case "CertificateExpirationAlarmType_ShelvingState_CurrentState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState, true
-	case "CertificateExpirationAlarmType_ShelvingState_CurrentState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Id, true
-	case "CertificateExpirationAlarmType_ShelvingState_CurrentState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Name, true
-	case "CertificateExpirationAlarmType_ShelvingState_CurrentState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Number, true
-	case "CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_ShelvingState_LastTransition":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition, true
-	case "CertificateExpirationAlarmType_ShelvingState_LastTransition_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Id, true
-	case "CertificateExpirationAlarmType_ShelvingState_LastTransition_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Name, true
-	case "CertificateExpirationAlarmType_ShelvingState_LastTransition_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Number, true
-	case "CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime, true
-	case "CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_ShelvingState_UnshelveTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_UnshelveTime, true
-	case "CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments, true
-	case "CertificateExpirationAlarmType_SuppressedOrShelved":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedOrShelved, true
-	case "CertificateExpirationAlarmType_MaxTimeShelved":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_MaxTimeShelved, true
-	case "CertificateExpirationAlarmType_NormalState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_NormalState, true
 	case "CertificateExpirationAlarmType_ExpirationDate":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationDate, true
 	case "CertificateExpirationAlarmType_CertificateType":
@@ -7367,88 +6455,6 @@ func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateTypes, true
 	case "CertificateExpirationAlarmType_ExpirationLimit":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationLimit, true
-	case "CertificateExpirationAlarmType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassId, true
-	case "CertificateExpirationAlarmType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassName, true
-	case "CertificateExpirationAlarmType_OutOfServiceState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Id, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Name, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Number, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TransitionTime, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TrueState, true
-	case "CertificateExpirationAlarmType_OutOfServiceState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_FalseState, true
-	case "CertificateExpirationAlarmType_SilenceState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState, true
-	case "CertificateExpirationAlarmType_SilenceState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Id, true
-	case "CertificateExpirationAlarmType_SilenceState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Name, true
-	case "CertificateExpirationAlarmType_SilenceState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Number, true
-	case "CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_SilenceState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TransitionTime, true
-	case "CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_SilenceState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TrueState, true
-	case "CertificateExpirationAlarmType_SilenceState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_FalseState, true
-	case "CertificateExpirationAlarmType_AudibleEnabled":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleEnabled, true
-	case "CertificateExpirationAlarmType_AudibleSound":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound, true
-	case "CertificateExpirationAlarmType_OnDelay":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OnDelay, true
-	case "CertificateExpirationAlarmType_OffDelay":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OffDelay, true
-	case "CertificateExpirationAlarmType_FirstInGroupFlag":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_FirstInGroupFlag, true
-	case "CertificateExpirationAlarmType_ReAlarmTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmTime, true
-	case "CertificateExpirationAlarmType_ReAlarmRepeatCount":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmRepeatCount, true
-	case "CertificateExpirationAlarmType_ShelvingState_AvailableStates":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableStates, true
-	case "CertificateExpirationAlarmType_ShelvingState_AvailableTransitions":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableTransitions, true
-	case "CertificateExpirationAlarmType_AudibleSound_ListId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_ListId, true
-	case "CertificateExpirationAlarmType_AudibleSound_AgencyId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_AgencyId, true
-	case "CertificateExpirationAlarmType_AudibleSound_VersionId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_VersionId, true
-	case "CertificateExpirationAlarmType_LatchedState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState, true
-	case "CertificateExpirationAlarmType_LatchedState_Id":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Id, true
-	case "CertificateExpirationAlarmType_LatchedState_Name":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Name, true
-	case "CertificateExpirationAlarmType_LatchedState_Number":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Number, true
-	case "CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName, true
-	case "CertificateExpirationAlarmType_LatchedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TransitionTime, true
-	case "CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime, true
-	case "CertificateExpirationAlarmType_LatchedState_TrueState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TrueState, true
-	case "CertificateExpirationAlarmType_LatchedState_FalseState":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_FalseState, true
 	case "CertificateGroupType_TrustList_UpdateFrequency":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_UpdateFrequency, true
 	case "CertificateGroupType_CertificateExpired_EventId":
@@ -10099,16 +9105,6 @@ func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_MaxByteStringLength, true
 	case "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength, true
-	case "CertificateExpirationAlarmType_Suppress2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Suppress2_InputArguments, true
-	case "CertificateExpirationAlarmType_Unsuppress2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Unsuppress2_InputArguments, true
-	case "CertificateExpirationAlarmType_RemoveFromService2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_RemoveFromService2_InputArguments, true
-	case "CertificateExpirationAlarmType_PlaceInService2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_PlaceInService2_InputArguments, true
-	case "CertificateExpirationAlarmType_Reset2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Reset2_InputArguments, true
 	case "CertificateGroupType_CertificateExpired_Suppress2_InputArguments":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Suppress2_InputArguments, true
 	case "CertificateGroupType_CertificateExpired_Unsuppress2_InputArguments":
@@ -10209,12 +9205,6 @@ func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2_InputArguments, true
 	case "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments, true
-	case "CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-	case "CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments, true
-	case "CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
 	case "CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments, true
 	case "CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2_InputArguments":
@@ -10275,8 +9265,6 @@ func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2_InputArguments, true
 	case "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments, true
-	case "CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments, true
 	case "CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments, true
 	case "CertificateGroupType_TrustListOutOfDate_GetGroupMemberships_OutputArguments":
@@ -10307,16 +9295,6 @@ func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_LastModifiedTime, true
 	case "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime, true
-	case "CertificateUpdatedAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassId, true
-	case "CertificateUpdatedAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassName, true
-	case "CertificateUpdatedAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassId, true
-	case "CertificateUpdatedAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassName, true
-	case "CertificateExpirationAlarmType_SupportsFilteredRetain":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SupportsFilteredRetain, true
 	case "CertificateGroupType_TrustList_ActivityTimeout":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_ActivityTimeout, true
 	case "CertificateGroupFolderType_DefaultApplicationGroup_TrustList_ActivityTimeout":
@@ -10327,46 +9305,6 @@ func OpcuaNodeIdServicesVariableCertificateByName(value string) (enum OpcuaNodeI
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_ActivityTimeout, true
 	case "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout":
 		return OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout, true
-	case "CertificateUpdateRequestedAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventId, true
-	case "CertificateUpdateRequestedAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventType, true
-	case "CertificateUpdateRequestedAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceNode, true
-	case "CertificateUpdateRequestedAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceName, true
-	case "CertificateUpdateRequestedAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Time, true
-	case "CertificateUpdateRequestedAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ReceiveTime, true
-	case "CertificateUpdateRequestedAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_LocalTime, true
-	case "CertificateUpdateRequestedAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Message, true
-	case "CertificateUpdateRequestedAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Severity, true
-	case "CertificateUpdateRequestedAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassId, true
-	case "CertificateUpdateRequestedAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassName, true
-	case "CertificateUpdateRequestedAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassId, true
-	case "CertificateUpdateRequestedAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassName, true
-	case "CertificateUpdateRequestedAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ActionTimeStamp, true
-	case "CertificateUpdateRequestedAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Status, true
-	case "CertificateUpdateRequestedAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ServerId, true
-	case "CertificateUpdateRequestedAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientAuditEntryId, true
-	case "CertificateUpdateRequestedAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientUserId, true
-	case "CertificateUpdateRequestedAuditEventType_MethodId":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_MethodId, true
-	case "CertificateUpdateRequestedAuditEventType_InputArguments":
-		return OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_InputArguments, true
 	}
 	return 0, false
 }
@@ -10434,210 +9372,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) SerializeWithWriteBuffer(ctx con
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventId:
-		return "CertificateUpdatedAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_EventType:
-		return "CertificateUpdatedAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceNode:
-		return "CertificateUpdatedAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_SourceName:
-		return "CertificateUpdatedAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Time:
-		return "CertificateUpdatedAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ReceiveTime:
-		return "CertificateUpdatedAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_LocalTime:
-		return "CertificateUpdatedAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Message:
-		return "CertificateUpdatedAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Severity:
-		return "CertificateUpdatedAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ActionTimeStamp:
-		return "CertificateUpdatedAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_Status:
-		return "CertificateUpdatedAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ServerId:
-		return "CertificateUpdatedAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientAuditEntryId:
-		return "CertificateUpdatedAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ClientUserId:
-		return "CertificateUpdatedAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventId:
-		return "CertificateExpirationAlarmType_EventId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EventType:
-		return "CertificateExpirationAlarmType_EventType"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceNode:
-		return "CertificateExpirationAlarmType_SourceNode"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SourceName:
-		return "CertificateExpirationAlarmType_SourceName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Time:
-		return "CertificateExpirationAlarmType_Time"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReceiveTime:
-		return "CertificateExpirationAlarmType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LocalTime:
-		return "CertificateExpirationAlarmType_LocalTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Message:
-		return "CertificateExpirationAlarmType_Message"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Severity:
-		return "CertificateExpirationAlarmType_Severity"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassId:
-		return "CertificateExpirationAlarmType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionClassName:
-		return "CertificateExpirationAlarmType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionName:
-		return "CertificateExpirationAlarmType_ConditionName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_BranchId:
-		return "CertificateExpirationAlarmType_BranchId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Retain:
-		return "CertificateExpirationAlarmType_Retain"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState:
-		return "CertificateExpirationAlarmType_EnabledState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Id:
-		return "CertificateExpirationAlarmType_EnabledState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Name:
-		return "CertificateExpirationAlarmType_EnabledState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_Number:
-		return "CertificateExpirationAlarmType_EnabledState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_EnabledState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TransitionTime:
-		return "CertificateExpirationAlarmType_EnabledState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_EnabledState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_TrueState:
-		return "CertificateExpirationAlarmType_EnabledState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_EnabledState_FalseState:
-		return "CertificateExpirationAlarmType_EnabledState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality:
-		return "CertificateExpirationAlarmType_Quality"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Quality_SourceTimestamp:
-		return "CertificateExpirationAlarmType_Quality_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity:
-		return "CertificateExpirationAlarmType_LastSeverity"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LastSeverity_SourceTimestamp:
-		return "CertificateExpirationAlarmType_LastSeverity_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment:
-		return "CertificateExpirationAlarmType_Comment"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Comment_SourceTimestamp:
-		return "CertificateExpirationAlarmType_Comment_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ClientUserId:
-		return "CertificateExpirationAlarmType_ClientUserId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AddComment_InputArguments:
-		return "CertificateExpirationAlarmType_AddComment_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh_InputArguments:
-		return "CertificateExpirationAlarmType_ConditionRefresh_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionRefresh2_InputArguments:
-		return "CertificateExpirationAlarmType_ConditionRefresh2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState:
-		return "CertificateExpirationAlarmType_AckedState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Id:
-		return "CertificateExpirationAlarmType_AckedState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Name:
-		return "CertificateExpirationAlarmType_AckedState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_Number:
-		return "CertificateExpirationAlarmType_AckedState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_AckedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TransitionTime:
-		return "CertificateExpirationAlarmType_AckedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_AckedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_TrueState:
-		return "CertificateExpirationAlarmType_AckedState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AckedState_FalseState:
-		return "CertificateExpirationAlarmType_AckedState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState:
-		return "CertificateExpirationAlarmType_ConfirmedState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Id:
-		return "CertificateExpirationAlarmType_ConfirmedState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Name:
-		return "CertificateExpirationAlarmType_ConfirmedState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_Number:
-		return "CertificateExpirationAlarmType_ConfirmedState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_ConfirmedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TransitionTime:
-		return "CertificateExpirationAlarmType_ConfirmedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_ConfirmedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_TrueState:
-		return "CertificateExpirationAlarmType_ConfirmedState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConfirmedState_FalseState:
-		return "CertificateExpirationAlarmType_ConfirmedState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Acknowledge_InputArguments:
-		return "CertificateExpirationAlarmType_Acknowledge_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Confirm_InputArguments:
-		return "CertificateExpirationAlarmType_Confirm_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState:
-		return "CertificateExpirationAlarmType_ActiveState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Id:
-		return "CertificateExpirationAlarmType_ActiveState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Name:
-		return "CertificateExpirationAlarmType_ActiveState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_Number:
-		return "CertificateExpirationAlarmType_ActiveState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_ActiveState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TransitionTime:
-		return "CertificateExpirationAlarmType_ActiveState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_ActiveState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_TrueState:
-		return "CertificateExpirationAlarmType_ActiveState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ActiveState_FalseState:
-		return "CertificateExpirationAlarmType_ActiveState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_InputNode:
-		return "CertificateExpirationAlarmType_InputNode"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState:
-		return "CertificateExpirationAlarmType_SuppressedState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Id:
-		return "CertificateExpirationAlarmType_SuppressedState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Name:
-		return "CertificateExpirationAlarmType_SuppressedState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_Number:
-		return "CertificateExpirationAlarmType_SuppressedState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_SuppressedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TransitionTime:
-		return "CertificateExpirationAlarmType_SuppressedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_SuppressedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_TrueState:
-		return "CertificateExpirationAlarmType_SuppressedState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedState_FalseState:
-		return "CertificateExpirationAlarmType_SuppressedState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState:
-		return "CertificateExpirationAlarmType_ShelvingState_CurrentState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Id:
-		return "CertificateExpirationAlarmType_ShelvingState_CurrentState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Name:
-		return "CertificateExpirationAlarmType_ShelvingState_CurrentState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_Number:
-		return "CertificateExpirationAlarmType_ShelvingState_CurrentState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_ShelvingState_CurrentState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition:
-		return "CertificateExpirationAlarmType_ShelvingState_LastTransition"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Id:
-		return "CertificateExpirationAlarmType_ShelvingState_LastTransition_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Name:
-		return "CertificateExpirationAlarmType_ShelvingState_LastTransition_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_Number:
-		return "CertificateExpirationAlarmType_ShelvingState_LastTransition_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime:
-		return "CertificateExpirationAlarmType_ShelvingState_LastTransition_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_UnshelveTime:
-		return "CertificateExpirationAlarmType_ShelvingState_UnshelveTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments:
-		return "CertificateExpirationAlarmType_ShelvingState_TimedShelve_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SuppressedOrShelved:
-		return "CertificateExpirationAlarmType_SuppressedOrShelved"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_MaxTimeShelved:
-		return "CertificateExpirationAlarmType_MaxTimeShelved"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_NormalState:
-		return "CertificateExpirationAlarmType_NormalState"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationDate:
 		return "CertificateExpirationAlarmType_ExpirationDate"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_CertificateType:
@@ -10870,88 +9604,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_CertificateTypes"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ExpirationLimit:
 		return "CertificateExpirationAlarmType_ExpirationLimit"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassId:
-		return "CertificateExpirationAlarmType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ConditionSubClassName:
-		return "CertificateExpirationAlarmType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState:
-		return "CertificateExpirationAlarmType_OutOfServiceState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Id:
-		return "CertificateExpirationAlarmType_OutOfServiceState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Name:
-		return "CertificateExpirationAlarmType_OutOfServiceState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_Number:
-		return "CertificateExpirationAlarmType_OutOfServiceState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_OutOfServiceState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TransitionTime:
-		return "CertificateExpirationAlarmType_OutOfServiceState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_OutOfServiceState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_TrueState:
-		return "CertificateExpirationAlarmType_OutOfServiceState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OutOfServiceState_FalseState:
-		return "CertificateExpirationAlarmType_OutOfServiceState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState:
-		return "CertificateExpirationAlarmType_SilenceState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Id:
-		return "CertificateExpirationAlarmType_SilenceState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Name:
-		return "CertificateExpirationAlarmType_SilenceState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_Number:
-		return "CertificateExpirationAlarmType_SilenceState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_SilenceState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TransitionTime:
-		return "CertificateExpirationAlarmType_SilenceState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_SilenceState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_TrueState:
-		return "CertificateExpirationAlarmType_SilenceState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SilenceState_FalseState:
-		return "CertificateExpirationAlarmType_SilenceState_FalseState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleEnabled:
-		return "CertificateExpirationAlarmType_AudibleEnabled"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound:
-		return "CertificateExpirationAlarmType_AudibleSound"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OnDelay:
-		return "CertificateExpirationAlarmType_OnDelay"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_OffDelay:
-		return "CertificateExpirationAlarmType_OffDelay"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_FirstInGroupFlag:
-		return "CertificateExpirationAlarmType_FirstInGroupFlag"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmTime:
-		return "CertificateExpirationAlarmType_ReAlarmTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ReAlarmRepeatCount:
-		return "CertificateExpirationAlarmType_ReAlarmRepeatCount"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableStates:
-		return "CertificateExpirationAlarmType_ShelvingState_AvailableStates"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_AvailableTransitions:
-		return "CertificateExpirationAlarmType_ShelvingState_AvailableTransitions"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_ListId:
-		return "CertificateExpirationAlarmType_AudibleSound_ListId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_AgencyId:
-		return "CertificateExpirationAlarmType_AudibleSound_AgencyId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_AudibleSound_VersionId:
-		return "CertificateExpirationAlarmType_AudibleSound_VersionId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState:
-		return "CertificateExpirationAlarmType_LatchedState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Id:
-		return "CertificateExpirationAlarmType_LatchedState_Id"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Name:
-		return "CertificateExpirationAlarmType_LatchedState_Name"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_Number:
-		return "CertificateExpirationAlarmType_LatchedState_Number"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName:
-		return "CertificateExpirationAlarmType_LatchedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TransitionTime:
-		return "CertificateExpirationAlarmType_LatchedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime:
-		return "CertificateExpirationAlarmType_LatchedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_TrueState:
-		return "CertificateExpirationAlarmType_LatchedState_TrueState"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_LatchedState_FalseState:
-		return "CertificateExpirationAlarmType_LatchedState_FalseState"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_UpdateFrequency:
 		return "CertificateGroupType_TrustList_UpdateFrequency"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_EventId:
@@ -13602,16 +12254,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 		return "CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_MaxByteStringLength"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength:
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_MaxByteStringLength"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Suppress2_InputArguments:
-		return "CertificateExpirationAlarmType_Suppress2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Unsuppress2_InputArguments:
-		return "CertificateExpirationAlarmType_Unsuppress2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_RemoveFromService2_InputArguments:
-		return "CertificateExpirationAlarmType_RemoveFromService2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_PlaceInService2_InputArguments:
-		return "CertificateExpirationAlarmType_PlaceInService2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_Reset2_InputArguments:
-		return "CertificateExpirationAlarmType_Reset2_InputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Suppress2_InputArguments:
 		return "CertificateGroupType_CertificateExpired_Suppress2_InputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_Unsuppress2_InputArguments:
@@ -13712,12 +12354,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_PlaceInService2_InputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments:
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_Reset2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments:
-		return "CertificateExpirationAlarmType_ShelvingState_TimedShelve2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments:
-		return "CertificateExpirationAlarmType_ShelvingState_Unshelve2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments:
-		return "CertificateExpirationAlarmType_ShelvingState_OneShotShelve2_InputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments:
 		return "CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2_InputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2_InputArguments:
@@ -13778,8 +12414,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_Unshelve2_InputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments:
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustListOutOfDate_ShelvingState_OneShotShelve2_InputArguments"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments:
-		return "CertificateExpirationAlarmType_GetGroupMemberships_OutputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments:
 		return "CertificateGroupType_CertificateExpired_GetGroupMemberships_OutputArguments"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustListOutOfDate_GetGroupMemberships_OutputArguments:
@@ -13810,16 +12444,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 		return "CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_LastModifiedTime"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime:
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_LastModifiedTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassId:
-		return "CertificateUpdatedAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionClassName:
-		return "CertificateUpdatedAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassId:
-		return "CertificateUpdatedAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdatedAuditEventType_ConditionSubClassName:
-		return "CertificateUpdatedAuditEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateExpirationAlarmType_SupportsFilteredRetain:
-		return "CertificateExpirationAlarmType_SupportsFilteredRetain"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupType_TrustList_ActivityTimeout:
 		return "CertificateGroupType_TrustList_ActivityTimeout"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_DefaultApplicationGroup_TrustList_ActivityTimeout:
@@ -13830,46 +12454,6 @@ func (e OpcuaNodeIdServicesVariableCertificate) PLC4XEnumName() string {
 		return "CertificateGroupFolderType_DefaultUserTokenGroup_TrustList_ActivityTimeout"
 	case OpcuaNodeIdServicesVariableCertificate_CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout:
 		return "CertificateGroupFolderType_AdditionalGroup_Placeholder_TrustList_ActivityTimeout"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventId:
-		return "CertificateUpdateRequestedAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_EventType:
-		return "CertificateUpdateRequestedAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceNode:
-		return "CertificateUpdateRequestedAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_SourceName:
-		return "CertificateUpdateRequestedAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Time:
-		return "CertificateUpdateRequestedAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ReceiveTime:
-		return "CertificateUpdateRequestedAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_LocalTime:
-		return "CertificateUpdateRequestedAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Message:
-		return "CertificateUpdateRequestedAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Severity:
-		return "CertificateUpdateRequestedAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassId:
-		return "CertificateUpdateRequestedAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionClassName:
-		return "CertificateUpdateRequestedAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassId:
-		return "CertificateUpdateRequestedAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ConditionSubClassName:
-		return "CertificateUpdateRequestedAuditEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ActionTimeStamp:
-		return "CertificateUpdateRequestedAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_Status:
-		return "CertificateUpdateRequestedAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ServerId:
-		return "CertificateUpdateRequestedAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientAuditEntryId:
-		return "CertificateUpdateRequestedAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_ClientUserId:
-		return "CertificateUpdateRequestedAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_MethodId:
-		return "CertificateUpdateRequestedAuditEventType_MethodId"
-	case OpcuaNodeIdServicesVariableCertificate_CertificateUpdateRequestedAuditEventType_InputArguments:
-		return "CertificateUpdateRequestedAuditEventType_InputArguments"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

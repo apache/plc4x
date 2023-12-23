@@ -84,6 +84,7 @@ public enum OpcuaNodeIdServicesVariableType {
   MultiStateDictionaryEntryDiscreteType((int) 19084L),
   PubSubDiagnosticsCounterType((int) 19725L),
   AlarmStateVariableType((int) 32244L),
+  BitFieldType((int) 32431L),
   ReferenceDescriptionVariableType((int) 32657L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableType> map;
 

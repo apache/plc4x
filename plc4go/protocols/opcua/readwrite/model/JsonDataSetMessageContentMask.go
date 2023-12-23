@@ -50,6 +50,9 @@ const (
 	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType             JsonDataSetMessageContentMask = 32
 	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName       JsonDataSetMessageContentMask = 64
 	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding JsonDataSetMessageContentMask = 128
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId             JsonDataSetMessageContentMask = 256
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName         JsonDataSetMessageContentMask = 512
+	JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion            JsonDataSetMessageContentMask = 1024
 )
 
 var JsonDataSetMessageContentMaskValues []JsonDataSetMessageContentMask
@@ -66,6 +69,9 @@ func init() {
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName,
 		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding,
+		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId,
+		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName,
+		JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion,
 	}
 }
 
@@ -75,16 +81,22 @@ func JsonDataSetMessageContentMaskByValue(value uint32) (enum JsonDataSetMessage
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone, true
 	case 1:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId, true
+	case 1024:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion, true
 	case 128:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding, true
 	case 16:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus, true
 	case 2:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion, true
+	case 256:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId, true
 	case 32:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType, true
 	case 4:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber, true
+	case 512:
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName, true
 	case 64:
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName, true
 	case 8:
@@ -99,16 +111,22 @@ func JsonDataSetMessageContentMaskByName(value string) (enum JsonDataSetMessageC
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskNone, true
 	case "jsonDataSetMessageContentMaskDataSetWriterId":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId, true
+	case "jsonDataSetMessageContentMaskMinorVersion":
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion, true
 	case "jsonDataSetMessageContentMaskReversibleFieldEncoding":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding, true
 	case "jsonDataSetMessageContentMaskStatus":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus, true
 	case "jsonDataSetMessageContentMaskMetaDataVersion":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion, true
+	case "jsonDataSetMessageContentMaskPublisherId":
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId, true
 	case "jsonDataSetMessageContentMaskMessageType":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType, true
 	case "jsonDataSetMessageContentMaskSequenceNumber":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber, true
+	case "jsonDataSetMessageContentMaskWriterGroupName":
+		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName, true
 	case "jsonDataSetMessageContentMaskDataSetWriterName":
 		return JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName, true
 	case "jsonDataSetMessageContentMaskTimestamp":
@@ -184,16 +202,22 @@ func (e JsonDataSetMessageContentMask) PLC4XEnumName() string {
 		return "jsonDataSetMessageContentMaskNone"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterId:
 		return "jsonDataSetMessageContentMaskDataSetWriterId"
+	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMinorVersion:
+		return "jsonDataSetMessageContentMaskMinorVersion"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskReversibleFieldEncoding:
 		return "jsonDataSetMessageContentMaskReversibleFieldEncoding"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskStatus:
 		return "jsonDataSetMessageContentMaskStatus"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMetaDataVersion:
 		return "jsonDataSetMessageContentMaskMetaDataVersion"
+	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskPublisherId:
+		return "jsonDataSetMessageContentMaskPublisherId"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskMessageType:
 		return "jsonDataSetMessageContentMaskMessageType"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskSequenceNumber:
 		return "jsonDataSetMessageContentMaskSequenceNumber"
+	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskWriterGroupName:
+		return "jsonDataSetMessageContentMaskWriterGroupName"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskDataSetWriterName:
 		return "jsonDataSetMessageContentMaskDataSetWriterName"
 	case JsonDataSetMessageContentMask_jsonDataSetMessageContentMaskTimestamp:

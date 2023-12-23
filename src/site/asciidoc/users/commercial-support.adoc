@@ -36,6 +36,8 @@ The information provided here was provided by the entities named, and is not ver
 
 a|image::users/companies/logo-connectorio.png[connectorio, 200, 200] |https://connectorio.com/solutions/apache-plc4x/[ConnectorIO sp. z o.o.^,opts=nofollow]|workshops, individual software development|Łukasz Dywicki |lukasz@connectorio.com |  |PMC Member
 
+a|image::users/companies/logo-timecho.png[timecho, 200, 200]  |https://www.timecho-global.com/[Timecho Europe GmbH,opts=nofollow] |consulting, workshops, individual software development, protocol/driver development, data-storage solutions |Christofer Dutz |christofer.dutz@timecho.com |  |PMC Member
+
 |===
 
 === Who can be added to this list?

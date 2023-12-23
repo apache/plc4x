@@ -53,7 +53,8 @@ public enum OpcuaNodeIdServicesVariableNamespaces {
   NamespacesType_NamespaceIdentifier_Placeholder_DefaultAccessRestrictions((int) 16142L),
   NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_MaxByteStringLength((int) 24247L),
   NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_LastModifiedTime((int) 25203L),
-  NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion((int) 25268L);
+  NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion((int) 25268L),
+  NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion((int) 32420L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableNamespaces> map;
 
   static {

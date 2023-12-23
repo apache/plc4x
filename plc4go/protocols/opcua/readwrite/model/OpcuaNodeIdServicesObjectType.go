@@ -293,6 +293,17 @@ const (
 	OpcuaNodeIdServicesObjectType_TrustListUpdateRequestedAuditEventType       OpcuaNodeIdServicesObjectType = 32260
 	OpcuaNodeIdServicesObjectType_TransactionDiagnosticsType                   OpcuaNodeIdServicesObjectType = 32286
 	OpcuaNodeIdServicesObjectType_CertificateUpdateRequestedAuditEventType     OpcuaNodeIdServicesObjectType = 32306
+	OpcuaNodeIdServicesObjectType_NonTransparentBackupRedundancyType           OpcuaNodeIdServicesObjectType = 32411
+	OpcuaNodeIdServicesObjectType_SyntaxReferenceEntryType                     OpcuaNodeIdServicesObjectType = 32439
+	OpcuaNodeIdServicesObjectType_UnitType                                     OpcuaNodeIdServicesObjectType = 32442
+	OpcuaNodeIdServicesObjectType_ServerUnitType                               OpcuaNodeIdServicesObjectType = 32447
+	OpcuaNodeIdServicesObjectType_AlternativeUnitType                          OpcuaNodeIdServicesObjectType = 32467
+	OpcuaNodeIdServicesObjectType_QuantityType                                 OpcuaNodeIdServicesObjectType = 32475
+	OpcuaNodeIdServicesObjectType_QuantitiesFolderType                         OpcuaNodeIdServicesObjectType = 32502
+	OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType             OpcuaNodeIdServicesObjectType = 32621
+	OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType            OpcuaNodeIdServicesObjectType = 32625
+	OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType     OpcuaNodeIdServicesObjectType = 32758
+	OpcuaNodeIdServicesObjectType_AuditHistoryBulkInsertEventType              OpcuaNodeIdServicesObjectType = 32803
 )
 
 var OpcuaNodeIdServicesObjectTypeValues []OpcuaNodeIdServicesObjectType
@@ -552,6 +563,17 @@ func init() {
 		OpcuaNodeIdServicesObjectType_TrustListUpdateRequestedAuditEventType,
 		OpcuaNodeIdServicesObjectType_TransactionDiagnosticsType,
 		OpcuaNodeIdServicesObjectType_CertificateUpdateRequestedAuditEventType,
+		OpcuaNodeIdServicesObjectType_NonTransparentBackupRedundancyType,
+		OpcuaNodeIdServicesObjectType_SyntaxReferenceEntryType,
+		OpcuaNodeIdServicesObjectType_UnitType,
+		OpcuaNodeIdServicesObjectType_ServerUnitType,
+		OpcuaNodeIdServicesObjectType_AlternativeUnitType,
+		OpcuaNodeIdServicesObjectType_QuantityType,
+		OpcuaNodeIdServicesObjectType_QuantitiesFolderType,
+		OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType,
+		OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType,
+		OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType,
+		OpcuaNodeIdServicesObjectType_AuditHistoryBulkInsertEventType,
 	}
 }
 
@@ -1031,6 +1053,28 @@ func OpcuaNodeIdServicesObjectTypeByValue(value int32) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_TransactionDiagnosticsType, true
 	case 32306:
 		return OpcuaNodeIdServicesObjectType_CertificateUpdateRequestedAuditEventType, true
+	case 32411:
+		return OpcuaNodeIdServicesObjectType_NonTransparentBackupRedundancyType, true
+	case 32439:
+		return OpcuaNodeIdServicesObjectType_SyntaxReferenceEntryType, true
+	case 32442:
+		return OpcuaNodeIdServicesObjectType_UnitType, true
+	case 32447:
+		return OpcuaNodeIdServicesObjectType_ServerUnitType, true
+	case 32467:
+		return OpcuaNodeIdServicesObjectType_AlternativeUnitType, true
+	case 32475:
+		return OpcuaNodeIdServicesObjectType_QuantityType, true
+	case 32502:
+		return OpcuaNodeIdServicesObjectType_QuantitiesFolderType, true
+	case 32621:
+		return OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType, true
+	case 32625:
+		return OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType, true
+	case 32758:
+		return OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType, true
+	case 32803:
+		return OpcuaNodeIdServicesObjectType_AuditHistoryBulkInsertEventType, true
 	case 3806:
 		return OpcuaNodeIdServicesObjectType_ProgramTransitionAuditEventType, true
 	case 58:
@@ -1541,6 +1585,28 @@ func OpcuaNodeIdServicesObjectTypeByName(value string) (enum OpcuaNodeIdServices
 		return OpcuaNodeIdServicesObjectType_TransactionDiagnosticsType, true
 	case "CertificateUpdateRequestedAuditEventType":
 		return OpcuaNodeIdServicesObjectType_CertificateUpdateRequestedAuditEventType, true
+	case "NonTransparentBackupRedundancyType":
+		return OpcuaNodeIdServicesObjectType_NonTransparentBackupRedundancyType, true
+	case "SyntaxReferenceEntryType":
+		return OpcuaNodeIdServicesObjectType_SyntaxReferenceEntryType, true
+	case "UnitType":
+		return OpcuaNodeIdServicesObjectType_UnitType, true
+	case "ServerUnitType":
+		return OpcuaNodeIdServicesObjectType_ServerUnitType, true
+	case "AlternativeUnitType":
+		return OpcuaNodeIdServicesObjectType_AlternativeUnitType, true
+	case "QuantityType":
+		return OpcuaNodeIdServicesObjectType_QuantityType, true
+	case "QuantitiesFolderType":
+		return OpcuaNodeIdServicesObjectType_QuantitiesFolderType, true
+	case "HistoricalEventConfigurationType":
+		return OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType, true
+	case "HistoricalExternalEventSourceType":
+		return OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType, true
+	case "AuditHistoryConfigurationChangeEventType":
+		return OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType, true
+	case "AuditHistoryBulkInsertEventType":
+		return OpcuaNodeIdServicesObjectType_AuditHistoryBulkInsertEventType, true
 	case "ProgramTransitionAuditEventType":
 		return OpcuaNodeIdServicesObjectType_ProgramTransitionAuditEventType, true
 	case "BaseObjectType":
@@ -2112,6 +2178,28 @@ func (e OpcuaNodeIdServicesObjectType) PLC4XEnumName() string {
 		return "TransactionDiagnosticsType"
 	case OpcuaNodeIdServicesObjectType_CertificateUpdateRequestedAuditEventType:
 		return "CertificateUpdateRequestedAuditEventType"
+	case OpcuaNodeIdServicesObjectType_NonTransparentBackupRedundancyType:
+		return "NonTransparentBackupRedundancyType"
+	case OpcuaNodeIdServicesObjectType_SyntaxReferenceEntryType:
+		return "SyntaxReferenceEntryType"
+	case OpcuaNodeIdServicesObjectType_UnitType:
+		return "UnitType"
+	case OpcuaNodeIdServicesObjectType_ServerUnitType:
+		return "ServerUnitType"
+	case OpcuaNodeIdServicesObjectType_AlternativeUnitType:
+		return "AlternativeUnitType"
+	case OpcuaNodeIdServicesObjectType_QuantityType:
+		return "QuantityType"
+	case OpcuaNodeIdServicesObjectType_QuantitiesFolderType:
+		return "QuantitiesFolderType"
+	case OpcuaNodeIdServicesObjectType_HistoricalEventConfigurationType:
+		return "HistoricalEventConfigurationType"
+	case OpcuaNodeIdServicesObjectType_HistoricalExternalEventSourceType:
+		return "HistoricalExternalEventSourceType"
+	case OpcuaNodeIdServicesObjectType_AuditHistoryConfigurationChangeEventType:
+		return "AuditHistoryConfigurationChangeEventType"
+	case OpcuaNodeIdServicesObjectType_AuditHistoryBulkInsertEventType:
+		return "AuditHistoryBulkInsertEventType"
 	case OpcuaNodeIdServicesObjectType_ProgramTransitionAuditEventType:
 		return "ProgramTransitionAuditEventType"
 	case OpcuaNodeIdServicesObjectType_BaseObjectType:

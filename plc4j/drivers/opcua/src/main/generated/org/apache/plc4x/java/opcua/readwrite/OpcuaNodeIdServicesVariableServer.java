@@ -3934,7 +3934,21 @@ public enum OpcuaNodeIdServicesVariableServer {
   ServerConfiguration_TransactionDiagnostics_Result((int) 32339L),
   ServerConfiguration_TransactionDiagnostics_AffectedTrustLists((int) 32340L),
   ServerConfiguration_TransactionDiagnostics_AffectedCertificateGroups((int) 32341L),
-  ServerConfiguration_TransactionDiagnostics_Errors((int) 32342L);
+  ServerConfiguration_TransactionDiagnostics_Errors((int) 32342L),
+  ServerType_ServerRedundancy_RedundantServerArray((int) 32409L),
+  ServerRedundancyType_RedundantServerArray((int) 32410L),
+  ServerUnitType_ConversionLimit((int) 32461L),
+  ServerUnitType_CoherentUnit_Symbol((int) 32463L),
+  ServerUnitType_CoherentUnit_Description((int) 32464L),
+  ServerUnitType_CoherentUnit_UnitSystem((int) 32465L),
+  ServerUnitType_CoherentUnit_Discipline((int) 32466L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol((int) 32588L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description((int) 32589L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem((int) 32590L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline((int) 32591L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion((int) 32592L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion((int) 32593L),
+  ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion((int) 32594L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableServer> map;
 
   static {

@@ -41,15 +41,9 @@ type IOpcuaNodeIdServicesVariableReader interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableReader_ReaderGroupType_GroupProperties                                                                               OpcuaNodeIdServicesVariableReader = 17491
 	OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties                                         OpcuaNodeIdServicesVariableReader = 17492
 	OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount                                                   OpcuaNodeIdServicesVariableReader = 17560
 	OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri                                                 OpcuaNodeIdServicesVariableReader = 17562
-	OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityMode                                                                                  OpcuaNodeIdServicesVariableReader = 18000
-	OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityGroupId                                                                               OpcuaNodeIdServicesVariableReader = 18002
-	OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityKeyServices                                                                           OpcuaNodeIdServicesVariableReader = 18003
-	OpcuaNodeIdServicesVariableReader_ReaderGroupType_MaxNetworkMessageSize                                                                         OpcuaNodeIdServicesVariableReader = 18065
-	OpcuaNodeIdServicesVariableReader_ReaderGroupType_Status_State                                                                                  OpcuaNodeIdServicesVariableReader = 18068
 	OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_PublisherId                                                     OpcuaNodeIdServicesVariableReader = 18077
 	OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_WriterGroupId                                                   OpcuaNodeIdServicesVariableReader = 18078
 	OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetWriterId                                                 OpcuaNodeIdServicesVariableReader = 18079
@@ -199,15 +193,9 @@ var OpcuaNodeIdServicesVariableReaderValues []OpcuaNodeIdServicesVariableReader
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableReaderValues = []OpcuaNodeIdServicesVariableReader{
-		OpcuaNodeIdServicesVariableReader_ReaderGroupType_GroupProperties,
 		OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties,
 		OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount,
 		OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri,
-		OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityMode,
-		OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityGroupId,
-		OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityKeyServices,
-		OpcuaNodeIdServicesVariableReader_ReaderGroupType_MaxNetworkMessageSize,
-		OpcuaNodeIdServicesVariableReader_ReaderGroupType_Status_State,
 		OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_PublisherId,
 		OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_WriterGroupId,
 		OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetWriterId,
@@ -355,24 +343,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableReaderByValue(value int32) (enum OpcuaNodeIdServicesVariableReader, ok bool) {
 	switch value {
-	case 17491:
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_GroupProperties, true
 	case 17492:
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties, true
 	case 17560:
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount, true
 	case 17562:
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri, true
-	case 18000:
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityMode, true
-	case 18002:
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityGroupId, true
-	case 18003:
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityKeyServices, true
-	case 18065:
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_MaxNetworkMessageSize, true
-	case 18068:
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_Status_State, true
 	case 18077:
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_PublisherId, true
 	case 18078:
@@ -663,24 +639,12 @@ func OpcuaNodeIdServicesVariableReaderByValue(value int32) (enum OpcuaNodeIdServ
 
 func OpcuaNodeIdServicesVariableReaderByName(value string) (enum OpcuaNodeIdServicesVariableReader, ok bool) {
 	switch value {
-	case "ReaderGroupType_GroupProperties":
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_GroupProperties, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties":
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount":
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri":
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri, true
-	case "ReaderGroupType_SecurityMode":
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityMode, true
-	case "ReaderGroupType_SecurityGroupId":
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityGroupId, true
-	case "ReaderGroupType_SecurityKeyServices":
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityKeyServices, true
-	case "ReaderGroupType_MaxNetworkMessageSize":
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_MaxNetworkMessageSize, true
-	case "ReaderGroupType_Status_State":
-		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_Status_State, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_PublisherId":
 		return OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_PublisherId, true
 	case "ReaderGroupType_DataSetReaderName_Placeholder_WriterGroupId":
@@ -1032,24 +996,12 @@ func (e OpcuaNodeIdServicesVariableReader) SerializeWithWriteBuffer(ctx context.
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableReader) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_GroupProperties:
-		return "ReaderGroupType_GroupProperties"
 	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties:
 		return "ReaderGroupType_DataSetReaderName_Placeholder_DataSetReaderProperties"
 	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount:
 		return "ReaderGroupType_DataSetReaderName_Placeholder_KeyFrameCount"
 	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri:
 		return "ReaderGroupType_DataSetReaderName_Placeholder_HeaderLayoutUri"
-	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityMode:
-		return "ReaderGroupType_SecurityMode"
-	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityGroupId:
-		return "ReaderGroupType_SecurityGroupId"
-	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_SecurityKeyServices:
-		return "ReaderGroupType_SecurityKeyServices"
-	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_MaxNetworkMessageSize:
-		return "ReaderGroupType_MaxNetworkMessageSize"
-	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_Status_State:
-		return "ReaderGroupType_Status_State"
 	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_PublisherId:
 		return "ReaderGroupType_DataSetReaderName_Placeholder_PublisherId"
 	case OpcuaNodeIdServicesVariableReader_ReaderGroupType_DataSetReaderName_Placeholder_WriterGroupId:

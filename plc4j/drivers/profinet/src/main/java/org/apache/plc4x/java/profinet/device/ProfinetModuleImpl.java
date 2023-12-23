@@ -162,11 +162,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 false,
                 false,
                 module.getInputDataLength(),
-                (short) 0x01,
-                (short) 0x01,
-                module.getOutputDataLength(),
-                (short) 0x01,
-                (short) 0x01
+                module.getOutputDataLength()
             ));
         } else if (module.getInputDataLength() != 0) {
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_InputData(
@@ -176,9 +172,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 false,
                 false,
                 false,
-                module.getInputDataLength(),
-                (short) 0x01,
-                (short) 0x01));
+                module.getInputDataLength()));
 
 
         } else if (module.getOutputDataLength() != 0) {
@@ -189,9 +183,7 @@ public class ProfinetModuleImpl implements ProfinetModule {
                 false,
                 false,
                 false,
-                module.getOutputDataLength(),
-                (short) 0x01,
-                (short) 0x01));
+                module.getOutputDataLength()));
         } else if (module.getInputDataLength() == 0 && module.getOutputDataLength() == 0) {
             expectedSubModuleApiBlocks.add(new PnIoCm_Submodule_NoInputNoOutputData(
                 0x01,

@@ -137,6 +137,8 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 		_childTemp, typeSwitchError = EphemeralKeyTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "15530": // EndpointType
 		_childTemp, typeSwitchError = EndpointTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32423": // BitFieldDefinition
+		_childTemp, typeSwitchError = BitFieldDefinitionParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "18808": // RationalNumber
 		_childTemp, typeSwitchError = RationalNumberParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "18809": // OpcuaVector
@@ -151,6 +153,12 @@ func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer ut
 		_childTemp, typeSwitchError = IdentityMappingRuleTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "23500": // CurrencyUnitType
 		_childTemp, typeSwitchError = CurrencyUnitTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32436": // AnnotationDataType
+		_childTemp, typeSwitchError = AnnotationDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32437": // LinearConversionDataType
+		_childTemp, typeSwitchError = LinearConversionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	case identifier == "32440": // QuantityDimension
+		_childTemp, typeSwitchError = QuantityDimensionParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "12556": // TrustListDataType
 		_childTemp, typeSwitchError = TrustListDataTypeParseWithBuffer(ctx, readBuffer, identifier)
 	case identifier == "32287": // TransactionErrorType

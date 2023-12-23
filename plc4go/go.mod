@@ -26,8 +26,8 @@ require (
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/dchest/uniuri v1.2.0
 	github.com/fatih/color v1.16.0
-	github.com/gdamore/tcell/v2 v2.6.0
-	github.com/google/uuid v1.4.0
+	github.com/gdamore/tcell/v2 v2.7.0
+	github.com/google/uuid v1.5.0
 	github.com/gopacket/gopacket v1.2.0
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
@@ -39,13 +39,13 @@ require (
 	github.com/schollz/progressbar/v3 v3.14.1
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.8.0
-	github.com/spf13/viper v1.18.0
+	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/net v0.19.0
-	golang.org/x/tools v0.16.0
+	golang.org/x/tools v0.16.1
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -60,7 +60,7 @@ require (
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mattn/go-runewidth v0.0.14 // indirect
+	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect

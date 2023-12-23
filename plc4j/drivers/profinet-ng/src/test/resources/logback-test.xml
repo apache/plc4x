@@ -29,6 +29,8 @@
     </encoder>
   </appender>
 
+  <logger name="org.apache.plc4x.java.spi.Plc4xNettyWrapper" level="TRACE"/>
+
   <root level="info">
     <appender-ref ref="STDOUT" />
   </root>

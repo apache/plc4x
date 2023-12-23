@@ -275,7 +275,18 @@ public enum OpcuaNodeIdServicesObjectType {
   AlarmSuppressionGroupType((int) 32064L),
   TrustListUpdateRequestedAuditEventType((int) 32260L),
   TransactionDiagnosticsType((int) 32286L),
-  CertificateUpdateRequestedAuditEventType((int) 32306L);
+  CertificateUpdateRequestedAuditEventType((int) 32306L),
+  NonTransparentBackupRedundancyType((int) 32411L),
+  SyntaxReferenceEntryType((int) 32439L),
+  UnitType((int) 32442L),
+  ServerUnitType((int) 32447L),
+  AlternativeUnitType((int) 32467L),
+  QuantityType((int) 32475L),
+  QuantitiesFolderType((int) 32502L),
+  HistoricalEventConfigurationType((int) 32621L),
+  HistoricalExternalEventSourceType((int) 32625L),
+  AuditHistoryConfigurationChangeEventType((int) 32758L),
+  AuditHistoryBulkInsertEventType((int) 32803L);
   private static final Map<Integer, OpcuaNodeIdServicesObjectType> map;
 
   static {

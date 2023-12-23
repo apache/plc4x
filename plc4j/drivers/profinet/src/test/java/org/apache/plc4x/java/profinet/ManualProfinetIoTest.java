@@ -34,11 +34,13 @@ public class ManualProfinetIoTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualProfinetIoTest.class);
 
     public static void main(String[] args) throws Exception {
+        // eth.addr == 88:3f:99:03:ef:b0
+
         // In this example 192.168.54.2 is the local IP of the computer running PLC4J and 192.168.54.23 is the IP of the PN device.
         //final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.54.2?gsddirectory=~/.gsd&devices=[[simocodexbpn156e,DAP%201,(1,),192.168.54.23]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=3");
         // REMARK: The driver would use the local network device with the given IP address and to an auto-discovery, trying to find any devices returned with the matching name.
         // If this device is then found and an IP address is provided, it would use PN-DCP to set the IP address of that device to the given value.
-        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.24.220?gsddirectory=~/.gsd&devices=[[cdxb195b3,DAP%201,(1,)]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=3");
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.54.220?gsddirectory=~/.gsd&devices=[[simocodexbpn156e,DAP%201,(1,)]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=3");
 
         PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("all", "*").build();
         PlcBrowseResponse plcBrowseResponse = browseRequest.execute().get(4000, TimeUnit.MILLISECONDS);

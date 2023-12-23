@@ -1403,8 +1403,11 @@
     ['652' M_RHOMBUS_EUROPE ['710', '"Rhombus Europe"']]
     ['653' M_TURING_THINK ['711', '"Turing-Think"']]
     ['654' M_MICHOI ['712', '"Michoi"']]
-    ['655' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['656' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['655' M_CAV_AUDIOGUANGZHOUCO__LTD ['713', '"CAV AUDIO(GUANGZHOU)CO.,LTD"']]
+    ['656' M_HELKAMA_BICA_OY ['714', '"Helkama Bica Oy"']]
+    ['657' M_MODULYTE ['715', '"ModuLyte"']]
+    ['658' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['659' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 

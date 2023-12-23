@@ -41,15 +41,6 @@ type IOpcuaNodeIdServicesVariableCondition interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableCondition_ConditionType_EventId                              OpcuaNodeIdServicesVariableCondition = 3865
-	OpcuaNodeIdServicesVariableCondition_ConditionType_EventType                            OpcuaNodeIdServicesVariableCondition = 3866
-	OpcuaNodeIdServicesVariableCondition_ConditionType_SourceNode                           OpcuaNodeIdServicesVariableCondition = 3867
-	OpcuaNodeIdServicesVariableCondition_ConditionType_SourceName                           OpcuaNodeIdServicesVariableCondition = 3868
-	OpcuaNodeIdServicesVariableCondition_ConditionType_Time                                 OpcuaNodeIdServicesVariableCondition = 3869
-	OpcuaNodeIdServicesVariableCondition_ConditionType_ReceiveTime                          OpcuaNodeIdServicesVariableCondition = 3870
-	OpcuaNodeIdServicesVariableCondition_ConditionType_LocalTime                            OpcuaNodeIdServicesVariableCondition = 3871
-	OpcuaNodeIdServicesVariableCondition_ConditionType_Message                              OpcuaNodeIdServicesVariableCondition = 3872
-	OpcuaNodeIdServicesVariableCondition_ConditionType_Severity                             OpcuaNodeIdServicesVariableCondition = 3873
 	OpcuaNodeIdServicesVariableCondition_ConditionType_Retain                               OpcuaNodeIdServicesVariableCondition = 3874
 	OpcuaNodeIdServicesVariableCondition_ConditionType_ConditionRefresh_InputArguments      OpcuaNodeIdServicesVariableCondition = 3876
 	OpcuaNodeIdServicesVariableCondition_ConditionVariableType_SourceTimestamp              OpcuaNodeIdServicesVariableCondition = 9003
@@ -87,15 +78,6 @@ var OpcuaNodeIdServicesVariableConditionValues []OpcuaNodeIdServicesVariableCond
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableConditionValues = []OpcuaNodeIdServicesVariableCondition{
-		OpcuaNodeIdServicesVariableCondition_ConditionType_EventId,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_EventType,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_SourceNode,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_SourceName,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_Time,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_ReceiveTime,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_LocalTime,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_Message,
-		OpcuaNodeIdServicesVariableCondition_ConditionType_Severity,
 		OpcuaNodeIdServicesVariableCondition_ConditionType_Retain,
 		OpcuaNodeIdServicesVariableCondition_ConditionType_ConditionRefresh_InputArguments,
 		OpcuaNodeIdServicesVariableCondition_ConditionVariableType_SourceTimestamp,
@@ -145,24 +127,6 @@ func OpcuaNodeIdServicesVariableConditionByValue(value int32) (enum OpcuaNodeIdS
 		return OpcuaNodeIdServicesVariableCondition_ConditionType_ConditionSubClassName, true
 	case 32060:
 		return OpcuaNodeIdServicesVariableCondition_ConditionType_SupportsFilteredRetain, true
-	case 3865:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_EventId, true
-	case 3866:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_EventType, true
-	case 3867:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_SourceNode, true
-	case 3868:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_SourceName, true
-	case 3869:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_Time, true
-	case 3870:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_ReceiveTime, true
-	case 3871:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_LocalTime, true
-	case 3872:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_Message, true
-	case 3873:
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_Severity, true
 	case 3874:
 		return OpcuaNodeIdServicesVariableCondition_ConditionType_Retain, true
 	case 3876:
@@ -229,24 +193,6 @@ func OpcuaNodeIdServicesVariableConditionByName(value string) (enum OpcuaNodeIdS
 		return OpcuaNodeIdServicesVariableCondition_ConditionType_ConditionSubClassName, true
 	case "ConditionType_SupportsFilteredRetain":
 		return OpcuaNodeIdServicesVariableCondition_ConditionType_SupportsFilteredRetain, true
-	case "ConditionType_EventId":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_EventId, true
-	case "ConditionType_EventType":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_EventType, true
-	case "ConditionType_SourceNode":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_SourceNode, true
-	case "ConditionType_SourceName":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_SourceName, true
-	case "ConditionType_Time":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_Time, true
-	case "ConditionType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_ReceiveTime, true
-	case "ConditionType_LocalTime":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_LocalTime, true
-	case "ConditionType_Message":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_Message, true
-	case "ConditionType_Severity":
-		return OpcuaNodeIdServicesVariableCondition_ConditionType_Severity, true
 	case "ConditionType_Retain":
 		return OpcuaNodeIdServicesVariableCondition_ConditionType_Retain, true
 	case "ConditionType_ConditionRefresh_InputArguments":
@@ -374,24 +320,6 @@ func (e OpcuaNodeIdServicesVariableCondition) PLC4XEnumName() string {
 		return "ConditionType_ConditionSubClassName"
 	case OpcuaNodeIdServicesVariableCondition_ConditionType_SupportsFilteredRetain:
 		return "ConditionType_SupportsFilteredRetain"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_EventId:
-		return "ConditionType_EventId"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_EventType:
-		return "ConditionType_EventType"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_SourceNode:
-		return "ConditionType_SourceNode"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_SourceName:
-		return "ConditionType_SourceName"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_Time:
-		return "ConditionType_Time"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_ReceiveTime:
-		return "ConditionType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_LocalTime:
-		return "ConditionType_LocalTime"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_Message:
-		return "ConditionType_Message"
-	case OpcuaNodeIdServicesVariableCondition_ConditionType_Severity:
-		return "ConditionType_Severity"
 	case OpcuaNodeIdServicesVariableCondition_ConditionType_Retain:
 		return "ConditionType_Retain"
 	case OpcuaNodeIdServicesVariableCondition_ConditionType_ConditionRefresh_InputArguments:

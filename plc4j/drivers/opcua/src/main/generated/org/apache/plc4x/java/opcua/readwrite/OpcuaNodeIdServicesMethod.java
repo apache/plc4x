@@ -34,140 +34,18 @@ public enum OpcuaNodeIdServicesMethod {
   ShelvedStateMachineType_TimedShelve((int) 2949L),
   AddCommentMethodType((int) 3863L),
   ConditionType_ConditionRefresh((int) 3875L),
-  DialogConditionType_ConditionRefresh((int) 4198L),
-  AcknowledgeableConditionType_ConditionRefresh((int) 5123L),
-  AlarmConditionType_ConditionRefresh((int) 5550L),
   TimedShelveMethodType((int) 6102L),
-  LimitAlarmType_ConditionRefresh((int) 6126L),
   ConditionRefreshMethodType((int) 9007L),
   ConditionType_Enable((int) 9027L),
   ConditionType_Disable((int) 9028L),
   ConditionType_AddComment((int) 9029L),
   DialogResponseMethodType((int) 9031L),
-  DialogConditionType_Enable((int) 9051L),
-  DialogConditionType_Disable((int) 9052L),
-  DialogConditionType_AddComment((int) 9053L),
   DialogConditionType_Respond((int) 9069L),
-  AcknowledgeableConditionType_Enable((int) 9089L),
-  AcknowledgeableConditionType_Disable((int) 9090L),
-  AcknowledgeableConditionType_AddComment((int) 9091L),
   AcknowledgeableConditionType_Acknowledge((int) 9111L),
   AcknowledgeableConditionType_Confirm((int) 9113L),
-  AlarmConditionType_Enable((int) 9134L),
-  AlarmConditionType_Disable((int) 9135L),
-  AlarmConditionType_AddComment((int) 9136L),
-  AlarmConditionType_Acknowledge((int) 9156L),
-  AlarmConditionType_Confirm((int) 9158L),
   AlarmConditionType_ShelvingState_Unshelve((int) 9211L),
   AlarmConditionType_ShelvingState_OneShotShelve((int) 9212L),
   AlarmConditionType_ShelvingState_TimedShelve((int) 9213L),
-  LimitAlarmType_Enable((int) 9235L),
-  LimitAlarmType_Disable((int) 9236L),
-  LimitAlarmType_AddComment((int) 9237L),
-  LimitAlarmType_Acknowledge((int) 9257L),
-  LimitAlarmType_Confirm((int) 9259L),
-  LimitAlarmType_ShelvingState_Unshelve((int) 9312L),
-  LimitAlarmType_ShelvingState_OneShotShelve((int) 9313L),
-  LimitAlarmType_ShelvingState_TimedShelve((int) 9314L),
-  ExclusiveLimitAlarmType_Enable((int) 9370L),
-  ExclusiveLimitAlarmType_Disable((int) 9371L),
-  ExclusiveLimitAlarmType_AddComment((int) 9372L),
-  ExclusiveLimitAlarmType_ConditionRefresh((int) 9374L),
-  ExclusiveLimitAlarmType_Acknowledge((int) 9394L),
-  ExclusiveLimitAlarmType_Confirm((int) 9396L),
-  ExclusiveLimitAlarmType_ShelvingState_Unshelve((int) 9449L),
-  ExclusiveLimitAlarmType_ShelvingState_OneShotShelve((int) 9450L),
-  ExclusiveLimitAlarmType_ShelvingState_TimedShelve((int) 9451L),
-  ExclusiveLevelAlarmType_Enable((int) 9511L),
-  ExclusiveLevelAlarmType_Disable((int) 9512L),
-  ExclusiveLevelAlarmType_AddComment((int) 9513L),
-  ExclusiveLevelAlarmType_ConditionRefresh((int) 9515L),
-  ExclusiveLevelAlarmType_Acknowledge((int) 9535L),
-  ExclusiveLevelAlarmType_Confirm((int) 9537L),
-  ExclusiveLevelAlarmType_ShelvingState_Unshelve((int) 9590L),
-  ExclusiveLevelAlarmType_ShelvingState_OneShotShelve((int) 9591L),
-  ExclusiveLevelAlarmType_ShelvingState_TimedShelve((int) 9592L),
-  ExclusiveRateOfChangeAlarmType_Enable((int) 9652L),
-  ExclusiveRateOfChangeAlarmType_Disable((int) 9653L),
-  ExclusiveRateOfChangeAlarmType_AddComment((int) 9654L),
-  ExclusiveRateOfChangeAlarmType_ConditionRefresh((int) 9656L),
-  ExclusiveRateOfChangeAlarmType_Acknowledge((int) 9676L),
-  ExclusiveRateOfChangeAlarmType_Confirm((int) 9678L),
-  ExclusiveRateOfChangeAlarmType_ShelvingState_Unshelve((int) 9731L),
-  ExclusiveRateOfChangeAlarmType_ShelvingState_OneShotShelve((int) 9732L),
-  ExclusiveRateOfChangeAlarmType_ShelvingState_TimedShelve((int) 9733L),
-  ExclusiveDeviationAlarmType_Enable((int) 9793L),
-  ExclusiveDeviationAlarmType_Disable((int) 9794L),
-  ExclusiveDeviationAlarmType_AddComment((int) 9795L),
-  ExclusiveDeviationAlarmType_ConditionRefresh((int) 9797L),
-  ExclusiveDeviationAlarmType_Acknowledge((int) 9817L),
-  ExclusiveDeviationAlarmType_Confirm((int) 9819L),
-  ExclusiveDeviationAlarmType_ShelvingState_Unshelve((int) 9872L),
-  ExclusiveDeviationAlarmType_ShelvingState_OneShotShelve((int) 9873L),
-  ExclusiveDeviationAlarmType_ShelvingState_TimedShelve((int) 9874L),
-  NonExclusiveLimitAlarmType_Enable((int) 9935L),
-  NonExclusiveLimitAlarmType_Disable((int) 9936L),
-  NonExclusiveLimitAlarmType_AddComment((int) 9937L),
-  NonExclusiveLimitAlarmType_ConditionRefresh((int) 9939L),
-  NonExclusiveLimitAlarmType_Acknowledge((int) 9959L),
-  NonExclusiveLimitAlarmType_Confirm((int) 9961L),
-  NonExclusiveLimitAlarmType_ShelvingState_Unshelve((int) 10014L),
-  NonExclusiveLimitAlarmType_ShelvingState_OneShotShelve((int) 10015L),
-  NonExclusiveLimitAlarmType_ShelvingState_TimedShelve((int) 10016L),
-  NonExclusiveLevelAlarmType_Enable((int) 10089L),
-  NonExclusiveLevelAlarmType_Disable((int) 10090L),
-  NonExclusiveLevelAlarmType_AddComment((int) 10091L),
-  NonExclusiveLevelAlarmType_ConditionRefresh((int) 10093L),
-  NonExclusiveLevelAlarmType_Acknowledge((int) 10113L),
-  NonExclusiveLevelAlarmType_Confirm((int) 10115L),
-  NonExclusiveLevelAlarmType_ShelvingState_Unshelve((int) 10168L),
-  NonExclusiveLevelAlarmType_ShelvingState_OneShotShelve((int) 10169L),
-  NonExclusiveLevelAlarmType_ShelvingState_TimedShelve((int) 10170L),
-  NonExclusiveRateOfChangeAlarmType_Enable((int) 10243L),
-  NonExclusiveRateOfChangeAlarmType_Disable((int) 10244L),
-  NonExclusiveRateOfChangeAlarmType_AddComment((int) 10245L),
-  NonExclusiveRateOfChangeAlarmType_ConditionRefresh((int) 10247L),
-  NonExclusiveRateOfChangeAlarmType_Acknowledge((int) 10267L),
-  NonExclusiveRateOfChangeAlarmType_Confirm((int) 10269L),
-  NonExclusiveRateOfChangeAlarmType_ShelvingState_Unshelve((int) 10322L),
-  NonExclusiveRateOfChangeAlarmType_ShelvingState_OneShotShelve((int) 10323L),
-  NonExclusiveRateOfChangeAlarmType_ShelvingState_TimedShelve((int) 10324L),
-  NonExclusiveDeviationAlarmType_Enable((int) 10397L),
-  NonExclusiveDeviationAlarmType_Disable((int) 10398L),
-  NonExclusiveDeviationAlarmType_AddComment((int) 10399L),
-  NonExclusiveDeviationAlarmType_ConditionRefresh((int) 10401L),
-  NonExclusiveDeviationAlarmType_Acknowledge((int) 10421L),
-  NonExclusiveDeviationAlarmType_Confirm((int) 10423L),
-  NonExclusiveDeviationAlarmType_ShelvingState_Unshelve((int) 10476L),
-  NonExclusiveDeviationAlarmType_ShelvingState_OneShotShelve((int) 10477L),
-  NonExclusiveDeviationAlarmType_ShelvingState_TimedShelve((int) 10478L),
-  DiscreteAlarmType_Enable((int) 10552L),
-  DiscreteAlarmType_Disable((int) 10553L),
-  DiscreteAlarmType_AddComment((int) 10554L),
-  DiscreteAlarmType_ConditionRefresh((int) 10556L),
-  DiscreteAlarmType_Acknowledge((int) 10576L),
-  DiscreteAlarmType_Confirm((int) 10578L),
-  DiscreteAlarmType_ShelvingState_Unshelve((int) 10631L),
-  DiscreteAlarmType_ShelvingState_OneShotShelve((int) 10632L),
-  DiscreteAlarmType_ShelvingState_TimedShelve((int) 10633L),
-  OffNormalAlarmType_Enable((int) 10666L),
-  OffNormalAlarmType_Disable((int) 10667L),
-  OffNormalAlarmType_AddComment((int) 10668L),
-  OffNormalAlarmType_ConditionRefresh((int) 10670L),
-  OffNormalAlarmType_Acknowledge((int) 10690L),
-  OffNormalAlarmType_Confirm((int) 10692L),
-  OffNormalAlarmType_ShelvingState_Unshelve((int) 10745L),
-  OffNormalAlarmType_ShelvingState_OneShotShelve((int) 10746L),
-  OffNormalAlarmType_ShelvingState_TimedShelve((int) 10747L),
-  TripAlarmType_Enable((int) 10780L),
-  TripAlarmType_Disable((int) 10781L),
-  TripAlarmType_AddComment((int) 10782L),
-  TripAlarmType_ConditionRefresh((int) 10784L),
-  TripAlarmType_Acknowledge((int) 10804L),
-  TripAlarmType_Confirm((int) 10806L),
-  TripAlarmType_ShelvingState_Unshelve((int) 10859L),
-  TripAlarmType_ShelvingState_OneShotShelve((int) 10860L),
-  TripAlarmType_ShelvingState_TimedShelve((int) 10861L),
   ServerType_GetMonitoredItems((int) 11489L),
   Server_GetMonitoredItems((int) 11492L),
   GetMonitoredItemsMethodType((int) 11495L),
@@ -177,12 +55,6 @@ public enum OpcuaNodeIdServicesMethod {
   FileType_Write((int) 11588L),
   FileType_GetPosition((int) 11590L),
   FileType_SetPosition((int) 11593L),
-  AddressSpaceFileType_Open((int) 11600L),
-  AddressSpaceFileType_Close((int) 11603L),
-  AddressSpaceFileType_Read((int) 11605L),
-  AddressSpaceFileType_Write((int) 11608L),
-  AddressSpaceFileType_GetPosition((int) 11610L),
-  AddressSpaceFileType_SetPosition((int) 11613L),
   AddressSpaceFileType_ExportNamespace((int) 11615L),
   NamespaceMetadataType_NamespaceFile_Open((int) 11629L),
   NamespaceMetadataType_NamespaceFile_Close((int) 11632L),
@@ -204,25 +76,10 @@ public enum OpcuaNodeIdServicesMethod {
   WriteMethodType((int) 11746L),
   GetPositionMethodType((int) 11748L),
   SetPositionMethodType((int) 11751L),
-  SystemOffNormalAlarmType_Disable((int) 11784L),
-  SystemOffNormalAlarmType_Enable((int) 11785L),
-  SystemOffNormalAlarmType_AddComment((int) 11786L),
-  SystemOffNormalAlarmType_ConditionRefresh((int) 11788L),
-  SystemOffNormalAlarmType_Acknowledge((int) 11808L),
-  SystemOffNormalAlarmType_Confirm((int) 11810L),
-  SystemOffNormalAlarmType_ShelvingState_Unshelve((int) 11844L),
-  SystemOffNormalAlarmType_ShelvingState_OneShotShelve((int) 11845L),
-  SystemOffNormalAlarmType_ShelvingState_TimedShelve((int) 11846L),
   OpenWithMasksMethodType((int) 12513L),
   CloseAndUpdateMethodType((int) 12516L),
   AddCertificateMethodType((int) 12518L),
   RemoveCertificateMethodType((int) 12520L),
-  TrustListType_Open((int) 12527L),
-  TrustListType_Close((int) 12530L),
-  TrustListType_Read((int) 12532L),
-  TrustListType_Write((int) 12535L),
-  TrustListType_GetPosition((int) 12537L),
-  TrustListType_SetPosition((int) 12540L),
   TrustListType_OpenWithMasks((int) 12543L),
   TrustListType_CloseAndUpdate((int) 12546L),
   TrustListType_AddCertificate((int) 12548L),
@@ -262,32 +119,6 @@ public enum OpcuaNodeIdServicesMethod {
   RequestServerStateChangeMethodType((int) 12888L),
   ConditionType_ConditionRefresh2((int) 12912L),
   ConditionRefresh2MethodType((int) 12914L),
-  DialogConditionType_ConditionRefresh2((int) 12916L),
-  AcknowledgeableConditionType_ConditionRefresh2((int) 12918L),
-  AlarmConditionType_ConditionRefresh2((int) 12984L),
-  LimitAlarmType_ConditionRefresh2((int) 12986L),
-  ExclusiveLimitAlarmType_ConditionRefresh2((int) 12988L),
-  NonExclusiveLimitAlarmType_ConditionRefresh2((int) 12990L),
-  NonExclusiveLevelAlarmType_ConditionRefresh2((int) 12992L),
-  ExclusiveLevelAlarmType_ConditionRefresh2((int) 12994L),
-  NonExclusiveDeviationAlarmType_ConditionRefresh2((int) 12996L),
-  ExclusiveDeviationAlarmType_ConditionRefresh2((int) 12998L),
-  NonExclusiveRateOfChangeAlarmType_ConditionRefresh2((int) 13000L),
-  ExclusiveRateOfChangeAlarmType_ConditionRefresh2((int) 13002L),
-  DiscreteAlarmType_ConditionRefresh2((int) 13004L),
-  OffNormalAlarmType_ConditionRefresh2((int) 13006L),
-  SystemOffNormalAlarmType_ConditionRefresh2((int) 13008L),
-  TripAlarmType_ConditionRefresh2((int) 13010L),
-  CertificateExpirationAlarmType_Disable((int) 13256L),
-  CertificateExpirationAlarmType_Enable((int) 13257L),
-  CertificateExpirationAlarmType_AddComment((int) 13258L),
-  CertificateExpirationAlarmType_ConditionRefresh((int) 13260L),
-  CertificateExpirationAlarmType_ConditionRefresh2((int) 13262L),
-  CertificateExpirationAlarmType_Acknowledge((int) 13282L),
-  CertificateExpirationAlarmType_Confirm((int) 13284L),
-  CertificateExpirationAlarmType_ShelvingState_Unshelve((int) 13318L),
-  CertificateExpirationAlarmType_ShelvingState_OneShotShelve((int) 13319L),
-  CertificateExpirationAlarmType_ShelvingState_TimedShelve((int) 13320L),
   CreateDirectoryMethodType((int) 13342L),
   CreateFileMethodType((int) 13345L),
   DeleteFileMethodType((int) 13348L),
@@ -459,15 +290,10 @@ public enum OpcuaNodeIdServicesMethod {
   TargetVariablesType_RemoveTargetVariables((int) 15118L),
   TargetVariablesTypeAddTargetVariablesMethodType((int) 15121L),
   TargetVariablesTypeRemoveTargetVariablesMethodType((int) 15124L),
-  PublishSubscribeType_GetSecurityKeys((int) 15212L),
   PublishSubscribe_GetSecurityKeys((int) 15215L),
   GetSecurityKeysMethodType((int) 15218L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Status_Enable((int) 15225L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Status_Disable((int) 15226L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Status_Enable((int) 15233L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Status_Disable((int) 15234L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Status_Enable((int) 15241L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Status_Disable((int) 15242L),
   CreateCredentialMethodType((int) 15248L),
   PubSubGroupType_Status_Enable((int) 15267L),
   PubSubGroupType_Status_Disable((int) 15268L),
@@ -475,9 +301,6 @@ public enum OpcuaNodeIdServicesMethod {
   DataSetWriterType_Status_Disable((int) 15302L),
   DataSetReaderType_Status_Enable((int) 15309L),
   DataSetReaderType_Status_Disable((int) 15310L),
-  PublishSubscribeType_GetSecurityGroup((int) 15431L),
-  PublishSubscribeType_SecurityGroups_AddSecurityGroup((int) 15435L),
-  PublishSubscribeType_SecurityGroups_RemoveSecurityGroup((int) 15438L),
   PublishSubscribe_GetSecurityGroup((int) 15440L),
   PublishSubscribe_SecurityGroups_AddSecurityGroup((int) 15444L),
   PublishSubscribe_SecurityGroups_RemoveSecurityGroup((int) 15447L),
@@ -498,10 +321,6 @@ public enum OpcuaNodeIdServicesMethod {
   ExtensionFieldsType_RemoveExtensionField((int) 15494L),
   AddExtensionFieldMethodType((int) 15496L),
   RemoveExtensionFieldMethodType((int) 15499L),
-  PublishedDataItemsType_ExtensionFields_AddExtensionField((int) 15504L),
-  PublishedDataItemsType_ExtensionFields_RemoveExtensionField((int) 15507L),
-  PublishedEventsType_ExtensionFields_AddExtensionField((int) 15512L),
-  PublishedEventsType_ExtensionFields_RemoveExtensionField((int) 15515L),
   RoleSetType_RoleName_Placeholder_AddIdentity((int) 15612L),
   RoleSetType_RoleName_Placeholder_RemoveIdentity((int) 15614L),
   RoleType_AddIdentity((int) 15624L),
@@ -532,8 +351,6 @@ public enum OpcuaNodeIdServicesMethod {
   FileTransferStateMachineType_Reset((int) 15843L),
   PublishSubscribeType_Status_Enable((int) 15846L),
   PublishSubscribeType_Status_Disable((int) 15847L),
-  PublishSubscribe_ConnectionName_Placeholder_Status_Enable((int) 15893L),
-  PublishSubscribe_ConnectionName_Placeholder_Status_Disable((int) 15894L),
   PubSubKeyServiceType_GetSecurityKeys((int) 15907L),
   PubSubKeyServiceType_GetSecurityGroup((int) 15910L),
   PubSubKeyServiceType_SecurityGroups_AddSecurityGroup((int) 15914L),
@@ -551,7 +368,6 @@ public enum OpcuaNodeIdServicesMethod {
   RemoveRoleMethodType((int) 16005L),
   WellKnownRole_Engineer_AddIdentity((int) 16041L),
   WellKnownRole_Engineer_RemoveIdentity((int) 16043L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Reset((int) 16076L),
   RoleSetType_RoleName_Placeholder_AddApplication((int) 16165L),
   RoleSetType_RoleName_Placeholder_RemoveApplication((int) 16167L),
   RoleSetType_RoleName_Placeholder_AddEndpoint((int) 16169L),
@@ -602,15 +418,6 @@ public enum OpcuaNodeIdServicesMethod {
   ServerCapabilitiesType_RoleSet_RemoveRole((int) 16299L),
   Server_ServerCapabilities_RoleSet_AddRole((int) 16301L),
   Server_ServerCapabilities_RoleSet_RemoveRole((int) 16304L),
-  FileSystem_FileDirectoryName_Placeholder_CreateDirectory((int) 16316L),
-  FileSystem_FileDirectoryName_Placeholder_CreateFile((int) 16319L),
-  FileSystem_FileDirectoryName_Placeholder_MoveOrCopy((int) 16324L),
-  FileSystem_FileName_Placeholder_Open((int) 16333L),
-  FileSystem_FileName_Placeholder_Close((int) 16336L),
-  FileSystem_FileName_Placeholder_Read((int) 16338L),
-  FileSystem_FileName_Placeholder_Write((int) 16341L),
-  FileSystem_FileName_Placeholder_GetPosition((int) 16343L),
-  FileSystem_FileName_Placeholder_SetPosition((int) 16346L),
   FileSystem_CreateDirectory((int) 16348L),
   FileSystem_CreateFile((int) 16351L),
   FileSystem_DeleteFileSystemObject((int) 16354L),
@@ -629,64 +436,24 @@ public enum OpcuaNodeIdServicesMethod {
   AlarmGroupType_AlarmConditionInstance_Placeholder_Suppress((int) 16534L),
   PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup((int) 16535L),
   PublishSubscribeType_ConnectionName_Placeholder_AddReaderGroup((int) 16560L),
-  LimitAlarmType_Silence((int) 16569L),
-  LimitAlarmType_Suppress((int) 16570L),
   PublishSubscribeType_AddConnection((int) 16598L),
   PublishSubscribeType_PublishedDataSets_AddPublishedDataItemsTemplate((int) 16601L),
-  ExclusiveLimitAlarmType_Silence((int) 16609L),
-  ExclusiveLimitAlarmType_Suppress((int) 16610L),
   PublishSubscribeType_PublishedDataSets_AddPublishedEventsTemplate((int) 16639L),
-  NonExclusiveLimitAlarmType_Silence((int) 16649L),
-  NonExclusiveLimitAlarmType_Suppress((int) 16650L),
   PublishSubscribeType_PublishedDataSets_AddDataSetFolder((int) 16651L),
   PublishSubscribeType_PublishedDataSets_RemoveDataSetFolder((int) 16680L),
-  NonExclusiveLevelAlarmType_Silence((int) 16689L),
-  NonExclusiveLevelAlarmType_Suppress((int) 16690L),
   AddConnectionMethodType((int) 16691L),
-  ExclusiveLevelAlarmType_Silence((int) 16729L),
-  ExclusiveLevelAlarmType_Suppress((int) 16730L),
-  NonExclusiveDeviationAlarmType_Silence((int) 16769L),
-  NonExclusiveDeviationAlarmType_Suppress((int) 16770L),
-  ExclusiveDeviationAlarmType_Silence((int) 16810L),
-  ExclusiveDeviationAlarmType_Suppress((int) 16811L),
   DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedDataItemsTemplate((int) 16842L),
-  NonExclusiveRateOfChangeAlarmType_Silence((int) 16851L),
-  NonExclusiveRateOfChangeAlarmType_Suppress((int) 16852L),
   DataSetFolderType_DataSetFolderName_Placeholder_AddPublishedEventsTemplate((int) 16881L),
   DataSetFolderType_DataSetFolderName_Placeholder_AddDataSetFolder((int) 16884L),
-  ExclusiveRateOfChangeAlarmType_Silence((int) 16892L),
-  ExclusiveRateOfChangeAlarmType_Suppress((int) 16893L),
   DataSetFolderType_DataSetFolderName_Placeholder_RemoveDataSetFolder((int) 16923L),
-  DiscreteAlarmType_Silence((int) 16933L),
-  DiscreteAlarmType_Suppress((int) 16934L),
   DataSetFolderType_AddPublishedDataItemsTemplate((int) 16935L),
   DataSetFolderType_AddPublishedEventsTemplate((int) 16960L),
-  OffNormalAlarmType_Silence((int) 16969L),
-  OffNormalAlarmType_Suppress((int) 16970L),
   DataSetFolderType_AddDataSetFolder((int) 16994L),
   DataSetFolderType_RemoveDataSetFolder((int) 16997L),
-  SystemOffNormalAlarmType_Silence((int) 17005L),
-  SystemOffNormalAlarmType_Suppress((int) 17006L),
   AddPublishedDataItemsTemplateMethodType((int) 17030L),
   AddPublishedEventsTemplateMethodType((int) 17033L),
-  TripAlarmType_Silence((int) 17041L),
-  TripAlarmType_Suppress((int) 17042L),
   AddDataSetFolderMethodType((int) 17067L),
-  CertificateExpirationAlarmType_Silence((int) 17077L),
-  CertificateExpirationAlarmType_Suppress((int) 17078L),
   RemoveDataSetFolderMethodType((int) 17079L),
-  DiscrepancyAlarmType_Disable((int) 17113L),
-  DiscrepancyAlarmType_Enable((int) 17114L),
-  DiscrepancyAlarmType_AddComment((int) 17115L),
-  DiscrepancyAlarmType_ConditionRefresh((int) 17117L),
-  DiscrepancyAlarmType_ConditionRefresh2((int) 17119L),
-  DiscrepancyAlarmType_Acknowledge((int) 17139L),
-  DiscrepancyAlarmType_Confirm((int) 17141L),
-  DiscrepancyAlarmType_ShelvingState_Unshelve((int) 17193L),
-  DiscrepancyAlarmType_ShelvingState_OneShotShelve((int) 17194L),
-  DiscrepancyAlarmType_ShelvingState_TimedShelve((int) 17195L),
-  DiscrepancyAlarmType_Silence((int) 17212L),
-  DiscrepancyAlarmType_Suppress((int) 17213L),
   PubSubConnectionType_WriterGroupName_Placeholder_AddDataSetWriter((int) 17293L),
   PublishSubscribeType_SetSecurityKeys((int) 17296L),
   SetSecurityKeysMethodType((int) 17298L),
@@ -697,9 +464,6 @@ public enum OpcuaNodeIdServicesMethod {
   PubSubConnectionType_ReaderGroupName_Placeholder_Status_Disable((int) 17332L),
   PubSubConnectionType_ReaderGroupName_Placeholder_RemoveDataSetReader((int) 17333L),
   PubSubConnectionType_ReaderGroupName_Placeholder_AddDataSetReader((int) 17355L),
-  PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup((int) 17356L),
-  PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup((int) 17359L),
-  PublishSubscribe_ConnectionName_Placeholder_RemoveGroup((int) 17362L),
   PublishSubscribe_SetSecurityKeys((int) 17364L),
   PublishSubscribe_AddConnection((int) 17366L),
   PublishSubscribe_RemoveConnection((int) 17369L),
@@ -723,16 +487,12 @@ public enum OpcuaNodeIdServicesMethod {
   KeyCredentialConfigurationFolderType_ServiceName_Placeholder_UpdateCredential((int) 17519L),
   KeyCredentialConfigurationFolderType_ServiceName_Placeholder_DeleteCredential((int) 17521L),
   KeyCredentialConfigurationFolderType_CreateCredential((int) 17522L),
-  KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey((int) 17525L),
   KeyCredentialConfiguration_CreateCredential((int) 17528L),
   GetEncryptingKeyMethodType((int) 17531L),
   KeyCredentialConfigurationType_GetEncryptingKey((int) 17534L),
   PubSubConnectionTypeAddWriterGroupMethodType((int) 17561L),
   PubSubConnectionAddReaderGroupGroupMethodType((int) 17630L),
   FileDirectoryType_FileDirectoryName_Placeholder_DeleteFileSystemObject((int) 17718L),
-  FileSystem_FileDirectoryName_Placeholder_DeleteFileSystemObject((int) 17722L),
-  WriterGroupType_Status_Enable((int) 17734L),
-  WriterGroupType_Status_Disable((int) 17735L),
   WriterGroupType_DataSetWriterName_Placeholder_Status_Enable((int) 17751L),
   WriterGroupType_DataSetWriterName_Placeholder_Status_Disable((int) 17752L),
   WriterGroupType_DataSetWriterName_Placeholder_Diagnostics_Reset((int) 17765L),
@@ -743,138 +503,24 @@ public enum OpcuaNodeIdServicesMethod {
   AlarmGroupType_AlarmConditionInstance_Placeholder_Unsuppress((int) 17875L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService((int) 17876L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService((int) 17877L),
-  LimitAlarmType_Unsuppress((int) 17882L),
-  LimitAlarmType_RemoveFromService((int) 17883L),
-  LimitAlarmType_PlaceInService((int) 17884L),
-  ExclusiveLimitAlarmType_Unsuppress((int) 17889L),
-  ExclusiveLimitAlarmType_RemoveFromService((int) 17890L),
-  ExclusiveLimitAlarmType_PlaceInService((int) 17891L),
-  NonExclusiveLimitAlarmType_Unsuppress((int) 17896L),
-  NonExclusiveLimitAlarmType_RemoveFromService((int) 17897L),
-  NonExclusiveLimitAlarmType_PlaceInService((int) 17898L),
-  NonExclusiveLevelAlarmType_RemoveFromService((int) 17904L),
-  NonExclusiveLevelAlarmType_PlaceInService((int) 17905L),
-  ExclusiveLevelAlarmType_Unsuppress((int) 17910L),
-  ExclusiveLevelAlarmType_RemoveFromService((int) 17911L),
-  ExclusiveLevelAlarmType_PlaceInService((int) 17912L),
-  NonExclusiveDeviationAlarmType_Unsuppress((int) 17917L),
-  NonExclusiveDeviationAlarmType_RemoveFromService((int) 17918L),
-  NonExclusiveDeviationAlarmType_PlaceInService((int) 17919L),
-  NonExclusiveRateOfChangeAlarmType_Unsuppress((int) 17924L),
-  NonExclusiveRateOfChangeAlarmType_RemoveFromService((int) 17925L),
-  NonExclusiveRateOfChangeAlarmType_PlaceInService((int) 17926L),
-  ExclusiveDeviationAlarmType_Unsuppress((int) 17931L),
-  ExclusiveDeviationAlarmType_RemoveFromService((int) 17932L),
-  ExclusiveDeviationAlarmType_PlaceInService((int) 17933L),
-  ExclusiveRateOfChangeAlarmType_Unsuppress((int) 17938L),
-  ExclusiveRateOfChangeAlarmType_RemoveFromService((int) 17939L),
-  ExclusiveRateOfChangeAlarmType_PlaceInService((int) 17940L),
-  DiscreteAlarmType_Unsuppress((int) 17945L),
-  DiscreteAlarmType_RemoveFromService((int) 17946L),
-  DiscreteAlarmType_PlaceInService((int) 17947L),
-  OffNormalAlarmType_Unsuppress((int) 17952L),
-  OffNormalAlarmType_RemoveFromService((int) 17953L),
-  OffNormalAlarmType_PlaceInService((int) 17954L),
-  SystemOffNormalAlarmType_Unsuppress((int) 17959L),
-  SystemOffNormalAlarmType_RemoveFromService((int) 17960L),
-  SystemOffNormalAlarmType_PlaceInService((int) 17961L),
-  TripAlarmType_Unsuppress((int) 17966L),
-  TripAlarmType_RemoveFromService((int) 17967L),
-  TripAlarmType_PlaceInService((int) 17968L),
   WriterGroupType_AddDataSetWriter((int) 17969L),
-  CertificateExpirationAlarmType_Unsuppress((int) 17973L),
-  CertificateExpirationAlarmType_RemoveFromService((int) 17974L),
-  CertificateExpirationAlarmType_PlaceInService((int) 17975L),
-  DiscrepancyAlarmType_Unsuppress((int) 17980L),
-  DiscrepancyAlarmType_RemoveFromService((int) 17981L),
-  DiscrepancyAlarmType_PlaceInService((int) 17982L),
   WriterGroupType_RemoveDataSetWriter((int) 17992L),
   PubSubGroupTypeAddWriterMethodType((int) 17994L),
   KeyCredentialConfigurationType_UpdateCredential((int) 18006L),
   KeyCredentialConfigurationType_DeleteCredential((int) 18008L),
   KeyCredentialUpdateMethodType((int) 18009L),
-  ReaderGroupType_Status_Enable((int) 18074L),
-  ReaderGroupType_Status_Disable((int) 18075L),
   ReaderGroupType_DataSetReaderName_Placeholder_Status_Enable((int) 18090L),
   ReaderGroupType_DataSetReaderName_Placeholder_Status_Disable((int) 18091L),
   ReaderGroupType_DataSetReaderName_Placeholder_Diagnostics_Reset((int) 18104L),
-  KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential((int) 18161L),
-  KeyCredentialConfiguration_ServiceName_Placeholder_DeleteCredential((int) 18163L),
   AlarmConditionType_Reset((int) 18199L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_Reset((int) 18212L),
-  LimitAlarmType_Reset((int) 18222L),
-  ExclusiveLimitAlarmType_Reset((int) 18232L),
-  NonExclusiveLimitAlarmType_Reset((int) 18242L),
-  NonExclusiveLevelAlarmType_Unsuppress((int) 18255L),
-  NonExclusiveLevelAlarmType_Reset((int) 18256L),
-  ExclusiveLevelAlarmType_Reset((int) 18266L),
-  NonExclusiveDeviationAlarmType_Reset((int) 18276L),
-  NonExclusiveRateOfChangeAlarmType_Reset((int) 18286L),
-  ExclusiveDeviationAlarmType_Reset((int) 18296L),
-  ExclusiveRateOfChangeAlarmType_Reset((int) 18306L),
-  DiscreteAlarmType_Reset((int) 18316L),
-  OffNormalAlarmType_Reset((int) 18326L),
-  SystemOffNormalAlarmType_Reset((int) 18336L),
-  TripAlarmType_Reset((int) 18346L),
-  InstrumentDiagnosticAlarmType_Disable((int) 18380L),
-  InstrumentDiagnosticAlarmType_Enable((int) 18381L),
-  InstrumentDiagnosticAlarmType_AddComment((int) 18382L),
-  InstrumentDiagnosticAlarmType_ConditionRefresh((int) 18384L),
-  InstrumentDiagnosticAlarmType_ConditionRefresh2((int) 18386L),
-  InstrumentDiagnosticAlarmType_Acknowledge((int) 18406L),
-  InstrumentDiagnosticAlarmType_Confirm((int) 18408L),
-  InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve((int) 18453L),
-  InstrumentDiagnosticAlarmType_ShelvingState_Unshelve((int) 18455L),
-  InstrumentDiagnosticAlarmType_ShelvingState_OneShotShelve((int) 18456L),
-  InstrumentDiagnosticAlarmType_Silence((int) 18489L),
-  InstrumentDiagnosticAlarmType_Suppress((int) 18490L),
-  InstrumentDiagnosticAlarmType_Unsuppress((int) 18491L),
-  InstrumentDiagnosticAlarmType_RemoveFromService((int) 18492L),
-  InstrumentDiagnosticAlarmType_PlaceInService((int) 18493L),
-  InstrumentDiagnosticAlarmType_Reset((int) 18494L),
-  SystemDiagnosticAlarmType_Disable((int) 18529L),
-  SystemDiagnosticAlarmType_Enable((int) 18530L),
-  SystemDiagnosticAlarmType_AddComment((int) 18531L),
-  SystemDiagnosticAlarmType_ConditionRefresh((int) 18533L),
-  SystemDiagnosticAlarmType_ConditionRefresh2((int) 18535L),
-  SystemDiagnosticAlarmType_Acknowledge((int) 18555L),
-  SystemDiagnosticAlarmType_Confirm((int) 18557L),
-  SystemDiagnosticAlarmType_ShelvingState_TimedShelve((int) 18602L),
-  SystemDiagnosticAlarmType_ShelvingState_Unshelve((int) 18604L),
-  SystemDiagnosticAlarmType_ShelvingState_OneShotShelve((int) 18605L),
-  SystemDiagnosticAlarmType_Silence((int) 18638L),
-  SystemDiagnosticAlarmType_Suppress((int) 18639L),
-  SystemDiagnosticAlarmType_Unsuppress((int) 18640L),
-  SystemDiagnosticAlarmType_RemoveFromService((int) 18641L),
-  SystemDiagnosticAlarmType_PlaceInService((int) 18642L),
-  SystemDiagnosticAlarmType_Reset((int) 18643L),
-  CertificateExpirationAlarmType_Reset((int) 18654L),
-  DiscrepancyAlarmType_Reset((int) 18664L),
   AlarmMetricsType_Reset((int) 18666L),
   PublishSubscribeType_ConnectionName_Placeholder_Diagnostics_Reset((int) 18679L),
   PublishSubscribeType_Diagnostics_Reset((int) 18727L),
   PublishedDataSetType_DataSetWriterName_Placeholder_Diagnostics_Reset((int) 18883L),
-  PublishedDataItemsType_DataSetWriterName_Placeholder_Diagnostics_Reset((int) 18942L),
-  PublishedEventsType_DataSetWriterName_Placeholder_Diagnostics_Reset((int) 19001L),
   PubSubConnectionType_WriterGroupName_Placeholder_Diagnostics_Reset((int) 19119L),
   PubSubConnectionType_ReaderGroupName_Placeholder_Diagnostics_Reset((int) 19188L),
   PubSubConnectionType_Diagnostics_Reset((int) 19253L),
-  TrustListOutOfDateAlarmType_Disable((int) 19330L),
-  TrustListOutOfDateAlarmType_Enable((int) 19331L),
-  TrustListOutOfDateAlarmType_AddComment((int) 19332L),
-  TrustListOutOfDateAlarmType_ConditionRefresh((int) 19334L),
-  TrustListOutOfDateAlarmType_ConditionRefresh2((int) 19336L),
-  TrustListOutOfDateAlarmType_Acknowledge((int) 19356L),
-  TrustListOutOfDateAlarmType_Confirm((int) 19358L),
-  TrustListOutOfDateAlarmType_ShelvingState_TimedShelve((int) 19403L),
-  TrustListOutOfDateAlarmType_ShelvingState_Unshelve((int) 19405L),
-  TrustListOutOfDateAlarmType_ShelvingState_OneShotShelve((int) 19406L),
-  TrustListOutOfDateAlarmType_Silence((int) 19439L),
-  TrustListOutOfDateAlarmType_Suppress((int) 19440L),
-  TrustListOutOfDateAlarmType_Unsuppress((int) 19441L),
-  TrustListOutOfDateAlarmType_RemoveFromService((int) 19442L),
-  TrustListOutOfDateAlarmType_PlaceInService((int) 19443L),
-  TrustListOutOfDateAlarmType_Reset((int) 19444L),
   CertificateGroupType_CertificateExpired_Disable((int) 19483L),
   CertificateGroupType_CertificateExpired_Enable((int) 19484L),
   CertificateGroupType_CertificateExpired_AddComment((int) 19485L),
@@ -883,12 +529,6 @@ public enum OpcuaNodeIdServicesMethod {
   DataSetWriterType_Diagnostics_Reset((int) 19562L),
   DataSetReaderType_Diagnostics_Reset((int) 19621L),
   PubSubDiagnosticsType_Reset((int) 19689L),
-  PubSubDiagnosticsRootType_Reset((int) 19744L),
-  PubSubDiagnosticsConnectionType_Reset((int) 19798L),
-  PubSubDiagnosticsWriterGroupType_Reset((int) 19846L),
-  PubSubDiagnosticsReaderGroupType_Reset((int) 19915L),
-  PubSubDiagnosticsDataSetWriterType_Reset((int) 19980L),
-  PubSubDiagnosticsDataSetReaderType_Reset((int) 20039L),
   CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve((int) 20097L),
   CertificateGroupType_CertificateExpired_ShelvingState_Unshelve((int) 20099L),
   CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve((int) 20100L),
@@ -1397,11 +1037,8 @@ public enum OpcuaNodeIdServicesMethod {
   AliasNameCategoryType_SubAliasNameCategories_Placeholder_FindAlias((int) 23459L),
   AliasNameCategoryType_FindAlias((int) 23462L),
   FindAliasMethodType((int) 23465L),
-  Aliases_SubAliasNameCategories_Placeholder_FindAlias((int) 23473L),
   Aliases_FindAlias((int) 23476L),
-  TagVariables_SubAliasNameCategories_Placeholder_FindAlias((int) 23482L),
   TagVariables_FindAlias((int) 23485L),
-  Topics_SubAliasNameCategories_Placeholder_FindAlias((int) 23491L),
   Topics_FindAlias((int) 23494L),
   CertificateGroupType_GetRejectedList((int) 23526L),
   CertificateGroupFolderType_DefaultApplicationGroup_GetRejectedList((int) 23529L),
@@ -1471,96 +1108,6 @@ public enum OpcuaNodeIdServicesMethod {
   AlarmGroupType_AlarmConditionInstance_Placeholder_RemoveFromService2((int) 24332L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_PlaceInService2((int) 24334L),
   AlarmGroupType_AlarmConditionInstance_Placeholder_Reset2((int) 24336L),
-  LimitAlarmType_Suppress2((int) 24338L),
-  LimitAlarmType_Unsuppress2((int) 24340L),
-  LimitAlarmType_RemoveFromService2((int) 24342L),
-  LimitAlarmType_PlaceInService2((int) 24344L),
-  LimitAlarmType_Reset2((int) 24346L),
-  ExclusiveLimitAlarmType_Suppress2((int) 24348L),
-  ExclusiveLimitAlarmType_Unsuppress2((int) 24350L),
-  ExclusiveLimitAlarmType_RemoveFromService2((int) 24352L),
-  ExclusiveLimitAlarmType_PlaceInService2((int) 24354L),
-  ExclusiveLimitAlarmType_Reset2((int) 24356L),
-  NonExclusiveLimitAlarmType_Suppress2((int) 24358L),
-  NonExclusiveLimitAlarmType_Unsuppress2((int) 24360L),
-  NonExclusiveLimitAlarmType_RemoveFromService2((int) 24362L),
-  NonExclusiveLimitAlarmType_PlaceInService2((int) 24364L),
-  NonExclusiveLimitAlarmType_Reset2((int) 24366L),
-  NonExclusiveLevelAlarmType_Suppress2((int) 24368L),
-  NonExclusiveLevelAlarmType_Unsuppress2((int) 24370L),
-  NonExclusiveLevelAlarmType_RemoveFromService2((int) 24372L),
-  NonExclusiveLevelAlarmType_PlaceInService2((int) 24374L),
-  NonExclusiveLevelAlarmType_Reset2((int) 24376L),
-  ExclusiveLevelAlarmType_Suppress2((int) 24378L),
-  ExclusiveLevelAlarmType_Unsuppress2((int) 24380L),
-  ExclusiveLevelAlarmType_RemoveFromService2((int) 24382L),
-  ExclusiveLevelAlarmType_PlaceInService2((int) 24384L),
-  ExclusiveLevelAlarmType_Reset2((int) 24386L),
-  NonExclusiveDeviationAlarmType_Suppress2((int) 24388L),
-  NonExclusiveDeviationAlarmType_Unsuppress2((int) 24390L),
-  NonExclusiveDeviationAlarmType_RemoveFromService2((int) 24392L),
-  NonExclusiveDeviationAlarmType_PlaceInService2((int) 24394L),
-  NonExclusiveDeviationAlarmType_Reset2((int) 24396L),
-  NonExclusiveRateOfChangeAlarmType_Suppress2((int) 24398L),
-  NonExclusiveRateOfChangeAlarmType_Unsuppress2((int) 24400L),
-  NonExclusiveRateOfChangeAlarmType_RemoveFromService2((int) 24402L),
-  NonExclusiveRateOfChangeAlarmType_PlaceInService2((int) 24404L),
-  NonExclusiveRateOfChangeAlarmType_Reset2((int) 24406L),
-  ExclusiveDeviationAlarmType_Suppress2((int) 24408L),
-  ExclusiveDeviationAlarmType_Unsuppress2((int) 24410L),
-  ExclusiveDeviationAlarmType_RemoveFromService2((int) 24412L),
-  ExclusiveDeviationAlarmType_PlaceInService2((int) 24414L),
-  ExclusiveDeviationAlarmType_Reset2((int) 24416L),
-  ExclusiveRateOfChangeAlarmType_Suppress2((int) 24418L),
-  ExclusiveRateOfChangeAlarmType_Unsuppress2((int) 24420L),
-  ExclusiveRateOfChangeAlarmType_RemoveFromService2((int) 24422L),
-  ExclusiveRateOfChangeAlarmType_PlaceInService2((int) 24424L),
-  ExclusiveRateOfChangeAlarmType_Reset2((int) 24426L),
-  DiscreteAlarmType_Suppress2((int) 24428L),
-  DiscreteAlarmType_Unsuppress2((int) 24430L),
-  DiscreteAlarmType_RemoveFromService2((int) 24432L),
-  DiscreteAlarmType_PlaceInService2((int) 24434L),
-  DiscreteAlarmType_Reset2((int) 24436L),
-  OffNormalAlarmType_Suppress2((int) 24438L),
-  OffNormalAlarmType_Unsuppress2((int) 24440L),
-  OffNormalAlarmType_RemoveFromService2((int) 24442L),
-  OffNormalAlarmType_PlaceInService2((int) 24444L),
-  OffNormalAlarmType_Reset2((int) 24446L),
-  SystemOffNormalAlarmType_Suppress2((int) 24448L),
-  SystemOffNormalAlarmType_Unsuppress2((int) 24450L),
-  SystemOffNormalAlarmType_RemoveFromService2((int) 24452L),
-  SystemOffNormalAlarmType_PlaceInService2((int) 24454L),
-  SystemOffNormalAlarmType_Reset2((int) 24456L),
-  TripAlarmType_Suppress2((int) 24458L),
-  TripAlarmType_Unsuppress2((int) 24460L),
-  TripAlarmType_RemoveFromService2((int) 24462L),
-  TripAlarmType_PlaceInService2((int) 24464L),
-  TripAlarmType_Reset2((int) 24466L),
-  InstrumentDiagnosticAlarmType_Suppress2((int) 24468L),
-  InstrumentDiagnosticAlarmType_Unsuppress2((int) 24470L),
-  InstrumentDiagnosticAlarmType_RemoveFromService2((int) 24472L),
-  InstrumentDiagnosticAlarmType_PlaceInService2((int) 24474L),
-  InstrumentDiagnosticAlarmType_Reset2((int) 24476L),
-  SystemDiagnosticAlarmType_Suppress2((int) 24478L),
-  SystemDiagnosticAlarmType_Unsuppress2((int) 24480L),
-  SystemDiagnosticAlarmType_RemoveFromService2((int) 24482L),
-  SystemDiagnosticAlarmType_PlaceInService2((int) 24484L),
-  SystemDiagnosticAlarmType_Reset2((int) 24486L),
-  CertificateExpirationAlarmType_Suppress2((int) 24488L),
-  CertificateExpirationAlarmType_Unsuppress2((int) 24490L),
-  CertificateExpirationAlarmType_RemoveFromService2((int) 24492L),
-  CertificateExpirationAlarmType_PlaceInService2((int) 24494L),
-  CertificateExpirationAlarmType_Reset2((int) 24496L),
-  DiscrepancyAlarmType_Suppress2((int) 24498L),
-  DiscrepancyAlarmType_Unsuppress2((int) 24500L),
-  DiscrepancyAlarmType_RemoveFromService2((int) 24502L),
-  DiscrepancyAlarmType_PlaceInService2((int) 24504L),
-  DiscrepancyAlarmType_Reset2((int) 24506L),
-  TrustListOutOfDateAlarmType_Suppress2((int) 24508L),
-  TrustListOutOfDateAlarmType_Unsuppress2((int) 24510L),
-  TrustListOutOfDateAlarmType_RemoveFromService2((int) 24512L),
-  TrustListOutOfDateAlarmType_PlaceInService2((int) 24514L),
-  TrustListOutOfDateAlarmType_Reset2((int) 24516L),
   CertificateGroupType_CertificateExpired_Suppress2((int) 24518L),
   CertificateGroupType_CertificateExpired_Unsuppress2((int) 24520L),
   CertificateGroupType_CertificateExpired_RemoveFromService2((int) 24522L),
@@ -1753,78 +1300,6 @@ public enum OpcuaNodeIdServicesMethod {
   ShelvedStateMachineType_TimedShelve2((int) 24756L),
   ShelvedStateMachineType_Unshelve2((int) 24758L),
   ShelvedStateMachineType_OneShotShelve2((int) 24760L),
-  LimitAlarmType_ShelvingState_TimedShelve2((int) 24762L),
-  LimitAlarmType_ShelvingState_Unshelve2((int) 24764L),
-  LimitAlarmType_ShelvingState_OneShotShelve2((int) 24766L),
-  LimitAlarmType_GetGroupMemberships((int) 24768L),
-  ExclusiveLimitAlarmType_ShelvingState_TimedShelve2((int) 24778L),
-  ExclusiveLimitAlarmType_ShelvingState_Unshelve2((int) 24780L),
-  ExclusiveLimitAlarmType_ShelvingState_OneShotShelve2((int) 24782L),
-  ExclusiveLimitAlarmType_GetGroupMemberships((int) 24784L),
-  NonExclusiveLimitAlarmType_ShelvingState_TimedShelve2((int) 24794L),
-  NonExclusiveLimitAlarmType_ShelvingState_Unshelve2((int) 24796L),
-  NonExclusiveLimitAlarmType_ShelvingState_OneShotShelve2((int) 24798L),
-  NonExclusiveLimitAlarmType_GetGroupMemberships((int) 24800L),
-  NonExclusiveLevelAlarmType_ShelvingState_TimedShelve2((int) 24810L),
-  NonExclusiveLevelAlarmType_ShelvingState_Unshelve2((int) 24812L),
-  NonExclusiveLevelAlarmType_ShelvingState_OneShotShelve2((int) 24814L),
-  NonExclusiveLevelAlarmType_GetGroupMemberships((int) 24816L),
-  ExclusiveLevelAlarmType_ShelvingState_TimedShelve2((int) 24826L),
-  ExclusiveLevelAlarmType_ShelvingState_Unshelve2((int) 24828L),
-  ExclusiveLevelAlarmType_ShelvingState_OneShotShelve2((int) 24830L),
-  ExclusiveLevelAlarmType_GetGroupMemberships((int) 24832L),
-  NonExclusiveDeviationAlarmType_ShelvingState_TimedShelve2((int) 24842L),
-  NonExclusiveDeviationAlarmType_ShelvingState_Unshelve2((int) 24844L),
-  NonExclusiveDeviationAlarmType_ShelvingState_OneShotShelve2((int) 24846L),
-  NonExclusiveDeviationAlarmType_GetGroupMemberships((int) 24848L),
-  NonExclusiveRateOfChangeAlarmType_ShelvingState_TimedShelve2((int) 24858L),
-  NonExclusiveRateOfChangeAlarmType_ShelvingState_Unshelve2((int) 24860L),
-  NonExclusiveRateOfChangeAlarmType_ShelvingState_OneShotShelve2((int) 24862L),
-  NonExclusiveRateOfChangeAlarmType_GetGroupMemberships((int) 24864L),
-  ExclusiveDeviationAlarmType_ShelvingState_TimedShelve2((int) 24874L),
-  ExclusiveDeviationAlarmType_ShelvingState_Unshelve2((int) 24876L),
-  ExclusiveDeviationAlarmType_ShelvingState_OneShotShelve2((int) 24878L),
-  ExclusiveDeviationAlarmType_GetGroupMemberships((int) 24880L),
-  ExclusiveRateOfChangeAlarmType_ShelvingState_TimedShelve2((int) 24890L),
-  ExclusiveRateOfChangeAlarmType_ShelvingState_Unshelve2((int) 24892L),
-  ExclusiveRateOfChangeAlarmType_ShelvingState_OneShotShelve2((int) 24894L),
-  ExclusiveRateOfChangeAlarmType_GetGroupMemberships((int) 24896L),
-  DiscreteAlarmType_ShelvingState_TimedShelve2((int) 24906L),
-  DiscreteAlarmType_ShelvingState_Unshelve2((int) 24908L),
-  DiscreteAlarmType_ShelvingState_OneShotShelve2((int) 24910L),
-  DiscreteAlarmType_GetGroupMemberships((int) 24912L),
-  OffNormalAlarmType_ShelvingState_TimedShelve2((int) 24914L),
-  OffNormalAlarmType_ShelvingState_Unshelve2((int) 24916L),
-  OffNormalAlarmType_ShelvingState_OneShotShelve2((int) 24918L),
-  OffNormalAlarmType_GetGroupMemberships((int) 24920L),
-  SystemOffNormalAlarmType_ShelvingState_TimedShelve2((int) 24922L),
-  SystemOffNormalAlarmType_ShelvingState_Unshelve2((int) 24924L),
-  SystemOffNormalAlarmType_ShelvingState_OneShotShelve2((int) 24926L),
-  SystemOffNormalAlarmType_GetGroupMemberships((int) 24928L),
-  TripAlarmType_ShelvingState_TimedShelve2((int) 24930L),
-  TripAlarmType_ShelvingState_Unshelve2((int) 24932L),
-  TripAlarmType_ShelvingState_OneShotShelve2((int) 24934L),
-  TripAlarmType_GetGroupMemberships((int) 24936L),
-  InstrumentDiagnosticAlarmType_ShelvingState_TimedShelve2((int) 24938L),
-  InstrumentDiagnosticAlarmType_ShelvingState_Unshelve2((int) 24940L),
-  InstrumentDiagnosticAlarmType_ShelvingState_OneShotShelve2((int) 24942L),
-  InstrumentDiagnosticAlarmType_GetGroupMemberships((int) 24944L),
-  SystemDiagnosticAlarmType_ShelvingState_TimedShelve2((int) 24946L),
-  SystemDiagnosticAlarmType_ShelvingState_Unshelve2((int) 24948L),
-  SystemDiagnosticAlarmType_ShelvingState_OneShotShelve2((int) 24950L),
-  SystemDiagnosticAlarmType_GetGroupMemberships((int) 24952L),
-  CertificateExpirationAlarmType_ShelvingState_TimedShelve2((int) 24954L),
-  CertificateExpirationAlarmType_ShelvingState_Unshelve2((int) 24956L),
-  CertificateExpirationAlarmType_ShelvingState_OneShotShelve2((int) 24958L),
-  CertificateExpirationAlarmType_GetGroupMemberships((int) 24960L),
-  DiscrepancyAlarmType_ShelvingState_TimedShelve2((int) 24962L),
-  DiscrepancyAlarmType_ShelvingState_Unshelve2((int) 24964L),
-  DiscrepancyAlarmType_ShelvingState_OneShotShelve2((int) 24966L),
-  DiscrepancyAlarmType_GetGroupMemberships((int) 24968L),
-  TrustListOutOfDateAlarmType_ShelvingState_TimedShelve2((int) 24970L),
-  TrustListOutOfDateAlarmType_ShelvingState_Unshelve2((int) 24972L),
-  TrustListOutOfDateAlarmType_ShelvingState_OneShotShelve2((int) 24974L),
-  TrustListOutOfDateAlarmType_GetGroupMemberships((int) 24976L),
   CertificateGroupType_CertificateExpired_ShelvingState_TimedShelve2((int) 24978L),
   CertificateGroupType_CertificateExpired_ShelvingState_Unshelve2((int) 24980L),
   CertificateGroupType_CertificateExpired_ShelvingState_OneShotShelve2((int) 24982L),
@@ -2024,12 +1499,6 @@ public enum OpcuaNodeIdServicesMethod {
   RemovePushTargetMethodType((int) 25379L),
   AddPushTargetFolderMethodType((int) 25381L),
   RemovePushTargetFolderMethodType((int) 25384L),
-  PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder((int) 25386L),
-  PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder((int) 25389L),
-  PublishSubscribeType_KeyPushTargets_AddPushTarget((int) 25393L),
-  PublishSubscribeType_KeyPushTargets_RemovePushTarget((int) 25396L),
-  PublishSubscribeType_KeyPushTargets_AddPushTargetFolder((int) 25398L),
-  PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder((int) 25401L),
   PublishSubscribeType_PubSubConfiguration_Open((int) 25411L),
   PublishSubscribeType_PubSubConfiguration_Close((int) 25414L),
   PublishSubscribeType_PubSubConfiguration_Read((int) 25416L),
@@ -2052,12 +1521,6 @@ public enum OpcuaNodeIdServicesMethod {
   PublishSubscribe_PubSubConfiguration_SetPosition((int) 25472L),
   PublishSubscribe_PubSubConfiguration_ReserveIds((int) 25474L),
   PublishSubscribe_PubSubConfiguration_CloseAndUpdate((int) 25477L),
-  PubSubConfigurationType_Open((int) 25490L),
-  PubSubConfigurationType_Close((int) 25493L),
-  PubSubConfigurationType_Read((int) 25495L),
-  PubSubConfigurationType_Write((int) 25498L),
-  PubSubConfigurationType_GetPosition((int) 25500L),
-  PubSubConfigurationType_SetPosition((int) 25503L),
   PubSubConfigurationType_ReserveIds((int) 25505L),
   PubSubConfigurationType_CloseAndUpdate((int) 25508L),
   PubSubConfigurationTypeReserveIdsMethodType((int) 25511L),
@@ -2096,350 +1559,8 @@ public enum OpcuaNodeIdServicesMethod {
   ServerConfigurationType_ResetToServerDefaults((int) 25699L),
   ServerConfiguration_CancelChanges((int) 25708L),
   ServerConfiguration_ResetToServerDefaults((int) 25709L),
-  ServerConfiguration_SetAdminPassword((int) 25710L),
   RequestTicketsMethodType((int) 25727L),
   SetRegistrarEndpointsMethodType((int) 25729L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Open(
-      (int) 25742L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Close(
-      (int) 25745L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Read(
-      (int) 25747L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_Write(
-      (int) 25750L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition(
-      (int) 25752L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition(
-      (int) 25755L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks(
-      (int) 25760L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate(
-      (int) 25763L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate(
-      (int) 25766L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate(
-      (int) 25768L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_GetRejectedList(
-      (int) 25772L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable(
-      (int) 25807L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable(
-      (int) 25808L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment(
-      (int) 25809L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge(
-      (int) 25829L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm(
-      (int) 25831L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve(
-      (int) 25876L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2(
-      (int) 25878L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve(
-      (int) 25880L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2(
-      (int) 25881L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve(
-      (int) 25883L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2(
-      (int) 25884L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence(
-      (int) 25917L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress(
-      (int) 25918L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2(
-      (int) 25919L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress(
-      (int) 25921L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2(
-      (int) 25922L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService(
-      (int) 25924L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2(
-      (int) 25925L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService(
-      (int) 25927L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2(
-      (int) 25928L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset(
-      (int) 25930L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2(
-      (int) 25931L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships(
-      (int) 25933L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable(
-      (int) 25973L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable(
-      (int) 25974L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment(
-      (int) 25975L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge(
-      (int) 25995L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm(
-      (int) 25997L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
-      (int) 26042L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
-      (int) 26044L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve(
-      (int) 26046L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
-      (int) 26047L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
-      (int) 26049L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
-      (int) 26050L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence(
-      (int) 26083L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress(
-      (int) 26084L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2(
-      (int) 26085L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress(
-      (int) 26087L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2(
-      (int) 26088L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService(
-      (int) 26090L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2(
-      (int) 26091L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService(
-      (int) 26093L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2(
-      (int) 26094L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset(
-      (int) 26096L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2(
-      (int) 26097L),
-  ApplicationConfigurationType_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships(
-      (int) 26099L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Open((int) 26114L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Close((int) 26117L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Read((int) 26119L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_Write((int) 26122L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition(
-      (int) 26124L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition(
-      (int) 26127L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks(
-      (int) 26132L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate(
-      (int) 26135L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate(
-      (int) 26138L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate(
-      (int) 26140L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_GetRejectedList((int) 26144L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable(
-      (int) 26179L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable(
-      (int) 26180L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment(
-      (int) 26181L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge(
-      (int) 26201L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm(
-      (int) 26203L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve(
-      (int) 26248L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2(
-      (int) 26250L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve(
-      (int) 26252L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2(
-      (int) 26253L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve(
-      (int) 26255L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2(
-      (int) 26256L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence(
-      (int) 26289L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress(
-      (int) 26290L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2(
-      (int) 26291L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress(
-      (int) 26293L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2(
-      (int) 26294L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService(
-      (int) 26296L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2(
-      (int) 26297L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService(
-      (int) 26299L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2(
-      (int) 26300L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset(
-      (int) 26302L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2(
-      (int) 26303L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships(
-      (int) 26305L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable(
-      (int) 26345L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable(
-      (int) 26346L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment(
-      (int) 26347L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge(
-      (int) 26367L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm(
-      (int) 26369L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
-      (int) 26414L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
-      (int) 26416L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve(
-      (int) 26418L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
-      (int) 26419L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
-      (int) 26421L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
-      (int) 26422L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence(
-      (int) 26455L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress(
-      (int) 26456L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2(
-      (int) 26457L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress(
-      (int) 26459L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2(
-      (int) 26460L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService(
-      (int) 26462L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2(
-      (int) 26463L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService(
-      (int) 26465L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2(
-      (int) 26466L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset(
-      (int) 26468L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2(
-      (int) 26469L),
-  ApplicationConfigurationType_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships(
-      (int) 26471L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Open((int) 26486L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Close(
-      (int) 26489L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Read((int) 26491L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_Write(
-      (int) 26494L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition(
-      (int) 26496L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition(
-      (int) 26499L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks(
-      (int) 26504L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate(
-      (int) 26507L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate(
-      (int) 26510L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate(
-      (int) 26512L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_GetRejectedList(
-      (int) 26516L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable(
-      (int) 26551L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable(
-      (int) 26552L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment(
-      (int) 26553L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge(
-      (int) 26573L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm(
-      (int) 26575L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve(
-      (int) 26620L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2(
-      (int) 26622L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve(
-      (int) 26624L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2(
-      (int) 26625L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve(
-      (int) 26627L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2(
-      (int) 26628L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence(
-      (int) 26661L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress(
-      (int) 26662L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2(
-      (int) 26663L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress(
-      (int) 26665L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2(
-      (int) 26666L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService(
-      (int) 26668L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2(
-      (int) 26669L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService(
-      (int) 26671L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2(
-      (int) 26672L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset(
-      (int) 26674L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2(
-      (int) 26675L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships(
-      (int) 26677L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable(
-      (int) 26717L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable(
-      (int) 26718L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment(
-      (int) 26719L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge(
-      (int) 26739L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm(
-      (int) 26741L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
-      (int) 26786L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
-      (int) 26788L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve(
-      (int) 26790L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
-      (int) 26791L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
-      (int) 26793L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
-      (int) 26794L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence(
-      (int) 26827L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress(
-      (int) 26828L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2(
-      (int) 26829L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress(
-      (int) 26831L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2(
-      (int) 26832L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService(
-      (int) 26834L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2(
-      (int) 26835L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService(
-      (int) 26837L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2(
-      (int) 26838L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset(
-      (int) 26840L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2(
-      (int) 26841L),
-  ApplicationConfigurationType_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships(
-      (int) 26843L),
-  ApplicationConfigurationType_UpdateCertificate((int) 26858L),
-  ApplicationConfigurationType_ApplyChanges((int) 26861L),
-  ApplicationConfigurationType_CancelChanges((int) 26862L),
-  ApplicationConfigurationType_CreateSigningRequest((int) 26863L),
-  ApplicationConfigurationType_GetRejectedList((int) 26866L),
-  ApplicationConfigurationType_ResetToServerDefaults((int) 26868L),
   ProvisionableDeviceType_RequestTickets((int) 26873L),
   ProvisionableDeviceType_SetRegistrarEndpoints((int) 26875L),
   ProvisionableDeviceType_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open(
@@ -2792,429 +1913,11 @@ public enum OpcuaNodeIdServicesMethod {
   ProvisionableDeviceType_ApplicationName_Placeholder_ResetToServerDefaults((int) 28015L),
   ProvisionableDevice_RequestTickets((int) 29880L),
   ProvisionableDevice_SetRegistrarEndpoints((int) 29882L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Open(
-      (int) 29896L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Close(
-      (int) 29899L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Read(
-      (int) 29901L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_Write(
-      (int) 29904L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_GetPosition(
-      (int) 29906L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_SetPosition(
-      (int) 29909L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_OpenWithMasks(
-      (int) 29914L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_CloseAndUpdate(
-      (int) 29917L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_AddCertificate(
-      (int) 29920L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustList_RemoveCertificate(
-      (int) 29922L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_GetRejectedList(
-      (int) 29926L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Disable(
-      (int) 29961L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Enable(
-      (int) 29962L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_AddComment(
-      (int) 29963L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Acknowledge(
-      (int) 29983L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Confirm(
-      (int) 29985L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve(
-      (int) 30030L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_TimedShelve2(
-      (int) 30032L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve(
-      (int) 30034L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_Unshelve2(
-      (int) 30035L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve(
-      (int) 30037L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_ShelvingState_OneShotShelve2(
-      (int) 30038L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Silence(
-      (int) 30071L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress(
-      (int) 30072L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Suppress2(
-      (int) 30073L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress(
-      (int) 30075L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Unsuppress2(
-      (int) 30076L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService(
-      (int) 30078L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_RemoveFromService2(
-      (int) 30079L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService(
-      (int) 30081L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_PlaceInService2(
-      (int) 30082L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset(
-      (int) 30084L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_Reset2(
-      (int) 30085L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_CertificateExpired_GetGroupMemberships(
-      (int) 30087L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Disable(
-      (int) 30127L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Enable(
-      (int) 30128L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_AddComment(
-      (int) 30129L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Acknowledge(
-      (int) 30149L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Confirm(
-      (int) 30151L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
-      (int) 30196L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
-      (int) 30198L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve(
-      (int) 30200L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
-      (int) 30201L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
-      (int) 30203L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
-      (int) 30204L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Silence(
-      (int) 30237L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress(
-      (int) 30238L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Suppress2(
-      (int) 30239L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress(
-      (int) 30241L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Unsuppress2(
-      (int) 30242L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService(
-      (int) 30244L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_RemoveFromService2(
-      (int) 30245L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService(
-      (int) 30247L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_PlaceInService2(
-      (int) 30248L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset(
-      (int) 30250L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_Reset2(
-      (int) 30251L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultApplicationGroup_TrustListOutOfDate_GetGroupMemberships(
-      (int) 30253L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Open(
-      (int) 30268L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Close(
-      (int) 30271L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Read(
-      (int) 30273L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_Write(
-      (int) 30276L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_GetPosition(
-      (int) 30278L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_SetPosition(
-      (int) 30281L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_OpenWithMasks(
-      (int) 30286L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_CloseAndUpdate(
-      (int) 30289L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_AddCertificate(
-      (int) 30292L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustList_RemoveCertificate(
-      (int) 30294L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_GetRejectedList(
-      (int) 30298L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Disable(
-      (int) 30333L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Enable(
-      (int) 30334L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_AddComment(
-      (int) 30335L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Acknowledge(
-      (int) 30355L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Confirm(
-      (int) 30357L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve(
-      (int) 30402L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_TimedShelve2(
-      (int) 30404L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve(
-      (int) 30406L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_Unshelve2(
-      (int) 30407L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve(
-      (int) 30409L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_ShelvingState_OneShotShelve2(
-      (int) 30410L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Silence(
-      (int) 30443L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress(
-      (int) 30444L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Suppress2(
-      (int) 30445L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress(
-      (int) 30447L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Unsuppress2(
-      (int) 30448L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService(
-      (int) 30450L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_RemoveFromService2(
-      (int) 30451L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService(
-      (int) 30453L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_PlaceInService2(
-      (int) 30454L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset(
-      (int) 30456L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_Reset2(
-      (int) 30457L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_CertificateExpired_GetGroupMemberships(
-      (int) 30459L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Disable(
-      (int) 30499L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Enable(
-      (int) 30500L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_AddComment(
-      (int) 30501L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Acknowledge(
-      (int) 30521L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Confirm(
-      (int) 30523L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
-      (int) 30568L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
-      (int) 30570L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve(
-      (int) 30572L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
-      (int) 30573L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
-      (int) 30575L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
-      (int) 30576L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Silence(
-      (int) 30609L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress(
-      (int) 30610L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Suppress2(
-      (int) 30611L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress(
-      (int) 30613L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Unsuppress2(
-      (int) 30614L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService(
-      (int) 30616L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_RemoveFromService2(
-      (int) 30617L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService(
-      (int) 30619L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_PlaceInService2(
-      (int) 30620L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset(
-      (int) 30622L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_Reset2(
-      (int) 30623L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultHttpsGroup_TrustListOutOfDate_GetGroupMemberships(
-      (int) 30625L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Open(
-      (int) 30640L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Close(
-      (int) 30643L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Read(
-      (int) 30645L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_Write(
-      (int) 30648L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_GetPosition(
-      (int) 30650L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_SetPosition(
-      (int) 30653L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_OpenWithMasks(
-      (int) 30658L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_CloseAndUpdate(
-      (int) 30661L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_AddCertificate(
-      (int) 30664L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustList_RemoveCertificate(
-      (int) 30666L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_GetRejectedList(
-      (int) 30670L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Disable(
-      (int) 30705L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Enable(
-      (int) 30706L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_AddComment(
-      (int) 30707L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Acknowledge(
-      (int) 30727L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Confirm(
-      (int) 30729L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve(
-      (int) 30774L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_TimedShelve2(
-      (int) 30776L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve(
-      (int) 30778L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_Unshelve2(
-      (int) 30779L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve(
-      (int) 30781L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_ShelvingState_OneShotShelve2(
-      (int) 30782L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Silence(
-      (int) 30815L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress(
-      (int) 30816L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Suppress2(
-      (int) 30817L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress(
-      (int) 30819L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Unsuppress2(
-      (int) 30820L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService(
-      (int) 30822L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_RemoveFromService2(
-      (int) 30823L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService(
-      (int) 30825L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_PlaceInService2(
-      (int) 30826L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset(
-      (int) 30828L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_Reset2(
-      (int) 30829L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_CertificateExpired_GetGroupMemberships(
-      (int) 30831L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Disable(
-      (int) 30871L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Enable(
-      (int) 30872L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_AddComment(
-      (int) 30873L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Acknowledge(
-      (int) 30893L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Confirm(
-      (int) 30895L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve(
-      (int) 30940L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_TimedShelve2(
-      (int) 30942L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve(
-      (int) 30944L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_Unshelve2(
-      (int) 30945L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve(
-      (int) 30947L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_ShelvingState_OneShotShelve2(
-      (int) 30948L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Silence(
-      (int) 30981L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress(
-      (int) 30982L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Suppress2(
-      (int) 30983L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress(
-      (int) 30985L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Unsuppress2(
-      (int) 30986L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService(
-      (int) 30988L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_RemoveFromService2(
-      (int) 30989L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService(
-      (int) 30991L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_PlaceInService2(
-      (int) 30992L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset(
-      (int) 30994L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_Reset2(
-      (int) 30995L),
-  ProvisionableDevice_ApplicationName_Placeholder_CertificateGroups_DefaultUserTokenGroup_TrustListOutOfDate_GetGroupMemberships(
-      (int) 30997L),
-  ProvisionableDevice_ApplicationName_Placeholder_UpdateCertificate((int) 31384L),
-  ProvisionableDevice_ApplicationName_Placeholder_ApplyChanges((int) 31387L),
-  ProvisionableDevice_ApplicationName_Placeholder_CancelChanges((int) 31388L),
-  ProvisionableDevice_ApplicationName_Placeholder_CreateSigningRequest((int) 31389L),
-  ProvisionableDevice_ApplicationName_Placeholder_GetRejectedList((int) 31392L),
-  ProvisionableDevice_ApplicationName_Placeholder_ResetToServerDefaults((int) 31394L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Disable((int) 32098L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Enable((int) 32099L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_AddComment((int) 32100L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Acknowledge((int) 32120L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Confirm((int) 32122L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_ShelvingState_TimedShelve(
-      (int) 32167L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_ShelvingState_TimedShelve2(
-      (int) 32169L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_ShelvingState_Unshelve((int) 32171L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_ShelvingState_Unshelve2(
-      (int) 32172L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_ShelvingState_OneShotShelve(
-      (int) 32174L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_ShelvingState_OneShotShelve2(
-      (int) 32175L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Silence((int) 32208L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Suppress((int) 32209L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Suppress2((int) 32210L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Unsuppress((int) 32212L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Unsuppress2((int) 32213L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_RemoveFromService((int) 32215L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_RemoveFromService2((int) 32216L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_PlaceInService((int) 32218L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_PlaceInService2((int) 32219L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Reset((int) 32221L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_Reset2((int) 32222L),
-  AlarmSuppressionGroupType_AlarmConditionInstance_Placeholder_GetGroupMemberships((int) 32224L),
   GetCertificatesMethodType((int) 32282L),
   ServerConfigurationType_GetCertificates((int) 32296L),
   ServerConfiguration_GetCertificates((int) 32333L),
-  ApplicationConfigurationType_GetCertificates((int) 32346L),
   ProvisionableDeviceType_ApplicationName_Placeholder_GetCertificates((int) 32359L),
-  ProvisionableDevice_ApplicationName_Placeholder_GetCertificates((int) 32372L),
-  DataSetClasses_GetSecurityKeys((int) 32406L),
-  DataSetClasses_GetSecurityGroup((int) 32409L),
-  DataSetClasses_SecurityGroups_AddSecurityGroup((int) 32413L),
-  DataSetClasses_SecurityGroups_RemoveSecurityGroup((int) 32416L),
-  DataSetClasses_SecurityGroups_AddSecurityGroupFolder((int) 32418L),
-  DataSetClasses_SecurityGroups_RemoveSecurityGroupFolder((int) 32421L),
-  DataSetClasses_KeyPushTargets_AddPushTarget((int) 32425L),
-  DataSetClasses_KeyPushTargets_RemovePushTarget((int) 32428L),
-  DataSetClasses_KeyPushTargets_AddPushTargetFolder((int) 32430L),
-  DataSetClasses_KeyPushTargets_RemovePushTargetFolder((int) 32433L),
-  DataSetClasses_ConnectionName_Placeholder_Status_Enable((int) 32450L),
-  DataSetClasses_ConnectionName_Placeholder_Status_Disable((int) 32451L),
-  DataSetClasses_ConnectionName_Placeholder_Diagnostics_Reset((int) 32464L),
-  DataSetClasses_ConnectionName_Placeholder_AddWriterGroup((int) 32500L),
-  DataSetClasses_ConnectionName_Placeholder_AddReaderGroup((int) 32503L),
-  DataSetClasses_ConnectionName_Placeholder_RemoveGroup((int) 32506L),
-  DataSetClasses_SetSecurityKeys((int) 32508L),
-  DataSetClasses_AddConnection((int) 32510L),
-  DataSetClasses_RemoveConnection((int) 32513L),
-  DataSetClasses_PublishedDataSets_AddPublishedDataItems((int) 32516L),
-  DataSetClasses_PublishedDataSets_AddPublishedEvents((int) 32519L),
-  DataSetClasses_PublishedDataSets_AddPublishedDataItemsTemplate((int) 32522L),
-  DataSetClasses_PublishedDataSets_AddPublishedEventsTemplate((int) 32525L),
-  DataSetClasses_PublishedDataSets_RemovePublishedDataSet((int) 32528L),
-  DataSetClasses_PublishedDataSets_AddDataSetFolder((int) 32530L),
-  DataSetClasses_PublishedDataSets_RemoveDataSetFolder((int) 32533L),
-  DataSetClasses_SubscribedDataSets_AddSubscribedDataSet((int) 32536L),
-  DataSetClasses_SubscribedDataSets_RemoveSubscribedDataSet((int) 32539L),
-  DataSetClasses_SubscribedDataSets_AddDataSetFolder((int) 32541L),
-  DataSetClasses_SubscribedDataSets_RemoveDataSetFolder((int) 32544L),
-  DataSetClasses_PubSubConfiguration_Open((int) 32554L),
-  DataSetClasses_PubSubConfiguration_Close((int) 32557L),
-  DataSetClasses_PubSubConfiguration_Read((int) 32559L),
-  DataSetClasses_PubSubConfiguration_Write((int) 32562L),
-  DataSetClasses_PubSubConfiguration_GetPosition((int) 32564L),
-  DataSetClasses_PubSubConfiguration_SetPosition((int) 32567L),
-  DataSetClasses_PubSubConfiguration_ReserveIds((int) 32569L),
-  DataSetClasses_PubSubConfiguration_CloseAndUpdate((int) 32572L),
-  DataSetClasses_Status_Enable((int) 32577L),
-  DataSetClasses_Status_Disable((int) 32578L),
-  DataSetClasses_Diagnostics_Reset((int) 32591L);
+  NonTransparentBackupRedundancyType_Failover((int) 32416L);
   private static final Map<Integer, OpcuaNodeIdServicesMethod> map;
 
   static {

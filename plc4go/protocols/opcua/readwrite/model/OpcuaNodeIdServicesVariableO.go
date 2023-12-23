@@ -68,6 +68,7 @@ const (
 	OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_NamespaceFile_MaxByteStringLength         OpcuaNodeIdServicesVariableO = 24243
 	OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_NamespaceFile_LastModifiedTime            OpcuaNodeIdServicesVariableO = 25199
 	OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ConfigurationVersion                      OpcuaNodeIdServicesVariableO = 25266
+	OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ModelVersion                              OpcuaNodeIdServicesVariableO = 32408
 )
 
 var OpcuaNodeIdServicesVariableOValues []OpcuaNodeIdServicesVariableO
@@ -102,6 +103,7 @@ func init() {
 		OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_NamespaceFile_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_NamespaceFile_LastModifiedTime,
 		OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ConfigurationVersion,
+		OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ModelVersion,
 	}
 }
 
@@ -161,6 +163,8 @@ func OpcuaNodeIdServicesVariableOByValue(value int32) (enum OpcuaNodeIdServicesV
 		return OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_NamespaceFile_LastModifiedTime, true
 	case 25266:
 		return OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ConfigurationVersion, true
+	case 32408:
+		return OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ModelVersion, true
 	}
 	return 0, false
 }
@@ -221,6 +225,8 @@ func OpcuaNodeIdServicesVariableOByName(value string) (enum OpcuaNodeIdServicesV
 		return OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_NamespaceFile_LastModifiedTime, true
 	case "OPCUANamespaceMetadata_ConfigurationVersion":
 		return OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ConfigurationVersion, true
+	case "OPCUANamespaceMetadata_ModelVersion":
+		return OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ModelVersion, true
 	}
 	return 0, false
 }
@@ -342,6 +348,8 @@ func (e OpcuaNodeIdServicesVariableO) PLC4XEnumName() string {
 		return "OPCUANamespaceMetadata_NamespaceFile_LastModifiedTime"
 	case OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ConfigurationVersion:
 		return "OPCUANamespaceMetadata_ConfigurationVersion"
+	case OpcuaNodeIdServicesVariableO_OPCUANamespaceMetadata_ModelVersion:
+		return "OPCUANamespaceMetadata_ModelVersion"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

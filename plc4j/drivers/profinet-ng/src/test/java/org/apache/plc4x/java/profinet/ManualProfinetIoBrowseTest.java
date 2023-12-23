@@ -28,7 +28,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ManualProfinetIoTest {
+public class ManualProfinetIoBrowseTest {
 
     public static void main(String[] args) throws Exception {
         //try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.41")) {
@@ -40,21 +40,8 @@ public class ManualProfinetIoTest {
                 List<PlcBrowseItem> values = plcBrowseResponse.getValues(queryName);
                 for (PlcBrowseItem value : values) {
                     System.out.println(value.getName() + ": " + value.getTag().getAddressString());
-
-                    // If it's an INPUT tag, add it to the subscription request.
-                    if(value.getTag() instanceof ProfinetTag) {
-                        ProfinetTag profinetTag = (ProfinetTag) value.getTag();
-                        if(profinetTag.getDirection() == ProfinetTag.Direction.INPUT) {
-                            subscriptionRequestBuilder.addCyclicTag(value.getName(), value.getTag(), Duration.ofMillis(1000));
-                        }
-                    }
                 }
             }
-
-            // Create and execute the subscription request.
-            PlcSubscriptionRequest subscriptionRequest = subscriptionRequestBuilder.build();
-            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(10000, TimeUnit.MILLISECONDS);
-            System.out.println(subscriptionResponse);
         }
     }
 

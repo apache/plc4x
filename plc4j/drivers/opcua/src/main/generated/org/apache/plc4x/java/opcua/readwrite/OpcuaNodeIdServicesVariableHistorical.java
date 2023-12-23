@@ -37,7 +37,18 @@ public enum OpcuaNodeIdServicesVariableHistorical {
   HistoricalEventFilter((int) 11215L),
   HistoricalDataConfigurationType_StartOfArchive((int) 11499L),
   HistoricalDataConfigurationType_StartOfOnlineArchive((int) 11500L),
-  HistoricalDataConfigurationType_ServerTimestampSupported((int) 19092L);
+  HistoricalDataConfigurationType_ServerTimestampSupported((int) 19092L),
+  HistoricalDataConfigurationType_MaxTimeStoredValues((int) 32619L),
+  HistoricalDataConfigurationType_MaxCountStoredValues((int) 32620L),
+  HistoricalEventConfigurationType_StartOfArchive((int) 32623L),
+  HistoricalEventConfigurationType_StartOfOnlineArchive((int) 32624L),
+  HistoricalExternalEventSourceType_Server((int) 32626L),
+  HistoricalExternalEventSourceType_EndpointUrl((int) 32627L),
+  HistoricalExternalEventSourceType_SecurityMode((int) 32628L),
+  HistoricalExternalEventSourceType_SecurityPolicyUri((int) 32629L),
+  HistoricalExternalEventSourceType_IdentityTokenPolicy((int) 32630L),
+  HistoricalExternalEventSourceType_TransportProfileUri((int) 32631L),
+  HistoricalExternalEventSourceType_HistoricalEventFilter((int) 32632L);
   private static final Map<Integer, OpcuaNodeIdServicesVariableHistorical> map;
 
   static {

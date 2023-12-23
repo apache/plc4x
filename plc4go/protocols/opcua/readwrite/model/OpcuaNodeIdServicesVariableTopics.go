@@ -41,10 +41,9 @@ type IOpcuaNodeIdServicesVariableTopics interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments  OpcuaNodeIdServicesVariableTopics = 23492
-	OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTopics = 23493
-	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments                                     OpcuaNodeIdServicesVariableTopics = 23495
-	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments                                    OpcuaNodeIdServicesVariableTopics = 23496
+	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments  OpcuaNodeIdServicesVariableTopics = 23495
+	OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments OpcuaNodeIdServicesVariableTopics = 23496
+	OpcuaNodeIdServicesVariableTopics_Topics_LastChange                OpcuaNodeIdServicesVariableTopics = 32856
 )
 
 var OpcuaNodeIdServicesVariableTopicsValues []OpcuaNodeIdServicesVariableTopics
@@ -52,37 +51,32 @@ var OpcuaNodeIdServicesVariableTopicsValues []OpcuaNodeIdServicesVariableTopics
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableTopicsValues = []OpcuaNodeIdServicesVariableTopics{
-		OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments,
-		OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments,
 		OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments,
 		OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments,
+		OpcuaNodeIdServicesVariableTopics_Topics_LastChange,
 	}
 }
 
 func OpcuaNodeIdServicesVariableTopicsByValue(value int32) (enum OpcuaNodeIdServicesVariableTopics, ok bool) {
 	switch value {
-	case 23492:
-		return OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case 23493:
-		return OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
 	case 23495:
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments, true
 	case 23496:
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments, true
+	case 32856:
+		return OpcuaNodeIdServicesVariableTopics_Topics_LastChange, true
 	}
 	return 0, false
 }
 
 func OpcuaNodeIdServicesVariableTopicsByName(value string) (enum OpcuaNodeIdServicesVariableTopics, ok bool) {
 	switch value {
-	case "Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments":
-		return OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments, true
-	case "Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments":
-		return OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments, true
 	case "Topics_FindAlias_InputArguments":
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments, true
 	case "Topics_FindAlias_OutputArguments":
 		return OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments, true
+	case "Topics_LastChange":
+		return OpcuaNodeIdServicesVariableTopics_Topics_LastChange, true
 	}
 	return 0, false
 }
@@ -150,14 +144,12 @@ func (e OpcuaNodeIdServicesVariableTopics) SerializeWithWriteBuffer(ctx context.
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableTopics) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments:
-		return "Topics_SubAliasNameCategories_Placeholder_FindAlias_InputArguments"
-	case OpcuaNodeIdServicesVariableTopics_Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments:
-		return "Topics_SubAliasNameCategories_Placeholder_FindAlias_OutputArguments"
 	case OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_InputArguments:
 		return "Topics_FindAlias_InputArguments"
 	case OpcuaNodeIdServicesVariableTopics_Topics_FindAlias_OutputArguments:
 		return "Topics_FindAlias_OutputArguments"
+	case OpcuaNodeIdServicesVariableTopics_Topics_LastChange:
+		return "Topics_LastChange"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

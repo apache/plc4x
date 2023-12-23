@@ -96,6 +96,8 @@ const (
 	OpcuaStatusCode_BadLicenseExpired                                               OpcuaStatusCode = 0x810E0000
 	OpcuaStatusCode_BadLicenseLimitsExceeded                                        OpcuaStatusCode = 0x810F0000
 	OpcuaStatusCode_BadLicenseNotAvailable                                          OpcuaStatusCode = 0x81100000
+	OpcuaStatusCode_BadServerTooBusy                                                OpcuaStatusCode = 0x80EE0000
+	OpcuaStatusCode_GoodPasswordChangeRequired                                      OpcuaStatusCode = 0x00EF0000
 	OpcuaStatusCode_GoodSubscriptionTransferred                                     OpcuaStatusCode = 0x002D0000
 	OpcuaStatusCode_GoodCompletesAsynchronously                                     OpcuaStatusCode = 0x002E0000
 	OpcuaStatusCode_GoodOverload                                                    OpcuaStatusCode = 0x002F0000
@@ -107,6 +109,7 @@ const (
 	OpcuaStatusCode_BadAttributeIdInvalid                                           OpcuaStatusCode = 0x80350000
 	OpcuaStatusCode_BadIndexRangeInvalid                                            OpcuaStatusCode = 0x80360000
 	OpcuaStatusCode_BadIndexRangeNoData                                             OpcuaStatusCode = 0x80370000
+	OpcuaStatusCode_BadIndexRangeDataMismatch                                       OpcuaStatusCode = 0x80EA0000
 	OpcuaStatusCode_BadDataEncodingInvalid                                          OpcuaStatusCode = 0x80380000
 	OpcuaStatusCode_BadDataEncodingUnsupported                                      OpcuaStatusCode = 0x80390000
 	OpcuaStatusCode_BadNotReadable                                                  OpcuaStatusCode = 0x803A0000
@@ -136,6 +139,8 @@ const (
 	OpcuaStatusCode_BadBrowseDirectionInvalid                                       OpcuaStatusCode = 0x804D0000
 	OpcuaStatusCode_BadNodeNotInView                                                OpcuaStatusCode = 0x804E0000
 	OpcuaStatusCode_BadNumericOverflow                                              OpcuaStatusCode = 0x81120000
+	OpcuaStatusCode_BadLocaleNotSupported                                           OpcuaStatusCode = 0x80ED0000
+	OpcuaStatusCode_BadNoValue                                                      OpcuaStatusCode = 0x80F00000
 	OpcuaStatusCode_BadServerUriInvalid                                             OpcuaStatusCode = 0x804F0000
 	OpcuaStatusCode_BadServerNameMissing                                            OpcuaStatusCode = 0x80500000
 	OpcuaStatusCode_BadDiscoveryUrlMissing                                          OpcuaStatusCode = 0x80510000
@@ -223,6 +228,7 @@ const (
 	OpcuaStatusCode_UncertainEngineeringUnitsExceeded                               OpcuaStatusCode = 0x40940000
 	OpcuaStatusCode_UncertainSubNormal                                              OpcuaStatusCode = 0x40950000
 	OpcuaStatusCode_GoodLocalOverride                                               OpcuaStatusCode = 0x00960000
+	OpcuaStatusCode_GoodSubNormal                                                   OpcuaStatusCode = 0x00EB0000
 	OpcuaStatusCode_BadRefreshInProgress                                            OpcuaStatusCode = 0x80970000
 	OpcuaStatusCode_BadConditionAlreadyDisabled                                     OpcuaStatusCode = 0x80980000
 	OpcuaStatusCode_BadConditionAlreadyEnabled                                      OpcuaStatusCode = 0x80CC0000
@@ -260,6 +266,7 @@ const (
 	OpcuaStatusCode_BadTicketRequired                                               OpcuaStatusCode = 0x811F0000
 	OpcuaStatusCode_BadTicketInvalid                                                OpcuaStatusCode = 0x81200000
 	OpcuaStatusCode_BadLocked                                                       OpcuaStatusCode = 0x80E90000
+	OpcuaStatusCode_BadRequiresLock                                                 OpcuaStatusCode = 0x80EC0000
 	OpcuaStatusCode_GoodEdited                                                      OpcuaStatusCode = 0x00DC0000
 	OpcuaStatusCode_GoodPostActionFailed                                            OpcuaStatusCode = 0x00DD0000
 	OpcuaStatusCode_UncertainDominantValueChanged                                   OpcuaStatusCode = 0x40DE0000
@@ -367,6 +374,8 @@ func init() {
 		OpcuaStatusCode_BadLicenseExpired,
 		OpcuaStatusCode_BadLicenseLimitsExceeded,
 		OpcuaStatusCode_BadLicenseNotAvailable,
+		OpcuaStatusCode_BadServerTooBusy,
+		OpcuaStatusCode_GoodPasswordChangeRequired,
 		OpcuaStatusCode_GoodSubscriptionTransferred,
 		OpcuaStatusCode_GoodCompletesAsynchronously,
 		OpcuaStatusCode_GoodOverload,
@@ -378,6 +387,7 @@ func init() {
 		OpcuaStatusCode_BadAttributeIdInvalid,
 		OpcuaStatusCode_BadIndexRangeInvalid,
 		OpcuaStatusCode_BadIndexRangeNoData,
+		OpcuaStatusCode_BadIndexRangeDataMismatch,
 		OpcuaStatusCode_BadDataEncodingInvalid,
 		OpcuaStatusCode_BadDataEncodingUnsupported,
 		OpcuaStatusCode_BadNotReadable,
@@ -407,6 +417,8 @@ func init() {
 		OpcuaStatusCode_BadBrowseDirectionInvalid,
 		OpcuaStatusCode_BadNodeNotInView,
 		OpcuaStatusCode_BadNumericOverflow,
+		OpcuaStatusCode_BadLocaleNotSupported,
+		OpcuaStatusCode_BadNoValue,
 		OpcuaStatusCode_BadServerUriInvalid,
 		OpcuaStatusCode_BadServerNameMissing,
 		OpcuaStatusCode_BadDiscoveryUrlMissing,
@@ -494,6 +506,7 @@ func init() {
 		OpcuaStatusCode_UncertainEngineeringUnitsExceeded,
 		OpcuaStatusCode_UncertainSubNormal,
 		OpcuaStatusCode_GoodLocalOverride,
+		OpcuaStatusCode_GoodSubNormal,
 		OpcuaStatusCode_BadRefreshInProgress,
 		OpcuaStatusCode_BadConditionAlreadyDisabled,
 		OpcuaStatusCode_BadConditionAlreadyEnabled,
@@ -531,6 +544,7 @@ func init() {
 		OpcuaStatusCode_BadTicketRequired,
 		OpcuaStatusCode_BadTicketInvalid,
 		OpcuaStatusCode_BadLocked,
+		OpcuaStatusCode_BadRequiresLock,
 		OpcuaStatusCode_GoodEdited,
 		OpcuaStatusCode_GoodPostActionFailed,
 		OpcuaStatusCode_UncertainDominantValueChanged,
@@ -621,6 +635,10 @@ func OpcuaStatusCodeByValue(value uint32) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_GoodRetransmissionQueueNotSupported, true
 	case 0x00E00000:
 		return OpcuaStatusCode_GoodDependentValueChanged, true
+	case 0x00EB0000:
+		return OpcuaStatusCode_GoodSubNormal, true
+	case 0x00EF0000:
+		return OpcuaStatusCode_GoodPasswordChangeRequired, true
 	case 0x01160000:
 		return OpcuaStatusCode_GoodEdited_DependentValueChanged, true
 	case 0x01170000:
@@ -1075,6 +1093,16 @@ func OpcuaStatusCodeByValue(value uint32) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_BadTransactionPending, true
 	case 0x80E90000:
 		return OpcuaStatusCode_BadLocked, true
+	case 0x80EA0000:
+		return OpcuaStatusCode_BadIndexRangeDataMismatch, true
+	case 0x80EC0000:
+		return OpcuaStatusCode_BadRequiresLock, true
+	case 0x80ED0000:
+		return OpcuaStatusCode_BadLocaleNotSupported, true
+	case 0x80EE0000:
+		return OpcuaStatusCode_BadServerTooBusy, true
+	case 0x80F00000:
+		return OpcuaStatusCode_BadNoValue, true
 	case 0x810D0000:
 		return OpcuaStatusCode_BadCertificateChainIncomplete, true
 	case 0x810E0000:
@@ -1155,6 +1183,10 @@ func OpcuaStatusCodeByName(value string) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_GoodRetransmissionQueueNotSupported, true
 	case "GoodDependentValueChanged":
 		return OpcuaStatusCode_GoodDependentValueChanged, true
+	case "GoodSubNormal":
+		return OpcuaStatusCode_GoodSubNormal, true
+	case "GoodPasswordChangeRequired":
+		return OpcuaStatusCode_GoodPasswordChangeRequired, true
 	case "GoodEdited_DependentValueChanged":
 		return OpcuaStatusCode_GoodEdited_DependentValueChanged, true
 	case "GoodEdited_DominantValueChanged":
@@ -1609,6 +1641,16 @@ func OpcuaStatusCodeByName(value string) (enum OpcuaStatusCode, ok bool) {
 		return OpcuaStatusCode_BadTransactionPending, true
 	case "BadLocked":
 		return OpcuaStatusCode_BadLocked, true
+	case "BadIndexRangeDataMismatch":
+		return OpcuaStatusCode_BadIndexRangeDataMismatch, true
+	case "BadRequiresLock":
+		return OpcuaStatusCode_BadRequiresLock, true
+	case "BadLocaleNotSupported":
+		return OpcuaStatusCode_BadLocaleNotSupported, true
+	case "BadServerTooBusy":
+		return OpcuaStatusCode_BadServerTooBusy, true
+	case "BadNoValue":
+		return OpcuaStatusCode_BadNoValue, true
 	case "BadCertificateChainIncomplete":
 		return OpcuaStatusCode_BadCertificateChainIncomplete, true
 	case "BadLicenseExpired":
@@ -1750,6 +1792,10 @@ func (e OpcuaStatusCode) PLC4XEnumName() string {
 		return "GoodRetransmissionQueueNotSupported"
 	case OpcuaStatusCode_GoodDependentValueChanged:
 		return "GoodDependentValueChanged"
+	case OpcuaStatusCode_GoodSubNormal:
+		return "GoodSubNormal"
+	case OpcuaStatusCode_GoodPasswordChangeRequired:
+		return "GoodPasswordChangeRequired"
 	case OpcuaStatusCode_GoodEdited_DependentValueChanged:
 		return "GoodEdited_DependentValueChanged"
 	case OpcuaStatusCode_GoodEdited_DominantValueChanged:
@@ -2204,6 +2250,16 @@ func (e OpcuaStatusCode) PLC4XEnumName() string {
 		return "BadTransactionPending"
 	case OpcuaStatusCode_BadLocked:
 		return "BadLocked"
+	case OpcuaStatusCode_BadIndexRangeDataMismatch:
+		return "BadIndexRangeDataMismatch"
+	case OpcuaStatusCode_BadRequiresLock:
+		return "BadRequiresLock"
+	case OpcuaStatusCode_BadLocaleNotSupported:
+		return "BadLocaleNotSupported"
+	case OpcuaStatusCode_BadServerTooBusy:
+		return "BadServerTooBusy"
+	case OpcuaStatusCode_BadNoValue:
+		return "BadNoValue"
 	case OpcuaStatusCode_BadCertificateChainIncomplete:
 		return "BadCertificateChainIncomplete"
 	case OpcuaStatusCode_BadLicenseExpired:

@@ -41,11 +41,9 @@ type IOpcuaNodeIdServicesVariableThree interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit                     OpcuaNodeIdServicesVariableThree = 17717
 	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X                              OpcuaNodeIdServicesVariableThree = 18769
 	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y                              OpcuaNodeIdServicesVariableThree = 18770
 	OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z                              OpcuaNodeIdServicesVariableThree = 18771
-	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit       OpcuaNodeIdServicesVariableThree = 18775
 	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X                OpcuaNodeIdServicesVariableThree = 18776
 	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y                OpcuaNodeIdServicesVariableThree = 18777
 	OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Z                OpcuaNodeIdServicesVariableThree = 18778
@@ -54,9 +52,6 @@ const (
 	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_B                         OpcuaNodeIdServicesVariableThree = 18784
 	OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C                         OpcuaNodeIdServicesVariableThree = 18785
 	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation                     OpcuaNodeIdServicesVariableThree = 18792
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant                        OpcuaNodeIdServicesVariableThree = 18793
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame                       OpcuaNodeIdServicesVariableThree = 18794
-	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase                       OpcuaNodeIdServicesVariableThree = 18795
 	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates            OpcuaNodeIdServicesVariableThree = 18796
 	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_LengthUnit OpcuaNodeIdServicesVariableThree = 18797
 	OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_X          OpcuaNodeIdServicesVariableThree = 18798
@@ -73,11 +68,9 @@ var OpcuaNodeIdServicesVariableThreeValues []OpcuaNodeIdServicesVariableThree
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableThreeValues = []OpcuaNodeIdServicesVariableThree{
-		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit,
 		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X,
 		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y,
 		OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z,
-		OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit,
 		OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X,
 		OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y,
 		OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Z,
@@ -86,9 +79,6 @@ func init() {
 		OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_B,
 		OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C,
 		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation,
-		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant,
-		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame,
-		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase,
 		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates,
 		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_LengthUnit,
 		OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_X,
@@ -103,16 +93,12 @@ func init() {
 
 func OpcuaNodeIdServicesVariableThreeByValue(value int32) (enum OpcuaNodeIdServicesVariableThree, ok bool) {
 	switch value {
-	case 17717:
-		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit, true
 	case 18769:
 		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X, true
 	case 18770:
 		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y, true
 	case 18771:
 		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z, true
-	case 18775:
-		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit, true
 	case 18776:
 		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X, true
 	case 18777:
@@ -129,12 +115,6 @@ func OpcuaNodeIdServicesVariableThreeByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C, true
 	case 18792:
 		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation, true
-	case 18793:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant, true
-	case 18794:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame, true
-	case 18795:
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase, true
 	case 18796:
 		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates, true
 	case 18797:
@@ -159,16 +139,12 @@ func OpcuaNodeIdServicesVariableThreeByValue(value int32) (enum OpcuaNodeIdServi
 
 func OpcuaNodeIdServicesVariableThreeByName(value string) (enum OpcuaNodeIdServicesVariableThree, ok bool) {
 	switch value {
-	case "ThreeDVectorType_VectorUnit":
-		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit, true
 	case "ThreeDVectorType_X":
 		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X, true
 	case "ThreeDVectorType_Y":
 		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y, true
 	case "ThreeDVectorType_Z":
 		return OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z, true
-	case "ThreeDCartesianCoordinatesType_LengthUnit":
-		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit, true
 	case "ThreeDCartesianCoordinatesType_X":
 		return OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X, true
 	case "ThreeDCartesianCoordinatesType_Y":
@@ -185,12 +161,6 @@ func OpcuaNodeIdServicesVariableThreeByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableThree_ThreeDOrientationType_C, true
 	case "ThreeDFrameType_Orientation":
 		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation, true
-	case "ThreeDFrameType_Constant":
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant, true
-	case "ThreeDFrameType_BaseFrame":
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame, true
-	case "ThreeDFrameType_FixedBase":
-		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase, true
 	case "ThreeDFrameType_CartesianCoordinates":
 		return OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates, true
 	case "ThreeDFrameType_CartesianCoordinates_LengthUnit":
@@ -276,16 +246,12 @@ func (e OpcuaNodeIdServicesVariableThree) SerializeWithWriteBuffer(ctx context.C
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableThree) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableThree_ThreeDVectorType_VectorUnit:
-		return "ThreeDVectorType_VectorUnit"
 	case OpcuaNodeIdServicesVariableThree_ThreeDVectorType_X:
 		return "ThreeDVectorType_X"
 	case OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Y:
 		return "ThreeDVectorType_Y"
 	case OpcuaNodeIdServicesVariableThree_ThreeDVectorType_Z:
 		return "ThreeDVectorType_Z"
-	case OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_LengthUnit:
-		return "ThreeDCartesianCoordinatesType_LengthUnit"
 	case OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_X:
 		return "ThreeDCartesianCoordinatesType_X"
 	case OpcuaNodeIdServicesVariableThree_ThreeDCartesianCoordinatesType_Y:
@@ -302,12 +268,6 @@ func (e OpcuaNodeIdServicesVariableThree) PLC4XEnumName() string {
 		return "ThreeDOrientationType_C"
 	case OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Orientation:
 		return "ThreeDFrameType_Orientation"
-	case OpcuaNodeIdServicesVariableThree_ThreeDFrameType_Constant:
-		return "ThreeDFrameType_Constant"
-	case OpcuaNodeIdServicesVariableThree_ThreeDFrameType_BaseFrame:
-		return "ThreeDFrameType_BaseFrame"
-	case OpcuaNodeIdServicesVariableThree_ThreeDFrameType_FixedBase:
-		return "ThreeDFrameType_FixedBase"
 	case OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates:
 		return "ThreeDFrameType_CartesianCoordinates"
 	case OpcuaNodeIdServicesVariableThree_ThreeDFrameType_CartesianCoordinates_LengthUnit:
