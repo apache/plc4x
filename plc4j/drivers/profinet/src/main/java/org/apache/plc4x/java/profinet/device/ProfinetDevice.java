@@ -215,8 +215,7 @@ public class ProfinetDevice implements PlcSubscriber {
                                 recordIdAndSend(writeParameters, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
                                 writeParameters.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
-                            // Send a CONTROL packet
-                            // TODO: I assume this tells the PN device that we'll be the new "master"
+                            // Send a CONTROL packet telling the device we're done configuring the connection.
                             case PREMED:
                                 WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
                                 recordIdAndSend(writeParametersEnd, deviceContext.getSourcePort(), deviceContext.getDestinationPort());

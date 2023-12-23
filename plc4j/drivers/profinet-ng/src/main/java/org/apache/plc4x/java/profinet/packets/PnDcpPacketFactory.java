@@ -206,7 +206,8 @@ public class PnDcpPacketFactory {
                 Collections.singletonList(
                     new IODReadRequestHeader((short) 1, (short) 0, 0,
                         new Uuid(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}),
-                        0, 0, 1, 0xF000, 16696,
+                        // * REMARK: It seems that it doesn't matter if we use subSlotNumber 0 or 1, the responses seem to be the same.
+                        0, 0, 0, 0xF000, 16696,
                         new Uuid(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}))
                 ))
         );

@@ -21,24 +21,23 @@ package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ManualProfinetIoTest {
+public class ManualProfinetIoTestAdamPN {
 
     public static void main(String[] args) throws Exception {
-        // WireShark filter: "eth.addr == 88:3f:99:00:06:ef"
-        try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.31")) {
+        // WireShark filter: "eth.addr == 74:fe:48:63:f6:c2"
+        try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://192.168.24.41")) {
             // Create and execute the subscription request.
             PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
                 .addCyclicTagAddress("inputs", "1.1.INPUT.0:BYTE[10]", Duration.ofMillis(400))
                 .addCyclicTagAddress("output", "1.1.OUTPUT.0:DWORD", Duration.ofMillis(400))
                 .build();
-            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(100000, TimeUnit.MILLISECONDS);
+            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(10000, TimeUnit.MILLISECONDS);
             System.out.println(subscriptionResponse);
         }
     }

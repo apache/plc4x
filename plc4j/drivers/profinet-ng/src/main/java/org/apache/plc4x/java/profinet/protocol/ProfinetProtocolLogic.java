@@ -40,7 +40,6 @@ import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseItem;
 import org.apache.plc4x.java.spi.messages.DefaultPlcBrowseResponse;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +49,17 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
 
+    // This is the minimum cycle time defined in the PN Spec (Page 205): 31,25us
+    private static final int NANOS_PER_CYCLE = 31250;
+
     private ProfinetDriverContext profinetDriverContext;
     private ProfinetConfiguration configuration;
+
+    private Integer cycleOffset = null;
+    private boolean connected = false;
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetProtocolLogic.class);
 
@@ -722,6 +726,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                         RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
                         PnDcpPacketFactory.sendApplicationReadyResponse(context, pnChannel, profinetDriverContext, payloadIPv4.getSourcePort(), dceRpc_packet.getActivityUuid(), arUuid, sessionKey);
 
+                        connected = true;
                         // TODO: Prepare the subscription response.
 //                        future.complete(new DefaultPlcSubscriptionResponse(subscriptionRequest, ))
                     });
@@ -732,45 +737,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     // We needed to put the code to expect the ApplicationReady to subscribe before sending,
                     // as the device sends it within 4 ms, and we can't guarantee that we're done setting up
                     // the listener.
-
-                    // TODO: Start sending data.
-                    Thread task = new Thread(() -> {
-                        int curCounterValue = 0;
-                        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
-                        MacAddress srcAddress = new MacAddress(pnChannel.getLocalMacAddress().getAddress());
-                        MacAddress dstAddress = new MacAddress(pnChannel.getRemoteMacAddress().getAddress());
-                        byte[] data = new byte[40];
-                        data[0] = (byte) 0x80;
-                        data[1] = (byte) 0x80;
-                        data[2] = (byte) 0x80;
-                        data[3] = (byte) 0x80;
-                        long nextExecutionTime = System.currentTimeMillis();
-                        System.out.println("Starting Loop");
-                        while(context.getChannel().isOpen()) {
-                            if(nextExecutionTime < System.currentTimeMillis()) {
-                                curCounterValue += 512;
-                                Ethernet_Frame frame = new Ethernet_Frame(
-                                    dstAddress,
-                                    srcAddress,
-                                    new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.INTERNETWORK_CONTROL, false, (short) 0,
-                                        new Ethernet_FramePayload_PnDcp(
-                                            new PnDcp_Pdu_RealTimeCyclic(0x8003,
-                                                new PnIo_CyclicServiceDataUnit(data, (short) 40),
-                                                curCounterValue, false, true,
-                                                true, true, false, true)
-                                        )
-                                    )
-                                );
-                                System.out.println("Sending");
-                                context.sendToWire(frame);
-                                // Send a packet every 16ms
-                                nextExecutionTime += 16;
-                            }
-                        }
-                        System.out.println("Channel closed");
-                    });
-                    task.setPriority(Thread.MAX_PRIORITY);
-                    task.start();
                 });
             });
 
@@ -779,11 +745,41 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
 
     @Override
     protected void decode(ConversationContext<Ethernet_Frame> context, Ethernet_Frame msg) throws Exception {
+        RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
+/*        MacAddress srcAddress = new MacAddress(pnChannel.getLocalMacAddress().getAddress());
+        MacAddress dstAddress = new MacAddress(pnChannel.getRemoteMacAddress().getAddress());
+        byte[] data = new byte[40];
+        data[0] = (byte) 0x60;
+        data[1] = (byte) 0x60;
+        data[2] = (byte) 0x60;
+        data[3] = (byte) 0x60;
+        data[4] = (byte) 0x60;
+        data[6] = (byte) 0x60;*/
+
         if (msg.getPayload() instanceof Ethernet_FramePayload_PnDcp) {
             Ethernet_FramePayload_PnDcp dcpPacket = (Ethernet_FramePayload_PnDcp) msg.getPayload();
             if (dcpPacket.getPdu() instanceof PnDcp_Pdu_RealTimeCyclic) {
                 PnDcp_Pdu_RealTimeCyclic realTimeCyclic = (PnDcp_Pdu_RealTimeCyclic) dcpPacket.getPdu();
-//                System.out.println(realTimeCyclic);
+
+/*                // Save the offset of the first packet.
+                cycleOffset = realTimeCyclic.getCycleCounter();
+
+                int newCycleCounter = (int) ((((System.nanoTime() - startTime) / (NANOS_PER_CYCLE)) + cycleOffset) % 65536);
+                Ethernet_Frame frame = new Ethernet_Frame(
+                    dstAddress,
+                    srcAddress,
+                    new Ethernet_FramePayload_VirtualLan(VirtualLanPriority.INTERNETWORK_CONTROL, false, (short) 0,
+                        new Ethernet_FramePayload_PnDcp(
+                            new PnDcp_Pdu_RealTimeCyclic(0x8003,
+                                new PnIo_CyclicServiceDataUnit(data, (short) 40),
+                                newCycleCounter, false, true,
+                                true, true, false, true)
+                        )
+                    )
+                );
+                System.out.println("Sending");
+                context.sendToWire(frame);*/
+
             } else {
                 System.out.println(dcpPacket);
             }
@@ -792,7 +788,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             if(payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Ping) {
                 DceRpc_Packet pingPacket = payloadIPv4.getPayload();
                 // Send back a ping response
-                RawSocketChannel pnChannel = (RawSocketChannel) context.getChannel();
                 PnDcpPacketFactory.sendPingResponse(context, pnChannel, profinetDriverContext, payloadIPv4);
             }
             // The remote device terminated the connection.
