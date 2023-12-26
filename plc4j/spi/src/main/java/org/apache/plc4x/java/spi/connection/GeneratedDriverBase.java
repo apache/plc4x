@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.connection;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
@@ -47,7 +48,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
-    protected abstract Class<? extends Configuration> getConfigurationType();
+    public abstract Class<? extends PlcConnectionConfiguration> getConfigurationType();
 
     protected boolean canPing() {
         return false;
@@ -133,7 +134,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         // Create the configuration object.
-        Configuration configuration = configurationFactory
+        PlcConnectionConfiguration configuration = configurationFactory
             .createConfiguration(getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");

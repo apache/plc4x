@@ -19,44 +19,34 @@
 
 package org.apache.plc4x.java.tools.ui.model;
 
-import java.util.Map;
+public class ConfigurationOption {
 
-public class Driver {
+    public final String name;
+    public final String typeName;
+    public final boolean required;
+    public final Object defaultValue;
 
-    private final String code;
-    private final String name;
-
-    private final boolean supportsDiscovery;
-
-    private final Map<String, ConfigurationOption> configurationOptions;
-    private final Map<String, Transport> transports;
-
-    public Driver(String code, String name, boolean supportsDiscovery, Map<String, ConfigurationOption> configurationOptions, Map<String, Transport> transports) {
-        this.code = code;
+    public ConfigurationOption(String name, String typeName, boolean required, Object defaultValue) {
         this.name = name;
-        this.supportsDiscovery = supportsDiscovery;
-        this.configurationOptions = configurationOptions;
-        this.transports = transports;
-    }
-
-    public String getCode() {
-        return code;
+        this.typeName = typeName;
+        this.required = required;
+        this.defaultValue = defaultValue;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isSupportsDiscovery() {
-        return supportsDiscovery;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public Map<String, ConfigurationOption> getConfigurationOptions() {
-        return configurationOptions;
+    public boolean isRequired() {
+        return required;
     }
 
-    public Map<String, Transport> getTransports() {
-        return transports;
+    public Object getDefaultValue() {
+        return defaultValue;
     }
 
 }

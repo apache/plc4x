@@ -26,8 +26,8 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.AttributeKey;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectEvent;
@@ -270,7 +270,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
 
 
     @Override
-    public void setEmbededhannel(Channel embeded_channel, Configuration configuration) {
+    public void setEmbededhannel(Channel embeded_channel, PlcConnectionConfiguration configuration) {
         final S7Configuration conf = (S7Configuration) configuration;
         this.embeded_channel = embeded_channel;
         this.embeded_channel.attr(IS_CONNECTED).set(false);

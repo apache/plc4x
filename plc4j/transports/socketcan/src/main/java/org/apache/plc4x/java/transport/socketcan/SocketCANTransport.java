@@ -23,9 +23,9 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.socketcan.readwrite.SocketCANFrame;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
@@ -60,7 +60,7 @@ public class SocketCANTransport implements CANTransport<SocketCANFrame> {
     }
 
     @Override
-    public MessageInput<SocketCANFrame> getMessageInput(Configuration cfg) {
+    public MessageInput<SocketCANFrame> getMessageInput(PlcConnectionConfiguration cfg) {
         return SocketCANFrame::staticParse;
     }
 

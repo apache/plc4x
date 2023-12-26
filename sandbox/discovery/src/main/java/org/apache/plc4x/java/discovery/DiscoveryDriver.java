@@ -21,6 +21,7 @@ package org.apache.plc4x.java.discovery;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 
 /**
@@ -47,6 +48,11 @@ public class DiscoveryDriver implements PlcDriver {
     @Override
     public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         throw new PlcConnectionException("Authentication not supported.");
+    }
+
+    @Override
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+        return null;
     }
 
 }

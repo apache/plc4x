@@ -21,6 +21,7 @@ package org.apache.plc4x.java.mock;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.tag.MockTag;
@@ -64,6 +65,11 @@ public class MockDriver implements PlcDriver {
     @Override
     public MockTag prepareTag(String tagAddress){
         return MockTag.of(tagAddress);
+    }
+
+    @Override
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+        return null;
     }
 
 }

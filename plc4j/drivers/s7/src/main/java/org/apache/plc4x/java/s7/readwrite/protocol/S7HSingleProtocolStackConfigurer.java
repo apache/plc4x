@@ -23,12 +23,12 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.EventListenerMessageCodec;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedProtocolMessageCodec;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -97,7 +97,7 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
         this.encryptionHandler = encryptionHandler;
     }
 
-    private ChannelHandler getMessageCodec(Configuration configuration) {
+    private ChannelHandler getMessageCodec(PlcConnectionConfiguration configuration) {
         return new GeneratedProtocolMessageCodec<>(basePacketClass, messageInput, messageOutput, byteOrder, parserArgs,
             packetSizeEstimatorClass != null ? configure(configuration, createInstance(packetSizeEstimatorClass)) : null,
             corruptPacketRemoverClass != null ? configure(configuration, createInstance(corruptPacketRemoverClass)) : null);
@@ -107,7 +107,7 @@ public class S7HSingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message>
      * Applies the given Stack to the Pipeline
      */
     @Override
-    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(Configuration configuration, ChannelPipeline pipeline,
+    public Plc4xProtocolBase<BASE_PACKET_CLASS> configurePipeline(PlcConnectionConfiguration configuration, ChannelPipeline pipeline,
                                                                   PlcAuthentication authentication, boolean passive,
                                                                   List<EventListener> listeners) {
         if (null == protocol) {

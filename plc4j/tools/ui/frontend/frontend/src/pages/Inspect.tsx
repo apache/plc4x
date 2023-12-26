@@ -16,19 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import plc4xLogo from "../assets/plc4x-logo.svg";
-import {Divider, Toolbar} from "@mui/material";
-import {Image} from "primereact/image";
 import {TabPanel, TabView} from "primereact/tabview";
-import {ScrollPanel} from "primereact/scrollpanel";
-import NavigationTree from "./NavigationTree.tsx";
+import {Splitter, SplitterPanel} from "primereact/splitter";
 import {useState} from "react";
-import {TreeItemData} from "../model/TreeItemData.ts";
 import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
 import axios from "axios";
+import {TreeItemData} from "../model/TreeItemData.ts";
+import {ScrollPanel} from "primereact/scrollpanel";
+import NavigationTree from "../components/NavigationTree.tsx";
+import PlcConnection from "../components/PlcConnection.tsx";
 
-export default function MainMenu() {
+export default function Inspect() {
     const [driverTreeRoots, setDriverTreeRoots] = useState<TreeItemData[]>([])
     const restClient = new RestApplicationClient(axios);
 
@@ -58,23 +56,28 @@ export default function MainMenu() {
     }
 
     return (
-        <div>
-            <Toolbar>
-                <Image src={plc4xLogo} width="200px"/>
-            </Toolbar>
-            <Divider/>
-            <TabView style={{width: '100%', height:'100%'}}>
-                <TabPanel header="By Driver" className="m-0">
-                    <ScrollPanel style={{width: '100%', height:'100%'}} className="h-full">
-                        <NavigationTree treeItems={driverTreeRoots}/>
-                    </ScrollPanel>
-                </TabPanel>
-                <TabPanel header="By Device">
-                    <ScrollPanel style={{width: '100%', height:'100%'}}>
-                        <NavigationTree  treeItems={driverTreeRoots}/>
-                    </ScrollPanel>
-                </TabPanel>
-            </TabView>
-        </div>
+        <Splitter className="h-full">
+            <SplitterPanel
+                size={16} minSize={1}
+                className="flex align-items-center justify-content-center">
+                <TabView style={{width: '100%', height:'100%'}}>
+                    <TabPanel header="By Driver" className="m-0">
+                        <ScrollPanel style={{width: '100%', height:'100%'}} className="h-full">
+                            <NavigationTree treeItems={driverTreeRoots}/>
+                        </ScrollPanel>
+                    </TabPanel>
+                    <TabPanel header="By Device">
+                        <ScrollPanel style={{width: '100%', height:'100%'}}>
+                            <NavigationTree  treeItems={driverTreeRoots}/>
+                        </ScrollPanel>
+                    </TabPanel>
+                </TabView>
+            </SplitterPanel>
+            <SplitterPanel size={84} className="flex align-items-center justify-content-center">
+                <TabView className="h-full w-full" panelContainerClassName="h-full">
+                    <PlcConnection connectionString={"ads://192.168.23.20"}/>
+                </TabView>
+            </SplitterPanel>
+        </Splitter>
     )
 }

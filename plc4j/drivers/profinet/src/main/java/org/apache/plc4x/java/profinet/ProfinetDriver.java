@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.profinet;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
@@ -30,7 +31,6 @@ import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
@@ -76,7 +76,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return ProfinetConfiguration.class;
     }
 

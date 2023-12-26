@@ -21,7 +21,11 @@ import './App.css'
 import axios from 'axios';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.tsx";
-import Editor from "./pages/Editor.tsx";
+import Inspect from "./pages/Inspect.tsx";
+import OpcUa from "./pages/OpcUa.tsx";
+import Mqtt from "./pages/Mqtt.tsx";
+import Settings from "./pages/Settings.tsx";
+import About from "./pages/About.tsx";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 
@@ -31,7 +35,11 @@ const router = createBrowserRouter([
         path: '/',
         element: <MainLayout/>,
         children: [
-            {path: '/', element: <Editor/>},
+            {path: '/inspect', element: <Inspect/>},
+            {path: '/opcua', element: <OpcUa/>},
+            {path: '/mqtt', element: <Mqtt/>},
+            {path: '/settings', element: <Settings/>},
+            {path: '/about', element: <About/>},
         ]
     },
 ])

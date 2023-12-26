@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+
 /**
  * (Marker) Interface which can be used to tell PLC4X that a class (that is instantiated by PLC4X)
  * has a Configuration.
@@ -25,7 +27,7 @@ package org.apache.plc4x.java.spi.configuration;
  *
  * @param <CONFIGURATION> Class of the Configuration
  */
-public interface HasConfiguration<CONFIGURATION extends Configuration> {
+public interface HasConfiguration<CONFIGURATION extends PlcConnectionConfiguration> {
 
     /**
      * Is called directly after instantiation before the class is used somewhere.

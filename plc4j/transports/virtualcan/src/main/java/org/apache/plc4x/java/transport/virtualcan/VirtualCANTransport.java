@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.transport.virtualcan;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;
 import org.apache.plc4x.java.transport.can.CANTransport;
@@ -109,7 +109,7 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
     }
 
     @Override
-    public MessageInput<VirtualCANFrame> getMessageInput(Configuration configuration) {
+    public MessageInput<VirtualCANFrame> getMessageInput(PlcConnectionConfiguration configuration) {
         return new VirtualCANFrameIO();
     }
 

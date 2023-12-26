@@ -12,6 +12,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mdi/js": "^7.3.67",
+    "@mdi/react": "^1.6.1",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
     "axios": "^1.6.2",

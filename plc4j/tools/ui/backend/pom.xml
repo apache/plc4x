@@ -73,9 +73,24 @@
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-spi</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-connection-cache</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-all</artifactId>
       <version>0.12.0-SNAPSHOT</version>
       <type>pom</type>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
 
     <dependency>

@@ -19,7 +19,7 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-12-07 13:27:46.
+// Generated using typescript-generator version 3.2.1263 on 2023-12-26 16:21:15.
 
 export interface PlcBrowseItem {
     name: string;
@@ -27,8 +27,8 @@ export interface PlcBrowseItem {
     writable: boolean;
     children: { [index: string]: PlcBrowseItem };
     tag: PlcTag;
-    subscribable: boolean;
     options: { [index: string]: PlcValue };
+    subscribable: boolean;
 }
 
 export interface PlcBrowseItemArrayInfo {
@@ -42,18 +42,18 @@ export interface PlcBrowseRequest extends PlcRequest {
 }
 
 export interface PlcBrowseResponse extends PlcResponse {
-    queryNames: string[];
     request: PlcBrowseRequest;
+    queryNames: string[];
 }
 
 export interface PlcDiscoveryItem {
     name: string;
     attributes: { [index: string]: PlcValue };
-    transportCode: string;
-    transportUrl: string;
-    connectionUrl: string;
-    protocolCode: string;
     options: { [index: string]: string };
+    connectionUrl: string;
+    transportUrl: string;
+    protocolCode: string;
+    transportCode: string;
 }
 
 export interface PlcDiscoveryRequest extends PlcRequest {
@@ -82,16 +82,16 @@ export interface PlcQuery {
 }
 
 export interface PlcTag {
-    arrayInfo: ArrayInfo[];
     addressString: string;
+    arrayInfo: ArrayInfo[];
     plcValueType: PlcValueType;
 }
 
 export interface PlcValue {
-    simple: boolean;
     bigInteger: number;
-    short: number;
     boolean: boolean;
+    simple: boolean;
+    short: number;
     length: number;
     byte: number;
     int: number;
@@ -107,11 +107,11 @@ export interface PlcValue {
     duration: Duration;
     date: Date;
     keys: string[];
-    plcValueType: PlcValueType;
-    metaDataNames: string[];
-    dateTime: Date;
     list: PlcValue[];
     nullable: boolean;
+    metaDataNames: string[];
+    dateTime: Date;
+    plcValueType: PlcValueType;
     raw: any;
     struct: { [index: string]: PlcValue };
 }
@@ -140,6 +140,8 @@ export interface Driver {
     code: string;
     name: string;
     supportsDiscovery: boolean;
+    configurationOptions: { [index: string]: ConfigurationOption };
+    transports: { [index: string]: Transport };
 }
 
 export interface TemporalUnit {
@@ -147,6 +149,19 @@ export interface TemporalUnit {
     duration: Duration;
     timeBased: boolean;
     dateBased: boolean;
+}
+
+export interface ConfigurationOption {
+    name: string;
+    typeName: string;
+    required: boolean;
+    defaultValue: any;
+}
+
+export interface Transport {
+    code: string;
+    name: string;
+    options: { [index: string]: any };
 }
 
 export interface HttpClient<O> {

@@ -19,13 +19,13 @@
 package org.apache.plc4x.java.eip.logix;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.*;
 
 import java.util.function.Consumer;
@@ -44,7 +44,7 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return LogixConfiguration.class;
     }
 
