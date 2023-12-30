@@ -19,14 +19,47 @@
 
 package org.apache.plc4x.java.tools.ui.service;
 
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.tools.ui.model.Device;
+import org.apache.plc4x.java.tools.ui.repository.ConnectionRepository;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
+@Component
 public class ConnectionService {
 
+    private final ConnectionRepository connectionRepository;
+    private final ApplicationEventPublisher publisher;
     private final CachedPlcConnectionManager cachedPlcConnectionManager;
 
-    public ConnectionService() {
-        cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
+    public ConnectionService(ConnectionRepository connectionRepository, ApplicationEventPublisher publisher, PlcDriverManager driverManager) {
+        this.connectionRepository = connectionRepository;
+        this.publisher = publisher;
+        this.cachedPlcConnectionManager = CachedPlcConnectionManager.getBuilder(driverManager.getConnectionManager()).build();
+    }
+
+    public List<Device> getAllConnections() {
+        return connectionRepository.findAll();
+    }
+
+    public Device createConnection(Device device) {
+        return connectionRepository.save(device);
+    }
+
+    public Optional<Device> readConnection(Integer id) {
+        return connectionRepository.findById(id);
+    }
+
+    public Device updateConnection(Device device) {
+        return connectionRepository.save(device);
+    }
+
+    public void deleteConnection(Device device) {
+        connectionRepository.delete(device);
     }
 
 }

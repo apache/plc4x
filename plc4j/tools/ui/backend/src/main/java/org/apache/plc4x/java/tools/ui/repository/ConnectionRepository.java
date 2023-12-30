@@ -17,18 +17,10 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.tools.ui;
+package org.apache.plc4x.java.tools.ui.repository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.apache.plc4x.java.tools.ui.model.Device;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@SpringBootApplication
-@EnableJpaRepositories("org.apache.plc4x.java.tools.ui")
-public class Plc4xUiBackendApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(Plc4xUiBackendApplication.class, args);
-    }
-
+public interface ConnectionRepository extends JpaRepository<Device, Integer> {
 }

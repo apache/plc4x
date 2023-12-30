@@ -17,18 +17,18 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.tools.ui;
+package org.apache.plc4x.java.tools.ui.configuration;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootApplication
-@EnableJpaRepositories("org.apache.plc4x.java.tools.ui")
-public class Plc4xUiBackendApplication {
+@Configuration
+public class Plc4xConfiguration {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Plc4xUiBackendApplication.class, args);
+    @Bean
+    public PlcDriverManager driverManager() {
+        return PlcDriverManager.getDefault();
     }
 
 }

@@ -17,18 +17,26 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.tools.ui;
+package org.apache.plc4x.java.tools.ui.event;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+public abstract class ApplicationEvent<T> extends org.springframework.context.ApplicationEvent {
 
-@SpringBootApplication
-@EnableJpaRepositories("org.apache.plc4x.java.tools.ui")
-public class Plc4xUiBackendApplication {
+    private final EventType eventType;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Plc4xUiBackendApplication.class, args);
+    public ApplicationEvent(T source, EventType eventType) {
+        super(source);
+        this.eventType = eventType;
+    }
+
+    public EventType getEventType() {
+        return eventType;
+    }
+
+    @Override
+    public T getSource() {
+        // We're only accepting objects of type T, so in this case it's safe to cast.
+        //noinspection unchecked
+        return (T) super.getSource();
     }
 
 }

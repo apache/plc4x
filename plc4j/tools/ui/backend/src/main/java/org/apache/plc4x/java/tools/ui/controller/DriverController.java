@@ -19,70 +19,33 @@
 
 package org.apache.plc4x.java.tools.ui.controller;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.plc4x.java.api.PlcDriver;
-import org.apache.plc4x.java.api.PlcDriverManager;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Required;
-import org.apache.plc4x.java.tools.ui.model.ConfigurationOption;
 import org.apache.plc4x.java.tools.ui.model.Driver;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.plc4x.java.tools.ui.service.DriverService;
+import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.List;
 
 // Allow from the default port 8080 as well as the one node usually uses for it's dev-mode 5173
-@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
+//@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
+@CrossOrigin(origins = {"*"})
 @RestController
 @RequestMapping("/api")
 public class DriverController {
 
+    private final DriverService driverService;
+
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
+
     @GetMapping("/drivers")
-    public ResponseEntity<List<Driver>> getDriverList() {
-        List<Driver> drivers = new ArrayList<>();
+    public List<Driver> getDriverList() {
+        return driverService.getDriverList();
+    }
 
-        // Build a list of driver objects.
-        PlcDriverManager driverManager = PlcDriverManager.getDefault();
-        for (String protocolCode : driverManager.listDrivers()) {
-            try {
-                PlcDriver driver = driverManager.getDriver(protocolCode);
-                PlcDriverMetadata metadata = driver.getMetadata();
-
-                // Get a description of all supported configuration options of the given driver.
-                Class<?> configurationType = driver.getConfigurationType();
-                Map<String, ConfigurationOption> configurationOptions = Arrays.stream(FieldUtils.getAllFields(configurationType))
-                    // - Filter out only the ones annotated with the ConfigurationParameter annotation.
-                    .filter(field -> (field.getAnnotation(ConfigurationParameter.class) != null) || (field.getAnnotation(ComplexConfigurationParameter.class) != null))
-                    .map(field -> new ConfigurationOption(field.getName(), field.getType().getTypeName(), field.isAnnotationPresent(Required.class), ConfigurationFactory.getDefaultValueFromAnnotation(field)))
-                    // - Create a map with the field-name as key and the field itself as value.
-                    .collect(Collectors.toMap(
-                        ConfigurationOption::getName,
-                        Function.identity()
-                    ));
-
-                // TODO: Get a list of all directly supported transports and for each a list of the configuration options.
-
-                drivers.add(new Driver(protocolCode, driver.getProtocolName(), metadata.canDiscover(), configurationOptions, null));
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Ignore ...
-            }
-        }
-
-        // Sort the list by the code of the driver elements.
-        drivers.sort(Comparator.comparing(Driver::getCode));
-
-        return ResponseEntity.ok(drivers);
+    @GetMapping("/discover/{protocolCode}")
+    public void discover(@PathVariable("protocolCode") String protocolCode) {
+        driverService.discover(protocolCode);
     }
 
 }

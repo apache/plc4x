@@ -19,7 +19,7 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-12-26 16:21:15.
+// Generated using typescript-generator version 3.2.1263 on 2023-12-29 16:56:08.
 
 export interface PlcBrowseItem {
     name: string;
@@ -27,8 +27,8 @@ export interface PlcBrowseItem {
     writable: boolean;
     children: { [index: string]: PlcBrowseItem };
     tag: PlcTag;
-    options: { [index: string]: PlcValue };
     subscribable: boolean;
+    options: { [index: string]: PlcValue };
 }
 
 export interface PlcBrowseItemArrayInfo {
@@ -42,18 +42,18 @@ export interface PlcBrowseRequest extends PlcRequest {
 }
 
 export interface PlcBrowseResponse extends PlcResponse {
-    request: PlcBrowseRequest;
     queryNames: string[];
+    request: PlcBrowseRequest;
 }
 
 export interface PlcDiscoveryItem {
     name: string;
     attributes: { [index: string]: PlcValue };
-    options: { [index: string]: string };
-    connectionUrl: string;
-    transportUrl: string;
     protocolCode: string;
     transportCode: string;
+    transportUrl: string;
+    connectionUrl: string;
+    options: { [index: string]: string };
 }
 
 export interface PlcDiscoveryRequest extends PlcRequest {
@@ -61,8 +61,8 @@ export interface PlcDiscoveryRequest extends PlcRequest {
 
 export interface PlcDiscoveryResponse extends PlcResponse {
     responseCode: PlcResponseCode;
-    values: PlcDiscoveryItem[];
     request: PlcDiscoveryRequest;
+    values: PlcDiscoveryItem[];
 }
 
 export interface PlcConnectionMetadata {
@@ -82,17 +82,16 @@ export interface PlcQuery {
 }
 
 export interface PlcTag {
-    addressString: string;
-    arrayInfo: ArrayInfo[];
     plcValueType: PlcValueType;
+    arrayInfo: ArrayInfo[];
+    addressString: string;
 }
 
 export interface PlcValue {
     bigInteger: number;
-    boolean: boolean;
-    simple: boolean;
     short: number;
     length: number;
+    boolean: boolean;
     byte: number;
     int: number;
     long: number;
@@ -107,11 +106,12 @@ export interface PlcValue {
     duration: Duration;
     date: Date;
     keys: string[];
-    list: PlcValue[];
-    nullable: boolean;
-    metaDataNames: string[];
-    dateTime: Date;
     plcValueType: PlcValueType;
+    dateTime: Date;
+    metaDataNames: string[];
+    nullable: boolean;
+    list: PlcValue[];
+    simple: boolean;
     raw: any;
     struct: { [index: string]: PlcValue };
 }
@@ -134,6 +134,10 @@ export interface TemporalAmount {
 }
 
 export interface Serializable {
+}
+
+export interface Device {
+    id: number;
 }
 
 export interface Driver {
@@ -172,6 +176,14 @@ export interface HttpClient<O> {
 export class RestApplicationClient<O> {
 
     constructor(protected httpClient: HttpClient<O>) {
+    }
+
+    /**
+     * HTTP GET /api/discover/{protocolCode}
+     * Java method: org.apache.plc4x.java.tools.ui.controller.DriverController.discover
+     */
+    discover(protocolCode: string, options?: O): RestResponse<Device[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/discover/${protocolCode}`, options: options });
     }
 
     /**

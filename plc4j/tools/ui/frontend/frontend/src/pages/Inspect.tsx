@@ -20,19 +20,22 @@ import {TabPanel, TabView} from "primereact/tabview";
 import {Splitter, SplitterPanel} from "primereact/splitter";
 import {useState} from "react";
 import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
-import axios from "axios";
 import {TreeItemData} from "../model/TreeItemData.ts";
 import {ScrollPanel} from "primereact/scrollpanel";
 import NavigationTree from "../components/NavigationTree.tsx";
 import PlcConnection from "../components/PlcConnection.tsx";
+import axios from "axios";
 
 export default function Inspect() {
+    const [initialized, setInitialized] = useState(false)
     const [driverTreeRoots, setDriverTreeRoots] = useState<TreeItemData[]>([])
     const restClient = new RestApplicationClient(axios);
 
     function updateDriverList() {
+        console.log("updateDriverList");
         const driverList = restClient.getDriverList();
         driverList.then(response => {
+            console.log(response);
             let newDriverTreeRoots: TreeItemData[] = [];
             response.data.map(driverValue => {
                 newDriverTreeRoots = [...newDriverTreeRoots, {
@@ -51,7 +54,8 @@ export default function Inspect() {
         })
     }
 
-    if(driverTreeRoots.length == 0) {
+    if(!initialized) {
+        setInitialized(true)
         updateDriverList()
     }
 

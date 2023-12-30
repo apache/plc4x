@@ -35,6 +35,7 @@
 
   <properties>
     <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <spring-boot.version>3.2.1</spring-boot.version>
   </properties>
 
   <modules>
@@ -42,5 +43,33 @@
     <module>backend</module>
     <module>frontend</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.annotation</groupId>
+        <artifactId>jakarta.annotation-api</artifactId>
+        <version>2.1.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>1.9.20.1</version>
+      </dependency>
+      <dependency>
+        <groupId>io.projectreactor</groupId>
+        <artifactId>reactor-core</artifactId>
+        <version>3.6.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

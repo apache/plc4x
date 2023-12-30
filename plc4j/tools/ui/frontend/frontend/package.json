@@ -35,5 +35,14 @@
     "eslint-plugin-react-refresh": "^0.4.4",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
+  },
+  "proxy": {
+      "/ws": {
+          "target": "ws://localhost:8080",
+          "ws": true
+      },
+      "/": {
+          "target": "http://localhost:8080"
+      }
   }
 }

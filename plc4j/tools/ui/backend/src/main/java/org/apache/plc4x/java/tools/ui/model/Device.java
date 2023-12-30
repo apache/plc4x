@@ -17,18 +17,29 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.tools.ui;
+package org.apache.plc4x.java.tools.ui.model;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-@SpringBootApplication
-@EnableJpaRepositories("org.apache.plc4x.java.tools.ui")
-public class Plc4xUiBackendApplication {
+@Entity
+public class Device {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Plc4xUiBackendApplication.class, args);
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    public Device() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
 }

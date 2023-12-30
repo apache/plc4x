@@ -45,6 +45,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
+              <skip>true</skip>
               <classes>
                 <!-- These are the PLC4J API types -->
                 <class>org.apache.plc4x.java.api.messages.PlcBrowseItem</class>
