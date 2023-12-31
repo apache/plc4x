@@ -25,7 +25,7 @@ setup(
     description="Plc4py The Python Industrial IOT Adapter",
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "License :: OSI Approved :: Apache 2.0 License",
+        "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3.8",
         "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
     ],
