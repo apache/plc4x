@@ -20,43 +20,45 @@
 package org.apache.plc4x.java.tools.ui.controller;
 
 import org.apache.plc4x.java.tools.ui.model.Device;
-import org.apache.plc4x.java.tools.ui.service.ConnectionService;
+import org.apache.plc4x.java.tools.ui.service.DeviceService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
+@CrossOrigin(origins = {"*"})
 @RestController
-@RequestMapping("/api/connections")
-public class ConnectionController {
+@RequestMapping("/api/devices")
+public class DeviceController {
 
-    private final ConnectionService connectionService;
+    private final DeviceService deviceService;
 
-    public ConnectionController(ConnectionService connectionService) {
-        this.connectionService = connectionService;
+    public DeviceController(DeviceService deviceService) {
+        this.deviceService = deviceService;
     }
 
     @GetMapping("/{id}")
-    public Device getConnectionById(@PathVariable Integer id) {
-        return connectionService.readConnection(id).orElseThrow(() -> new RuntimeException("Error finding connection with id: " + id));
+    public Device getDeviceById(@PathVariable Integer id) {
+        return deviceService.readDevice(id).orElseThrow(() -> new RuntimeException("Error finding connection with id: " + id));
     }
 
     @GetMapping
-    public List<Device> getAllConnections() {
-        return connectionService.getAllConnections();
+    public List<Device> getAllDevices() {
+        return deviceService.getAllDevices();
     }
 
     @PostMapping
-    public Device saveConnection(@RequestBody Device device) {
+    public Device saveDevice(@RequestBody Device device) {
         if (device.getId() == null) {
-            return connectionService.createConnection(device);
+            return deviceService.createDevice(device);
         } else {
-            return connectionService.updateConnection(device);
+            return deviceService.updateDevice(device);
         }
     }
 
     @DeleteMapping
-    public void deleteConnection(@RequestBody Device device) {
-        connectionService.deleteConnection(device);
+    public void deleteDevice(@RequestBody Device device) {
+        deviceService.deleteDevice(device);
     }
 
 }

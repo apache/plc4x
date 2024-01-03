@@ -19,125 +19,16 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-12-29 16:56:08.
-
-export interface PlcBrowseItem {
-    name: string;
-    readable: boolean;
-    writable: boolean;
-    children: { [index: string]: PlcBrowseItem };
-    tag: PlcTag;
-    subscribable: boolean;
-    options: { [index: string]: PlcValue };
-}
-
-export interface PlcBrowseItemArrayInfo {
-    size: number;
-    lowerBound: number;
-    upperBound: number;
-}
-
-export interface PlcBrowseRequest extends PlcRequest {
-    queryNames: string[];
-}
-
-export interface PlcBrowseResponse extends PlcResponse {
-    queryNames: string[];
-    request: PlcBrowseRequest;
-}
-
-export interface PlcDiscoveryItem {
-    name: string;
-    attributes: { [index: string]: PlcValue };
-    protocolCode: string;
-    transportCode: string;
-    transportUrl: string;
-    connectionUrl: string;
-    options: { [index: string]: string };
-}
-
-export interface PlcDiscoveryRequest extends PlcRequest {
-}
-
-export interface PlcDiscoveryResponse extends PlcResponse {
-    responseCode: PlcResponseCode;
-    request: PlcDiscoveryRequest;
-    values: PlcDiscoveryItem[];
-}
-
-export interface PlcConnectionMetadata {
-}
-
-export interface PlcDriverMetadata {
-}
-
-export interface ArrayInfo {
-    size: number;
-    lowerBound: number;
-    upperBound: number;
-}
-
-export interface PlcQuery {
-    queryString: string;
-}
-
-export interface PlcTag {
-    plcValueType: PlcValueType;
-    arrayInfo: ArrayInfo[];
-    addressString: string;
-}
-
-export interface PlcValue {
-    bigInteger: number;
-    short: number;
-    length: number;
-    boolean: boolean;
-    byte: number;
-    int: number;
-    long: number;
-    float: number;
-    double: number;
-    object: any;
-    integer: number;
-    null: boolean;
-    string: string;
-    bigDecimal: number;
-    time: Date;
-    duration: Duration;
-    date: Date;
-    keys: string[];
-    plcValueType: PlcValueType;
-    dateTime: Date;
-    metaDataNames: string[];
-    nullable: boolean;
-    list: PlcValue[];
-    simple: boolean;
-    raw: any;
-    struct: { [index: string]: PlcValue };
-}
-
-export interface PlcRequest extends PlcMessage {
-}
-
-export interface PlcResponse extends PlcMessage {
-    request: PlcRequest;
-}
-
-export interface Duration extends TemporalAmount, Serializable {
-}
-
-export interface PlcMessage {
-}
-
-export interface TemporalAmount {
-    units: TemporalUnit[];
-}
-
-export interface Serializable {
-}
+// Generated using typescript-generator version 3.2.1263 on 2023-12-31 13:36:32.
 
 export interface Device {
     id: number;
+    name: string;
+    protocolCode: string;
+    getTransportCode: string;
+    getTransportUrl: string;
+    getOptions: { [index: string]: string };
+    getAttributes: { [index: string]: string };
 }
 
 export interface Driver {
@@ -146,13 +37,6 @@ export interface Driver {
     supportsDiscovery: boolean;
     configurationOptions: { [index: string]: ConfigurationOption };
     transports: { [index: string]: Transport };
-}
-
-export interface TemporalUnit {
-    durationEstimated: boolean;
-    duration: Duration;
-    timeBased: boolean;
-    dateBased: boolean;
 }
 
 export interface ConfigurationOption {
@@ -179,29 +63,55 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP DELETE /api/devices
+     * Java method: org.apache.plc4x.java.tools.ui.controller.DeviceController.deleteDevice
+     */
+    deleteDevice(arg0: Device, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/devices`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP GET /api/devices
+     * Java method: org.apache.plc4x.java.tools.ui.controller.DeviceController.getAllDevices
+     */
+    getAllDevices(options?: O): RestResponse<Device[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/devices`, options: options });
+    }
+
+    /**
+     * HTTP POST /api/devices
+     * Java method: org.apache.plc4x.java.tools.ui.controller.DeviceController.saveDevice
+     */
+    saveDevice(arg0: Device, options?: O): RestResponse<Device> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/devices`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP GET /api/devices/{id}
+     * Java method: org.apache.plc4x.java.tools.ui.controller.DeviceController.getDeviceById
+     */
+    getDeviceById(id: string, options?: O): RestResponse<Device> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/devices/${id}`, options: options });
+    }
+
+    /**
      * HTTP GET /api/discover/{protocolCode}
      * Java method: org.apache.plc4x.java.tools.ui.controller.DriverController.discover
      */
-    discover(protocolCode: string, options?: O): RestResponse<Device[]> {
+    discover(protocolCode: string, options?: O): RestResponse<void> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/discover/${protocolCode}`, options: options });
     }
 
     /**
      * HTTP GET /api/drivers
-     * Java method: org.apache.plc4x.java.tools.ui.controller.DriverController.getDriverList
+     * Java method: org.apache.plc4x.java.tools.ui.controller.DriverController.getAllDrivers
      */
-    getDriverList(options?: O): RestResponse<Driver[]> {
+    getAllDrivers(options?: O): RestResponse<Driver[]> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/drivers`, options: options });
     }
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
-
-export type PlcResponseCode = "OK" | "NOT_FOUND" | "ACCESS_DENIED" | "INVALID_ADDRESS" | "INVALID_DATATYPE" | "INVALID_DATA" | "INTERNAL_ERROR" | "REMOTE_BUSY" | "REMOTE_ERROR" | "UNSUPPORTED" | "RESPONSE_PENDING";
-
-export type PlcSubscriptionType = "CYCLIC" | "CHANGE_OF_STATE" | "EVENT";
-
-export type PlcValueType = "NULL" | "BOOL" | "BYTE" | "WORD" | "DWORD" | "LWORD" | "USINT" | "UINT" | "UDINT" | "ULINT" | "SINT" | "INT" | "DINT" | "LINT" | "REAL" | "LREAL" | "CHAR" | "WCHAR" | "STRING" | "WSTRING" | "TIME" | "LTIME" | "DATE" | "LDATE" | "TIME_OF_DAY" | "LTIME_OF_DAY" | "DATE_AND_TIME" | "LDATE_AND_TIME" | "Struct" | "List" | "RAW_BYTE_ARRAY";
 
 function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): string {
     let result = "";

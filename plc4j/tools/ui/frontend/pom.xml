@@ -45,10 +45,10 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <skip>true</skip>
+              <skip>false</skip>
               <classes>
                 <!-- These are the PLC4J API types -->
-                <class>org.apache.plc4x.java.api.messages.PlcBrowseItem</class>
+                <!--class>org.apache.plc4x.java.api.messages.PlcBrowseItem</class>
                 <class>org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo</class>
                 <class>org.apache.plc4x.java.api.messages.PlcBrowseRequest</class>
                 <class>org.apache.plc4x.java.api.messages.PlcBrowseResponse</class>
@@ -63,8 +63,11 @@
                 <class>org.apache.plc4x.java.api.types.PlcResponseCode</class>
                 <class>org.apache.plc4x.java.api.types.PlcSubscriptionType</class>
                 <class>org.apache.plc4x.java.api.types.PlcValueType</class>
-                <class>org.apache.plc4x.java.api.value.PlcValue</class>
+                <class>org.apache.plc4x.java.api.value.PlcValue</class-->
+                <class>org.apache.plc4x.java.tools.ui.model.Device</class>
+                <class>org.apache.plc4x.java.tools.ui.model.Driver</class>
                 <!-- Here come the REST controllers -->
+                <class>org.apache.plc4x.java.tools.ui.controller.DeviceController</class>
                 <class>org.apache.plc4x.java.tools.ui.controller.DriverController</class>
               </classes>
               <excludeClasses>

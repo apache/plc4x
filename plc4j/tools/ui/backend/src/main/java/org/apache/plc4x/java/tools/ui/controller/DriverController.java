@@ -39,7 +39,7 @@ public class DriverController {
     }
 
     @GetMapping("/drivers")
-    public List<Driver> getDriverList() {
+    public List<Driver> getAllDrivers() {
         return driverService.getDriverList();
     }
 

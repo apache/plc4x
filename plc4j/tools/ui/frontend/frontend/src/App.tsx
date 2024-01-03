@@ -26,8 +26,13 @@ import OpcUa from "./pages/OpcUa.tsx";
 import Mqtt from "./pages/Mqtt.tsx";
 import Settings from "./pages/Settings.tsx";
 import About from "./pages/About.tsx";
+import useWebSocket from 'react-use-websocket';
+import {useEffect} from "react";
+import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
+import store from "./store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
+const restClient = new RestApplicationClient(axios);
 
 // We're actually just using this concept in order to separate the layout for the general page from the content.
 const router = createBrowserRouter([
@@ -45,6 +50,28 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+    useWebSocket( 'ws://localhost:8080/ws', {
+        onOpen: () => {
+            console.log('WebSocket connection established.');
+        },
+        onMessage: event => {
+            console.log('Incoming message: ' + event.data)
+        }
+    });
+
+    // Load the initial list of drivers and connections and initialize the store with that.
+    useEffect(() => {
+        restClient.getAllDrivers().then(driverList => {
+            restClient.getAllDevices().then(deviceList => {
+                store.dispatch({
+                    type: 'initialize-lists',
+                    driverList: driverList,
+                    deviceList: deviceList
+                })
+            })
+        })
+    })
+
     return (
         <RouterProvider router={router}/>
     )

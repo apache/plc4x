@@ -22,5 +22,5 @@ package org.apache.plc4x.java.tools.ui.repository;
 import org.apache.plc4x.java.tools.ui.model.Device;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ConnectionRepository extends JpaRepository<Device, Integer> {
+public interface DeviceRepository extends JpaRepository<Device, Integer> {
 }

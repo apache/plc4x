@@ -18,46 +18,36 @@
  */
 import {TabPanel, TabView} from "primereact/tabview";
 import {Splitter, SplitterPanel} from "primereact/splitter";
-import {useState} from "react";
-import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
-import {TreeItemData} from "../model/TreeItemData.ts";
 import {ScrollPanel} from "primereact/scrollpanel";
 import NavigationTree from "../components/NavigationTree.tsx";
 import PlcConnection from "../components/PlcConnection.tsx";
-import axios from "axios";
+import { useSelector } from "react-redux";
+import {ApplicationState} from "../store"
+import {Device, Driver} from "../generated/plc4j-tools-ui-frontend.ts";
+import {TreeItemData} from "../model/TreeItemData.ts";
+
+
+function getByDriverTree(driverList: Driver[] | undefined, deviceList: Device[] | undefined):TreeItemData[] {
+    if(driverList && deviceList) {
+        console.log(driverList)
+        console.log(deviceList)
+    }
+    return []
+}
+
+function getByDeviceTree(driverList: Driver[] | undefined, deviceList: Device[] | undefined):TreeItemData[] {
+    if(driverList && deviceList) {
+        console.log(driverList)
+        console.log(deviceList)
+    }
+    return []
+}
 
 export default function Inspect() {
-    const [initialized, setInitialized] = useState(false)
-    const [driverTreeRoots, setDriverTreeRoots] = useState<TreeItemData[]>([])
-    const restClient = new RestApplicationClient(axios);
-
-    function updateDriverList() {
-        console.log("updateDriverList");
-        const driverList = restClient.getDriverList();
-        driverList.then(response => {
-            console.log(response);
-            let newDriverTreeRoots: TreeItemData[] = [];
-            response.data.map(driverValue => {
-                newDriverTreeRoots = [...newDriverTreeRoots, {
-                    id: driverValue.code,
-                    name: driverValue.name,
-                    type: "DRIVER",
-                    supportsDiscovery: driverValue.supportsDiscovery,
-                    supportsBrowsing: false,
-                    supportsReading: false,
-                    supportsWriting: false,
-                    supportsSubscribing: false,
-                    supportsPublishing: false,
-                }]
-            })
-            setDriverTreeRoots(newDriverTreeRoots)
-        })
-    }
-
-    if(!initialized) {
-        setInitialized(true)
-        updateDriverList()
-    }
+    const lists = useSelector<ApplicationState>(state => {
+        state.driverList
+        state.deviceList
+    }) as ApplicationState
 
     return (
         <Splitter className="h-full">
@@ -67,12 +57,12 @@ export default function Inspect() {
                 <TabView style={{width: '100%', height:'100%'}}>
                     <TabPanel header="By Driver" className="m-0">
                         <ScrollPanel style={{width: '100%', height:'100%'}} className="h-full">
-                            <NavigationTree treeItems={driverTreeRoots}/>
+                            <NavigationTree treeItems={getByDriverTree(lists.driverList, lists.deviceList)}/>
                         </ScrollPanel>
                     </TabPanel>
                     <TabPanel header="By Device">
                         <ScrollPanel style={{width: '100%', height:'100%'}}>
-                            <NavigationTree  treeItems={driverTreeRoots}/>
+                            <NavigationTree  treeItems={getByDeviceTree(lists.driverList, lists.deviceList)}/>
                         </ScrollPanel>
                     </TabPanel>
                 </TabView>
