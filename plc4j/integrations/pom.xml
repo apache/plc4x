@@ -40,19 +40,7 @@
   <modules>
     <module>apache-calcite</module>
     <module>apache-nifi</module>
+    <module>apache-kafka</module>
   </modules>
-
-  <!-- It seems that the Kafka-Connect plugin doesn't work with Java 21 -->
-  <profiles>
-    <profile>
-      <id>.below-java-21</id>
-      <activation>
-        <jdk>[11,21)</jdk>
-      </activation>
-      <modules>
-        <module>apache-kafka</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

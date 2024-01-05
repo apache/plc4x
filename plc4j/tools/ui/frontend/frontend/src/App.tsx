@@ -27,7 +27,7 @@ import Mqtt from "./pages/Mqtt.tsx";
 import Settings from "./pages/Settings.tsx";
 import About from "./pages/About.tsx";
 import useWebSocket from 'react-use-websocket';
-import {useEffect} from "react";
+import {useState} from "react";
 import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
 import store from "./store";
 
@@ -50,6 +50,8 @@ const router = createBrowserRouter([
 ])
 
 function App() {
+    const [initialized, setInitialized] = useState(false)
+
     useWebSocket( 'ws://localhost:8080/ws', {
         onOpen: () => {
             console.log('WebSocket connection established.');
@@ -60,7 +62,9 @@ function App() {
     });
 
     // Load the initial list of drivers and connections and initialize the store with that.
-    useEffect(() => {
+    if(!initialized) {
+        setInitialized(true);
+
         restClient.getAllDrivers().then(driverList => {
             restClient.getAllDevices().then(deviceList => {
                 store.dispatch({
@@ -70,7 +74,7 @@ function App() {
                 })
             })
         })
-    })
+    }
 
     return (
         <RouterProvider router={router}/>

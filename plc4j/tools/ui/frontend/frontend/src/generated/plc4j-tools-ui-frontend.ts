@@ -2,7 +2,7 @@
  * #%L
  * plc4j-tools-ui-frontend
  * %%
- * Copyright (C) 2017 - 2023 The Apache Software Foundation
+ * Copyright (C) 2017 - 2024 The Apache Software Foundation
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2023-12-31 13:36:32.
+// Generated using typescript-generator version 3.2.1263 on 2024-01-05 15:50:57.
 
 export interface Device {
     id: number;

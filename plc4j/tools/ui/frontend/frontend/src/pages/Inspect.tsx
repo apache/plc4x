@@ -28,6 +28,7 @@ import {TreeItemData} from "../model/TreeItemData.ts";
 
 
 function getByDriverTree(driverList: Driver[] | undefined, deviceList: Device[] | undefined):TreeItemData[] {
+    console.log('getByDriverTree')
     if(driverList && deviceList) {
         console.log(driverList)
         console.log(deviceList)
@@ -36,6 +37,7 @@ function getByDriverTree(driverList: Driver[] | undefined, deviceList: Device[] 
 }
 
 function getByDeviceTree(driverList: Driver[] | undefined, deviceList: Device[] | undefined):TreeItemData[] {
+    console.log('getByDeviceTree')
     if(driverList && deviceList) {
         console.log(driverList)
         console.log(deviceList)
@@ -48,6 +50,7 @@ export default function Inspect() {
         state.driverList
         state.deviceList
     }) as ApplicationState
+    console.log("Test" + lists);
 
     return (
         <Splitter className="h-full">
