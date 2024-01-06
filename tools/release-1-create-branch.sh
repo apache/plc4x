@@ -49,7 +49,7 @@ fi
 sed -i '' 's/(Unreleased) *//' ../RELEASE_NOTES
 
 # 4. Add a new section for the new version to the RELEASE_NOTES file
-sed -i '1i\
+sed -i '' '1i\
 ==============================================================\
 (Unreleased) Apache PLC4X $NEW_VERSION\
 ==============================================================\
@@ -62,7 +62,7 @@ Incompatible changes\
 \
 Bug Fixes\
 ---------\
-"' ../RELEASE_NOTES
+' ../RELEASE_NOTES
 
 # 5. Commit the change.
 # TODO: Implement ...
