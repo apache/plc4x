@@ -46,7 +46,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # 3. Remove the "(Unreleased)" prefix from the current version of the RELEASE_NOTES file
-sed -i '' 's/(Unreleased) *//' ../RELEASE_NOTES
+sed -i '' "s/(Unreleased) Apache PLC4X $PROJECT_VERSION*/Apache PLC4X $RELEASE_VERSION/" ../RELEASE_NOTES
 
 # 4. Add a new section for the new version to the RELEASE_NOTES file
 sed -i '' '1i\
