@@ -22,18 +22,20 @@ from enum import Enum, auto
 from typing import Generator
 
 
-# TODO: Figure out what the parameters are and if we need this
 class GenericGenerator(Generator):
     def __enter__(self):
         return self
 
-    def send(self, _value, blah):
+    def send(self, _value):
+        # TODO I need to figure out why this was added
         pass
 
     def throw(self):
+        # TODO I need to figure out why this was added
         pass
 
     def __exit__(self, *args):
+        # TODO I need to figure out why this was added
         pass
 
 

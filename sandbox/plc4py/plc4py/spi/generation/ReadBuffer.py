@@ -16,20 +16,7 @@
 #  under the License.
 import struct
 import types
-from ctypes import (
-    c_byte,
-    c_ubyte,
-    c_uint16,
-    c_uint32,
-    c_uint64,
-    c_int16,
-    c_int32,
-    c_int64,
-    c_float,
-    c_double,
-    c_int8,
-    c_uint8,
-)
+from abc import abstractmethod, ABC
 from dataclasses import dataclass
 from typing import List, Union, Any
 
@@ -43,95 +30,113 @@ from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware
 
 
 class PositionAware:
+    @abstractmethod
     def get_pos(self) -> int:
         raise NotImplementedError
 
 
 @dataclass
-class ReadBuffer(ByteOrderAware, PositionAware):
+class ReadBuffer(ByteOrderAware, PositionAware, ABC):
     byte_order: ByteOrder
 
+    @abstractmethod
     def get_pos(self) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def push_context(self, logical_name: str, **kwargs) -> None:
         raise NotImplementedError
 
+    @abstractmethod
     def pop_context(self, logical_name: str, **kwargs) -> None:
         raise NotImplementedError
 
+    @abstractmethod
     def read_bit(self, logical_name: str = "", **kwargs) -> bool:
         raise NotImplementedError
 
     def read_byte(self, logical_name: str = "", **kwargs) -> int:
         self.read_signed_byte(8, logical_name, **kwargs)
 
+    @abstractmethod
     def read_byte_array(
         self, number_of_bytes: int, logical_name: str = "", **kwargs
     ) -> List[int]:
         raise NotImplementedError
 
+    @abstractmethod
     def read_unsigned_byte(
         self, bit_length: int = 8, logical_name: str = "", **kwargs
     ) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_unsigned_short(
         self, bit_length: int = 16, logical_name: str = "", **kwargs
     ) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_unsigned_int(
         self, bit_length: int = 32, logical_name: str = "", **kwargs
     ) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_unsigned_long(
         self, bit_length: int = 64, logical_name: str = "", **kwargs
     ) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_signed_byte(
         self, bit_length: int = 8, logical_name: str = "", **kwargs
     ) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_short(self, bit_length: int = 16, logical_name: str = "", **kwargs) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_int(self, bit_length: int = 32, logical_name: str = "", **kwargs) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_long(self, bit_length: int = 64, logical_name: str = "", **kwargs) -> int:
         raise NotImplementedError
 
+    @abstractmethod
     def read_float(
         self, bit_length: int = 32, logical_name: str = "", **kwargs
     ) -> float:
         raise NotImplementedError
 
+    @abstractmethod
     def read_double(
         self, bit_length: int = 64, logical_name: str = "", **kwargs
     ) -> float:
         raise NotImplementedError
 
+    @abstractmethod
     def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
         raise NotImplementedError
 
-    def read_virtual(self, logical_name: str = "", **kwargs) -> str:
-        raise NotImplementedError
-
+    @abstractmethod
     def read_complex_array(self, logical_name: str = "", **kwargs) -> List[Any]:
         raise NotImplementedError
 
+    @abstractmethod
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
         raise NotImplementedError
 
+    @abstractmethod
     def read_enum(
         self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
     ) -> Any:
         raise NotImplementedError
 
+    @abstractmethod
     def read_array_field(
         self,
         logical_name: str = "",
@@ -145,20 +150,6 @@ class ReadBuffer(ByteOrderAware, PositionAware):
 
 
 class ReadBufferByteBased(ReadBuffer):
-    NUMERIC_UNION = Union[
-        c_ubyte,
-        c_byte,
-        c_uint8,
-        c_uint16,
-        c_uint32,
-        c_uint64,
-        c_int8,
-        c_int16,
-        c_int32,
-        c_int64,
-        c_float,
-        c_double,
-    ]
 
     def __init__(self, bb: bytearray, byte_order: ByteOrder):
         if byte_order == ByteOrder.LITTLE_ENDIAN:
@@ -181,6 +172,7 @@ class ReadBufferByteBased(ReadBuffer):
         pass
 
     def pop_context(self, logical_name: str, **kwargs) -> None:
+        # Byte buffer doesn't need context handling
         pass
 
     def read_bit(self, logical_name: str = "", **kwargs) -> bool:
@@ -350,7 +342,6 @@ class ReadBufferByteBased(ReadBuffer):
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
         if isinstance(read_function, types.FunctionType):
             return read_function(self, **kwargs)
-        pass
 
     def read_enum(
         self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
@@ -360,6 +351,12 @@ class ReadBufferByteBased(ReadBuffer):
             return enum_return_value
         else:
             raise RuntimeError("read_enum called but read_function wasn't an enum")
+
+    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[Any]:
+        raise NotImplementedError
+
+    def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
+        raise NotImplementedError
 
     def read_array_field(
         self,
@@ -372,7 +369,7 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> List[Any]:
         if count is not None:
             parsed_array = []
-            for i in range(count):
+            for _ in range(count):
                 parsed_array.append(read_function(self, **kwargs))
             return parsed_array
         else:

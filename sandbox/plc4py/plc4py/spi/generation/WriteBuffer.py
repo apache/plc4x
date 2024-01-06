@@ -130,9 +130,6 @@ class WriteBuffer(ByteOrderAware, PositionAware):
     ) -> None:
         raise NotImplementedError
 
-    def write_virtual(self, value: str, logical_name: str = "", **kwargs) -> None:
-        raise NotImplementedError
-
     def write_complex_array(
         self, value: List[PlcMessage], logical_name: str = "", **kwargs
     ) -> None:
@@ -181,6 +178,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         pass
 
     def pop_context(self, logical_name: str, **kwargs) -> None:
+        # Byte Based Buffer doesn't need a context.
         pass
 
     def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:
