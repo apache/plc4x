@@ -61,9 +61,8 @@ Incompatible changes
 
 Bug Fixes
 ---------
-
 "
-cat <(echo "$HEADER") ../RELEASE_NOTES
+cat <(echo "$HEADER") ../RELEASE_NOTES > ../RELEASE_NOTES
 
 # 5. Commit the change.
 # TODO: Implement ...
