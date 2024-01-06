@@ -20,6 +20,13 @@
 # ----------------------------------------------------------------------------
 DIRECTORY=..
 
+# 0. Check if there are uncommited changes as these would automatically be committed
+if [[ `git status --porcelain` ]]; then
+  # Changes
+  echo "There are untracked files or changed files, aborting."
+  exit 1
+fi
+
 # 1. Delete the pre-exising "out" driectory that contains the maven local repo and deployments. (localhost)
 echo "Deleting the maven local repo and previous deployments"
 #rm -r $DIRECTORY/out
@@ -33,9 +40,14 @@ do
 done
 
 # 3. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
-docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
+docker compose run --rm --abort-on-container-exit releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
+if [ $? -ne 0 ]; then
+    echo "Got non-0 exit code from docker compose, aborting."
+    exit 1
+done
 
 # 4. Add all new files to Git (localhost)
+# TODO: Possibly only add items in a generated directory ...
 git add --all
 
 # 5. Commit and push all changes to Git (localhost)
