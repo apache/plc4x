@@ -38,11 +38,9 @@ do
     echo " - Deleting: " $f
     rm -r $f
 done
-for f in $(find $DIRECTORY -path "plc4c/generated-sources")
-do
-    echo " - Deleting: " $f
-    rm -r $f
-done
+# Delete the PLC4C code
+echo " - Deleting: " $DIRECTORY "/plc4c/generated-sources"
+rm -r $DIRECTORY "/plc4c/generated-sources"
 
 # 3. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
 docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
