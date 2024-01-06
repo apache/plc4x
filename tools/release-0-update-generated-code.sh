@@ -43,6 +43,10 @@ echo " - Deleting:  $DIRECTORY/plc4c/generated-sources"
 rm -r "$DIRECTORY/plc4c/generated-sources"
 # TODO: delete the generated code for go, c# and python.
 
+# TODO: Possibly check, if the year in the NOTICE is outdated
+
+# TODO: Possibly check if the RELEASE_NOTES file contains a section for the current version
+
 # 3. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
 docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
 if [ $? -ne 0 ]; then
@@ -60,3 +64,4 @@ else
   echo "No changes."
 fi
 
+echo "Pre-release updates complete. Please continue with 'release-1-create-branch.sh' next."

@@ -39,11 +39,39 @@ echo "Release Banch Name: '$BRANCH_NAME'"
 echo "New develop Version: '$NEW_VERSION'"
 
 # 2. Do a simple maven branch command with pushChanges=false (inside the Docker container)
-docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpuchChanges=false -DdevelopmentVersion=$NEW_VERSION -DbranchName=$BRANCH_NAME
+echo docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpuchChanges=false -DdevelopmentVersion=$NEW_VERSION -DbranchName=$BRANCH_NAME
 if [ $? -ne 0 ]; then
     echo "Got non-0 exit code from docker compose, aborting."
     exit 1
 fi
 
-# 3. Push the changes (outside)
-git push
+# 3. Remove the "(Unreleased)" prefix from the current version of the RELEASE_NOTES file
+sed -i '' 's/(Unreleased) *//' ../RELEASE_NOTES
+
+# 4. Add a new section for the new version to the RELEASE_NOTES file
+HEADER="==============================================================
+(Unreleased) Apache PLC4X $NEW_VERSION
+==============================================================
+
+New Features
+------------
+
+Incompatible changes
+--------------------
+
+Bug Fixes
+---------
+
+"
+cat <(echo "$HEADER") ../RELEASE_NOTES
+
+# 5. Commit the change.
+# TODO: Implement ...
+
+# 6. Push the changes (outside)
+#git push
+
+# 7. Switch to the release branch
+#git checkout $BRANCH_NAME
+
+echo "Release branch creation complete. Please continue with 'release-2-prepare-release.sh' as soon as the release branch is ready for being released."
