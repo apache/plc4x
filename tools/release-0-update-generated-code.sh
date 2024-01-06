@@ -44,7 +44,7 @@ docker compose run --rm --abort-on-container-exit releaser bash /ws/mvnw -e -P w
 if [ $? -ne 0 ]; then
     echo "Got non-0 exit code from docker compose, aborting."
     exit 1
-done
+fi
 
 # 4. Add all new files to Git (localhost)
 # TODO: Possibly only add items in a generated directory ...
