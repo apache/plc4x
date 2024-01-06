@@ -38,6 +38,11 @@ do
     echo " - Deleting: " $f
     rm -r $f
 done
+for f in $(find $DIRECTORY -path "plc4c/generated-sources")
+do
+    echo " - Deleting: " $f
+    rm -r $f
+done
 
 # 3. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
 docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
@@ -53,9 +58,10 @@ if [[ `git status --porcelain` ]]; then
   exit 0
 fi
 
+echo "Committing changes."
 # 4. Add all new files to Git (localhost)
-git add --all
+#git add --all
 
 # 5. Commit and push all changes to Git (localhost)
-git commit -m "chore: updated generated code"
-git push
+#git commit -m "chore: updated generated code"
+#git push
