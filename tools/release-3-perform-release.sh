@@ -19,7 +19,24 @@
 # under the License.
 # ----------------------------------------------------------------------------
 
+# 0. Check if the release properties file exists.
+#if [[ `git status --porcelain` ]]; then
+#  # Changes
+#  echo "There are untracked files or changed files, aborting."
+#  exit 1
+#fi
+
 # 1. Do a simple release-perfoem command skip sigining of artifacts and deploy to local directory (inside the Docker container)
+docker compose run --rm releaser bash /ws/mvnw -e -Dmaven.repo.local=/ws/out/.repository -DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-artifacts-dir release:perform
+
 # 2. Sign the artifacts
+# TODO: it seems the gpg sign plugin only signs one artifact ... gotta find out how to sign every jar in out/.local-artifacts-dir
+
 # 3. Deploy the artifacts to Nexus
-# 4. Upload the release artifacts to SVN
+# TODO: Use the same technique we use on Jenkins to deploy everything in a local repo
+
+# 4. Prepare a directory for the release candidate
+# TODO: Implement ...
+
+# 5. Upload the release candidate artifacts to SVN
+# TODO: Implement ...

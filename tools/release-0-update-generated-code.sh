@@ -20,32 +20,30 @@
 # ----------------------------------------------------------------------------
 DIRECTORY=..
 
-# 0. Check if there are uncommited changes as these would automatically be committed
+# 0. Check if there are uncommited changes as these would automatically be committed (local)
 if [[ `git status --porcelain` ]]; then
   # Changes
   echo "There are untracked files or changed files, aborting."
   exit 1
 fi
 
-# 1. Delete the pre-exising "out" driectory that contains the maven local repo and deployments. (localhost)
+# 1. Delete the pre-exising "out" driectory that contains the maven local repo and deployments (local)
 echo "Deleting the maven local repo and previous deployments"
 rm -r $DIRECTORY/out
 
-# 2. Delete all generated sources (localhost)
+# 2. Delete all generated sources (local)
 echo "Deleting generated-sources:"
 for f in $(find $DIRECTORY -path "*/src/main/generated")
 do
     echo " - Deleting: " $f
     rm -r $f
 done
-# Delete the PLC4C code
+# Delete the PLC4C code (local)
 echo " - Deleting:  $DIRECTORY/plc4c/generated-sources"
 rm -r "$DIRECTORY/plc4c/generated-sources"
 # TODO: delete the generated code for go, c# and python.
 
 # TODO: Possibly check, if the year in the NOTICE is outdated
-
-# TODO: Possibly check if the RELEASE_NOTES file contains a section for the current version
 
 # 3. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
 docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
@@ -54,7 +52,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Check if there is unchanged files (or committing and pushing nothing will fail)
+# Check if there is unchanged files (or committing and pushing nothing will fail) (local)
 if [[ `git status --porcelain` ]]; then
   echo "Committing changes."
   git add --all
