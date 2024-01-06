@@ -49,21 +49,7 @@ fi
 sed -i '' "s/(Unreleased) Apache PLC4X $PROJECT_VERSION*/Apache PLC4X $RELEASE_VERSION/" ../RELEASE_NOTES
 
 # 4. Add a new section for the new version to the RELEASE_NOTES file
-sed -i '' "1i\
-==============================================================\
-(Unreleased) Apache PLC4X $NEW_VERSION\
-==============================================================\
-\
-New Features\
-------------\
-\
-Incompatible changes\
---------------------\
-\
-Bug Fixes\
----------\
-
-" ../RELEASE_NOTES
+sed -i '' "1i\==============================================================\n(Unreleased) Apache PLC4X $NEW_VERSION\n==============================================================\n\nNew Features\n------------\n\nIncompatible changes\n--------------------\n\nBug Fixes\n---------\n" ../RELEASE_NOTES
 
 # 5. Commit the change.
 # TODO: Implement ...
