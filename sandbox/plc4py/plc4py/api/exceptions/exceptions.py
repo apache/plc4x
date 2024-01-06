@@ -41,3 +41,7 @@ class PlcNotImplementedException(Exception):
 
 class SerializationException(Exception):
     pass
+
+
+class ParseException(Exception):
+    pass

@@ -19,7 +19,7 @@
 from abc import ABC
 from dataclasses import dataclass
 from enum import auto, Enum
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, List
 
 T = TypeVar("T")
 
@@ -28,10 +28,22 @@ T = TypeVar("T")
 class PlcValue(Generic[T], ABC):
     value: T
 
-    def get_bool(self):
+    def get_bool(self) -> bool:
+        return bool(self.value)
+
+    def get_float(self) -> float:
+        return float(self.value)
+
+    def get_str(self) -> str:
+        return str(self.value)
+
+    def get_int(self) -> int:
+        return int(self.value)
+
+    def get_list(self) -> List["PlcValue"]:
         return self.value
 
-    def get_int(self):
+    def get_raw(self):
         return self.value
 
 

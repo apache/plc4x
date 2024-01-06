@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class PlcField:
+class PlcTag:
     """
     Base type for all field types.
     Typically every driver provides an implementation of this interface in order
@@ -31,7 +31,7 @@ class PlcField:
     In order to stay platform and protocol independent every driver connection implementation
     provides a prepareField(String) method that is able to parse a string representation of
     a resource into it's individual field type. Manually constructing PlcField objects
-    manually makes the solution less independent from the protocol, but might be faster.
+    manually makes the solution less independent of the protocol, but might be faster.
     """
 
-    name: str
+    address: str

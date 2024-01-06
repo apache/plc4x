@@ -28,3 +28,6 @@ class ModbusConfiguration(PlcConfiguration):
 
         if self.port is None:
             self.port = 502
+
+        if "unit_identifier" not in self.parameters:
+            self.unit_identifier = 1

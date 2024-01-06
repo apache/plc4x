@@ -15,6 +15,7 @@
 #  specific language governing permissions and limitations
 #  under the License.
 import struct
+import types
 from ctypes import (
     c_byte,
     c_ubyte,
@@ -30,8 +31,9 @@ from ctypes import (
     c_uint8,
 )
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Union, Any
 
+import aenum
 from bitarray import bitarray
 from bitarray.util import zeros, ba2int, ba2base
 
@@ -119,7 +121,15 @@ class ReadBuffer(ByteOrderAware, PositionAware):
     def read_virtual(self, logical_name: str = "", **kwargs) -> str:
         raise NotImplementedError
 
-    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[PlcMessage]:
+    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[Any]:
+        raise NotImplementedError
+
+    def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+        raise NotImplementedError
+
+    def read_enum(
+        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
         raise NotImplementedError
 
     def read_array_field(
@@ -130,15 +140,11 @@ class ReadBuffer(ByteOrderAware, PositionAware):
         length: int = None,
         terminated=None,
         **kwargs
-    ) -> List[PlcMessage]:
+    ) -> List[Any]:
         raise NotImplementedError
 
 
 class ReadBufferByteBased(ReadBuffer):
-    byte_order: ByteOrder
-    position: int = 0
-    bb: bitarray
-
     NUMERIC_UNION = Union[
         c_ubyte,
         c_byte,
@@ -162,6 +168,7 @@ class ReadBufferByteBased(ReadBuffer):
             buffer=memoryview(bb), endian=ByteOrder.get_short_name(byte_order)
         )
         self.byte_order = byte_order
+        self.position = 0
 
     def get_bytes(self) -> memoryview:
         return memoryview(self.bb)
@@ -171,6 +178,9 @@ class ReadBufferByteBased(ReadBuffer):
 
     def push_context(self, logical_name: str, **kwargs) -> None:
         # byte buffer need no context handling
+        pass
+
+    def pop_context(self, logical_name: str, **kwargs) -> None:
         pass
 
     def read_bit(self, logical_name: str = "", **kwargs) -> bool:
@@ -199,7 +209,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 8:
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -212,7 +224,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 16:
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -225,7 +239,10 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 32:
             raise SerializationException("unsigned int can only contain max 32 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            ss = self.bb[self.position : bit_length]
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -238,7 +255,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 64:
             raise SerializationException("unsigned long can only contain max 64 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -251,7 +270,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 8:
             raise SerializationException("signed byte can only contain max 8 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -262,7 +283,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 16:
             raise SerializationException("signed short can only contain max 16 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -273,7 +296,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 32:
             raise SerializationException("signed int can only contain max 32 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -284,7 +309,9 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 64:
             raise SerializationException("signed long can only contain max 64 bits")
         else:
-            result: int = ba2int(self.bb[self.position : bit_length], signed=False)
+            result: int = ba2int(
+                self.bb[self.position : self.position + bit_length], signed=False
+            )
             self.position += bit_length
             return result
 
@@ -299,7 +326,7 @@ class ReadBufferByteBased(ReadBuffer):
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
             result: float = struct.unpack(
-                endianness + "f", self.bb[self.position : bit_length]
+                endianness + "f", self.bb[self.position : self.position + bit_length]
             )[0]
             self.position += bit_length
             return result
@@ -315,7 +342,38 @@ class ReadBufferByteBased(ReadBuffer):
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
             result: float = struct.unpack(
-                endianness + "d", self.bb[self.position : bit_length]
+                endianness + "d", self.bb[self.position : self.position + bit_length]
             )[0]
             self.position += bit_length
             return result
+
+    def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+        if isinstance(read_function, types.FunctionType):
+            return read_function(self, **kwargs)
+        pass
+
+    def read_enum(
+        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
+        if isinstance(read_function, aenum._enum.EnumType):
+            enum_return_value = read_function(ba2int(self.bb[self.position : self.position + bit_length], signed=False))
+            return enum_return_value
+        else:
+            raise RuntimeError("read_enum called but read_function wasn't an enum")
+
+    def read_array_field(
+        self,
+        logical_name: str = "",
+        read_function=None,
+        count: int = None,
+        length: int = None,
+        terminated=None,
+        **kwargs
+    ) -> List[Any]:
+        if count is not None:
+            parsed_array = []
+            for i in range(count):
+                parsed_array.append(read_function(self, **kwargs))
+            return parsed_array
+        else:
+            raise NotImplementedError

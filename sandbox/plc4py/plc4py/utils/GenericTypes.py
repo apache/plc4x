@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import threading
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Generator
@@ -60,3 +61,23 @@ class ByteOrder(Enum):
 @dataclass
 class ByteOrderAware:
     byte_order: ByteOrder
+
+
+class AtomicInteger:
+    def __init__(self, seed=0):
+        self._value = seed
+        self._lock = threading.Lock()
+
+    def increment(self, num=1):
+        with self._lock:
+            self._value += num
+            return self._value
+
+    def decrement(self, num=1):
+        with self._lock:
+            self._value -= num
+            return self._value
+
+    @property
+    def value(self):
+        return self._value
