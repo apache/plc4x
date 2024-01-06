@@ -1357,7 +1357,8 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.27.7-b1</version>
+          <!-- Not all versions have all types of binaries deployed -->
+          <version>3.26.3-b1</version>
         </plugin>
 
         <plugin>
