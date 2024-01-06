@@ -23,7 +23,7 @@
 if [[ `git status --porcelain` ]]; then
   # Changes
   echo "There are untracked files or changed files, aborting."
-  exit 1
+#  exit 1
 fi
 
 # 1. Get and calculate the current veerion
@@ -38,6 +38,16 @@ echo "Release Version: '$RELEASE_VERSION'"
 echo "Release Banch Name: '$BRANCH_NAME'"
 echo "New develop Version: '$NEW_VERSION'"
 
+# 2. Ask if the RELEASE_NOTES have been filled out at all
+read -p "Have the RELEASE_NOTES been updated for this version? (yes/no) " yn
+case $yn in
+	yes ) echo continuing with the proess;;
+	no ) echo Please update the RELEASE_NOTES first;
+		exit 1;;
+	* ) echo invalid response;
+		exit 1;;
+esac
+
 # 2. Do a simple maven branch command with pushChanges=false (inside the Docker container)
 echo docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpuchChanges=false -DdevelopmentVersion=$NEW_VERSION -DbranchName=$BRANCH_NAME
 if [ $? -ne 0 ]; then
@@ -49,20 +59,22 @@ fi
 sed -i '' "s/(Unreleased) Apache PLC4X $PROJECT_VERSION*/Apache PLC4X $RELEASE_VERSION/" ../RELEASE_NOTES
 
 # 4. Add a new section for the new version to the RELEASE_NOTES file
-sed -i '' '1i\
-==============================================================\
-(Unreleased) Apache PLC4X $NEW_VERSION\
-==============================================================\
+NEW_HEADER="==============================================================\n\
+(Unreleased) Apache PLC4X $NEW_VERSION\n\
+==============================================================\n\
+\n\
+New Features\n\
+------------\n\
+\n\
+Incompatible changes\n\
+--------------------\n\
+\n\
+Bug Fixes\n\
+---------\n\
 \
-New Features\
-------------\
-\
-Incompatible changes\
---------------------\
-\
-Bug Fixes\
----------\
-' ../RELEASE_NOTES
+"
+echo NEW_VERSION
+sed -i '' "1s/.*/$NEW_HEADER/" ../RELEASE_NOTES
 
 # 5. Commit the change.
 # TODO: Implement ...
