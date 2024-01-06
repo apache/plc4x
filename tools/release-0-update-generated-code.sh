@@ -29,7 +29,7 @@ fi
 
 # 1. Delete the pre-exising "out" driectory that contains the maven local repo and deployments. (localhost)
 echo "Deleting the maven local repo and previous deployments"
-#rm -r $DIRECTORY/out
+rm -r $DIRECTORY/out
 
 # 2. Delete all generated sources (localhost)
 echo "Deleting generated-sources:"
@@ -39,8 +39,9 @@ do
     rm -r $f
 done
 # Delete the PLC4C code
-echo " - Deleting: $DIRECTORY/plc4c/generated-sources"
+echo " - Deleting:  $DIRECTORY/plc4c/generated-sources"
 rm -r "$DIRECTORY/plc4c/generated-sources"
+# TODO: delete the generated code for go, c# and python.
 
 # 3. Run the maven build for all modules with "update-generated-code" enabled (Docker container)
 docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks,update-generated-code -Dmaven.repo.local=/ws/out/.repository clean package
@@ -51,15 +52,11 @@ fi
 
 # Check if there is unchanged files (or committing and pushing nothing will fail)
 if [[ `git status --porcelain` ]]; then
-  # Changes
+  echo "Committing changes."
+  git add --all
+  git commit -m "chore: updated generated code"
+  git push
+else
   echo "No changes."
-  exit 0
 fi
 
-echo "Committing changes."
-# 4. Add all new files to Git (localhost)
-#git add --all
-
-# 5. Commit and push all changes to Git (localhost)
-#git commit -m "chore: updated generated code"
-#git push
