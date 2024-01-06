@@ -49,7 +49,7 @@ case $yn in
 esac
 
 # 2. Do a simple maven branch command with pushChanges=false (inside the Docker container)
-echo docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpuchChanges=false -DdevelopmentVersion=$NEW_VERSION -DbranchName=$BRANCH_NAME
+docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpuchChanges=false -DdevelopmentVersion=$NEW_VERSION -DbranchName=$BRANCH_NAME
 if [ $? -ne 0 ]; then
     echo "Got non-0 exit code from docker compose, aborting."
     exit 1
@@ -76,13 +76,14 @@ Bug Fixes\n\
 echo NEW_VERSION
 sed -i '' "1s/.*/$NEW_HEADER/" ../RELEASE_NOTES
 
-# 5. Commit the change.
-# TODO: Implement ...
+# 5. Commit the change (outside)
+git add --all
+git commit -m "chore: prepared the RELEASE_NOTES for the next version."
 
 # 6. Push the changes (outside)
-#git push
+git push
 
 # 7. Switch to the release branch
-#git checkout $BRANCH_NAME
+git checkout $BRANCH_NAME
 
-echo "Release branch creation complete. Please continue with 'release-2-prepare-release.sh' as soon as the release branch is ready for being released."
+echo "Release branch creation complete. We have switched the local branch to the release branch. Please continue with 'release-2-prepare-release.sh' as soon as the release branch is ready for being released."
