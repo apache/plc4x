@@ -46,8 +46,14 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Check if there is unchanged files (or committing and pushing nothing will fail)
+if [[ `git status --porcelain` ]]; then
+  # Changes
+  echo "No changes."
+  exit 0
+fi
+
 # 4. Add all new files to Git (localhost)
-# TODO: Possibly only add items in a generated directory ...
 git add --all
 
 # 5. Commit and push all changes to Git (localhost)
