@@ -17,82 +17,73 @@
  * under the License.
  */
 
-import {Action, createStore} from "redux";
+import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Device, Driver} from "../generated/plc4j-tools-ui-frontend.ts";
+import {useDispatch} from "react-redux";
 
-export type ApplicationState = {
-    driverList?: Driver[]
-    deviceList?: Device[]
-}
-
-type InitializeAction = {
-    type: string
+export type InitializeConnectionsAction = {
     driverList: Driver[]
     deviceList: Device[]
 }
 
 type DeviceAction = {
-    type: string
     device: Device
 }
 
-const storeReducer = (state: ApplicationState = {}, action: Action) => {
-    console.log(action);
-    if (action.type === 'initialize-lists') {
-        const initializeAction: InitializeAction = action as InitializeAction
-        return {
-            ...state,
-            deviceList: initializeAction.deviceList,
-            driverList: initializeAction.driverList
-        }
-    } else if (action.type === 'add-device') {
-        const deviceAction: DeviceAction = action as DeviceAction
-        if(state.deviceList) {
-            return {
-                ...state,
-                deviceList: [...state.deviceList, deviceAction.device]
-            }
-        }
-        return {
-            ...state,
-            deviceList: [deviceAction.device]
-        }
-    } else if (action.type === 'update-device') {
-        const deviceAction: DeviceAction = action as DeviceAction
-        if(state.deviceList) {
-            const device = state.deviceList.find(value => value.id == deviceAction.device.id);
-            if(device) {
+export interface ConnectionsState {
+    driverList: Driver[]
+    deviceList: Device[]
+}
+
+const connectionsInitialState: ConnectionsState = {
+    driverList: [] as Driver[],
+    deviceList: [] as Device[],
+}
+
+const connectionsSlice = createSlice({
+    name: 'connections',
+    initialState: connectionsInitialState,
+    reducers: {
+        initializeLists: (state, action: PayloadAction<InitializeConnectionsAction>) => {
+            state.driverList = action.payload.driverList
+            state.deviceList = action.payload.deviceList
+            console.log("updated driver and device lists")
+        },
+        addDevice: (state, action: PayloadAction<DeviceAction>) => {
+            state.deviceList = [...state.deviceList, action.payload.device]
+        },
+        updateDevice: (state, action: PayloadAction<DeviceAction>) => {
+            const device = state.deviceList.find(value => value.id == action.payload.device.id);
+            if (device) {
                 const index = state.deviceList.indexOf(device);
-                if(index) {
-                    const newList = state.deviceList;
-                    newList.splice(index, 1, deviceAction.device)
-                    return {
-                        ...state,
-                        newList
-                    }
+                if (index) {
+                    state.deviceList.splice(index, 1, action.payload.device);
                 }
             }
-        }
-    } else if (action.type === 'delete-device') {
-        const deviceAction: DeviceAction = action as DeviceAction
-        if(state.deviceList) {
-            const device = state.deviceList.find(value => value.id == deviceAction.device.id);
-            if(device) {
+        },
+        deleteDevice: (state, action: PayloadAction<DeviceAction>) => {
+            const device = state.deviceList.find(value => value.id == action.payload.device.id);
+            if (device) {
                 const index = state.deviceList.indexOf(device);
-                if(index) {
-                    const newList = state.deviceList;
-                    newList.splice(index, 1)
-                    return {
-                        ...state,
-                        newList
-                    }
+                if (index) {
+                    state.deviceList.splice(index, 1);
                 }
             }
         }
     }
-    return state
-}
+})
 
-const store = createStore<ApplicationState, Action>(storeReducer)
+export const { initializeLists, addDevice, updateDevice, deleteDevice } = connectionsSlice.actions
 
-export default store;
+const store = configureStore({
+    reducer: {
+        connections: connectionsSlice.reducer
+    }
+})
+export default store
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {connections: ConnectionsState}
+export type AppDispatch = typeof store.dispatch
+export const useAppDispatch: () => AppDispatch = useDispatch

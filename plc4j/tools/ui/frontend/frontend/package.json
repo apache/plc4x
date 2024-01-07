@@ -16,6 +16,7 @@
     "@mdi/react": "^1.6.1",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
+    "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
@@ -24,8 +25,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.4",
     "react-router-dom": "^6.20.1",
-    "react-use-websocket": "^4.5.0",
-    "redux": "^5.0.1"
+    "react-use-websocket": "^4.5.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

@@ -22,36 +22,43 @@ import {ScrollPanel} from "primereact/scrollpanel";
 import NavigationTree from "../components/NavigationTree.tsx";
 import PlcConnection from "../components/PlcConnection.tsx";
 import { useSelector } from "react-redux";
-import {ApplicationState} from "../store"
 import {Device, Driver} from "../generated/plc4j-tools-ui-frontend.ts";
 import {TreeItemData} from "../model/TreeItemData.ts";
+import {RootState} from "../store";
 
-
-function getByDriverTree(driverList: Driver[] | undefined, deviceList: Device[] | undefined):TreeItemData[] {
-    console.log('getByDriverTree')
+function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemData[] {
     if(driverList && deviceList) {
-        console.log(driverList)
-        console.log(deviceList)
+        let result:TreeItemData[] = []
+        driverList.forEach(value => {
+            result = [...result, {
+                id: value.code,
+                name: value.name,
+                type: "DRIVER",
+                supportsDiscovery: value.supportsDiscovery,
+                supportsBrowsing: false,
+                supportsReading: false,
+                supportsWriting: false,
+                supportsSubscribing: false,
+                supportsPublishing: false
+            }]
+        })
+        // TODO: Now add each connection to the driver it belongs to.
+        return result
     }
     return []
 }
 
-function getByDeviceTree(driverList: Driver[] | undefined, deviceList: Device[] | undefined):TreeItemData[] {
-    console.log('getByDeviceTree')
+function getByDeviceTree(driverList: Driver[], deviceList: Device[]):TreeItemData[] {
     if(driverList && deviceList) {
-        console.log(driverList)
-        console.log(deviceList)
+        // TODO: Do something ...
     }
     return []
 }
 
 export default function Inspect() {
-    const lists = useSelector<ApplicationState>(state => {
-        state.driverList
-        state.deviceList
-    }) as ApplicationState
-    console.log("Test" + lists);
-
+    const lists = useSelector((state: RootState) => {
+        return state.connections
+    })
     return (
         <Splitter className="h-full">
             <SplitterPanel

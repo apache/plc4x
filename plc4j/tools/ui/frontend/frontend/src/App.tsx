@@ -29,7 +29,7 @@ import About from "./pages/About.tsx";
 import useWebSocket from 'react-use-websocket';
 import {useState} from "react";
 import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
-import store from "./store";
+import store, {InitializeConnectionsAction, initializeLists} from "./store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -64,14 +64,12 @@ function App() {
     // Load the initial list of drivers and connections and initialize the store with that.
     if(!initialized) {
         setInitialized(true);
-
+        console.log("Initializing")
         restClient.getAllDrivers().then(driverList => {
             restClient.getAllDevices().then(deviceList => {
-                store.dispatch({
-                    type: 'initialize-lists',
-                    driverList: driverList,
-                    deviceList: deviceList
-                })
+                console.log("Dispatching (Initialize-Lists)")
+                const action:InitializeConnectionsAction = {driverList:driverList.data, deviceList: deviceList.data}
+                store.dispatch(initializeLists(action))
             })
         })
     }
