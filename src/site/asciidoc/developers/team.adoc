@@ -84,3 +84,8 @@ Software Developer
 Open to Work
 
 San Juan Del Sur, Nicaragua |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.png[hutcheb, 240, 320]
+| *César García*
+
+CEOS Automatización, C.A.
+
+Pto. La Cruz, Anzoátegui, Venezuela |Electrical engineer, dedicated to process automation and control. Specialized in Siemens S5, S7, PCS7 architecture for the Oil&Gas industry and Braumat for the food and beverage industry. Applying open source technologies to create added value for users, such as Kannel, Apache Http Server, Apache Karaf, Apache Hop, Apache IoTDB and the meeting point of all of them Apache PLC4X where I have been able to collaborate as a PMC. | a| image::team/glcj.jpg[glcj, 240, 320]
