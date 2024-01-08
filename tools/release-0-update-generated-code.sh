@@ -20,14 +20,14 @@
 # ----------------------------------------------------------------------------
 DIRECTORY=..
 
-# 0. Check if there are uncommited changes as these would automatically be committed (local)
-if [[ `git status --porcelain` ]]; then
+# 0. Check if there are uncommitted changes as these would automatically be committed (local)
+if [[ $(git status --porcelain) ]]; then
   # Changes
   echo "There are untracked files or changed files, aborting."
   exit 1
 fi
 
-# 1. Delete the pre-exising "out" driectory that contains the maven local repo and deployments (local)
+# 1. Delete the pre-exising "out" directory that contains the maven local repo and deployments (local)
 echo "Deleting the maven local repo and previous deployments"
 rm -r $DIRECTORY/out
 
@@ -53,7 +53,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Check if there is unchanged files (or committing and pushing nothing will fail) (local)
-if [[ `git status --porcelain` ]]; then
+if [[ $(git status --porcelain) ]]; then
   echo "Committing changes."
   git add --all
   git commit -m "chore: updated generated code"

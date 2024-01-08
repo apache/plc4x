@@ -26,7 +26,7 @@
 #  exit 1
 #fi
 
-# 1. Do a simple release-perfoem command skip sigining of artifacts and deploy to local directory (inside the Docker container)
+# 1. Do a simple release-perform command skip signing of artifacts and deploy to local directory (inside the Docker container)
 docker compose run --rm releaser bash /ws/mvnw -e -Dmaven.repo.local=/ws/out/.repository -DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-artifacts-dir release:perform
 
 # 2. Sign the artifacts
