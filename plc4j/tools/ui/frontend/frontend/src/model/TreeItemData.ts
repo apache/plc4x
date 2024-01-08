@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export type TreeItemType = "DRIVER" | "CONNECTION" | "DEVICE";
+export type TreeItemType = "ROOT" | "DRIVER" | "CONNECTION" | "DEVICE";
 
 export interface TreeItemData {
     id: string,

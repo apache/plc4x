@@ -22,12 +22,38 @@ import {Tree} from "primereact/tree";
 import {TreeNode} from "primereact/treenode";
 import {IconType} from "primereact/utils";
 import 'primeicons/primeicons.css';
+import {useRef, useState} from "react";
+import {Toast} from "primereact/toast";
+import {ContextMenu} from "primereact/contextmenu";
+import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
+import axios from "axios";
 
 type NavigationTreeProps = {
     treeItems: TreeItemData[];
 }
 
+const restClient = new RestApplicationClient(axios);
+
 export default function NavigationTree({treeItems}: NavigationTreeProps) {
+    const [selectedNodeKey, setSelectedNodeKey] = useState<string>("");
+    const toast = useRef<Toast>(null);
+    const cm = useRef<ContextMenu>(null);
+    const menu = [
+        {
+            label: 'Discover',
+            icon: 'pi pi-search',
+            command: () => {
+                restClient.discover(selectedNodeKey);
+            }
+        },
+        {
+            label: 'Add',
+            icon: 'pi pi-plus-circle',
+            command: () => {
+                console.log("Toggle")
+            }
+        }
+    ];
     function getIcon(curItem: TreeItemData):IconType<TreeNode> {
         switch (curItem.type) {
             case "DRIVER":
@@ -55,5 +81,19 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
     }
 
     const treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value))
-    return <Tree value={treeNodes} selectionMode="single"/>
+    return(
+        <div>
+            <Toast ref={toast} />
+
+            <ContextMenu model={menu} ref={cm} onHide={() => setSelectedNodeKey("")} />
+
+            <Tree value={treeNodes} selectionMode="single"
+                  contextMenuSelectionKey={selectedNodeKey}
+                  onContextMenuSelectionChange={event => setSelectedNodeKey(event.value as string)}
+                  onContextMenu={event => {
+                      if(cm.current) {
+                          cm.current.show(event.originalEvent);
+                      }
+                  }}/>
+        </div>)
 }

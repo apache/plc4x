@@ -42,15 +42,26 @@ function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemDat
                 supportsPublishing: false
             }]
         })
-        // TODO: Now add each connection to the driver it belongs to.
         return result
     }
     return []
 }
 
-function getByDeviceTree(driverList: Driver[], deviceList: Device[]):TreeItemData[] {
-    if(driverList && deviceList) {
-        // TODO: Do something ...
+function getByDeviceTree(deviceList: Device[]):TreeItemData[] {
+    if(deviceList) {
+        // Group the connections by transport-url.
+        // TODO: Possibly create filters for the different types of urls (IP, Hostname, Port, Mac-Address, ...)
+        const deviceMap = new Map<string, Device[]>
+        deviceList.forEach(device => {
+            const devices = deviceMap.get(device.getTransportUrl)
+            if(devices) {
+                deviceMap.set(device.getTransportUrl, [...devices, device])
+            } else {
+                deviceMap.set(device.getTransportUrl, [device])
+            }
+        })
+
+        // Build a tree based on the grouped locations.
     }
     return []
 }
@@ -72,7 +83,7 @@ export default function Inspect() {
                     </TabPanel>
                     <TabPanel header="By Device">
                         <ScrollPanel style={{width: '100%', height:'100%'}}>
-                            <NavigationTree  treeItems={getByDeviceTree(lists.driverList, lists.deviceList)}/>
+                            <NavigationTree  treeItems={getByDeviceTree(lists.deviceList)}/>
                         </ScrollPanel>
                     </TabPanel>
                 </TabView>
