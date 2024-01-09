@@ -64,7 +64,6 @@ from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
 class ModbusDevice:
     _configuration: ModbusConfiguration
     tags: Dict[str, PlcValue] = field(default_factory=lambda: {})
-
     _transaction_generator: AtomicInteger = field(
         default_factory=lambda: AtomicInteger()
     )
@@ -73,7 +72,7 @@ class ModbusDevice:
         self, request: PlcReadRequest, transport: Transport
     ) -> PlcReadResponse:
         """
-        Reads one field from the Mock Device
+        Reads one field from the Modbus Device
         """
         if len(request.tags) > 1:
             raise NotImplementedError(

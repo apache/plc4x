@@ -42,24 +42,33 @@ from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
 class ModbusConnection(PlcConnection):
-    """A hook implementation namespace."""
+    """
+    Modbus TCP PLC connection implementation
+    """
 
     def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
         super().__init__(config)
+        self._configuration : ModbusConfiguration
         self._device: ModbusDevice = ModbusDevice(self._configuration)
         self._transport: Plc4xBaseTransport = transport
 
     @staticmethod
-    async def create(url):
+    async def create(url: str):
+        """
+        Static Factory to return an instance of a ModbusConnection.
+        It creates the TCP connection to the Modbus device before returning.
+
+        :param url: PLC4X connection string of the Modbus TCP connection
+        :return ModbusConnection instance using the configuration from the url provided
+        """
         config = ModbusConfiguration(url)
         loop = asyncio.get_running_loop()
         connection_future = loop.create_future()
-        # TODO:- Look at removing this future.
-        transport = await TCPTransport.create(
+        transport = await asyncio.wait_for(TCPTransport.create(
             protocol_factory=lambda: ModbusProtocol(connection_future),
             host=config.host,
             port=config.port,
-        )
+        ), 10)
         return ModbusConnection(config, transport)
 
     def is_connected(self) -> bool:
@@ -110,7 +119,7 @@ class ModbusConnection(PlcConnection):
 
         async def _request(req, device) -> PlcReadResponse:
             try:
-                response = await device.read(req, self._transport)
+                response = await asyncio.wait_for(device.read(req, self._transport), 5)
                 return response
             except Exception as e:
                 # TODO:- This exception is very general and probably should be replaced
@@ -123,6 +132,7 @@ class ModbusConnection(PlcConnection):
 
 class ModbusDriver(PlcDriver):
     def __init__(self):
+        super().__init__()
         self.protocol_code = "modbus-tcp"
         self.protocol_name = "Modbus TCP"
 
@@ -139,6 +149,9 @@ class ModbusDriver(PlcDriver):
 
 
 class ModbusDriverLoader(PlcDriverLoader):
+    """
+    Modbus Driver Pluggy Hook Implmentation, lets pluggy find the driver by name
+    """
     @staticmethod
     @plc4py.hookimpl
     def get_driver() -> Type[ModbusDriver]:
