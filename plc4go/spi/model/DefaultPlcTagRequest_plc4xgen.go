@@ -45,7 +45,8 @@ func (d *DefaultPlcTagRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 	if err := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.tags {
+	for _name, elem := range d.tags {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

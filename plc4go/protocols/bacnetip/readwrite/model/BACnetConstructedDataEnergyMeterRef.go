@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataEnergyMeterRef) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_energyMeterRefErr, "Error serializing 'energyMeterRef' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

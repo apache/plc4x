@@ -362,6 +362,8 @@ func (pm *_Request) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		}
 	}
 	// Virtual field
+	actualPeek := m.GetActualPeek()
+	_ = actualPeek
 	if _actualPeekErr := writeBuffer.WriteVirtual(ctx, "actualPeek", m.GetActualPeek()); _actualPeekErr != nil {
 		return errors.Wrap(_actualPeekErr, "Error serializing 'actualPeek' field")
 	}

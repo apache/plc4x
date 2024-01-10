@@ -180,7 +180,7 @@ func AdsPortNumbersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return 0, errors.Wrap(err, "error reading AdsPortNumbers")
 	}
 	if enum, ok := AdsPortNumbersByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AdsPortNumbers")
 		return AdsPortNumbers(val), nil
 	} else {
 		return enum, nil
@@ -198,7 +198,7 @@ func (e AdsPortNumbers) Serialize() ([]byte, error) {
 func (e AdsPortNumbers) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("AdsPortNumbers", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("AdsPortNumbers", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -231,7 +231,7 @@ func (e AdsPortNumbers) PLC4XEnumName() string {
 	case AdsPortNumbers_CAM_SWITCH:
 		return "CAM_SWITCH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e AdsPortNumbers) String() string {

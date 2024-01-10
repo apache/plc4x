@@ -120,7 +120,7 @@ func EiPCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading EiPCommand")
 	}
 	if enum, ok := EiPCommandByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for EiPCommand")
 		return EiPCommand(val), nil
 	} else {
 		return enum, nil
@@ -138,7 +138,7 @@ func (e EiPCommand) Serialize() ([]byte, error) {
 func (e EiPCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("EiPCommand", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -151,7 +151,7 @@ func (e EiPCommand) PLC4XEnumName() string {
 	case EiPCommand_SendRRData:
 		return "SendRRData"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e EiPCommand) String() string {

@@ -42,7 +42,7 @@ public abstract class ManualTest {
     private final List<TestCase> testCases;
 
     public ManualTest(String connectionString) {
-        this(connectionString, false);
+        this(connectionString, true);
     }
 
     public ManualTest(String connectionString, boolean testWrite) {
@@ -51,8 +51,9 @@ public abstract class ManualTest {
         testCases = new ArrayList<>();
     }
 
-    public void addTestCase(String address, Object expectedReadValue) {
+    public ManualTest addTestCase(String address, Object expectedReadValue) {
         testCases.add(new TestCase(address, expectedReadValue, null));
+        return this;
     }
 
     public void run() throws Exception {
@@ -72,13 +73,13 @@ public abstract class ManualTest {
                 Assertions.assertEquals(tagName, readResponse.getTagNames().iterator().next(), tagName);
                 Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName), tagName);
                 Assertions.assertNotNull(readResponse.getPlcValue(tagName), tagName);
-                if(readResponse.getPlcValue(tagName) instanceof PlcList) {
+                if (readResponse.getPlcValue(tagName) instanceof PlcList) {
                     PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
                     List expectedValues;
                     if (testCase.expectedReadValue instanceof PlcList) {
                         PlcList expectedPlcList = (PlcList) testCase.expectedReadValue;
                         expectedValues = expectedPlcList.getList();
-                    } else if(testCase.expectedReadValue instanceof List) {
+                    } else if (testCase.expectedReadValue instanceof List) {
                         expectedValues = (List) testCase.expectedReadValue;
                     } else {
                         Assertions.fail("Got a list of values, but only expected one.");
@@ -104,9 +105,9 @@ public abstract class ManualTest {
                 }
 
                 // Try writing the same value back to the PLC.
-                if(testWrite) {
+                if (testWrite) {
                     PlcValue plcValue;
-                    if(testCase.expectedReadValue instanceof PlcValue) {
+                    if (testCase.expectedReadValue instanceof PlcValue) {
                         plcValue = ((PlcValue) testCase.expectedReadValue);
                     } else {
                         plcValue = PlcValues.of(testCase.expectedReadValue);
@@ -119,7 +120,7 @@ public abstract class ManualTest {
                     PlcWriteResponse writeResponse = writeRequest.execute().get();
 
                     // Check the result
-                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName));
+                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
                 }
             }
             System.out.println("Success");

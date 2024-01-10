@@ -124,11 +124,13 @@ public class ProfinetDevice implements PlcSubscriber {
         }
     }
 
-    private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable) {
+    private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable, int sourcePort, int destPort) {
         deviceContext.addToQueue(callable.getId(), callable);
         this.messageWrapper.sendUdpMessage(
             callable,
-            deviceContext
+            deviceContext,
+            sourcePort,
+            destPort
         );
     }
 
@@ -201,7 +203,7 @@ public class ProfinetDevice implements PlcSubscriber {
                             case IDLE:
                                 CreateConnection createConnection = new CreateConnection();
                                 // Send the packet and process the response ...
-                                recordIdAndSend(createConnection);
+                                recordIdAndSend(createConnection, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
                                 // Wait for it to be finished processing ...
                                 createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
@@ -210,14 +212,13 @@ public class ProfinetDevice implements PlcSubscriber {
                             // This should probably be done using the PLC4X Write API anyway.
                             case STARTUP:
                                 WriteParameters writeParameters = new WriteParameters();
-                                recordIdAndSend(writeParameters);
+                                recordIdAndSend(writeParameters, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
                                 writeParameters.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
-                            // Send a CONTROL packet
-                            // TODO: I assume this tells the PN device that we'll be the new "master"
+                            // Send a CONTROL packet telling the device we're done configuring the connection.
                             case PREMED:
                                 WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
-                                recordIdAndSend(writeParametersEnd);
+                                recordIdAndSend(writeParametersEnd, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
                                 writeParametersEnd.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
                             case WAITAPPLRDY:
@@ -225,7 +226,8 @@ public class ProfinetDevice implements PlcSubscriber {
                                 break;
                             case APPLRDY:
                                 ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
-                                recordIdAndSend(applicationReadyResponse);
+                                recordIdAndSend(applicationReadyResponse, ProfinetDeviceContext.DEFAULT_UDP_PORT, deviceContext.getApplicationResponseDestinationPort());
+                                Thread.sleep(cycleTime * 2);
                                 deviceContext.getContext().fireConnected();
                                 deviceContext.setState(ProfinetDeviceState.CYCLICDATA);
                                 break;
@@ -310,17 +312,19 @@ public class ProfinetDevice implements PlcSubscriber {
             deviceContext.setSequenceNumber(packet.getPayload().getSequenceNumber());
             if (payloadPacket instanceof PnIoCm_Packet_Req) {
                 PnIoCm_Packet_Req req = (PnIoCm_Packet_Req) payloadPacket;
+                deviceContext.setMaxArrayCount(req.getArrayMaximumCount());
+                deviceContext.setApplicationResponseDestinationPort(packet.getSourcePort());
                 for (PnIoCm_Block block : req.getBlocks()) {
-                    if (block instanceof PnIoCM_Block_Request) {
+                    if (block instanceof PnIoCm_Control_Request_ApplicationReady) {
                         deviceContext.setState(ProfinetDeviceState.APPLRDY);
                     }
                 }
             } else if (payloadPacket instanceof PnIoCm_Packet_Fault) {
                 DceRpcAck ack = new DceRpcAck(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
-                recordIdAndSend(ack);
+                recordIdAndSend(ack, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
             } else if (payloadPacket instanceof PnIoCm_Packet_Ping) {
                 DceRpcAck ack = new DceRpcAck(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
-                recordIdAndSend(ack);
+                recordIdAndSend(ack, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
             } else {
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Unable to match Response with Requested Profinet packet");
@@ -802,7 +806,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 (short) 0,
                 new PnIoCm_Packet_Req(16696, 16696, 0,
                     Collections.singletonList(
-                        new PnIoCm_Control_Request(
+                        new PnIoCm_Control_Request_ParameterEnd(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,
@@ -881,10 +885,10 @@ public class ProfinetDevice implements PlcSubscriber {
                     (short) 0,
                     (short) 0,
                     (short) 0,
-                    ProfinetDeviceContext.DEFAULT_MAX_ARRAY_COUNT,
+                    deviceContext.getMaxArrayCount(),
                     0,
                     Collections.singletonList(
-                        new PnIoCM_Block_ResponseConnect(
+                        new PnIoCm_Control_Response_ApplicationReady(
                             (short) 1,
                             (short) 0,
                             ProfinetDeviceContext.ARUUID,

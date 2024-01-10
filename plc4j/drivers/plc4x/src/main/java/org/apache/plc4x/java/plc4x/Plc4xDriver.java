@@ -20,6 +20,7 @@ package org.apache.plc4x.java.plc4x;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
+import org.apache.plc4x.java.plc4x.config.Plc4xTcpTransportConfiguration;
 import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;
 import org.apache.plc4x.java.plc4x.protocol.Plc4xProtocolLogic;
 import org.apache.plc4x.java.plc4x.readwrite.Plc4xMessage;
@@ -28,11 +29,13 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.ToIntFunction;
 
-public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
+public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -101,6 +104,15 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
             }
             return -1;
         }
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Plc4xTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

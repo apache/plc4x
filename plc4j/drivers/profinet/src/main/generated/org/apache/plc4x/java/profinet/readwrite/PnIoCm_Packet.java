@@ -117,6 +117,10 @@ public abstract class PnIoCm_Packet implements Message {
       builder = PnIoCm_Packet_Rej.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.WORKING)) {
       builder = PnIoCm_Packet_Working.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.CONNECTIONLESS_CANCEL)) {
+      builder =
+          PnIoCm_Packet_ConnectionlessCancel.staticParsePnIoCm_PacketBuilder(
+              readBuffer, packetType);
     }
     if (builder == null) {
       throw new ParseException(

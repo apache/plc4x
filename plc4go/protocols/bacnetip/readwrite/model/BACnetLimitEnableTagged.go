@@ -255,10 +255,14 @@ func (m *_BACnetLimitEnableTagged) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
+	lowLimitEnable := m.GetLowLimitEnable()
+	_ = lowLimitEnable
 	if _lowLimitEnableErr := writeBuffer.WriteVirtual(ctx, "lowLimitEnable", m.GetLowLimitEnable()); _lowLimitEnableErr != nil {
 		return errors.Wrap(_lowLimitEnableErr, "Error serializing 'lowLimitEnable' field")
 	}
 	// Virtual field
+	highLimitEnable := m.GetHighLimitEnable()
+	_ = highLimitEnable
 	if _highLimitEnableErr := writeBuffer.WriteVirtual(ctx, "highLimitEnable", m.GetHighLimitEnable()); _highLimitEnableErr != nil {
 		return errors.Wrap(_highLimitEnableErr, "Error serializing 'highLimitEnable' field")
 	}

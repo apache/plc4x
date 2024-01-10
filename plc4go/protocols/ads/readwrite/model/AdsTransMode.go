@@ -144,7 +144,7 @@ func AdsTransModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading AdsTransMode")
 	}
 	if enum, ok := AdsTransModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AdsTransMode")
 		return AdsTransMode(val), nil
 	} else {
 		return enum, nil
@@ -162,7 +162,7 @@ func (e AdsTransMode) Serialize() ([]byte, error) {
 func (e AdsTransMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("AdsTransMode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint32("AdsTransMode", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -183,7 +183,7 @@ func (e AdsTransMode) PLC4XEnumName() string {
 	case AdsTransMode_ON_CHANGE_IN_CONTEXT:
 		return "ON_CHANGE_IN_CONTEXT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e AdsTransMode) String() string {

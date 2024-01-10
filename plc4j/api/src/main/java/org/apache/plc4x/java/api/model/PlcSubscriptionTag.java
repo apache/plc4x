@@ -27,6 +27,8 @@ public interface PlcSubscriptionTag extends PlcTag {
 
     PlcSubscriptionType getPlcSubscriptionType();
 
+    PlcTag getTag();
+
     Optional<Duration> getDuration();
 
 }

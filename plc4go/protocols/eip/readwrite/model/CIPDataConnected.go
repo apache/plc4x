@@ -166,14 +166,14 @@ func (m *_CIPDataConnected) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 	// Simple Field (value)
 	value := uint32(m.GetValue())
-	_valueErr := writeBuffer.WriteUint32("value", 32, (value))
+	_valueErr := writeBuffer.WriteUint32("value", 32, uint32((value)))
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}
 
 	// Simple Field (tagStatus)
 	tagStatus := uint16(m.GetTagStatus())
-	_tagStatusErr := writeBuffer.WriteUint16("tagStatus", 16, (tagStatus))
+	_tagStatusErr := writeBuffer.WriteUint16("tagStatus", 16, uint16((tagStatus)))
 	if _tagStatusErr != nil {
 		return errors.Wrap(_tagStatusErr, "Error serializing 'tagStatus' field")
 	}

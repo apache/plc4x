@@ -147,13 +147,13 @@ func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for additionalBridgeAddresses")
 	}
 	// Count array
-	additionalBridgeAddresses := make([]BridgeAddress, uint16(networkPCI.GetStackDepth())-uint16(uint16(1)))
+	additionalBridgeAddresses := make([]BridgeAddress, utils.Max(uint16(networkPCI.GetStackDepth())-uint16(uint16(1)), 0))
 	// This happens when the size is set conditional to 0
 	if len(additionalBridgeAddresses) == 0 {
 		additionalBridgeAddresses = nil
 	}
 	{
-		_numItems := uint16(uint16(networkPCI.GetStackDepth()) - uint16(uint16(1)))
+		_numItems := uint16(utils.Max(uint16(networkPCI.GetStackDepth())-uint16(uint16(1)), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

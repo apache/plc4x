@@ -73,7 +73,10 @@ func (e *dynamicExecutor) Start() {
 		defer e.dynamicWorkers.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				e.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				e.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		workerLog := e.log.With().Str("Worker type", "spawner").Logger()
@@ -85,7 +88,11 @@ func (e *dynamicExecutor) Start() {
 			mutex.Lock()
 			numberOfItemsInQueue := len(e.workItems)
 			numberOfWorkers := len(e.worker)
-			workerLog.Debug().Msgf("Checking if numberOfItemsInQueue(%d) > numberOfWorkers(%d) && numberOfWorkers(%d) < maxNumberOfWorkers(%d)", numberOfItemsInQueue, numberOfWorkers, numberOfWorkers, e.maxNumberOfWorkers)
+			workerLog.Debug().
+				Int("numberOfItemsInQueue", numberOfItemsInQueue).
+				Int("numberOfWorkers", numberOfWorkers).
+				Int("maxNumberOfWorkers", e.maxNumberOfWorkers).
+				Msg("Checking if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < maxNumberOfWorkers")
 			if numberOfItemsInQueue > numberOfWorkers && numberOfWorkers < e.maxNumberOfWorkers {
 				workerLog.Trace().Msg("spawning new worker")
 				workerId := numberOfWorkers - 1
@@ -100,7 +107,7 @@ func (e *dynamicExecutor) Start() {
 			}
 			mutex.Unlock()
 			func() {
-				workerLog.Debug().Msgf("Sleeping for %v", upScaleInterval)
+				workerLog.Debug().Dur("upScaleInterval", upScaleInterval).Msg("Sleeping")
 				timer := time.NewTimer(upScaleInterval)
 				defer utils.CleanupTimer(timer)
 				select {
@@ -118,7 +125,10 @@ func (e *dynamicExecutor) Start() {
 		defer e.dynamicWorkers.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				e.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				e.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		workerLog := e.log.With().Str("Worker type", "killer").Logger()
@@ -132,7 +142,11 @@ func (e *dynamicExecutor) Start() {
 			newWorkers := make([]*worker, 0)
 			for _, _worker := range e.worker {
 				deadline := time.Now().Add(-timeToBecomeUnused)
-				workerLog.Debug().Int("Worker id", _worker.id).Msgf("Checking if %v is before %v", _worker.lastReceived.Load(), deadline)
+				workerLog.Debug().
+					Int("workerId", _worker.id).
+					Time("lastReceived", _worker.lastReceived.Load().(time.Time)).
+					Time("deadline", deadline).
+					Msg("Checking if lastReceived is before deadline")
 				if _worker.lastReceived.Load().(time.Time).Before(deadline) {
 					workerLog.Info().Int("Worker id", _worker.id).Msg("killing")
 					_worker.stop(true)
@@ -150,7 +164,7 @@ func (e *dynamicExecutor) Start() {
 			}
 			mutex.Unlock()
 			func() {
-				workerLog.Debug().Msgf("Sleeping for %v", downScaleInterval)
+				workerLog.Debug().Dur("downScaleInterval", downScaleInterval).Msg("Sleeping for %v")
 				timer := time.NewTimer(downScaleInterval)
 				defer utils.CleanupTimer(timer)
 				select {
@@ -175,7 +189,9 @@ func (e *dynamicExecutor) Stop() {
 	close(e.interrupter)
 	e.log.Trace().Msg("stopping inner executor")
 	e.executor.Stop()
-	e.log.Debug().Msgf("waiting for %d dynamic workers to stop", e.currentNumberOfWorkers.Load())
+	e.log.Debug().
+		Interface("currentNumberOfWorkers", e.currentNumberOfWorkers.Load()).
+		Msg("waiting for currentNumberOfWorkers dynamic workers to stop")
 	e.dynamicWorkers.Wait()
 	e.log.Trace().Msg("stopped")
 }

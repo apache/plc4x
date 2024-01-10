@@ -220,13 +220,13 @@ func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for typeIds")
 	}
 	// Count array
-	typeIds := make([]TypeId, typeIdCount)
+	typeIds := make([]TypeId, utils.Max(typeIdCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(typeIds) == 0 {
 		typeIds = nil
 	}
 	{
-		_numItems := uint16(typeIdCount)
+		_numItems := uint16(utils.Max(typeIdCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -275,21 +275,21 @@ func (m *_SendUnitData) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		}
 
 		// Const Field (interfaceHandle)
-		_interfaceHandleErr := writeBuffer.WriteUint32("interfaceHandle", 32, 0x00000000)
+		_interfaceHandleErr := writeBuffer.WriteUint32("interfaceHandle", 32, uint32(0x00000000))
 		if _interfaceHandleErr != nil {
 			return errors.Wrap(_interfaceHandleErr, "Error serializing 'interfaceHandle' field")
 		}
 
 		// Simple Field (timeout)
 		timeout := uint16(m.GetTimeout())
-		_timeoutErr := writeBuffer.WriteUint16("timeout", 16, (timeout))
+		_timeoutErr := writeBuffer.WriteUint16("timeout", 16, uint16((timeout)))
 		if _timeoutErr != nil {
 			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
 		}
 
 		// Implicit Field (typeIdCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
-		_typeIdCountErr := writeBuffer.WriteUint16("typeIdCount", 16, (typeIdCount))
+		_typeIdCountErr := writeBuffer.WriteUint16("typeIdCount", 16, uint16((typeIdCount)))
 		if _typeIdCountErr != nil {
 			return errors.Wrap(_typeIdCountErr, "Error serializing 'typeIdCount' field")
 		}

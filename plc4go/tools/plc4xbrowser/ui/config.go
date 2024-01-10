@@ -26,6 +26,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"path"
+	"sync"
 	"time"
 )
 
@@ -83,7 +84,11 @@ func LoadConfig() {
 	}
 }
 
+var saveMutex sync.Mutex
+
 func saveConfig() {
+	saveMutex.Lock()
+	defer saveMutex.Unlock()
 	config.LastUpdated = time.Now()
 	f, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
@@ -157,7 +162,7 @@ func enableAutoRegister(driver string) error {
 		}
 	}
 	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers, driver)
-	log.Info().Msgf("Auto register enabled for %s", driver)
+	log.Info().Str("driver", driver).Msg("Auto register enabled")
 	return nil
 }
 
@@ -176,6 +181,6 @@ func disableAutoRegister(driver string) error {
 		return errors.Errorf("%s not registered for auto register", driver)
 	}
 	config.AutoRegisterDrivers = append(config.AutoRegisterDrivers[:index], config.AutoRegisterDrivers[index+1:]...)
-	log.Info().Msgf("Auto register disabled for %s", driver)
+	log.Info().Str("driver", driver).Msg("Auto register disabled")
 	return nil
 }

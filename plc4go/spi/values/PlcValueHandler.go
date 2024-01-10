@@ -105,7 +105,10 @@ func (m DefaultValueHandler) ParseSimpleType(tag apiModel.PlcTag, value any) (ap
 		stringValue := fmt.Sprintf("%v", value)
 		plcValue, err = m.NewPlcValueFromType(tag.GetValueType(), stringValue)
 		if err == nil {
-			m.log.Debug().Msgf("had to convert %v into %v by using string conversion", value, plcValue)
+			m.log.Debug().
+				Interface("value", value).
+				Stringer("plcValue", plcValue).
+				Msg("had to convert %v into %v by using string conversion")
 		}
 	}
 	return plcValue, err

@@ -18,22 +18,14 @@
  */
 package org.apache.plc4x.java.knxnetip.configuration;
 
-import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
-import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
-public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration, PcapReplayTransportConfiguration, RawSocketTransportConfiguration {
+public class KnxNetIpConfiguration implements Configuration {
 
     @ConfigurationParameter("knxproj-file-path")
     public String knxprojFilePath;
@@ -48,14 +40,6 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
     @ConfigurationParameter("connection-type")
     @StringDefaultValue("LINK_LAYER")
     public String connectionType = "LINK_LAYER";
-
-    @ConfigurationParameter("replay-speed-factor")
-    @FloatDefaultValue(1.0f)
-    public float replaySpeedFactor = 1.0f;
-
-    @ConfigurationParameter("loop")
-    @BooleanDefaultValue(false)
-    public boolean loop = false;
 
     public String getKnxprojFilePath() {
         return knxprojFilePath;
@@ -94,39 +78,6 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
             throw new ConfigurationException("Value provided for connection-type invalid.");
         }
         this.connectionType = connectionType.toUpperCase();
-    }
-
-    @Override
-    public float getReplaySpeedFactor() {
-        return replaySpeedFactor;
-    }
-
-    public void setReplaySpeedFactor(float replaySpeedFactor) {
-        this.replaySpeedFactor = replaySpeedFactor;
-    }
-
-    @Override
-    public boolean isLoop() {
-        return loop;
-    }
-
-    public void setLoop(boolean loop) {
-        this.loop = loop;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return KnxNetIpDriver.KNXNET_IP_PORT;
-    }
-
-    @Override
-    public Integer getProtocolId() {
-        return PcapChannelConfig.ALL_PROTOCOLS;
-    }
-
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return packet -> packet.getPayload().getPayload().getPayload().getRawData();
     }
 
     @Override

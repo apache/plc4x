@@ -23,12 +23,8 @@ import org.apache.plc4x.java.profinet.device.GsdFileMap;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -40,27 +36,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
-
-    @Override
-    public boolean getSupportVlans() {
-        return RawSocketTransportConfiguration.super.getSupportVlans();
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return 34964;
-    }
-
-    @Override
-    public Integer getProtocolId() {
-        return RawSocketTransportConfiguration.super.getProtocolId();
-    }
-
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return null;
-    }
+public class ProfinetConfiguration implements Configuration {
 
     @Required
     @ConfigurationParameter

@@ -174,7 +174,7 @@ func PinModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (P
 		return 0, errors.Wrap(err, "error reading PinMode")
 	}
 	if enum, ok := PinModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for PinMode")
 		return PinMode(val), nil
 	} else {
 		return enum, nil
@@ -192,7 +192,7 @@ func (e PinMode) Serialize() ([]byte, error) {
 func (e PinMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("PinMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("PinMode", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -223,7 +223,7 @@ func (e PinMode) PLC4XEnumName() string {
 	case PinMode_PinModePullup:
 		return "PinModePullup"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e PinMode) String() string {

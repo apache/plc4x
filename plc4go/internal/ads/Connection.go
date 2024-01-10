@@ -177,7 +177,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		for message := range defaultIncomingMessageChannel {
@@ -190,10 +193,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 					m.handleIncomingDeviceNotificationRequest(
 						amsTCPPacket.GetUserdata().(readWriteModel.AdsDeviceNotificationRequest))
 				default:
-					m.log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
+					m.log.Warn().Stringer("message", message).Msg("Got unexpected type of incoming ADS message")
 				}
 			default:
-				m.log.Warn().Msgf("Got unexpected type of incoming ADS message %v", message)
+				m.log.Warn().Stringer("message", message).Msg("Got unexpected type of incoming ADS message")
 			}
 		}
 		m.log.Info().Msg("Done waiting for messages ...")
@@ -411,7 +414,7 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 }
 
 func (m *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading:     true,
 		ProvidesWriting:     true,
 		ProvidesSubscribing: true,

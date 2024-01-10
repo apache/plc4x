@@ -33,13 +33,6 @@ func NewDefaultPlcBrowseResponseItem(code apiModel.PlcResponseCode, results []ap
 	return &DefaultPlcBrowseResponseItem{code, results}
 }
 
-func NewBrowseResponseItem(code apiModel.PlcResponseCode, results []apiModel.PlcBrowseItem) *DefaultPlcBrowseResponseItem {
-	return &DefaultPlcBrowseResponseItem{
-		code:    code,
-		results: results,
-	}
-}
-
 func (d *DefaultPlcBrowseResponseItem) GetCode() apiModel.PlcResponseCode {
 	return d.code
 }

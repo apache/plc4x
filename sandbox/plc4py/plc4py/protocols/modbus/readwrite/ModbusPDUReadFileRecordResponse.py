@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -28,20 +30,18 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordResponseItem impor
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from sys import getsizeof
+from typing import Any
 from typing import List
 import math
 
 
 @dataclass
-class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
+class ModbusPDUReadFileRecordResponse(ModbusPDU):
     items: List[ModbusPDUReadFileRecordResponseItem]
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x14
     response: bool = True
-
-    def __post_init__(self):
-        super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFileRecordResponse")
@@ -56,19 +56,19 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
         write_buffer.pop_context("ModbusPDUReadFileRecordResponse")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUReadFileRecordResponse = self
 
         # Implicit Field (byteCount)
         length_in_bits += 8
 
         # Array field
-        if self.items != None:
+        if self.items is not None:
             for element in self.items:
-                length_in_bits += element.get_length_in_bits()
+                length_in_bits += element.length_in_bits()
 
         return length_in_bits
 
@@ -76,15 +76,15 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFileRecordResponse")
 
-        byte_count: int = read_implicit_field("byteCount", read_unsigned_short)
+        byte_count: int = read_buffer.read_unsigned_byte(
+            logical_name="byteCount", response=response
+        )
 
-        self.items = read_length_array_field(
-            "items",
-            DataReaderComplexDefault(
-                ModbusPDUReadFileRecordResponseItem.static_parse(read_buffer),
-                read_buffer,
-            ),
-            byte_count,
+        items: List[Any] = read_buffer.read_array_field(
+            logical_name="items",
+            read_function=ModbusPDUReadFileRecordResponseItem.static_parse,
+            length=byte_count,
+            response=response,
         )
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponse")
@@ -105,21 +105,19 @@ class ModbusPDUReadFileRecordResponse(PlcMessage, ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadFileRecordResponseBuilder(ModbusPDUBuilder):
     items: List[ModbusPDUReadFileRecordResponseItem]
-
-    def __post_init__(self):
-        pass
 
     def build(
         self,

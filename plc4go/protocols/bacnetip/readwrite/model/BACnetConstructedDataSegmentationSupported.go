@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataSegmentationSupported) SerializeWithWriteBuffer(c
 			return errors.Wrap(_segmentationSupportedErr, "Error serializing 'segmentationSupported' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

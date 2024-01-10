@@ -49,7 +49,7 @@ class DefaultSendRequestContextTest {
 
     @BeforeEach
     void setUp() {
-        SUT = new DefaultSendRequestContext(finisher, null, context);
+        SUT = new DefaultSendRequestContext(null, finisher, null, context);
     }
 
     @Test

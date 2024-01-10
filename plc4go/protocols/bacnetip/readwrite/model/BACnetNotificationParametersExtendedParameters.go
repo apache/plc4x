@@ -837,14 +837,20 @@ func (m *_BACnetNotificationParametersExtendedParameters) SerializeWithWriteBuff
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 	// Virtual field
+	peekedTagNumber := m.GetPeekedTagNumber()
+	_ = peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 	// Virtual field
+	isOpeningTag := m.GetIsOpeningTag()
+	_ = isOpeningTag
 	if _isOpeningTagErr := writeBuffer.WriteVirtual(ctx, "isOpeningTag", m.GetIsOpeningTag()); _isOpeningTagErr != nil {
 		return errors.Wrap(_isOpeningTagErr, "Error serializing 'isOpeningTag' field")
 	}
 	// Virtual field
+	isClosingTag := m.GetIsClosingTag()
+	_ = isClosingTag
 	if _isClosingTagErr := writeBuffer.WriteVirtual(ctx, "isClosingTag", m.GetIsClosingTag()); _isClosingTagErr != nil {
 		return errors.Wrap(_isClosingTagErr, "Error serializing 'isClosingTag' field")
 	}

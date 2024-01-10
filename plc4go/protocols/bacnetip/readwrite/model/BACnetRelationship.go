@@ -288,7 +288,7 @@ func BACnetRelationshipParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading BACnetRelationship")
 	}
 	if enum, ok := BACnetRelationshipByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetRelationship")
 		return BACnetRelationship(val), nil
 	} else {
 		return enum, nil
@@ -306,7 +306,7 @@ func (e BACnetRelationship) Serialize() ([]byte, error) {
 func (e BACnetRelationship) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetRelationship", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -375,7 +375,7 @@ func (e BACnetRelationship) PLC4XEnumName() string {
 	case BACnetRelationship_ADJUSTED_BY:
 		return "ADJUSTED_BY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetRelationship) String() string {

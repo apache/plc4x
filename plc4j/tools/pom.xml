@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-tools</artifactId>
@@ -33,14 +33,18 @@
   <name>PLC4J: Tools</name>
   <description>A collection of tools that provide additional services to users.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>capture-replay</module>
     <module>connection-cache</module>
+    <module>opcua-server</module>
     <module>opm</module>
     <module>plc4x-server</module>
     <module>scraper</module>
     <module>scraper-ng</module>
-    <module>ui</module>
   </modules>
 
 </project>

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.merlot.db.core;
 
-import org.apache.plc4x.merlot.base.api.BaseDriver;
+import org.apache.plc4x.merlot.das.base.api.BaseDriver;
 import org.apache.plc4x.merlot.db.api.DBControl;
 import org.apache.plc4x.merlot.db.api.DBRecordFactory;
 import org.apache.plc4x.merlot.scheduler.api.Job;

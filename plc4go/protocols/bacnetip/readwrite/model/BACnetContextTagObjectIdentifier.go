@@ -238,10 +238,14 @@ func (m *_BACnetContextTagObjectIdentifier) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
+		objectType := m.GetObjectType()
+		_ = objectType
 		if _objectTypeErr := writeBuffer.WriteVirtual(ctx, "objectType", m.GetObjectType()); _objectTypeErr != nil {
 			return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 		}
 		// Virtual field
+		instanceNumber := m.GetInstanceNumber()
+		_ = instanceNumber
 		if _instanceNumberErr := writeBuffer.WriteVirtual(ctx, "instanceNumber", m.GetInstanceNumber()); _instanceNumberErr != nil {
 			return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
 		}

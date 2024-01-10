@@ -200,14 +200,14 @@ func (m *_NLMICouldBeRouterToNetwork) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (destinationNetworkAddress)
 		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, (destinationNetworkAddress))
+		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		// Simple Field (performanceIndex)
 		performanceIndex := uint8(m.GetPerformanceIndex())
-		_performanceIndexErr := writeBuffer.WriteUint8("performanceIndex", 8, (performanceIndex))
+		_performanceIndexErr := writeBuffer.WriteUint8("performanceIndex", 8, uint8((performanceIndex)))
 		if _performanceIndexErr != nil {
 			return errors.Wrap(_performanceIndexErr, "Error serializing 'performanceIndex' field")
 		}

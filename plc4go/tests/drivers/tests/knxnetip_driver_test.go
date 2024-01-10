@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	knxIO "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -36,13 +35,14 @@ func TestKNXNetIPDriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.KnxNetIpMessageParseWithBuffer(context.Background(), readBufferByteBased)
 	}
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(
 		t,
-		knxnetip.NewDriver(withCustomLogger),
+		knxnetip.NewDriver(optionsForTesting...),
 		"assets/testing/protocols/knxnetip/DriverTestsuite.xml",
 		knxIO.KnxnetipXmlParserHelper{},
-		testutils.WithRootTypeParser(parser),
-		withCustomLogger,
+		append(optionsForTesting,
+			testutils.WithRootTypeParser(parser),
+		)...,
 	)
 }

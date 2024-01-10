@@ -23,10 +23,11 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
-import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
+import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 
 import java.time.Duration;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.regex.Pattern;
 
 public class OpcuaTag implements PlcSubscriptionTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>[^;]+)?(;(?<datatype>[a-zA-Z_]+))?");
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>[^;]+)?(;(?<datatype>[a-zA-Z_]+))?$");
 
     private final OpcuaIdentifierType identifierType;
 
@@ -76,6 +77,11 @@ public class OpcuaTag implements PlcSubscriptionTag {
         }
         OpcuaDataType dataType = OpcuaDataType.valueOf(dataTypeString);
 
+        return new OpcuaTag(namespace, identifier, identifierType, dataType);
+    }
+
+    @Override
+    public PlcTag getTag() {
         return new OpcuaTag(namespace, identifier, identifierType, dataType);
     }
 

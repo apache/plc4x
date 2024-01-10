@@ -132,7 +132,7 @@ func BACnetSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
 	}
 	if enum, ok := BACnetSilencedStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetSilencedState")
 		return BACnetSilencedState(val), nil
 	} else {
 		return enum, nil
@@ -150,7 +150,7 @@ func (e BACnetSilencedState) Serialize() ([]byte, error) {
 func (e BACnetSilencedState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -167,7 +167,7 @@ func (e BACnetSilencedState) PLC4XEnumName() string {
 	case BACnetSilencedState_ALL_SILENCED:
 		return "ALL_SILENCED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetSilencedState) String() string {

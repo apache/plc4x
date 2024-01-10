@@ -32,7 +32,12 @@
                 
         <!-- Mandatory librarys -->
 
+        <!-- Apache librarys -->
         <bundle start-level="30">wrap:mvn:org.apache.commons/commons-lang3/${commons-lang3.version}/$Export-Package=*;version=&quot;${commons-lang3.version}&quot;,!*</bundle>        
+        <bundle start-level="28">mvn:commons-codec/commons-codec/${commons-codec.version}</bundle>
+        <bundle start-level="28">mvn:commons-net/commons-net/${commons-net.version}</bundle>  
+        <bundle start-level="28">mvn:org.apache.aries.spifly/org.apache.aries.spifly.static.bundle/${spifly.version}</bundle>        
+                
         <bundle start-level="32">wrap:mvn:io.netty/netty-buffer/${netty.version}/$Bundle-SymbolicName=netty-buffer&amp;Bundle-Version=${netty.version}&amp;Export-Package=*;version=&quot;${netty.version}&quot;,!*</bundle>                 
         <bundle start-level="32">wrap:mvn:io.netty/netty-common/${netty.version}/$Bundle-SymbolicName=netty-common&amp;Bundle-Version=${netty.version}&amp;Export-Package=*;version=&quot;${netty.version}&quot;,!*</bundle>  
         <bundle start-level="32">wrap:mvn:io.netty/netty-codec/${netty.version}/$Bundle-SymbolicName=netty-codec&amp;Bundle-Version=${netty.version}&amp;Export-Package=*;version=&quot;${netty.version}&quot;,!*</bundle>          
@@ -49,17 +54,16 @@
         <bundle start-level="30">wrap:mvn:com.fasterxml.jackson.core/jackson-databind/${jackson.version}/$Export-Package=*;version=&quot;${jackson.version}&quot;,!*</bundle>
         <bundle start-level="30">wrap:mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}/$Export-Package=*;version=&quot;${jackson.version}&quot;,!*</bundle>
 
-        <bundle start-level="28">mvn:org.apache.aries.spifly/org.apache.aries.spifly.static.bundle/${spifly.version}</bundle>
+
         
         <bundle start-level="28">mvn:org.ops4j.pax.logging/pax-logging-api/2.2.3</bundle>
         
-        <bundle start-level="28">mvn:commons-codec/commons-codec/1.15</bundle>
-        <bundle start-level="28">mvn:com.lmax/disruptor/3.4.4</bundle>
-        <bundle start-level="28">mvn:org.osgi/org.osgi.service.dal/1.0.2</bundle>
+        <bundle start-level="28">mvn:com.lmax/disruptor/${disruptor.version}</bundle>
+        <bundle start-level="28">mvn:org.osgi/org.osgi.service.dal/${org.osgi.dal.version}</bundle>
         <bundle start-level="28">mvn:com.fazecast/jSerialComm/2.10.3</bundle>   
-        <bundle start-level="28">mvn:ch.qos.logback/logback-core/1.4.11</bundle>                      
+        <bundle start-level="28">mvn:ch.qos.logback/logback-core/${logback.version>}</bundle>                      
         <bundle start-level="32">wrap:mvn:org.pcap4j/pcap4j-core/1.8.2/$Bundle-SymbolicName=pcap4j&amp;Bundle-Version=1.8.2&amp;Bundle-ManifestVersion=&quot;2&quot;&amp;Export-Package=*;version=&quot;1.8.2&quot;,!*</bundle>      
-        <bundle start-level="28">mvn:commons-net/commons-net/3.9.0</bundle>   
+
         
         <bundle start-level="28">mvn:javax.annotation/javax.annotation-api/1.3.2</bundle>  
         <bundle start-level="28">mvn:org.apache.thrift/libthrift/0.19.0</bundle>                  
@@ -69,7 +73,7 @@
         <bundle>wrap:mvn:org.quartz-scheduler/quartz/${quartz.version}/$Export-Package=*;version=&quot;${quartz.version}&quot;,!*</bundle>   
         <bundle>wrap:mvn:jakarta.xml.bind/jakarta.xml.bind-api/${jakarta.xml.bind.version}/$Export-Package=*;version=&quot;${jakarta.xml.bind.version}&quot;,!*</bundle>            -->
         
-        <!-- Plc4x - Core -->
+        <!-- Apache Plc4x - Core -->
         <bundle start-level="28">mvn:org.apache.plc4x/plc4j-api/${project.version}</bundle>
         <bundle start-level="30">mvn:org.apache.plc4x/plc4j-spi/${project.version}</bundle>
         <bundle start-level="30">mvn:org.apache.plc4x/plc4j-osgi/${project.version}</bundle>                  
@@ -93,7 +97,7 @@
       
         <bundle start-level="40">mvn:org.apache.plc4x.merlot.das.base/org.apache.plc4x.merlot.das.base/${project.version}</bundle>  
         <configfile finalname="/etc/org.apache.plc4x.merlot.das.devices.cfg">mvn:org.apache.plc4x.merlot.das.base/org.apache.plc4x.merlot.das.base/${project.version}/cfg</configfile>                       
-        <bundle start-level="40">mvn:org.apache.plc4x.dummy/org.apache.plc4x.dummy/${project.version}</bundle>                        
+        <!-- <bundle start-level="40">mvn:org.apache.plc4x.dummy/org.apache.plc4x.dummy/${project.version}</bundle>   -->                     
         
         <!-- Plc4x - Default driver implementation -->        
         <bundle start-level="40">mvn:org.apache.plc4x/plc4j-driver-simulated/${project.version}</bundle>        

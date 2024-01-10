@@ -239,21 +239,21 @@ func (m *_AdsWriteControlRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (adsState)
 		adsState := uint16(m.GetAdsState())
-		_adsStateErr := writeBuffer.WriteUint16("adsState", 16, (adsState))
+		_adsStateErr := writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.GetDeviceState())
-		_deviceStateErr := writeBuffer.WriteUint16("deviceState", 16, (deviceState))
+		_deviceStateErr := writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.GetData())))
-		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}

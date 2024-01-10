@@ -115,6 +115,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      */
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf outbb, List<Object> list) throws Exception {
+        logger.debug("ENCODE: " + outbb.toString());
         if ((embed_ctx == null) && (ctx.channel() instanceof EmbeddedChannel)) embed_ctx = ctx;
         if ((tcp_channel != null) && (embed_ctx == ctx)) {
             tcp_channel.writeAndFlush(outbb.copy());

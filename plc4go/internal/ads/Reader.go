@@ -62,7 +62,7 @@ func (m *Connection) Read(ctx context.Context, readRequest apiModel.PlcReadReque
 func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcReadRequest, result chan apiModel.PlcReadRequestResult) {
 	if len(readRequest.GetTagNames()) != 1 {
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("this part of the ads driver only supports single-item requests"))
-		m.log.Debug().Msgf("this part of the ads driver only supports single-item requests. Got %d tags", len(readRequest.GetTagNames()))
+		m.log.Debug().Int("nTags", len(readRequest.GetTagNames())).Msg("this part of the ads driver only supports single-item requests. Got nTags tags")
 		return
 	}
 
@@ -73,7 +73,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 		adsField, err := model.CastToSymbolicPlcTagFromPlcTag(tag)
 		if err != nil {
 			result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrap(err, "invalid tag item type"))
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 		// Replace the symbolic tag with a direct one
@@ -84,14 +84,14 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 				nil,
 				errors.Wrap(err, "invalid tag item type"),
 			)
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 	}
 	directAdsTag, ok := tag.(*model.DirectPlcTag)
 	if !ok {
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.New("invalid tag item type"))
-		m.log.Debug().Msgf("Invalid tag item type %T", tag)
+		m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 		return
 	}
 
@@ -119,7 +119,7 @@ func (m *Connection) singleRead(ctx context.Context, readRequest apiModel.PlcRea
 		responseCodes := map[string]apiModel.PlcResponseCode{}
 		plcValues := map[string]apiValues.PlcValue{}
 		for _, tagName := range readRequest.GetTagNames() {
-			m.log.Debug().Msgf("get a tag from request with name %s", tagName)
+			m.log.Debug().Str("tagName", tagName).Msg("get a tag from request with name")
 			// Try to parse the value
 			plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb)
 			if err != nil {
@@ -155,7 +155,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 					nil,
 					errors.Wrap(err, "invalid tag item type"),
 				)
-				m.log.Debug().Msgf("Invalid tag item type %T", tag)
+				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 				return
 			}
 			// Replace the symbolic tag with a direct one
@@ -166,7 +166,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 					nil,
 					errors.Wrap(err, "invalid tag item type"),
 				)
-				m.log.Debug().Msgf("Invalid tag item type %T", tag)
+				m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 				return
 			}
 		}
@@ -177,7 +177,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 				nil,
 				errors.New("invalid tag item type"),
 			)
-			m.log.Debug().Msgf("Invalid tag item type %T", tag)
+			m.log.Debug().Type("tag", tag).Msg("Invalid tag item type")
 			return
 		}
 
@@ -235,7 +235,7 @@ func (m *Connection) multiRead(ctx context.Context, readRequest apiModel.PlcRead
 		}
 
 		directAdsTag := directAdsTags[tagName]
-		m.log.Debug().Msgf("get a tag from request with name %s", tagName)
+		m.log.Debug().Str("tagName", tagName).Msg("get a tag from request with name")
 		// Try to parse the value
 		plcValue, err := m.parsePlcValue(directAdsTag.DataType, directAdsTag.DataType.GetArrayInfo(), rb)
 		if err != nil {

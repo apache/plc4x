@@ -168,7 +168,7 @@ func BACnetLifeSafetyOperationParseWithBuffer(ctx context.Context, readBuffer ut
 		return 0, errors.Wrap(err, "error reading BACnetLifeSafetyOperation")
 	}
 	if enum, ok := BACnetLifeSafetyOperationByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLifeSafetyOperation")
 		return BACnetLifeSafetyOperation(val), nil
 	} else {
 		return enum, nil
@@ -186,7 +186,7 @@ func (e BACnetLifeSafetyOperation) Serialize() ([]byte, error) {
 func (e BACnetLifeSafetyOperation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetLifeSafetyOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetLifeSafetyOperation", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -215,7 +215,7 @@ func (e BACnetLifeSafetyOperation) PLC4XEnumName() string {
 	case BACnetLifeSafetyOperation_UNSILENCE_VISUAL:
 		return "UNSILENCE_VISUAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLifeSafetyOperation) String() string {

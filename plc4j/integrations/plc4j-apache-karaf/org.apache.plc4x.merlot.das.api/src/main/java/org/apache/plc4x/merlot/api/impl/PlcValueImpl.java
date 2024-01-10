@@ -296,6 +296,21 @@ public class PlcValueImpl extends FunctionData  implements PlcValue {
                 filter(e -> (e.getValue() instanceof PlcValue)).
                 collect(toMap(e -> e.getKey(), e -> e.getValue()));
     }
+
+    @Override
+    public Set<String> getMetaDataNames() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public boolean hasMetaData(String key) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public PlcValue getMetaData(String key) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
         
 
     public static class PlcValueBuilder {

@@ -211,14 +211,14 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Implicit Field (numBytes) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numBytes := uint8(uint8(len(m.GetData())))
-		_numBytesErr := writeBuffer.WriteUint8("numBytes", 6, (numBytes))
+		_numBytesErr := writeBuffer.WriteUint8("numBytes", 6, uint8((numBytes)))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, (address))
+		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

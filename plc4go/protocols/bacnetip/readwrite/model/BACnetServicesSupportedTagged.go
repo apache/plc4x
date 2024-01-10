@@ -375,42 +375,62 @@ func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
+	writeGroup := m.GetWriteGroup()
+	_ = writeGroup
 	if _writeGroupErr := writeBuffer.WriteVirtual(ctx, "writeGroup", m.GetWriteGroup()); _writeGroupErr != nil {
 		return errors.Wrap(_writeGroupErr, "Error serializing 'writeGroup' field")
 	}
 	// Virtual field
+	subscribeCovPropertyMultiple := m.GetSubscribeCovPropertyMultiple()
+	_ = subscribeCovPropertyMultiple
 	if _subscribeCovPropertyMultipleErr := writeBuffer.WriteVirtual(ctx, "subscribeCovPropertyMultiple", m.GetSubscribeCovPropertyMultiple()); _subscribeCovPropertyMultipleErr != nil {
 		return errors.Wrap(_subscribeCovPropertyMultipleErr, "Error serializing 'subscribeCovPropertyMultiple' field")
 	}
 	// Virtual field
+	confirmedCovNotificationMultiple := m.GetConfirmedCovNotificationMultiple()
+	_ = confirmedCovNotificationMultiple
 	if _confirmedCovNotificationMultipleErr := writeBuffer.WriteVirtual(ctx, "confirmedCovNotificationMultiple", m.GetConfirmedCovNotificationMultiple()); _confirmedCovNotificationMultipleErr != nil {
 		return errors.Wrap(_confirmedCovNotificationMultipleErr, "Error serializing 'confirmedCovNotificationMultiple' field")
 	}
 	// Virtual field
+	unconfirmedCovNotificationMultiple := m.GetUnconfirmedCovNotificationMultiple()
+	_ = unconfirmedCovNotificationMultiple
 	if _unconfirmedCovNotificationMultipleErr := writeBuffer.WriteVirtual(ctx, "unconfirmedCovNotificationMultiple", m.GetUnconfirmedCovNotificationMultiple()); _unconfirmedCovNotificationMultipleErr != nil {
 		return errors.Wrap(_unconfirmedCovNotificationMultipleErr, "Error serializing 'unconfirmedCovNotificationMultiple' field")
 	}
 	// Virtual field
+	whoIs := m.GetWhoIs()
+	_ = whoIs
 	if _whoIsErr := writeBuffer.WriteVirtual(ctx, "whoIs", m.GetWhoIs()); _whoIsErr != nil {
 		return errors.Wrap(_whoIsErr, "Error serializing 'whoIs' field")
 	}
 	// Virtual field
+	readRange := m.GetReadRange()
+	_ = readRange
 	if _readRangeErr := writeBuffer.WriteVirtual(ctx, "readRange", m.GetReadRange()); _readRangeErr != nil {
 		return errors.Wrap(_readRangeErr, "Error serializing 'readRange' field")
 	}
 	// Virtual field
+	utcTimeSynchronization := m.GetUtcTimeSynchronization()
+	_ = utcTimeSynchronization
 	if _utcTimeSynchronizationErr := writeBuffer.WriteVirtual(ctx, "utcTimeSynchronization", m.GetUtcTimeSynchronization()); _utcTimeSynchronizationErr != nil {
 		return errors.Wrap(_utcTimeSynchronizationErr, "Error serializing 'utcTimeSynchronization' field")
 	}
 	// Virtual field
+	lifeSafetyOperation := m.GetLifeSafetyOperation()
+	_ = lifeSafetyOperation
 	if _lifeSafetyOperationErr := writeBuffer.WriteVirtual(ctx, "lifeSafetyOperation", m.GetLifeSafetyOperation()); _lifeSafetyOperationErr != nil {
 		return errors.Wrap(_lifeSafetyOperationErr, "Error serializing 'lifeSafetyOperation' field")
 	}
 	// Virtual field
+	subscribeCovProperty := m.GetSubscribeCovProperty()
+	_ = subscribeCovProperty
 	if _subscribeCovPropertyErr := writeBuffer.WriteVirtual(ctx, "subscribeCovProperty", m.GetSubscribeCovProperty()); _subscribeCovPropertyErr != nil {
 		return errors.Wrap(_subscribeCovPropertyErr, "Error serializing 'subscribeCovProperty' field")
 	}
 	// Virtual field
+	getEventInformation := m.GetGetEventInformation()
+	_ = getEventInformation
 	if _getEventInformationErr := writeBuffer.WriteVirtual(ctx, "getEventInformation", m.GetGetEventInformation()); _getEventInformationErr != nil {
 		return errors.Wrap(_getEventInformationErr, "Error serializing 'getEventInformation' field")
 	}

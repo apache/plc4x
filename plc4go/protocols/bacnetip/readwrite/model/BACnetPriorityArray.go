@@ -543,6 +543,8 @@ func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for BACnetPriorityArray")
 	}
 	// Virtual field
+	zero := m.GetZero()
+	_ = zero
 	if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 		return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 	}
@@ -580,74 +582,110 @@ func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(popErr, "Error popping for data")
 	}
 	// Virtual field
+	priorityValue01 := m.GetPriorityValue01()
+	_ = priorityValue01
 	if _priorityValue01Err := writeBuffer.WriteVirtual(ctx, "priorityValue01", m.GetPriorityValue01()); _priorityValue01Err != nil {
 		return errors.Wrap(_priorityValue01Err, "Error serializing 'priorityValue01' field")
 	}
 	// Virtual field
+	priorityValue02 := m.GetPriorityValue02()
+	_ = priorityValue02
 	if _priorityValue02Err := writeBuffer.WriteVirtual(ctx, "priorityValue02", m.GetPriorityValue02()); _priorityValue02Err != nil {
 		return errors.Wrap(_priorityValue02Err, "Error serializing 'priorityValue02' field")
 	}
 	// Virtual field
+	priorityValue03 := m.GetPriorityValue03()
+	_ = priorityValue03
 	if _priorityValue03Err := writeBuffer.WriteVirtual(ctx, "priorityValue03", m.GetPriorityValue03()); _priorityValue03Err != nil {
 		return errors.Wrap(_priorityValue03Err, "Error serializing 'priorityValue03' field")
 	}
 	// Virtual field
+	priorityValue04 := m.GetPriorityValue04()
+	_ = priorityValue04
 	if _priorityValue04Err := writeBuffer.WriteVirtual(ctx, "priorityValue04", m.GetPriorityValue04()); _priorityValue04Err != nil {
 		return errors.Wrap(_priorityValue04Err, "Error serializing 'priorityValue04' field")
 	}
 	// Virtual field
+	priorityValue05 := m.GetPriorityValue05()
+	_ = priorityValue05
 	if _priorityValue05Err := writeBuffer.WriteVirtual(ctx, "priorityValue05", m.GetPriorityValue05()); _priorityValue05Err != nil {
 		return errors.Wrap(_priorityValue05Err, "Error serializing 'priorityValue05' field")
 	}
 	// Virtual field
+	priorityValue06 := m.GetPriorityValue06()
+	_ = priorityValue06
 	if _priorityValue06Err := writeBuffer.WriteVirtual(ctx, "priorityValue06", m.GetPriorityValue06()); _priorityValue06Err != nil {
 		return errors.Wrap(_priorityValue06Err, "Error serializing 'priorityValue06' field")
 	}
 	// Virtual field
+	priorityValue07 := m.GetPriorityValue07()
+	_ = priorityValue07
 	if _priorityValue07Err := writeBuffer.WriteVirtual(ctx, "priorityValue07", m.GetPriorityValue07()); _priorityValue07Err != nil {
 		return errors.Wrap(_priorityValue07Err, "Error serializing 'priorityValue07' field")
 	}
 	// Virtual field
+	priorityValue08 := m.GetPriorityValue08()
+	_ = priorityValue08
 	if _priorityValue08Err := writeBuffer.WriteVirtual(ctx, "priorityValue08", m.GetPriorityValue08()); _priorityValue08Err != nil {
 		return errors.Wrap(_priorityValue08Err, "Error serializing 'priorityValue08' field")
 	}
 	// Virtual field
+	priorityValue09 := m.GetPriorityValue09()
+	_ = priorityValue09
 	if _priorityValue09Err := writeBuffer.WriteVirtual(ctx, "priorityValue09", m.GetPriorityValue09()); _priorityValue09Err != nil {
 		return errors.Wrap(_priorityValue09Err, "Error serializing 'priorityValue09' field")
 	}
 	// Virtual field
+	priorityValue10 := m.GetPriorityValue10()
+	_ = priorityValue10
 	if _priorityValue10Err := writeBuffer.WriteVirtual(ctx, "priorityValue10", m.GetPriorityValue10()); _priorityValue10Err != nil {
 		return errors.Wrap(_priorityValue10Err, "Error serializing 'priorityValue10' field")
 	}
 	// Virtual field
+	priorityValue11 := m.GetPriorityValue11()
+	_ = priorityValue11
 	if _priorityValue11Err := writeBuffer.WriteVirtual(ctx, "priorityValue11", m.GetPriorityValue11()); _priorityValue11Err != nil {
 		return errors.Wrap(_priorityValue11Err, "Error serializing 'priorityValue11' field")
 	}
 	// Virtual field
+	priorityValue12 := m.GetPriorityValue12()
+	_ = priorityValue12
 	if _priorityValue12Err := writeBuffer.WriteVirtual(ctx, "priorityValue12", m.GetPriorityValue12()); _priorityValue12Err != nil {
 		return errors.Wrap(_priorityValue12Err, "Error serializing 'priorityValue12' field")
 	}
 	// Virtual field
+	priorityValue13 := m.GetPriorityValue13()
+	_ = priorityValue13
 	if _priorityValue13Err := writeBuffer.WriteVirtual(ctx, "priorityValue13", m.GetPriorityValue13()); _priorityValue13Err != nil {
 		return errors.Wrap(_priorityValue13Err, "Error serializing 'priorityValue13' field")
 	}
 	// Virtual field
+	priorityValue14 := m.GetPriorityValue14()
+	_ = priorityValue14
 	if _priorityValue14Err := writeBuffer.WriteVirtual(ctx, "priorityValue14", m.GetPriorityValue14()); _priorityValue14Err != nil {
 		return errors.Wrap(_priorityValue14Err, "Error serializing 'priorityValue14' field")
 	}
 	// Virtual field
+	priorityValue15 := m.GetPriorityValue15()
+	_ = priorityValue15
 	if _priorityValue15Err := writeBuffer.WriteVirtual(ctx, "priorityValue15", m.GetPriorityValue15()); _priorityValue15Err != nil {
 		return errors.Wrap(_priorityValue15Err, "Error serializing 'priorityValue15' field")
 	}
 	// Virtual field
+	priorityValue16 := m.GetPriorityValue16()
+	_ = priorityValue16
 	if _priorityValue16Err := writeBuffer.WriteVirtual(ctx, "priorityValue16", m.GetPriorityValue16()); _priorityValue16Err != nil {
 		return errors.Wrap(_priorityValue16Err, "Error serializing 'priorityValue16' field")
 	}
 	// Virtual field
+	isIndexedAccess := m.GetIsIndexedAccess()
+	_ = isIndexedAccess
 	if _isIndexedAccessErr := writeBuffer.WriteVirtual(ctx, "isIndexedAccess", m.GetIsIndexedAccess()); _isIndexedAccessErr != nil {
 		return errors.Wrap(_isIndexedAccessErr, "Error serializing 'isIndexedAccess' field")
 	}
 	// Virtual field
+	indexEntry := m.GetIndexEntry()
+	_ = indexEntry
 	if _indexEntryErr := writeBuffer.WriteVirtual(ctx, "indexEntry", m.GetIndexEntry()); _indexEntryErr != nil {
 		return errors.Wrap(_indexEntryErr, "Error serializing 'indexEntry' field")
 	}

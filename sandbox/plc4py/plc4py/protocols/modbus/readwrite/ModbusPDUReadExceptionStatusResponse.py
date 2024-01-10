@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
@@ -28,15 +30,12 @@ import math
 
 
 @dataclass
-class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
+class ModbusPDUReadExceptionStatusResponse(ModbusPDU):
     value: int
     # Accessors for discriminator values.
     error_flag: bool = False
     function_flag: int = 0x07
     response: bool = True
-
-    def __post_init__(self):
-        super().__init__()
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
@@ -47,10 +46,10 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
         write_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
-        length_in_bits: int = super().get_length_in_bits()
+    def length_in_bits(self) -> int:
+        length_in_bits: int = super().length_in_bits()
         _value: ModbusPDUReadExceptionStatusResponse = self
 
         # Simple field (value)
@@ -62,7 +61,9 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
 
-        self.value = read_simple_field("value", read_unsigned_short)
+        value: int = read_buffer.read_unsigned_byte(
+            logical_name="value", bit_length=8, response=response
+        )
 
         read_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
         # Create the instance
@@ -84,21 +85,19 @@ class ModbusPDUReadExceptionStatusResponse(PlcMessage, ModbusPDU):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
 @dataclass
 class ModbusPDUReadExceptionStatusResponseBuilder(ModbusPDUBuilder):
     value: int
-
-    def __post_init__(self):
-        pass
 
     def build(
         self,

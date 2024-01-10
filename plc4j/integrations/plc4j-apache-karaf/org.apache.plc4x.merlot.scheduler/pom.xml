@@ -23,12 +23,12 @@
     <parent>
         <artifactId>plc4j-apache-karaf</artifactId>
         <groupId>org.apache.plc4x</groupId>
-        <version>0.11.0-SNAPSHOT</version>
+        <version>0.12.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apache.plc4x.merlot.scheduler</groupId>
     <artifactId>org.apache.plc4x.merlot.scheduler</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>PLC4J: Merlot :: scheluder :: Scheduler in mseg</name>

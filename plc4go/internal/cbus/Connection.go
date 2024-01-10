@@ -42,7 +42,7 @@ import (
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator
 type AlphaGenerator struct {
-	currentAlpha byte
+	currentAlpha byte `hasLocker:"lock"`
 	lock         sync.Mutex
 }
 
@@ -127,7 +127,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 
 func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	c.log.Trace().Msg("Connecting")
-	ch := make(chan plc4go.PlcConnectionConnectResult)
+	ch := make(chan plc4go.PlcConnectionConnectResult, 1)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -168,7 +168,7 @@ func (c *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ProvidesReading:     true,
 		ProvidesWriting:     true,
 		ProvidesSubscribing: true,
@@ -204,8 +204,7 @@ func (c *Connection) SubscriptionRequestBuilder() apiModel.PlcSubscriptionReques
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() apiModel.PlcUnsubscriptionRequestBuilder {
-	// TODO: where do we get the unsubscriber from
-	return nil
+	return spiModel.NewDefaultPlcUnsubscriptionRequestBuilder()
 }
 
 func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
@@ -221,7 +220,9 @@ func (c *Connection) BrowseRequestBuilder() apiModel.PlcBrowseRequestBuilder {
 func (c *Connection) addSubscriber(subscriber *Subscriber) {
 	for _, sub := range c.subscribers {
 		if sub == subscriber {
-			c.log.Debug().Msgf("Subscriber %v already added", subscriber)
+			c.log.Debug().
+				Stringer("subscriber", subscriber).
+				Msg("Subscriber already added")
 			return
 		}
 	}
@@ -271,22 +272,32 @@ func (c *Connection) startSubscriptionHandler() {
 		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				salLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				salLogger.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		salLogger.Debug().Msg("SAL handler started")
 		for c.IsConnected() {
 			for monitoredSal := range c.messageCodec.monitoredSALs {
-				salLogger.Trace().Msgf("got a SAL\n%v", monitoredSal)
+				salLogger.Trace().
+					Stringer("monitoredSal", monitoredSal).
+					Msg("got a SAL")
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
-						salLogger.Debug().Msgf("\n%v handled\n%s", subscriber, monitoredSal)
+						salLogger.Debug().
+							Stringer("monitoredSal", monitoredSal).
+							Stringer("subscriber", subscriber).
+							Msg("handled")
 						handled = true
 					}
 				}
 				if !handled {
-					salLogger.Debug().Msgf("SAL was not handled:\n%s", monitoredSal)
+					salLogger.Debug().
+						Stringer("monitoredSal", monitoredSal).
+						Msg("SAL was not handled")
 				}
 			}
 		}
@@ -299,22 +310,27 @@ func (c *Connection) startSubscriptionHandler() {
 		defer c.handlerWaitGroup.Done()
 		defer func() {
 			if err := recover(); err != nil {
-				mmiLogger.Error().Msgf("panic-ed %v. Stack:\n%s", err, debug.Stack())
+				mmiLogger.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		mmiLogger.Debug().Msg("default MMI started")
 		for c.IsConnected() {
 			for calReply := range c.messageCodec.monitoredMMIs {
-				mmiLogger.Trace().Msgf("got a MMI")
+				mmiLogger.Trace().Msg("got a MMI")
 				handled := false
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
-						mmiLogger.Debug().Msgf("\n%v handled", subscriber)
+						mmiLogger.Debug().
+							Stringer("subscriber", subscriber).
+							Msg("handled")
 						handled = true
 					}
 				}
 				if !handled {
-					mmiLogger.Debug().Msgf("MMI was not handled")
+					mmiLogger.Debug().Msg("MMI was not handled")
 				}
 			}
 		}
@@ -323,7 +339,7 @@ func (c *Connection) startSubscriptionHandler() {
 }
 
 func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult, cbusOptions *readWriteModel.CBusOptions, requestContext *readWriteModel.RequestContext, sendOutErrorNotification bool) (ok bool) {
-	c.log.Debug().Msgf("Send a reset (sendOutErrorNotification: %t)", sendOutErrorNotification)
+	c.log.Debug().Bool("sendOutErrorNotification", sendOutErrorNotification).Msg("Send a reset")
 	requestTypeReset := readWriteModel.RequestType_RESET
 	requestReset := readWriteModel.NewRequestReset(requestTypeReset, &requestTypeReset, requestTypeReset, &requestTypeReset, requestTypeReset, nil, &requestTypeReset, requestTypeReset, readWriteModel.NewRequestTermination(), *cbusOptions)
 	cBusMessage := readWriteModel.NewCBusMessageToServer(requestReset, *requestContext, *cbusOptions)
@@ -344,11 +360,11 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 						c.log.Debug().Msg("Received a PUN reply")
 						return true
 					default:
-						c.log.Trace().Msgf("%T not relevant", reply)
+						c.log.Trace().Type("reply", reply).Msg("not relevant")
 						return false
 					}
 				default:
-					c.log.Trace().Msgf("%T not relevant", reply)
+					c.log.Trace().Type("reply", reply).Msg("not relevant")
 					return false
 				}
 			case readWriteModel.CBusMessageToServerExactly:
@@ -357,11 +373,11 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 					c.log.Debug().Msg("Received a Reset reply")
 					return true
 				default:
-					c.log.Trace().Msgf("%T not relevant", request)
+					c.log.Trace().Type("request", request).Msg("not relevant")
 					return false
 				}
 			default:
-				c.log.Trace().Msgf("%T not relevant", message)
+				c.log.Trace().Type("message", message).Msg("not relevant")
 				return false
 			}
 		},
@@ -408,7 +424,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 	defer utils.CleanupTimer(timeout)
 	select {
 	case <-receivedResetEchoChan:
-		c.log.Debug().Msgf("We received the echo")
+		c.log.Debug().Msg("We received the echo")
 	case err := <-receivedResetEchoErrorChan:
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Wrap(err, "Error receiving of Reset"), ch)
@@ -420,7 +436,7 @@ func (c *Connection) sendReset(ctx context.Context, ch chan plc4go.PlcConnection
 		if sendOutErrorNotification {
 			c.fireConnectionError(errors.Errorf("Timeout after %v", timeout.Sub(startTime)), ch)
 		} else {
-			c.log.Trace().Msgf("Timeout after %v", timeout.Sub(startTime))
+			c.log.Trace().Dur("timeout", timeout.Sub(startTime)).Msg("Timeout")
 		}
 		return false
 	}
@@ -546,7 +562,7 @@ func (c *Connection) sendCalDataWrite(ctx context.Context, ch chan plc4go.PlcCon
 	defer utils.CleanupTimer(timeout)
 	select {
 	case <-directCommandAckChan:
-		c.log.Debug().Msgf("We received the ack")
+		c.log.Debug().Msg("We received the ack")
 	case err := <-directCommandAckErrorChan:
 		c.fireConnectionError(errors.Wrap(err, "Error receiving of ack"), ch)
 		return false

@@ -162,7 +162,7 @@ func (a *asciiBoxWriter) boxString(name string, data string, charWidth int) Asci
 	longestLine := rawBox.Width()
 	if charWidth < longestLine {
 		if DebugAsciiBox {
-			log.Debug().Msgf("Overflow by %d chars", longestLine-charWidth)
+			log.Debug().Int("nChars", longestLine-charWidth).Msg("Overflow by nChars chars")
 		}
 		charWidth = longestLine + a.borderWidth + a.borderWidth
 	}
@@ -355,13 +355,13 @@ func (a *asciiBoxWriter) AlignBoxes(boxes []AsciiBox, desiredWidth int) AsciiBox
 		boxWidth := box.Width()
 		if boxWidth > actualWidth {
 			if DebugAsciiBox {
-				log.Debug().Msgf("Overflow by %d chars", boxWidth-desiredWidth)
+				log.Debug().Int("nChars", boxWidth-desiredWidth).Msg("Overflow by nChars chars")
 			}
 			actualWidth = boxWidth
 		}
 	}
 	if DebugAsciiBox {
-		log.Debug().Msgf("Working with %d chars", actualWidth)
+		log.Debug().Int("actualWidth", actualWidth).Msg("Working with actualWidth chars")
 	}
 	bigBox := AsciiBox{"", a, a.compressBoxSet()}
 	currentBoxRow := make([]AsciiBox, 0)

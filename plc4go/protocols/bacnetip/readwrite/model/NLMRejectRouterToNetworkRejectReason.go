@@ -144,7 +144,7 @@ func NLMRejectRouterToNetworkRejectReasonParseWithBuffer(ctx context.Context, re
 		return 0, errors.Wrap(err, "error reading NLMRejectRouterToNetworkRejectReason")
 	}
 	if enum, ok := NLMRejectRouterToNetworkRejectReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for NLMRejectRouterToNetworkRejectReason")
 		return NLMRejectRouterToNetworkRejectReason(val), nil
 	} else {
 		return enum, nil
@@ -162,7 +162,7 @@ func (e NLMRejectRouterToNetworkRejectReason) Serialize() ([]byte, error) {
 func (e NLMRejectRouterToNetworkRejectReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("NLMRejectRouterToNetworkRejectReason", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -183,7 +183,7 @@ func (e NLMRejectRouterToNetworkRejectReason) PLC4XEnumName() string {
 	case NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR:
 		return "ADDRESSING_ERROR"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e NLMRejectRouterToNetworkRejectReason) String() string {

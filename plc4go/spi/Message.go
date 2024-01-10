@@ -20,10 +20,12 @@
 package spi
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type Message interface {
+	fmt.Stringer
 	utils.Serializable
 	utils.LengthAware
 }

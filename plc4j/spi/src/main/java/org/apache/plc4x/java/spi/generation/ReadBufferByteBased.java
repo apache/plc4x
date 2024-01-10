@@ -205,7 +205,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final int longValue = bi.readInt(true, bitLength);
-                        return Integer.reverseBytes(longValue) >>> 16;
+                        return Integer.reverseBytes(longValue) >>> (32 - bitLength);
                     }
                     return bi.readInt(true, bitLength);
                 default:
@@ -476,6 +476,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         encoding = encoding.toUpperCase();
         switch (encoding) {
             case "ASCII":
+            case "WINDOWS1252":
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
@@ -497,6 +498,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 switch (encoding) {
                     case "UTF8":
                         charset = StandardCharsets.UTF_8;
+                        break;
+                    case "WINDOWS1252":
+                        charset = Charset.forName("windows-1252");
                         break;
                     default:
                         charset = StandardCharsets.US_ASCII;

@@ -198,13 +198,13 @@ func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for adsStampHeaders")
 	}
 	// Count array
-	adsStampHeaders := make([]AdsStampHeader, stamps)
+	adsStampHeaders := make([]AdsStampHeader, utils.Max(stamps, 0))
 	// This happens when the size is set conditional to 0
 	if len(adsStampHeaders) == 0 {
 		adsStampHeaders = nil
 	}
 	{
-		_numItems := uint16(stamps)
+		_numItems := uint16(utils.Max(stamps, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -255,14 +255,14 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (length)
 		length := uint32(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (stamps)
 		stamps := uint32(m.GetStamps())
-		_stampsErr := writeBuffer.WriteUint32("stamps", 32, (stamps))
+		_stampsErr := writeBuffer.WriteUint32("stamps", 32, uint32((stamps)))
 		if _stampsErr != nil {
 			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}

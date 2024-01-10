@@ -186,13 +186,13 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context
 		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
-	messageObjects := make([]uint8, numberOfObjects)
+	messageObjects := make([]uint8, utils.Max(numberOfObjects, 0))
 	// This happens when the size is set conditional to 0
 	if len(messageObjects) == 0 {
 		messageObjects = nil
 	}
 	{
-		_numItems := uint16(numberOfObjects)
+		_numItems := uint16(utils.Max(numberOfObjects, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -242,14 +242,14 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBu
 
 		// Simple Field (functionId)
 		functionId := uint8(m.GetFunctionId())
-		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, (functionId))
+		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
 		if _functionIdErr != nil {
 			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
-		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
+		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 		if _numberOfObjectsErr != nil {
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 		}
@@ -260,7 +260,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBu
 		}
 		for _curItem, _element := range m.GetMessageObjects() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 			}

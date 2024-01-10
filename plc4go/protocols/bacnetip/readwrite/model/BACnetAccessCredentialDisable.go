@@ -132,7 +132,7 @@ func BACnetAccessCredentialDisableParseWithBuffer(ctx context.Context, readBuffe
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisable")
 	}
 	if enum, ok := BACnetAccessCredentialDisableByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessCredentialDisable")
 		return BACnetAccessCredentialDisable(val), nil
 	} else {
 		return enum, nil
@@ -150,7 +150,7 @@ func (e BACnetAccessCredentialDisable) Serialize() ([]byte, error) {
 func (e BACnetAccessCredentialDisable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetAccessCredentialDisable", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -167,7 +167,7 @@ func (e BACnetAccessCredentialDisable) PLC4XEnumName() string {
 	case BACnetAccessCredentialDisable_DISABLE_LOCKOUT:
 		return "DISABLE_LOCKOUT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessCredentialDisable) String() string {

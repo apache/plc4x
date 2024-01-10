@@ -210,6 +210,8 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.
 		return errors.Wrap(_encodingErr, "Error serializing 'encoding' field")
 	}
 	// Virtual field
+	actualLengthInBit := m.GetActualLengthInBit()
+	_ = actualLengthInBit
 	if _actualLengthInBitErr := writeBuffer.WriteVirtual(ctx, "actualLengthInBit", m.GetActualLengthInBit()); _actualLengthInBitErr != nil {
 		return errors.Wrap(_actualLengthInBitErr, "Error serializing 'actualLengthInBit' field")
 	}

@@ -150,7 +150,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		go func(discoveryItem *discovery) {
 			defer func() {
 				if err := recover(); err != nil {
-					d.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+					d.log.Error().
+						Str("stack", string(debug.Stack())).
+						Interface("err", err).
+						Msg("panic-ed")
 				}
 			}()
 			buf := make([]byte, 1024)

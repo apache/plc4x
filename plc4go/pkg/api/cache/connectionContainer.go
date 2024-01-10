@@ -175,8 +175,10 @@ func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState
 	switch newState {
 	case StateInitialized, StateInvalid:
 		// TODO: Perhaps do a maximum number of retries and then call failConnection()
-		c.log.Debug().Str("connectionString", c.connectionString).
-			Msgf("Client returned a %s connection, reconnecting.", newState)
+		c.log.Debug().
+			Str("connectionString", c.connectionString).
+			Stringer("newState", newState).
+			Msg("Client returned a connection, reconnecting.")
 		c.connect()
 	default:
 		c.log.Debug().Str("connectionString", c.connectionString).Msg("Client returned valid connection.")

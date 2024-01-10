@@ -109,6 +109,11 @@ type ${type.name} interface {
 	// Get${field.name?cap_first} returns ${field.name?cap_first} (virtual field)
 	Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
 </#list>
+<#list type.abstractFields as field>
+	<#assign namedField=field.asNamedField().orElseThrow()>
+	// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+	Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
+</#list>
 }
 
 // ${type.name}Exactly can be used when we want exactly this type and not a type which fulfills ${type.name}.
@@ -163,6 +168,11 @@ type _${type.name}ChildRequirements interface {
             <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>
+    </#list>
+    <#list type.abstractFields as field>
+        <#assign namedField=field.asNamedField().orElseThrow()>
+		// Get${namedField.name?cap_first} returns ${namedField.name?cap_first} (abstract field)
+		Get${namedField.name?cap_first}() ${helper.getLanguageTypeNameForField(field)}
     </#list>
 }
 </#if>
@@ -297,8 +307,30 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
   	  </#list>
+	  <#if typeRef.isStringTypeReference() || typeRef.isVstringTypeReference()>
+    return fmt.Sprintf("%v", ${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})<@emitImport import="fmt" />
+	  <#else>
 	return <#if typeRef.isNonSimpleTypeReference()>Cast</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}(${helper.toSerializationExpression(field, field.type, field.valueExpression, parserArguments)})
+	  </#if>
 }
+
+	</#list>
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+</#if>
+<#if type.abstractFields?has_content>
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for abstract fields.
+///////////////////////
+
+	<#list type.abstractFields as field>
+        <#assign typeRef=field.asTypedField().orElseThrow().type>
+		func (m *_${type.name}) Get${field.name?cap_first}() ${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+			return m._${type.name}ChildRequirements.Get${field.name?cap_first}()
+		}
 
 	</#list>
 ///////////////////////
@@ -805,13 +837,13 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
 	// Count array
-	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, utils.Max(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}, 0))
 	// This happens when the size is set conditional to 0
 	if len(${arrayField.name}) == 0 {
 		${arrayField.name} = nil
 	}
 	{
-		_numItems := uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+		_numItems := uint16(utils.Max(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
             <#-- TODO: find a way to do this nicer -->
@@ -1358,8 +1390,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 									<#assign parsedDiscriminatorExpression=tracer.removeTraces(parsedDiscriminatorExpression)>
 									<#if helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]??><#assign discriminatorType=helper.getDiscriminatorTypes()[parsedDiscriminatorExpression]></#if>
 									${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)} ==
-									<#if helper.discriminatorValueNeedsStringEqualityCheck(discriminatorExpression)>"${helper.toParseExpression(null, discriminatorType,discriminatorValueTerm, parserArguments)}"
-									<#elseif discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
+									<#if discriminatorType?has_content && discriminatorType.isNonSimpleTypeReference()>
 										<#if discriminatorType.isEnumTypeReference()>
 											<#assign enumType=helper.getLanguageTypeNameForTypeReference(discriminatorType)>
 											<#assign enumTypeWithoutTraces=tracer.removeTraces(enumType)>
@@ -1409,7 +1440,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Virtual field
 	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments, true)}
-			<#if virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
+			<#if virtualField.type.isStringTypeReference() || typeRef.isVstringTypeReference()>
+	${virtualField.name} := fmt.Sprintf("%v", _${virtualField.name})<@emitImport import="fmt" />
+			<#elseif virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
 	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
 			<#else>
 	${virtualField.name} := _${virtualField.name}
@@ -1858,6 +1891,8 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
                 	<#assign typedField = field.asTypedField().orElseThrow()>
                 	<#assign namedField = field.asNamedField().orElseThrow()>
 	// Virtual field
+	${namedField.name} := m.Get${namedField.name?cap_first}()
+	_ =	${namedField.name}
 	if _${namedField.name}Err := writeBuffer.WriteVirtual(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}()); _${namedField.name}Err != nil {
 		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}

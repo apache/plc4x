@@ -41,6 +41,9 @@ on:
 permissions:
   contents: read
 
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+
 jobs:
   test:
     strategy:
@@ -58,14 +61,14 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install libpcap
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '${{ matrix.python-version }}'
 
       - name: Setup Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-package: jdk
@@ -73,7 +76,7 @@ jobs:
 
       - name: Set Platform options
         id: platform_opts
-        uses: actions/github-script@v6.4.1
+        uses: actions/github-script@v7.0.1
         env:
           OS: ${{ matrix.os }}
         with:
@@ -91,7 +94,7 @@ jobs:
 
       - name: Calculate platform suffix
         id: platform_suffix
-        uses: actions/github-script@v6.4.1
+        uses: actions/github-script@v7.0.1
         env:
           OS: ${{ matrix.os }}
         with:
@@ -105,7 +108,7 @@ jobs:
 
       - name: Set extra options
         id: extra_options
-        uses: actions/github-script@v6.4.1
+        uses: actions/github-script@v7.0.1
         env:
           FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
         with:
@@ -144,7 +147,7 @@ jobs:
 
       - name: Run mvnw
         run: |
-          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python,enable-all-checks' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-sandbox,with-python,enable-all-checks,update-generated-code' -pl :plc4py -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
 #      - name: Perform CodeQL Analysis
 #        uses: github/codeql-action/analyze@v2

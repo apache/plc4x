@@ -219,6 +219,8 @@ func (pm *_BACnetLogDataLogDataEntry) SerializeParent(ctx context.Context, write
 		return errors.Wrap(pushErr, "Error pushing for BACnetLogDataLogDataEntry")
 	}
 	// Virtual field
+	peekedTagNumber := m.GetPeekedTagNumber()
+	_ = peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}

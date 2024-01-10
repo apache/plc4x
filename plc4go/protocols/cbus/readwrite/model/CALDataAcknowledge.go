@@ -217,7 +217,7 @@ func (m *_CALDataAcknowledge) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (code)
 		code := uint8(m.GetCode())
-		_codeErr := writeBuffer.WriteUint8("code", 8, (code))
+		_codeErr := writeBuffer.WriteUint8("code", 8, uint8((code)))
 		if _codeErr != nil {
 			return errors.Wrap(_codeErr, "Error serializing 'code' field")
 		}

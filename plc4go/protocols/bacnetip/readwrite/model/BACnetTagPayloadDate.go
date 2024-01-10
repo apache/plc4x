@@ -374,74 +374,96 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadDate")
 	}
 	// Virtual field
+	wildcard := m.GetWildcard()
+	_ = wildcard
 	if _wildcardErr := writeBuffer.WriteVirtual(ctx, "wildcard", m.GetWildcard()); _wildcardErr != nil {
 		return errors.Wrap(_wildcardErr, "Error serializing 'wildcard' field")
 	}
 
 	// Simple Field (yearMinus1900)
 	yearMinus1900 := uint8(m.GetYearMinus1900())
-	_yearMinus1900Err := writeBuffer.WriteUint8("yearMinus1900", 8, (yearMinus1900))
+	_yearMinus1900Err := writeBuffer.WriteUint8("yearMinus1900", 8, uint8((yearMinus1900)))
 	if _yearMinus1900Err != nil {
 		return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
 	}
 	// Virtual field
+	yearIsWildcard := m.GetYearIsWildcard()
+	_ = yearIsWildcard
 	if _yearIsWildcardErr := writeBuffer.WriteVirtual(ctx, "yearIsWildcard", m.GetYearIsWildcard()); _yearIsWildcardErr != nil {
 		return errors.Wrap(_yearIsWildcardErr, "Error serializing 'yearIsWildcard' field")
 	}
 	// Virtual field
+	year := m.GetYear()
+	_ = year
 	if _yearErr := writeBuffer.WriteVirtual(ctx, "year", m.GetYear()); _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
 	// Simple Field (month)
 	month := uint8(m.GetMonth())
-	_monthErr := writeBuffer.WriteUint8("month", 8, (month))
+	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 	// Virtual field
+	monthIsWildcard := m.GetMonthIsWildcard()
+	_ = monthIsWildcard
 	if _monthIsWildcardErr := writeBuffer.WriteVirtual(ctx, "monthIsWildcard", m.GetMonthIsWildcard()); _monthIsWildcardErr != nil {
 		return errors.Wrap(_monthIsWildcardErr, "Error serializing 'monthIsWildcard' field")
 	}
 	// Virtual field
+	oddMonthWildcard := m.GetOddMonthWildcard()
+	_ = oddMonthWildcard
 	if _oddMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "oddMonthWildcard", m.GetOddMonthWildcard()); _oddMonthWildcardErr != nil {
 		return errors.Wrap(_oddMonthWildcardErr, "Error serializing 'oddMonthWildcard' field")
 	}
 	// Virtual field
+	evenMonthWildcard := m.GetEvenMonthWildcard()
+	_ = evenMonthWildcard
 	if _evenMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "evenMonthWildcard", m.GetEvenMonthWildcard()); _evenMonthWildcardErr != nil {
 		return errors.Wrap(_evenMonthWildcardErr, "Error serializing 'evenMonthWildcard' field")
 	}
 
 	// Simple Field (dayOfMonth)
 	dayOfMonth := uint8(m.GetDayOfMonth())
-	_dayOfMonthErr := writeBuffer.WriteUint8("dayOfMonth", 8, (dayOfMonth))
+	_dayOfMonthErr := writeBuffer.WriteUint8("dayOfMonth", 8, uint8((dayOfMonth)))
 	if _dayOfMonthErr != nil {
 		return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
 	}
 	// Virtual field
+	dayOfMonthIsWildcard := m.GetDayOfMonthIsWildcard()
+	_ = dayOfMonthIsWildcard
 	if _dayOfMonthIsWildcardErr := writeBuffer.WriteVirtual(ctx, "dayOfMonthIsWildcard", m.GetDayOfMonthIsWildcard()); _dayOfMonthIsWildcardErr != nil {
 		return errors.Wrap(_dayOfMonthIsWildcardErr, "Error serializing 'dayOfMonthIsWildcard' field")
 	}
 	// Virtual field
+	lastDayOfMonthWildcard := m.GetLastDayOfMonthWildcard()
+	_ = lastDayOfMonthWildcard
 	if _lastDayOfMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "lastDayOfMonthWildcard", m.GetLastDayOfMonthWildcard()); _lastDayOfMonthWildcardErr != nil {
 		return errors.Wrap(_lastDayOfMonthWildcardErr, "Error serializing 'lastDayOfMonthWildcard' field")
 	}
 	// Virtual field
+	oddDayOfMonthWildcard := m.GetOddDayOfMonthWildcard()
+	_ = oddDayOfMonthWildcard
 	if _oddDayOfMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "oddDayOfMonthWildcard", m.GetOddDayOfMonthWildcard()); _oddDayOfMonthWildcardErr != nil {
 		return errors.Wrap(_oddDayOfMonthWildcardErr, "Error serializing 'oddDayOfMonthWildcard' field")
 	}
 	// Virtual field
+	evenDayOfMonthWildcard := m.GetEvenDayOfMonthWildcard()
+	_ = evenDayOfMonthWildcard
 	if _evenDayOfMonthWildcardErr := writeBuffer.WriteVirtual(ctx, "evenDayOfMonthWildcard", m.GetEvenDayOfMonthWildcard()); _evenDayOfMonthWildcardErr != nil {
 		return errors.Wrap(_evenDayOfMonthWildcardErr, "Error serializing 'evenDayOfMonthWildcard' field")
 	}
 
 	// Simple Field (dayOfWeek)
 	dayOfWeek := uint8(m.GetDayOfWeek())
-	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, (dayOfWeek))
+	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
 	if _dayOfWeekErr != nil {
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}
 	// Virtual field
+	dayOfWeekIsWildcard := m.GetDayOfWeekIsWildcard()
+	_ = dayOfWeekIsWildcard
 	if _dayOfWeekIsWildcardErr := writeBuffer.WriteVirtual(ctx, "dayOfWeekIsWildcard", m.GetDayOfWeekIsWildcard()); _dayOfWeekIsWildcardErr != nil {
 		return errors.Wrap(_dayOfWeekIsWildcardErr, "Error serializing 'dayOfWeekIsWildcard' field")
 	}

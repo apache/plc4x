@@ -140,7 +140,7 @@ func (m *plcDriverManger) RegisterDriver(driver PlcDriver) {
 		}
 	}
 	m.drivers[driver.GetProtocolCode()] = driver
-	m.log.Info().Str("protocolName", driver.GetProtocolName()).Msgf("Driver for %s registered", driver.GetProtocolName())
+	m.log.Info().Str("protocolName", driver.GetProtocolName()).Msg("Driver for protocolName registered")
 }
 
 func (m *plcDriverManger) ListDriverNames() []string {
@@ -149,7 +149,7 @@ func (m *plcDriverManger) ListDriverNames() []string {
 	for driverName := range m.drivers {
 		driverNames = append(driverNames, driverName)
 	}
-	m.log.Trace().Msgf("Found %d driver(s)", len(driverNames))
+	m.log.Trace().Int("nDrivers", len(driverNames)).Msg("Found nDrivers driver(s)")
 	return driverNames
 }
 
@@ -170,7 +170,7 @@ func (m *plcDriverManger) RegisterTransport(transport transports.Transport) {
 		}
 	}
 	m.transports[transport.GetTransportCode()] = transport
-	m.log.Info().Str("transportName", transport.GetTransportName()).Msgf("Transport for %s registered", transport.GetTransportName())
+	m.log.Info().Str("transportName", transport.GetTransportName()).Msg("Transport for transportName registered")
 }
 
 func (m *plcDriverManger) ListTransportNames() []string {
@@ -179,7 +179,7 @@ func (m *plcDriverManger) ListTransportNames() []string {
 	for transportName := range m.transports {
 		transportNames = append(transportNames, transportName)
 	}
-	m.log.Trace().Msgf("Found %d transports", len(transportNames))
+	m.log.Trace().Int("nTransports", len(transportNames)).Msg("Found nTransports transports")
 	return transportNames
 }
 
@@ -192,7 +192,7 @@ func (m *plcDriverManger) GetTransport(transportName string, _ string, _ map[str
 }
 
 func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConnectionConnectResult {
-	m.log.Debug().Str("connectionString", connectionString).Msgf("Getting connection for %s", connectionString)
+	m.log.Debug().Str("connectionString", connectionString).Msg("Getting connection for connectionString")
 	// Parse the connection string.
 	connectionUrl, err := url.Parse(connectionString)
 	if err != nil {
@@ -210,12 +210,12 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	driverName := connectionUrl.Scheme
 	driver, err := m.GetDriver(driverName)
 	if err != nil {
-		m.log.Err(err).Str("driverName", driverName).Msgf("Couldn't get driver for %s", driverName)
+		m.log.Err(err).Str("driverName", driverName).Msg("Couldn't get driver for driverName")
 		ch := make(chan PlcConnectionConnectResult, 1)
 		ch <- &plcConnectionConnectResult{err: errors.Wrap(err, "error getting driver for connection string")}
 		return ch
 	}
-	m.log.Debug().Stringer("connectionUrl", connectionUrl).Msgf("got driver %s", driver.GetProtocolName())
+	m.log.Debug().Stringer("connectionUrl", connectionUrl).Str("protocolName", driver.GetProtocolName()).Msg("got driver protocolName")
 
 	// If a transport is provided alongside the driver, the URL content is decoded as "opaque" data
 	// Then we have to re-parse that to get the transport code as well as the host & port information.
@@ -244,7 +244,7 @@ func (m *plcDriverManger) GetConnection(connectionString string) <-chan PlcConne
 	m.log.Debug().
 		Str("transportName", transportName).
 		Str("transportConnectionString", transportConnectionString).
-		Msgf("got a transport %s", transportName)
+		Msg("got a transport")
 	// If no transport has been specified explicitly or per default, we have to abort.
 	if transportName == "" {
 		m.log.Error().Msg("got a empty transport")

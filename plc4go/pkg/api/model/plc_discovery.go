@@ -20,11 +20,13 @@
 package model
 
 import (
+	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"net/url"
 )
 
 type PlcDiscoveryItem interface {
+	fmt.Stringer
 	GetProtocolCode() string
 	GetTransportCode() string
 	GetTransportUrl() url.URL

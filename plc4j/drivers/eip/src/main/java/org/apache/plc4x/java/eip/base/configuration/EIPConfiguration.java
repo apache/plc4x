@@ -18,13 +18,11 @@
  */
 package org.apache.plc4x.java.eip.base.configuration;
 
-import org.apache.plc4x.java.eip.base.EIPDriver;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
+public class EIPConfiguration implements Configuration {
 
     @ConfigurationParameter
     private int backplane = 1;
@@ -58,8 +56,5 @@ public class EIPConfiguration implements Configuration, TcpTransportConfiguratio
     public void setByteOrder(ByteOrder byteOrder) {
         this.bigEndian = byteOrder == ByteOrder.BIG_ENDIAN;
     }
-
-    @Override
-    public int getDefaultPort(){return EIPDriver.PORT;}
 
 }

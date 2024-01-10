@@ -165,13 +165,13 @@ func S7ParameterReadVarRequestParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]S7VarRequestParameterItem, numItems)
+	items := make([]S7VarRequestParameterItem, utils.Max(numItems, 0))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(numItems)
+		_numItems := uint16(utils.Max(numItems, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -220,7 +220,7 @@ func (m *_S7ParameterReadVarRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.GetItems())))
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, (numItems))
+		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}

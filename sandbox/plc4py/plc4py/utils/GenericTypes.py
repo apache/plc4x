@@ -16,23 +16,26 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import threading
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Generator
 
 
-# TODO: Figure out what the parameters are and if we need this
 class GenericGenerator(Generator):
     def __enter__(self):
         return self
 
-    def send(self, _value, blah):
+    def send(self, _value):
+        # TODO I need to figure out why this was added
         pass
 
     def throw(self):
+        # TODO I need to figure out why this was added
         pass
 
     def __exit__(self, *args):
+        # TODO I need to figure out why this was added
         pass
 
 
@@ -60,3 +63,23 @@ class ByteOrder(Enum):
 @dataclass
 class ByteOrderAware:
     byte_order: ByteOrder
+
+
+class AtomicInteger:
+    def __init__(self, seed=0):
+        self._value = seed
+        self._lock = threading.Lock()
+
+    def increment(self, num=1):
+        with self._lock:
+            self._value += num
+            return self._value
+
+    def decrement(self, num=1):
+        with self._lock:
+            self._value -= num
+            return self._value
+
+    @property
+    def value(self):
+        return self._value

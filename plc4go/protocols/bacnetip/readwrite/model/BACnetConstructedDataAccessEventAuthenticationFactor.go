@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataAccessEventAuthenticationFactor) SerializeWithWri
 			return errors.Wrap(_accessEventAuthenticationFactorErr, "Error serializing 'accessEventAuthenticationFactor' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

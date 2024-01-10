@@ -150,7 +150,7 @@ func BACnetAccessZoneOccupancyStateParseWithBuffer(ctx context.Context, readBuff
 		return 0, errors.Wrap(err, "error reading BACnetAccessZoneOccupancyState")
 	}
 	if enum, ok := BACnetAccessZoneOccupancyStateByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessZoneOccupancyState")
 		return BACnetAccessZoneOccupancyState(val), nil
 	} else {
 		return enum, nil
@@ -168,7 +168,7 @@ func (e BACnetAccessZoneOccupancyState) Serialize() ([]byte, error) {
 func (e BACnetAccessZoneOccupancyState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetAccessZoneOccupancyState", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -191,7 +191,7 @@ func (e BACnetAccessZoneOccupancyState) PLC4XEnumName() string {
 	case BACnetAccessZoneOccupancyState_NOT_SUPPORTED:
 		return "NOT_SUPPORTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessZoneOccupancyState) String() string {

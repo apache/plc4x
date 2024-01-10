@@ -130,7 +130,7 @@ func EnableControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading EnableControlCommandType")
 	}
 	if enum, ok := EnableControlCommandTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for EnableControlCommandType")
 		return EnableControlCommandType(val), nil
 	} else {
 		return enum, nil
@@ -148,7 +148,7 @@ func (e EnableControlCommandType) Serialize() ([]byte, error) {
 func (e EnableControlCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("EnableControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("EnableControlCommandType", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -157,7 +157,7 @@ func (e EnableControlCommandType) PLC4XEnumName() string {
 	case EnableControlCommandType_SET_NETWORK_VARIABLE:
 		return "SET_NETWORK_VARIABLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e EnableControlCommandType) String() string {

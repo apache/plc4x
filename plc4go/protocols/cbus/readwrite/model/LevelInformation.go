@@ -314,34 +314,50 @@ func (pm *_LevelInformation) SerializeParent(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for LevelInformation")
 	}
 	// Virtual field
+	nibble1 := m.GetNibble1()
+	_ = nibble1
 	if _nibble1Err := writeBuffer.WriteVirtual(ctx, "nibble1", m.GetNibble1()); _nibble1Err != nil {
 		return errors.Wrap(_nibble1Err, "Error serializing 'nibble1' field")
 	}
 	// Virtual field
+	nibble2 := m.GetNibble2()
+	_ = nibble2
 	if _nibble2Err := writeBuffer.WriteVirtual(ctx, "nibble2", m.GetNibble2()); _nibble2Err != nil {
 		return errors.Wrap(_nibble2Err, "Error serializing 'nibble2' field")
 	}
 	// Virtual field
+	nibble3 := m.GetNibble3()
+	_ = nibble3
 	if _nibble3Err := writeBuffer.WriteVirtual(ctx, "nibble3", m.GetNibble3()); _nibble3Err != nil {
 		return errors.Wrap(_nibble3Err, "Error serializing 'nibble3' field")
 	}
 	// Virtual field
+	nibble4 := m.GetNibble4()
+	_ = nibble4
 	if _nibble4Err := writeBuffer.WriteVirtual(ctx, "nibble4", m.GetNibble4()); _nibble4Err != nil {
 		return errors.Wrap(_nibble4Err, "Error serializing 'nibble4' field")
 	}
 	// Virtual field
+	isAbsent := m.GetIsAbsent()
+	_ = isAbsent
 	if _isAbsentErr := writeBuffer.WriteVirtual(ctx, "isAbsent", m.GetIsAbsent()); _isAbsentErr != nil {
 		return errors.Wrap(_isAbsentErr, "Error serializing 'isAbsent' field")
 	}
 	// Virtual field
+	isCorruptedByNoise := m.GetIsCorruptedByNoise()
+	_ = isCorruptedByNoise
 	if _isCorruptedByNoiseErr := writeBuffer.WriteVirtual(ctx, "isCorruptedByNoise", m.GetIsCorruptedByNoise()); _isCorruptedByNoiseErr != nil {
 		return errors.Wrap(_isCorruptedByNoiseErr, "Error serializing 'isCorruptedByNoise' field")
 	}
 	// Virtual field
+	isCorruptedByNoiseOrLevelsDiffer := m.GetIsCorruptedByNoiseOrLevelsDiffer()
+	_ = isCorruptedByNoiseOrLevelsDiffer
 	if _isCorruptedByNoiseOrLevelsDifferErr := writeBuffer.WriteVirtual(ctx, "isCorruptedByNoiseOrLevelsDiffer", m.GetIsCorruptedByNoiseOrLevelsDiffer()); _isCorruptedByNoiseOrLevelsDifferErr != nil {
 		return errors.Wrap(_isCorruptedByNoiseOrLevelsDifferErr, "Error serializing 'isCorruptedByNoiseOrLevelsDiffer' field")
 	}
 	// Virtual field
+	isCorrupted := m.GetIsCorrupted()
+	_ = isCorrupted
 	if _isCorruptedErr := writeBuffer.WriteVirtual(ctx, "isCorrupted", m.GetIsCorrupted()); _isCorruptedErr != nil {
 		return errors.Wrap(_isCorruptedErr, "Error serializing 'isCorrupted' field")
 	}

@@ -149,4 +149,10 @@ public interface PlcValue {
 
     Map<String, ? extends PlcValue> getStruct();
 
+    Set<String> getMetaDataNames();
+
+    boolean hasMetaData(String key);
+
+    PlcValue getMetaData(String key);
+
 }

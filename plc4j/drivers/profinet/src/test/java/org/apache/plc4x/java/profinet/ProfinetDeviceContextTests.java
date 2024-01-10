@@ -41,9 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 public class ProfinetDeviceContextTests {
 
     @Test
-    public void readProfinetAllocatedSubModulesLengthCheck()  {
+    public void readProfinetAllocatedSubModulesLengthCheck() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
+            ProfinetConfiguration.class, "", "", "",
+            "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -60,7 +61,7 @@ public class ProfinetDeviceContextTests {
             devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
         }
 
-        ProfinetDevice device =devices.get("DEVICE_NAME_1");
+        ProfinetDevice device = devices.get("DEVICE_NAME_1");
         device.setVendorDeviceId("CAFE", "0001");
 
         ProfinetModule[] modules = device.getDeviceContext().getModules();
@@ -69,9 +70,10 @@ public class ProfinetDeviceContextTests {
     }
 
     @Test
-    public void readProfinetAllocatedSubModulesTypeCheck()  {
+    public void readProfinetAllocatedSubModulesTypeCheck() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
+            ProfinetConfiguration.class, "", "", "",
+            "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -102,9 +104,10 @@ public class ProfinetDeviceContextTests {
     }
 
     @Test
-    public void readProfinetAllocatedSubModulesTypeCheckEmptyModule()  {
+    public void readProfinetAllocatedSubModulesTypeCheckEmptyModule() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
+            ProfinetConfiguration.class, "", "", "",
+            "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();
@@ -135,9 +138,9 @@ public class ProfinetDeviceContextTests {
     }
 
     @Test
-    public void readExpectedSubModuleApiBlocks()  {
+    public void readExpectedSubModuleApiBlocks() {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
-            ProfinetConfiguration.class, "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
+            ProfinetConfiguration.class, "", "", "", "gsddirectory=src/test/resources/&devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, , PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]");
 
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
         Map<String, ProfinetDevice> devices = new HashMap<>();

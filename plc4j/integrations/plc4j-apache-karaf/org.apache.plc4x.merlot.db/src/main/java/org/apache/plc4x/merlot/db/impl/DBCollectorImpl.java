@@ -20,7 +20,7 @@ package org.apache.plc4x.merlot.db.impl;
 
 import org.apache.plc4x.merlot.api.DriverEvent;
 import org.apache.plc4x.merlot.api.core.Merlot;
-import org.apache.plc4x.merlot.base.api.BaseDriver;
+import org.apache.plc4x.merlot.das.base.api.BaseDriver;
 import org.apache.plc4x.merlot.db.api.DBCollector;
 import org.apache.plc4x.merlot.scheduler.api.JobContext;
 import java.util.Collection;

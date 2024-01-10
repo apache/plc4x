@@ -30,12 +30,12 @@ import (
 type DefaultPlcSubscriptionEventItem struct {
 	code             apiModel.PlcResponseCode `stringer:"true"`
 	tag              apiModel.PlcTag
-	subscriptionType SubscriptionType
-	interval         time.Duration `stringer:"true"`
+	subscriptionType apiModel.PlcSubscriptionType `stringer:"true"`
+	interval         time.Duration                `stringer:"true"`
 	value            apiValues.PlcValue
 }
 
-func NewDefaultPlcSubscriptionEventItem(code apiModel.PlcResponseCode, tag apiModel.PlcTag, subscriptionType SubscriptionType, interval time.Duration, value apiValues.PlcValue) *DefaultPlcSubscriptionEventItem {
+func NewDefaultPlcSubscriptionEventItem(code apiModel.PlcResponseCode, tag apiModel.PlcTag, subscriptionType apiModel.PlcSubscriptionType, interval time.Duration, value apiValues.PlcValue) *DefaultPlcSubscriptionEventItem {
 	return &DefaultPlcSubscriptionEventItem{
 		code:             code,
 		tag:              tag,
@@ -53,7 +53,7 @@ func (d *DefaultPlcSubscriptionEventItem) GetTag() apiModel.PlcTag {
 	return d.tag
 }
 
-func (d *DefaultPlcSubscriptionEventItem) GetSubscriptionType() SubscriptionType {
+func (d *DefaultPlcSubscriptionEventItem) GetSubscriptionType() apiModel.PlcSubscriptionType {
 	return d.subscriptionType
 }
 

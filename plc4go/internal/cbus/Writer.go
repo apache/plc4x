@@ -139,12 +139,12 @@ func (m *Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteReques
 					addResponseCode(tagName, apiModel.PlcResponseCode_OK)
 					return transaction.EndRequest()
 				}, func(err error) error {
-					m.log.Debug().Msgf("Error waiting for tag %s", tagNameCopy)
+					m.log.Debug().Str("tagName", tagNameCopy).Msg("Error waiting for tag")
 					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_REQUEST_TIMEOUT)
 					// TODO: ok or not ok?
 					return transaction.EndRequest()
 				}, time.Second*1); err != nil {
-					m.log.Debug().Err(err).Msgf("Error sending message for tag %s", tagNameCopy)
+					m.log.Debug().Str("tagName", tagNameCopy).Err(err).Msg("Error sending message for tag")
 					addResponseCode(tagNameCopy, apiModel.PlcResponseCode_INTERNAL_ERROR)
 					if err := transaction.FailRequest(errors.Errorf("timeout after %s", time.Second*1)); err != nil {
 						m.log.Debug().Err(err).Msg("Error failing request")

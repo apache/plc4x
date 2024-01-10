@@ -22,17 +22,23 @@ import io.vavr.control.Either;
 
 import java.time.Duration;
 import java.util.Deque;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class HandlerRegistration {
+public class HandlerRegistration implements Future<Void> {
 
     private static int counter = 0;
 
     private final int id = counter++;
+
+    private final String name;
 
     private final Deque<Either<Function<?, ?>, Predicate<?>>> commands;
 
@@ -43,18 +49,43 @@ public class HandlerRegistration {
     private final Consumer<TimeoutException> onTimeoutConsumer;
 
     private final BiConsumer<?, ? extends Throwable> errorConsumer;
+    private final Runnable onHandled;
+    private final Runnable onError;
+    private final Runnable onCancelled;
     private final Duration timeout;
 
-    private volatile boolean cancelled = false;
-    private volatile boolean handled = false;
+    private final CompletableFuture<Void> handled = new CompletableFuture<>();
 
-    public HandlerRegistration(Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Duration timeout) {
+    public HandlerRegistration(String name, Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Duration timeout) {
+        this(
+            name,
+            commands,
+            expectClazz,
+            packetConsumer,
+            onTimeoutConsumer,
+            errorConsumer,
+            () -> {},
+            () -> {},
+            () -> {},
+            timeout
+        );
+    }
+
+    public HandlerRegistration(String name, Deque<Either<Function<?, ?>, Predicate<?>>> commands, Class<?> expectClazz, Consumer<?> packetConsumer, Consumer<TimeoutException> onTimeoutConsumer, BiConsumer<?, ? extends Throwable> errorConsumer, Runnable onHandled, Runnable onError, Runnable onCancelled, Duration timeout) {
+        this.name = name;
         this.commands = commands;
         this.expectClazz = expectClazz;
         this.packetConsumer = packetConsumer;
         this.onTimeoutConsumer = onTimeoutConsumer;
         this.errorConsumer = errorConsumer;
+        this.onHandled = onHandled;
+        this.onError = onError;
+        this.onCancelled = onCancelled;
         this.timeout = timeout;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Deque<Either<Function<?, ?>, Predicate<?>>> getCommands() {
@@ -82,20 +113,58 @@ public class HandlerRegistration {
     }
 
     public void cancel() {
-        this.cancelled = true;
+        handled.cancel(true);
+        onCancelled.run();
+    }
+
+    @Override
+    public boolean cancel(boolean ignored) {
+        if (isCancelled()) {
+            return false;
+        } else {
+            cancel();
+            return true;
+        }
     }
 
     public boolean isCancelled() {
-        return this.cancelled;
+        return handled.isCancelled();
+    }
+
+    @Override
+    public boolean isDone() {
+        return hasHandled();
+    }
+
+    @Override
+    public Void get() throws InterruptedException, ExecutionException {
+        return handled.get();
+    }
+
+    @Override
+    public Void get(long amount, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+        return handled.get(amount, timeUnit);
     }
 
     public void confirmHandled() {
-        this.handled = true;
+        confirmCompleted();
+        this.onHandled.run();
+    }
+
+    public void confirmError() {
+        confirmCompleted();
+        this.onError.run();
+    }
+
+    public void confirmCompleted() {
+        this.handled.complete(null);
     }
 
     public boolean hasHandled() {
-        return this.handled;
+        return this.handled.isDone();
     }
+
+
 
     @Override
     public String toString() {

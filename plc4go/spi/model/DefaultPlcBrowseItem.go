@@ -24,6 +24,8 @@ import (
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
+var _ apiModel.PlcBrowseItem = &DefaultPlcBrowseItem{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseItem
 type DefaultPlcBrowseItem struct {
 	Tag          apiModel.PlcTag

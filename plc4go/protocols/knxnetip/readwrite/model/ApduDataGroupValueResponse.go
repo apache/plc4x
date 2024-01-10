@@ -201,7 +201,7 @@ func (m *_ApduDataGroupValueResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.GetDataFirstByte())
-		_dataFirstByteErr := writeBuffer.WriteInt8("dataFirstByte", 6, (dataFirstByte))
+		_dataFirstByteErr := writeBuffer.WriteInt8("dataFirstByte", 6, int8((dataFirstByte)))
 		if _dataFirstByteErr != nil {
 			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
 		}

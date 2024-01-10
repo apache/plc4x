@@ -203,21 +203,21 @@ func (m *_NLMInitalizeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx cont
 
 	// Simple Field (destinationNetworkAddress)
 	destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-	_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, (destinationNetworkAddress))
+	_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
 	if _destinationNetworkAddressErr != nil {
 		return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 	}
 
 	// Simple Field (portId)
 	portId := uint8(m.GetPortId())
-	_portIdErr := writeBuffer.WriteUint8("portId", 8, (portId))
+	_portIdErr := writeBuffer.WriteUint8("portId", 8, uint8((portId)))
 	if _portIdErr != nil {
 		return errors.Wrap(_portIdErr, "Error serializing 'portId' field")
 	}
 
 	// Simple Field (portInfoLength)
 	portInfoLength := uint8(m.GetPortInfoLength())
-	_portInfoLengthErr := writeBuffer.WriteUint8("portInfoLength", 8, (portInfoLength))
+	_portInfoLengthErr := writeBuffer.WriteUint8("portInfoLength", 8, uint8((portInfoLength)))
 	if _portInfoLengthErr != nil {
 		return errors.Wrap(_portInfoLengthErr, "Error serializing 'portInfoLength' field")
 	}

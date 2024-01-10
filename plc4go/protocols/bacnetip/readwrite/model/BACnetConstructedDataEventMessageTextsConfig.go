@@ -323,6 +323,8 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventMessageTextsConfig")
 		}
 		// Virtual field
+		zero := m.GetZero()
+		_ = zero
 		if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 			return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 		}
@@ -360,14 +362,20 @@ func (m *_BACnetConstructedDataEventMessageTextsConfig) SerializeWithWriteBuffer
 			return errors.Wrap(popErr, "Error popping for eventMessageTextsConfig")
 		}
 		// Virtual field
+		toOffnormalTextConfig := m.GetToOffnormalTextConfig()
+		_ = toOffnormalTextConfig
 		if _toOffnormalTextConfigErr := writeBuffer.WriteVirtual(ctx, "toOffnormalTextConfig", m.GetToOffnormalTextConfig()); _toOffnormalTextConfigErr != nil {
 			return errors.Wrap(_toOffnormalTextConfigErr, "Error serializing 'toOffnormalTextConfig' field")
 		}
 		// Virtual field
+		toFaultTextConfig := m.GetToFaultTextConfig()
+		_ = toFaultTextConfig
 		if _toFaultTextConfigErr := writeBuffer.WriteVirtual(ctx, "toFaultTextConfig", m.GetToFaultTextConfig()); _toFaultTextConfigErr != nil {
 			return errors.Wrap(_toFaultTextConfigErr, "Error serializing 'toFaultTextConfig' field")
 		}
 		// Virtual field
+		toNormalTextConfig := m.GetToNormalTextConfig()
+		_ = toNormalTextConfig
 		if _toNormalTextConfigErr := writeBuffer.WriteVirtual(ctx, "toNormalTextConfig", m.GetToNormalTextConfig()); _toNormalTextConfigErr != nil {
 			return errors.Wrap(_toNormalTextConfigErr, "Error serializing 'toNormalTextConfig' field")
 		}

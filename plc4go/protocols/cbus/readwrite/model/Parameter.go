@@ -7895,7 +7895,7 @@ func ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading Parameter")
 	}
 	if enum, ok := ParameterByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for Parameter")
 		return Parameter(val), nil
 	} else {
 		return enum, nil
@@ -7913,7 +7913,7 @@ func (e Parameter) Serialize() ([]byte, error) {
 func (e Parameter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("Parameter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("Parameter", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -8432,7 +8432,7 @@ func (e Parameter) PLC4XEnumName() string {
 	case Parameter_UNKOWN_255:
 		return "UNKOWN_255"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e Parameter) String() string {

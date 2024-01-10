@@ -19,23 +19,31 @@
 
 package model
 
-import "context"
-
-type PlcUnsubscriptionRequestBuilder interface {
-	// TODO: Implement
-}
+import (
+	"context"
+	"fmt"
+)
 
 type PlcUnsubscriptionRequestResult interface {
+	fmt.Stringer
 	GetRequest() PlcUnsubscriptionRequest
 	GetResponse() PlcUnsubscriptionResponse
 	GetErr() error
 }
 
+type PlcUnsubscriptionRequestBuilder interface {
+	fmt.Stringer
+	AddHandles(handles ...PlcSubscriptionHandle) PlcUnsubscriptionRequestBuilder
+	Build() (PlcUnsubscriptionRequest, error)
+}
+
 type PlcUnsubscriptionRequest interface {
+	PlcRequest
 	Execute() <-chan PlcUnsubscriptionRequestResult
 	ExecuteWithContext(ctx context.Context) <-chan PlcUnsubscriptionRequestResult
-	PlcRequest
 }
 
 type PlcUnsubscriptionResponse interface {
+	fmt.Stringer
+	GetRequest() PlcUnsubscriptionRequest
 }

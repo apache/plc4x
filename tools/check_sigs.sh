@@ -54,13 +54,23 @@ function checkFile() {
        echo "${FILE} SHA OK";
     fi
 
-    gpg --verify "${FILE}.asc"
-
 }
 
 for bundle in "${BUNDLE_DIR}"/*.zip
 do
     checkFile "${bundle}"
+
+    gpg --verify "${FILE}.asc"
+done
+
+for sbom in "${BUNDLE_DIR}"/*.json
+do
+    gpg --verify "${sbom}.asc"
+done
+
+for sbom in "${BUNDLE_DIR}"/*.xml
+do
+    gpg --verify "${sbom}.asc"
 done
 
 echo

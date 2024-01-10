@@ -184,6 +184,13 @@ public class DataItem {
           readBuffer.readUnsignedLong("", 32);
 
       return PlcTIME.ofMilliseconds(milliseconds);
+    } else if (EvaluationHelper.equals(dataProtocolId, "S7_S5TIME")) { // TIME
+
+      // Manual Field (milliseconds)
+      long milliseconds =
+          (long) (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS5Time(readBuffer));
+
+      return PlcTIME.ofMilliseconds(milliseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
 
       // Simple Field (nanoseconds)
@@ -193,11 +200,11 @@ public class DataItem {
       return PlcLTIME.ofNanoseconds(nanoseconds);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
 
-      // Simple Field (daysSinceSiemensEpoch)
-      Integer daysSinceSiemensEpoch = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedInt("", 16);
+      // Manual Field (daysSinceEpoch)
+      int daysSinceEpoch =
+          (int) (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseTiaDate(readBuffer));
 
-      return PlcDATE.ofDaysSinceSiemensEpoch(daysSinceSiemensEpoch);
+      return PlcDATE.ofDaysSinceEpoch(daysSinceEpoch);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
 
       // Simple Field (millisecondsSinceMidnight)
@@ -369,17 +376,17 @@ public class DataItem {
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
           "", 32, ((Number) (milliseconds)).longValue());
+    } else if (EvaluationHelper.equals(dataProtocolId, "S7_S5TIME")) { // TIME
+      // Manual Field (milliseconds)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS5Time(writeBuffer, _value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
       BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
-      // Simple Field (daysSinceSiemensEpoch)
-      int daysSinceSiemensEpoch = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt(
-          "", 16, ((Number) (daysSinceSiemensEpoch)).intValue());
+      // Manual Field (daysSinceEpoch)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeTiaDate(writeBuffer, _value);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
       long millisecondsSinceMidnight = (long) _value.getLong();
@@ -491,19 +498,22 @@ public class DataItem {
       sizeInBits += 16;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_STRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (STR_LEN(_value)) + (2);
+      sizeInBits += (((stringLength) * (8))) + (16);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_WSTRING")) { // STRING
       // Manual Field (value)
-      sizeInBits += (((STR_LEN(_value)) * (2))) + (2);
+      sizeInBits += (((stringLength) * (16))) + (32);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME")) { // TIME
       // Simple Field (milliseconds)
       sizeInBits += 32;
+    } else if (EvaluationHelper.equals(dataProtocolId, "S7_S5TIME")) { // TIME
+      // Manual Field (milliseconds)
+      sizeInBits += 2;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_LTIME")) { // LTIME
       // Simple Field (nanoseconds)
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE")) { // DATE
-      // Simple Field (daysSinceSiemensEpoch)
-      sizeInBits += 16;
+      // Manual Field (daysSinceEpoch)
+      sizeInBits += 2;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
       sizeInBits += 32;

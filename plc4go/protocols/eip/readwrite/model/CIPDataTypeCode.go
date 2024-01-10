@@ -414,7 +414,7 @@ func CIPDataTypeCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading CIPDataTypeCode")
 	}
 	if enum, ok := CIPDataTypeCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for CIPDataTypeCode")
 		return CIPDataTypeCode(val), nil
 	} else {
 		return enum, nil
@@ -432,7 +432,7 @@ func (e CIPDataTypeCode) Serialize() ([]byte, error) {
 func (e CIPDataTypeCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("CIPDataTypeCode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -497,7 +497,7 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 	case CIPDataTypeCode_STRUCTURED:
 		return "STRUCTURED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e CIPDataTypeCode) String() string {

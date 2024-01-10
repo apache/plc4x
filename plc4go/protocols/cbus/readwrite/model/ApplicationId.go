@@ -252,7 +252,7 @@ func ApplicationIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return 0, errors.Wrap(err, "error reading ApplicationId")
 	}
 	if enum, ok := ApplicationIdByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ApplicationId")
 		return ApplicationId(val), nil
 	} else {
 		return enum, nil
@@ -270,7 +270,7 @@ func (e ApplicationId) Serialize() ([]byte, error) {
 func (e ApplicationId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("ApplicationId", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("ApplicationId", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -327,7 +327,7 @@ func (e ApplicationId) PLC4XEnumName() string {
 	case ApplicationId_NETWORK_CONTROL:
 		return "NETWORK_CONTROL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ApplicationId) String() string {

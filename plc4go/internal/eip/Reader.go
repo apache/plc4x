@@ -113,7 +113,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					},
 					func(message spi.Message) error {
 						cipRRData := message.(readWriteModel.CipRRData)
-						m.log.Trace().Msgf("handling:\n%s", cipRRData)
+						m.log.Trace().Stringer("cipRRData", cipRRData).Msg("handling")
 						unconnectedDataItem := cipRRData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
 						// Convert the eip response into a PLC4X response
 						m.log.Trace().Msg("convert response to PLC4X response")

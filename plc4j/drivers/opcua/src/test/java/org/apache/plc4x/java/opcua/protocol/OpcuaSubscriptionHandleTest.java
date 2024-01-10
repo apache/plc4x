@@ -24,6 +24,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
+import org.apache.plc4x.test.DisableInDockerFlag;
 import org.apache.plc4x.test.DisableOnParallelsVmFlag;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
@@ -35,11 +36,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 // ! For some odd reason does this test not work on VMs running in Parallels.
 // cdutz: I have done way more than my fair share on tracking down this issue and am simply giving up on it.
 // I tracked it down into the core of Milo several times now, but got lost in there.
 // It's not a big issue as the GitHub runners and the Apache Jenkins still run the test.
 @DisableOnParallelsVmFlag
+@DisableInDockerFlag
 public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
@@ -75,55 +79,33 @@ public class OpcuaSubscriptionHandleTest {
 
     private static PlcConnection opcuaConnection;
 
-    @BeforeEach
-    public void before() {
-    }
-
-    @AfterEach
-    public void after() {
-
-    }
-
     // ! If this test fails, see comment at the top of the class before investigating.
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws Exception {
+        // When switching JDK versions from a newer to an older version,
+        // this can cause the server to not start correctly.
+        // Deleting the directory makes sure the key-store is initialized correctly.
+        Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
         try {
-            // When switching JDK versions from a newer to an older version,
-            // this can cause the server to not start correctly.
-            // Deleting the directory makes sure the key-store is initialized correctly.
-            Path securityBaseDir = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security");
-            try {
-                Files.delete(securityBaseDir);
-            } catch (Exception e) {
-                // Ignore this ...
-            }
-
-            exampleServer = new ExampleServer();
-            exampleServer.startup().get();
-            //Connect
-            opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
-            assert opcuaConnection.isConnected();
+            Files.delete(securityBaseDir);
         } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                exampleServer.shutdown().get();
-            } catch (Exception j) {
-                j.printStackTrace();
-            }
+            // Ignore this ...
         }
+
+        exampleServer = new ExampleServer();
+        exampleServer.startup().get();
+        //Connect
+        opcuaConnection = new DefaultPlcDriverManager().getConnection(tcpConnectionAddress);
+        assertThat(opcuaConnection).extracting(PlcConnection::isConnected).isEqualTo(true);
     }
 
     @AfterAll
-    public static void tearDown() {
-        try {
-            // Close Connection
-            opcuaConnection.close();
-            assert !opcuaConnection.isConnected();
+    public static void tearDown() throws Exception {
+        // Close Connection
+        opcuaConnection.close();
+        assertThat(opcuaConnection).extracting(PlcConnection::isConnected).isEqualTo(false);
 
-            exampleServer.shutdown().get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        exampleServer.shutdown().get();
     }
 
     // ! If this test fails, see comment at the top of the class before investigating.

@@ -200,14 +200,14 @@ func (m *_ApduDataMemoryRead) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (numBytes)
 		numBytes := uint8(m.GetNumBytes())
-		_numBytesErr := writeBuffer.WriteUint8("numBytes", 6, (numBytes))
+		_numBytesErr := writeBuffer.WriteUint8("numBytes", 6, uint8((numBytes)))
 		if _numBytesErr != nil {
 			return errors.Wrap(_numBytesErr, "Error serializing 'numBytes' field")
 		}
 
 		// Simple Field (address)
 		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, (address))
+		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

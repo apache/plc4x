@@ -103,7 +103,7 @@ func (m *MessageCodec) Disconnect() error {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	m.log.Trace().Msgf("Sending message\n%s", message)
+	m.log.Trace().Stringer("message", message).Msg("Sending message")
 	// Cast the message to the correct type of struct
 	cbusMessage, ok := message.(readWriteModel.CBusMessage)
 	if !ok {
@@ -112,7 +112,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 
 	// Set the right request context
 	m.requestContext = CreateRequestContext(cbusMessage)
-	m.log.Debug().Msgf("Created request context\n%s", m.requestContext)
+	m.log.Debug().Stringer("requestContext", m.requestContext).Msg("Created request context")
 
 	// Serialize the request
 	theBytes, err := cbusMessage.Serialize()
@@ -180,7 +180,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		}
 		readableBytes = numBytesAvailableInBuffer
 	}
-	m.log.Trace().Msgf("%d bytes available in buffer", readableBytes)
+	m.log.Trace().Uint32("readableBytes", readableBytes).Msg("readableBytes bytes available in buffer")
 
 	// Check for an isolated error
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
@@ -221,7 +221,11 @@ lookingForTheEnd:
 			break lookingForTheEnd
 		}
 	}
-	m.log.Trace().Msgf("indexOfCR %d,indexOfLF %d,indexOfConfirmation %d", indexOfCR, indexOfLF, indexOfConfirmation)
+	m.log.Trace().
+		Int("indexOfCR", indexOfCR).
+		Int("indexOfLF", indexOfLF).
+		Int("indexOfConfirmation", indexOfConfirmation).
+		Msg("working with indexes")
 	if indexOfCR < 0 && indexOfLF >= 0 {
 		// This means that the package is garbage as a lf is always prefixed with a cr
 		m.log.Debug().Err(err).Msg("Error reading")
@@ -239,22 +243,31 @@ lookingForTheEnd:
 		requestToPci = true
 	}
 	const numberOfCyclesToWait = 15
-	const estimatedElapsedTime = numberOfCyclesToWait * 10
+	const estimatedElapsedTime = numberOfCyclesToWait * 10 * time.Millisecond
 	if !pciResponse && !requestToPci && indexOfLF < 0 {
 		// To be sure we might receive that package later we hash the bytes and check if we might receive one
 		hash := crc32.NewIEEE()
 		_, _ = hash.Write(peekedBytes)
 		newPackageHash := hash.Sum32()
-		if newPackageHash == m.lastPackageHash.Load() {
+		lastPackageHash := m.lastPackageHash.Load()
+		if newPackageHash == lastPackageHash {
 			m.hashEncountered.Add(1)
 		}
-		m.log.Trace().Msgf("new hash %x, last hash %x, seen %d times", newPackageHash, m.lastPackageHash.Load(), m.hashEncountered.Load())
+		hasEncountered := m.hashEncountered.Load()
+		m.log.Trace().
+			Uint32("newPackageHash", newPackageHash).
+			Uint32("lastPackageHash", lastPackageHash).
+			Uint64("hashEncountered", hasEncountered).
+			Msg("new hash newPackageHash, last hash lastPackageHash, seen hashEncountered times")
 		m.lastPackageHash.Store(newPackageHash)
-		if m.hashEncountered.Load() < numberOfCyclesToWait {
+		if hasEncountered < numberOfCyclesToWait {
 			m.log.Trace().Msg("Waiting for more data")
 			return nil, nil
 		} else {
-			m.log.Trace().Msgf("stopping after ~%dms (%d cycles)", estimatedElapsedTime, numberOfCyclesToWait)
+			m.log.Trace().
+				Dur("estimatedElapsedTime", estimatedElapsedTime).
+				Int("numberOfCyclesToWait", numberOfCyclesToWait).
+				Msg("stopping after estimatedElapsedTime ms (numberOfCyclesToWait cycles)")
 			// after numberOfCyclesToWait*10 ms we give up finding a lf
 			m.lastPackageHash.Store(0)
 			m.hashEncountered.Store(0)
@@ -301,22 +314,31 @@ lookingForTheEnd:
 			}
 		}
 		// Now we report the errors one by one so for every request we get a proper rejection
-		if foundErrors > m.currentlyReportedServerErrors.Load() {
-			m.log.Debug().Msgf("We found %d errors in the current message. We have %d reported already", foundErrors, m.currentlyReportedServerErrors.Load())
+		currentlyReportedServerErrors := m.currentlyReportedServerErrors.Load()
+		if foundErrors > currentlyReportedServerErrors {
+			m.log.Debug().
+				Uint64("foundErrors", foundErrors).
+				Uint64("currentlyReportedServerErrors", currentlyReportedServerErrors).
+				Msg("We found foundErrors errors in the current message. We have currentlyReportedServerErrors reported already")
 			m.currentlyReportedServerErrors.Add(1)
 			ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 			return readWriteModel.CBusMessageParse(ctxForModel, []byte{'!'}, true, m.requestContext, m.cbusOptions)
 		}
 		if foundErrors > 0 {
-			m.log.Debug().Msgf("We should have reported all errors by now (%d in total which we reported %d), so we resetting the count", foundErrors, m.currentlyReportedServerErrors.Load())
+			m.log.Debug().
+				Uint64("foundErrors", foundErrors).
+				Uint64("currentlyReportedServerErrors", currentlyReportedServerErrors).
+				Msg("We should have reported all errors by now (foundErrors in total which we reported currentlyReportedServerErrors), so we resetting the count")
 			m.currentlyReportedServerErrors.Store(0)
 		}
-		m.log.Trace().Msgf("currentlyReportedServerErrors %d should be 0", m.currentlyReportedServerErrors.Load())
+		m.log.Trace().
+			Uint64("currentlyReportedServerErrors", currentlyReportedServerErrors).
+			Msg("currentlyReportedServerErrors should be 0")
 	}
 
 	var rawInput []byte
 	{
-		m.log.Trace().Msgf("Read packet length %d", packetLength)
+		m.log.Trace().Int("packetLength", packetLength).Msg("Read packet length")
 		read, err := ti.Read(uint32(packetLength))
 		if err != nil {
 			return nil, errors.Wrap(err, "Invalid state... If we have peeked that before we should be able to read that now")
@@ -332,11 +354,11 @@ lookingForTheEnd:
 			}
 		}
 	}
-	m.log.Debug().Msgf("Parsing %q", sanitizedInput)
+	m.log.Debug().Bytes("sanitizedInput", sanitizedInput).Msg("Parsing")
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	start := time.Now()
 	cBusMessage, err := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, m.requestContext, m.cbusOptions)
-	m.log.Trace().Msgf("Parsing took %s", time.Since(start))
+	m.log.Trace().TimeDiff("elapsedTime", time.Now(), start).Msg("Parsing took elapsedTime")
 	if err != nil {
 		m.log.Debug().Err(err).Msg("First Parse Failed")
 		{ // Try SAL
@@ -344,7 +366,7 @@ lookingForTheEnd:
 			requestContext := readWriteModel.NewRequestContext(false)
 			cBusMessage, secondErr := readWriteModel.CBusMessageParse(ctxForModel, sanitizedInput, pciResponse, requestContext, m.cbusOptions)
 			if secondErr == nil {
-				m.log.Trace().Msgf("Parsed message as SAL")
+				m.log.Trace().Msg("Parsed message as SAL")
 				return cBusMessage, nil
 			} else {
 				m.log.Debug().Err(secondErr).Msg("SAL parse failed too")
@@ -389,19 +411,29 @@ func extractMMIAndSAL(log zerolog.Logger) _default.CustomMessageHandler {
 							log.Trace().Msg("Feed to monitored MMIs")
 							codec.(*MessageCodec).monitoredMMIs <- encodedReply.GetCalReply()
 						default:
-							log.Trace().Msgf("Not a CALDataStatusExactly or CALDataStatusExtendedExactly. Actual type %T", calData)
+							log.Trace().
+								Type("actualType", calData).
+								Msg("Not a CALDataStatusExactly or CALDataStatusExtendedExactly")
 						}
 					default:
-						log.Trace().Msgf("Not a MonitoredSALReply or EncodedReplyCALReply. Actual type %T", encodedReply)
+						log.Trace().
+							Type("actualType", encodedReply).
+							Msg("Not a MonitoredSALReply or EncodedReplyCALReply")
 					}
 				default:
-					log.Trace().Msgf("Not a ReplyEncodedReply. Actual type %T", reply)
+					log.Trace().
+						Type("actualType", reply).
+						Msg("Not a ReplyEncodedReply")
 				}
 			default:
-				log.Trace().Msgf("Not a ReplyOrConfirmationReply. Actual type %T", reply)
+				log.Trace().
+					Type("actualType", reply).
+					Msg("Not a ReplyOrConfirmationReply")
 			}
 		default:
-			log.Trace().Msgf("Not a CBusMessageToClient. Actual type %T", message)
+			log.Trace().
+				Type("actualType", message).
+				Msg("Not a CBusMessageToClient")
 		}
 		// We never handle mmi or sal here as we might want to read them in a read-request too
 		return false

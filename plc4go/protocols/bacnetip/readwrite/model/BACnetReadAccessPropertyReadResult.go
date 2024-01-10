@@ -266,6 +266,8 @@ func (m *_BACnetReadAccessPropertyReadResult) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetReadAccessPropertyReadResult")
 	}
 	// Virtual field
+	peekedTagNumber := m.GetPeekedTagNumber()
+	_ = peekedTagNumber
 	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}

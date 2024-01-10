@@ -180,7 +180,7 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (ttl)
 		ttl := uint16(m.GetTtl())
-		_ttlErr := writeBuffer.WriteUint16("ttl", 16, (ttl))
+		_ttlErr := writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
 		if _ttlErr != nil {
 			return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
 		}

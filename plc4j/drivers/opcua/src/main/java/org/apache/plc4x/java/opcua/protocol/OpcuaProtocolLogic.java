@@ -18,6 +18,11 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import static java.util.concurrent.ForkJoinPool.commonPool;
+
+import java.nio.ByteBuffer;
+import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
@@ -26,9 +31,10 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
+import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
-import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
+import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -38,8 +44,8 @@ import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +58,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -76,7 +81,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
     private OpcuaConfiguration configuration;
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new HashMap<>();
     private SecureChannel channel;
-    private final AtomicBoolean securedConnection = new AtomicBoolean(false);
 
     @Override
     public void setConfiguration(OpcuaConfiguration configuration) {
@@ -90,16 +94,18 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void onDisconnect(ConversationContext<OpcuaAPU> context) {
+        if (channel == null) {
+            return;
+        }
         for (Map.Entry<Long, OpcuaSubscriptionHandle> subscriber : subscriptions.entrySet()) {
             subscriber.getValue().stopSubscriber();
         }
-        channel.onDisconnect(context);
+        commonPool().submit(() -> channel.onDisconnect(context));
     }
 
     @Override
     public void setDriverContext(DriverContext driverContext) {
         super.setDriverContext(driverContext);
-        this.channel = new SecureChannel(driverContext, this.configuration);
     }
 
     @Override
@@ -107,9 +113,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         LOGGER.debug("Opcua Driver running in ACTIVE mode.");
 
         if (this.channel == null) {
-            this.channel = new SecureChannel(driverContext, this.configuration);
+            try {
+                this.channel = createSecureChannel(context.getAuthentication());
+            } catch (PlcRuntimeException ex) {
+                context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
+                return;
+            }
         }
-        this.channel.onConnect(context);
+        commonPool().submit(() -> this.channel.onConnect(context));
     }
 
     @Override
@@ -117,9 +128,18 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
         if (this.channel == null) {
-            this.channel = new SecureChannel(driverContext, this.configuration);
+            try {
+                this.channel = createSecureChannel(context.getAuthentication());
+            } catch (PlcRuntimeException ex) {
+                context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException(ex));
+                return;
+            }
         }
-        channel.onDiscover(context);
+        commonPool().submit(() -> channel.onDiscover(context));
+    }
+
+    private SecureChannel createSecureChannel(PlcAuthentication authentication) {
+        return new SecureChannel((OpcuaDriverContext) driverContext, configuration, authentication);
     }
 
     @Override
@@ -175,7 +195,6 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                PlcReadResponse response = null;
                 try {
                     ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
                     if (reply instanceof ReadResponse) {
@@ -193,9 +212,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                             status.put(key, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                         }
                         future.complete(new DefaultPlcReadResponse(request, status));
-                        return;
                     }
-                } catch (ParseException|PlcRuntimeException e) {
+                } catch (ParseException | PlcRuntimeException e) {
                     future.completeExceptionally(new PlcRuntimeException(e));
                 }
             };
@@ -220,7 +238,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return future;
     }
 
-    private NodeId generateNodeId(OpcuaTag tag) {
+    static NodeId generateNodeId(OpcuaTag tag) {
         NodeId nodeId = null;
         if (tag.getIdentifierType() == OpcuaIdentifierType.BINARY_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdTwoByte(Short.parseShort(tag.getIdentifier())));
@@ -228,10 +246,14 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             nodeId = new NodeId(new NodeIdNumeric((short) tag.getNamespace(), Long.parseLong(tag.getIdentifier())));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.GUID_IDENTIFIER) {
             UUID guid = UUID.fromString(tag.getIdentifier());
-            byte[] guidBytes = new byte[16];
-            System.arraycopy(guid.getMostSignificantBits(), 0, guidBytes, 0, 8);
-            System.arraycopy(guid.getLeastSignificantBits(), 0, guidBytes, 8, 8);
-            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), guidBytes));
+            ByteBuffer bb = ByteBuffer.allocate(16)
+                    .order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                    .putInt((int)(guid.getMostSignificantBits() >> (4*8)))
+                    .putShort((short)(guid.getMostSignificantBits() >> (2*8)))
+                    .putShort((short)guid.getMostSignificantBits())
+                    .order(java.nio.ByteOrder.BIG_ENDIAN)
+                    .putLong(guid.getLeastSignificantBits());
+            nodeId = new NodeId(new NodeIdGuid((short) tag.getNamespace(), bb.array()));
         } else if (tag.getIdentifierType() == OpcuaIdentifierType.STRING_IDENTIFIER) {
             nodeId = new NodeId(new NodeIdString((short) tag.getNamespace(), new PascalString(tag.getIdentifier())));
         }
@@ -730,16 +752,31 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                WriteResponse responseMessage = null;
                 try {
-                    responseMessage = (WriteResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    if (reply instanceof WriteResponse) {
+                        WriteResponse responseMessage = (WriteResponse) reply;
+                        PlcWriteResponse response = writeResponse(request, responseMessage);
+
+                        // Pass the response back to the application.
+                        future.complete(response);
+                    } else {
+                        if (reply instanceof ServiceFault) {
+                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
+                            LOGGER.error("Write request ended up with ServiceFault: {}", header);
+                        } else {
+                            LOGGER.error("Remote party returned an error '{}'", reply);
+                        }
+
+                        Map<String, PlcResponseCode> status = new LinkedHashMap<>();
+                        for (String key : request.getTagNames()) {
+                            status.put(key, PlcResponseCode.INTERNAL_ERROR);
+                        }
+                        future.complete(new DefaultPlcWriteResponse(request, status));
+                    }
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }
-                PlcWriteResponse response = writeResponse(request, responseMessage);
-
-                // Pass the response back to the application.
-                future.complete(response);
             };
 
             /* Functional Consumer example using inner class */
@@ -851,16 +888,30 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
             /* Functional Consumer example using inner class */
             Consumer<byte[]> consumer = opcuaResponse -> {
-                CreateSubscriptionResponse responseMessage = null;
                 try {
-                    responseMessage = (CreateSubscriptionResponse) ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN), false).getBody();
+                    ExtensionObjectDefinition reply = ExtensionObject.staticParse(new ReadBufferByteBased(opcuaResponse, ByteOrder.LITTLE_ENDIAN),false).getBody();
+                    if (reply instanceof CreateSubscriptionResponse) {
+                        CreateSubscriptionResponse responseMessage = (CreateSubscriptionResponse) reply;
+
+                        // Pass the response back to the application.
+                        future.complete(responseMessage);
+                    } else {
+                        if (reply instanceof ServiceFault) {
+                            ExtensionObjectDefinition header = ((ServiceFault) reply).getResponseHeader();
+                            LOGGER.error("Subscription request ended up with ServiceFault: {}", header);
+                            future.completeExceptionally(new PlcRuntimeException(
+                                    String.format("Subscription request ended up with ServiceFault: %s", header)
+                            ));
+                        } else {
+                            LOGGER.error("Remote party returned an error '{}'", reply);
+                            future.completeExceptionally(new PlcRuntimeException(
+                                    String.format("Remote party returned an error '%s'", reply)
+                            ));
+                        }
+                    }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LOGGER.error("error parsing", e);
                 }
-
-                // Pass the response back to the application.
-                future.complete(responseMessage);
-
             };
 
             /* Functional Consumer example using inner class */

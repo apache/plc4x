@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-protocols</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-protocols-opcua</artifactId>
@@ -32,206 +32,26 @@
   <name>Protocols: OPC UA</name>
   <description>Base protocol specifications for the OPC UA protocol</description>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <executions>
-          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-          <execution>
-            <id>fetch-opc-datatypes</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.Types.bsd</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.Types.bsd</outputFileName>
-              <skipCache>true</skipCache>
-              <overwrite>true</overwrite>
-            </configuration>
-          </execution>
-          <!-- Fetch the master-data which will be used to translate manufacturer ids to readable names -->
-          <execution>
-            <id>fetch-opc-statuscodes</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/StatusCode.csv</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>StatusCode.csv</outputFileName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-discriminators</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/v1.04/Schema/Opc.Ua.NodeSet2.Services.xml</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeSet2.Services.xml</outputFileName>
-            </configuration>
-          </execution>
-          <execution>
-            <id>fetch-opc-services-enum</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <!-- TODO: This file was deleted, so I had to replace it with the revision url -->
-              <url>https://raw.githubusercontent.com/OPCFoundation/UA-Nodeset/e57608523f98bf9d587d79dd9a0b63c37ebcee6b/Schema/Opc.Ua.NodeIds.csv</url>
-              <unpack>false</unpack>
-              <outputDirectory>${project.build.directory}/downloads</outputDirectory>
-              <outputFileName>Opc.Ua.NodeIds.Services.csv</outputFileName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+  <properties>
+    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+  </properties>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xml-maven-plugin</artifactId>
-        <version>1.1.0</version>
-        <executions>
-          <execution>
-            <id>transform-services</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>transform</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <transformationSets>
-            <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
-              <includes>Opc.Ua.Types.bsd</includes>
-              <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
-              <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
-              <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                  <targetName>opc-services.mspec</targetName>
-                </fileMapper>
-              </fileMappers>
-              <parameters>
-                <parameter>
-                  <name>osType</name>
-                  <value>${os.suffix}</value>
-                </parameter>
-                <parameter>
-                  <name>servicesEnum</name>
-                  <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
-                </parameter>
-              </parameters>
-              <outputProperties>
-                <outputProperty>
-                  <name>indent</name>
-                  <value>no</value>
-                </outputProperty>
-              </outputProperties>
-            </transformationSet>
-            <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
-              <includes>Opc.Ua.Types.bsd</includes>
-              <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
-              <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
-              <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                  <targetName>opc-status.mspec</targetName>
-                </fileMapper>
-              </fileMappers>
-              <parameters>
-                <parameter>
-                  <name>osType</name>
-                  <value>${os.suffix}</value>
-                </parameter>
-                <parameter>
-                  <name>statusCodes</name>
-                  <value>${project.build.directory}/downloads/StatusCode.csv</value>
-                </parameter>
-              </parameters>
-              <outputProperties>
-                <outputProperty>
-                  <name>indent</name>
-                  <value>no</value>
-                </outputProperty>
-              </outputProperties>
-            </transformationSet>
-            <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
-              <includes>Opc.Ua.Types.bsd</includes>
-              <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
-              <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
-              <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                  <targetName>opc-manual.mspec</targetName>
-                </fileMapper>
-              </fileMappers>
-              <parameters>
-                <parameter>
-                  <name>osType</name>
-                  <value>${os.suffix}</value>
-                </parameter>
-                <parameter>
-                  <name>services</name>
-                  <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
-                </parameter>
-              </parameters>
-              <outputProperties>
-                <outputProperty>
-                  <name>indent</name>
-                  <value>no</value>
-                </outputProperty>
-              </outputProperties>
-            </transformationSet>
-            <transformationSet>
-              <dir>${project.build.directory}/downloads</dir>
-              <includes>Opc.Ua.Types.bsd</includes>
-              <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
-              <outputDir>${project.build.outputDirectory}/protocols/opcua</outputDir>
-              <fileMappers>
-                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                  <targetName>opc-types.mspec</targetName>
-                </fileMapper>
-              </fileMappers>
-              <outputProperties>
-                <outputProperty>
-                  <name>indent</name>
-                  <value>no</value>
-                </outputProperty>
-              </outputProperties>
-            </transformationSet>
-          </transformationSets>
-        </configuration>
-        <dependencies>
-          <!-- https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE -->
-          <dependency>
-            <groupId>net.sf.saxon</groupId>
-            <artifactId>Saxon-HE</artifactId>
-            <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
-            <version>12.3</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-    </plugins>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/generated</directory>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -239,6 +59,173 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>3.9.6</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.gmaven</groupId>
+            <artifactId>groovy-maven-plugin</artifactId>
+            <version>2.1.1</version>
+            <executions>
+              <execution>
+                <id>manipulate-services-csv</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <source>${project.basedir}/src/main/script/downloadAndEditOpcuaNodeSet.groovy</source>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>xml-maven-plugin</artifactId>
+            <version>1.1.0</version>
+            <executions>
+              <execution>
+                <id>transform-services</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>transform</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <transformationSets>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>Opc.Ua.Types.bsd</includes>
+                  <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
+                  <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                      <targetName>opc-services.mspec</targetName>
+                    </fileMapper>
+                  </fileMappers>
+                  <parameters>
+                    <parameter>
+                      <name>osType</name>
+                      <value>${os.suffix}</value>
+                    </parameter>
+                    <parameter>
+                      <name>servicesEnum</name>
+                      <value>${project.build.directory}/downloads/Opc.Ua.NodeIds.Services.csv</value>
+                    </parameter>
+                  </parameters>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>no</value>
+                    </outputProperty>
+                  </outputProperties>
+                </transformationSet>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>Opc.Ua.Types.bsd</includes>
+                  <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
+                  <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                      <targetName>opc-status.mspec</targetName>
+                    </fileMapper>
+                  </fileMappers>
+                  <parameters>
+                    <parameter>
+                      <name>osType</name>
+                      <value>${os.suffix}</value>
+                    </parameter>
+                    <parameter>
+                      <name>statusCodes</name>
+                      <value>${project.build.directory}/downloads/StatusCode.csv</value>
+                    </parameter>
+                  </parameters>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>no</value>
+                    </outputProperty>
+                  </outputProperties>
+                </transformationSet>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>Opc.Ua.Types.bsd</includes>
+                  <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
+                  <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                      <targetName>opc-manual.mspec</targetName>
+                    </fileMapper>
+                  </fileMappers>
+                  <parameters>
+                    <parameter>
+                      <name>osType</name>
+                      <value>${os.suffix}</value>
+                    </parameter>
+                    <parameter>
+                      <name>services</name>
+                      <value>${project.build.directory}/downloads/Opc.Ua.NodeSet2.Services.xml</value>
+                    </parameter>
+                  </parameters>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>no</value>
+                    </outputProperty>
+                  </outputProperties>
+                </transformationSet>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>Opc.Ua.Types.bsd</includes>
+                  <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
+                  <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                      <targetName>opc-types.mspec</targetName>
+                    </fileMapper>
+                  </fileMappers>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>no</value>
+                    </outputProperty>
+                  </outputProperties>
+                </transformationSet>
+              </transformationSets>
+            </configuration>
+            <dependencies>
+              <!-- https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE -->
+              <dependency>
+                <groupId>net.sf.saxon</groupId>
+                <artifactId>Saxon-HE</artifactId>
+                <!-- REMARK: 11.3 is currently the newest version, however when updating to that, the build breaks -->
+                <version>12.4</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

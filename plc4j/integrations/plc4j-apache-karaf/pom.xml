@@ -18,728 +18,96 @@ specific language governing permissions and limitations
 under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-                                                 
+
+    <modelVersion>4.0.0</modelVersion>
   
-  
-  
-  
-  
-  
-  
-    
-  
-  
-  
-  <modelVersion>4.0.0</modelVersion>
-                          
-  
-  
-  
-  
-  
-  
-    
-  
-  
-  
-  <!--
-    <parent>
+<!--    <parent>
         <groupId>org.apache.plc4x</groupId>
         <artifactId>plc4j-integrations</artifactId>
-        <version>0.11.0-SNAPSHOT</version>
-    </parent>
-    -->
-                          
-    
-  
-  
-  
-  
-  
-  
-    
-  
-  
-  
-  <groupId>org.apache.plc4x</groupId>
-                    
-  
-  
-  
-  
-    
-  
-  
-  
-  <artifactId>plc4j-apache-karaf</artifactId>
-                    
-  
-  
-  
-  
-    
-  
-  
-  
-  <version>0.11.0-SNAPSHOT</version>
-                    
-  
-  
-  
-  
-    
-  
-  
-  
-  <packaging>pom</packaging>
-                          
-  
-  
-  
-  
-  
-    
-  
-  
-  
-  <name>PLC4J: Integrations: Apache Karaf</name>
-                    
-  
-  
-  
-  
-    
-  
-  
-  
-  <description>Integration module for integrating PLC4X into Apache Karaf.</description>
-                    
-  
-  
-  
-  
-    
-  
-  
-  
-  <properties>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <!-- Inherited -->
-                                    
-    
-    
-    
-        
-    
-    
-    
-    <apache.log4j.version>2.20.0</apache.log4j.version>
-                                    
-    
-    
-    
-    
-        
-    
-    
-    
-    <bit-io.version>1.4.3</bit-io.version>
-                                    
-    
-    
-    
-    
-        
-    
-    
-    
-    <c3p0.version>0.9.5.5</c3p0.version>
-                                   
-    
-    
-    
-    
-        
-    
-    
-    
-    <commons-lang3.version>3.12.0</commons-lang3.version>
-                                    
-    
-    
-    
-    
-        
-    
-    
-    
-    <hikaricp.version>2.7.9</hikaricp.version>
-                                     
-    
-    
-    
-    
-        
-    
-    
-    
-    <netty.version>4.1.95.Final</netty.version>
-                                 
-    
-    
-    
-    
-        
-    
-    
-    
-    <quartz.version>2.3.2</quartz.version>
-                                      
-    
-    
-    
-    
-        
-    
-    
-    
-    <slf4j.version>2.0.3</slf4j.version>
-                                    
-    
-    
-    
-        
-    
-    
-    
-    <spifly.version>1.3.6</spifly.version>
-                                    
-    
-    
-    
-    
-        
-    
-    
-    
-    <jackson.version>2.15.2</jackson.version>
-                                          
-    
-    
-    
-    
-        
-    
-    
-    
-    <jakarta.xml.bind.version>2.3.3</jakarta.xml.bind.version>
-                                    
-    
-    
-    
-        
-    
-    
-    
-    <parser-ng.version>0.1.8</parser-ng.version>
-                                    
-    
-    
-    
-    
-        
-    
-    
-    
-    <vavr.version>0.10.4</vavr.version>
-                                       
-      
-    
-    
-    
-    
-    
-        
-    
-    
-    
-    <!-- Database used in Pax-jdbc -->
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <derby.version>10.14.2.0</derby.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <h2.version>2.1.210</h2.version>
-                                        
-    
-    
-    
-    
-    
-        
-    
-    
-    
-    <!-- Remove GPL licence -->
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <javaluator.version>3.0.3</javaluator.version>
-                                     
+        <version>0.12.0-SNAPSHOT</version>
+    </parent>-->
 
-    
-    
-    
-    
-    
-        
-    
-    
-    
-    <!-- Integration version -->
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <karaf.version>4.4.3</karaf.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <org.osgi.core.version>6.0.0</org.osgi.core.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <osgi.core.version>8.0.0</osgi.core.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <osgi.cmpn.version>7.0.0</osgi.cmpn.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <osgi.device.version>1.1.0</osgi.device.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <disruptor.version>3.4.4</disruptor.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <!-- EPICS -->
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.core.version>7.0.9</epics.core.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.util.version>1.0.6</epics.util.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.vtype.version>1.0.6</epics.vtype.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.vtype.all.version>1.0.6</epics.vtype.all.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.ntypes.version>0.3.8</epics.ntypes.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.jca.version>2.4.8</epics.jca.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.pvaccess.version>5.1.8</epics.pvaccess.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.pvaclient.version>4.3.2</epics.pvaclient.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.pvdata.version>6.1.8</epics.pvdata.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.pvdatabase.version>4.3.1</epics.pvdatabase.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.gpclient.version>1.0.7</epics.gpclient.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.gpclient.core.version>1.0.7</epics.gpclient.core.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.gpclient.sim.version>1.0.7</epics.gpclient.sim.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.gpclient.loc.version>1.0.7</epics.gpclient.loc.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.gpclient.pva.version>1.0.7</epics.gpclient.pva.version>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <epics.gpclient.ca.version>1.0.7</epics.gpclient.ca.version>
-                                      
-  
-  
-  
-  
-    
-  
-  
-  
-  </properties>
-                          
-  
-  
-  
-  
-  
-  
-    
-  
-  
-  
-  <modules>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.modbus.dev</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.modbus.svr</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.scheduler</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.branding</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.uns</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.features</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.das</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.modbus.sim</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.db</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.das.api</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.derby</module>
-                                        
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.h2</module>
-                                        
-    
-    
-    
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.drv.simulated</module>
-                              
-    
-    
-        
-    
-    
-    
-    <module>org.apache.plc4x.merlot.das.ref</module>
-          
-    
-    <module>org.apache.plc4x.merlot.das.base</module>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-apache-karaf</artifactId>
+    <version>0.12.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    
+    <name>PLC4J: Integrations: Apache Karaf</name>
+    <description>Integration module for integrating PLC4X into Apache Karaf.</description>
 
-  </modules>
-                      
+    <properties>
+    
+        <!-- Inherited -->
+        <apache.log4j.version>2.20.0</apache.log4j.version>
+        <bit-io.version>1.4.3</bit-io.version>
+        <c3p0.version>0.9.5.5</c3p0.version>   
+        <commons-codec.version>1.16.0</commons-codec.version> 
+        <commons-net.version>3.10.0</commons-net.version>               
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <hikaricp.version>2.7.9</hikaricp.version>
+        <netty.version>4.1.104.Final</netty.version>
+        <quartz.version>2.3.2</quartz.version>
+        <slf4j.version>2.0.3</slf4j.version>   
+        <spifly.version>1.3.6</spifly.version>
+        <jackson.version>2.16.1</jackson.version>  
+        <jakarta.xml.bind.version>2.3.3</jakarta.xml.bind.version>
+        <parser-ng.version>0.1.8</parser-ng.version>
+        <vavr.version>0.10.4</vavr.version>
+    
+        <!-- Database used in Pax-jdbc -->
+        <derby.version>10.14.2.0</derby.version>
+        <h2.version>2.1.210</h2.version>
+    
+        <!-- Remove GPL licence -->   
+        <javaluator.version>3.0.3</javaluator.version>
 
-
-
-
-
-
-
-
-
+        <!-- Integration version -->
+    
+        <karaf.version>4.4.4</karaf.version>
+        <org.osgi.core.version>6.0.0</org.osgi.core.version>
+        <osgi.core.version>8.0.0</osgi.core.version>    
+        <osgi.cmpn.version>7.0.0</osgi.cmpn.version>
+        <osgi.device.version>1.1.0</osgi.device.version>
+        <org.osgi.dal.version>1.0.2</org.osgi.dal.version>        
+        <disruptor.version>3.4.4</disruptor.version>
+    
+        <!-- EPICS -->
+        <epics.core.version>7.0.9</epics.core.version>
+        <epics.util.version>1.0.6</epics.util.version>
+        <epics.vtype.version>1.0.6</epics.vtype.version>
+        <epics.vtype.all.version>1.0.6</epics.vtype.all.version>
+        <epics.ntypes.version>0.3.8</epics.ntypes.version>
+        <epics.jca.version>2.4.8</epics.jca.version>
+        <epics.pvaccess.version>5.1.8</epics.pvaccess.version>
+        <epics.pvaclient.version>4.3.2</epics.pvaclient.version>
+        <epics.pvdata.version>6.1.8</epics.pvdata.version>
+        <epics.pvdatabase.version>4.3.1</epics.pvdatabase.version>
+        <epics.gpclient.version>1.0.7</epics.gpclient.version>
+        <epics.gpclient.core.version>1.0.7</epics.gpclient.core.version>
+        <epics.gpclient.sim.version>1.0.7</epics.gpclient.sim.version>
+        <epics.gpclient.loc.version>1.0.7</epics.gpclient.loc.version>
+        <epics.gpclient.pva.version>1.0.7</epics.gpclient.pva.version>
+        <epics.gpclient.ca.version>1.0.7</epics.gpclient.ca.version>
+  
+    </properties>
+                           
+    <modules>
+        <module>org.apache.plc4x.merlot</module>
+        <module>org.apache.plc4x.merlot.modbus.dev</module>
+        <module>org.apache.plc4x.merlot.modbus.svr</module>
+        <module>org.apache.plc4x.merlot.scheduler</module>
+        <module>org.apache.plc4x.merlot.branding</module>
+        <module>org.apache.plc4x.merlot.uns</module>
+        <module>org.apache.plc4x.merlot.features</module>
+        <module>org.apache.plc4x.merlot.das</module>
+        <module>org.apache.plc4x.merlot.modbus.sim</module>   
+        <module>org.apache.plc4x.merlot.db</module>
+        <module>org.apache.plc4x.merlot.das.api</module>
+        <module>org.apache.plc4x.merlot.derby</module>
+        <module>org.apache.plc4x.merlot.h2</module>  
+        <module>org.apache.plc4x.merlot.drv.simulated</module>
+        <module>org.apache.plc4x.merlot.das.ref</module>
+        <module>org.apache.plc4x.merlot.das.base</module>
+    </modules>
 
 </project>

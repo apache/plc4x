@@ -462,18 +462,18 @@
         // Characters & Strings
         // -----------------------------------------
         ['CHAR' CHAR
-            [simple   string 8                       value    encoding='"UTF-8"'   ]
+            [simple   string 8                       value    encoding='"Windows-1252"']
         ]
         ['WCHAR' WCHAR
-            [simple   string 16                      value    encoding='"UTF-16LE"']
+            [simple   string 16                      value    encoding='"UTF-16LE"'    ]
         ]
         ['STRING' STRING
-            [simple   vstring 'stringLength * 8'     value    encoding='"UTF-8"'   ]
-            [reserved uint 8                         '0x00'                        ]
+            [simple   vstring 'stringLength * 8'     value    encoding='"Windows-1252"']
+            [reserved uint 8                         '0x00'                            ]
         ]
         ['WSTRING' WSTRING
-            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"']
-            [reserved uint 16                        '0x0000'                      ]
+            [simple   vstring 'stringLength * 8 * 2' value    encoding='"UTF-16LE"'    ]
+            [reserved uint 16                        '0x0000'                          ]
         ]
 
         // -----------------------------------------

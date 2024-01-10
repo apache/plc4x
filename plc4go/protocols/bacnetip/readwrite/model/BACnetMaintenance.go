@@ -132,7 +132,7 @@ func BACnetMaintenanceParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetMaintenance")
 	}
 	if enum, ok := BACnetMaintenanceByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetMaintenance")
 		return BACnetMaintenance(val), nil
 	} else {
 		return enum, nil
@@ -150,7 +150,7 @@ func (e BACnetMaintenance) Serialize() ([]byte, error) {
 func (e BACnetMaintenance) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetMaintenance", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetMaintenance", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -167,7 +167,7 @@ func (e BACnetMaintenance) PLC4XEnumName() string {
 	case BACnetMaintenance_NEED_SERVICE_INOPERATIVE:
 		return "NEED_SERVICE_INOPERATIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetMaintenance) String() string {

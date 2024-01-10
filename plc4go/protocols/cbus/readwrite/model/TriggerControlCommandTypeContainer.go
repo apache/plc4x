@@ -853,7 +853,7 @@ func TriggerControlCommandTypeContainerParseWithBuffer(ctx context.Context, read
 		return 0, errors.Wrap(err, "error reading TriggerControlCommandTypeContainer")
 	}
 	if enum, ok := TriggerControlCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for TriggerControlCommandTypeContainer")
 		return TriggerControlCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -871,7 +871,7 @@ func (e TriggerControlCommandTypeContainer) Serialize() ([]byte, error) {
 func (e TriggerControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("TriggerControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("TriggerControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -980,7 +980,7 @@ func (e TriggerControlCommandTypeContainer) PLC4XEnumName() string {
 	case TriggerControlCommandTypeContainer_TriggerControlCommandLabel_31Bytes:
 		return "TriggerControlCommandLabel_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e TriggerControlCommandTypeContainer) String() string {

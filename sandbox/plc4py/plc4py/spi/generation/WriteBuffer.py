@@ -6,7 +6,7 @@
 #  "License"); you may not use this file except in compliance
 #  with the License.  You may obtain a copy of the License at
 #
-#    http://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 #  Unless required by applicable law or agreed to in writing,
 #  software distributed under the License is distributed on an
@@ -14,6 +14,8 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+import struct
+from abc import ABCMeta
 from ctypes import (
     c_byte,
     c_ubyte,
@@ -119,11 +121,13 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def write_str(
-        self, value: str, bit_length: int = -1, logical_name: str = "", **kwargs
+        self,
+        value: str,
+        bit_length: int = -1,
+        logical_name: str = "",
+        encoding: str = "UTF-8",
+        **kwargs
     ) -> None:
-        raise NotImplementedError
-
-    def write_virtual(self, value: str, logical_name: str = "", **kwargs) -> None:
         raise NotImplementedError
 
     def write_complex_array(
@@ -141,11 +145,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         value.serialize(self)
 
 
-class WriteBufferByteBased(WriteBuffer):
-    byte_order: ByteOrder
-    position: int = 0
-    bb: bitarray
-
+class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
     NUMERIC_UNION = Union[
         c_ubyte,
         c_byte,
@@ -162,8 +162,10 @@ class WriteBufferByteBased(WriteBuffer):
     ]
 
     def __init__(self, size: int, byte_order: ByteOrder):
-        self.bb = zeros(size * 8, endian=ByteOrder.get_short_name(byte_order))
+        # This refers to the bit alignment, which we always use big bit endianess
+        self.bb = zeros(size * 8, endian=ByteOrder.get_short_name(ByteOrder.BIG_ENDIAN))
         self.byte_order = byte_order
+        self.position: int = 0
 
     def get_bytes(self) -> memoryview:
         return memoryview(self.bb)
@@ -173,6 +175,10 @@ class WriteBufferByteBased(WriteBuffer):
 
     def push_context(self, logical_name: str, **kwargs) -> None:
         # byte buffer need no context handling
+        pass
+
+    def pop_context(self, logical_name: str, **kwargs) -> None:
+        # Byte Based Buffer doesn't need a context.
         pass
 
     def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:
@@ -206,6 +212,10 @@ class WriteBufferByteBased(WriteBuffer):
         elif bit_length > 16:
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
+            if self.byte_order == ByteOrder.LITTLE_ENDIAN:
+                value = struct.unpack("<H", struct.pack("H", value))[0]
+            else:
+                value = struct.unpack(">H", struct.pack("H", value))[0]
             self._handle_numeric_encoding(c_uint16(value), bit_length, **kwargs)
 
     def write_unsigned_int(
@@ -291,29 +301,20 @@ class WriteBufferByteBased(WriteBuffer):
             self.pop_context(logical_name, **kwargs)
 
     def _handle_numeric_encoding(self, value: NUMERIC_UNION, bit_length: int, **kwargs):
-        byte_order = kwargs.get("byte_order", self.byte_order)
+        bit_order = kwargs.get("bit_order", ByteOrder.BIG_ENDIAN)
         value_encoding: str = kwargs.get("encoding", "default")
         if value_encoding == "ASCII":
             if bit_length % 8 != 0:
                 raise SerializationException(
                     "'ASCII' encoded fields must have a length that is a multiple of 8 bits long"
                 )
-            char_len: int = int(bit_length / 8)
-            max_value: int = int(10**char_len - 1)
-            if value.value > max_value:
-                raise SerializationException(
-                    "Provided value of "
-                    + str(value)
-                    + " exceeds the max value of "
-                    + str(max_value)
-                )
             string_value: str = "{}".format(value.value)
-            src = bitarray(endian=ByteOrder.get_short_name(byte_order))
+            src = bitarray(endian=ByteOrder.get_short_name(bit_order))
             src.frombytes(bytearray(string_value, value_encoding))
-            self.bb[self.position : bit_length] = src[:bit_length]
+            self.bb[self.position : self.position + bit_length] = src[:bit_length]
             self.position += bit_length
         elif value_encoding == "default":
-            src = bitarray(endian=ByteOrder.get_short_name(byte_order))
+            src = bitarray(endian=ByteOrder.get_short_name(bit_order))
             src.frombytes(value)
-            self.bb[self.position : bit_length] = src[:bit_length]
+            self.bb[self.position : self.position + bit_length] = src[-bit_length:]
             self.position += bit_length

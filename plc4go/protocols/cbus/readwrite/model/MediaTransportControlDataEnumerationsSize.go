@@ -290,32 +290,40 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_sizeTypeErr, "Error serializing 'sizeType' field")
 		}
 		// Virtual field
+		isListCategories := m.GetIsListCategories()
+		_ = isListCategories
 		if _isListCategoriesErr := writeBuffer.WriteVirtual(ctx, "isListCategories", m.GetIsListCategories()); _isListCategoriesErr != nil {
 			return errors.Wrap(_isListCategoriesErr, "Error serializing 'isListCategories' field")
 		}
 		// Virtual field
+		isListSelections := m.GetIsListSelections()
+		_ = isListSelections
 		if _isListSelectionsErr := writeBuffer.WriteVirtual(ctx, "isListSelections", m.GetIsListSelections()); _isListSelectionsErr != nil {
 			return errors.Wrap(_isListSelectionsErr, "Error serializing 'isListSelections' field")
 		}
 		// Virtual field
+		isListTracks := m.GetIsListTracks()
+		_ = isListTracks
 		if _isListTracksErr := writeBuffer.WriteVirtual(ctx, "isListTracks", m.GetIsListTracks()); _isListTracksErr != nil {
 			return errors.Wrap(_isListTracksErr, "Error serializing 'isListTracks' field")
 		}
 		// Virtual field
+		isReserved := m.GetIsReserved()
+		_ = isReserved
 		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
 		// Simple Field (start)
 		start := uint8(m.GetStart())
-		_startErr := writeBuffer.WriteUint8("start", 8, (start))
+		_startErr := writeBuffer.WriteUint8("start", 8, uint8((start)))
 		if _startErr != nil {
 			return errors.Wrap(_startErr, "Error serializing 'start' field")
 		}
 
 		// Simple Field (size)
 		size := uint8(m.GetSize())
-		_sizeErr := writeBuffer.WriteUint8("size", 8, (size))
+		_sizeErr := writeBuffer.WriteUint8("size", 8, uint8((size)))
 		if _sizeErr != nil {
 			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 		}

@@ -23,12 +23,12 @@
     <parent>
     <artifactId>plc4j-apache-karaf</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
     <groupId>org.apache.plc4x.merlot.db</groupId>
     <artifactId>org.apache.plc4x.merlot.db</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>PLC4J: Merlot :: db :: Simple database</name>
@@ -104,12 +104,12 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-api</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.12.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x.merlot.scheduler</groupId>
             <artifactId>org.apache.plc4x.merlot.scheduler</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.12.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.epics</groupId>
@@ -122,14 +122,10 @@
             <version>6.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.ceos.merlot.das.drv.basic</groupId>
-            <artifactId>com.ceos.merlot.das.drv.basic</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.plc4x.merlot.base</groupId>
-            <artifactId>org.apache.plc4x.merlot.base</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <groupId>org.apache.plc4x.merlot.das.base</groupId>
+            <artifactId>org.apache.plc4x.merlot.das.base</artifactId>
+            <version>0.12.0-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

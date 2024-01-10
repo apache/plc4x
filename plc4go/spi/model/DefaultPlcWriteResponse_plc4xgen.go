@@ -64,7 +64,8 @@ func (d *DefaultPlcWriteResponse) SerializeWithWriteBuffer(ctx context.Context, 
 	if err := writeBuffer.PushContext("responseCodes", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.responseCodes {
+	for _name, elem := range d.responseCodes {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

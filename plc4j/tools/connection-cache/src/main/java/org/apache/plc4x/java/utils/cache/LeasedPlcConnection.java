@@ -34,18 +34,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements PlcConnection {
 
     private final ConnectionContainer connectionContainer;
-    private PlcConnection connection;
+    private final AtomicReference<PlcConnection> connection;
     private boolean invalidateConnection;
     private final Timer usageTimer;
 
-    public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
+    LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
         this.connectionContainer = connectionContainer;
-        this.connection = connection;
+        this.connection = new AtomicReference<>(connection);
         this.invalidateConnection = false;
         this.usageTimer = new Timer();
         this.usageTimer.schedule(new TimerTask() {
@@ -58,11 +59,16 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
+        // In this case the connection was already closed (possibly by the timer)
+        if(connection.get() == null) {
+            return;
+        }
+
         // Cancel automatically timing out.
         usageTimer.cancel();
 
         // Make the connection unusable.
-        connection = null;
+        connection.set(null);
 
         // Tell the connection container that the connection is free to be reused.
         connectionContainer.returnConnection(this, invalidateConnection);
@@ -75,34 +81,38 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public boolean isConnected() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.isConnected();
+        return plcConnection.isConnected();
     }
 
     @Override
     public PlcConnectionMetadata getMetadata() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.getMetadata();
+        return plcConnection.getMetadata();
     }
 
     @Override
-    public CompletableFuture<Void> ping() {
-        if(connection == null) {
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.ping();
+        return plcConnection.ping();
     }
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcReadRequest.Builder innerBuilder = connection.readRequestBuilder();
+        final PlcReadRequest.Builder innerBuilder = plcConnection.readRequestBuilder();
         return new PlcReadRequest.Builder() {
             @Override
             public PlcReadRequest build() {
@@ -161,10 +171,11 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcWriteRequest.Builder innerBuilder = connection.writeRequestBuilder();
+        final PlcWriteRequest.Builder innerBuilder = plcConnection.writeRequestBuilder();
         return new PlcWriteRequest.Builder() {
             @Override
             public PlcWriteRequest build() {
@@ -233,10 +244,11 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcSubscriptionRequest.Builder innerBuilder = connection.subscriptionRequestBuilder();
+        final PlcSubscriptionRequest.Builder innerBuilder = plcConnection.subscriptionRequestBuilder();
         return new PlcSubscriptionRequest.Builder() {
             @Override
             public PlcSubscriptionRequest build() {
@@ -325,10 +337,11 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public PlcUnsubscriptionRequest.Builder unsubscriptionRequestBuilder() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcUnsubscriptionRequest.Builder innerBuilder = connection.unsubscriptionRequestBuilder();
+        final PlcUnsubscriptionRequest.Builder innerBuilder = plcConnection.unsubscriptionRequestBuilder();
         return new PlcUnsubscriptionRequest.Builder() {
             @Override
             public PlcUnsubscriptionRequest build() {
@@ -377,10 +390,11 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        if(connection == null) {
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        final PlcBrowseRequest.Builder innerBuilder = connection.browseRequestBuilder();
+        final PlcBrowseRequest.Builder innerBuilder = plcConnection.browseRequestBuilder();
         return new PlcBrowseRequest.Builder() {
             @Override
             public PlcBrowseRequest build() {

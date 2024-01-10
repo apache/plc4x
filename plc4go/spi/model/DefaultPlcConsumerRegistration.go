@@ -25,11 +25,13 @@ import (
 	"math/rand"
 )
 
+var _ apiModel.PlcConsumerRegistration = &DefaultPlcConsumerRegistration{}
+
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcConsumerRegistration
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
 	consumer      apiModel.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable
-	plcSubscriber spi.PlcSubscriber
+	plcSubscriber spi.PlcSubscriber                     `ignore:"true"` // Avoid recursio
 	handles       []apiModel.PlcSubscriptionHandle
 }
 

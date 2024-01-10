@@ -19,6 +19,8 @@
 
 from dataclasses import dataclass
 
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -26,26 +28,23 @@ import math
 
 
 @dataclass
-class ModbusConstants(PlcMessage):
-    MODBUSTCPDEFAULTPORT: int = int(502)
-
-    def __post_init__(self):
-        super().__init__()
+class ModbusConstants:
+    MODBUS_TCP_DEFAULT_PORT: int = int(502)
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusConstants")
 
         # Const Field (modbusTcpDefaultPort)
         write_buffer.write_unsigned_short(
-            self.modbus_tcp_default_port.value, logical_name="modbusTcpDefaultPort"
+            self.MODBUS_TCP_DEFAULT_PORT, logical_name="modbusTcpDefaultPort"
         )
 
         write_buffer.pop_context("ModbusConstants")
 
     def length_in_bytes(self) -> int:
-        return int(math.ceil(float(self.get_length_in_bits() / 8.0)))
+        return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
-    def get_length_in_bits(self) -> int:
+    def length_in_bits(self) -> int:
         length_in_bits: int = 0
         _value: ModbusConstants = self
 
@@ -54,17 +53,16 @@ class ModbusConstants(PlcMessage):
 
         return length_in_bits
 
-    def static_parse(self, read_buffer: ReadBuffer, args):
-        return self.static_parse_context(read_buffer)
+    @staticmethod
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+        return ModbusConstants.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusConstants")
 
-        self.modbus_tcp_default_port: int = read_const_field(
-            "modbusTcpDefaultPort",
-            read_unsigned_int,
-            ModbusConstants.MODBUSTCPDEFAULTPORT,
+        MODBUS_TCP_DEFAULT_PORT: int = read_buffer.read_unsigned_short(
+            logical_name="modbusTcpDefaultPort"
         )
 
         read_buffer.pop_context("ModbusConstants")
@@ -86,10 +84,11 @@ class ModbusConstants(PlcMessage):
         return hash(self)
 
     def __str__(self) -> str:
-        write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
-        try:
-            write_buffer_box_based.writeSerializable(self)
-        except SerializationException as e:
-            raise RuntimeException(e)
+        pass
+        # write_buffer_box_based: WriteBufferBoxBased = WriteBufferBoxBased(True, True)
+        # try:
+        #    write_buffer_box_based.writeSerializable(self)
+        # except SerializationException as e:
+        #    raise PlcRuntimeException(e)
 
-        return "\n" + str(write_buffer_box_based.get_box()) + "\n"
+        # return "\n" + str(write_buffer_box_based.get_box()) + "\n"

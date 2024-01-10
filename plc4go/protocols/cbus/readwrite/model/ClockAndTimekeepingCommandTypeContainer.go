@@ -265,7 +265,7 @@ func ClockAndTimekeepingCommandTypeContainerParseWithBuffer(ctx context.Context,
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandTypeContainer")
 	}
 	if enum, ok := ClockAndTimekeepingCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ClockAndTimekeepingCommandTypeContainer")
 		return ClockAndTimekeepingCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -283,7 +283,7 @@ func (e ClockAndTimekeepingCommandTypeContainer) Serialize() ([]byte, error) {
 func (e ClockAndTimekeepingCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("ClockAndTimekeepingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("ClockAndTimekeepingCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -308,7 +308,7 @@ func (e ClockAndTimekeepingCommandTypeContainer) PLC4XEnumName() string {
 	case ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh:
 		return "MediaTransportControlCommandRequestRefresh"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ClockAndTimekeepingCommandTypeContainer) String() string {

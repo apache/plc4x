@@ -54,6 +54,7 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
             kpg = KeyPairGenerator.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("Security Algorithim is unsupported for certificate");
+            return null;
         }
         kpg.initialize(2048);
         KeyPair caKeys = kpg.generateKeyPair();
@@ -73,7 +74,7 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
         final Calendar calender = Calendar.getInstance();
         calender.add(Calendar.DATE, -1);
         Date startDate = calender.getTime();
-        calender.add(Calendar.DATE, 365*25);
+        calender.add(Calendar.DATE, 365 * 25);
         Date expiryDate = calender.getTime();
 
         KeyPairGenerator generator = null;
@@ -94,13 +95,13 @@ public class CertificateGenerator<PKCS10CertificateRequest> {
                 Locale.ENGLISH,
                 nameBuilder.build(),
                 subjectPublicKeyInfo
-                );
+            );
 
-            GeneralName[] gnArray = new GeneralName[] {new GeneralName(GeneralName.dNSName, InetAddress.getLocalHost().getHostName()), new GeneralName(GeneralName.uniformResourceIdentifier, APPURI)};
+            GeneralName[] gnArray = new GeneralName[]{new GeneralName(GeneralName.dNSName, InetAddress.getLocalHost().getHostName()), new GeneralName(GeneralName.uniformResourceIdentifier, APPURI)};
 
             certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(keyPair.getPublic()));
             certificateBuilder.addExtension(Extension.extendedKeyUsage, false, new ExtendedKeyUsage(new KeyPurposeId[]{KeyPurposeId.id_kp_clientAuth, KeyPurposeId.id_kp_serverAuth}));
-            certificateBuilder.addExtension(Extension.keyUsage,false, new KeyUsage(KeyUsage.dataEncipherment | KeyUsage.digitalSignature | KeyUsage.keyAgreement | KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.nonRepudiation));
+            certificateBuilder.addExtension(Extension.keyUsage, false, new KeyUsage(KeyUsage.dataEncipherment | KeyUsage.digitalSignature | KeyUsage.keyAgreement | KeyUsage.keyCertSign | KeyUsage.keyEncipherment | KeyUsage.nonRepudiation));
             certificateBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
 
             GeneralNames subjectAltNames = GeneralNames.getInstance(new DERSequence(gnArray));

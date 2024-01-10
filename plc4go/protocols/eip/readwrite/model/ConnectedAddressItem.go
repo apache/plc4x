@@ -210,7 +210,7 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
+			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -218,7 +218,7 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (connectionId)
 		connectionId := uint32(m.GetConnectionId())
-		_connectionIdErr := writeBuffer.WriteUint32("connectionId", 32, (connectionId))
+		_connectionIdErr := writeBuffer.WriteUint32("connectionId", 32, uint32((connectionId)))
 		if _connectionIdErr != nil {
 			return errors.Wrap(_connectionIdErr, "Error serializing 'connectionId' field")
 		}

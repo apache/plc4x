@@ -318,13 +318,13 @@ func AlarmMessageObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for AssociatedValues")
 	}
 	// Count array
-	AssociatedValues := make([]AssociatedValueType, numberOfValues)
+	AssociatedValues := make([]AssociatedValueType, utils.Max(numberOfValues, 0))
 	// This happens when the size is set conditional to 0
 	if len(AssociatedValues) == 0 {
 		AssociatedValues = nil
 	}
 	{
-		_numItems := uint16(numberOfValues)
+		_numItems := uint16(utils.Max(numberOfValues, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -376,14 +376,14 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 	}
 
 	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, 0x12)
+	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 	if _variableSpecErr != nil {
 		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 	}
 
 	// Simple Field (lengthSpec)
 	lengthSpec := uint8(m.GetLengthSpec())
-	_lengthSpecErr := writeBuffer.WriteUint8("lengthSpec", 8, (lengthSpec))
+	_lengthSpecErr := writeBuffer.WriteUint8("lengthSpec", 8, uint8((lengthSpec)))
 	if _lengthSpecErr != nil {
 		return errors.Wrap(_lengthSpecErr, "Error serializing 'lengthSpec' field")
 	}
@@ -402,14 +402,14 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 
 	// Simple Field (numberOfValues)
 	numberOfValues := uint8(m.GetNumberOfValues())
-	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, (numberOfValues))
+	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, uint8((numberOfValues)))
 	if _numberOfValuesErr != nil {
 		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
 	}
 
 	// Simple Field (eventId)
 	eventId := uint32(m.GetEventId())
-	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, (eventId))
+	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, uint32((eventId)))
 	if _eventIdErr != nil {
 		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
 	}

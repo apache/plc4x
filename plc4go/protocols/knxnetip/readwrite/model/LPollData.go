@@ -283,7 +283,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 4, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -291,7 +291,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (numberExpectedPollData)
 		numberExpectedPollData := uint8(m.GetNumberExpectedPollData())
-		_numberExpectedPollDataErr := writeBuffer.WriteUint8("numberExpectedPollData", 6, (numberExpectedPollData))
+		_numberExpectedPollDataErr := writeBuffer.WriteUint8("numberExpectedPollData", 6, uint8((numberExpectedPollData)))
 		if _numberExpectedPollDataErr != nil {
 			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}

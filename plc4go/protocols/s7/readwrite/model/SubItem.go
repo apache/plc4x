@@ -184,21 +184,21 @@ func (m *_SubItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 	// Simple Field (bytesToRead)
 	bytesToRead := uint8(m.GetBytesToRead())
-	_bytesToReadErr := writeBuffer.WriteUint8("bytesToRead", 8, (bytesToRead))
+	_bytesToReadErr := writeBuffer.WriteUint8("bytesToRead", 8, uint8((bytesToRead)))
 	if _bytesToReadErr != nil {
 		return errors.Wrap(_bytesToReadErr, "Error serializing 'bytesToRead' field")
 	}
 
 	// Simple Field (dbNumber)
 	dbNumber := uint16(m.GetDbNumber())
-	_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, (dbNumber))
+	_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
 	if _dbNumberErr != nil {
 		return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 	}
 
 	// Simple Field (startAddress)
 	startAddress := uint16(m.GetStartAddress())
-	_startAddressErr := writeBuffer.WriteUint16("startAddress", 16, (startAddress))
+	_startAddressErr := writeBuffer.WriteUint16("startAddress", 16, uint16((startAddress)))
 	if _startAddressErr != nil {
 		return errors.Wrap(_startAddressErr, "Error serializing 'startAddress' field")
 	}

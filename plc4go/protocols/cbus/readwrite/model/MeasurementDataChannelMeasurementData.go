@@ -317,14 +317,14 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (deviceId)
 		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, (deviceId))
+		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
 		if _deviceIdErr != nil {
 			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
 		}
 
 		// Simple Field (channel)
 		channel := uint8(m.GetChannel())
-		_channelErr := writeBuffer.WriteUint8("channel", 8, (channel))
+		_channelErr := writeBuffer.WriteUint8("channel", 8, uint8((channel)))
 		if _channelErr != nil {
 			return errors.Wrap(_channelErr, "Error serializing 'channel' field")
 		}
@@ -343,29 +343,33 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (multiplier)
 		multiplier := int8(m.GetMultiplier())
-		_multiplierErr := writeBuffer.WriteInt8("multiplier", 8, (multiplier))
+		_multiplierErr := writeBuffer.WriteInt8("multiplier", 8, int8((multiplier)))
 		if _multiplierErr != nil {
 			return errors.Wrap(_multiplierErr, "Error serializing 'multiplier' field")
 		}
 
 		// Simple Field (msb)
 		msb := uint8(m.GetMsb())
-		_msbErr := writeBuffer.WriteUint8("msb", 8, (msb))
+		_msbErr := writeBuffer.WriteUint8("msb", 8, uint8((msb)))
 		if _msbErr != nil {
 			return errors.Wrap(_msbErr, "Error serializing 'msb' field")
 		}
 
 		// Simple Field (lsb)
 		lsb := uint8(m.GetLsb())
-		_lsbErr := writeBuffer.WriteUint8("lsb", 8, (lsb))
+		_lsbErr := writeBuffer.WriteUint8("lsb", 8, uint8((lsb)))
 		if _lsbErr != nil {
 			return errors.Wrap(_lsbErr, "Error serializing 'lsb' field")
 		}
 		// Virtual field
+		rawValue := m.GetRawValue()
+		_ = rawValue
 		if _rawValueErr := writeBuffer.WriteVirtual(ctx, "rawValue", m.GetRawValue()); _rawValueErr != nil {
 			return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 		}
 		// Virtual field
+		value := m.GetValue()
+		_ = value
 		if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

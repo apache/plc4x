@@ -182,13 +182,13 @@ func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]uint8, valueLength)
+	data := make([]uint8, utils.Max(valueLength, 0))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		_numItems := uint16(valueLength)
+		_numItems := uint16(utils.Max(valueLength, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -260,7 +260,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (valueLength)
 	valueLength := uint16(m.GetValueLength())
-	_valueLengthErr := writeBuffer.WriteUint16("valueLength", 16, (valueLength))
+	_valueLengthErr := writeBuffer.WriteUint16("valueLength", 16, uint16((valueLength)))
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}
@@ -271,7 +271,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 	}
 	for _curItem, _element := range m.GetData() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}

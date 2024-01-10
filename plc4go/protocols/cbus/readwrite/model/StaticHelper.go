@@ -144,7 +144,7 @@ func readBytesFromHex(ctx context.Context, logicalName string, readBuffer utils.
 		readBuffer.Reset(readBuffer.GetPos() - 2)
 		rawBytes = rawBytes[:len(rawBytes)-1]
 	}
-	log.Trace().Msgf("%d bytes decoded", n)
+	log.Trace().Int("n", n).Msg("n bytes decoded")
 	return rawBytes, nil
 }
 
@@ -179,7 +179,7 @@ func writeToHex(ctx context.Context, logicalName string, writeBuffer utils.Write
 	// usually you use hex.Encode but we want the encoding in uppercase
 	//n := hex.Encode(hexBytes, wbbb.GetBytes())
 	n := encodeHexUpperCase(hexBytes, bytesToWrite)
-	log.Trace().Msgf("%d bytes encoded", n)
+	log.Trace().Int("n", n).Msg("n bytes encoded")
 	return writeBuffer.WriteByteArray(logicalName, hexBytes)
 }
 
@@ -195,7 +195,7 @@ func encodeHexUpperCase(dst, src []byte) int {
 	return len(src) * 2
 }
 
-func KnowsCALCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsCALCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -205,7 +205,7 @@ func KnowsCALCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuff
 	return CALCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsLightingCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsLightingCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -215,7 +215,7 @@ func KnowsLightingCommandTypeContainer(ctx context.Context, readBuffer utils.Rea
 	return LightingCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsSecurityCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsSecurityCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -225,7 +225,7 @@ func KnowsSecurityCommandTypeContainer(ctx context.Context, readBuffer utils.Rea
 	return SecurityCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsMeteringCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsMeteringCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -235,7 +235,7 @@ func KnowsMeteringCommandTypeContainer(ctx context.Context, readBuffer utils.Rea
 	return MeteringCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsTriggerControlCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsTriggerControlCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -245,7 +245,7 @@ func KnowsTriggerControlCommandTypeContainer(ctx context.Context, readBuffer uti
 	return TriggerControlCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsEnableControlCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsEnableControlCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -255,7 +255,7 @@ func KnowsEnableControlCommandTypeContainer(ctx context.Context, readBuffer util
 	return EnableControlCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsTemperatureBroadcastCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsTemperatureBroadcastCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -265,7 +265,7 @@ func KnowsTemperatureBroadcastCommandTypeContainer(ctx context.Context, readBuff
 	return TemperatureBroadcastCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsAccessControlCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsAccessControlCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -275,7 +275,7 @@ func KnowsAccessControlCommandTypeContainer(ctx context.Context, readBuffer util
 	return AccessControlCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsMediaTransportControlCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsMediaTransportControlCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -285,7 +285,7 @@ func KnowsMediaTransportControlCommandTypeContainer(ctx context.Context, readBuf
 	return MediaTransportControlCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsClockAndTimekeepingCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsClockAndTimekeepingCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -295,7 +295,7 @@ func KnowsClockAndTimekeepingCommandTypeContainer(ctx context.Context, readBuffe
 	return ClockAndTimekeepingCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsTelephonyCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsTelephonyCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -305,7 +305,7 @@ func KnowsTelephonyCommandTypeContainer(ctx context.Context, readBuffer utils.Re
 	return TelephonyCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsAirConditioningCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsAirConditioningCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -315,7 +315,7 @@ func KnowsAirConditioningCommandTypeContainer(ctx context.Context, readBuffer ut
 	return AirConditioningCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsMeasurementCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsMeasurementCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)
@@ -325,7 +325,7 @@ func KnowsMeasurementCommandTypeContainer(ctx context.Context, readBuffer utils.
 	return MeasurementCommandTypeContainerKnows(readUint8)
 }
 
-func KnowsErrorReportingCommandTypeContainer(ctx context.Context, readBuffer utils.ReadBuffer) bool {
+func KnowsErrorReportingCommandTypeContainer(_ context.Context, readBuffer utils.ReadBuffer) bool {
 	oldPos := readBuffer.GetPos()
 	defer readBuffer.Reset(oldPos)
 	readUint8, err := readBuffer.ReadUint8("", 8)

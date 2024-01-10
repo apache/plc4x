@@ -30,13 +30,14 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
+//go:generate go run ../../../tools/plc4xgenerator/gen.go -type=AdsSubscriptionHandle
 type AdsSubscriptionHandle struct {
 	subscriber spi.PlcSubscriber
 	tagName    string
 	directTag  DirectPlcTag
 	consumers  []apiModel.PlcSubscriptionEventConsumer
 
-	log      zerolog.Logger
+	log      zerolog.Logger       `ignore:"true"`
 	_options []options.WithOption // Used to pass them downstream
 }
 
@@ -68,7 +69,7 @@ func (t *AdsSubscriptionHandle) GetDirectTag() DirectPlcTag {
 func (t *AdsSubscriptionHandle) PublishPlcValue(value apiValues.PlcValue) {
 	event := NewSubscriptionEvent(
 		map[string]apiModel.PlcTag{t.tagName: t.directTag},
-		map[string]spiModel.SubscriptionType{t.tagName: spiModel.SubscriptionChangeOfState},
+		map[string]apiModel.PlcSubscriptionType{t.tagName: apiModel.SubscriptionChangeOfState},
 		map[string]time.Duration{t.tagName: time.Second},
 		map[string]apiModel.PlcResponseCode{t.tagName: apiModel.PlcResponseCode_OK},
 		map[string]apiValues.PlcValue{t.tagName: value},

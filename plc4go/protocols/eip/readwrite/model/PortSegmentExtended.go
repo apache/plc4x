@@ -241,18 +241,20 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (port)
 		port := uint8(m.GetPort())
-		_portErr := writeBuffer.WriteUint8("port", 4, (port))
+		_portErr := writeBuffer.WriteUint8("port", 4, uint8((port)))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		// Simple Field (linkAddressSize)
 		linkAddressSize := uint8(m.GetLinkAddressSize())
-		_linkAddressSizeErr := writeBuffer.WriteUint8("linkAddressSize", 8, (linkAddressSize))
+		_linkAddressSizeErr := writeBuffer.WriteUint8("linkAddressSize", 8, uint8((linkAddressSize)))
 		if _linkAddressSizeErr != nil {
 			return errors.Wrap(_linkAddressSizeErr, "Error serializing 'linkAddressSize' field")
 		}
 		// Virtual field
+		paddingByte := m.GetPaddingByte()
+		_ = paddingByte
 		if _paddingByteErr := writeBuffer.WriteVirtual(ctx, "paddingByte", m.GetPaddingByte()); _paddingByteErr != nil {
 			return errors.Wrap(_paddingByteErr, "Error serializing 'paddingByte' field")
 		}

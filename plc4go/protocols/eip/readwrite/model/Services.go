@@ -149,13 +149,13 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
 	}
 	// Count array
-	offsets := make([]uint16, serviceNb)
+	offsets := make([]uint16, utils.Max(serviceNb, 0))
 	// This happens when the size is set conditional to 0
 	if len(offsets) == 0 {
 		offsets = nil
 	}
 	{
-		_numItems := uint16(serviceNb)
+		_numItems := uint16(utils.Max(serviceNb, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -176,13 +176,13 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 		return nil, errors.Wrap(pullErr, "Error pulling for services")
 	}
 	// Count array
-	services := make([]CipService, serviceNb)
+	services := make([]CipService, utils.Max(serviceNb, 0))
 	// This happens when the size is set conditional to 0
 	if len(services) == 0 {
 		services = nil
 	}
 	{
-		_numItems := uint16(serviceNb)
+		_numItems := uint16(utils.Max(serviceNb, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -229,7 +229,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 	// Implicit Field (serviceNb) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	serviceNb := uint16(uint16(len(m.GetOffsets())))
-	_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, (serviceNb))
+	_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
 	if _serviceNbErr != nil {
 		return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 	}
@@ -240,7 +240,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	}
 	for _curItem, _element := range m.GetOffsets() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint16("", 16, _element)
+		_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
 		}

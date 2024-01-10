@@ -18,33 +18,40 @@
  */
 package org.apache.plc4x.java.spi.connection;
 
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.*;
-
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
+
 public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implements PlcDriver {
 
+    public static final String PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT = "PLC4X_FORCE_FIRE_DISCOVER_EVENT";
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE = "PLC4X_FORCE_AWAIT_SETUP_COMPLETE";
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE = "PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE";
     public static final String PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE = "PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE";
 
-    private static final Pattern URI_PATTERN = Pattern.compile(
+    public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
     protected abstract Class<? extends Configuration> getConfigurationType();
+
+    protected boolean canPing() {
+        return false;
+    }
 
     protected boolean canRead() {
         return false;
@@ -59,6 +66,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     }
 
     protected boolean canBrowse() {
+        return false;
+    }
+
+    protected boolean fireDiscoverEvent() {
         return false;
     }
 
@@ -101,15 +112,16 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     @Override
     public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
+        ConfigurationFactory configurationFactory = new ConfigurationFactory();
         // Split up the connection string into its individual segments.
         Matcher matcher = URI_PATTERN.matcher(connectionString);
         if (!matcher.matches()) {
             throw new PlcConnectionException(
-                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-address}(?{parameter-string)?'");
+                "Connection string doesn't match the format '{protocol-code}:({transport-code})?//{transport-config}(?{parameter-string)?'");
         }
         final String protocolCode = matcher.group("protocolCode");
-        final String transportCode = (matcher.group("transportCode") != null) ?
-            matcher.group("transportCode") : getDefaultTransport();
+        String transportCodeMatch = matcher.group("transportCode");
+        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransport();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
 
@@ -121,8 +133,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         // Create the configuration object.
-        Configuration configuration = new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), paramString);
+        Configuration configuration = configurationFactory
+            .createConfiguration(getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -141,12 +153,28 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             throw new PlcConnectionException("Unsupported transport " + transportCode);
         }
 
-        // Inject the configuration into the transport.
-        configure(configuration, transport);
+        // Find out the type of the transport configuration.
+        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        if(this instanceof TransportConfigurationTypeProvider) {
+            TransportConfigurationTypeProvider transportConfigurationTypeProvider =
+                (TransportConfigurationTypeProvider) this;
+            Class<? extends TransportConfiguration> driverTransportConfigurationType =
+                transportConfigurationTypeProvider.getTransportConfigurationType(transportCode);
+            if(driverTransportConfigurationType != null) {
+                transportConfigurationType = driverTransportConfigurationType;
+            }
+        }
+        // Use the transport configuration type to actually configure the transport instance.
+        if(transportConfigurationType != null) {
+            Configuration transportConfiguration = configurationFactory
+                .createPrefixedConfiguration(transportConfigurationType,
+                    transportCode, protocolCode, transportCode, transportConfig, paramString);
+            configure(transportConfiguration, transport);
+        }
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
-        if(channelFactory == null) {
+        if (channelFactory == null) {
             throw new PlcConnectionException("Unable to get channel factory from url " + transportConfig);
         }
         configure(configuration, channelFactory);
@@ -154,30 +182,37 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
             awaitSetupComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE));
         }
 
         // Make the "await disconnect complete" overridable via system property.
         boolean awaitDisconnectComplete = awaitDisconnectComplete();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE) != null) {
             awaitDisconnectComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCONNECT_COMPLETE));
         }
 
         // Make the "await disconnect complete" overridable via system property.
         boolean awaitDiscoverComplete = awaitDiscoverComplete();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
+        if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,
@@ -185,6 +220,5 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             getOptimizer(),
             authentication);
     }
-
 
 }

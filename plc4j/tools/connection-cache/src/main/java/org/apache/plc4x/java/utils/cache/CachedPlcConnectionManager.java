@@ -58,6 +58,25 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
         this.connectionContainers = new HashMap<>();
     }
 
+    /**
+     * @return set of connection-urls the CachedPlcConnectionManager is currently managing.
+     */
+    public Set<String> getCachedConnections() {
+        synchronized (connectionContainers) {
+            return connectionContainers.keySet();
+        }
+    }
+
+    /**
+     * Removes a given connection from the cache (Should only be used in order to remove somehow broken connections).
+     * @param url url of the connection that should be removed.
+     */
+    public void removeCachedConnection(String url) {
+        synchronized (connectionContainers) {
+            connectionContainers.remove(url);
+        }
+    }
+
     public PlcConnection getConnection(String url) throws PlcConnectionException {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {

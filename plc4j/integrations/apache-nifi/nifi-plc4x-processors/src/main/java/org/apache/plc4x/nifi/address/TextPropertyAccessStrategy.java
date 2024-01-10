@@ -17,30 +17,54 @@
 
 package org.apache.plc4x.nifi.address;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.nifi.components.AllowableValue;
+import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.exception.ProcessException;
-
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TextPropertyAccessStrategy implements AddressesAccessStrategy{
-    private Map<String,String> extractAddressesFromText(String input) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
+public class TextPropertyAccessStrategy extends BaseAccessStrategy {
 
-        return mapper.readValue(input, Map.class);
+    @Override
+    public AllowableValue getAllowableValue() {
+        return AddressesAccessUtils.ADDRESS_TEXT;
     }
 
     @Override
-    public Map<String, String> extractAddresses(final ProcessContext context, final FlowFile flowFile) throws ProcessException{
+    public List<PropertyDescriptor> getPropertyDescriptors() {
+        return List.of(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
+    }
+
+    @Override
+    public Map<String, String> extractAddressesFromResources(final ProcessContext context, final FlowFile flowFile) throws ProcessException{
         try {
             return extractAddressesFromText(context.getProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY).evaluateAttributeExpressions(flowFile).getValue());
         } catch (Exception e) {
             throw new ProcessException(e.toString());
         }
-        
+    }
+
+    private static Map<String,String> extractAddressesFromText(String input) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+
+        return mapper.readerForMapOf(String.class).readValue(input);
+    }
+
+    public static class TagValidator extends BaseAccessStrategy.TagValidator {
+        public TagValidator(DefaultPlcDriverManager manager) {
+            super(manager);
+        }
+
+        @Override
+        protected Collection<String> getTags(String input) throws Exception {
+            return TextPropertyAccessStrategy.extractAddressesFromText(input).values();
+        } 
     }
 }

@@ -187,7 +187,7 @@ func (m *_ModbusPDUReadExceptionStatusResponse) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (value)
 		value := uint8(m.GetValue())
-		_valueErr := writeBuffer.WriteUint8("value", 8, (value))
+		_valueErr := writeBuffer.WriteUint8("value", 8, uint8((value)))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

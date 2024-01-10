@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.modbus;
 
+import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 import org.junit.jupiter.api.Disabled;
 
@@ -71,21 +72,21 @@ public class ManualModbusDriverTest extends ManualTest {
 
     public static void main(String[] args) throws Exception {
         ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://192.168.23.30");
-        test.addTestCase("holding-register:1:BOOL", true); // 0001
-        test.addTestCase("holding-register:2:BYTE", Arrays.asList(false, false, true, false, true, false, true, false)); // 2A
-        test.addTestCase("holding-register:3:WORD", Arrays.asList(true, false, true, false, false, true, false, true, true, false, true, true, true, false, false, false)); // A5B8
-        test.addTestCase("holding-register:4:DWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8
-        test.addTestCase("holding-register:6:LWORD", Arrays.asList(true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false, true, true, true, true, true, true, false, false, true, true, false, true, true, true, true, false, true, false, false, false, true, false, false, false, true, false, true, true, true, false, false, false)); // FCDE 88B8 FCDE 88B8
-        test.addTestCase("holding-register:10:SINT", -42); // D6
-        test.addTestCase("holding-register:11:USINT", 42); // 2A
-        test.addTestCase("holding-register:12:INT", -2424); // F688
-        test.addTestCase("holding-register:13:UINT", 42424); // A5B8
-        test.addTestCase("holding-register:14:DINT", -242442424); // F18C 9F48
-        test.addTestCase("holding-register:16:UDINT", 4242442424L);// FCDE 88B8
-        test.addTestCase("holding-register:18:LINT", -4242442424242424242L);// C51F D117 B2FB B64E
-        test.addTestCase("holding-register:22:ULINT", 4242442424242424242L);// 3AE0 2EE8 4D04 49B2
-        test.addTestCase("holding-register:26:REAL", 3.141593F);// 4049 0FDC
-        test.addTestCase("holding-register:28:LREAL", 2.71828182846D); // 4005 BF0A 8B14 5FCF
+        test.addTestCase("holding-register:1:BOOL", new PlcBOOL(true)); // 0001
+        test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 2A
+        test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8
+        test.addTestCase("holding-register:4:DWORD", new PlcDWORD(4242442424L)); // FCDE 88B8
+//        test.addTestCase("holding-register:6:LWORD", new PlcLWORD(4242442424242424242L)); // FCDE 88B8 FCDE 88B8
+        test.addTestCase("holding-register:10:SINT", new PlcSINT(-42)); // D6
+        test.addTestCase("holding-register:11:USINT", new PlcUSINT(42)); // 2A
+        test.addTestCase("holding-register:12:INT", new PlcINT(-2424)); // F688
+        test.addTestCase("holding-register:13:UINT", new PlcUINT(42424)); // A5B8
+        test.addTestCase("holding-register:14:DINT", new PlcDINT(-242442424)); // F18C 9F48
+        test.addTestCase("holding-register:16:UDINT", new PlcUDINT(4242442424L));// FCDE 88B8
+        test.addTestCase("holding-register:18:LINT", new PlcLINT(-4242442424242424242L));// C51F D117 B2FB B64E
+        test.addTestCase("holding-register:22:ULINT", new PlcULINT(4242442424242424242L));// 3AE0 2EE8 4D04 49B2
+        test.addTestCase("holding-register:26:REAL", new PlcREAL(3.141593F));// 4049 0FDC
+        test.addTestCase("holding-register:28:LREAL", new PlcLREAL(2.71828182846D)); // 4005 BF0A 8B14 5FCF
         //test.addTestCase("holding-register:32:TIME", "PT1.234S"); // 04D2
         //test.addTestCase("holding-register::LTIME", "PT24015H23M12.034002044S");
         //test.addTestCase("holding-register::DATE", "1998-03-28");

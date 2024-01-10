@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataNotificationThreshold) SerializeWithWriteBuffer(c
 			return errors.Wrap(_notificationThresholdErr, "Error serializing 'notificationThreshold' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

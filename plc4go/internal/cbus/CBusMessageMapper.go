@@ -479,7 +479,7 @@ func MapEncodedReply(localLog zerolog.Logger, transaction transactions.RequestTr
 		default:
 			wbpcb := spiValues.NewWriteBufferPlcValueBased()
 			if err := calData.SerializeWithWriteBuffer(context.Background(), wbpcb); err != nil {
-				localLog.Warn().Err(err).Msgf("Unmapped cal data type %T. Returning raw to string", calData)
+				localLog.Warn().Err(err).Type("calData", calData).Msg("Unmapped cal data type %T. Returning raw to string")
 				addPlcValue(tagName, spiValues.NewPlcSTRING(fmt.Sprintf("%s", calData)))
 			} else {
 				addPlcValue(tagName, wbpcb.GetPlcValue())

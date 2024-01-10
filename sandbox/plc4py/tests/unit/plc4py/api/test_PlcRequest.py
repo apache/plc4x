@@ -21,15 +21,15 @@ from typing import cast
 import pytest
 
 from plc4py.api.PlcConnection import PlcConnection
-from plc4py.api.messages.PlcField import PlcField
+from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcRequest import (
-    PlcFieldRequest,
+    PlcTagRequest,
 )
 from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
-from plc4py.spi.values.PlcBOOL import PlcBOOL
-from plc4py.spi.values.PlcINT import PlcINT
+from plc4py.spi.values.PlcValues import PlcBOOL
+from plc4py.spi.values.PlcValues import PlcINT
 from plc4py.drivers.mock.MockConnection import MockConnection
 
 
@@ -44,8 +44,8 @@ def test_read_request_builder_empty_request(mocker) -> None:
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
-        request: PlcFieldRequest = builder.build()
-    assert len(request.field_names) == 0
+        request: PlcTagRequest = builder.build()
+    assert len(request.tag_names) == 0
 
 
 def test_read_request_builder_non_empty_request(mocker) -> None:
@@ -59,12 +59,12 @@ def test_read_request_builder_non_empty_request(mocker) -> None:
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
-        builder.add_item("1:BOOL")
-        request: PlcFieldRequest = builder.build()
+        builder.add_item("Random Tag", "1:BOOL")
+        request: PlcTagRequest = builder.build()
 
     # verify that request has one field
-    assert request.field_names == ["1:BOOL"]
-    assert len(request.field_names) == 1
+    assert request.tag_names == ["Random Tag"]
+    assert len(request.tag_names) == 1
 
 
 @pytest.mark.asyncio
@@ -79,8 +79,8 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
-        builder.add_item("1:BOOL")
-        request: PlcFieldRequest = builder.build()
+        builder.add_item("Random Tag", "1:BOOL")
+        request: PlcTagRequest = builder.build()
         response = await connection.execute(request)
 
     # verify that request has one field
@@ -95,13 +95,13 @@ async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> 
     :return:
     """
     connection: PlcConnection = await MockConnection.create("mock://localhost")
-    field = "1:BOOL"
+    tag = "1:BOOL"
 
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
-        builder.add_item(field)
-        request: PlcFieldRequest = builder.build()
+        builder.add_item("Random Tag", tag)
+        request: PlcTagRequest = builder.build()
         response: PlcReadResponse = cast(
             PlcReadResponse, await connection.execute(request)
         )
@@ -109,7 +109,7 @@ async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> 
     # verify that request has one field
     assert response.code == PlcResponseCode.OK
 
-    value = response.values[field][0].value
+    value = response.values["Random Tag"][0].value
     assert not value.get_bool()
 
 
@@ -121,13 +121,13 @@ async def test_read_request_builder_non_empty_request_connected_int(mocker) -> N
     :return:
     """
     connection: PlcConnection = await MockConnection.create("mock://localhost")
-    field = "1:INT"
+    tag = "1:INT"
 
     # the connection function is supposed to support context manager
     # so using it in a with statement should result in close being called on the connection
     with connection.read_request_builder() as builder:
-        builder.add_item(field)
-        request: PlcFieldRequest = builder.build()
+        builder.add_item("Random Tag", tag)
+        request: PlcTagRequest = builder.build()
         response: PlcReadResponse = cast(
             PlcReadResponse, await connection.execute(request)
         )
@@ -135,7 +135,7 @@ async def test_read_request_builder_non_empty_request_connected_int(mocker) -> N
     # verify that request has one field
     assert response.code == PlcResponseCode.OK
 
-    value = response.values[field][0].value
+    value = response.values["Random Tag"][0].value
     assert value.get_int() == 0
 
 
@@ -147,7 +147,6 @@ def test_read_response_boolean_response(mocker) -> None:
     """
     response = PlcReadResponse(
         PlcResponseCode.OK,
-        [PlcField("1:BOOL")],
         {"1:BOOL": [ResponseItem(PlcResponseCode.OK, PlcBOOL(True))]},
     )
     assert response.get_boolean("1:BOOL")
@@ -162,7 +161,6 @@ def test_read_response_int_response(mocker) -> None:
     """
     response = PlcReadResponse(
         PlcResponseCode.OK,
-        [PlcField("1:INT")],
         {"1:INT": [ResponseItem(PlcResponseCode.OK, PlcINT(10))]},
     )
     assert response.get_int("1:INT") == 10

@@ -18,6 +18,12 @@
  */
 package org.apache.plc4x.java.s7.events;
 
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -27,41 +33,38 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.PlcValue;
-import org.apache.plc4x.java.s7.readwrite.S7ParameterModeTransition;
 
-public class S7ModeEvent  implements S7Event {
+public class S7ModeEvent implements S7Event {
 
-   
-    public enum Fields{
+
+    public enum Fields {
         TIMESTAMP,
-        TYPE,        
+        TYPE,
         MAP,
         METHOD,
         FUNCTION,
         CURRENT_MODE
-    }    
-    
+    }
+
     private final Instant timeStamp;
     private final Map<String, Object> map;
-    
+
     public S7ModeEvent(S7ParameterModeTransition parameter) {
-      this.map = new HashMap();
-      map.put(Fields.TYPE.name(), "MODE");
-      map.put(Fields.METHOD.name(), parameter.getMethod());
-      map.put(Fields.FUNCTION.name(), parameter.getCpuFunctionType());
-      map.put(Fields.CURRENT_MODE.name(), parameter.getCurrentMode());
-      this.timeStamp = Instant.now();
-      map.put(Fields.TIMESTAMP .name(), this.timeStamp );
-    }    
-    
-    
+        this.map = new HashMap<>();
+        map.put(Fields.TYPE.name(), "MODE");
+        map.put(Fields.METHOD.name(), parameter.getMethod());
+        map.put(Fields.FUNCTION.name(), parameter.getCpuFunctionType());
+        map.put(Fields.CURRENT_MODE.name(), parameter.getCurrentMode());
+        this.timeStamp = Instant.now();
+        map.put(Fields.TIMESTAMP.name(), this.timeStamp);
+        // TODO: Is this really correct, to put the map itself in itself?
+        map.put(Fields.MAP.name(), map);
+    }
+
+
     @Override
     public Map<String, Object> getMap() {
-         return map;
+        return map;
     }
 
     @Override
@@ -443,7 +446,6 @@ public class S7ModeEvent  implements S7Event {
     public PlcResponseCode getResponseCode(String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
 
-    
+
 }

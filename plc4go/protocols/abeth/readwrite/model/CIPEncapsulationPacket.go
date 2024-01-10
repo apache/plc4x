@@ -210,13 +210,13 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for senderContext")
 	}
 	// Count array
-	senderContext := make([]uint8, uint16(8))
+	senderContext := make([]uint8, utils.Max(uint16(8), 0))
 	// This happens when the size is set conditional to 0
 	if len(senderContext) == 0 {
 		senderContext = nil
 	}
 	{
-		_numItems := uint16(uint16(8))
+		_numItems := uint16(utils.Max(uint16(8), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -306,7 +306,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType := uint16(child.GetCommandType())
-	_commandTypeErr := writeBuffer.WriteUint16("commandType", 16, (commandType))
+	_commandTypeErr := writeBuffer.WriteUint16("commandType", 16, uint16((commandType)))
 
 	if _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
@@ -314,21 +314,21 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 
 	// Implicit Field (packetLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(28)))
-	_packetLenErr := writeBuffer.WriteUint16("packetLen", 16, (packetLen))
+	_packetLenErr := writeBuffer.WriteUint16("packetLen", 16, uint16((packetLen)))
 	if _packetLenErr != nil {
 		return errors.Wrap(_packetLenErr, "Error serializing 'packetLen' field")
 	}
 
 	// Simple Field (sessionHandle)
 	sessionHandle := uint32(m.GetSessionHandle())
-	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, (sessionHandle))
+	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
 	if _sessionHandleErr != nil {
 		return errors.Wrap(_sessionHandleErr, "Error serializing 'sessionHandle' field")
 	}
 
 	// Simple Field (status)
 	status := uint32(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint32("status", 32, (status))
+	_statusErr := writeBuffer.WriteUint32("status", 32, uint32((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
@@ -339,7 +339,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 	}
 	for _curItem, _element := range m.GetSenderContext() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
 		}
@@ -350,7 +350,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 
 	// Simple Field (options)
 	options := uint32(m.GetOptions())
-	_optionsErr := writeBuffer.WriteUint32("options", 32, (options))
+	_optionsErr := writeBuffer.WriteUint32("options", 32, uint32((options)))
 	if _optionsErr != nil {
 		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
 	}
@@ -365,7 +365,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteUint32("reserved", 32, reserved)
+		_err := writeBuffer.WriteUint32("reserved", 32, uint32(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

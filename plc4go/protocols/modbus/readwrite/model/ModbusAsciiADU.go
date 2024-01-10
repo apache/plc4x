@@ -225,7 +225,7 @@ func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (address)
 		address := uint8(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint8("address", 8, (address))
+		_addressErr := writeBuffer.WriteUint8("address", 8, uint8((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
@@ -248,7 +248,7 @@ func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Checksum calculation failed")
 			}
-			_checksumWriteErr := writeBuffer.WriteUint8("checksum", 8, (_checksum))
+			_checksumWriteErr := writeBuffer.WriteUint8("checksum", 8, uint8((_checksum)))
 			if _checksumWriteErr != nil {
 				return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
 			}

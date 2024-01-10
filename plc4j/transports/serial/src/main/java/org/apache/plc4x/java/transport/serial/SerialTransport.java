@@ -20,6 +20,7 @@ package org.apache.plc4x.java.transport.serial;
 
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 
 public class SerialTransport implements Transport {
 
@@ -37,6 +38,11 @@ public class SerialTransport implements Transport {
     public ChannelFactory createChannelFactory(String transportConfig) {
         SerialSocketAddress socketAddress = new SerialSocketAddress(transportConfig);
         return new SerialChannelFactory(socketAddress);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigType() {
+        return DefaultSerialTransportConfiguration.class;
     }
 
 }

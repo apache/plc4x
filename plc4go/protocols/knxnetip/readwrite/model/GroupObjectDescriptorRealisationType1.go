@@ -309,7 +309,7 @@ func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(ctx co
 
 	// Simple Field (dataPointer)
 	dataPointer := uint8(m.GetDataPointer())
-	_dataPointerErr := writeBuffer.WriteUint8("dataPointer", 8, (dataPointer))
+	_dataPointerErr := writeBuffer.WriteUint8("dataPointer", 8, uint8((dataPointer)))
 	if _dataPointerErr != nil {
 		return errors.Wrap(_dataPointerErr, "Error serializing 'dataPointer' field")
 	}
@@ -324,7 +324,7 @@ func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(ctx co
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 1, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

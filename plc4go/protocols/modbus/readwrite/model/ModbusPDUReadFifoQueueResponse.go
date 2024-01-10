@@ -174,13 +174,13 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for fifoValue")
 	}
 	// Count array
-	fifoValue := make([]uint16, fifoCount)
+	fifoValue := make([]uint16, utils.Max(fifoCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(fifoValue) == 0 {
 		fifoValue = nil
 	}
 	{
-		_numItems := uint16(fifoCount)
+		_numItems := uint16(utils.Max(fifoCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -229,14 +229,14 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16((uint16(uint16(len(m.GetFifoValue()))) * uint16(uint16(2)))) + uint16(uint16(2)))
-		_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, (byteCount))
+		_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, uint16((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16((uint16(uint16(len(m.GetFifoValue()))) * uint16(uint16(2)))) / uint16(uint16(2)))
-		_fifoCountErr := writeBuffer.WriteUint16("fifoCount", 16, (fifoCount))
+		_fifoCountErr := writeBuffer.WriteUint16("fifoCount", 16, uint16((fifoCount)))
 		if _fifoCountErr != nil {
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
 		}
@@ -247,7 +247,7 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 		}
 		for _curItem, _element := range m.GetFifoValue() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, _element)
+			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 			}

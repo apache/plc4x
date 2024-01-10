@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataLoopAction) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_actionErr, "Error serializing 'action' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

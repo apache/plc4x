@@ -25,17 +25,20 @@ import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
 import org.apache.plc4x.java.modbus.rtu.protocol.ModbusRtuProtocolLogic;
+import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.ToIntFunction;
 
-public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
+public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -73,6 +76,11 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     @Override
     protected boolean awaitDisconnectComplete() {
         return false;
+    }
+
+    @Override
+    protected boolean canPing() {
+        return true;
     }
 
     @Override
@@ -125,6 +133,15 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     @Override
     public ModbusTag prepareTag(String tagAddress){
         return ModbusTag.of(tagAddress);
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return ModbusTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

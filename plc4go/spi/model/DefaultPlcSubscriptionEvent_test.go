@@ -294,7 +294,7 @@ func TestDefaultPlcSubscriptionEvent_GetType(t *testing.T) {
 		name   string
 		fields fields
 		args   args
-		want   SubscriptionType
+		want   apiModel.PlcSubscriptionType
 	}{
 		{
 			name: "get it (not found)",
@@ -304,11 +304,11 @@ func TestDefaultPlcSubscriptionEvent_GetType(t *testing.T) {
 			name: "get it",
 			fields: fields{
 				values: map[string]*DefaultPlcSubscriptionEventItem{
-					"da field": {subscriptionType: SubscriptionChangeOfState},
+					"da field": {subscriptionType: apiModel.SubscriptionChangeOfState},
 				},
 			},
 			args: args{name: "da field"},
-			want: SubscriptionChangeOfState,
+			want: apiModel.SubscriptionChangeOfState,
 		},
 	}
 	for _, tt := range tests {
@@ -392,7 +392,7 @@ func TestNewDefaultPlcSubscriptionEvent(t *testing.T) {
 	type args struct {
 		defaultPlcSubscriptionEventRequirements DefaultPlcSubscriptionEventRequirements
 		tags                                    map[string]apiModel.PlcTag
-		types                                   map[string]SubscriptionType
+		types                                   map[string]apiModel.PlcSubscriptionType
 		intervals                               map[string]time.Duration
 		responseCodes                           map[string]apiModel.PlcResponseCode
 		values                                  map[string]apiValues.PlcValue

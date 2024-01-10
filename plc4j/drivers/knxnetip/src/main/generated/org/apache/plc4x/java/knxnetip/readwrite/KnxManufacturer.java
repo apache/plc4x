@@ -531,8 +531,8 @@ public enum KnxManufacturer {
   M_OSRAM((int) 464, (int) 519, (String) "OSRAM"),
   M_LEBENOR((int) 465, (int) 520, (String) "Lebenor"),
   M_AUTOMANENG((int) 466, (int) 521, (String) "automaneng"),
-  M_HONEYWELL_AUTOMATION_SOLUTION_CONTROLCHINA(
-      (int) 467, (int) 522, (String) "Honeywell Automation Solution control(China)"),
+  M_HONEYWELL_AUTOMATION_CONTROL_SOLUTIONSCHINACOLTD(
+      (int) 467, (int) 522, (String) "Honeywell Automation Control Solutions(China)CoLtd"),
   M_HANGZHOU_BINTHEN_INTELLIGENCE_TECHNOLOGY_CO__LTD(
       (int) 468, (int) 523, (String) "Hangzhou binthen Intelligence Technology Co.,Ltd"),
   M_ETA_HEIZTECHNIK((int) 469, (int) 524, (String) "ETA Heiztechnik"),
@@ -656,7 +656,7 @@ public enum KnxManufacturer {
   M_VIEGA_GMBH_AND_CO__KG((int) 572, (int) 628, (String) "Viega GmbH & Co. KG"),
   M_FREDON_DIGITAL_BUILDINGS((int) 573, (int) 629, (String) "Fredon Digital Buildings"),
   M_HELUKABEL_THAILAND_CO__LTD_((int) 574, (int) 630, (String) "Helukabel (Thailand) Co.,Ltd."),
-  M_ACE_TECHNOLOGY((int) 575, (int) 631, (String) "ACE Technology"),
+  M_SICS((int) 575, (int) 631, (String) "SICS"),
   M_MEX_ELECTRIC_TECHNOLOGY_SHANGHAI_CO___LTD(
       (int) 576, (int) 632, (String) "MEX Electric Technology (Shanghai) Co., Ltd"),
   M_SUMAMO((int) 577, (int) 633, (String) "SUMAMO"),
@@ -744,9 +744,21 @@ public enum KnxManufacturer {
       (int) 645, (int) 703, (String) "NINGBO QIYUAN LIGHTING TECH CO.,LTD"),
   M_NS_TOUCH((int) 646, (int) 704, (String) "NS Touch"),
   M_ROOMIO((int) 647, (int) 705, (String) "ROOMIO"),
-  M_ABB___RESERVED((int) 648, (int) 43954, (String) "ABB - reserved"),
+  M_ATOUCH((int) 648, (int) 706, (String) "Atouch"),
+  M_PANASONIC_LIFE_SOLUTIONS_INDIA_PVT__LTD(
+      (int) 649, (int) 707, (String) "Panasonic Life Solutions India Pvt. Ltd"),
+  M_WALLYONS((int) 650, (int) 708, (String) "WallYons"),
+  M_ZIMMEX((int) 651, (int) 709, (String) "Zimmex"),
+  M_RHOMBUS_EUROPE((int) 652, (int) 710, (String) "Rhombus Europe"),
+  M_TURING_THINK((int) 653, (int) 711, (String) "Turing-Think"),
+  M_MICHOI((int) 654, (int) 712, (String) "Michoi"),
+  M_CAV_AUDIOGUANGZHOUCO__LTD((int) 655, (int) 713, (String) "CAV AUDIO(GUANGZHOU)CO.,LTD"),
+  M_HELKAMA_BICA_OY((int) 656, (int) 714, (String) "Helkama Bica Oy"),
+  M_MODULYTE((int) 657, (int) 715, (String) "ModuLyte"),
+  M_ABB___RESERVED((int) 658, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 649, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 659, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

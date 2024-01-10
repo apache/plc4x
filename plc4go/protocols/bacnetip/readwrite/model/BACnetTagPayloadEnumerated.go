@@ -181,6 +181,8 @@ func (m *_BACnetTagPayloadEnumerated) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 	// Virtual field
+	actualValue := m.GetActualValue()
+	_ = actualValue
 	if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 		return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 	}

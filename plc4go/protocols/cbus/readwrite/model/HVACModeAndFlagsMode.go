@@ -132,7 +132,7 @@ func HVACModeAndFlagsModeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return 0, errors.Wrap(err, "error reading HVACModeAndFlagsMode")
 	}
 	if enum, ok := HVACModeAndFlagsModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACModeAndFlagsMode")
 		return HVACModeAndFlagsMode(val), nil
 	} else {
 		return enum, nil
@@ -150,7 +150,7 @@ func (e HVACModeAndFlagsMode) Serialize() ([]byte, error) {
 func (e HVACModeAndFlagsMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("HVACModeAndFlagsMode", 3, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("HVACModeAndFlagsMode", 3, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -167,7 +167,7 @@ func (e HVACModeAndFlagsMode) PLC4XEnumName() string {
 	case HVACModeAndFlagsMode_VENT_FAN_ONLY:
 		return "VENT_FAN_ONLY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACModeAndFlagsMode) String() string {

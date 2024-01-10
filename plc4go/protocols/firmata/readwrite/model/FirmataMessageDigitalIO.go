@@ -165,13 +165,13 @@ func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
 	// Count array
-	data := make([]int8, uint16(2))
+	data := make([]int8, utils.Max(uint16(2), 0))
 	// This happens when the size is set conditional to 0
 	if len(data) == 0 {
 		data = nil
 	}
 	{
-		_numItems := uint16(uint16(2))
+		_numItems := uint16(utils.Max(uint16(2), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -223,7 +223,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (pinBlock)
 		pinBlock := uint8(m.GetPinBlock())
-		_pinBlockErr := writeBuffer.WriteUint8("pinBlock", 4, (pinBlock))
+		_pinBlockErr := writeBuffer.WriteUint8("pinBlock", 4, uint8((pinBlock)))
 		if _pinBlockErr != nil {
 			return errors.Wrap(_pinBlockErr, "Error serializing 'pinBlock' field")
 		}
@@ -234,7 +234,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteInt8("", 8, _element)
+			_elementErr := writeBuffer.WriteInt8("", 8, int8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

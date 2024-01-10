@@ -50,6 +50,12 @@ type TransportInstance struct {
 
 func NewTransportInstance(transport *Transport, _options ...options.WithOption) *TransportInstance {
 	customLogger := options.ExtractCustomLoggerOrDefaultToGlobal(_options...)
+	shouldTrace, found := ExtractTraceTransportInstance(_options...)
+	if found && !shouldTrace {
+		if customLogger.GetLevel() < zerolog.InfoLevel {
+			customLogger = customLogger.Level(zerolog.InfoLevel)
+		}
+	}
 	return &TransportInstance{
 		readBuffer:  []byte{},
 		writeBuffer: []byte{},
@@ -57,6 +63,27 @@ func NewTransportInstance(transport *Transport, _options ...options.WithOption) 
 
 		log: customLogger,
 	}
+}
+
+// WithTraceTransportInstance enables tracing of the test transport instance
+func WithTraceTransportInstance(trace bool) options.WithOption {
+	return withTraceTransportInstance{trace: trace}
+}
+
+// ExtractTraceTransportInstance to extract the flag indicating that transport instance should be traced
+func ExtractTraceTransportInstance(options ...options.WithOption) (trace bool, found bool) {
+	for _, option := range options {
+		switch option := option.(type) {
+		case withTraceTransportInstance:
+			trace, found = option.trace, true
+		}
+	}
+	return
+}
+
+type withTraceTransportInstance struct {
+	options.Option
+	trace bool
 }
 
 func (m *TransportInstance) Connect() error {
@@ -97,7 +124,7 @@ func (m *TransportInstance) GetNumBytesAvailableInBuffer() (uint32, error) {
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
 	readableBytes := len(m.readBuffer)
-	m.log.Trace().Msgf("return number of readable bytes %d", readableBytes)
+	m.log.Trace().Int("readableBytes", readableBytes).Msg("return number of readable bytes")
 	return uint32(readableBytes), nil
 }
 
@@ -108,7 +135,7 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 	m.log.Trace().Msg("Fill the buffer")
 	nBytes := uint32(1)
 	for {
-		m.log.Trace().Msgf("Peeking %d bytes", nBytes)
+		m.log.Trace().Uint32("nBytes", nBytes).Msg("Peeking bytes")
 		_bytes, err := m.PeekReadableBytes(nBytes)
 		if err != nil {
 			return errors.Wrap(err, "Error while peeking")
@@ -116,7 +143,7 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 		m.dataMutex.RLock()
 		reader := bufio.NewReader(bytes.NewReader(m.readBuffer))
 		if keepGoing := until(uint(nBytes-1), _bytes[len(_bytes)-1], reader); !keepGoing {
-			m.log.Trace().Msgf("Stopped after %d bytes", nBytes)
+			m.log.Trace().Uint32("nBytes", nBytes).Msg("Stopped after nBytes")
 			m.dataMutex.RUnlock()
 			return nil
 		}
@@ -132,7 +159,10 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	m.dataMutex.RLock()
 	defer m.dataMutex.RUnlock()
 	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
-	m.log.Trace().Msgf("Peek %d readable bytes (%d available bytes)", numBytes, availableBytes)
+	m.log.Trace().
+		Uint32("numBytes", numBytes).
+		Uint32("availableBytes", availableBytes).
+		Msg("Peek numBytes readable bytes (of availableBytes available)")
 	var err error
 	if availableBytes != numBytes {
 		err = errors.New("not enough bytes available")
@@ -150,18 +180,22 @@ func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
-	nBytes := len(m.readBuffer)
-	m.log.Trace().Msgf("Read num bytes %d (of %d available)", numBytes, nBytes)
-	if nBytes < 1 {
-		return nil, errors.Errorf("Only %d bytes available. Requested %d", nBytes, numBytes)
+	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
+	m.log.Trace().
+		Uint32("numBytes", numBytes).
+		Uint32("availableBytes", availableBytes).
+		Msg("Read num bytes numBytes (of availableBytes available)")
+	if availableBytes < 1 {
+		return nil, errors.Errorf("Only %d bytes available. Requested %d", availableBytes, numBytes)
 	}
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
-	m.log.Trace().Msgf("New buffer size %d", nBytes)
+	m.log.Trace().Uint32("availableBytes", availableBytes).Msg("New buffer size availableBytes")
 	return data, nil
 }
 
 func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportInstance *TransportInstance, data []byte)) {
+	m.log.Trace().Msg("Set write interceptor")
 	m.writeInterceptor = writeInterceptor
 }
 
@@ -170,12 +204,18 @@ func (m *TransportInstance) Write(data []byte) error {
 		return errors.New("working on a unconnected connection")
 	}
 	if m.writeInterceptor != nil {
-		m.log.Trace().Msgf("Passing data to write interceptor\n%s", hex.Dump(data))
+		m.log.Trace().
+			Hex("data", data).
+			Str("hexDump", hex.Dump(data)).
+			Msg("Passing data to write interceptor")
 		m.writeInterceptor(m, data)
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
-	m.log.Trace().Msgf("Write data to write buffer\n%s", hex.Dump(data))
+	m.log.Trace().
+		Hex("data", data).
+		Str("hexDump", hex.Dump(data)).
+		Msg("Write data to write buffer")
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
@@ -187,7 +227,11 @@ func (m *TransportInstance) FillReadBuffer(data []byte) {
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
-	m.log.Trace().Msgf("fill read buffer with \n%s (%d bytes). (Adding to %d bytes existing)", hex.Dump(data), len(data), len(m.readBuffer))
+	m.log.Trace().
+		Int("nBytes", len(data)).
+		Int("existingBytes", len(m.readBuffer)).
+		Str("hexDump", hex.Dump(data)).
+		Msg("fill read buffer with hexDump (nBytes bytes). (Adding to existingBytes bytes existing)")
 	m.readBuffer = append(m.readBuffer, data...)
 }
 
@@ -209,7 +253,9 @@ func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 	}
 	m.dataMutex.Lock()
 	defer m.dataMutex.Unlock()
-	m.log.Trace().Msgf("Drain write buffer with number of bytes %d", numBytes)
+	m.log.Trace().
+		Uint32("numBytes", numBytes).
+		Msg("Drain write buffer with number of bytes")
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
 	return data

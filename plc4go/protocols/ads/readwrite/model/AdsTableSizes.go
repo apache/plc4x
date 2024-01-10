@@ -239,42 +239,42 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (symbolCount)
 	symbolCount := uint32(m.GetSymbolCount())
-	_symbolCountErr := writeBuffer.WriteUint32("symbolCount", 32, (symbolCount))
+	_symbolCountErr := writeBuffer.WriteUint32("symbolCount", 32, uint32((symbolCount)))
 	if _symbolCountErr != nil {
 		return errors.Wrap(_symbolCountErr, "Error serializing 'symbolCount' field")
 	}
 
 	// Simple Field (symbolLength)
 	symbolLength := uint32(m.GetSymbolLength())
-	_symbolLengthErr := writeBuffer.WriteUint32("symbolLength", 32, (symbolLength))
+	_symbolLengthErr := writeBuffer.WriteUint32("symbolLength", 32, uint32((symbolLength)))
 	if _symbolLengthErr != nil {
 		return errors.Wrap(_symbolLengthErr, "Error serializing 'symbolLength' field")
 	}
 
 	// Simple Field (dataTypeCount)
 	dataTypeCount := uint32(m.GetDataTypeCount())
-	_dataTypeCountErr := writeBuffer.WriteUint32("dataTypeCount", 32, (dataTypeCount))
+	_dataTypeCountErr := writeBuffer.WriteUint32("dataTypeCount", 32, uint32((dataTypeCount)))
 	if _dataTypeCountErr != nil {
 		return errors.Wrap(_dataTypeCountErr, "Error serializing 'dataTypeCount' field")
 	}
 
 	// Simple Field (dataTypeLength)
 	dataTypeLength := uint32(m.GetDataTypeLength())
-	_dataTypeLengthErr := writeBuffer.WriteUint32("dataTypeLength", 32, (dataTypeLength))
+	_dataTypeLengthErr := writeBuffer.WriteUint32("dataTypeLength", 32, uint32((dataTypeLength)))
 	if _dataTypeLengthErr != nil {
 		return errors.Wrap(_dataTypeLengthErr, "Error serializing 'dataTypeLength' field")
 	}
 
 	// Simple Field (extraCount)
 	extraCount := uint32(m.GetExtraCount())
-	_extraCountErr := writeBuffer.WriteUint32("extraCount", 32, (extraCount))
+	_extraCountErr := writeBuffer.WriteUint32("extraCount", 32, uint32((extraCount)))
 	if _extraCountErr != nil {
 		return errors.Wrap(_extraCountErr, "Error serializing 'extraCount' field")
 	}
 
 	// Simple Field (extraLength)
 	extraLength := uint32(m.GetExtraLength())
-	_extraLengthErr := writeBuffer.WriteUint32("extraLength", 32, (extraLength))
+	_extraLengthErr := writeBuffer.WriteUint32("extraLength", 32, uint32((extraLength)))
 	if _extraLengthErr != nil {
 		return errors.Wrap(_extraLengthErr, "Error serializing 'extraLength' field")
 	}

@@ -21,7 +21,6 @@ package simulated
 
 import (
 	"fmt"
-
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
@@ -85,4 +84,8 @@ func (t simulatedTag) GetArrayInfo() []apiModel.ArrayInfo {
 		}
 	}
 	return []apiModel.ArrayInfo{}
+}
+
+func (t simulatedTag) String() string {
+	return "simulated"
 }

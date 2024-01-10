@@ -255,35 +255,35 @@ func (m *_DF1RequestProtectedTypedLogicalRead) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (byteSize)
 		byteSize := uint8(m.GetByteSize())
-		_byteSizeErr := writeBuffer.WriteUint8("byteSize", 8, (byteSize))
+		_byteSizeErr := writeBuffer.WriteUint8("byteSize", 8, uint8((byteSize)))
 		if _byteSizeErr != nil {
 			return errors.Wrap(_byteSizeErr, "Error serializing 'byteSize' field")
 		}
 
 		// Simple Field (fileNumber)
 		fileNumber := uint8(m.GetFileNumber())
-		_fileNumberErr := writeBuffer.WriteUint8("fileNumber", 8, (fileNumber))
+		_fileNumberErr := writeBuffer.WriteUint8("fileNumber", 8, uint8((fileNumber)))
 		if _fileNumberErr != nil {
 			return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
 		}
 
 		// Simple Field (fileType)
 		fileType := uint8(m.GetFileType())
-		_fileTypeErr := writeBuffer.WriteUint8("fileType", 8, (fileType))
+		_fileTypeErr := writeBuffer.WriteUint8("fileType", 8, uint8((fileType)))
 		if _fileTypeErr != nil {
 			return errors.Wrap(_fileTypeErr, "Error serializing 'fileType' field")
 		}
 
 		// Simple Field (elementNumber)
 		elementNumber := uint8(m.GetElementNumber())
-		_elementNumberErr := writeBuffer.WriteUint8("elementNumber", 8, (elementNumber))
+		_elementNumberErr := writeBuffer.WriteUint8("elementNumber", 8, uint8((elementNumber)))
 		if _elementNumberErr != nil {
 			return errors.Wrap(_elementNumberErr, "Error serializing 'elementNumber' field")
 		}
 
 		// Simple Field (subElementNumber)
 		subElementNumber := uint8(m.GetSubElementNumber())
-		_subElementNumberErr := writeBuffer.WriteUint8("subElementNumber", 8, (subElementNumber))
+		_subElementNumberErr := writeBuffer.WriteUint8("subElementNumber", 8, uint8((subElementNumber)))
 		if _subElementNumberErr != nil {
 			return errors.Wrap(_subElementNumberErr, "Error serializing 'subElementNumber' field")
 		}

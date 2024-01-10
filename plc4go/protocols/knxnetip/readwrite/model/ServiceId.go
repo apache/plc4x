@@ -178,7 +178,7 @@ func (pm *_ServiceId) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.GetServiceType())
-	_serviceTypeErr := writeBuffer.WriteUint8("serviceType", 8, (serviceType))
+	_serviceTypeErr := writeBuffer.WriteUint8("serviceType", 8, uint8((serviceType)))
 
 	if _serviceTypeErr != nil {
 		return errors.Wrap(_serviceTypeErr, "Error serializing 'serviceType' field")

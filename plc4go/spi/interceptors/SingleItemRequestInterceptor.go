@@ -21,12 +21,14 @@ package interceptors
 
 import (
 	"context"
-	"errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
 
@@ -96,6 +98,7 @@ func NewSingleItemRequestInterceptor(readRequestFactory readRequestFactory, writ
 // Internal section
 //
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=interceptedPlcReadRequestResult
 type interceptedPlcReadRequestResult struct {
 	Request  apiModel.PlcReadRequest
 	Response apiModel.PlcReadResponse
@@ -114,6 +117,7 @@ func (d *interceptedPlcReadRequestResult) GetErr() error {
 	return d.Err
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=interceptedPlcWriteRequestResult
 type interceptedPlcWriteRequestResult struct {
 	Request  apiModel.PlcWriteRequest
 	Response apiModel.PlcWriteResponse
@@ -176,27 +180,16 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 	m.log.Trace().Msg("Merging requests")
 	responseCodes := map[string]apiModel.PlcResponseCode{}
 	val := map[string]values.PlcValue{}
-	var err error = nil
+	var collectedErrors []error
 	for _, readResult := range readResults {
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			m.log.Warn().Err(ctxErr).Msg("aborting early")
-			if err != nil {
-				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, ctxErr)
-			} else {
-				err = ctxErr
-			}
+		if err := ctx.Err(); err != nil {
+			m.log.Warn().Err(err).Msg("aborting early")
+			collectedErrors = append(collectedErrors, err)
 			break
 		}
-		if readResult.GetErr() != nil {
-			m.log.Debug().Err(readResult.GetErr()).Msgf("Error during read")
-			if err == nil {
-				// Lazy initialization of multi error
-				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{readResult.GetErr()}}
-			} else {
-				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, readResult.GetErr())
-			}
+		if err := readResult.GetErr(); err != nil {
+			m.log.Debug().Err(err).Msg("Error during read")
+			collectedErrors = append(collectedErrors, err)
 		} else if response := readResult.GetResponse(); response != nil {
 			request := response.GetRequest()
 			if len(request.GetTagNames()) > 1 {
@@ -207,6 +200,10 @@ func (m SingleItemRequestInterceptor) ProcessReadResponses(ctx context.Context, 
 				val[tagName] = response.GetValue(tagName)
 			}
 		}
+	}
+	var err error
+	if len(collectedErrors) > 0 {
+		err = utils.MultiError{MainError: errors.New("error aggregating"), Errors: collectedErrors}
 	}
 	return &interceptedPlcReadRequestResult{
 		Request:  readRequest,
@@ -253,27 +250,16 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 	}
 	m.log.Trace().Msg("Merging requests")
 	responseCodes := map[string]apiModel.PlcResponseCode{}
-	var err error = nil
+	var collectedErrors []error
 	for _, writeResult := range writeResults {
-		if ctxErr := ctx.Err(); ctxErr != nil {
-			m.log.Warn().Err(ctxErr).Msg("aborting early")
-			if err != nil {
-				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, ctxErr)
-			} else {
-				err = ctxErr
-			}
+		if err := ctx.Err(); err != nil {
+			m.log.Warn().Err(err).Msg("aborting early")
+			collectedErrors = append(collectedErrors, err)
 			break
 		}
-		if writeResult.GetErr() != nil {
-			m.log.Debug().Err(writeResult.GetErr()).Msgf("Error during write")
-			if err == nil {
-				// Lazy initialization of multi error
-				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{writeResult.GetErr()}}
-			} else {
-				multiError := err.(utils.MultiError)
-				multiError.Errors = append(multiError.Errors, writeResult.GetErr())
-			}
+		if err := writeResult.GetErr(); err != nil {
+			m.log.Debug().Err(err).Msg("Error during write")
+			collectedErrors = append(collectedErrors, err)
 		} else if writeResult.GetResponse() != nil {
 			if len(writeResult.GetResponse().GetRequest().GetTagNames()) > 1 {
 				m.log.Error().Int("numberOfTags", len(writeResult.GetResponse().GetRequest().GetTagNames())).Msg("We should only get 1")
@@ -282,6 +268,10 @@ func (m SingleItemRequestInterceptor) ProcessWriteResponses(ctx context.Context,
 				responseCodes[tagName] = writeResult.GetResponse().GetResponseCode(tagName)
 			}
 		}
+	}
+	var err error
+	if len(collectedErrors) > 0 {
+		err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: collectedErrors}
 	}
 	return &interceptedPlcWriteRequestResult{
 		Request:  writeRequest,

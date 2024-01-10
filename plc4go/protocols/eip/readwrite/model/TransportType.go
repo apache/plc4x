@@ -191,14 +191,14 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (trigger)
 	trigger := uint8(m.GetTrigger())
-	_triggerErr := writeBuffer.WriteUint8("trigger", 3, (trigger))
+	_triggerErr := writeBuffer.WriteUint8("trigger", 3, uint8((trigger)))
 	if _triggerErr != nil {
 		return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
 	}
 
 	// Simple Field (classTransport)
 	classTransport := uint8(m.GetClassTransport())
-	_classTransportErr := writeBuffer.WriteUint8("classTransport", 4, (classTransport))
+	_classTransportErr := writeBuffer.WriteUint8("classTransport", 4, uint8((classTransport)))
 	if _classTransportErr != nil {
 		return errors.Wrap(_classTransportErr, "Error serializing 'classTransport' field")
 	}

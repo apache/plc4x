@@ -202,14 +202,14 @@ func (m *_S7MessageResponse) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.GetErrorClass())
-		_errorClassErr := writeBuffer.WriteUint8("errorClass", 8, (errorClass))
+		_errorClassErr := writeBuffer.WriteUint8("errorClass", 8, uint8((errorClass)))
 		if _errorClassErr != nil {
 			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.GetErrorCode())
-		_errorCodeErr := writeBuffer.WriteUint8("errorCode", 8, (errorCode))
+		_errorCodeErr := writeBuffer.WriteUint8("errorCode", 8, uint8((errorCode)))
 		if _errorCodeErr != nil {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}

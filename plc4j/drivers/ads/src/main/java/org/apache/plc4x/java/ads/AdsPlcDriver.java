@@ -20,6 +20,7 @@ package org.apache.plc4x.java.ads;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
+import org.apache.plc4x.java.ads.configuration.AdsTcpTransportConfiguration;
 import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
 import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
@@ -27,6 +28,8 @@ import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
+import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -41,7 +44,7 @@ import java.util.function.ToIntFunction;
  * - TCP
  * - Serial
  */
-public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
+public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> implements TransportConfigurationTypeProvider {
 
     @Override
     public String getProtocolCode() {
@@ -56,6 +59,11 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         return new DefaultPlcDiscoveryRequest.Builder(new AdsPlcDiscoverer());
+    }
+
+    @Override
+    protected boolean canPing() {
+        return true;
     }
 
     @Override
@@ -130,6 +138,15 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
             }
             return -1;
         }
+    }
+
+    @Override
+    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return AdsTcpTransportConfiguration.class;
+        }
+        return null;
     }
 
 }

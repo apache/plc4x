@@ -206,7 +206,6 @@
 The files:
 plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedChannel.java
 plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedEventLoop.java
-plc4j/utils/pcap-shared/src/main/java/org/apache/plc4x/java/utils/pcap/netty/exception/PcapException.java
 Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.
 
 The file:

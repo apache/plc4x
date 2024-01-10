@@ -178,7 +178,7 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (L)
 		L := uint32(m.GetL())
-		_LErr := writeBuffer.WriteUint32("L", 32, (L))
+		_LErr := writeBuffer.WriteUint32("L", 32, uint32((L)))
 		if _LErr != nil {
 			return errors.Wrap(_LErr, "Error serializing 'L' field")
 		}

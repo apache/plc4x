@@ -520,8 +520,8 @@ func (m Browser) executeCommunicationObjectQuery(ctx context.Context, query Comm
 		rrr = readRequest.Execute()
 		readResult = <-rrr
 		if readResult.GetResponse().GetResponseCode("comObjectTableAddress") == apiModel.PlcResponseCode_OK {
-			comObjectTableAddress := readResult.GetResponse().GetValue("comObjectTableAddress").GetUint16()
-			m.log.Info().Msgf("Com Object Table Address: %x", comObjectTableAddress)
+			comObjectTableAddress := readResult.GetResponse().GetValue("comObjectTableAddress")
+			m.log.Info().Stringer("comObjectTableAddress", comObjectTableAddress).Msg("Com Object Table Address")
 		}
 	}
 

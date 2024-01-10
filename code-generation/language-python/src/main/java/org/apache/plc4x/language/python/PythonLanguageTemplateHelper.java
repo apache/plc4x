@@ -207,28 +207,29 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final Optional<Term> encodingOptional = field.getEncoding();
         if (encodingOptional.isPresent()) {
             final String encoding = toParseExpression(field, field.getType(), encodingOptional.get(), parserArguments);
-            sb.append(", WithOption.WithEncoding(").append(encoding).append(")");
+            sb.append(", encoding='").append(encoding).append("'");
         }
         final Optional<Term> byteOrderOptional = field.getByteOrder();
         if (byteOrderOptional.isPresent()) {
             final String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
-            sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
+            emitRequiredImport("from plc4py.utils.GenericTypes import ByteOrder");
+            sb.append(", byte_order=ByteOrder.").append(byteOrder);
         }
         return sb.toString();
     }
 
     public String getDataReaderCall(TypeReference typeReference) {
-        return getDataReaderCall(typeReference, "enumForValue");
+        return getDataReaderCall(typeReference, "enumForValue", false);
     }
 
-    public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
+    public String getDataReaderCall(TypeReference typeReference, String resolverMethod, Boolean isArray) {
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "DataReaderEnumDefault(" + languageTypeName + "." + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+            return "read_enum(read_function=" + languageTypeName + ",";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
-            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);
+            return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod, true);
         } else if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataReaderCall(simpleTypeReference);
@@ -251,12 +252,15 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 final TypeReference argumentType = getArgumentType(complexTypeReference, i);
                 paramsString
                     .append(", ")
-                    .append(getLanguageTypeNameForTypeReference(argumentType, true))
-                    .append("(")
                     .append(toParseExpression(null, argumentType, paramTerm, null))
-                    .append(")");
+                    .append("=")
+                    .append(toParseExpression(null, argumentType, paramTerm, null));
             }
-            return "DataReaderComplexDefault(" + parserCallString + ".static_parse(read_buffer" + paramsString + "), read_buffer)";
+            if (isArray) {
+                return parserCallString + ".static_parse, ";
+            } else {
+                return "read_complex(read_function=" + parserCallString + ".static_parse, ";
+            }
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
@@ -270,9 +274,9 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             case BYTE:
                 return "read_byte";
             case UINT:
-                if (sizeInBits <= 4) return "read_unsigned_byte";
-                if (sizeInBits <= 8) return "read_unsigned_short";
-                if (sizeInBits <= 16) return "read_unsigned_int";
+                if (sizeInBits <= 8) return "read_unsigned_byte";
+                if (sizeInBits <= 16) return "read_unsigned_short";
+                if (sizeInBits <= 32) return "read_unsigned_int";
                 return "read_unsigned_long";
             case INT:
                 if (sizeInBits <= 8) return "read_signed_byte";
@@ -283,10 +287,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 if (sizeInBits <= 32) return "read_float";
                 return "read_double";
             case STRING:
-                return "read_string";
+                return "read_str";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "read_string";
+                return "read_str";
             case TIME:
                 return "read_time";
             case DATE:
@@ -323,14 +327,14 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "DataWriterEnumDefault(" + languageTypeName + "." + camelCaseToSnakeCase(attributeName) + ", " + languageTypeName + ".name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return getDataWriterCall(outputTypeReference, fieldName);
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "write_boolean";
+                return "write_bit";
             case BYTE:
                 return "write_byte";
             case UINT:
@@ -347,10 +351,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 if (sizeInBits <= 32) return "write_float";
                 return "write_double";
             case STRING:
-                return "write_string";
+                return "write_str";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "write_string";
+                return "write_str";
             case TIME:
                 return "write_time";
             case DATE:
@@ -373,35 +377,45 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         SimpleTypeReference simpleTypeReference = (SimpleTypeReference) typeReference;
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcBOOL");
                 return "PlcBOOL";
             case BYTE:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSINT");
                 return "PlcSINT";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcUSINT");
                     return "PlcUSINT";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcUINT");
                     return "PlcUINT";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcUDINT");
                     return "PlcUDINT";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcULINT");
                     return "PlcULINT";
                 }
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSINT");
                     return "PlcSINT";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcINT");
                     return "PlcINT";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcDINT");
                     return "PlcDINT";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcLINT");
                     return "PlcLINT";
                 }
 
@@ -410,17 +424,21 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 int sizeInBits = floatTypeReference.getSizeInBits();
                 if (sizeInBits <= 32) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcREAL");
                     return "PlcREAL";
                 }
                 if (sizeInBits <= 64) {
+                    emitRequiredImport("from plc4py.spi.values.PlcValues import PlcLREAL");
                     return "PlcLREAL";
                 }
             case STRING:
             case VSTRING:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSTRING");
                 return "PlcSTRING";
             case TIME:
             case DATE:
             case DATETIME:
+                emitRequiredImport("from plc4py.spi.values.PlcValues import PlcTIME");
                 return "PlcTIME";
             default:
                 return "";
@@ -516,7 +534,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
                     unsignedIntegerType = "unsigned_long";
                 } else {
-                    unsignedIntegerType = "unsigned_big_integer";
+                    unsignedIntegerType = "unsigned_long";
                 }
                 return "read_buffer.read_" + unsignedIntegerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case INT:
@@ -530,7 +548,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else if (simpleTypeReference.getSizeInBits() <= 64) {
                     integerType = "long";
                 } else {
-                    integerType = "big_integer";
+                    integerType = "long";
                 }
                 return "read_buffer.read_" + integerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case FLOAT:
@@ -538,7 +556,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 return "read_buffer.read_" + floatType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
             case STRING:
             case VSTRING:
-                String stringType = "string";
+                String stringType = "str";
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
                 if (!(encodingTerm instanceof StringLiteral)) {
                     throw new FreemarkerException("Encoding must be a quoted string value");
@@ -586,49 +604,49 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         }
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return "writeBuffer.WriteBit(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_bit(" + fieldName + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case BYTE:
-                return "writeBuffer.WriteByte(\"" + logicalName + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_byte(" + fieldName + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.WriteUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_byte(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.WriteUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_unsigned_short(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteUint32(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_unsigned_int(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteUint64(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_unsigned_long(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_unsigned_long(" + fieldName + ", " + unsignedIntegerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case INT:
                 IntegerTypeReference integerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (integerTypeReference.getSizeInBits() <= 8) {
-                    return "writeBuffer.WriteInt8(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_signed_byte(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 16) {
-                    return "writeBuffer.WriteInt16(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_short(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteInt32(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_int(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (integerTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteInt64(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_long(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigInt(\"" + logicalName + "\", " + integerTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_long(" + fieldName + ", " + integerTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case FLOAT:
             case UFLOAT:
                 FloatTypeReference floatTypeReference = (FloatTypeReference) simpleTypeReference;
                 if (floatTypeReference.getSizeInBits() <= 32) {
-                    return "writeBuffer.WriteFloat32(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_float(" + fieldName + ", " + floatTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
                 if (floatTypeReference.getSizeInBits() <= 64) {
-                    return "writeBuffer.WriteFloat64(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                    return "write_buffer.write_double(" + fieldName + ", " + floatTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
                 }
-                return "writeBuffer.WriteBigFloat(\"" + logicalName + "\", " + floatTypeReference.getSizeInBits() + ", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_double(" + fieldName + ", " + floatTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case STRING: {
                 StringTypeReference stringTypeReference = (StringTypeReference) simpleTypeReference;
                 final Term encodingTerm = field.getEncoding().orElse(new DefaultStringLiteral("UTF-8"));
@@ -637,8 +655,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .asStringLiteral()
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_str(" + fieldName + ", " + length + ", \"" +
+                    encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -649,13 +667,13 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + lengthExpression + "), \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "write_buffer.write_str(" + fieldName + ", " + lengthExpression + ", \"" +
+                    encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
             }
             case DATE:
             case TIME:
             case DATETIME:
-                return "writeBuffer.WriteUint32(\"" + logicalName + "\", uint32(" + fieldName + ")" + writerArgsString + ")";
+                return "write_buffer.write_unsigned_int(uint32(" + fieldName + "), \"" + logicalName + "\")" + writerArgsString + ")";
             default:
                 throw new FreemarkerException("Unsupported base type " + simpleTypeReference.getBaseType());
         }
@@ -1026,7 +1044,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName)) && "stringLength".equals(variableLiteralName)) {
             tracer = tracer.dive("serialization argument");
-            return tracer + variableLiteralName +
+            return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
@@ -1041,7 +1059,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if ((parserArguments != null) && parserArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("parser argument");
-            return tracer + variableLiteralName +
+            return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
@@ -1058,7 +1076,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         if (isChild) {
             variableAccess = "get_" + camelCaseToSnakeCase(variableAccess) + "()";
         }
-        return tracer + (serialize ? "self." + camelCaseToSnakeCase(variableLiteralName) + "" : variableAccess) + indexCall +
+        return tracer + (serialize ? "self." + camelCaseToSnakeCase(variableLiteralName) + "" : camelCaseToSnakeCase(variableAccess)) + indexCall +
             variableLiteral.getChild()
                 .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                 .orElse("");
@@ -1066,7 +1084,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     private String toUppercaseVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean serialize, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("toUppercaseVariableExpression");
-        StringBuilder sb = new StringBuilder("get_" + camelCaseToSnakeCase(variableLiteral.getName()) + "()");
+        StringBuilder sb = new StringBuilder(variableLiteral.getName().toUpperCase());
         if (variableLiteral.getArgs().isPresent()) {
             sb.append("(");
             boolean firstArg = true;
@@ -1220,7 +1238,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                             break;
                     }
                 } else {
-                    sb.append("self." + toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
+                    sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, serialize, suppressPointerAccess));
                 }
             } else if (arg instanceof StringLiteral) {
                 tracer = tracer.dive("StringLiteral");
@@ -1305,12 +1323,12 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     private String toLengthInBitsVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBits");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(self.get" : "get") + "length_in_bits" + (serialize ? "(ctx))" : "(ctx)");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(" : "") + "length_in_bits" + (serialize ? "())" : "()");
     }
 
     private String toLengthInBytesVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBytes");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(self.get" : "Get") + "length_in_bytes" + (serialize ? "(ctx))" : "(ctx)");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(" : "") + "length_in_bytes" + (serialize ? "())" : "()");
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, List<Argument> parserArguments) {

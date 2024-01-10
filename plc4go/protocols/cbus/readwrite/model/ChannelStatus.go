@@ -120,7 +120,7 @@ func ChannelStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return 0, errors.Wrap(err, "error reading ChannelStatus")
 	}
 	if enum, ok := ChannelStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ChannelStatus")
 		return ChannelStatus(val), nil
 	} else {
 		return enum, nil
@@ -138,7 +138,7 @@ func (e ChannelStatus) Serialize() ([]byte, error) {
 func (e ChannelStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("ChannelStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("ChannelStatus", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -151,7 +151,7 @@ func (e ChannelStatus) PLC4XEnumName() string {
 	case ChannelStatus_CURRENT_LIMIT_OR_SHORT:
 		return "CURRENT_LIMIT_OR_SHORT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ChannelStatus) String() string {

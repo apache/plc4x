@@ -59,11 +59,18 @@ func NewDriver(_options ...options.WithOption) plc4go.PlcDriver {
 }
 
 func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, driverOptions map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	m.log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(driverOptions))
+	m.log.Debug().
+		Stringer("transportUrl", &transportUrl).
+		Int("nTransports", len(transports)).
+		Int("nDriverOptions", len(driverOptions)).
+		Msg("Get connection for transport url with nTransports transport(s) and nDriverOptions option(s)")
 	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
-		m.log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
+		m.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Str("scheme", transportUrl.Scheme).
+			Msg("We couldn't find a transport for scheme")
 		return m.reportError(errors.Errorf("couldn't find transport for given transport url %v", transportUrl))
 	}
 	// Provide a default-port to the transport, which is used, if the user doesn't provide on in the connection string.
@@ -75,20 +82,23 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 		append(m._options, options.WithCustomLogger(m.log))...,
 	)
 	if err != nil {
-		m.log.Error().Err(err).Stringer("transportUrl", &transportUrl).Msgf("We couldn't create a transport instance for port %#v", driverOptions["defaultTcpPort"])
+		m.log.Error().
+			Stringer("transportUrl", &transportUrl).
+			Strs("defaultTcpPort", driverOptions["defaultTcpPort"]).
+			Msg("We couldn't create a transport instance for port")
 		return m.reportError(errors.Wrapf(err, "couldn't initialize transport configuration for given transport url %s", transportUrl.String()))
 	}
 
 	configuration, err := ParseFromOptions(m.log, driverOptions)
 	if err != nil {
-		m.log.Error().Err(err).Msgf("Invalid options")
+		m.log.Error().Err(err).Msg("Invalid options")
 		return m.reportError(errors.Wrap(err, "Invalid options"))
 	}
 	codec := NewMessageCodec(
 		transportInstance,
 		append(m._options, options.WithCustomLogger(m.log))...,
 	)
-	m.log.Debug().Msgf("working with codec:\n%s", codec)
+	m.log.Debug().Stringer("codec", codec).Msg("working with codec")
 
 	driverContext := NewDriverContext(configuration)
 	driverContext.awaitSetupComplete = m.awaitSetupComplete

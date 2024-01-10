@@ -20,18 +20,23 @@
 package testutils
 
 import (
+	"bytes"
 	"context"
+	"fmt"
+	"github.com/rs/zerolog/pkgerrors"
 	"os"
 	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/ajankovic/xdiff"
@@ -66,7 +71,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	cleanDiff := make([]xdiff.Delta, 0)
 	for _, delta := range diff {
 		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
-			localLog.Info().Msgf("We ignore empty elements which should be deleted %v", delta)
+			localLog.Info().Interface("delta", delta).Msg("We ignore empty elements which should be deleted")
 			continue
 		}
 		// Workaround for different precisions on float
@@ -76,7 +81,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
 			string(delta.Object.Parent.FirstChild.Value) == "float" {
 			if strings.Contains(string(delta.Subject.Value), string(delta.Object.Value)) || strings.Contains(string(delta.Object.Value), string(delta.Subject.Value)) {
-				localLog.Info().Msgf("We ignore precision diffs %v", delta)
+				localLog.Info().Interface("delta", delta).Msg("We ignore precision diffs")
 				continue
 			}
 		}
@@ -86,7 +91,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 			string(delta.Object.Parent.FirstChild.Name) == "dataType" &&
 			string(delta.Object.Parent.FirstChild.Value) == "string" {
 			if diff, err := xdiff.Compare(delta.Subject, delta.Object); diff == nil && err == nil {
-				localLog.Info().Msgf("We ignore newline diffs %v", delta)
+				localLog.Info().Interface("delta", delta).Msg("We ignore newline diffs")
 				continue
 			}
 		}
@@ -127,6 +132,7 @@ var (
 	traceTransactionManagerTransactions bool
 	traceDefaultMessageCodecWorker      bool
 	traceExecutorWorkers                bool
+	traceTestTransportInstance          bool
 )
 
 func init() {
@@ -141,6 +147,7 @@ func init() {
 	getOrLeaveBool("PLC4X_TEST_TRACE_TRANSACTION_MANAGER_TRANSACTIONS", &traceTransactionManagerTransactions)
 	getOrLeaveBool("PLC4X_TEST_TRACE_DEFAULT_MESSAGE_CODEC_WORKER", &traceDefaultMessageCodecWorker)
 	getOrLeaveBool("PLC4X_TEST_TRACE_EXECUTOR_WORKERS", &traceExecutorWorkers)
+	getOrLeaveBool("PLC4X_TEST_TEST_TRANSPORT_INSTANCE", &traceTestTransportInstance)
 }
 
 func getOrLeaveBool(key string, setting *bool) {
@@ -159,33 +166,74 @@ func getOrLeaveDuration(key string, setting *time.Duration) {
 	}
 }
 
+func shouldNoColor() bool {
+	noColor := false
+	{
+		// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
+		onJenkins := os.Getenv("JENKINS_URL") != ""
+		onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
+		onCI := os.Getenv("CI") != ""
+		if onJenkins || onGithubAction || onCI {
+			noColor = true
+		}
+	}
+	return noColor
+}
+
 // ProduceTestingLogger produces a logger which redirects to testing.T
 func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+	noColor := shouldNoColor()
+	consoleWriter := zerolog.NewConsoleWriter(
+		zerolog.ConsoleTestWriter(t),
+		func(w *zerolog.ConsoleWriter) {
+			w.NoColor = noColor
+		},
+		func(w *zerolog.ConsoleWriter) {
+			if highLogPrecision {
+				w.TimeFormat = time.StampNano
+			}
+		},
+		func(w *zerolog.ConsoleWriter) {
+			w.FormatFieldValue = func(i interface{}) string {
+				if aString, ok := i.(string); ok && strings.Contains(aString, "\\n") {
+					if noColor {
+						return "see below"
+					} else {
+						return fmt.Sprintf("\x1b[%dm%v\x1b[0m", 31, "see below")
+					}
+				}
+				return fmt.Sprintf("%s", i)
+			}
+			w.FormatExtra = func(m map[string]interface{}, buffer *bytes.Buffer) error {
+				for key, i := range m {
+					if aString, ok := i.(string); ok && strings.Contains(aString, "\n") {
+						buffer.WriteString("\n")
+						if noColor {
+							buffer.WriteString("field " + key)
+						} else {
+							buffer.WriteString(fmt.Sprintf("\x1b[%dm%v\x1b[0m", 32, "field "+key))
+						}
+						buffer.WriteString(":\n" + aString)
+					}
+				}
+				return nil
+			}
+		},
+	)
 	logger := zerolog.New(
-		zerolog.NewConsoleWriter(
-			zerolog.ConsoleTestWriter(t),
-			func(w *zerolog.ConsoleWriter) {
-				// TODO: this is really an issue with go-junit-report not sanitizing output before dumping into xml...
-				onJenkins := os.Getenv("JENKINS_URL") != ""
-				onGithubAction := os.Getenv("GITHUB_ACTIONS") != ""
-				onCI := os.Getenv("CI") != ""
-				if onJenkins || onGithubAction || onCI {
-					w.NoColor = true
-				}
-
-			},
-			func(w *zerolog.ConsoleWriter) {
-				if highLogPrecision {
-					w.TimeFormat = time.StampNano
-				}
-			},
-		),
+		consoleWriter,
 	)
 	if highLogPrecision {
 		logger = logger.With().Timestamp().Logger()
 	}
+	stackSetter.Do(func() {
+		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	})
+	logger = logger.With().Stack().Logger()
 	return logger
 }
+
+var stackSetter sync.Once
 
 // EnrichOptionsWithOptionsForTesting appends options useful for testing to config.WithOption s
 func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOption) []options.WithOption {
@@ -200,6 +248,7 @@ func EnrichOptionsWithOptionsForTesting(t *testing.T, _options ...options.WithOp
 		options.WithTraceTransactionManagerTransactions(traceTransactionManagerTransactions),
 		options.WithTraceDefaultMessageCodecWorker(traceDefaultMessageCodecWorker),
 		options.WithExecutorOptionTracerWorkers(traceExecutorWorkers),
+		test.WithTraceTransportInstance(traceTestTransportInstance),
 	)
 	// We always create a custom executor to ensure shared executor for transaction manager is not used for tests
 	testSharedExecutorInstance := pool.NewFixedSizeExecutor(

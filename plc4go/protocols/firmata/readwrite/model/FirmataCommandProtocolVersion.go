@@ -200,14 +200,14 @@ func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (majorVersion)
 		majorVersion := uint8(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, (majorVersion))
+		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
 		if _majorVersionErr != nil {
 			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint8(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, (minorVersion))
+		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
 		if _minorVersionErr != nil {
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}

@@ -264,7 +264,7 @@ func (pm *_ModbusPDU) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(child.GetFunctionFlag())
-	_functionFlagErr := writeBuffer.WriteUint8("functionFlag", 7, (functionFlag))
+	_functionFlagErr := writeBuffer.WriteUint8("functionFlag", 7, uint8((functionFlag)))
 
 	if _functionFlagErr != nil {
 		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")

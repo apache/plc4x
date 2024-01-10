@@ -201,7 +201,7 @@ func (m *_APDUUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (unknownTypeRest)
 		unknownTypeRest := uint8(m.GetUnknownTypeRest())
-		_unknownTypeRestErr := writeBuffer.WriteUint8("unknownTypeRest", 4, (unknownTypeRest))
+		_unknownTypeRestErr := writeBuffer.WriteUint8("unknownTypeRest", 4, uint8((unknownTypeRest)))
 		if _unknownTypeRestErr != nil {
 			return errors.Wrap(_unknownTypeRestErr, "Error serializing 'unknownTypeRest' field")
 		}

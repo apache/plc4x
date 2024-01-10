@@ -258,7 +258,7 @@ func SzlSublistParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading SzlSublist")
 	}
 	if enum, ok := SzlSublistByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for SzlSublist")
 		return SzlSublist(val), nil
 	} else {
 		return enum, nil
@@ -276,7 +276,7 @@ func (e SzlSublist) Serialize() ([]byte, error) {
 func (e SzlSublist) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("SzlSublist", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("SzlSublist", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -335,7 +335,7 @@ func (e SzlSublist) PLC4XEnumName() string {
 	case SzlSublist_DIAGNOSTIC_DATA_DP_SLAVE:
 		return "DIAGNOSTIC_DATA_DP_SLAVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e SzlSublist) String() string {

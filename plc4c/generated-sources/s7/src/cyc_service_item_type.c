@@ -98,11 +98,15 @@ plc4c_return_code plc4c_s7_read_write_cyc_service_item_type_parse(plc4x_spi_cont
 if( syntaxId == 0x10 ) { /* CycServiceItemAnyType */
     (*_message)->_type = plc4c_s7_read_write_cyc_service_item_type_type_plc4c_s7_read_write_cyc_service_item_any_type;
 
-  // Simple Field (transportSize)
-  plc4c_s7_read_write_transport_size transportSize;
-  _res = plc4c_s7_read_write_transport_size_parse(ctx, readBuffer, (void*) &transportSize);
-  if(_res != OK) {
-    return _res;
+  // Enum field (transportSize)
+  plc4c_s7_read_write_transport_size transportSize = plc4c_s7_read_write_transport_size_null();
+  {
+    uint8_t _constantValue = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &_constantValue);
+    if(_res != OK) {
+      return _res;
+    }
+    transportSize = plc4c_s7_read_write_transport_size_get_first_enum_for_field_code(_constantValue);
   }
   (*_message)->cyc_service_item_any_type_transport_size = transportSize;
 
@@ -200,8 +204,8 @@ plc4c_return_code plc4c_s7_read_write_cyc_service_item_type_serialize(plc4x_spi_
   switch(_message->_type) {
     case plc4c_s7_read_write_cyc_service_item_type_type_plc4c_s7_read_write_cyc_service_item_any_type: {
 
-  // Simple Field (transportSize)
-  _res = plc4c_s7_read_write_transport_size_serialize(ctx, writeBuffer, &_message->cyc_service_item_any_type_transport_size);
+  // Enum field (transportSize)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, plc4c_s7_read_write_transport_size_get_code(_message->cyc_service_item_any_type_transport_size));
   if(_res != OK) {
     return _res;
   }
@@ -279,8 +283,8 @@ uint16_t plc4c_s7_read_write_cyc_service_item_type_length_in_bits(plc4x_spi_cont
   switch(_message->_type) {
     case plc4c_s7_read_write_cyc_service_item_type_type_plc4c_s7_read_write_cyc_service_item_any_type: {
 
-  // Simple field (transportSize)
-  lengthInBits += plc4c_s7_read_write_transport_size_length_in_bits(ctx, &_message->cyc_service_item_any_type_transport_size);
+  // Enum Field (transportSize)
+  lengthInBits += 8;
 
 
   // Simple field (length)

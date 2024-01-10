@@ -21,7 +21,7 @@ from typing import cast
 from plc4py import __version__
 from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.PlcConnection import PlcConnection
-from plc4py.api.messages.PlcRequest import PlcFieldRequest
+from plc4py.api.messages.PlcRequest import PlcTagRequest
 from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.mock.MockConnection import MockConnection
@@ -52,12 +52,12 @@ async def test_plc_driver_manager_init_mock():
 
 async def test_plc_driver_manager_init_mock_read_request():
     driver_manager = PlcDriverManager()
-    field = "1:BOOL"
+    tag = "1:BOOL"
 
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item(field)
-            request: PlcFieldRequest = builder.build()
+            builder.add_item("Random Tag", tag)
+            request: PlcTagRequest = builder.build()
             response: PlcReadResponse = cast(
                 PlcReadResponse, await connection.execute(request)
             )

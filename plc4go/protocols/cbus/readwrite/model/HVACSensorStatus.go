@@ -126,7 +126,7 @@ func HVACSensorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading HVACSensorStatus")
 	}
 	if enum, ok := HVACSensorStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for HVACSensorStatus")
 		return HVACSensorStatus(val), nil
 	} else {
 		return enum, nil
@@ -144,7 +144,7 @@ func (e HVACSensorStatus) Serialize() ([]byte, error) {
 func (e HVACSensorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("HVACSensorStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("HVACSensorStatus", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -159,7 +159,7 @@ func (e HVACSensorStatus) PLC4XEnumName() string {
 	case HVACSensorStatus_SENSOR_TOTAL_FAILURE:
 		return "SENSOR_TOTAL_FAILURE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e HVACSensorStatus) String() string {

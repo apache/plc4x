@@ -382,7 +382,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx
 
 		// Simple Field (entry)
 		entry := uint8(m.GetEntry())
-		_entryErr := writeBuffer.WriteUint8("entry", 8, (entry))
+		_entryErr := writeBuffer.WriteUint8("entry", 8, uint8((entry)))
 		if _entryErr != nil {
 			return errors.Wrap(_entryErr, "Error serializing 'entry' field")
 		}

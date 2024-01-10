@@ -261,6 +261,18 @@ func S7PayloadUserDataItemParseWithBuffer(ctx context.Context, readBuffer utils.
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 	case cpuFunctionGroup == 0x04 && cpuFunctionType == 0x08 && cpuSubfunction == 0x13: // S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
 		_childTemp, typeSwitchError = S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx, readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x04 && cpuSubfunction == 0x01: // S7PayloadUserDataItemClkRequest
+		_childTemp, typeSwitchError = S7PayloadUserDataItemClkRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x08 && cpuSubfunction == 0x01: // S7PayloadUserDataItemClkResponse
+		_childTemp, typeSwitchError = S7PayloadUserDataItemClkResponseParseWithBuffer(ctx, readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x04 && cpuSubfunction == 0x03: // S7PayloadUserDataItemClkFRequest
+		_childTemp, typeSwitchError = S7PayloadUserDataItemClkFRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x08 && cpuSubfunction == 0x03: // S7PayloadUserDataItemClkFResponse
+		_childTemp, typeSwitchError = S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx, readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x04 && cpuSubfunction == 0x04: // S7PayloadUserDataItemClkSetRequest
+		_childTemp, typeSwitchError = S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	case cpuFunctionGroup == 0x07 && cpuFunctionType == 0x08 && cpuSubfunction == 0x04: // S7PayloadUserDataItemClkSetResponse
+		_childTemp, typeSwitchError = S7PayloadUserDataItemClkSetResponseParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [cpuFunctionGroup=%v, cpuFunctionType=%v, cpuSubfunction=%v, dataLength=%v]", cpuFunctionGroup, cpuFunctionType, cpuSubfunction, dataLength)
 	}
@@ -316,7 +328,7 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(ctx context.Context, writeBuff
 
 	// Simple Field (dataLength)
 	dataLength := uint16(m.GetDataLength())
-	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, (dataLength))
+	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}

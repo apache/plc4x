@@ -199,7 +199,7 @@ func (pm *_ApduData) SerializeParent(ctx context.Context, writeBuffer utils.Writ
 
 	// Discriminator Field (apciType) (Used as input to a switch field)
 	apciType := uint8(child.GetApciType())
-	_apciTypeErr := writeBuffer.WriteUint8("apciType", 4, (apciType))
+	_apciTypeErr := writeBuffer.WriteUint8("apciType", 4, uint8((apciType)))
 
 	if _apciTypeErr != nil {
 		return errors.Wrap(_apciTypeErr, "Error serializing 'apciType' field")

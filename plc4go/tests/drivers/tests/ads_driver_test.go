@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	adsIO "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
@@ -36,13 +35,14 @@ func TestAdsDriver(t *testing.T) {
 	parser := func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return readWriteModel.AmsTCPPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	}
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(
 		t,
-		ads.NewDriver(withCustomLogger),
+		ads.NewDriver(optionsForTesting...),
 		"assets/testing/protocols/ads/DriverTestsuite.xml",
 		adsIO.AdsXmlParserHelper{},
-		testutils.WithRootTypeParser(parser),
-		withCustomLogger,
+		append(optionsForTesting,
+			testutils.WithRootTypeParser(parser),
+		)...,
 	)
 }

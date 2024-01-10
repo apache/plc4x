@@ -23,12 +23,12 @@
     <parent>
     <artifactId>plc4j-apache-karaf</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
     <groupId>org.apache.plc4x.merlot.das.ref</groupId>
     <artifactId>org.apache.plc4x.merlot.das.ref</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
 
     <name>PLC4J: Merlot :: das :: Referring driver</name>
@@ -80,17 +80,17 @@
         <dependency>
             <groupId>org.apache.plc4x</groupId>
             <artifactId>plc4j-api</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.12.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x.merlot.api</groupId>
             <artifactId>org.apache.plc4x.merlot.api</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.12.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.plc4x.merlot.das.base</groupId>
             <artifactId>org.apache.plc4x.merlot.das.base</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.12.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

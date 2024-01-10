@@ -32,7 +32,7 @@ import (
 func TestNewSubscriptionEvent(t *testing.T) {
 	type args struct {
 		tags          map[string]apiModel.PlcTag
-		types         map[string]spiModel.SubscriptionType
+		types         map[string]apiModel.PlcSubscriptionType
 		intervals     map[string]time.Duration
 		responseCodes map[string]apiModel.PlcResponseCode
 		address       map[string]string

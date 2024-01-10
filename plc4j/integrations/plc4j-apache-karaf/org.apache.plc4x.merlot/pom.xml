@@ -24,12 +24,12 @@
     <parent>
         <artifactId>plc4j-apache-karaf</artifactId>
         <groupId>org.apache.plc4x</groupId>
-        <version>0.11.0-SNAPSHOT</version>
+        <version>0.12.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apache.plc4x</groupId>
     <artifactId>org.apache.plc4x.merlot</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
     <packaging>karaf-assembly</packaging>
 
     <name>PLC4J: Merlot :: assembly :: Karaf assembly</name>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.apache.plc4x.merlot.features</groupId>
             <artifactId>org.apache.plc4x.merlot.features</artifactId>
-            <version>0.11.0-SNAPSHOT</version>
+            <version>0.12.0-SNAPSHOT</version>
             <type>xml</type>
             <classifier>features</classifier>
             <scope>runtime</scope>            

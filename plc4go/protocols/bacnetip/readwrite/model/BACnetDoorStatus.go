@@ -168,7 +168,7 @@ func BACnetDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading BACnetDoorStatus")
 	}
 	if enum, ok := BACnetDoorStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDoorStatus")
 		return BACnetDoorStatus(val), nil
 	} else {
 		return enum, nil
@@ -186,7 +186,7 @@ func (e BACnetDoorStatus) Serialize() ([]byte, error) {
 func (e BACnetDoorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetDoorStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetDoorStatus", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -215,7 +215,7 @@ func (e BACnetDoorStatus) PLC4XEnumName() string {
 	case BACnetDoorStatus_LIMITED_OPENED:
 		return "LIMITED_OPENED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetDoorStatus) String() string {

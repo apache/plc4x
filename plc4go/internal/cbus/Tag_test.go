@@ -233,7 +233,7 @@ func TestStatusRequestType_String(t *testing.T) {
 		{
 			name: "non type",
 			s:    255,
-			want: "",
+			want: "StatusRequestType(255)",
 		},
 	}
 	for _, tt := range tests {

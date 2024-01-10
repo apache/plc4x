@@ -19,20 +19,26 @@
 package org.apache.plc4x.java.s7.readwrite.tag;
 
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 
 public class S7PlcTagHandler implements PlcTagHandler {
 
     @Override
     public PlcTag parseTag(String tagAddress) {
-        if (S7Tag.matches(tagAddress)) {
-            return S7Tag.of(tagAddress);
-        } else if (S7SubscriptionTag.matches(tagAddress)){
+        if (S7StringVarLengthTag.matches(tagAddress)) {
+            return S7StringVarLengthTag.of(tagAddress);
+        } else if (S7StringFixedLengthTag.matches(tagAddress)) {
+            return S7StringFixedLengthTag.of(tagAddress);
+        } else if (S7SubscriptionTag.matches(tagAddress)) {
             return S7SubscriptionTag.of(tagAddress);
-        } else if (S7SzlTag.matches(tagAddress)){
+        } else if (S7ClkTag.matches(tagAddress)) {
+            return S7ClkTag.of(tagAddress);
+        } else if (S7SzlTag.matches(tagAddress)) {
             return S7SzlTag.of(tagAddress);
+        } else if (S7Tag.matches(tagAddress)) {
+            return S7Tag.of(tagAddress);
         }
         throw new PlcInvalidTagException(tagAddress);
     }

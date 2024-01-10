@@ -126,7 +126,7 @@ func BACnetNetworkNumberQualityParseWithBuffer(ctx context.Context, readBuffer u
 		return 0, errors.Wrap(err, "error reading BACnetNetworkNumberQuality")
 	}
 	if enum, ok := BACnetNetworkNumberQualityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetNetworkNumberQuality")
 		return BACnetNetworkNumberQuality(val), nil
 	} else {
 		return enum, nil
@@ -144,7 +144,7 @@ func (e BACnetNetworkNumberQuality) Serialize() ([]byte, error) {
 func (e BACnetNetworkNumberQuality) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetNetworkNumberQuality", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -159,7 +159,7 @@ func (e BACnetNetworkNumberQuality) PLC4XEnumName() string {
 	case BACnetNetworkNumberQuality_CONFIGURED:
 		return "CONFIGURED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetNetworkNumberQuality) String() string {

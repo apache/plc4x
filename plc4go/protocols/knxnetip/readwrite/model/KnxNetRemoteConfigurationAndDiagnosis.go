@@ -179,7 +179,7 @@ func (m *_KnxNetRemoteConfigurationAndDiagnosis) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (version)
 		version := uint8(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint8("version", 8, (version))
+		_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

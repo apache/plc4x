@@ -20,6 +20,8 @@
 package _default
 
 // DefaultConnectionMetadata implements the model.PlcConnectionMetadata interface
+//
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultConnectionMetadata
 type DefaultConnectionMetadata struct {
 	ConnectionAttributes map[string]string
 	ProvidesReading      bool
@@ -28,22 +30,22 @@ type DefaultConnectionMetadata struct {
 	ProvidesBrowsing     bool
 }
 
-func (m DefaultConnectionMetadata) GetConnectionAttributes() map[string]string {
+func (m *DefaultConnectionMetadata) GetConnectionAttributes() map[string]string {
 	return m.ConnectionAttributes
 }
 
-func (m DefaultConnectionMetadata) CanRead() bool {
+func (m *DefaultConnectionMetadata) CanRead() bool {
 	return m.ProvidesReading
 }
 
-func (m DefaultConnectionMetadata) CanWrite() bool {
+func (m *DefaultConnectionMetadata) CanWrite() bool {
 	return m.ProvidesWriting
 }
 
-func (m DefaultConnectionMetadata) CanSubscribe() bool {
+func (m *DefaultConnectionMetadata) CanSubscribe() bool {
 	return m.ProvidesSubscribing
 }
 
-func (m DefaultConnectionMetadata) CanBrowse() bool {
+func (m *DefaultConnectionMetadata) CanBrowse() bool {
 	return m.ProvidesBrowsing
 }

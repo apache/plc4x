@@ -29,7 +29,7 @@ import (
 	"time"
 )
 
-const protocols = "ads,bacnetip,c-bus,s7"
+const protocols = "ads,bacnetip,c-bus,opcua,s7"
 
 var protocolList = strings.Split(protocols, ",")
 
