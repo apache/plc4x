@@ -1494,6 +1494,9 @@ const (
 	BACnetVendorId_AETERLINK_CORPORATION                                                        BACnetVendorId = 1457
 	BACnetVendorId_ALPHA_EPSILON_AUTOMATION                                                     BACnetVendorId = 1458
 	BACnetVendorId_ASTRALITE_INC                                                                BACnetVendorId = 1459
+	BACnetVendorId_DELTA_FIRE_LTDA                                                              BACnetVendorId = 1460
+	BACnetVendorId_BOCK_WATER_HEATERS_INC                                                       BACnetVendorId = 1461
+	BACnetVendorId_CLEAVER_BROOKS                                                               BACnetVendorId = 1462
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2953,6 +2956,9 @@ func init() {
 		BACnetVendorId_AETERLINK_CORPORATION,
 		BACnetVendorId_ALPHA_EPSILON_AUTOMATION,
 		BACnetVendorId_ASTRALITE_INC,
+		BACnetVendorId_DELTA_FIRE_LTDA,
+		BACnetVendorId_BOCK_WATER_HEATERS_INC,
+		BACnetVendorId_CLEAVER_BROOKS,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5006,6 +5012,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 146:
 		{ /* '146' */
 			return 146
+		}
+	case 1460:
+		{ /* '1460' */
+			return 1460
+		}
+	case 1461:
+		{ /* '1461' */
+			return 1461
+		}
+	case 1462:
+		{ /* '1462' */
+			return 1462
 		}
 	case 147:
 		{ /* '147' */
@@ -10833,6 +10851,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '146' */
 			return "Sanyo Electric Co., Ltd."
 		}
+	case 1460:
+		{ /* '1460' */
+			return "Delta Fire Ltda."
+		}
+	case 1461:
+		{ /* '1461' */
+			return "Bock Water Heaters, Inc."
+		}
+	case 1462:
+		{ /* '1462' */
+			return "Cleaver-Brooks"
+		}
 	case 147:
 		{ /* '147' */
 			return "Integrated Information Systems, Inc."
@@ -15634,6 +15664,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ASTRALITE_INC, true
 	case 146:
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
+	case 1460:
+		return BACnetVendorId_DELTA_FIRE_LTDA, true
+	case 1461:
+		return BACnetVendorId_BOCK_WATER_HEATERS_INC, true
+	case 1462:
+		return BACnetVendorId_CLEAVER_BROOKS, true
 	case 147:
 		return BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC, true
 	case 148:
@@ -18544,6 +18580,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ASTRALITE_INC, true
 	case "SANYO_ELECTRIC_CO_LTD":
 		return BACnetVendorId_SANYO_ELECTRIC_CO_LTD, true
+	case "DELTA_FIRE_LTDA":
+		return BACnetVendorId_DELTA_FIRE_LTDA, true
+	case "BOCK_WATER_HEATERS_INC":
+		return BACnetVendorId_BOCK_WATER_HEATERS_INC, true
+	case "CLEAVER_BROOKS":
+		return BACnetVendorId_CLEAVER_BROOKS, true
 	case "INTEGRATED_INFORMATION_SYSTEMS_INC":
 		return BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC, true
 	case "TEMCO_CONTROLS_LTD":
@@ -21515,6 +21557,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ASTRALITE_INC"
 	case BACnetVendorId_SANYO_ELECTRIC_CO_LTD:
 		return "SANYO_ELECTRIC_CO_LTD"
+	case BACnetVendorId_DELTA_FIRE_LTDA:
+		return "DELTA_FIRE_LTDA"
+	case BACnetVendorId_BOCK_WATER_HEATERS_INC:
+		return "BOCK_WATER_HEATERS_INC"
+	case BACnetVendorId_CLEAVER_BROOKS:
+		return "CLEAVER_BROOKS"
 	case BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC:
 		return "INTEGRATED_INFORMATION_SYSTEMS_INC"
 	case BACnetVendorId_TEMCO_CONTROLS_LTD:
