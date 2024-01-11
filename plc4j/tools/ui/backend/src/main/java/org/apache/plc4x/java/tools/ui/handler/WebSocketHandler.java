@@ -27,6 +27,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.lang.Nullable;
 
 import java.io.IOException;
 import java.util.Map;
@@ -58,8 +59,10 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
      * @param session the new web-socket session.
      */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        openSessions.put(session.getId(), session);
+    public void afterConnectionEstablished(@Nullable WebSocketSession session) {
+        if(session != null) {
+            openSessions.put(session.getId(), session);
+        }
     }
 
     /**
@@ -68,8 +71,11 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
      * @param closeStatus the status of the closed session
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) {
-        openSessions.remove(session.getId());
+    public void afterConnectionClosed(@Nullable WebSocketSession session, @Nullable CloseStatus closeStatus) {
+        if((session != null) && (closeStatus != null)) {
+            //noinspection resource
+            openSessions.remove(session.getId());
+        }
     }
 
     /**
@@ -79,7 +85,7 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
      * @param message the message
      */
     @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) {
+    public void handleMessage(@Nullable WebSocketSession session, @Nullable WebSocketMessage<?> message) {
         System.out.println("handleMessage");
     }
 
@@ -89,7 +95,7 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
      * @param exception the error that happened
      */
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) {
+    public void handleTransportError(@Nullable WebSocketSession session, @Nullable Throwable exception) {
         System.out.println("handleTransportError");
     }
 

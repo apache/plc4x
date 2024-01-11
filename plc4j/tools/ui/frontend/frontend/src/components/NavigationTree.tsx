@@ -22,38 +22,41 @@ import {Tree} from "primereact/tree";
 import {TreeNode} from "primereact/treenode";
 import {IconType} from "primereact/utils";
 import 'primeicons/primeicons.css';
-import {useRef, useState} from "react";
-import {Toast} from "primereact/toast";
+import {useRef} from "react";
 import {ContextMenu} from "primereact/contextmenu";
-import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
-import axios from "axios";
+import {MenuItem} from "primereact/menuitem";
+//import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
+//import axios from "axios";
 
 type NavigationTreeProps = {
     treeItems: TreeItemData[];
 }
 
-const restClient = new RestApplicationClient(axios);
+//const restClient = new RestApplicationClient(axios);
 
 export default function NavigationTree({treeItems}: NavigationTreeProps) {
-    const [selectedNodeKey, setSelectedNodeKey] = useState<string>("");
-    const toast = useRef<Toast>(null);
     const cm = useRef<ContextMenu>(null);
     const menu = [
         {
+            key: "1",
             label: 'Discover',
+            data: "discover-data",
             icon: 'pi pi-search',
-            command: () => {
-                restClient.discover(selectedNodeKey);
-            }
-        },
+            disabled: false,
+        } as MenuItem,
         {
+            key: "2",
             label: 'Add',
+            data: "add-data",
             icon: 'pi pi-plus-circle',
-            command: () => {
-                console.log("Toggle")
-            }
-        }
-    ];
+            disabled: false,
+        } as MenuItem
+    ] as MenuItem[]
+    function updateMenu(selectedItem:TreeItemData) {
+        menu[0].disabled = selectedItem.supportsDiscovery
+        menu[1].disabled = selectedItem.type != "DRIVER"
+        console.log("Second element enabled: " + (menu[1].disabled))
+    }
     function getIcon(curItem: TreeItemData):IconType<TreeNode> {
         switch (curItem.type) {
             case "DRIVER":
@@ -76,6 +79,7 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
             id: curItem.id,
             label: curItem.name,
             icon: getIcon(curItem),
+            data: curItem,
             children: curItem.children?.map(value => createTreeNode(value))
         }
     }
@@ -83,15 +87,15 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
     const treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value))
     return(
         <div>
-            <Toast ref={toast} />
+            <ContextMenu model={menu} ref={cm}/>
 
-            <ContextMenu model={menu} ref={cm} onHide={() => setSelectedNodeKey("")} />
-
-            <Tree value={treeNodes} selectionMode="single"
-                  contextMenuSelectionKey={selectedNodeKey}
-                  onContextMenuSelectionChange={event => setSelectedNodeKey(event.value as string)}
+            <Tree value={treeNodes}
+                  selectionMode="single"
                   onContextMenu={event => {
                       if(cm.current) {
+                          // Update the state of the menu (enabling/disabling some menu items)
+                          updateMenu(event.node.data as TreeItemData)
+                          //cm.current.props.model = menu
                           cm.current.show(event.originalEvent);
                       }
                   }}/>
