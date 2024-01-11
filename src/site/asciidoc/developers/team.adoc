@@ -26,11 +26,11 @@ Sorted by first name:
 |Name |Bio | |
 | *Ben Hutcheson*
 
-Software Developer
+Software Developer, Control Systems Engineer
 
-Open to Work
+Isar Aerospace
 
-San Juan Del Sur, Nicaragua |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.png[hutcheb, 240, 320]
+Altötting, Germany |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.png[hutcheb, 240, 320]
 | *César García*
 
 CEOS Automatización, C.A.
