@@ -25,14 +25,14 @@ import 'primeicons/primeicons.css';
 import {useRef} from "react";
 import {ContextMenu} from "primereact/contextmenu";
 import {MenuItem} from "primereact/menuitem";
-//import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
-//import axios from "axios";
+import {RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
+import axios from "axios";
 
 type NavigationTreeProps = {
     treeItems: TreeItemData[];
 }
 
-//const restClient = new RestApplicationClient(axios);
+const restClient = new RestApplicationClient(axios);
 
 export default function NavigationTree({treeItems}: NavigationTreeProps) {
     const cm = useRef<ContextMenu>(null);
@@ -53,9 +53,11 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         } as MenuItem
     ] as MenuItem[]
     function updateMenu(selectedItem:TreeItemData) {
-        menu[0].disabled = selectedItem.supportsDiscovery
+        menu[0].disabled = !selectedItem.supportsDiscovery
+        menu[0].command = () => {
+            restClient.discover(selectedItem.id)
+        }
         menu[1].disabled = selectedItem.type != "DRIVER"
-        console.log("Second element enabled: " + (menu[1].disabled))
     }
     function getIcon(curItem: TreeItemData):IconType<TreeNode> {
         switch (curItem.type) {

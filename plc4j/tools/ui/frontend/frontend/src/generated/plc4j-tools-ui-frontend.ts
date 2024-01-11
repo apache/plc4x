@@ -19,7 +19,7 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-01-06 12:02:32.
+// Generated using typescript-generator version 3.2.1263 on 2024-01-11 22:58:15.
 
 export interface Device {
     id: number;
@@ -39,6 +39,15 @@ export interface Driver {
     transports: { [index: string]: Transport };
 }
 
+export interface UiApplicationEvent<T> extends ApplicationEvent {
+    source: T;
+    eventType: EventType;
+}
+
+export interface DeviceEvent extends UiApplicationEvent<Device> {
+    source: Device;
+}
+
 export interface ConfigurationOption {
     name: string;
     typeName: string;
@@ -50,6 +59,17 @@ export interface Transport {
     code: string;
     name: string;
     options: { [index: string]: any };
+}
+
+export interface ApplicationEvent extends EventObject {
+    timestamp: number;
+}
+
+export interface EventObject extends Serializable {
+    source: any;
+}
+
+export interface Serializable {
 }
 
 export interface HttpClient<O> {
@@ -112,6 +132,8 @@ export class RestApplicationClient<O> {
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
+
+export type EventType = "CREATED" | "UPDATED" | "DELETED";
 
 function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): string {
     let result = "";

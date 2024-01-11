@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.tools.ui.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.plc4x.java.tools.ui.event.ApplicationEvent;
+import org.apache.plc4x.java.tools.ui.event.UiApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -41,13 +41,13 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
 
     /**
      * ApplicationEvent listener forwarding all ApplicationEvents from this application to all connected clients.
-     * @param applicationEvent event that we want to be forwarded.
+     * @param uiApplicationEvent event that we want to be forwarded.
      */
     @EventListener
-    public void onApplicationEvent(ApplicationEvent<?> applicationEvent) {
+    public void onApplicationEvent(UiApplicationEvent<?> uiApplicationEvent) {
         openSessions.forEach((s, webSocketSession) -> {
             try {
-                webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(applicationEvent)));
+                webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(uiApplicationEvent)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

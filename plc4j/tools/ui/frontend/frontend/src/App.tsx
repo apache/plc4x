@@ -28,8 +28,15 @@ import Settings from "./pages/Settings.tsx";
 import About from "./pages/About.tsx";
 import useWebSocket from 'react-use-websocket';
 import {useState} from "react";
-import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
-import store, {InitializeConnectionsAction, initializeLists} from "./store";
+import {DeviceEvent, RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
+import store, {
+    addDevice,
+    deleteDevice,
+    DeviceAction,
+    InitializeConnectionsAction,
+    initializeLists,
+    updateDevice
+} from "./store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -57,17 +64,34 @@ function App() {
             console.log('WebSocket connection established.');
         },
         onMessage: event => {
-            console.log('Incoming message: ' + event.data)
+            const deviceEvent = JSON.parse(event.data) as DeviceEvent;
+            if(deviceEvent != null) {
+                switch (deviceEvent.eventType) {
+                    case "CREATED": {
+                        const action:DeviceAction = {device: deviceEvent.source}
+                        store.dispatch(addDevice(action));
+                        break;
+                    }
+                    case "UPDATED": {
+                        const action:DeviceAction = {device: deviceEvent.source}
+                        updateDevice(action)
+                        break;
+                    }
+                    case "DELETED": {
+                        const action: DeviceAction = {device: deviceEvent.source}
+                        deleteDevice(action)
+                        break;
+                    }
+                }
+            }
         }
     });
 
     // Load the initial list of drivers and connections and initialize the store with that.
     if(!initialized) {
         setInitialized(true);
-        console.log("Initializing")
         restClient.getAllDrivers().then(driverList => {
             restClient.getAllDevices().then(deviceList => {
-                console.log("Dispatching (Initialize-Lists)")
                 const action:InitializeConnectionsAction = {driverList:driverList.data, deviceList: deviceList.data}
                 store.dispatch(initializeLists(action))
             })

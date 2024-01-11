@@ -26,7 +26,7 @@ export type InitializeConnectionsAction = {
     deviceList: Device[]
 }
 
-type DeviceAction = {
+export type DeviceAction = {
     device: Device
 }
 
@@ -47,12 +47,13 @@ const connectionsSlice = createSlice({
         initializeLists: (state, action: PayloadAction<InitializeConnectionsAction>) => {
             state.driverList = action.payload.driverList
             state.deviceList = action.payload.deviceList
-            console.log("updated driver and device lists")
         },
         addDevice: (state, action: PayloadAction<DeviceAction>) => {
+            console.log("ADD " + action)
             state.deviceList = [...state.deviceList, action.payload.device]
         },
         updateDevice: (state, action: PayloadAction<DeviceAction>) => {
+            console.log("UPDATE " + action)
             const device = state.deviceList.find(value => value.id == action.payload.device.id);
             if (device) {
                 const index = state.deviceList.indexOf(device);
@@ -62,6 +63,7 @@ const connectionsSlice = createSlice({
             }
         },
         deleteDevice: (state, action: PayloadAction<DeviceAction>) => {
+            console.log("DELETE " + action)
             const device = state.deviceList.find(value => value.id == action.payload.device.id);
             if (device) {
                 const index = state.deviceList.indexOf(device);

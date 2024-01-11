@@ -19,11 +19,11 @@
 
 package org.apache.plc4x.java.tools.ui.event;
 
-public abstract class ApplicationEvent<T> extends org.springframework.context.ApplicationEvent {
+public abstract class UiApplicationEvent<T> extends org.springframework.context.ApplicationEvent {
 
     private final EventType eventType;
 
-    public ApplicationEvent(T source, EventType eventType) {
+    public UiApplicationEvent(T source, EventType eventType) {
         super(source);
         this.eventType = eventType;
     }

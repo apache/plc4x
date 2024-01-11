@@ -21,7 +21,7 @@ package org.apache.plc4x.java.tools.ui.event;
 
 import org.apache.plc4x.java.tools.ui.model.Device;
 
-public class DeviceEvent extends ApplicationEvent<Device> {
+public class DeviceEvent extends UiApplicationEvent<Device> {
 
     public DeviceEvent(Device source, EventType eventType) {
         super(source, eventType);
