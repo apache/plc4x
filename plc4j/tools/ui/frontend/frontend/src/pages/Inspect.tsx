@@ -68,6 +68,7 @@ function getByDeviceTree(deviceList: Device[]):TreeItemData[] {
 
 export default function Inspect() {
     const lists = useSelector((state: RootState) => {
+        console.log("Updated connections " + JSON.stringify(state.connections))
         return state.connections
     })
     return (

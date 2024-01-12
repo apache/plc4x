@@ -33,19 +33,19 @@ public class Device {
     private String name;
 
     private String protocolCode;
-    private String getTransportCode;
+    private String transportCode;
 
-    private String getTransportUrl;
+    private String transportUrl;
     @ElementCollection
     @MapKeyColumn(name="name")
     @Column(name="value")
     @CollectionTable(name="device_options", joinColumns=@JoinColumn(name="device_id"))
-    private Map<String, String> getOptions;
+    private Map<String, String> options;
     @ElementCollection
     @MapKeyColumn(name="name")
     @Column(name="value")
     @CollectionTable(name="device_attributes", joinColumns=@JoinColumn(name="device_id"))
-    private Map<String, String> getAttributes;
+    private Map<String, String> attributes;
 
     public Device() {
     }
@@ -74,36 +74,36 @@ public class Device {
         this.protocolCode = protocolCode;
     }
 
-    public String getGetTransportCode() {
-        return getTransportCode;
+    public String getTransportCode() {
+        return transportCode;
     }
 
-    public void setGetTransportCode(String getTransportCode) {
-        this.getTransportCode = getTransportCode;
+    public void setTransportCode(String transportCode) {
+        this.transportCode = transportCode;
     }
 
-    public String getGetTransportUrl() {
-        return getTransportUrl;
+    public String getTransportUrl() {
+        return transportUrl;
     }
 
-    public void setGetTransportUrl(String getTransportUrl) {
-        this.getTransportUrl = getTransportUrl;
+    public void setTransportUrl(String transportUrl) {
+        this.transportUrl = transportUrl;
     }
 
-    public Map<String, String> getGetOptions() {
-        return getOptions;
+    public Map<String, String> getOptions() {
+        return options;
     }
 
-    public void setGetOptions(Map<String, String> getOptions) {
-        this.getOptions = getOptions;
+    public void setOptions(Map<String, String> options) {
+        this.options = options;
     }
 
-    public Map<String, String> getGetAttributes() {
-        return getAttributes;
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
-    public void setGetAttributes(Map<String, String> getAttributes) {
-        this.getAttributes = getAttributes;
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
 }

@@ -37,10 +37,7 @@ import org.apache.plc4x.java.tools.ui.model.Driver;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -92,7 +89,18 @@ public class DriverService {
                 PlcDiscoveryRequest request = driver.discoveryRequestBuilder().addQuery("all", "*").build();
                 // Execute the discovery request and have all connections found be added as connections.
                 request.executeWithHandler(discoveryItem -> {
+                    Map<String, String> attributes = new HashMap<>();
+                    for (String attributeName : discoveryItem.getAttributes().keySet()) {
+                        String attributeValue = discoveryItem.getAttributes().get(attributeName).getString();
+                        attributes.put(attributeName, attributeValue);
+                    }
                     Device device = new Device();
+                    device.setName(discoveryItem.getName());
+                    device.setProtocolCode(discoveryItem.getProtocolCode());
+                    device.setTransportCode(discoveryItem.getTransportCode());
+                    device.setTransportUrl(discoveryItem.getTransportUrl());
+                    device.setOptions(discoveryItem.getOptions());
+                    device.setAttributes(attributes);
                     applicationEventPublisher.publishEvent(new DeviceEvent(device, EventType.CREATED));
                 }).whenComplete((plcDiscoveryResponse, throwable) -> {
                     if(throwable != null) {
