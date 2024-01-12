@@ -27,10 +27,12 @@ import {TreeItemData} from "../model/TreeItemData.ts";
 import {RootState} from "../store";
 
 function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemData[] {
+    console.log("getByDriverTree " + JSON.stringify(driverList) + " " + JSON.stringify(deviceList))
     if(driverList && deviceList) {
+        const driverMap = new Map<string, TreeItemData>()
         let result:TreeItemData[] = []
         driverList.forEach(value => {
-            result = [...result, {
+            const driverEntry:TreeItemData = {
                 id: value.code,
                 name: value.name,
                 type: "DRIVER",
@@ -39,8 +41,28 @@ function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemDat
                 supportsReading: false,
                 supportsWriting: false,
                 supportsSubscribing: false,
-                supportsPublishing: false
-            }]
+                supportsPublishing: false,
+                children: []
+            }
+            driverMap.set(value.code, driverEntry)
+            result = [...result, driverEntry]
+        })
+        result.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+        deviceList.forEach(value => {
+            const curDriverTreeItem = driverMap.get(value.protocolCode);
+            if(curDriverTreeItem && curDriverTreeItem.children) {
+                curDriverTreeItem.children = [...curDriverTreeItem.children, {
+                    id: value.id?.toString(),
+                    name: value.name,
+                    type: "DEVICE",
+                    supportsDiscovery: false,
+                    supportsBrowsing: false,
+                    supportsReading: false,
+                    supportsWriting: false,
+                    supportsSubscribing: false,
+                    supportsPublishing: false} as TreeItemData
+                ]
+            }
         })
         return result
     }
@@ -48,6 +70,7 @@ function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemDat
 }
 
 function getByDeviceTree(deviceList: Device[]):TreeItemData[] {
+    console.log("getByDeviceTree " + JSON.stringify(deviceList))
     if(deviceList) {
         // Group the connections by transport-url.
         // TODO: Possibly create filters for the different types of urls (IP, Hostname, Port, Mac-Address, ...)

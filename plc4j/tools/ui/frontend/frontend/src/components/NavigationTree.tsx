@@ -50,6 +50,13 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
             data: "add-data",
             icon: 'pi pi-plus-circle',
             disabled: false,
+        } as MenuItem,
+        {
+            key: "3",
+            label: 'Connect',
+            data: "connect-data",
+            icon: 'pi pi-phone',
+            disabled: false,
         } as MenuItem
     ] as MenuItem[]
     function updateMenu(selectedItem:TreeItemData) {
@@ -58,6 +65,7 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
             restClient.discover(selectedItem.id)
         }
         menu[1].disabled = selectedItem.type != "DRIVER"
+        menu[2].disabled = selectedItem.type != "DEVICE"
     }
     function getIcon(curItem: TreeItemData):IconType<TreeNode> {
         switch (curItem.type) {
