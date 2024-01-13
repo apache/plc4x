@@ -60,6 +60,7 @@ setup(
         "plc4py.drivers": [
             "mock = plc4py.drivers.mock.MockConnection:MockDriverLoader",
             "modbus = plc4py.drivers.modbus.ModbusConnection:ModbusDriverLoader",
+            "umas = plc4py.drivers.umas.UmasConnection:UmasDriverLoader",
         ]
     },
 )

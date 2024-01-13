@@ -50,6 +50,7 @@ class UmasConnection(PlcConnection):
         super().__init__(config)
         self._configuration: UmasConfiguration
         self._device: UmasDevice = UmasDevice(self._configuration)
+        self._device.connect()
         self._transport: Plc4xBaseTransport = transport
 
     @staticmethod
@@ -153,7 +154,7 @@ class UmasDriver(PlcDriver):
 
 class UmasDriverLoader(PlcDriverLoader):
     """
-    Umas Driver Pluggy Hook Implmentation, lets pluggy find the driver by name
+    Umas Driver Pluggy Hook Implementation, lets pluggy find the driver by name
     """
 
     @staticmethod

@@ -21,16 +21,16 @@ import time
 from plc4py.PlcDriverManager import PlcDriverManager
 
 
-async def manual_test_plc_driver_modbus_connect():
+async def manual_test_plc_driver_umas_connect():
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("modbus://127.0.0.1:5555") as connection:
+    async with driver_manager.connection("umas://127.0.0.1:5555") as connection:
         assert connection.is_connected()
     assert not connection.is_connected()
 
 
-async def test_plc_driver_modbus_read():
+async def test_plc_driver_umas_read():
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("modbus://192.168.1.174:502") as connection:
+    async with driver_manager.connection("umas://192.168.1.174:502") as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001[10]")
             request = builder.build()

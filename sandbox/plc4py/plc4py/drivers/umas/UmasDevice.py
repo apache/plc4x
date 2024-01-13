@@ -68,6 +68,9 @@ class UmasDevice:
         default_factory=lambda: AtomicInteger()
     )
 
+    async def connect(self):
+        pass
+
     async def read(
         self, request: PlcReadRequest, transport: Transport
     ) -> PlcReadResponse:
