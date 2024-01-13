@@ -25,14 +25,14 @@ from plc4py.api.exceptions.exceptions import ParseException
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.modbus.readwrite.DriverType import DriverType
+from plc4py.protocols.umas.readwrite.DriverType import DriverType
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
-class ModbusADU(ABC, PlcMessage):
+class UmasADU(ABC, PlcMessage):
     # Arguments.
     response: bool
 
@@ -43,23 +43,23 @@ class ModbusADU(ABC, PlcMessage):
         pass
 
     @abstractmethod
-    def serialize_modbus_adu_child(self, write_buffer: WriteBuffer) -> None:
+    def serialize_umas_adu_child(self, write_buffer: WriteBuffer) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("ModbusADU")
+        write_buffer.push_context("UmasADU")
 
         # Switch field (Serialize the sub-type)
-        self.serialize_modbus_adu_child(write_buffer)
+        self.serialize_umas_adu_child(write_buffer)
 
-        write_buffer.pop_context("ModbusADU")
+        write_buffer.pop_context("UmasADU")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = 0
-        _value: ModbusADU = self
+        _value: UmasADU = self
 
         # Length of subtype elements will be added by sub-type...
 
@@ -94,32 +94,32 @@ class ModbusADU(ABC, PlcMessage):
                 + kwargs.get("response").getClass().getName()
             )
 
-        return ModbusADU.static_parse_context(read_buffer, driver_type, response)
+        return UmasADU.static_parse_context(read_buffer, driver_type, response)
 
     @staticmethod
     def static_parse_context(
         read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
-        read_buffer.push_context("ModbusADU")
+        read_buffer.push_context("UmasADU")
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-        builder: ModbusADUBuilder = None
-        from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+        builder: UmasADUBuilder = None
+        from plc4py.protocols.umas.readwrite.UmasTcpADU import UmasTcpADU
 
-        if driver_type == DriverType.MODBUS_TCP:
-            builder = ModbusTcpADU.static_parse_builder(
+        if driver_type == DriverType.umas__tcp:
+            builder = UmasTcpADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
-        from plc4py.protocols.modbus.readwrite.ModbusRtuADU import ModbusRtuADU
+        from plc4py.protocols.umas.readwrite.UmasRtuADU import UmasRtuADU
 
-        if driver_type == DriverType.MODBUS_RTU:
-            builder = ModbusRtuADU.static_parse_builder(
+        if driver_type == DriverType.umas__rtu:
+            builder = UmasRtuADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
-        from plc4py.protocols.modbus.readwrite.ModbusAsciiADU import ModbusAsciiADU
+        from plc4py.protocols.umas.readwrite.UmasAsciiADU import UmasAsciiADU
 
-        if driver_type == DriverType.MODBUS_ASCII:
-            builder = ModbusAsciiADU.static_parse_builder(
+        if driver_type == DriverType.umas__ascii:
+            builder = UmasAsciiADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
         if builder is None:
@@ -131,19 +131,19 @@ class ModbusADU(ABC, PlcMessage):
                 + "]"
             )
 
-        read_buffer.pop_context("ModbusADU")
+        read_buffer.pop_context("UmasADU")
         # Create the instance
-        _modbus_adu: ModbusADU = builder.build(response)
-        return _modbus_adu
+        _umas_adu: UmasADU = builder.build(response)
+        return _umas_adu
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, ModbusADU):
+        if not isinstance(o, UmasADU):
             return False
 
-        that: ModbusADU = ModbusADU(o)
+        that: UmasADU = UmasADU(o)
         return True
 
     def hash_code(self) -> int:
@@ -160,7 +160,6 @@ class ModbusADU(ABC, PlcMessage):
         # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
-@dataclass
-class ModbusADUBuilder:
-    def build(self, response: bool) -> ModbusADU:
+class UmasADUBuilder:
+    def build(self, response: bool) -> UmasADU:
         pass

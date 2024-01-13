@@ -636,6 +636,7 @@ class ModbusPDU(ABC, PlcMessage):
         # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
+@dataclass
 class ModbusPDUBuilder:
     def build(
         self,

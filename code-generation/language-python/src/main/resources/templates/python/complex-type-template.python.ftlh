@@ -742,7 +742,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign virtualField = field.asVirtualField().orElseThrow()>
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
-        ${namedField.name}: ${helper.getLanguageTypeNameForField(field)} = read_buffer.${helper.getDataReaderCall(virtualField.type)}(logical_name="${namedField.name}", ${helper.getLanguageTypeNameForField(field)}.class, ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
+        ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForField(field)} = ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}
                 <#break>
             <#case "validation">
                 <#assign validationField = field.asValidationField().orElseThrow()>
@@ -758,7 +758,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${namedField.name}: ${helper.getLanguageTypeNameForField(field)} = read_buffer.${helper.getDataReaderCall(peekField.type)}(logical_name="${namedField.name}"<#if peekField.offsetExpression.present>, ${helper.toParseExpression(peekField, helper.boolTypeReference, peekField.offsetExpression.get(), parserArguments)}</#if>${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
+        ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForField(field)} = read_buffer.${helper.getDataReaderCall(peekField.type)}(logical_name="${namedField.name}"<#if peekField.offsetExpression.present>, ${helper.toParseExpression(peekField, helper.boolTypeReference, peekField.offsetExpression.get(), parserArguments)}</#if>${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
                 <#break>
         </#switch>
     </#list>
@@ -844,13 +844,13 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         #return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
     <#if type.isDiscriminatedParentTypeDefinition()>
+@dataclass
 class ${type.name}Builder:
+    <#list type.propertyFields as field>
+    ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}
+    </#list>
     <@compress single_line=true>def build(self,
-<#list type.propertyFields as field>
-    ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
-</#list>
 <#if filteredParserArguments?has_content>
-    <#if type.propertyFields?has_content>, </#if>
     <#list filteredParserArguments as arg>
         ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
     </#list>
@@ -876,13 +876,10 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
     def build(self,<@compress single_line=true>
     <#if filteredParserArguments?has_content>
         <#list filteredParserArguments as arg>
-            ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}
+            ${helper.camelCaseToSnakeCase(arg.name)}: ${helper.getLanguageTypeNameForTypeReference(arg.type)}<#sep>, </#sep>
         </#list>
         ,
     </#if>
-    <#list type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields as field>
-        ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep>
-    </#list>
     <#if filteredParentParserArguments?has_content>
         <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if>
         <#list filteredParentParserArguments as arg>
@@ -893,12 +890,11 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
         ${helper.camelCaseToSnakeCase(type.name)}: ${type.name} = ${type.name}(<@compress single_line=true>
     <#if filteredParserArguments?has_content>
         <#list filteredParserArguments as arg>
-            ${arg.name}<#sep>, </#sep>
+            ${helper.camelCaseToSnakeCase(arg.name)}<#sep>, </#sep>
         </#list>
     </#if>
     <#if filteredParserArguments?has_content>, </#if>
     <#list type.allPropertyFields as field>
-
         self.${helper.camelCaseToSnakeCase(field.name)}<#sep>, </#sep>
     </#list>
     )</@compress>

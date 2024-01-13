@@ -25,41 +25,62 @@ from plc4py.api.exceptions.exceptions import ParseException
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 import math
 
 
 @dataclass
-class ModbusADU(ABC, PlcMessage):
+class UmasPDUItem(ABC, PlcMessage):
+    pairing_key: int
     # Arguments.
-    response: bool
+    byte_count: int
 
     # Abstract accessors for discriminator values.
     @property
     @abstractmethod
-    def driver_type(self) -> DriverType:
+    def response(self) -> bool:
+        pass
+
+    @property
+    @abstractmethod
+    def umas_function_key(self) -> int:
         pass
 
     @abstractmethod
-    def serialize_modbus_adu_child(self, write_buffer: WriteBuffer) -> None:
+    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("ModbusADU")
+        write_buffer.push_context("UmasPDUItem")
+
+        # Simple Field (pairingKey)
+        write_buffer.write_unsigned_byte(self.pairing_key, logical_name="pairingKey")
+
+        # Discriminator Field (umasFunctionKey) (Used as input to a switch field)
+        write_buffer.write_unsigned_byte(
+            self.umas_function_key,
+            logical_name="umasFunctionKey",
+            bit_length=8,
+        )
 
         # Switch field (Serialize the sub-type)
-        self.serialize_modbus_adu_child(write_buffer)
+        self.serialize_umas_pdu_item_child(write_buffer)
 
-        write_buffer.pop_context("ModbusADU")
+        write_buffer.pop_context("UmasPDUItem")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = 0
-        _value: ModbusADU = self
+        _value: UmasPDUItem = self
+
+        # Simple field (pairingKey)
+        length_in_bits += 8
+
+        # Discriminator Field (umasFunctionKey)
+        length_in_bits += 8
 
         # Length of subtype elements will be added by sub-type...
 
@@ -72,17 +93,6 @@ class ModbusADU(ABC, PlcMessage):
                 "Wrong number of arguments, expected 2, but got None"
             )
 
-        driver_type: DriverType = 0
-        if isinstance(kwargs.get("driverType"), DriverType):
-            driver_type = DriverType(kwargs.get("driverType"))
-        elif isinstance(kwargs.get("driverType"), str):
-            driver_type = DriverType(str(kwargs.get("driverType")))
-        else:
-            raise PlcRuntimeException(
-                "Argument 0 expected to be of type DriverType or a string which is parseable but was "
-                + kwargs.get("driverType").getClass().getName()
-            )
-
         response: bool = False
         if isinstance(kwargs.get("response"), bool):
             response = bool(kwargs.get("response"))
@@ -90,61 +100,81 @@ class ModbusADU(ABC, PlcMessage):
             response = bool(str(kwargs.get("response")))
         else:
             raise PlcRuntimeException(
-                "Argument 1 expected to be of type bool or a string which is parseable but was "
+                "Argument 0 expected to be of type bool or a string which is parseable but was "
                 + kwargs.get("response").getClass().getName()
             )
 
-        return ModbusADU.static_parse_context(read_buffer, driver_type, response)
+        byte_count: int = 0
+        if isinstance(kwargs.get("byteCount"), int):
+            byte_count = int(kwargs.get("byteCount"))
+        elif isinstance(kwargs.get("byteCount"), str):
+            byte_count = int(str(kwargs.get("byteCount")))
+        else:
+            raise PlcRuntimeException(
+                "Argument 1 expected to be of type int or a string which is parseable but was "
+                + kwargs.get("byteCount").getClass().getName()
+            )
+
+        return UmasPDUItem.static_parse_context(read_buffer, response, byte_count)
 
     @staticmethod
-    def static_parse_context(
-        read_buffer: ReadBuffer, driver_type: DriverType, response: bool
-    ):
-        read_buffer.push_context("ModbusADU")
+    def static_parse_context(read_buffer: ReadBuffer, response: bool, byte_count: int):
+        read_buffer.push_context("UmasPDUItem")
+
+        pairing_key: int = read_buffer.read_unsigned_byte(
+            logical_name="pairingKey",
+            bit_length=8,
+            response=response,
+            byte_count=byte_count,
+        )
+
+        umas_function_key: int = read_buffer.read_unsigned_byte(
+            logical_name="umasFunctionKey",
+            bit_length=8,
+            response=response,
+            byte_count=byte_count,
+        )
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
-        builder: ModbusADUBuilder = None
-        from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+        builder: UmasPDUItemBuilder = None
+        from plc4py.protocols.umas.readwrite.UmasPDURequest import UmasPDURequest
 
-        if driver_type == DriverType.MODBUS_TCP:
-            builder = ModbusTcpADU.static_parse_builder(
-                read_buffer, driver_type, response
+        if umas_function_key == int(0x02) and response == bool(False):
+            builder = UmasPDURequest.static_parse_builder(
+                read_buffer, response, byte_count
             )
-        from plc4py.protocols.modbus.readwrite.ModbusRtuADU import ModbusRtuADU
+        from plc4py.protocols.umas.readwrite.UmasPDUResponse import UmasPDUResponse
 
-        if driver_type == DriverType.MODBUS_RTU:
-            builder = ModbusRtuADU.static_parse_builder(
-                read_buffer, driver_type, response
-            )
-        from plc4py.protocols.modbus.readwrite.ModbusAsciiADU import ModbusAsciiADU
-
-        if driver_type == DriverType.MODBUS_ASCII:
-            builder = ModbusAsciiADU.static_parse_builder(
-                read_buffer, driver_type, response
+        if umas_function_key == int(0x02) and response == bool(True):
+            builder = UmasPDUResponse.static_parse_builder(
+                read_buffer, response, byte_count
             )
         if builder is None:
             raise ParseException(
                 "Unsupported case for discriminated type"
                 + " parameters ["
-                + "driverType="
-                + str(driver_type)
+                + "umasFunctionKey="
+                + str(umas_function_key)
+                + " "
+                + "response="
+                + str(response)
                 + "]"
             )
 
-        read_buffer.pop_context("ModbusADU")
+        read_buffer.pop_context("UmasPDUItem")
         # Create the instance
-        _modbus_adu: ModbusADU = builder.build(response)
-        return _modbus_adu
+        _umas_pdu_item: UmasPDUItem = builder.build(pairing_key, byte_count)
+        return _umas_pdu_item
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, ModbusADU):
+        if not isinstance(o, UmasPDUItem):
             return False
 
-        that: ModbusADU = ModbusADU(o)
-        return True
+        that: UmasPDUItem = UmasPDUItem(o)
+        return (self.pairing_key == that.pairing_key) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -161,6 +191,8 @@ class ModbusADU(ABC, PlcMessage):
 
 
 @dataclass
-class ModbusADUBuilder:
-    def build(self, response: bool) -> ModbusADU:
+class UmasPDUItemBuilder:
+    pairing_key: int
+
+    def build(self, byte_count: int) -> UmasPDUItem:
         pass

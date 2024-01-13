@@ -24,45 +24,45 @@ from typing import Dict, List
 
 from bitarray import bitarray
 
-from plc4py.protocols.modbus.readwrite.DataItem import DataItem
-from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
+from plc4py.protocols.umas.readwrite.DataItem import DataItem
+from plc4py.protocols.umas.readwrite.UmasPDUError import UmasPDUError
 from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
 
-from plc4py.drivers.modbus.ModbusTag import (
-    ModbusTagHoldingRegister,
-    ModbusTagCoil,
-    ModbusTagDiscreteInput,
-    ModbusTagInputRegister,
+from plc4py.drivers.umas.UmasTag import (
+    UmasTagHoldingRegister,
+    UmasTagCoil,
+    UmasTagDiscreteInput,
+    UmasTagInputRegister,
 )
 
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsRequest import (
-    ModbusPDUReadCoilsRequest,
+from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
+from plc4py.protocols.umas.readwrite.UmasPDUReadCoilsRequest import (
+    UmasPDUReadCoilsRequest,
 )
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
-    ModbusPDUReadDiscreteInputsRequest,
+from plc4py.protocols.umas.readwrite.UmasPDUReadDiscreteInputsRequest import (
+    UmasPDUReadDiscreteInputsRequest,
 )
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import (
-    ModbusPDUReadInputRegistersRequest,
+from plc4py.protocols.umas.readwrite.UmasPDUReadInputRegistersRequest import (
+    UmasPDUReadInputRegistersRequest,
 )
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
 from plc4py.api.messages.PlcRequest import PlcReadRequest
 from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest import (
-    ModbusPDUReadHoldingRegistersRequest,
+from plc4py.protocols.umas.readwrite.UmasPDUReadHoldingRegistersRequest import (
+    UmasPDUReadHoldingRegistersRequest,
 )
-from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+from plc4py.protocols.umas.readwrite.UmasTcpADU import UmasTcpADU
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcValues import PlcList, PlcNull
 from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
 
 
 @dataclass
-class ModbusDevice:
-    _configuration: ModbusConfiguration
+class UmasDevice:
+    _configuration: UmasConfiguration
     tags: Dict[str, PlcValue] = field(default_factory=lambda: {})
     _transaction_generator: AtomicInteger = field(
         default_factory=lambda: AtomicInteger()
@@ -72,35 +72,35 @@ class ModbusDevice:
         self, request: PlcReadRequest, transport: Transport
     ) -> PlcReadResponse:
         """
-        Reads one field from the Modbus Device
+        Reads one field from the Umas Device
         """
         if len(request.tags) > 1:
             raise NotImplementedError(
-                "The Modbus driver only supports reading single tags at once"
+                "The Umas driver only supports reading single tags at once"
             )
         if len(request.tags) == 0:
             raise PlcRuntimeException("No tags have been specified to read")
         tag = request.tags[request.tag_names[0]]
-        logging.debug(f"Reading tag {str(tag)} from Modbus Device")
+        logging.debug(f"Reading tag {str(tag)} from Umas Device")
 
         # Create future to be returned when a value is returned
         loop = asyncio.get_running_loop()
         message_future = loop.create_future()
 
-        if isinstance(tag, ModbusTagCoil):
-            pdu = ModbusPDUReadCoilsRequest(tag.address, tag.quantity)
-        elif isinstance(tag, ModbusTagDiscreteInput):
-            pdu = ModbusPDUReadDiscreteInputsRequest(tag.address, tag.quantity)
-        elif isinstance(tag, ModbusTagInputRegister):
-            pdu = ModbusPDUReadInputRegistersRequest(tag.address, tag.quantity)
-        elif isinstance(tag, ModbusTagHoldingRegister):
-            pdu = ModbusPDUReadHoldingRegistersRequest(tag.address, tag.quantity)
+        if isinstance(tag, UmasTagCoil):
+            pdu = UmasPDUReadCoilsRequest(tag.address, tag.quantity)
+        elif isinstance(tag, UmasTagDiscreteInput):
+            pdu = UmasPDUReadDiscreteInputsRequest(tag.address, tag.quantity)
+        elif isinstance(tag, UmasTagInputRegister):
+            pdu = UmasPDUReadInputRegistersRequest(tag.address, tag.quantity)
+        elif isinstance(tag, UmasTagHoldingRegister):
+            pdu = UmasPDUReadHoldingRegistersRequest(tag.address, tag.quantity)
         else:
             raise NotImplementedError(
-                "Modbus tag type not implemented " + str(tag.__class__)
+                "Umas tag type not implemented " + str(tag.__class__)
             )
 
-        adu = ModbusTcpADU(
+        adu = UmasTcpADU(
             False,
             self._transaction_generator.increment(),
             self._configuration.unit_identifier,
@@ -120,7 +120,7 @@ class ModbusDevice:
         await message_future
         result = message_future.result()
 
-        if isinstance(result, ModbusPDUError):
+        if isinstance(result, UmasPDUError):
             response_items = [
                 ResponseItem(
                     PlcResponseCode.ACCESS_DENIED, PlcNull(result.exception_code)
@@ -132,7 +132,7 @@ class ModbusDevice:
             )
             return response
 
-        if isinstance(tag, ModbusTagCoil) or isinstance(tag, ModbusTagDiscreteInput):
+        if isinstance(tag, UmasTagCoil) or isinstance(tag, UmasTagDiscreteInput):
             a = bitarray()
             a.frombytes(bytearray(result.value))
             a.bytereverse()

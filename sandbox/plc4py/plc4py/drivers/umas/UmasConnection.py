@@ -32,47 +32,47 @@ from plc4py.api.messages.PlcRequest import (
 )
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
-from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
-from plc4py.drivers.modbus.ModbusDevice import ModbusDevice
-from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
-from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
+from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
+from plc4py.drivers.umas.UmasDevice import UmasDevice
+from plc4py.drivers.umas.UmasProtocol import UmasProtocol
+from plc4py.drivers.umas.UmasTag import UmasTagBuilder
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection):
+class UmasConnection(PlcConnection):
     """
-    Modbus TCP PLC connection implementation
+    Umas TCP PLC connection implementation
     """
 
-    def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
+    def __init__(self, config: UmasConfiguration, transport: Plc4xBaseTransport):
         super().__init__(config)
-        self._configuration: ModbusConfiguration
-        self._device: ModbusDevice = ModbusDevice(self._configuration)
+        self._configuration: UmasConfiguration
+        self._device: UmasDevice = UmasDevice(self._configuration)
         self._transport: Plc4xBaseTransport = transport
 
     @staticmethod
     async def create(url: str):
         """
-        Static Factory to return an instance of a ModbusConnection.
-        It creates the TCP connection to the Modbus device before returning.
+        Static Factory to return an instance of a UmasConnection.
+        It creates the TCP connection to the Umas device before returning.
 
-        :param url: PLC4X connection string of the Modbus TCP connection
-        :return ModbusConnection instance using the configuration from the url provided
+        :param url: PLC4X connection string of the Umas TCP connection
+        :return UmasConnection instance using the configuration from the url provided
         """
-        config = ModbusConfiguration(url)
+        config = UmasConfiguration(url)
         loop = asyncio.get_running_loop()
         connection_future = loop.create_future()
         transport = await asyncio.wait_for(
             TCPTransport.create(
-                protocol_factory=lambda: ModbusProtocol(connection_future),
+                protocol_factory=lambda: UmasProtocol(connection_future),
                 host=config.host,
                 port=config.port,
             ),
             10,
         )
-        return ModbusConnection(config, transport)
+        return UmasConnection(config, transport)
 
     def is_connected(self) -> bool:
         """
@@ -96,7 +96,7 @@ class ModbusConnection(PlcConnection):
         """
         :return: read request builder.
         """
-        return DefaultReadRequestBuilder(ModbusTagBuilder)
+        return DefaultReadRequestBuilder(UmasTagBuilder)
 
     def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
         """
@@ -117,7 +117,7 @@ class ModbusConnection(PlcConnection):
         Executes a PlcReadRequest
         """
         if self._device is None:
-            logging.error("No device is set in the modbus connection!")
+            logging.error("No device is set in the Umas connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         async def _request(req, device) -> PlcReadResponse:
@@ -128,16 +128,16 @@ class ModbusConnection(PlcConnection):
                 # TODO:- This exception is very general and probably should be replaced
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
-        logging.debug("Sending read request to ModbusDevice")
+        logging.debug("Sending read request to UmasDevice")
         future = asyncio.ensure_future(_request(request, self._device))
         return future
 
 
-class ModbusDriver(PlcDriver):
+class UmasDriver(PlcDriver):
     def __init__(self):
         super().__init__()
-        self.protocol_code = "modbus-tcp"
-        self.protocol_name = "Modbus TCP"
+        self.protocol_code = "umas"
+        self.protocol_name = "umas"
 
     async def get_connection(
         self, url: str, authentication: PlcAuthentication = PlcAuthentication()
@@ -148,20 +148,20 @@ class ModbusDriver(PlcDriver):
         :param authentication: authentication credentials.
         :return PlcConnection: PLC Connection object
         """
-        return await ModbusConnection.create(url)
+        return await UmasConnection.create(url)
 
 
-class ModbusDriverLoader(PlcDriverLoader):
+class UmasDriverLoader(PlcDriverLoader):
     """
-    Modbus Driver Pluggy Hook Implmentation, lets pluggy find the driver by name
+    Umas Driver Pluggy Hook Implmentation, lets pluggy find the driver by name
     """
 
     @staticmethod
     @plc4py.hookimpl
-    def get_driver() -> Type[ModbusDriver]:
-        return ModbusDriver
+    def get_driver() -> Type[UmasDriver]:
+        return UmasDriver
 
     @staticmethod
     @plc4py.hookimpl
     def key() -> str:
-        return "modbus"
+        return "umas"
