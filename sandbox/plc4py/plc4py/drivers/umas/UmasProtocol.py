@@ -37,9 +37,7 @@ class UmasProtocol(Plc4xBaseProtocol):
         read_buffer = ReadBufferByteBased(
             bytearray(data), byte_order=ByteOrder.BIG_ENDIAN
         )
-        adu: ModbusTcpADU = ModbusTcpADU.static_parse(read_buffer, response=True).build(
-            True
-        )
+        adu: ModbusTcpADU = ModbusTcpADU.static_parse(read_buffer, response=True)
         if adu.transaction_identifier in self.messages:
             self.messages[adu.transaction_identifier].set_result(adu.pdu)
         else:

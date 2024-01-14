@@ -34,7 +34,6 @@ import math
 class ModbusPDU(ABC, PlcMessage):
     # Arguments.
     response: bool
-    length: int
 
     # Abstract accessors for discriminator values.
     @property
@@ -94,7 +93,7 @@ class ModbusPDU(ABC, PlcMessage):
     def static_parse(read_buffer: ReadBuffer, **kwargs):
         if kwargs is None:
             raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got None"
+                "Wrong number of arguments, expected 1, but got None"
             )
 
         response: bool = False
@@ -108,28 +107,17 @@ class ModbusPDU(ABC, PlcMessage):
                 + kwargs.get("response").getClass().getName()
             )
 
-        length: int = 0
-        if isinstance(kwargs.get("length"), int):
-            length = int(kwargs.get("length"))
-        elif isinstance(kwargs.get("length"), str):
-            length = int(str(kwargs.get("length")))
-        else:
-            raise PlcRuntimeException(
-                "Argument 1 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("length").getClass().getName()
-            )
-
-        return ModbusPDU.static_parse_context(read_buffer, response, length)
+        return ModbusPDU.static_parse_context(read_buffer, response)
 
     @staticmethod
-    def static_parse_context(read_buffer: ReadBuffer, response: bool, length: int):
+    def static_parse_context(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDU")
         error_flag: bool = read_buffer.read_bit(
-            logical_name="errorFlag", bit_length=1, response=response, length=length
+            logical_name="errorFlag", bit_length=1, response=response
         )
 
         function_flag: int = read_buffer.read_unsigned_byte(
-            logical_name="functionFlag", bit_length=7, response=response, length=length
+            logical_name="functionFlag", bit_length=7, response=response
         )
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -137,11 +125,11 @@ class ModbusPDU(ABC, PlcMessage):
         from plc4py.protocols.umas.readwrite.ModbusPDUError import ModbusPDUError
 
         if error_flag == bool(True):
-            builder = ModbusPDUError.static_parse_builder(read_buffer, response, length)
+            builder = ModbusPDUError.static_parse_builder(read_buffer, response)
         from plc4py.protocols.umas.readwrite.UmasPDU import UmasPDU
 
         if error_flag == bool(False) and function_flag == int(0x5A):
-            builder = UmasPDU.static_parse_builder(read_buffer, response, length)
+            builder = UmasPDU.static_parse_builder(read_buffer, response)
         if builder is None:
             raise ParseException(
                 "Unsupported case for discriminated type"
@@ -156,7 +144,7 @@ class ModbusPDU(ABC, PlcMessage):
 
         read_buffer.pop_context("ModbusPDU")
         # Create the instance
-        _modbus_pdu: ModbusPDU = builder.build(response, length)
+        _modbus_pdu: ModbusPDU = builder.build(response)
         return _modbus_pdu
 
     def equals(self, o: object) -> bool:
@@ -185,5 +173,5 @@ class ModbusPDU(ABC, PlcMessage):
 
 @dataclass
 class ModbusPDUBuilder:
-    def build(self, response: bool, length: int) -> ModbusPDU:
+    def build(self, response: bool) -> ModbusPDU:
         pass

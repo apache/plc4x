@@ -33,8 +33,6 @@ import math
 @dataclass
 class UmasPDUItem(ABC, PlcMessage):
     pairing_key: int
-    # Arguments.
-    byte_count: int
 
     # Abstract accessors for discriminator values.
     @property
@@ -90,7 +88,7 @@ class UmasPDUItem(ABC, PlcMessage):
     def static_parse(read_buffer: ReadBuffer, **kwargs):
         if kwargs is None:
             raise PlcRuntimeException(
-                "Wrong number of arguments, expected 2, but got None"
+                "Wrong number of arguments, expected 1, but got None"
             )
 
         response: bool = False
@@ -104,35 +102,18 @@ class UmasPDUItem(ABC, PlcMessage):
                 + kwargs.get("response").getClass().getName()
             )
 
-        byte_count: int = 0
-        if isinstance(kwargs.get("byteCount"), int):
-            byte_count = int(kwargs.get("byteCount"))
-        elif isinstance(kwargs.get("byteCount"), str):
-            byte_count = int(str(kwargs.get("byteCount")))
-        else:
-            raise PlcRuntimeException(
-                "Argument 1 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("byteCount").getClass().getName()
-            )
-
-        return UmasPDUItem.static_parse_context(read_buffer, response, byte_count)
+        return UmasPDUItem.static_parse_context(read_buffer, response)
 
     @staticmethod
-    def static_parse_context(read_buffer: ReadBuffer, response: bool, byte_count: int):
+    def static_parse_context(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("UmasPDUItem")
 
         pairing_key: int = read_buffer.read_unsigned_byte(
-            logical_name="pairingKey",
-            bit_length=8,
-            response=response,
-            byte_count=byte_count,
+            logical_name="pairingKey", bit_length=8, response=response
         )
 
         umas_function_key: int = read_buffer.read_unsigned_byte(
-            logical_name="umasFunctionKey",
-            bit_length=8,
-            response=response,
-            byte_count=byte_count,
+            logical_name="umasFunctionKey", bit_length=8, response=response
         )
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -140,15 +121,11 @@ class UmasPDUItem(ABC, PlcMessage):
         from plc4py.protocols.umas.readwrite.UmasPDURequest import UmasPDURequest
 
         if umas_function_key == int(0x02) and response == bool(False):
-            builder = UmasPDURequest.static_parse_builder(
-                read_buffer, response, byte_count
-            )
+            builder = UmasPDURequest.static_parse_builder(read_buffer, response)
         from plc4py.protocols.umas.readwrite.UmasPDUResponse import UmasPDUResponse
 
-        if umas_function_key == int(0x02) and response == bool(True):
-            builder = UmasPDUResponse.static_parse_builder(
-                read_buffer, response, byte_count
-            )
+        if umas_function_key == int(0xFE) and response == bool(True):
+            builder = UmasPDUResponse.static_parse_builder(read_buffer, response)
         if builder is None:
             raise ParseException(
                 "Unsupported case for discriminated type"
@@ -163,7 +140,7 @@ class UmasPDUItem(ABC, PlcMessage):
 
         read_buffer.pop_context("UmasPDUItem")
         # Create the instance
-        _umas_pdu_item: UmasPDUItem = builder.build(pairing_key, byte_count)
+        _umas_pdu_item: UmasPDUItem = builder.build(pairing_key)
         return _umas_pdu_item
 
     def equals(self, o: object) -> bool:
@@ -194,5 +171,7 @@ class UmasPDUItem(ABC, PlcMessage):
 class UmasPDUItemBuilder:
     pairing_key: int
 
-    def build(self, byte_count: int) -> UmasPDUItem:
+    def build(
+        self,
+    ) -> UmasPDUItem:
         pass

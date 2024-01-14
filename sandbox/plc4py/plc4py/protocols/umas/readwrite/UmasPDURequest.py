@@ -23,7 +23,6 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
-from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItemBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
@@ -32,8 +31,6 @@ import math
 
 @dataclass
 class UmasPDURequest(UmasPDUItem):
-    # Arguments.
-    byte_count: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0x02
     response: ClassVar[bool] = False
@@ -53,7 +50,7 @@ class UmasPDURequest(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: bool, byte_count: int):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("UmasPDURequest")
 
         read_buffer.pop_context("UmasPDURequest")
@@ -85,10 +82,9 @@ class UmasPDURequest(UmasPDUItem):
 
 
 @dataclass
-class UmasPDURequestBuilder(UmasPDUItemBuilder):
-    def build(
-        self,
-        byte_count: int,
-    ) -> UmasPDURequest:
-        umas_pdu_request: UmasPDURequest = UmasPDURequest(byte_count, self.pairing_key)
+class UmasPDURequestBuilder:
+    def build(self, pairing_key) -> UmasPDURequest:
+        umas_pdu_request: UmasPDURequest = UmasPDURequest(
+            pairing_key,
+        )
         return umas_pdu_request

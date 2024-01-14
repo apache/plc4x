@@ -23,7 +23,6 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.umas.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -36,7 +35,6 @@ class UmasPDU(ModbusPDU):
     item: UmasPDUItem
     # Arguments.
     response: bool
-    length: int
     # Accessors for discriminator values.
     error_flag: ClassVar[bool] = False
     function_flag: ClassVar[int] = 0x5A
@@ -62,14 +60,13 @@ class UmasPDU(ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: bool, length: int):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("UmasPDU")
 
         item: UmasPDUItem = read_buffer.read_complex(
             read_function=UmasPDUItem.static_parse,
             logical_name="item",
             response=response,
-            length=length,
         )
 
         read_buffer.pop_context("UmasPDU")
@@ -101,13 +98,12 @@ class UmasPDU(ModbusPDU):
 
 
 @dataclass
-class UmasPDUBuilder(ModbusPDUBuilder):
+class UmasPDUBuilder:
     item: UmasPDUItem
 
     def build(
         self,
         response: bool,
-        length: int,
     ) -> UmasPDU:
-        umas_pdu: UmasPDU = UmasPDU(response, length, self.item)
+        umas_pdu: UmasPDU = UmasPDU(response, self.item)
         return umas_pdu

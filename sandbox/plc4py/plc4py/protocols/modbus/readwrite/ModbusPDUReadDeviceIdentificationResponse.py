@@ -35,7 +35,6 @@ from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationObject import (
     ModbusDeviceInformationObject,
 )
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
@@ -226,7 +225,7 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadDeviceIdentificationResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUReadDeviceIdentificationResponseBuilder:
     level: ModbusDeviceInformationLevel
     individual_access: bool
     conformity_level: ModbusDeviceInformationConformityLevel

@@ -687,7 +687,12 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
                 <#if typedField.type.isSimpleTypeReference()>
                     <#assign simpleTypeReference = typedField.type.asSimpleTypeReference().orElseThrow()>
+                        <#if simpleTypeReference.isVstringTypeReference()>
+                            <#assign vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow()>
+        ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForTypeReference(simpleField.type, false)} = <#if typedField.type.isEnumTypeReference()>read_buffer.${helper.getDataReaderCall(simpleField.type)}bit_length=${helper.toParseExpression(simpleField, helper.intTypeReference, vstringTypeReference.getLengthExpression(), parserArguments)}, logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)<#else><#if simpleField.type.isComplexTypeReference()>read_buffer.${helper.getDataReaderCall(simpleField.type)}logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)<#else>read_buffer.${helper.getDataReaderCall(simpleField.type)}(logical_name="${namedField.name}", bit_length=${helper.toParseExpression(simpleField, helper.intTypeReference, vstringTypeReference.getLengthExpression(), parserArguments)}${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)  </#if></#if>
+                        <#else>
         ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForTypeReference(simpleField.type, false)} = <#if typedField.type.isEnumTypeReference()>read_buffer.${helper.getDataReaderCall(simpleField.type)}bit_length=${simpleTypeReference.sizeInBits}, logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)<#else><#if simpleField.type.isComplexTypeReference()>read_buffer.${helper.getDataReaderCall(simpleField.type)}logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)<#else>read_buffer.${helper.getDataReaderCall(simpleField.type)}(logical_name="${namedField.name}", bit_length=${simpleTypeReference.sizeInBits}${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)  </#if></#if>
+                        </#if>
                 <#else>
         ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForTypeReference(simpleField.type, false)} = <#if typedField.type.isEnumTypeReference()>read_buffer.${helper.getDataReaderCall(simpleField.type)}bit_length=${helper.getEnumBaseTypeReference(typedField.type).sizeInBits}, logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)<#else><#if simpleField.type.isComplexTypeReference()>read_buffer.${helper.getDataReaderCall(simpleField.type)}logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)<#else>read_buffer.${helper.getDataReaderCall(simpleField.type)}(logical_name="${namedField.name}"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)  </#if></#if>
                 </#if>
@@ -862,9 +867,8 @@ class ${type.name}Builder:
     </#if>
 
     <#if type.isDiscriminatedChildTypeDefinition()>
-<@emitImport import="from plc4py.protocols.${protocolName}.${outputFlavor?replace('-', '')}.${type.parentType.orElseThrow().name} import ${type.parentType.orElseThrow().name}Builder" />
 @dataclass
-class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
+class ${type.name}Builder:
 <#if type.propertyFields?has_content>
     <#list type.propertyFields as field>
     ${helper.camelCaseToSnakeCase(field.name)}: ${helper.getLanguageTypeNameForField(field)}
@@ -881,6 +885,11 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
         </#list>
         ,
     </#if>
+    <#if type.getParentPropertyFields()?has_content>
+        <#list type.getParentPropertyFields() as field>
+            ${helper.camelCaseToSnakeCase(field.name)}<#sep>, </#sep>
+        </#list>
+    </#if>
     <#if filteredParentParserArguments?has_content>
         <#if type.parentType.orElseThrow().asComplexTypeDefinition().orElseThrow().propertyFields?has_content>, </#if>
         <#list filteredParentParserArguments as arg>
@@ -895,7 +904,11 @@ class ${type.name}Builder(${type.parentType.orElseThrow().name}Builder):
         </#list>
     </#if>
     <#if filteredParserArguments?has_content>, </#if>
-    <#list type.allPropertyFields as field>
+    <#list type.getParentPropertyFields() as field>
+        ${helper.camelCaseToSnakeCase(field.name)}<#sep>, </#sep>
+    </#list>
+    <#if type.getParentPropertyFields()?has_content>, </#if>
+    <#list type.propertyFields as field>
         self.${helper.camelCaseToSnakeCase(field.name)}<#sep>, </#sep>
     </#list>
     )</@compress>

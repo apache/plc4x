@@ -23,7 +23,6 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
@@ -156,7 +155,7 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUGetComEventLogResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUGetComEventLogResponseBuilder:
     status: int
     event_count: int
     message_count: int

@@ -23,7 +23,6 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordRequestItem import (
     ModbusPDUReadFileRecordRequestItem,
 )
@@ -117,7 +116,7 @@ class ModbusPDUReadFileRecordRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadFileRecordRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUReadFileRecordRequestBuilder:
     items: List[ModbusPDUReadFileRecordRequestItem]
 
     def build(

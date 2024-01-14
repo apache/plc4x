@@ -25,7 +25,6 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
-from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -140,7 +139,7 @@ class ModbusAsciiADU(ModbusADU):
 
 
 @dataclass
-class ModbusAsciiADUBuilder(ModbusADUBuilder):
+class ModbusAsciiADUBuilder:
     address: int
     pdu: ModbusPDU
 

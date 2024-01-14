@@ -23,7 +23,6 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import ClassVar
@@ -115,7 +114,7 @@ class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUWriteMultipleCoilsResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUWriteMultipleCoilsResponseBuilder:
     starting_address: int
     quantity: int
 

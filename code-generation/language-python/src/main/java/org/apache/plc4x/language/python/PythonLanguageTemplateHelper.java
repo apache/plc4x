@@ -954,7 +954,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             tracer = tracer.dive("optional fields");
             OptionalField optionalField = thisType.asComplexTypeDefinition().orElseThrow().getPropertyFieldByName(variableLiteralName).orElseThrow().asOptionalField().orElseThrow();
             return tracer + "(" + (suppressPointerAccess || optionalField.getType().isComplexTypeReference() ? "" : "*") + "self." + camelCaseToSnakeCase(variableLiteral.getName()) + ")" +
-                variableLiteral.getChild().map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
+                variableLiteral.getChild().map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, serialize, suppressPointerAccess, true))).orElse("");
         }
         // If we are accessing implicit fields, we need to rely on local variable instead.
         //else if (isVariableLiteralImplicitField(vl)) {
@@ -1046,14 +1046,14 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             tracer = tracer.dive("serialization argument");
             return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
-                    .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
+                    .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, serialize, suppressPointerAccess, true)))
                     .orElse("");
         } else if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("serialization argument");
             return tracer + "self." + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
-                    .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
+                    .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, serialize, suppressPointerAccess, true)))
                     .orElse("");
         }
         if ((parserArguments != null) && parserArguments.stream()
@@ -1061,7 +1061,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             tracer = tracer.dive("parser argument");
             return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
-                    .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
+                    .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, serialize, suppressPointerAccess, true)))
                     .orElse("");
         }
         String indexCall = "";

@@ -359,7 +359,13 @@ class ReadBufferByteBased(ReadBuffer):
         raise NotImplementedError
 
     def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
-        raise NotImplementedError
+        byte_order = kwargs.get("byte_order", self.byte_order)
+        result: str = struct.unpack(
+            str(int(bit_length / 8)) + "s",
+            self.bb[self.position : self.position + bit_length],
+        )[0]
+        self.position += bit_length
+        return result
 
     def read_array_field(
         self,

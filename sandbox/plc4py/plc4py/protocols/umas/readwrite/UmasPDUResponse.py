@@ -23,12 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
-from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItemBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
 from typing import ClassVar
-from typing import List
 import math
 
 
@@ -43,16 +40,9 @@ class UmasPDUResponse(UmasPDUItem):
     crash_code: int
     string_length: int
     string_value: str
-    junk: List[int]
-    # Arguments.
-    byte_count: int
     # Accessors for discriminator values.
-    umas_function_key: ClassVar[int] = 0x02
+    umas_function_key: ClassVar[int] = 0xFE
     response: ClassVar[bool] = True
-
-    @property
-    def array_length(self) -> int:
-        return int(self.byte_count - self.string_length - int(23) - int(3))
 
     def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUResponse")
@@ -85,14 +75,6 @@ class UmasPDUResponse(UmasPDUItem):
 
         # Simple Field (stringValue)
         write_buffer.write_str(self.string_value, logical_name="stringValue")
-
-        # Virtual field (doesn't actually serialize anything, just makes the value available)
-        arrayLength: int = self.array_length()
-
-        # Array Field (junk)
-        write_buffer.write_simple_array(
-            self.junk, write_unsigned_byte, logical_name="junk"
-        )
 
         write_buffer.pop_context("UmasPDUResponse")
 
@@ -130,89 +112,48 @@ class UmasPDUResponse(UmasPDUItem):
         # Simple field (stringValue)
         length_in_bits += self.string_length * int(8)
 
-        # A virtual field doesn't have any in- or output.
-
-        # Array field
-        if self.junk is not None:
-            length_in_bits += 8 * len(self.junk)
-
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: bool, byte_count: int):
+    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("UmasPDUResponse")
 
         range: int = read_buffer.read_unsigned_int(
-            logical_name="range",
-            bit_length=32,
-            response=response,
-            byte_count=byte_count,
+            logical_name="range", bit_length=32, response=response
         )
 
         ident: int = read_buffer.read_unsigned_int(
-            logical_name="ident",
-            bit_length=32,
-            response=response,
-            byte_count=byte_count,
+            logical_name="ident", bit_length=32, response=response
         )
 
         model: int = read_buffer.read_unsigned_short(
-            logical_name="model",
-            bit_length=16,
-            response=response,
-            byte_count=byte_count,
+            logical_name="model", bit_length=16, response=response
         )
 
         com_version: int = read_buffer.read_unsigned_short(
-            logical_name="comVersion",
-            bit_length=16,
-            response=response,
-            byte_count=byte_count,
+            logical_name="comVersion", bit_length=16, response=response
         )
 
         int_version: int = read_buffer.read_unsigned_short(
-            logical_name="intVersion",
-            bit_length=16,
-            response=response,
-            byte_count=byte_count,
+            logical_name="intVersion", bit_length=16, response=response
         )
 
         hardware_version: int = read_buffer.read_unsigned_byte(
-            logical_name="hardwareVersion",
-            bit_length=8,
-            response=response,
-            byte_count=byte_count,
+            logical_name="hardwareVersion", bit_length=8, response=response
         )
 
         crash_code: int = read_buffer.read_unsigned_int(
-            logical_name="crashCode",
-            bit_length=32,
-            response=response,
-            byte_count=byte_count,
+            logical_name="crashCode", bit_length=32, response=response
         )
 
         string_length: int = read_buffer.read_unsigned_int(
-            logical_name="stringLength",
-            bit_length=32,
-            response=response,
-            byte_count=byte_count,
+            logical_name="stringLength", bit_length=32, response=response
         )
 
         string_value: str = read_buffer.read_str(
             logical_name="stringValue",
-            bit_length=-1,
+            bit_length=string_length * int(8),
             response=response,
-            byte_count=byte_count,
-        )
-
-        array_length: int = byte_count - string_length - int(23) - int(3)
-
-        junk: List[Any] = read_buffer.read_array_field(
-            logical_name="junk",
-            read_function=read_buffer.read_unsigned_byte,
-            length=array_length,
-            response=response,
-            byte_count=byte_count,
         )
 
         read_buffer.pop_context("UmasPDUResponse")
@@ -227,7 +168,6 @@ class UmasPDUResponse(UmasPDUItem):
             crash_code,
             string_length,
             string_value,
-            junk,
         )
 
     def equals(self, o: object) -> bool:
@@ -248,7 +188,6 @@ class UmasPDUResponse(UmasPDUItem):
             and (self.crash_code == that.crash_code)
             and (self.string_length == that.string_length)
             and (self.string_value == that.string_value)
-            and (self.junk == that.junk)
             and super().equals(that)
             and True
         )
@@ -268,7 +207,7 @@ class UmasPDUResponse(UmasPDUItem):
 
 
 @dataclass
-class UmasPDUResponseBuilder(UmasPDUItemBuilder):
+class UmasPDUResponseBuilder:
     range: int
     ident: int
     model: int
@@ -278,15 +217,10 @@ class UmasPDUResponseBuilder(UmasPDUItemBuilder):
     crash_code: int
     string_length: int
     string_value: str
-    junk: List[int]
 
-    def build(
-        self,
-        byte_count: int,
-    ) -> UmasPDUResponse:
+    def build(self, pairing_key) -> UmasPDUResponse:
         umas_pdu_response: UmasPDUResponse = UmasPDUResponse(
-            byte_count,
-            self.pairing_key,
+            pairing_key,
             self.range,
             self.ident,
             self.model,
@@ -296,6 +230,5 @@ class UmasPDUResponseBuilder(UmasPDUItemBuilder):
             self.crash_code,
             self.string_length,
             self.string_value,
-            self.junk,
         )
         return umas_pdu_response

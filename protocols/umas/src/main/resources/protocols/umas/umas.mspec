@@ -44,10 +44,10 @@
     [simple         uint 8      unitIdentifier]
 
     // The actual Modbus payload
-    [simple         ModbusPDU('response','length')   pdu]
+    [simple         ModbusPDU('response')   pdu]
 ]
 
-[discriminatedType ModbusPDU(bit response, uint 16 length)
+[discriminatedType ModbusPDU(bit response)
     [discriminator bit         errorFlag]
     [discriminator uint 7      functionFlag]
     [typeSwitch errorFlag,functionFlag
@@ -56,30 +56,28 @@
         ]
 
         ['false','0x5a'     UmasPDU
-            [simple     UmasPDUItem('response', 'length')    item]
+            [simple     UmasPDUItem('response')    item]
         ]
     ]
 ]
 
-[type UmasPDUItem(bit response, uint 8 byteCount)
+[type UmasPDUItem(bit response)
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
     [typeSwitch umasFunctionKey, response
         ['0x02','false'      UmasPDURequest
         ]
 
-        ['0x02','true'      UmasPDUResponse
-            [simple     uint 32     range]
-            [simple     uint 32      ident]
-            [simple     uint 16      model]
-            [simple     uint 16      comVersion]
-            [simple     uint 16      intVersion]
-            [simple     uint 8      hardwareVersion]
-            [simple     uint 32      crashCode]
-            [simple     uint 32      stringLength]
-            [simple     vstring   'stringLength*8' stringValue]
-            [virtual    uint 32    arrayLength 'byteCount - stringLength - 23 - 3' ]
-            [array      uint 8    junk length 'arrayLength']
+        ['0xFE','true'      UmasPDUResponse
+            [simple     uint 32         range]
+            [simple     uint 32         ident]
+            [simple     uint 16         model]
+            [simple     uint 16         comVersion]
+            [simple     uint 16         intVersion]
+            [simple     uint 8          hardwareVersion]
+            [simple     uint 32         crashCode]
+            [simple     uint 32         stringLength]
+            [simple     vstring         'stringLength*8' stringValue]
         ]
     ]
 ]
