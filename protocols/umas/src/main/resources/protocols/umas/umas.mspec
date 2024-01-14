@@ -69,12 +69,13 @@
         ]
 
         ['0xFE','true'      UmasPDUResponse
-            [simple     uint 32         range]
+            [simple     uint 8         range]
             [simple     uint 32         ident]
             [simple     uint 16         model]
             [simple     uint 16         comVersion]
+            [simple     uint 16         comPatch]
             [simple     uint 16         intVersion]
-            [simple     uint 8          hardwareVersion]
+            [simple     uint 16         hardwareVersion]
             [simple     uint 32         crashCode]
             [simple     uint 32         stringLength]
             [simple     vstring         'stringLength*8' stringValue]

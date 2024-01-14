@@ -35,6 +35,7 @@ class UmasPDUResponse(UmasPDUItem):
     ident: int
     model: int
     com_version: int
+    com_patch: int
     int_version: int
     hardware_version: int
     crash_code: int
@@ -48,7 +49,7 @@ class UmasPDUResponse(UmasPDUItem):
         write_buffer.push_context("UmasPDUResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_int(self.range, logical_name="range")
+        write_buffer.write_unsigned_byte(self.range, logical_name="range")
 
         # Simple Field (ident)
         write_buffer.write_unsigned_int(self.ident, logical_name="ident")
@@ -59,11 +60,14 @@ class UmasPDUResponse(UmasPDUItem):
         # Simple Field (comVersion)
         write_buffer.write_unsigned_short(self.com_version, logical_name="comVersion")
 
+        # Simple Field (comPatch)
+        write_buffer.write_unsigned_short(self.com_patch, logical_name="comPatch")
+
         # Simple Field (intVersion)
         write_buffer.write_unsigned_short(self.int_version, logical_name="intVersion")
 
         # Simple Field (hardwareVersion)
-        write_buffer.write_unsigned_byte(
+        write_buffer.write_unsigned_short(
             self.hardware_version, logical_name="hardwareVersion"
         )
 
@@ -86,7 +90,7 @@ class UmasPDUResponse(UmasPDUItem):
         _value: UmasPDUResponse = self
 
         # Simple field (range)
-        length_in_bits += 32
+        length_in_bits += 8
 
         # Simple field (ident)
         length_in_bits += 32
@@ -97,11 +101,14 @@ class UmasPDUResponse(UmasPDUItem):
         # Simple field (comVersion)
         length_in_bits += 16
 
+        # Simple field (comPatch)
+        length_in_bits += 16
+
         # Simple field (intVersion)
         length_in_bits += 16
 
         # Simple field (hardwareVersion)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (crashCode)
         length_in_bits += 32
@@ -118,8 +125,8 @@ class UmasPDUResponse(UmasPDUItem):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("UmasPDUResponse")
 
-        range: int = read_buffer.read_unsigned_int(
-            logical_name="range", bit_length=32, response=response
+        range: int = read_buffer.read_unsigned_byte(
+            logical_name="range", bit_length=8, response=response
         )
 
         ident: int = read_buffer.read_unsigned_int(
@@ -134,12 +141,16 @@ class UmasPDUResponse(UmasPDUItem):
             logical_name="comVersion", bit_length=16, response=response
         )
 
+        com_patch: int = read_buffer.read_unsigned_short(
+            logical_name="comPatch", bit_length=16, response=response
+        )
+
         int_version: int = read_buffer.read_unsigned_short(
             logical_name="intVersion", bit_length=16, response=response
         )
 
-        hardware_version: int = read_buffer.read_unsigned_byte(
-            logical_name="hardwareVersion", bit_length=8, response=response
+        hardware_version: int = read_buffer.read_unsigned_short(
+            logical_name="hardwareVersion", bit_length=16, response=response
         )
 
         crash_code: int = read_buffer.read_unsigned_int(
@@ -163,6 +174,7 @@ class UmasPDUResponse(UmasPDUItem):
             ident,
             model,
             com_version,
+            com_patch,
             int_version,
             hardware_version,
             crash_code,
@@ -183,6 +195,7 @@ class UmasPDUResponse(UmasPDUItem):
             and (self.ident == that.ident)
             and (self.model == that.model)
             and (self.com_version == that.com_version)
+            and (self.com_patch == that.com_patch)
             and (self.int_version == that.int_version)
             and (self.hardware_version == that.hardware_version)
             and (self.crash_code == that.crash_code)
@@ -212,6 +225,7 @@ class UmasPDUResponseBuilder:
     ident: int
     model: int
     com_version: int
+    com_patch: int
     int_version: int
     hardware_version: int
     crash_code: int
@@ -225,6 +239,7 @@ class UmasPDUResponseBuilder:
             self.ident,
             self.model,
             self.com_version,
+            self.com_patch,
             self.int_version,
             self.hardware_version,
             self.crash_code,
