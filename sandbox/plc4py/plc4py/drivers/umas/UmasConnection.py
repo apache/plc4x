@@ -50,7 +50,6 @@ class UmasConnection(PlcConnection):
         super().__init__(config)
         self._configuration: UmasConfiguration
         self._device: UmasDevice = UmasDevice(self._configuration)
-        self._device.connect()
         self._transport: Plc4xBaseTransport = transport
 
     @staticmethod
@@ -73,7 +72,9 @@ class UmasConnection(PlcConnection):
             ),
             10,
         )
-        return UmasConnection(config, transport)
+        connection = UmasConnection(config, transport)
+        await connection._device.connect(transport)
+        return connection
 
     def is_connected(self) -> bool:
         """
