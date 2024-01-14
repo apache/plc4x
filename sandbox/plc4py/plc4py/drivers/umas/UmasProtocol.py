@@ -21,10 +21,9 @@ from asyncio import Future
 from dataclasses import dataclass, field
 from typing import Dict, Awaitable
 
-from plc4py.protocols.umas.readwrite.DriverType import DriverType
 from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
 
-from plc4py.protocols.umas.readwrite.UmasTcpADU import UmasTcpADU
+from plc4py.protocols.umas.readwrite.ModbusTcpADU import ModbusTcpADU
 from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
 from plc4py.utils.GenericTypes import ByteOrder
 
@@ -38,9 +37,9 @@ class UmasProtocol(Plc4xBaseProtocol):
         read_buffer = ReadBufferByteBased(
             bytearray(data), byte_order=ByteOrder.BIG_ENDIAN
         )
-        adu: UmasTcpADU = UmasTcpADU.static_parse_builder(
-            read_buffer, DriverType.Umas_TCP, True
-        ).build(True)
+        adu: ModbusTcpADU = ModbusTcpADU.static_parse(read_buffer, response=True).build(
+            True
+        )
         if adu.transaction_identifier in self.messages:
             self.messages[adu.transaction_identifier].set_result(adu.pdu)
         else:

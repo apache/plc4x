@@ -29,6 +29,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import ClassVar
 import math
 
 
@@ -41,7 +42,7 @@ class ModbusTcpADU(ModbusADU):
     response: bool
     PROTOCOL_IDENTIFIER: int = 0x0000
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.MODBUS_TCP
+    driver_type: ClassVar[DriverType] = DriverType.MODBUS_TCP
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusTcpADU")

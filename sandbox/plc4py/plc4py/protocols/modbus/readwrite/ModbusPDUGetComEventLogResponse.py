@@ -27,6 +27,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
+from typing import ClassVar
 from typing import List
 import math
 
@@ -38,9 +39,9 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
     message_count: int
     events: List[int]
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x0C
-    response: bool = True
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x0C
+    response: ClassVar[bool] = True
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventLogResponse")

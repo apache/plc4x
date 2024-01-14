@@ -106,7 +106,8 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !discriminatedChildType.isNonDiscriminatorField(discriminatorName)><#--&& !discriminatedChildType.isParserArgument(discriminatorName)-->
             <#assign discriminatorType = helper.getDiscriminatorTypes()[discriminatorName]>
-    ${helper.camelCaseToSnakeCase(discriminatorName)}: ${helper.getLanguageTypeNameForTypeReference(discriminatorType)} = <@compress single_line=true>
+                <@emitImport import="from typing import ClassVar" />
+    ${helper.camelCaseToSnakeCase(discriminatorName)}: ClassVar[${helper.getLanguageTypeNameForTypeReference(discriminatorType)}] = <@compress single_line=true>
             <#if discriminatorValue?? && !helper.isWildcard(discriminatorValue)>
                 <#if discriminatorType.isEnumTypeReference()>
         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${discriminatorValue.name}
