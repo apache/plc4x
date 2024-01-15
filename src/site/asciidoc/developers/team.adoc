@@ -24,6 +24,18 @@ Sorted by first name:
 [width="100%",cols="2,4,1,1",options="header"]
 |=========================================================
 |Name |Bio | |
+| *Ben Hutcheson*
+
+Software Developer, Control Systems Engineer
+
+Isar Aerospace
+
+Altötting, Germany |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.png[hutcheb, 240, 320]
+| *César García*
+
+CEOS Automatización, C.A.
+
+Pto. La Cruz, Anzoátegui, Venezuela |Electrical engineer, dedicated to process automation and control. Specialized in Siemens S5, S7, PCS7 architecture for the Oil&Gas industry and Braumat for the food and beverage industry. Applying open source technologies to create added value for users, such as Kannel, Apache Http Server, Apache Karaf, Apache Hop, Apache IoTDB and the meeting point of all of them Apache PLC4X where I have been able to collaborate as a PMC. | a| image::team/glcj.jpg[glcj, 240, 320]
 | *Christofer Dutz*
 
 IoT Consultant
@@ -54,7 +66,14 @@ Domain Architect
 Pharmaceutical Industry
 
 Copenhagen | He started working with Apache Software Foundation projects in 2013 - at that time in the context of Semantic Technologies with an archived project called Apache Stanbol. Since then he took an interested in several different Apache projects like Apache ActiveMQ, Apache Spark, Apache Storm, Apache Cassandra. He is an Open Source and Pythonista, passionate about connecting people, processes and machines. Main focus is community over code and linking different communities together | a|image::team/lott.jpg[lott, 240, 304]
+| *Matthias Milan Strljic*
 
+Research assistant
+
+ISW;
+University of Stuttgart
+
+Stuttgart |Research assistant and software engineer at the Institute for control engineering of machine tools and manufacturing units (ISW) of the university of stuttgart, research in the fields of automation technology + smart services + cloud manufacturing, my favourites are woodwork + knife sharpening + cigars, member of the PMC of PLC4X| a| image::team/mstrljic.jpg[mstrljic, 150, 150]
 | *Sebastian Rühl*
 
 Software Developer
@@ -69,18 +88,3 @@ Engineer
 pragmatic industries GmbH
 
 Nürtingen |Electrical engineer (HW, SW and interface-stuff) from passion and very new to Apache projects. The more he is involved in open-source the more he likes it, focusing on PLC4X at first. | a|image::team/tmitsch.png[tmitsch, 240, 263]
-| *Matthias Milan Strljic*
-
-Research assistant
-
-ISW;
-University of Stuttgart
-
-Stuttgart |Research assistant and software engineer at the Institute for control engineering of machine tools and manufacturing units (ISW) of the university of stuttgart, research in the fields of automation technology + smart services + cloud manufacturing, my favourites are woodwork + knife sharpening + cigars, member of the PMC of PLC4X| a| image::team/mstrljic.jpg[mstrljic, 150, 150]
-| *Ben Hutcheson*
-
-Software Developer
-
-Open to Work
-
-San Juan Del Sur, Nicaragua |Experienced as an Electrical Engineer, Control Systems Engineer and Software Developer. Enjoys developing systems which overlap in all three of these fields. | a| image::team/hutcheb.png[hutcheb, 240, 320]

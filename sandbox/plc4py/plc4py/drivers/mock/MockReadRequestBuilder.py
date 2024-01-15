@@ -18,12 +18,12 @@
 #
 
 from dataclasses import dataclass, field
-from typing import Union, List
+from typing import Union, List, Dict
 
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
-    PlcField,
+    PlcTag,
     PlcReadRequest,
 )
 from plc4py.api.messages.PlcResponse import PlcReadResponse
@@ -32,22 +32,3 @@ from plc4py.api.messages.PlcResponse import PlcReadResponse
 class MockPlcReadResponse(PlcReadResponse):
     def get_request(self) -> PlcMessage:
         return PlcMessage()
-
-
-class MockPlcReadRequest(PlcReadRequest):
-    def __init__(self, fields: List[PlcField] = []):
-        super().__init__(fields)
-
-
-@dataclass
-class MockReadRequestBuilder(ReadRequestBuilder):
-    items: List[PlcField] = field(default_factory=lambda: [])
-
-    def build(self) -> PlcReadRequest:
-        return MockPlcReadRequest(self.items)
-
-    def add_item(self, field_query: Union[str, PlcField]) -> None:
-        field_temp: PlcField = (
-            PlcField(field_query) if isinstance(field_query, str) else field_query
-        )
-        self.items.append(field_temp)

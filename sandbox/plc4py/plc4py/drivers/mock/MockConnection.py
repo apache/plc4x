@@ -22,13 +22,17 @@ import logging
 from dataclasses import dataclass, field
 from typing import Awaitable, Type, List, Dict
 
+from plc4py.drivers.mock import MockTag
+from plc4py.drivers.mock.MockTag import MockTagBuilder
+from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
+
 import plc4py
 
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
-from plc4py.api.messages.PlcField import PlcField
+from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
     PlcReadRequest,
@@ -39,54 +43,22 @@ from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
-from plc4py.spi.values.PlcBOOL import PlcBOOL
-from plc4py.spi.values.PlcINT import PlcINT
-from plc4py.drivers.mock.MockReadRequestBuilder import MockReadRequestBuilder
-
-
-@dataclass
-class MockPlcField(PlcField):
-    """
-    Mock PLC Field type
-    """
-
-    datatype: str = "INT"
-
-
-class MockPlcFieldHandler:
-    """
-    Helper class to generate MockPlcField based on a fieldquery
-    """
-
-    @staticmethod
-    def of(fieldquery: str) -> MockPlcField:
-        """
-        :param fieldquery: Field identifier string e.g. '1:BOOL'
-        :return: A MockPlcField with the datatype populated
-        """
-        try:
-            datatype = fieldquery.split(":")[1]
-            return MockPlcField(fieldquery, datatype)
-        except IndexError:
-            raise PlcFieldParseException
+from plc4py.spi.values.PlcValues import PlcBOOL
+from plc4py.spi.values.PlcValues import PlcINT
 
 
 @dataclass
 class MockDevice:
-    fields: Dict[str, PlcValue] = field(default_factory=lambda: {})
-
-    def read(self, field: str) -> List[ResponseItem[PlcValue]]:
+    def read(self, tag: MockTag) -> List[ResponseItem[PlcValue]]:
         """
         Reads one field from the Mock Device
         """
-        logging.debug(f"Reading field {field} from Mock Device")
-        plc_field = MockPlcFieldHandler.of(field)
-        if plc_field.datatype == "BOOL":
-            self.fields[field] = PlcBOOL(False)
-            return [ResponseItem(PlcResponseCode.OK, self.fields[field])]
-        elif plc_field.datatype == "INT":
-            self.fields[field] = PlcINT(0)
-            return [ResponseItem(PlcResponseCode.OK, self.fields[field])]
+        logging.debug(f"Reading field {str(tag)} from Mock Device")
+
+        if tag.data_type == "BOOL":
+            return [ResponseItem(PlcResponseCode.OK, PlcBOOL(False))]
+        elif tag.data_type == "INT":
+            return [ResponseItem(PlcResponseCode.OK, PlcINT(0))]
         else:
             raise PlcFieldParseException
 
@@ -128,7 +100,7 @@ class MockConnection(PlcConnection, PlcReader):
         """
         :return: read request builder.
         """
-        return MockReadRequestBuilder()
+        return DefaultReadRequestBuilder(MockTagBuilder)
 
     def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
         """
@@ -156,13 +128,12 @@ class MockConnection(PlcConnection, PlcReader):
             try:
                 response = PlcReadResponse(
                     PlcResponseCode.OK,
-                    req.fields,
-                    {field: device.read(field) for field in req.field_names},
+                    {tag_name: device.read(tag) for tag_name, tag in req.tags.items()},
                 )
                 return response
-            except Exception:
+            except Exception as e:
                 # TODO:- This exception is very general and probably should be replaced
-                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.fields, {})
+                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.tags, {})
 
         logging.debug("Sending read request to MockDevice")
         future = asyncio.ensure_future(_request(request, self.device))

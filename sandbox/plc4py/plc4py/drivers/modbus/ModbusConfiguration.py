@@ -20,6 +20,9 @@ from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 
 
 class ModbusConfiguration(PlcConfiguration):
+    """
+    Specific Modbus Configuration
+    """
     def __init__(self, url):
         super().__init__(url)
 
@@ -28,3 +31,6 @@ class ModbusConfiguration(PlcConfiguration):
 
         if self.port is None:
             self.port = 502
+
+        if "unit_identifier" not in self.parameters:
+            self.unit_identifier = 1

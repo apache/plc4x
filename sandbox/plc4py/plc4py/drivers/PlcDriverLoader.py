@@ -32,7 +32,7 @@ class PlcDriverLoader:
     @abstractmethod
     def get_driver() -> Type[PlcDriver]:
         """
-        :return Type[PlcConnection]: Returns the PlcConnection class that is used to instantiate the driver
+        :return Type[PlcDriver]: Returns the PlcDriver class that is used to instantiate the driver
         """
         pass
 

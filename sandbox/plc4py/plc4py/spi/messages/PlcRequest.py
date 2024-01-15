@@ -16,12 +16,28 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from dataclasses import dataclass
 
-from plc4py.api.value.PlcValue import PlcValue
+from plc4py.api.messages.PlcRequest import (
+    PlcReadRequest,
+    ReadRequestBuilder,
+)
 
 
-@dataclass
-class PlcBOOL(PlcValue[bool]):
-    def get_bool(self):
-        return self.value
+class TagBuilder:
+    @staticmethod
+    def create(address_string: str):
+        raise NotImplementedError
+
+
+class DefaultReadRequestBuilder(ReadRequestBuilder):
+    def __init__(self, tag_builder: TagBuilder):
+        super().__init__()
+        self.read_request = PlcReadRequest()
+        self.tag_builder = tag_builder
+
+    def build(self) -> PlcReadRequest:
+        return self.read_request
+
+    def add_item(self, tag_name: str, address_string: str) -> None:
+        tag = self.tag_builder.create(address_string)
+        self.read_request.tags[tag_name] = tag
