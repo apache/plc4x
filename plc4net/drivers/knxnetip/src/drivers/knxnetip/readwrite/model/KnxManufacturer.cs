@@ -683,8 +683,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_HELKAMA_BICA_OY = 656,
         M_MODULYTE = 657,
         M_CONSOLINNO_ENERGY_GMBH = 658,
-        M_ABB___RESERVED = 659,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 660,
+        M_SCHIDERON_ELECTRIC_ASIA_LIMITED = 659,
+        M_3R = 660,
+        M_ABB___RESERVED = 661,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 662,
     }
 
     public static class KnxManufacturerInfo
@@ -2560,13 +2562,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_CONSOLINNO_ENERGY_GMBH: { /* '658' */
                     return 716;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '659' */
-                    return 43954;
+                case KnxManufacturer.M_SCHIDERON_ELECTRIC_ASIA_LIMITED: { /* '659' */
+                    return 717;
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
                     return 105;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '660' */
+                case KnxManufacturer.M_3R: { /* '660' */
+                    return 718;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '661' */
+                    return 43954;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '662' */
                     return 43959;
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
@@ -4553,13 +4561,19 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_CONSOLINNO_ENERGY_GMBH: { /* '658' */
                     return "Consolinno Energy GmbH";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '659' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_SCHIDERON_ELECTRIC_ASIA_LIMITED: { /* '659' */
+                    return "SCHIDERON ELECTRIC (ASIA) LIMITED";
                 }
                 case KnxManufacturer.M_RTS_AUTOMATION: { /* '66' */
                     return "RTS Automation";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '660' */
+                case KnxManufacturer.M_3R: { /* '660' */
+                    return "3R";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '661' */
+                    return "ABB - reserved";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '662' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
