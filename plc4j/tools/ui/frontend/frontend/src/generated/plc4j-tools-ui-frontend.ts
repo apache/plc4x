@@ -19,16 +19,16 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-01-11 22:58:15.
+// Generated using typescript-generator version 3.2.1263 on 2024-01-15 21:38:43.
 
 export interface Device {
     id: number;
     name: string;
     protocolCode: string;
-    getTransportCode: string;
-    getTransportUrl: string;
-    getOptions: { [index: string]: string };
-    getAttributes: { [index: string]: string };
+    transportCode: string;
+    transportUrl: string;
+    options: { [index: string]: string };
+    attributes: { [index: string]: string };
 }
 
 export interface Driver {

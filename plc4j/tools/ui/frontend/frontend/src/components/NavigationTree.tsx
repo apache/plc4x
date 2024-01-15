@@ -53,6 +53,20 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         } as MenuItem,
         {
             key: "3",
+            label: 'Edit',
+            data: "edit-data",
+            icon: 'pi pi-pencil',
+            disabled: false,
+        } as MenuItem,
+        {
+            key: "4",
+            label: 'Delete',
+            data: "delete-data",
+            icon: 'pi pi-minus-circle',
+            disabled: false,
+        } as MenuItem,
+        {
+            key: "5",
             label: 'Connect',
             data: "connect-data",
             icon: 'pi pi-phone',
@@ -60,12 +74,23 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         } as MenuItem
     ] as MenuItem[]
     function updateMenu(selectedItem:TreeItemData) {
-        menu[0].disabled = !selectedItem.supportsDiscovery
+        // Discover
+        menu[0].disabled = !selectedItem.supportsDiscovery && selectedItem.type != "ROOT"
         menu[0].command = () => {
             restClient.discover(selectedItem.id)
         }
+
+        // Add
         menu[1].disabled = selectedItem.type != "DRIVER"
+
+        // Edit
         menu[2].disabled = selectedItem.type != "DEVICE"
+
+        // Delete
+        menu[3].disabled = selectedItem.type != "DEVICE"
+
+        // Connect
+        menu[4].disabled = selectedItem.type != "DEVICE"
     }
     function getIcon(curItem: TreeItemData):IconType<TreeNode> {
         switch (curItem.type) {
@@ -86,6 +111,7 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
     }
     function createTreeNode(curItem:TreeItemData):TreeNode {
         return {
+            key: curItem.type + '-' + curItem.id,
             id: curItem.id,
             label: curItem.name,
             icon: getIcon(curItem),

@@ -44,6 +44,8 @@ import java.util.stream.Collectors;
 @Component
 public class DriverService {
 
+    private static final String ALL_DRIVERS = "all";
+
     private final PlcDriverManager driverManager;
 
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -81,6 +83,26 @@ public class DriverService {
     }
 
     public void discover(String protocolCode) {
+        if(ALL_DRIVERS.equals(protocolCode)) {
+            for (String curProtocolCode : driverManager.listDrivers()) {
+                try {
+                    if("modbus-tcp".equals(curProtocolCode)) {
+                        continue;
+                    }
+                    PlcDriver driver = driverManager.getDriver(curProtocolCode);
+                    if (driver.getMetadata().canDiscover()) {
+                        discoverProtocol(curProtocolCode);
+                    }
+                } catch (PlcConnectionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            discoverProtocol(protocolCode);
+        }
+    }
+
+    private void discoverProtocol(String protocolCode) {
         try {
             PlcDriver driver = driverManager.getDriver(protocolCode);
             if (!driver.getMetadata().canDiscover()) {
