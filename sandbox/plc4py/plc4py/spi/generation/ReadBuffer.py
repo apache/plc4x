@@ -150,7 +150,6 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
 
 
 class ReadBufferByteBased(ReadBuffer):
-
     def __init__(self, bb: bytearray, byte_order: ByteOrder):
         if byte_order == ByteOrder.LITTLE_ENDIAN:
             bb = bitarray(buffer=bb)
@@ -347,7 +346,11 @@ class ReadBufferByteBased(ReadBuffer):
         self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
     ) -> Any:
         if isinstance(read_function, aenum._enum.EnumType):
-            enum_return_value = read_function(ba2int(self.bb[self.position : self.position + bit_length], signed=False))
+            enum_return_value = read_function(
+                ba2int(
+                    self.bb[self.position : self.position + bit_length], signed=False
+                )
+            )
             return enum_return_value
         else:
             raise RuntimeError("read_enum called but read_function wasn't an enum")
