@@ -36,13 +36,11 @@ class UmasPDUItem(ABC, PlcMessage):
 
     # Abstract accessors for discriminator values.
     @property
-    @abstractmethod
-    def response(self) -> bool:
+    def umas_function_key(self) -> int:
         pass
 
     @property
-    @abstractmethod
-    def umas_function_key(self) -> int:
+    def umas_request_function_key(self) -> int:
         pass
 
     @abstractmethod
@@ -91,41 +89,55 @@ class UmasPDUItem(ABC, PlcMessage):
                 "Wrong number of arguments, expected 1, but got None"
             )
 
-        response: bool = False
-        if isinstance(kwargs.get("response"), bool):
-            response = bool(kwargs.get("response"))
-        elif isinstance(kwargs.get("response"), str):
-            response = bool(str(kwargs.get("response")))
+        umas_request_function_key: int = 0
+        if isinstance(kwargs.get("umas_request_function_key"), int):
+            umas_request_function_key = int(kwargs.get("umas_request_function_key"))
+        elif isinstance(kwargs.get("umas_request_function_key"), str):
+            umas_request_function_key = int(
+                str(kwargs.get("umas_request_function_key"))
+            )
         else:
             raise PlcRuntimeException(
-                "Argument 0 expected to be of type bool or a string which is parseable but was "
-                + kwargs.get("response").getClass().getName()
+                "Argument 0 expected to be of type int or a string which is parseable but was "
+                + kwargs.get("umas_request_function_key").getClass().getName()
             )
 
-        return UmasPDUItem.static_parse_context(read_buffer, response)
+        return UmasPDUItem.static_parse_context(read_buffer, umas_request_function_key)
 
     @staticmethod
-    def static_parse_context(read_buffer: ReadBuffer, response: bool):
+    def static_parse_context(read_buffer: ReadBuffer, umas_request_function_key: int):
         read_buffer.push_context("UmasPDUItem")
 
         pairing_key: int = read_buffer.read_unsigned_byte(
-            logical_name="pairingKey", bit_length=8, response=response
+            logical_name="pairingKey",
+            bit_length=8,
+            umas_request_function_key=umas_request_function_key,
         )
 
         umas_function_key: int = read_buffer.read_unsigned_byte(
-            logical_name="umasFunctionKey", bit_length=8, response=response
+            logical_name="umasFunctionKey",
+            bit_length=8,
+            umas_request_function_key=umas_request_function_key,
         )
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: UmasPDUItemBuilder = None
-        from plc4py.protocols.umas.readwrite.UmasPDURequest import UmasPDURequest
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import (
+            UmasPDUPlcIdentRequest,
+        )
 
-        if umas_function_key == int(0x02) and response == bool(False):
-            builder = UmasPDURequest.static_parse_builder(read_buffer, response)
-        from plc4py.protocols.umas.readwrite.UmasPDUResponse import UmasPDUResponse
+        if umas_function_key == int(0x02):
+            builder = UmasPDUPlcIdentRequest.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import (
+            UmasPDUPlcIdentResponse,
+        )
 
-        if umas_function_key == int(0xFE) and response == bool(True):
-            builder = UmasPDUResponse.static_parse_builder(read_buffer, response)
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x02):
+            builder = UmasPDUPlcIdentResponse.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
         if builder is None:
             raise ParseException(
                 "Unsupported case for discriminated type"
@@ -133,8 +145,8 @@ class UmasPDUItem(ABC, PlcMessage):
                 + "umasFunctionKey="
                 + str(umas_function_key)
                 + " "
-                + "response="
-                + str(response)
+                + "umasRequestFunctionKey="
+                + str(umas_request_function_key)
                 + "]"
             )
 

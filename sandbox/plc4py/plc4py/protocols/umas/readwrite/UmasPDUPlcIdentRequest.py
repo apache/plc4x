@@ -22,7 +22,6 @@ from dataclasses import dataclass
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.umas.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -31,57 +30,42 @@ import math
 
 
 @dataclass
-class UmasPDU(ModbusPDU):
-    item: UmasPDUItem
-    # Arguments.
-    umas_request_function_key: int
+class UmasPDUPlcIdentRequest(UmasPDUItem):
     # Accessors for discriminator values.
-    error_flag: ClassVar[bool] = False
-    function_flag: ClassVar[int] = 0x5A
+    umas_function_key: ClassVar[int] = 0x02
+    umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasPDU")
+    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+        write_buffer.push_context("UmasPDUPlcIdentRequest")
 
-        # Simple Field (item)
-        write_buffer.write_serializable(self.item, logical_name="item")
-
-        write_buffer.pop_context("UmasPDU")
+        write_buffer.pop_context("UmasPDUPlcIdentRequest")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = super().length_in_bits()
-        _value: UmasPDU = self
-
-        # Simple field (item)
-        length_in_bits += self.item.length_in_bits()
+        _value: UmasPDUPlcIdentRequest = self
 
         return length_in_bits
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
-        read_buffer.push_context("UmasPDU")
+        read_buffer.push_context("UmasPDUPlcIdentRequest")
 
-        item: UmasPDUItem = read_buffer.read_complex(
-            read_function=UmasPDUItem.static_parse,
-            logical_name="item",
-            umas_request_function_key=umas_request_function_key,
-        )
-
-        read_buffer.pop_context("UmasPDU")
+        read_buffer.pop_context("UmasPDUPlcIdentRequest")
         # Create the instance
-        return UmasPDUBuilder(item)
+        return UmasPDUPlcIdentRequestBuilder()
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasPDU):
+        if not isinstance(o, UmasPDUPlcIdentRequest):
             return False
 
-        that: UmasPDU = UmasPDU(o)
-        return (self.item == that.item) and super().equals(that) and True
+        that: UmasPDUPlcIdentRequest = UmasPDUPlcIdentRequest(o)
+        return super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -98,12 +82,9 @@ class UmasPDU(ModbusPDU):
 
 
 @dataclass
-class UmasPDUBuilder:
-    item: UmasPDUItem
-
-    def build(
-        self,
-        umas_request_function_key: int,
-    ) -> UmasPDU:
-        umas_pdu: UmasPDU = UmasPDU(umas_request_function_key, self.item)
-        return umas_pdu
+class UmasPDUPlcIdentRequestBuilder:
+    def build(self, pairing_key) -> UmasPDUPlcIdentRequest:
+        umas_pdu_plc_ident_request: UmasPDUPlcIdentRequest = UmasPDUPlcIdentRequest(
+            pairing_key,
+        )
+        return umas_pdu_plc_ident_request

@@ -28,7 +28,7 @@ from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcValue
 from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
 from plc4py.protocols.umas.readwrite.ModbusTcpADU import ModbusTcpADU
-from plc4py.protocols.umas.readwrite.UmasPDU import UmasPDU
+from plc4py.protocols.umas.readwrite.UmasPDU import UmasPDU, UmasPDUBuilder
 from plc4py.protocols.umas.readwrite.UmasPDURequest import (
     UmasPDURequest,
     UmasPDURequestBuilder,
@@ -49,7 +49,8 @@ class UmasDevice:
         loop = asyncio.get_running_loop()
         message_future = loop.create_future()
 
-        pdu = UmasPDU(False, UmasPDURequestBuilder().build(0))
+        request_pdu = UmasPDURequestBuilder().build(0)
+        pdu = UmasPDUBuilder(request_pdu).build(request_pdu.umas_request_function_key)
 
         adu = ModbusTcpADU(
             self._transaction_generator.increment(),
@@ -66,6 +67,7 @@ class UmasDevice:
             transport,
             adu.transaction_identifier,
             message_future,
+            adu.pdu.item.umas_function_key,
         )
 
         await message_future

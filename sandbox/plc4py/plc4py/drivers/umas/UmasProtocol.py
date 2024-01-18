@@ -19,7 +19,7 @@
 import logging
 from asyncio import Future
 from dataclasses import dataclass, field
-from typing import Dict, Awaitable
+from typing import Dict, Awaitable, Tuple
 
 from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
 
@@ -30,23 +30,27 @@ from plc4py.utils.GenericTypes import ByteOrder
 
 @dataclass
 class UmasProtocol(Plc4xBaseProtocol):
-    messages: Dict[int, Future] = field(default_factory=lambda: {})
+    messages: Dict[int, Tuple[int, Future]] = field(default_factory=lambda: {})
 
     def data_received(self, data):
         """Unpack the adu and return the pdu"""
         read_buffer = ReadBufferByteBased(
             bytearray(data), byte_order=ByteOrder.BIG_ENDIAN
         )
-        adu: ModbusTcpADU = ModbusTcpADU.static_parse(read_buffer, response=True)
+        adu: ModbusTcpADU = ModbusTcpADU.static_parse(
+            read_buffer, umas_request_function_key=2
+        )
         if adu.transaction_identifier in self.messages:
-            self.messages[adu.transaction_identifier].set_result(adu.pdu)
+            self.messages[adu.transaction_identifier][1].set_result(adu.pdu)
         else:
             logging.error("Unsolicited message returned")
             self.close()
 
-    def write_wait_for_response(self, data, transport, transaction_id, message_future):
+    def write_wait_for_response(
+        self, data, transport, transaction_id: int, message_future, umas_request_id: int
+    ):
         """Writes a message to the wire and records the identifier to identify and route the response"""
-        self.messages[transaction_id] = message_future
+        self.messages[transaction_id] = (umas_request_id, message_future)
         transport.write(data)
 
     def close(self):

@@ -25,7 +25,7 @@
     [const          uint 16     UmasTcpDefaultPort 502]
 ]
 
-[discriminatedType ModbusTcpADU(bit response) byteOrder='BIG_ENDIAN'
+[discriminatedType ModbusTcpADU(uint 8 umasRequestFunctionKey) byteOrder='BIG_ENDIAN'
     // It is used for transaction pairing, the Umas server copies in the response the transaction
     // identifier of the request.
     [simple         uint 16     transactionIdentifier]
@@ -44,10 +44,10 @@
     [simple         uint 8      unitIdentifier]
 
     // The actual Modbus payload
-    [simple         ModbusPDU('response')   pdu]
+    [simple         ModbusPDU('umasRequestFunctionKey')   pdu]
 ]
 
-[discriminatedType ModbusPDU(bit response)
+[discriminatedType ModbusPDU(uint 8 umasRequestFunctionKey)
     [discriminator bit         errorFlag]
     [discriminator uint 7      functionFlag]
     [typeSwitch errorFlag,functionFlag
@@ -56,19 +56,19 @@
         ]
 
         ['false','0x5a'     UmasPDU
-            [simple     UmasPDUItem('response')    item]
+            [simple     UmasPDUItem('umasRequestFunctionKey')    item]
         ]
     ]
 ]
 
-[type UmasPDUItem(bit response)
+[type UmasPDUItem(uint 8 umasRequestFunctionKey)
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
-    [typeSwitch umasFunctionKey, response
-        ['0x02','false'      UmasPDURequest
+    [typeSwitch umasFunctionKey, umasRequestFunctionKey
+        ['0x02'      UmasPDUPlcIdentRequest
         ]
 
-        ['0xFE','true'      UmasPDUResponse
+        ['0xFE', '0x02'     UmasPDUPlcIdentResponse
             [simple     uint 8         range]
             [simple     uint 32         ident]
             [simple     uint 16         model]

@@ -34,17 +34,14 @@ import math
 class ModbusPDU(ABC, PlcMessage):
     # Abstract accessors for discriminator values.
     @property
-    @abstractmethod
     def error_flag(self) -> bool:
         pass
 
     @property
-    @abstractmethod
     def function_flag(self) -> int:
         pass
 
     @property
-    @abstractmethod
     def response(self) -> bool:
         pass
 

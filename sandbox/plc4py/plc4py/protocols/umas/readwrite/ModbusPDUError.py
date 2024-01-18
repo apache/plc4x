@@ -34,7 +34,7 @@ import math
 class ModbusPDUError(ModbusPDU):
     exception_code: ModbusErrorCode
     # Arguments.
-    response: bool
+    umas_request_function_key: int
     # Accessors for discriminator values.
     error_flag: ClassVar[bool] = True
     function_flag: ClassVar[int] = 0
@@ -62,14 +62,14 @@ class ModbusPDUError(ModbusPDU):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, response: bool):
+    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
         read_buffer.push_context("ModbusPDUError")
 
         exception_code: ModbusErrorCode = read_buffer.read_enum(
             read_function=ModbusErrorCode,
             bit_length=8,
             logical_name="exceptionCode",
-            response=response,
+            umas_request_function_key=umas_request_function_key,
         )
 
         read_buffer.pop_context("ModbusPDUError")
@@ -110,7 +110,9 @@ class ModbusPDUErrorBuilder:
 
     def build(
         self,
-        response: bool,
+        umas_request_function_key: int,
     ) -> ModbusPDUError:
-        modbus_pdu_error: ModbusPDUError = ModbusPDUError(response, self.exception_code)
+        modbus_pdu_error: ModbusPDUError = ModbusPDUError(
+            umas_request_function_key, self.exception_code
+        )
         return modbus_pdu_error

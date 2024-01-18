@@ -136,7 +136,6 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
             <#if !type.isNonDiscriminatorField(discriminatorName)><#-- && !type.isParserArgument(discriminatorName)-->
     <@emitImport import="from abc import abstractmethod" />
     @property
-    @abstractmethod
     def ${helper.camelCaseToSnakeCase(discriminatorName)}(self) -> ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}:
         pass
             </#if>
@@ -146,7 +145,6 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 <#list type.abstractFields as field>
     <@emitImport import="from abc import abstractmethod" />
     @property
-    @abstractmethod
     def ${helper.camelCaseToSnakeCase(field.asNamedField().orElseThrow().name)}(self) -> ${helper.getLanguageTypeNameForField(field)}:
         pass
 
@@ -525,14 +523,14 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
             <#list parserArguments as parserArgument>
                 <#assign languageName=helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)>
         ${helper.camelCaseToSnakeCase(parserArgument.name)}: ${languageName} = ${helper.getNullValueForTypeReference(parserArgument.type)}
-        if isinstance(kwargs.get("${parserArgument.name}"), ${languageName}):
-            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${languageName}(kwargs.get("${parserArgument.name}"))
+        if isinstance(kwargs.get("${helper.camelCaseToSnakeCase(parserArgument.name)}"), ${languageName}):
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${languageName}(kwargs.get("${helper.camelCaseToSnakeCase(parserArgument.name)}"))
                 <#if parserArgument.type.isSimpleTypeReference() || parserArgument.type.isEnumTypeReference()>
-        elif isinstance(kwargs.get("${parserArgument.name}"), str):
-            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${languageName}(str(kwargs.get("${parserArgument.name}")))
+        elif isinstance(kwargs.get("${helper.camelCaseToSnakeCase(parserArgument.name)}"), str):
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${languageName}(str(kwargs.get("${helper.camelCaseToSnakeCase(parserArgument.name)}")))
                 </#if>
         else:
-            raise PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${languageName} or a string which is parseable but was " + kwargs.get("${parserArgument.name}").getClass().getName())
+            raise PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${languageName} or a string which is parseable but was " + kwargs.get("${helper.camelCaseToSnakeCase(parserArgument.name)}").getClass().getName())
 
             </#list>
         </#if>
