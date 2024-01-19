@@ -15,7 +15,7 @@
     "@mdi/js": "^7.3.67",
     "@mdi/react": "^1.6.1",
     "@mui/icons-material": "^5.14.19",
-    "@mui/material": "^5.14.20",
+    "@mui/material": "^5.15.5",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
     "primeflex": "^3.3.1",

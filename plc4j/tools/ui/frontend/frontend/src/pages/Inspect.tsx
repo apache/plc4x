@@ -36,6 +36,7 @@ function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemDat
                 id: value.code,
                 name: value.name,
                 type: "DRIVER",
+                driver: value,
                 supportsDiscovery: value.supportsDiscovery,
                 supportsBrowsing: false,
                 supportsReading: false,
@@ -56,6 +57,7 @@ function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemDat
                     id: value.id?.toString(),
                     name: value.name,
                     type: "DEVICE",
+                    device: value,
                     // Even if most connections will support reading/writing, in order to really know, we need a
                     // connection first. As we're not offering any connection-actions here anyway we just set all
                     // to false.

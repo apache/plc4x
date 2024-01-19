@@ -55,7 +55,7 @@ buildNumber.properties
 *.tmp
 *.bak
 *.swp
-*~.nib
+#*~.nib
 local.properties
 .settings/
 .loadpath
@@ -75,7 +75,7 @@ local.properties
 .worksheet
 
 # Emacs backup files
-*~
+#*~
 .scannerwork
 
 spock-reports
@@ -119,7 +119,7 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-exclude ruby specifics:
+#exclude ruby specifics:
 
 *.gem
 *.rbc

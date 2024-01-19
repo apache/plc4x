@@ -17,21 +17,12 @@
  * under the License.
  */
 
-import {Device, Driver} from "../generated/plc4j-tools-ui-frontend.ts";
+export class Counter {
 
-export type TreeItemType = "ROOT" | "DRIVER" | "CONNECTION" | "DEVICE";
+    private _value:number = 0;
 
-export interface TreeItemData {
-    id: string,
-    name: string,
-    type: TreeItemType,
-    driver?: Driver,
-    device?: Device,
-    supportsDiscovery: boolean,
-    supportsBrowsing: boolean,
-    supportsReading: boolean,
-    supportsWriting: boolean,
-    supportsSubscribing: boolean,
-    supportsPublishing: boolean,
-    children?: readonly TreeItemData[]
+    public  getAndIncrement():number {
+        return this._value++
+    }
+
 }
