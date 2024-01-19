@@ -127,9 +127,11 @@ public class TriggeredScraperTask implements ScraperTask, TriggeredScraperTaskMB
                     plcReadResponse = readRequestBuilder
                         .build()
                         .execute()
-                        .get(requestTimeoutMs, TimeUnit.MILLISECONDS);
+                        .orTimeout(requestTimeoutMs, TimeUnit.MILLISECONDS)
+                        .get();
                 } catch (ExecutionException e) {
                     // Handle execution exception
+                    LOGGER.warn("Execution Exception while reading PLC Response", e);
                     handleException(e);
                     return;
                 }
