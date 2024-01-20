@@ -19,7 +19,7 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-01-20 11:37:19.
+// Generated using typescript-generator version 3.2.1263 on 2024-01-20 11:48:31.
 
 export interface Device {
     id: number;
