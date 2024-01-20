@@ -36,8 +36,11 @@
   <properties>
     <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
     <spring-boot.version>3.2.1</spring-boot.version>
-    <!-- Starting with Derby 10.17 Java 19 is required -->
-    <derby.version>10.16.1.1</derby.version>
+    <!--
+      This dependency is the reason we need at least Java 19 for the UI (otherwise 17 would have been enough)
+      unfortunately the version 16 branch is vulnerable to a critical security vulnerability.
+    -->
+    <derby.version>10.17.1.0</derby.version>
   </properties>
 
   <modules>
@@ -53,7 +56,7 @@
         <artifactId>maven-enforcer-plugin</artifactId>
         <executions>
           <!--
-            Increase the minimum Java version to Java 17, as this is a UI tool and made to run on its own
+            Increase the minimum Java version to Java 19, as this is a UI tool and made to run on its own
             It therefore doesn't make much sense to stick to old version of libraries.
           -->
           <execution>
@@ -64,7 +67,7 @@
             <configuration>
               <rules>
                 <enforceBytecodeVersion>
-                  <maxJdkVersion>17</maxJdkVersion>
+                  <maxJdkVersion>19</maxJdkVersion>
                 </enforceBytecodeVersion>
               </rules>
             </configuration>
