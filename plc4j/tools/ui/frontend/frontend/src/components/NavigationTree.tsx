@@ -166,7 +166,7 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
     const treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value, new Counter()))
     return (
         <div>
-            <DeviceDialog device={dialogDevice.current} visible={showDeviceDialog} />
+            <DeviceDialog device={dialogDevice.current} visible={showDeviceDialog} onSave={console.log} onCancel={console.log} />
             <ContextMenu model={menu} ref={cm}/>
             <Tree value={treeNodes}
                   selectionMode="single"
