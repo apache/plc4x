@@ -67,9 +67,7 @@ class UmasProtocol(Plc4xBaseProtocol):
     def write_wait_for_response(
         self, umas_pdu_item: UmasPDUItem, transport, message_future
     ):
-        pdu = UmasPDUBuilder(umas_pdu_item).build(
-            umas_pdu_item.umas_function_key
-        )
+        pdu = UmasPDUBuilder(umas_pdu_item).build(umas_pdu_item.umas_function_key)
 
         write_buffer = WriteBufferByteBased(pdu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
         pdu.serialize(write_buffer)

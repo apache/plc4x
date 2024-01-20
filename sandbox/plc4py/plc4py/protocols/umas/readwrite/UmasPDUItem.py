@@ -122,12 +122,28 @@ class UmasPDUItem(ABC, PlcMessage):
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: UmasPDUItemBuilder = None
+        from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import (
+            UmasInitCommsRequest,
+        )
+
+        if umas_function_key == int(0x01):
+            builder = UmasInitCommsRequest.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
         from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import (
             UmasPDUPlcIdentRequest,
         )
 
         if umas_function_key == int(0x02):
             builder = UmasPDUPlcIdentRequest.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
+        from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import (
+            UmasInitCommsResponse,
+        )
+
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x01):
+            builder = UmasInitCommsResponse.static_parse_builder(
                 read_buffer, umas_request_function_key
             )
         from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import (

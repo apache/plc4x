@@ -65,11 +65,22 @@
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
     [typeSwitch umasFunctionKey, umasRequestFunctionKey
+        ['0x01'      UmasInitCommsRequest
+            [simple     uint 8         unknownObject]
+        ]
         ['0x02'      UmasPDUPlcIdentRequest
         ]
 
+        ['0xFE', '0x01'     UmasInitCommsResponse
+            [simple     uint 16         maxFrameSize]
+            [simple     uint 16         firmwareVersion]
+            [simple     uint 32         notSure]
+            [simple     uint 32         internalCode]
+            [simple     uint 8          hostnameLength]
+            [simple     vstring         'hostnameLength*8' hostname]
+        ]
         ['0xFE', '0x02'     UmasPDUPlcIdentResponse
-            [simple     uint 8         range]
+            [simple     uint 8          range]
             [simple     uint 32         ident]
             [simple     uint 16         model]
             [simple     uint 16         comVersion]
@@ -77,10 +88,19 @@
             [simple     uint 16         intVersion]
             [simple     uint 16         hardwareVersion]
             [simple     uint 32         crashCode]
-            [simple     uint 32         stringLength]
-            [simple     vstring         'stringLength*8' stringValue]
+            [simple     uint 32          hostnameLength]
+            [simple     vstring         'hostnameLength*8' hostname]
+            [simple     uint 8          numberOfMemoryBanks
+            [array      PlcMemoryBlockIdent memoryIdents count 'numberOfMemoryBanks']
         ]
     ]
+]
+
+[type PlcMemoryBlockIdent
+    [simple uint 8 blockType]
+    [simple uint 8 folio]
+    [simple uint 16 status]
+    [simple uint 32 memoryLength]
 ]
 
 

@@ -21,14 +21,19 @@ from asyncio import Transport
 from dataclasses import dataclass, field
 from typing import Dict
 
-from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import UmasPDUPlcIdentRequestBuilder
+from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import (
+    UmasInitCommsRequestBuilder,
+)
+
+from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import (
+    UmasPDUPlcIdentRequestBuilder,
+)
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
 from plc4py.api.messages.PlcRequest import PlcReadRequest
 from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcValue
 from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
-
 
 
 @dataclass
@@ -51,7 +56,21 @@ class UmasDevice:
         )
 
         await message_future
-        result = message_future.result()
+        ident_result = message_future.result()
+
+        message_future = loop.create_future()
+
+        request_pdu = UmasInitCommsRequestBuilder(0).build(0)
+
+        protocol = transport.protocol
+        protocol.write_wait_for_response(
+            request_pdu,
+            transport,
+            message_future,
+        )
+
+        await message_future
+        init_result = message_future.result()
         pass
 
     async def read(
