@@ -25,7 +25,7 @@
     [const          uint 16     UmasTcpDefaultPort 502]
 ]
 
-[discriminatedType ModbusTcpADU(uint 8 umasRequestFunctionKey) byteOrder='BIG_ENDIAN'
+[discriminatedType ModbusTcpADU byteOrder='BIG_ENDIAN'
     // It is used for transaction pairing, the Umas server copies in the response the transaction
     // identifier of the request.
     [simple         uint 16     transactionIdentifier]
@@ -35,7 +35,7 @@
 
     // The length field is a byte count of the following fields, including the Unit Identifier and
     // data fields.
-    [implicit       uint 16     length                'pdu.lengthInBytes + 1']
+    [implicit       uint 16     length                'COUNT(pduArray) + 1']
 
     // This field is used for intra-system routing purpose. It is typically used to communicate to
     // a Umas+ or a Umas serial line slave through a gateway between an Ethernet TCP-IP network
@@ -44,7 +44,7 @@
     [simple         uint 8      unitIdentifier]
 
     // The actual Modbus payload
-    [simple         ModbusPDU('umasRequestFunctionKey')   pdu]
+    [array      byte        pduArray         count   'length - 1']
 ]
 
 [discriminatedType ModbusPDU(uint 8 umasRequestFunctionKey)

@@ -66,7 +66,9 @@ class UmasConnection(PlcConnection):
         connection_future = loop.create_future()
         transport = await asyncio.wait_for(
             TCPTransport.create(
-                protocol_factory=lambda: UmasProtocol(connection_future),
+                protocol_factory=lambda: UmasProtocol(
+                    connection_future, False, config.unit_identifier
+                ),
                 host=config.host,
                 port=config.port,
             ),

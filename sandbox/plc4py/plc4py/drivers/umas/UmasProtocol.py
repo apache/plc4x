@@ -21,37 +21,76 @@ from asyncio import Future
 from dataclasses import dataclass, field
 from typing import Dict, Awaitable, Tuple
 
+from plc4py.protocols.umas.readwrite.ModbusPDU import ModbusPDU
+from plc4py.protocols.umas.readwrite.UmasPDU import UmasPDUBuilder, UmasPDU
+from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
+from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
+
 from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
 
 from plc4py.protocols.umas.readwrite.ModbusTcpADU import ModbusTcpADU
 from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
-from plc4py.utils.GenericTypes import ByteOrder
+from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
 
 
 @dataclass
 class UmasProtocol(Plc4xBaseProtocol):
+    unit_identifier: int = 0
     messages: Dict[int, Tuple[int, Future]] = field(default_factory=lambda: {})
+    _transaction_generator: AtomicInteger = field(
+        default_factory=lambda: AtomicInteger()
+    )
 
     def data_received(self, data):
         """Unpack the adu and return the pdu"""
         read_buffer = ReadBufferByteBased(
             bytearray(data), byte_order=ByteOrder.BIG_ENDIAN
         )
-        adu: ModbusTcpADU = ModbusTcpADU.static_parse(
-            read_buffer, umas_request_function_key=2
-        )
+        adu: ModbusTcpADU = ModbusTcpADU.static_parse(read_buffer)
         if adu.transaction_identifier in self.messages:
-            self.messages[adu.transaction_identifier][1].set_result(adu.pdu)
+            read_buffer = ReadBufferByteBased(
+                bytearray(adu.pdu_array), byte_order=ByteOrder.BIG_ENDIAN
+            )
+            pdu: ModbusPDU = ModbusPDU.static_parse(
+                read_buffer,
+                umas_request_function_key=self.messages[adu.transaction_identifier][0],
+            )
+            if isinstance(pdu, UmasPDU):
+                self.messages[adu.transaction_identifier][1].set_result(pdu.item)
+            else:
+                logging.error("Modbus Error Message Received")
+                self.close()
         else:
             logging.error("Unsolicited message returned")
             self.close()
 
     def write_wait_for_response(
-        self, data, transport, transaction_id: int, message_future, umas_request_id: int
+        self, umas_pdu_item: UmasPDUItem, transport, message_future
     ):
+        pdu = UmasPDUBuilder(umas_pdu_item).build(
+            umas_pdu_item.umas_function_key
+        )
+
+        write_buffer = WriteBufferByteBased(pdu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
+        pdu.serialize(write_buffer)
+
+        adu = ModbusTcpADU(
+            self._transaction_generator.increment(),
+            self.unit_identifier,
+            write_buffer.get_bytes().tolist(),
+        )
+
+        adu_write_buffer = WriteBufferByteBased(
+            adu.length_in_bytes(), ByteOrder.BIG_ENDIAN
+        )
+        adu.serialize(adu_write_buffer)
+
         """Writes a message to the wire and records the identifier to identify and route the response"""
-        self.messages[transaction_id] = (umas_request_id, message_future)
-        transport.write(data)
+        self.messages[adu.transaction_identifier] = (
+            pdu.umas_request_function_key,
+            message_future,
+        )
+        transport.write(adu_write_buffer.get_bytes())
 
     def close(self):
         """Clean up the message which didn't receive a response"""

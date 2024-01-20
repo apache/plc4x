@@ -22,10 +22,11 @@ from dataclasses import dataclass
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.umas.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import Any
+from typing import List
 import math
 
 
@@ -33,9 +34,7 @@ import math
 class ModbusTcpADU:
     transaction_identifier: int
     unit_identifier: int
-    pdu: ModbusPDU
-    # Arguments.
-    umas_request_function_key: int
+    pdu_array: List[int]
     PROTOCOL_IDENTIFIER: int = 0x0000
 
     def serialize(self, write_buffer: WriteBuffer):
@@ -52,7 +51,7 @@ class ModbusTcpADU:
         )
 
         # Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        length: int = self.pdu.length_in_bytes() + int(1)
+        length: int = int(len(self.pdu_array)) + int(1)
         write_buffer.write_unsigned_short(length, logical_name="length")
 
         # Simple Field (unitIdentifier)
@@ -60,8 +59,8 @@ class ModbusTcpADU:
             self.unit_identifier, logical_name="unitIdentifier"
         )
 
-        # Simple Field (pdu)
-        write_buffer.write_serializable(self.pdu, logical_name="pdu")
+        # Array Field (pduArray)
+        write_buffer.write_byte_array(self.pdu_array, logical_name="pduArray")
 
         write_buffer.pop_context("ModbusTcpADU")
 
@@ -84,74 +83,49 @@ class ModbusTcpADU:
         # Simple field (unitIdentifier)
         length_in_bits += 8
 
-        # Simple field (pdu)
-        length_in_bits += self.pdu.length_in_bits()
+        # Array field
+        if self.pdu_array is not None:
+            length_in_bits += 8 * len(self.pdu_array)
 
         return length_in_bits
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        if kwargs is None:
-            raise PlcRuntimeException(
-                "Wrong number of arguments, expected 1, but got None"
-            )
-
-        umas_request_function_key: int = 0
-        if isinstance(kwargs.get("umas_request_function_key"), int):
-            umas_request_function_key = int(kwargs.get("umas_request_function_key"))
-        elif isinstance(kwargs.get("umas_request_function_key"), str):
-            umas_request_function_key = int(
-                str(kwargs.get("umas_request_function_key"))
-            )
-        else:
-            raise PlcRuntimeException(
-                "Argument 0 expected to be of type int or a string which is parseable but was "
-                + kwargs.get("umas_request_function_key").getClass().getName()
-            )
-
-        return ModbusTcpADU.static_parse_context(read_buffer, umas_request_function_key)
+        return ModbusTcpADU.static_parse_context(read_buffer)
 
     @staticmethod
-    def static_parse_context(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusTcpADU")
 
         transaction_identifier: int = read_buffer.read_unsigned_short(
             logical_name="transactionIdentifier",
             bit_length=16,
             byte_order=ByteOrder.BIG_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
         )
 
         PROTOCOL_IDENTIFIER: int = read_buffer.read_unsigned_short(
-            logical_name="protocolIdentifier",
-            byte_order=ByteOrder.BIG_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
+            logical_name="protocolIdentifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
         length: int = read_buffer.read_unsigned_short(
-            logical_name="length",
-            byte_order=ByteOrder.BIG_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
+            logical_name="length", byte_order=ByteOrder.BIG_ENDIAN
         )
 
         unit_identifier: int = read_buffer.read_unsigned_byte(
-            logical_name="unitIdentifier",
-            bit_length=8,
-            byte_order=ByteOrder.BIG_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
+            logical_name="unitIdentifier", bit_length=8, byte_order=ByteOrder.BIG_ENDIAN
         )
 
-        pdu: ModbusPDU = read_buffer.read_complex(
-            read_function=ModbusPDU.static_parse,
-            logical_name="pdu",
+        pdu_array: List[Any] = read_buffer.read_array_field(
+            logical_name="pduArray",
+            read_function=read_buffer.read_byte,
+            count=length - int(1),
             byte_order=ByteOrder.BIG_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
         )
 
         read_buffer.pop_context("ModbusTcpADU")
         # Create the instance
         _modbus_tcp_adu: ModbusTcpADU = ModbusTcpADU(
-            transaction_identifier, unit_identifier, pdu, umas_request_function_key
+            transaction_identifier, unit_identifier, pdu_array
         )
         return _modbus_tcp_adu
 
@@ -166,7 +140,7 @@ class ModbusTcpADU:
         return (
             (self.transaction_identifier == that.transaction_identifier)
             and (self.unit_identifier == that.unit_identifier)
-            and (self.pdu == that.pdu)
+            and (self.pdu_array == that.pdu_array)
             and True
         )
 
