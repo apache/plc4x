@@ -19,12 +19,11 @@
 package org.apache.plc4x.java.iec608705104.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014TcpTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.protocol.Iec608705104Protocol;
 import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104TagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -59,7 +58,7 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> implements T
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return Iec608705014Configuration.class;
     }
 
@@ -76,11 +75,6 @@ public class Iec60870514PlcDriver extends GeneratedDriverBase<APDU> implements T
     @Override
     protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new PlcValueHandler();
-    }
-
-    @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
     }
 
     /**

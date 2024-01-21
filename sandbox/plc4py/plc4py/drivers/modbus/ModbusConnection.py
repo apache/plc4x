@@ -48,7 +48,7 @@ class ModbusConnection(PlcConnection):
 
     def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
         super().__init__(config)
-        self._configuration : ModbusConfiguration
+        self._configuration: ModbusConfiguration
         self._device: ModbusDevice = ModbusDevice(self._configuration)
         self._transport: Plc4xBaseTransport = transport
 
@@ -64,11 +64,14 @@ class ModbusConnection(PlcConnection):
         config = ModbusConfiguration(url)
         loop = asyncio.get_running_loop()
         connection_future = loop.create_future()
-        transport = await asyncio.wait_for(TCPTransport.create(
-            protocol_factory=lambda: ModbusProtocol(connection_future),
-            host=config.host,
-            port=config.port,
-        ), 10)
+        transport = await asyncio.wait_for(
+            TCPTransport.create(
+                protocol_factory=lambda: ModbusProtocol(connection_future),
+                host=config.host,
+                port=config.port,
+            ),
+            10,
+        )
         return ModbusConnection(config, transport)
 
     def is_connected(self) -> bool:
@@ -152,6 +155,7 @@ class ModbusDriverLoader(PlcDriverLoader):
     """
     Modbus Driver Pluggy Hook Implmentation, lets pluggy find the driver by name
     """
+
     @staticmethod
     @plc4py.hookimpl
     def get_driver() -> Type[ModbusDriver]:

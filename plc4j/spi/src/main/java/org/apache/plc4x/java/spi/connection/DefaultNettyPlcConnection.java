@@ -22,6 +22,7 @@ import io.netty.channel.*;
 import java.util.concurrent.RejectedExecutionException;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
@@ -48,7 +49,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
-    protected final Configuration configuration;
+    protected final PlcConnectionConfiguration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean fireDiscoverEvent;
     protected final boolean awaitSessionSetupComplete;
@@ -68,7 +69,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      boolean canBrowse,
                                      PlcTagHandler tagHandler,
                                      PlcValueHandler valueHandler,
-                                     Configuration configuration,
+                                     PlcConnectionConfiguration configuration,
                                      ChannelFactory channelFactory,
                                      boolean fireDiscoverEvent,
                                      boolean awaitSessionSetupComplete,

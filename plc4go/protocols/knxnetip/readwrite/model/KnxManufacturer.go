@@ -701,8 +701,11 @@ const (
 	KnxManufacturer_M_CAV_AUDIOGUANGZHOUCO__LTD                          KnxManufacturer = 655
 	KnxManufacturer_M_HELKAMA_BICA_OY                                    KnxManufacturer = 656
 	KnxManufacturer_M_MODULYTE                                           KnxManufacturer = 657
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 658
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 659
+	KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH                             KnxManufacturer = 658
+	KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED                    KnxManufacturer = 659
+	KnxManufacturer_M_3R                                                 KnxManufacturer = 660
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 661
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 662
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1368,6 +1371,9 @@ func init() {
 		KnxManufacturer_M_CAV_AUDIOGUANGZHOUCO__LTD,
 		KnxManufacturer_M_HELKAMA_BICA_OY,
 		KnxManufacturer_M_MODULYTE,
+		KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH,
+		KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED,
+		KnxManufacturer_M_3R,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3861,15 +3867,27 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 658:
 		{ /* '658' */
-			return 43954
+			return 716
 		}
 	case 659:
 		{ /* '659' */
-			return 43959
+			return 717
 		}
 	case 66:
 		{ /* '66' */
 			return 105
+		}
+	case 660:
+		{ /* '660' */
+			return 718
+		}
+	case 661:
+		{ /* '661' */
+			return 43954
+		}
+	case 662:
+		{ /* '662' */
+			return 43959
 		}
 	case 67:
 		{ /* '67' */
@@ -6519,15 +6537,27 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 658:
 		{ /* '658' */
-			return "ABB - reserved"
+			return "Consolinno Energy GmbH"
 		}
 	case 659:
 		{ /* '659' */
-			return "Busch-Jaeger Elektro - reserved"
+			return "SCHIDERON ELECTRIC (ASIA) LIMITED"
 		}
 	case 66:
 		{ /* '66' */
 			return "RTS Automation"
+		}
+	case 660:
+		{ /* '660' */
+			return "3R"
+		}
+	case 661:
+		{ /* '661' */
+			return "ABB - reserved"
+		}
+	case 662:
+		{ /* '662' */
+			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 67:
 		{ /* '67' */
@@ -7933,11 +7963,17 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 657:
 		return KnxManufacturer_M_MODULYTE, true
 	case 658:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH, true
 	case 659:
-		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
+		return KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED, true
 	case 66:
 		return KnxManufacturer_M_RTS_AUTOMATION, true
+	case 660:
+		return KnxManufacturer_M_3R, true
+	case 661:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 662:
+		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 67:
 		return KnxManufacturer_M_EIBMARKT_GMBH, true
 	case 68:
@@ -9258,12 +9294,18 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_HELKAMA_BICA_OY, true
 	case "M_MODULYTE":
 		return KnxManufacturer_M_MODULYTE, true
+	case "M_CONSOLINNO_ENERGY_GMBH":
+		return KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH, true
+	case "M_SCHIDERON_ELECTRIC_ASIA_LIMITED":
+		return KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED, true
+	case "M_RTS_AUTOMATION":
+		return KnxManufacturer_M_RTS_AUTOMATION, true
+	case "M_3R":
+		return KnxManufacturer_M_3R, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
-	case "M_RTS_AUTOMATION":
-		return KnxManufacturer_M_RTS_AUTOMATION, true
 	case "M_EIBMARKT_GMBH":
 		return KnxManufacturer_M_EIBMARKT_GMBH, true
 	case "M_WAREMA_RENKHOFF_SE":
@@ -10645,12 +10687,18 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_HELKAMA_BICA_OY"
 	case KnxManufacturer_M_MODULYTE:
 		return "M_MODULYTE"
+	case KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH:
+		return "M_CONSOLINNO_ENERGY_GMBH"
+	case KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED:
+		return "M_SCHIDERON_ELECTRIC_ASIA_LIMITED"
+	case KnxManufacturer_M_RTS_AUTOMATION:
+		return "M_RTS_AUTOMATION"
+	case KnxManufacturer_M_3R:
+		return "M_3R"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:
 		return "M_BUSCH_JAEGER_ELEKTRO___RESERVED"
-	case KnxManufacturer_M_RTS_AUTOMATION:
-		return "M_RTS_AUTOMATION"
 	case KnxManufacturer_M_EIBMARKT_GMBH:
 		return "M_EIBMARKT_GMBH"
 	case KnxManufacturer_M_WAREMA_RENKHOFF_SE:

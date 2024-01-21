@@ -454,6 +454,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
+              <skip>${skipTests}</skip>
               <executable>${project.build.directory}/go-junit-report</executable>
               <arguments>
                 <argument>-in</argument>

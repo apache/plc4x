@@ -20,6 +20,7 @@ package org.apache.plc4x.java.eip.base;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.configuration.EipTcpTransportConfiguration;
@@ -34,7 +35,6 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
@@ -64,7 +64,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> implements Transpo
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return EIPConfiguration.class;
     }
 

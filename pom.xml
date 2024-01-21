@@ -137,7 +137,8 @@
     <woodstox-core.version>6.5.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
-    <jetty-util.version>12.0.5</jetty-util.version>
+    <!-- Starting with Jetty 12 Java 17 is required -->
+    <jetty-util.version>11.0.19</jetty-util.version>
     <jna.version>5.14.0</jna.version>
     <joda-time.version>2.12.6</joda-time.version>
     <jserialcom.version>2.10.4</jserialcom.version>
@@ -905,6 +906,20 @@
               <fail>true</fail>
             </configuration>
           </execution>
+          <!-- Ensure dependencies are compatible with Java 11 -->
+          <execution>
+            <id>enforce-java-compatability</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <enforceBytecodeVersion>
+                  <maxJdkVersion>11</maxJdkVersion>
+                </enforceBytecodeVersion>
+              </rules>
+            </configuration>
+          </execution>
           <!-- Ensure we're not mixing dependency versions -->
           <execution>
             <id>enforce-version-convergence</id>
@@ -1037,7 +1052,8 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.16</version>
+          <!-- TODO: There currently is a significant performance degradation when using version 0.16 -->
+          <version>0.15</version>
           <configuration>
             <!--
                 Make rat output the files with missing licensed directly into the
@@ -1342,7 +1358,8 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.27.7-b1</version>
+          <!-- Not all versions have all types of binaries deployed -->
+          <version>3.26.3-b1</version>
         </plugin>
 
         <plugin>

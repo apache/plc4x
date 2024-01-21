@@ -21,6 +21,7 @@ package org.apache.plc4x.java.mock;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.PlcDriver;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,6 +36,11 @@ public class ApiMockDriver implements PlcDriver {
     @Override
     public String getProtocolName() {
         return "Mock Protocol Implementation";
+    }
+
+    @Override
+    public Class<PlcConnectionConfiguration> getConfigurationType() {
+        return null;
     }
 
     @Override
