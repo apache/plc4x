@@ -340,7 +340,7 @@ class ReadBufferByteBased(ReadBuffer):
 
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
         if isinstance(read_function, types.FunctionType):
-            return read_function(self, **kwargs)
+            return read_function(logical_name=logical_name, read_buffer=self, **kwargs)
 
     def read_enum(
         self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
@@ -379,7 +379,9 @@ class ReadBufferByteBased(ReadBuffer):
         if count is not None:
             parsed_array = []
             for _ in range(count):
-                parsed_array.append(read_function(self, **kwargs))
+                parsed_array.append(
+                    read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+                )
             return parsed_array
         else:
             raise NotImplementedError

@@ -70,6 +70,11 @@
         ]
         ['0x02'      UmasPDUPlcIdentRequest
         ]
+        ['0x03'      UmasPDUProjectInfoRequest
+            [simple uint 8 subcode]
+        ]
+        ['0x04'      UmasPDUPlcStatusRequest
+        ]
 
         ['0xFE', '0x01'     UmasInitCommsResponse
             [simple     uint 16         maxFrameSize]
@@ -92,6 +97,12 @@
             [simple     vstring         'hostnameLength*8' hostname]
             [simple     uint 8          numberOfMemoryBanks
             [array      PlcMemoryBlockIdent memoryIdents count 'numberOfMemoryBanks']
+        ]
+        ['0xFE', '0x04'     UmasPDUPlcStatusResponse
+            [simple     uint 24         notUsed]
+            [simple     uint 8          numberOfBlocks]
+            [array      uint 32         blocks count 'numberOfBlocks']
+
         ]
     ]
 ]

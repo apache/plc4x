@@ -138,6 +138,22 @@ class UmasPDUItem(ABC, PlcMessage):
             builder = UmasPDUPlcIdentRequest.static_parse_builder(
                 read_buffer, umas_request_function_key
             )
+        from plc4py.protocols.umas.readwrite.UmasPDUProjectInfoRequest import (
+            UmasPDUProjectInfoRequest,
+        )
+
+        if umas_function_key == int(0x03):
+            builder = UmasPDUProjectInfoRequest.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusRequest import (
+            UmasPDUPlcStatusRequest,
+        )
+
+        if umas_function_key == int(0x04):
+            builder = UmasPDUPlcStatusRequest.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
         from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import (
             UmasInitCommsResponse,
         )
@@ -152,6 +168,14 @@ class UmasPDUItem(ABC, PlcMessage):
 
         if umas_function_key == int(0xFE) and umas_request_function_key == int(0x02):
             builder = UmasPDUPlcIdentResponse.static_parse_builder(
+                read_buffer, umas_request_function_key
+            )
+        from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusResponse import (
+            UmasPDUPlcStatusResponse,
+        )
+
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x04):
+            builder = UmasPDUPlcStatusResponse.static_parse_builder(
                 read_buffer, umas_request_function_key
             )
         if builder is None:
