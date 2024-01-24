@@ -33,93 +33,78 @@ import math
 
 
 @dataclass
-class UmasPDUPlcStatusResponse(UmasPDUItem):
-    not_used: int
-    number_of_blocks: int
-    blocks: List[int]
+class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
+    number_of_bytes: int
+    block: List[int]
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0xFE
-    umas_request_function_key: ClassVar[int] = 0x04
+    umas_request_function_key: ClassVar[int] = 0x20
 
     def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasPDUPlcStatusResponse")
+        write_buffer.push_context("UmasPDUReadMemoryBlockResponse")
 
-        # Simple Field (notUsed)
-        write_buffer.write_unsigned_int(self.not_used, logical_name="notUsed")
-
-        # Simple Field (numberOfBlocks)
-        write_buffer.write_unsigned_byte(
-            self.number_of_blocks, logical_name="numberOfBlocks"
+        # Simple Field (numberOfBytes)
+        write_buffer.write_unsigned_short(
+            self.number_of_bytes, logical_name="numberOfBytes"
         )
 
-        # Array Field (blocks)
+        # Array Field (block)
         write_buffer.write_simple_array(
-            self.blocks, write_unsigned_int, logical_name="blocks"
+            self.block, write_unsigned_byte, logical_name="block"
         )
 
-        write_buffer.pop_context("UmasPDUPlcStatusResponse")
+        write_buffer.pop_context("UmasPDUReadMemoryBlockResponse")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = super().length_in_bits()
-        _value: UmasPDUPlcStatusResponse = self
+        _value: UmasPDUReadMemoryBlockResponse = self
 
-        # Simple field (notUsed)
-        length_in_bits += 24
-
-        # Simple field (numberOfBlocks)
-        length_in_bits += 8
+        # Simple field (numberOfBytes)
+        length_in_bits += 16
 
         # Array field
-        if self.blocks is not None:
-            length_in_bits += 32 * len(self.blocks)
+        if self.block is not None:
+            length_in_bits += 8 * len(self.block)
 
         return length_in_bits
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
-        read_buffer.push_context("UmasPDUPlcStatusResponse")
+        read_buffer.push_context("UmasPDUReadMemoryBlockResponse")
 
-        not_used: int = read_buffer.read_unsigned_int(
-            logical_name="notUsed",
-            bit_length=24,
+        number_of_bytes: int = read_buffer.read_unsigned_short(
+            logical_name="numberOfBytes",
+            bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
-        number_of_blocks: int = read_buffer.read_unsigned_byte(
-            logical_name="numberOfBlocks",
-            bit_length=8,
-            byte_order=ByteOrder.LITTLE_ENDIAN,
-            umas_request_function_key=umas_request_function_key,
-        )
-
-        blocks: List[Any] = read_buffer.read_array_field(
-            logical_name="blocks",
-            read_function=read_buffer.read_unsigned_int,
+        block: List[Any] = read_buffer.read_array_field(
+            logical_name="block",
+            read_function=read_buffer.read_unsigned_byte,
             count=number_of_blocks,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
-        read_buffer.pop_context("UmasPDUPlcStatusResponse")
+        read_buffer.pop_context("UmasPDUReadMemoryBlockResponse")
         # Create the instance
-        return UmasPDUPlcStatusResponseBuilder(not_used, number_of_blocks, blocks)
+        return UmasPDUReadMemoryBlockResponseBuilder(number_of_bytes, block)
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasPDUPlcStatusResponse):
+        if not isinstance(o, UmasPDUReadMemoryBlockResponse):
             return False
 
-        that: UmasPDUPlcStatusResponse = UmasPDUPlcStatusResponse(o)
+        that: UmasPDUReadMemoryBlockResponse = UmasPDUReadMemoryBlockResponse(o)
         return (
-            (self.not_used == that.not_used)
-            and (self.number_of_blocks == that.number_of_blocks)
-            and (self.blocks == that.blocks)
+            (self.number_of_bytes == that.number_of_bytes)
+            and (self.block == that.block)
             and super().equals(that)
             and True
         )
@@ -139,15 +124,14 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
 
 
 @dataclass
-class UmasPDUPlcStatusResponseBuilder:
-    not_used: int
-    number_of_blocks: int
-    blocks: List[int]
+class UmasPDUReadMemoryBlockResponseBuilder:
+    number_of_bytes: int
+    block: List[int]
 
-    def build(self, pairing_key) -> UmasPDUPlcStatusResponse:
-        umas_pdu_plc_status_response: UmasPDUPlcStatusResponse = (
-            UmasPDUPlcStatusResponse(
-                pairing_key, self.not_used, self.number_of_blocks, self.blocks
+    def build(self, pairing_key) -> UmasPDUReadMemoryBlockResponse:
+        umas_pdu_read_memory_block_response: UmasPDUReadMemoryBlockResponse = (
+            UmasPDUReadMemoryBlockResponse(
+                pairing_key, self.number_of_bytes, self.block
             )
         )
-        return umas_pdu_plc_status_response
+        return umas_pdu_read_memory_block_response

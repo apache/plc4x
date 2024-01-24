@@ -20,7 +20,18 @@ import asyncio
 import logging
 from asyncio import Transport, AbstractEventLoop
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, List
+
+from plc4py.protocols.umas.readwrite.PlcMemoryBlockIdent import PlcMemoryBlockIdent
+from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import (
+    UmasPDUPlcIdentResponse,
+)
+
+from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockRequest import (
+    UmasPDUReadMemoryBlockRequestBuilder,
+)
+
+from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import UmasInitCommsResponse
 
 from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusResponse import (
     UmasPDUPlcStatusResponse,
@@ -55,6 +66,8 @@ class UmasDevice:
     _configuration: UmasConfiguration
     tags: Dict[str, PlcValue] = field(default_factory=lambda: {})
     project_crc: int = -1
+    max_frame_size: int = -1
+    memory_blocks: List[PlcMemoryBlockIdent] = field(default_factory=lambda: [])
 
     async def connect(self, transport: Transport):
         # Create future to be returned when a value is returned
@@ -62,7 +75,7 @@ class UmasDevice:
         await self._send_plc_ident(transport, loop)
         await self._send_init_comms(transport, loop)
         await self._send_project_info(transport, loop)
-        pass
+        await self._send_read_memory_block(transport, loop)
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -77,7 +90,8 @@ class UmasDevice:
         )
 
         await message_future
-        ident_result = message_future.result()
+        ident_result: UmasPDUPlcIdentResponse = message_future.result()
+        self.memory_blocks = ident_result.memory_idents
 
     async def _send_init_comms(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -92,7 +106,8 @@ class UmasDevice:
         )
 
         await message_future
-        init_result = message_future.result()
+        init_result: UmasInitCommsResponse = message_future.result()
+        self.max_frame_size = init_result.max_frame_size
 
     async def _send_project_info(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -112,6 +127,30 @@ class UmasDevice:
             if project_info_result.blocks[3] == project_info_result.blocks[4]:
                 logging.debug("Received Valid Project CRC Response")
                 self.project_crc = project_info_result.blocks[3]
+
+    async def _send_read_memory_block(
+        self, transport: Transport, loop: AbstractEventLoop
+    ):
+        message_future = loop.create_future()
+
+        request_pdu = UmasPDUReadMemoryBlockRequestBuilder(
+            block_number=0x30,
+            offset=0,
+            number_of_bytes=0x21,
+            unknown_object=0,
+            unknown_object1=0,
+        ).build(pairing_key=0)
+
+        protocol = transport.protocol
+        protocol.write_wait_for_response(
+            request_pdu,
+            transport,
+            message_future,
+        )
+
+        await message_future
+        memory_block_result: UmasPDUPlcStatusResponse = message_future.result()
+        pass
 
     async def read(
         self, request: PlcReadRequest, transport: Transport

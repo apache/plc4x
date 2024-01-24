@@ -61,7 +61,7 @@
     ]
 ]
 
-[type UmasPDUItem(uint 8 umasRequestFunctionKey)
+[type UmasPDUItem(uint 8 umasRequestFunctionKey) byteOrder='LITTLE_ENDIAN'
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
     [typeSwitch umasFunctionKey, umasRequestFunctionKey
@@ -74,6 +74,13 @@
             [simple uint 8 subcode]
         ]
         ['0x04'      UmasPDUPlcStatusRequest
+        ]
+        ['0x20'      UmasPDUReadMemoryBlockRequest
+            [simple     uint 8         unknownObject]
+            [simple     uint 16        blockNumber]
+            [simple     uint 16        offset]
+            [simple     uint 16        unknownObject1]
+            [simple     uint 16        numberOfBytes]
         ]
 
         ['0xFE', '0x01'     UmasInitCommsResponse
@@ -102,7 +109,10 @@
             [simple     uint 24         notUsed]
             [simple     uint 8          numberOfBlocks]
             [array      uint 32         blocks count 'numberOfBlocks']
-
+        ]
+        ['0xFE', '0x20'     UmasPDUReadMemoryBlockResponse
+            [simple     uint 16         numberOfBytes]
+            [array      uint 8          block count 'numberOfBlocks']
         ]
     ]
 ]

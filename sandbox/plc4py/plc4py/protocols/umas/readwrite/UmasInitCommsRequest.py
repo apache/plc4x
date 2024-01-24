@@ -25,6 +25,7 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
 from typing import ClassVar
 import math
 
@@ -65,6 +66,7 @@ class UmasInitCommsRequest(UmasPDUItem):
         unknown_object: int = read_buffer.read_unsigned_byte(
             logical_name="unknownObject",
             bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 

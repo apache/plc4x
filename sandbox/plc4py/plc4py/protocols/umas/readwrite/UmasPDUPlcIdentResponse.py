@@ -26,6 +26,7 @@ from plc4py.protocols.umas.readwrite.PlcMemoryBlockIdent import PlcMemoryBlockId
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
 from typing import Any
 from typing import ClassVar
 from typing import List
@@ -153,66 +154,77 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         range: int = read_buffer.read_unsigned_byte(
             logical_name="range",
             bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         ident: int = read_buffer.read_unsigned_int(
             logical_name="ident",
             bit_length=32,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         model: int = read_buffer.read_unsigned_short(
             logical_name="model",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         com_version: int = read_buffer.read_unsigned_short(
             logical_name="comVersion",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         com_patch: int = read_buffer.read_unsigned_short(
             logical_name="comPatch",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         int_version: int = read_buffer.read_unsigned_short(
             logical_name="intVersion",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         hardware_version: int = read_buffer.read_unsigned_short(
             logical_name="hardwareVersion",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         crash_code: int = read_buffer.read_unsigned_int(
             logical_name="crashCode",
             bit_length=32,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         hostname_length: int = read_buffer.read_unsigned_int(
             logical_name="hostnameLength",
             bit_length=32,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         hostname: str = read_buffer.read_str(
             logical_name="hostname",
             bit_length=hostname_length * int(8),
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         number_of_memory_banks: int = read_buffer.read_unsigned_byte(
             logical_name="numberOfMemoryBanks",
             bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
@@ -220,6 +232,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
             logical_name="memoryIdents",
             read_function=PlcMemoryBlockIdent.static_parse,
             count=number_of_memory_banks,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 

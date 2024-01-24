@@ -229,10 +229,10 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         # Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
                         <#if typedField.type.isEnumTypeReference()>
-        write_buffer.${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}, logical_name="${namedField.name}", ${helper.getFieldOptions(typedField, parserArguments)})
+        write_buffer.${helper.getEnumDataWriterCall(typedField.type, namedField.name, "value")}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}, logical_name="${namedField.name}" ${helper.getFieldOptions(typedField, parserArguments)})
                         <#else>
         <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}, logical_name="${namedField.name}", bit_length=${simpleTypeReference.sizeInBits}, ${helper.getFieldOptions(typedField, parserArguments)})
+        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(self.${helper.camelCaseToSnakeCase(discriminatorField.name)}, logical_name="${namedField.name}", bit_length=${simpleTypeReference.sizeInBits} ${helper.getFieldOptions(typedField, parserArguments)})
                         </#if>
                         <#break>
                     <#case "enum">

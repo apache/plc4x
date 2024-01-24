@@ -25,6 +25,7 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
 from typing import ClassVar
 import math
 
@@ -104,36 +105,42 @@ class UmasInitCommsResponse(UmasPDUItem):
         max_frame_size: int = read_buffer.read_unsigned_short(
             logical_name="maxFrameSize",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         firmware_version: int = read_buffer.read_unsigned_short(
             logical_name="firmwareVersion",
             bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         not_sure: int = read_buffer.read_unsigned_int(
             logical_name="notSure",
             bit_length=32,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         internal_code: int = read_buffer.read_unsigned_int(
             logical_name="internalCode",
             bit_length=32,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         hostname_length: int = read_buffer.read_unsigned_byte(
             logical_name="hostnameLength",
             bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
         hostname: str = read_buffer.read_str(
             logical_name="hostname",
             bit_length=hostname_length * int(8),
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
         )
 
