@@ -213,3 +213,5 @@ DartConfiguration.tcl
 /plc4j/tools/ui/frontend/project/.vite/**
 /storage/**
 /derby.log
+/plc4j/tools/ui/frontend/frontend/.idea/vcs.xml
+/plc4j/tools/ui/frontend/frontend/.idea/workspace.xml
