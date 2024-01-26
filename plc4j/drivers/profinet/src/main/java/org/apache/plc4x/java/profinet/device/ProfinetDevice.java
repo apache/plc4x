@@ -192,13 +192,14 @@ public class ProfinetDevice implements PlcSubscriber {
      */
     public void start() {
         final long timeout = (long) deviceContext.getConfiguration().getReductionRatio() * deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getWatchdogFactor() * MIN_CYCLE_NANO_SEC;
-        final int cycleTime = (int) ((deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * MIN_CYCLE_NANO_SEC) / 1000000);
+        final int cycleTime = (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * MIN_CYCLE_NANO_SEC) / 1000000;
         Function<Object, Boolean> subscription =
             message -> {
                 long startTime = System.nanoTime();
                 ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
                 ses.scheduleAtFixedRate(() -> {
                     try {
+//                        System.out.println("State: " + deviceContext.getState().name() + " queue length: " + deviceContext.getQueue().size());
                         switch (deviceContext.getState()) {
                             // If an ipAddress is specified in the device config, we use PN DCP to set the IP
                             // address of the PN device identified by the name to that given IP address.
@@ -214,8 +215,9 @@ public class ProfinetDevice implements PlcSubscriber {
                                 // Send the packet and process the response ...
                                 recordIdAndSend(createConnection, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
 
-                                // Wait for it to be finished processing ...
-                                createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
+                                // For some reason the first response quite often came in too late,
+                                // so we're extending the wait time here.
+                                createConnection.getResponseHandled().get(8 * timeout, TimeUnit.NANOSECONDS);
                                 break;
                             // TODO: It seems this state is never used?
                             // It seems that in this step we would be setting parameters in the PN device (hereby configuring it)
@@ -231,21 +233,31 @@ public class ProfinetDevice implements PlcSubscriber {
                                 recordIdAndSend(writeParametersEnd, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
                                 writeParametersEnd.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
                                 break;
+                            // Here we're waiting for an incoming application-ready request from the device.
                             case WAITAPPLRDY:
                                 break;
+                            // Here we've received the application-ready request from the device and simply acknowledge
+                            // it, which finishes the connection setup.
                             case APPLRDY:
                                 ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
                                 send(applicationReadyResponse, ProfinetDeviceContext.DEFAULT_UDP_PORT, deviceContext.getApplicationResponseDestinationPort());
                                 deviceContext.getContext().fireConnected();
                                 deviceContext.setState(ProfinetDeviceState.CYCLICDATA);
                                 break;
+                            // In this state we're receiving data from the remote device and in this part of the
+                            // code, we're sending back our data in every cycle.
+                            // TODO: Possibly check if, depending on the reduction ratio, we only have to send back data every few cycles.
                             case CYCLICDATA:
                                 CyclicData cyclicData = new CyclicData(startTime);
                                 messageWrapper.sendPnioMessage(cyclicData, deviceContext);
+                                // TODO: Check if we're getting data every cycle ... if not, react.
                                 break;
+                            case ABORT:
+                                // TODO: Handle this
                         }
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         deviceContext.setState(ProfinetDeviceState.ABORT);
+                        logger.warn("Got exception", e);
                     }
                 }, 0, cycleTime, TimeUnit.MILLISECONDS);
                 return null;
