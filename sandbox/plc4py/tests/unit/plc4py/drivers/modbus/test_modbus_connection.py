@@ -28,7 +28,7 @@ async def manual_test_plc_driver_modbus_connect():
     assert not connection.is_connected()
 
 
-async def test_plc_driver_modbus_read():
+async def manual_test_plc_driver_modbus_read():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("modbus://192.168.1.174:502") as connection:
         with connection.read_request_builder() as builder:

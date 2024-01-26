@@ -32,7 +32,7 @@ import math
 
 @dataclass
 class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
-    unknown_object: int
+    range: int
     block_number: int
     offset: int
     unknown_object1: int
@@ -44,10 +44,8 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
     def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
-        # Simple Field (unknownObject)
-        write_buffer.write_unsigned_byte(
-            self.unknown_object, logical_name="unknownObject"
-        )
+        # Simple Field (range)
+        write_buffer.write_unsigned_byte(self.range, logical_name="range")
 
         # Simple Field (blockNumber)
         write_buffer.write_unsigned_short(self.block_number, logical_name="blockNumber")
@@ -74,7 +72,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         length_in_bits: int = super().length_in_bits()
         _value: UmasPDUReadMemoryBlockRequest = self
 
-        # Simple field (unknownObject)
+        # Simple field (range)
         length_in_bits += 8
 
         # Simple field (blockNumber)
@@ -95,8 +93,8 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
     def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
         read_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
-        unknown_object: int = read_buffer.read_unsigned_byte(
-            logical_name="unknownObject",
+        range: int = read_buffer.read_unsigned_byte(
+            logical_name="range",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -133,7 +131,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         read_buffer.pop_context("UmasPDUReadMemoryBlockRequest")
         # Create the instance
         return UmasPDUReadMemoryBlockRequestBuilder(
-            unknown_object, block_number, offset, unknown_object1, number_of_bytes
+            range, block_number, offset, unknown_object1, number_of_bytes
         )
 
     def equals(self, o: object) -> bool:
@@ -145,7 +143,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
 
         that: UmasPDUReadMemoryBlockRequest = UmasPDUReadMemoryBlockRequest(o)
         return (
-            (self.unknown_object == that.unknown_object)
+            (self.range == that.range)
             and (self.block_number == that.block_number)
             and (self.offset == that.offset)
             and (self.unknown_object1 == that.unknown_object1)
@@ -170,7 +168,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
 
 @dataclass
 class UmasPDUReadMemoryBlockRequestBuilder:
-    unknown_object: int
+    range: int
     block_number: int
     offset: int
     unknown_object1: int
@@ -180,7 +178,7 @@ class UmasPDUReadMemoryBlockRequestBuilder:
         umas_pdu_read_memory_block_request: UmasPDUReadMemoryBlockRequest = (
             UmasPDUReadMemoryBlockRequest(
                 pairing_key,
-                self.unknown_object,
+                self.range,
                 self.block_number,
                 self.offset,
                 self.unknown_object1,

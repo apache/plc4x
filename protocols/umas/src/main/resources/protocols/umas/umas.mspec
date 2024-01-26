@@ -76,7 +76,7 @@
         ['0x04'      UmasPDUPlcStatusRequest
         ]
         ['0x20'      UmasPDUReadMemoryBlockRequest
-            [simple     uint 8         unknownObject]
+            [simple     uint 8          range]
             [simple     uint 16        blockNumber]
             [simple     uint 16        offset]
             [simple     uint 16        unknownObject1]
@@ -116,6 +116,8 @@
         ]
     ]
 ]
+
+
 
 [type PlcMemoryBlockIdent
     [simple uint 8 blockType]

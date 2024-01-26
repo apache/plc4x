@@ -69,7 +69,9 @@ class UmasProtocol(Plc4xBaseProtocol):
     ):
         pdu = UmasPDUBuilder(umas_pdu_item).build(umas_pdu_item.umas_function_key)
 
-        write_buffer = WriteBufferByteBased(pdu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
+        write_buffer = WriteBufferByteBased(
+            pdu.length_in_bytes(), ByteOrder.LITTLE_ENDIAN
+        )
         pdu.serialize(write_buffer)
 
         adu = ModbusTcpADU(

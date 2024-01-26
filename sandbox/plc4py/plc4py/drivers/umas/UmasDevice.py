@@ -134,10 +134,10 @@ class UmasDevice:
         message_future = loop.create_future()
 
         request_pdu = UmasPDUReadMemoryBlockRequestBuilder(
+            range=0,
             block_number=0x30,
             offset=0,
             number_of_bytes=0x21,
-            unknown_object=0,
             unknown_object1=0,
         ).build(pairing_key=0)
 
