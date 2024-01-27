@@ -236,7 +236,9 @@ class ModbusPDUReadDeviceIdentificationResponseBuilder(ModbusPDUBuilder):
     def build(
         self,
     ) -> ModbusPDUReadDeviceIdentificationResponse:
-        modbus_pdu_read_device_identification_response: ModbusPDUReadDeviceIdentificationResponse = ModbusPDUReadDeviceIdentificationResponse(
+        modbus_pdu_read_device_identification_response: (
+            ModbusPDUReadDeviceIdentificationResponse
+        ) = ModbusPDUReadDeviceIdentificationResponse(
             self.level,
             self.individual_access,
             self.conformity_level,

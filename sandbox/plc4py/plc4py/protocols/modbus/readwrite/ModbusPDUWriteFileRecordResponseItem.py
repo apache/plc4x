@@ -118,7 +118,9 @@ class ModbusPDUWriteFileRecordResponseItem:
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
         # Create the instance
-        _modbus_pdu_write_file_record_response_item: ModbusPDUWriteFileRecordResponseItem = ModbusPDUWriteFileRecordResponseItem(
+        _modbus_pdu_write_file_record_response_item: (
+            ModbusPDUWriteFileRecordResponseItem
+        ) = ModbusPDUWriteFileRecordResponseItem(
             reference_type, file_number, record_number, record_data
         )
         return _modbus_pdu_write_file_record_response_item

@@ -67,6 +67,7 @@ class ModbusADU(ABC, PlcMessage):
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
+
         if kwargs is None:
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 2, but got None"
@@ -107,18 +108,21 @@ class ModbusADU(ABC, PlcMessage):
         from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
 
         if driver_type == DriverType.MODBUS_TCP:
+
             builder = ModbusTcpADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusRtuADU import ModbusRtuADU
 
         if driver_type == DriverType.MODBUS_RTU:
+
             builder = ModbusRtuADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusAsciiADU import ModbusAsciiADU
 
         if driver_type == DriverType.MODBUS_ASCII:
+
             builder = ModbusAsciiADU.static_parse_builder(
                 read_buffer, driver_type, response
             )

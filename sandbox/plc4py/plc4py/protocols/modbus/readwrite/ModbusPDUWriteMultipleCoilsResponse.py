@@ -121,7 +121,7 @@ class ModbusPDUWriteMultipleCoilsResponseBuilder(ModbusPDUBuilder):
     def build(
         self,
     ) -> ModbusPDUWriteMultipleCoilsResponse:
-        modbus_pdu_write_multiple_coils_response: ModbusPDUWriteMultipleCoilsResponse = ModbusPDUWriteMultipleCoilsResponse(
-            self.starting_address, self.quantity
-        )
+        modbus_pdu_write_multiple_coils_response: (
+            ModbusPDUWriteMultipleCoilsResponse
+        ) = ModbusPDUWriteMultipleCoilsResponse(self.starting_address, self.quantity)
         return modbus_pdu_write_multiple_coils_response

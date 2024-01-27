@@ -22,6 +22,7 @@ from aenum import AutoNumberEnum
 
 
 class ModbusDeviceInformationLevel(AutoNumberEnum):
+
     BASIC: int = 0x01
     REGULAR: int = 0x02
     EXTENDED: int = 0x03

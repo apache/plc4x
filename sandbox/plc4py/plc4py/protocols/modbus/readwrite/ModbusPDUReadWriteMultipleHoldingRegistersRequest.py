@@ -189,7 +189,9 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUBuilder)
     def build(
         self,
     ) -> ModbusPDUReadWriteMultipleHoldingRegistersRequest:
-        modbus_pdu_read_write_multiple_holding_registers_request: ModbusPDUReadWriteMultipleHoldingRegistersRequest = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
+        modbus_pdu_read_write_multiple_holding_registers_request: (
+            ModbusPDUReadWriteMultipleHoldingRegistersRequest
+        ) = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
             self.read_starting_address,
             self.read_quantity,
             self.write_starting_address,

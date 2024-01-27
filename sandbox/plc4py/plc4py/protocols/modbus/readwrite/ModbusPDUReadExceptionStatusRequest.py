@@ -86,10 +86,11 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
 
 @dataclass
 class ModbusPDUReadExceptionStatusRequestBuilder(ModbusPDUBuilder):
+
     def build(
         self,
     ) -> ModbusPDUReadExceptionStatusRequest:
-        modbus_pdu_read_exception_status_request: ModbusPDUReadExceptionStatusRequest = (
-            ModbusPDUReadExceptionStatusRequest()
-        )
+        modbus_pdu_read_exception_status_request: (
+            ModbusPDUReadExceptionStatusRequest
+        ) = ModbusPDUReadExceptionStatusRequest()
         return modbus_pdu_read_exception_status_request

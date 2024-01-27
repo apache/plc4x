@@ -119,7 +119,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder(ModbusPDUBuilder
     def build(
         self,
     ) -> ModbusPDUReadWriteMultipleHoldingRegistersResponse:
-        modbus_pdu_read_write_multiple_holding_registers_response: ModbusPDUReadWriteMultipleHoldingRegistersResponse = ModbusPDUReadWriteMultipleHoldingRegistersResponse(
-            self.value
-        )
+        modbus_pdu_read_write_multiple_holding_registers_response: (
+            ModbusPDUReadWriteMultipleHoldingRegistersResponse
+        ) = ModbusPDUReadWriteMultipleHoldingRegistersResponse(self.value)
         return modbus_pdu_read_write_multiple_holding_registers_response

@@ -104,7 +104,9 @@ class ModbusPDUReadFileRecordRequestItem:
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance
-        _modbus_pdu_read_file_record_request_item: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(
+        _modbus_pdu_read_file_record_request_item: (
+            ModbusPDUReadFileRecordRequestItem
+        ) = ModbusPDUReadFileRecordRequestItem(
             reference_type, file_number, record_number, record_length
         )
         return _modbus_pdu_read_file_record_request_item

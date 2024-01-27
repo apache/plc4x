@@ -119,7 +119,7 @@ class ModbusPDUWriteSingleRegisterResponseBuilder(ModbusPDUBuilder):
     def build(
         self,
     ) -> ModbusPDUWriteSingleRegisterResponse:
-        modbus_pdu_write_single_register_response: ModbusPDUWriteSingleRegisterResponse = ModbusPDUWriteSingleRegisterResponse(
-            self.address, self.value
-        )
+        modbus_pdu_write_single_register_response: (
+            ModbusPDUWriteSingleRegisterResponse
+        ) = ModbusPDUWriteSingleRegisterResponse(self.address, self.value)
         return modbus_pdu_write_single_register_response

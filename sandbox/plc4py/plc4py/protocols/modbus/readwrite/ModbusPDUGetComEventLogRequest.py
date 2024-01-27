@@ -84,6 +84,7 @@ class ModbusPDUGetComEventLogRequest(ModbusPDU):
 
 @dataclass
 class ModbusPDUGetComEventLogRequestBuilder(ModbusPDUBuilder):
+
     def build(
         self,
     ) -> ModbusPDUGetComEventLogRequest:
