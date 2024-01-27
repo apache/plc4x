@@ -25,7 +25,7 @@ import 'primeicons/primeicons.css';
 import {useRef, useState} from "react";
 import {ContextMenu} from "primereact/contextmenu";
 import {MenuItem} from "primereact/menuitem";
-import {Device, DeviceEvent, RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
+import {Device, RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
 import axios from "axios";
 import {Counter} from "../utils/Counter.ts";
 import DeviceDialog from "./DeviceDialog.tsx";
@@ -188,7 +188,7 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
             accept: confirmDeleteAccept,
             reject: confirmDeleteReject
         });
-    };
+    }
 
     const treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value, new Counter()))
     return (
