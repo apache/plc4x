@@ -22,5 +22,9 @@ package org.apache.plc4x.java.tools.ui.repository;
 import org.apache.plc4x.java.tools.ui.model.Device;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 public interface DeviceRepository extends JpaRepository<Device, Integer> {
+    List<Device> findByProtocolCodeAndTransportCodeAndTransportUrl(String protocolCode, String transportCode, String transportUrl);
+
 }

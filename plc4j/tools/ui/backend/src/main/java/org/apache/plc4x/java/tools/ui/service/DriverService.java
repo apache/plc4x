@@ -34,6 +34,7 @@ import org.apache.plc4x.java.tools.ui.event.EventType;
 import org.apache.plc4x.java.tools.ui.model.ConfigurationOption;
 import org.apache.plc4x.java.tools.ui.model.Device;
 import org.apache.plc4x.java.tools.ui.model.Driver;
+import org.apache.plc4x.java.tools.ui.repository.DeviceRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -47,12 +48,11 @@ public class DriverService {
     private static final String ALL_DRIVERS = "all";
 
     private final PlcDriverManager driverManager;
+    private final DeviceService deviceService;
 
-    private final ApplicationEventPublisher applicationEventPublisher;
-
-    public DriverService(PlcDriverManager driverManager, ApplicationEventPublisher applicationEventPublisher) {
+    public DriverService(PlcDriverManager driverManager, DeviceService deviceService) {
         this.driverManager = driverManager;
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.deviceService = deviceService;
     }
 
     public List<Driver> getDriverList() {
@@ -111,19 +111,25 @@ public class DriverService {
                 PlcDiscoveryRequest request = driver.discoveryRequestBuilder().addQuery("all", "*").build();
                 // Execute the discovery request and have all connections found be added as connections.
                 request.executeWithHandler(discoveryItem -> {
-                    Map<String, String> attributes = new HashMap<>();
-                    for (String attributeName : discoveryItem.getAttributes().keySet()) {
-                        String attributeValue = discoveryItem.getAttributes().get(attributeName).getString();
-                        attributes.put(attributeName, attributeValue);
-                    }
+                    // Create the new device.
                     Device device = new Device();
                     device.setName(discoveryItem.getName());
                     device.setProtocolCode(discoveryItem.getProtocolCode());
                     device.setTransportCode(discoveryItem.getTransportCode());
                     device.setTransportUrl(discoveryItem.getTransportUrl());
                     device.setOptions(discoveryItem.getOptions());
+                    Map<String, String> attributes = new HashMap<>();
+                    for (String attributeName : discoveryItem.getAttributes().keySet()) {
+                        String attributeValue = discoveryItem.getAttributes().get(attributeName).getString();
+                        attributes.put(attributeName, attributeValue);
+                    }
                     device.setAttributes(attributes);
-                    applicationEventPublisher.publishEvent(new DeviceEvent(device, EventType.CREATED));
+
+                    // Save the found device in the database, if this is a new device,
+                    // that is not stored in our system before.
+                    if(deviceService.isNewDevice(device)) {
+                        deviceService.createDevice(device);
+                    }
                 }).whenComplete((plcDiscoveryResponse, throwable) -> {
                     if(throwable != null) {
                         throw new RuntimeException("Error executing discovery", throwable);

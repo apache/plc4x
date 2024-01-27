@@ -25,10 +25,11 @@ import 'primeicons/primeicons.css';
 import {useRef, useState} from "react";
 import {ContextMenu} from "primereact/contextmenu";
 import {MenuItem} from "primereact/menuitem";
-import {Device, RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
+import {Device, DeviceEvent, RestApplicationClient} from "../generated/plc4j-tools-ui-frontend.ts";
 import axios from "axios";
 import {Counter} from "../utils/Counter.ts";
 import DeviceDialog from "./DeviceDialog.tsx";
+import {confirmDialog, ConfirmDialog} from "primereact/confirmdialog";
 
 type NavigationTreeProps = {
     treeItems: TreeItemData[];
@@ -37,7 +38,7 @@ type NavigationTreeProps = {
 const restClient = new RestApplicationClient(axios);
 
 export default function NavigationTree({treeItems}: NavigationTreeProps) {
-    const dialogDevice = useRef<Device>({
+    const [dialogDevice, setDialogDevice] = useState<Device>({
         id: 0,
         name: "",
         protocolCode: "",
@@ -45,7 +46,7 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         transportUrl: "",
         options: {},
         attributes: {},
-    });
+    })
     const [showDeviceDialog, setShowDeviceDialog] = useState(false)
 
     const cm = useRef<ContextMenu>(null);
@@ -97,35 +98,43 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         // Add
         menu[1].disabled = selectedItem.type != "DRIVER"
         menu[1].command = () => {
-            dialogDevice.current.id = 0;
-            dialogDevice.current.name = "";
-            dialogDevice.current.transportCode = "";
-            dialogDevice.current.transportUrl = "";
-            dialogDevice.current.protocolCode = selectedItem.id;
-            dialogDevice.current.options = {};
-            dialogDevice.current.attributes = {};
+            dialogDevice.id = 0;
+            dialogDevice.name = "";
+            dialogDevice.transportCode = "";
+            dialogDevice.transportUrl = "";
+            dialogDevice.protocolCode = selectedItem.id;
+            dialogDevice.options = {};
+            dialogDevice.attributes = {};
             setShowDeviceDialog(true);
         }
 
         // Edit
         menu[2].disabled = selectedItem.type != "DEVICE"
         menu[2].command = () => {
-            console.log(JSON.stringify(selectedItem))
             if(selectedItem.device) {
-                dialogDevice.current.id = selectedItem.device.id;
-                dialogDevice.current.name = selectedItem.device.name;
-                dialogDevice.current.transportCode = selectedItem.device.transportCode;
-                dialogDevice.current.transportUrl = selectedItem.device.transportUrl;
-                dialogDevice.current.protocolCode = selectedItem.device.protocolCode;
-                dialogDevice.current.options = selectedItem.device.options;
-                dialogDevice.current.attributes = selectedItem.device.attributes;
+                dialogDevice.id = selectedItem.device.id;
+                dialogDevice.name = selectedItem.device.name;
+                dialogDevice.transportCode = selectedItem.device.transportCode;
+                dialogDevice.transportUrl = selectedItem.device.transportUrl;
+                dialogDevice.protocolCode = selectedItem.device.protocolCode;
+                dialogDevice.options = selectedItem.device.options;
+                dialogDevice.attributes = selectedItem.device.attributes;
                 setShowDeviceDialog(true);
             }
         }
         // Delete
         menu[3].disabled = selectedItem.type != "DEVICE"
         menu[3].command = () => {
-            // TODO: Ask for confirmation ...
+            if(selectedItem.device) {
+                dialogDevice.id = selectedItem.device.id;
+                dialogDevice.name = selectedItem.device.name;
+                dialogDevice.transportCode = selectedItem.device.transportCode;
+                dialogDevice.transportUrl = selectedItem.device.transportUrl;
+                dialogDevice.protocolCode = selectedItem.device.protocolCode;
+                dialogDevice.options = selectedItem.device.options;
+                dialogDevice.attributes = selectedItem.device.attributes;
+                confirmDelete()
+            }
         }
         // Connect
         menu[4].disabled = selectedItem.type != "DEVICE"
@@ -163,10 +172,40 @@ export default function NavigationTree({treeItems}: NavigationTreeProps) {
         }
     }
 
+    const confirmDeleteAccept = () => {
+        restClient.deleteDevice(dialogDevice)
+    }
+
+    const confirmDeleteReject = () => {
+    }
+
+    function confirmDelete() {
+        confirmDialog({
+            message: 'Do you want to delete this record?',
+            header: 'Delete Confirmation',
+            icon: 'pi pi-info-circle',
+            acceptClassName: 'p-button-danger',
+            accept: confirmDeleteAccept,
+            reject: confirmDeleteReject
+        });
+    };
+
     const treeNodes: TreeNode[] = treeItems.map(value => createTreeNode(value, new Counter()))
     return (
         <div>
-            <DeviceDialog device={dialogDevice.current} visible={showDeviceDialog} onSave={console.log} onCancel={console.log} />
+            <DeviceDialog device={dialogDevice} visible={showDeviceDialog}
+                          onUpdate={device => {
+                              setDialogDevice(device)
+                          }}
+                          onSave={device => {
+                              restClient.saveDevice(device).then(value => {
+                                  if(value.status == 200) {
+                                      setShowDeviceDialog(false)
+                                  }
+                              })
+                          }}
+                          onCancel={() => setShowDeviceDialog(false)} />
+            <ConfirmDialog />
             <ContextMenu model={menu} ref={cm}/>
             <Tree value={treeNodes}
                   selectionMode="single"

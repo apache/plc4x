@@ -74,12 +74,12 @@ function App() {
                     }
                     case "UPDATED": {
                         const action:DeviceAction = {device: deviceEvent.source}
-                        updateDevice(action)
+                        store.dispatch(updateDevice(action));
                         break;
                     }
                     case "DELETED": {
                         const action: DeviceAction = {device: deviceEvent.source}
-                        deleteDevice(action)
+                        store.dispatch(deleteDevice(action));
                         break;
                     }
                 }
