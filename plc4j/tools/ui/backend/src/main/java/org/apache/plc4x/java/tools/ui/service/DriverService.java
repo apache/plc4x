@@ -29,13 +29,9 @@ import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
-import org.apache.plc4x.java.tools.ui.event.DeviceEvent;
-import org.apache.plc4x.java.tools.ui.event.EventType;
 import org.apache.plc4x.java.tools.ui.model.ConfigurationOption;
 import org.apache.plc4x.java.tools.ui.model.Device;
 import org.apache.plc4x.java.tools.ui.model.Driver;
-import org.apache.plc4x.java.tools.ui.repository.DeviceRepository;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
