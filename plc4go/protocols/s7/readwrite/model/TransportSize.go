@@ -598,11 +598,11 @@ func (e TransportSize) SizeInBytes() uint8 {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 12
+			return 8
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return 12
+			return 8
 		}
 	default:
 		{
@@ -980,7 +980,7 @@ func (e TransportSize) ShortName() uint8 {
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return 'X'
+			return 'B'
 		}
 	default:
 		{
@@ -1228,11 +1228,11 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	case 0x1B:
 		{ /* '0x1B' */
-			return 0
+			return DataTransportSize_BYTE_WORD_DWORD
 		}
 	default:
 		{

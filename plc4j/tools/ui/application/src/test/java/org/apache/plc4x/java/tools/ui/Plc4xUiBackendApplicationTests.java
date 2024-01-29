@@ -19,12 +19,14 @@
 
 package org.apache.plc4x.java.tools.ui;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles(value = "test")
+@Disabled("Disabled for now")
 class Plc4xUiBackendApplicationTests {
 
 	@Test

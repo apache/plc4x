@@ -50,6 +50,12 @@ uint16_t plc4c_s7_read_write_s7msec_to_int(plc4c_spi_read_buffer* io);
 
 plc4c_return_code plc4c_s7_read_write_int_to_s7msec(plc4c_spi_write_buffer* writeBuffer, uint16_t value);
 
+uint64_t plc4c_s7_read_write_parse_s7_day_of_week(plc4c_spi_write_buffer* writeBuffer);
+
+uint64_t plc4c_s7_read_write_parse_s7_msec_to_nsec(plc4c_spi_write_buffer* writeBuffer);
+
+uint64_t plc4c_s7_read_write_parse_bcd_to_byte(plc4c_spi_write_buffer* writeBuffer);
+
 char* plc4c_s7_read_write_parse_s7_string(plc4c_spi_read_buffer* io, int32_t stringLength, char* encoding);
 
 char* plc4c_s7_read_write_parse_s7_char(plc4c_spi_read_buffer* io, char* encoding);

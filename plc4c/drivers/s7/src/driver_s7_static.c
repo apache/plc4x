@@ -150,3 +150,17 @@ plc4c_return_code plc4c_s7_read_write_int_to_s7msec(plc4c_spi_write_buffer* writ
   return 0;
 }
 
+uint64_t plc4c_s7_read_write_parse_s7_day_of_week(plc4c_spi_write_buffer* writeBuffer) {
+  // TODO: Implement ...
+  return 0;
+}
+
+uint64_t plc4c_s7_read_write_parse_s7_msec_to_nsec(plc4c_spi_write_buffer* writeBuffer) {
+  // TODO: Implement ...
+  return 0;
+}
+
+uint64_t plc4c_s7_read_write_parse_bcd_to_byte(plc4c_spi_write_buffer* writeBuffer) {
+  // TODO: Implement ...
+  return 0;
+}

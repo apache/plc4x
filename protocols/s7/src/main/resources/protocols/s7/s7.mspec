@@ -811,14 +811,14 @@
         //2. The "dayOfWeek" field is taken from the PLC, but is unused 
         //   since it is generated internally in the LocalDateTime instances.
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
-            [manual uint 64  year        'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Year())'    '8']
-            [manual uint 64  month       'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().MonthValue())'    '8']
-            [manual uint 64  day         'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().DayOfMonth())'    '8']
-            [manual uint 64  hour        'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Hour())'    '8']
-            [manual uint 64  minutes     'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Minute())'    '8']
-            [manual uint 64  seconds     'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Second())'    '8']
-            [manual uint 64  nanoseconds 'STATIC_CALL("parseS7MsecToNsec", readBuffer)'   'STATIC_CALL("serializeNsecToS7Msec", writeBuffer, _value.DateTime().Nano())'   '8']  //(01)
-            [manual uint 64  dayOfWeek   'STATIC_CALL("parseS7DayOfWeek", readBuffer)'   'STATIC_CALL("serializeS7DayOfWeek", writeBuffer, _value.DateTime().DayOfWeek().Value())'   '8']         
+            [manual uint 64  year        'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Year())'                         '8']
+            [manual uint 64  month       'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().MonthValue())'                   '8']
+            [manual uint 64  day         'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().DayOfMonth())'                   '8']
+            [manual uint 64  hour        'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Hour())'                         '8']
+            [manual uint 64  minutes     'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Minute())'                       '8']
+            [manual uint 64  seconds     'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Second())'                       '8']
+            [manual uint 64  nanoseconds 'STATIC_CALL("parseS7MsecToNsec", readBuffer)' 'STATIC_CALL("serializeNsecToS7Msec", writeBuffer, _value.DateTime().Nano())'             '8']  //(01)
+            [manual uint 64  dayOfWeek   'STATIC_CALL("parseS7DayOfWeek", readBuffer)'  'STATIC_CALL("serializeS7DayOfWeek", writeBuffer, _value.DateTime().DayOfWeek().Value())' '8']
         ]
 
         // - Date & Time: Interpreted as "number of nanoseconds since 1990-01-01"
