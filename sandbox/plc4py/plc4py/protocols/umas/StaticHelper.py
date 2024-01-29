@@ -103,3 +103,11 @@ def ascii_lrc_check(address: int, pdu: ModbusPDU) -> int:
 
     lrc = -lrc
     return lrc & 0xFF
+
+
+def parse_terminated_string(write_buffer, string_length):
+    pass
+
+
+def serialize_terminated_string(read_buffer, value, string_length):
+    pass

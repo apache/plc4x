@@ -265,9 +265,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#assign manualField = field.asManualField().orElseThrow()>
                         <#assign typedField = field.asTypedField().orElseThrow()>
                         <#assign namedField = field.asNamedField().orElseThrow()>
-
+                        <@emitImport import="from plc4py.protocols.${protocolName} import StaticHelper" />
         # Manual Field (${manualField.name})
-        write_buffer.${helper.getDataWriterCall(typedField.type, namedField.name)}(lambda : ${helper.toParseExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}, logical_name="${namedField.name}")
+        write_buffer.write_manual(write_function=lambda : StaticHelper.${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, parserArguments)}, logical_name="${namedField.name}")
                         <#break>
                     <#case "optional">
                         <#assign optionalField = field.asOptionalField().orElseThrow()>
@@ -424,7 +424,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         <#assign manualField = field.asManualField().orElseThrow()>
 
         # Manual Field (${manualField.name})
-        length_in_bits += ${helper.toParseExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)}
+        length_in_bits += ${helper.toSerializationExpression(manualField, helper.intTypeReference, manualField.lengthExpression, parserArguments)}
         <#break>
     <#case "optional">
         <#assign optionalField = field.asOptionalField().orElseThrow()>
@@ -642,12 +642,12 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
                 <#if arrayElementTypeReference.isByteBased()>
-                <@emitImport import="from typing import List" />
-                <@emitImport import="from typing import Any" />
+                    <@emitImport import="from typing import List" />
+                    <@emitImport import="from typing import Any" />
         ${helper.camelCaseToSnakeCase(arrayField.name)}: List[Any] = read_buffer.read_array_field(logical_name="${manualArrayField.name}", read_function=<#if manualArrayField.type.isComplexTypeReference()><#else>read_buffer.</#if>${helper.getDataReaderCall(manualArrayField.type)}manual_start = lambda _values: bool(${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), manual_stop = lambda : byte(${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
                 <#else>
-                <@emitImport import="from typing import List" />
-                <@emitImport import="from typing import Any" />
+                    <@emitImport import="from typing import List" />
+                    <@emitImport import="from typing import Any" />
         ${helper.camelCaseToSnakeCase(arrayField.name)}: List[Any] = read_buffer.read_array_field(logical_name="${manualArrayField.name}", read_function=<#if manualArrayField.type.isComplexTypeReference()><#else>read_buffer.</#if>${helper.getDataReaderCall(manualArrayField.type)}manual_start = lambda _values: ${helper.getNonPrimitiveLanguageTypeNameForField(manualArrayField)} : bool(${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}), lambda : ${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}(${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
                 </#if>
                 <#break>
@@ -656,7 +656,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-        ${helper.camelCaseToSnakeCase(manualField.name)} = read_buffer.${helper.getDataReaderCall(manualField.type)}(logical_name="${namedField.name}", read_buffer, lambda : ${helper.getLanguageTypeNameForField(manualField)}(${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
+        ${helper.camelCaseToSnakeCase(manualField.name)} = read_buffer.read_manual(read_function=lambda : StaticHelper.${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)}, logical_name="${namedField.name}")
                 <#break>
             <#case "optional">
                 <#assign optionalField = field.asOptionalField().orElseThrow()>

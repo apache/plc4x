@@ -150,12 +150,17 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
 
 
 class ReadBufferByteBased(ReadBuffer):
-    def __init__(self, bb: bytearray, byte_order: ByteOrder):
+    def __init__(
+        self,
+        bb: bytearray,
+        byte_order: ByteOrder,
+        bit_order: ByteOrder = ByteOrder.BIG_ENDIAN,
+    ):
         if byte_order == ByteOrder.LITTLE_ENDIAN:
-            bb = bitarray(buffer=bb)
+            bb = bitarray(buffer=bb, endian=ByteOrder.get_short_name(bit_order))
             bb.bytereverse()
         self.bb = bitarray(
-            buffer=memoryview(bb), endian=ByteOrder.get_short_name(byte_order)
+            buffer=memoryview(bb), endian=ByteOrder.get_short_name(bit_order)
         )
         self.byte_order = byte_order
         self.position = 0
@@ -341,6 +346,10 @@ class ReadBufferByteBased(ReadBuffer):
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
         if isinstance(read_function, types.FunctionType):
             return read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+
+    def read_manual(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+        if isinstance(read_function, types.FunctionType):
+            return read_function()
 
     def read_enum(
         self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs

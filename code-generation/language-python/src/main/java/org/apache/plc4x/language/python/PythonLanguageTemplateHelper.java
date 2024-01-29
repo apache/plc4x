@@ -1199,6 +1199,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 VariableLiteral va = (VariableLiteral) arg;
                 // "io" is the default name of the reader argument which is always available.
                 boolean isParserArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName()) || ((thisType instanceof DataIoTypeDefinition) && "_value".equals(va.getName()));
+                boolean isBufferArg = "readBuffer".equals(va.getName()) || "writeBuffer".equals(va.getName());
                 boolean isTypeArg = "_type".equals(va.getName());
                 if (!isParserArg && !isTypeArg && parserArguments != null) {
                     for (Argument parserArgument : parserArguments) {
@@ -1208,11 +1209,13 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                         }
                     }
                 }
-                if (isParserArg) {
+                if (isBufferArg) {
+                    sb.append(toVariableExpression(field, typeReference, va, parserArguments, serializerArguments, false, suppressPointerAccess));
+                } else if (isParserArg) {
                     tracer = tracer.dive("isParserArg");
                     if (va.getName().equals("_value")) {
                         tracer = tracer.dive("is _value");
-                        sb.append(va.getName().substring(1)).append(va.getChild().map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)).orElse(""));
+                        sb.append(va.getName().substring(1)).append(va.getChild().map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, false)).orElse(""));
                     } else {
                         sb.append(va.getName()).append((va.getChild().isPresent()) ?
                             ".get_" + camelCaseToSnakeCase(toVariableExpression(field, typeReference, va.getChild().orElseThrow(IllegalStateException::new), parserArguments, serializerArguments, false, suppressPointerAccess)) + "()" : "");
@@ -1318,7 +1321,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         final Tracer tracer2 = tracer.dive("_value");
         return variableLiteral.getChild()
             .map(child -> tracer2.dive("withChild") + "self." + toUppercaseVariableExpression(field, typeReference, child, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer2))
-            .orElse(tracer2 + "m");
+            .orElse(tracer2 + "value");
     }
 
     private String toLengthInBitsVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {

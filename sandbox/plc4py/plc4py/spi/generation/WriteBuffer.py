@@ -15,6 +15,7 @@
 #  specific language governing permissions and limitations
 #  under the License.
 import struct
+import types
 from abc import ABCMeta
 from ctypes import (
     c_byte,
@@ -135,6 +136,10 @@ class WriteBuffer(ByteOrderAware, PositionAware):
     ) -> None:
         raise NotImplementedError
 
+    def write_manual(self, logical_name: str = "", write_function=None, **kwargs):
+        if isinstance(write_function, types.FunctionType):
+            return write_function()
+
     #
     # This method can be used to influence serializing (e.g. intercept whole types and render them in a simplified form)
     #
@@ -186,13 +191,13 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         self.position += 1
 
     def write_byte(self, value: int, logical_name: str = "", **kwargs) -> None:
-        self.write_signed_byte(value, 8, logical_name, **kwargs)
+        self.write_unsigned_byte(value, 8, logical_name, **kwargs)
 
     def write_byte_array(
         self, value: List[int], logical_name: str = "", **kwargs
     ) -> None:
         for a_byte in value:
-            self.write_signed_byte(a_byte, 8, logical_name, **kwargs)
+            self.write_unsigned_byte(a_byte, 8, logical_name, **kwargs)
 
     def write_unsigned_byte(
         self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
