@@ -21,6 +21,7 @@ package org.apache.plc4x.java.s7.readwrite.utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import java.math.BigInteger;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -53,6 +54,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.s7.readwrite.DateAndTime;
 import org.apache.plc4x.java.spi.values.PlcDATE;
 import org.apache.plc4x.java.spi.values.PlcTIME;
 
@@ -2097,10 +2099,19 @@ public class StaticHelper {
         byte dec = (byte) ((incomingByte / 10) % 10);
         return (byte) ((dec << 4) | (incomingByte % 10));
     }
+    
+    public static void ByteToBcd(final WriteBuffer buffer, PlcValue _value) throws SerializationException {
+        
+    }     
 
     private static int BcdToInt(byte bcd) {
         return (bcd >> 4) * 10 + (bcd & 0x0f);
     }
+    
+    public static int BcdToInt(final ReadBuffer buffer) throws ParseException {
+        byte bcd = buffer.readByte();
+        return (bcd >> 4) * 10 + (bcd & 0x0f);
+    }      
 
     public static void ByteToBcd(final WriteBuffer buffer, short _value) throws SerializationException {
         short incomingByte = _value;
@@ -2109,11 +2120,21 @@ public class StaticHelper {
         outputByte = (byte) ((dec << 4) | (incomingByte % 10));
         buffer.writeByte(outputByte);
     }
-
-    public static int BcdToInt(final ReadBuffer buffer) throws ParseException {
+    
+    public static void ByteToBcd(final WriteBuffer buffer, int _value) throws SerializationException {
+        ByteToBcd(buffer, (short) _value);
+    }    
+    
+    public static BigInteger parseBcdToByte(final ReadBuffer buffer) throws ParseException {
         byte bcd = buffer.readByte();
-        return (bcd >> 4) * 10 + (bcd & 0x0f);
-    }
+        return BigInteger.valueOf((short) ((bcd >> 4) * 10 + (bcd & 0x0f)));
+    }    
+    
+    public static void serializeByteToBcd(final WriteBuffer buffer, PlcValue _value) throws SerializationException {
+        byte outputByte = 0;
+        //System.out.println("Clase: " + _value.getDateTime().getN);
+    }    
+    
 
     public static int S7msecToInt(final ReadBuffer buffer) throws ParseException {
         int centenas = BcdToInt(buffer.readUnsignedByte(4));
@@ -2138,6 +2159,10 @@ public class StaticHelper {
         buffer.writeUnsignedByte(4, (byte) unidad);
     }
 
+    public static void IntToS7msec(final WriteBuffer buffer, PlcValue _value) throws SerializationException {
+        
+    }    
+    
     public static void LeftShift3(final WriteBuffer buffer, int _value) throws SerializationException {
         int valor = _value << 3;
         buffer.writeUnsignedInt(16, valor);
@@ -2663,6 +2688,67 @@ public class StaticHelper {
             return;
         }
     }
+    
+    public static LocalDateTime xparseS7DateTime(ReadBuffer io) {
+        try {
+            int year = io.readByte()  + 2000;
+            int month = io.readByte();
+            int day = io.readByte();
+            int hour = io.readByte();
+            int minute = io.readByte();
+            int second = io.readByte();
+            int ms = io.readUnsignedInt(12);
+            // Skip day-of-week
+            int dow = io.readUnsignedInt(4);
+
+            return LocalDateTime.of(year, month, day, hour, minute, second, ms * 1000000);
+        } catch (Exception e) {
+            return null;
+        }        
+    } 
+    
+    
+//    public static LocalDateTime parseS7DateTime(ReadBuffer io) {
+//        return null;    
+//        
+//    }   
+    
+    /*
+    * This is a specific solution for the DATE_AND_TIME data type. 
+    * The 12 bits they represent are capped at up to 999 in BCD.
+    */
+    public static BigInteger parseS7MsecToNsec(ReadBuffer io) {
+        BigInteger bint = BigInteger.ZERO; 
+        try {    
+            return bint.add(BigInteger.valueOf(S7msecToInt(io) * 1_000_000L));
+        } catch (ParseException ex) {
+            
+        }
+        return bint;
+    }      
+    
+    public static void serializeNsecToS7Msec(WriteBuffer io, int value) {
+        long ms = (long) (value / 1_000_000);
+        byte bhl6 = (byte) ((int) (((ms / 100) << 4) | ((ms / 10) % 10)));
+        byte bh_7 = (byte) ((ms % 10) << 4);
+        try {
+            io.writeByte(bhl6);
+            io.writeShort(4, bh_7);
+        } catch (SerializationException ex) {
+            Logger.getLogger(StaticHelper.class.getName()).log(Level.SEVERE, null, ex);
+        }                
+    } 
+    
+   public static BigInteger parseS7DayOfWeek(ReadBuffer io) throws ParseException {
+        BigInteger bint = io.readUnsignedBigInteger(4);
+        return bint;
+   }    
+   
+    public static void serializeS7DayOfWeek(WriteBuffer io, int value) throws SerializationException {
+        short dayofweek = (short) ((value < 7) ? value + 1 : 1);
+        io.writeShort(4, dayofweek); 
+    }   
+    
 
     //TODO: Call BCD converter
     public static LocalDateTime parseTiaDateTime(ReadBuffer io) {

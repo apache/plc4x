@@ -446,8 +446,8 @@ public class KnxDatapoint {
 
       return PlcDATE_AND_TIME.ofSegments(
           year.intValue(),
-          (month == 0) ? 1 : month.intValue(),
-          (day == 0) ? 1 : day.intValue(),
+          (month.intValue() == 0) ? 1 : month.intValue(),
+          (day.intValue() == 0) ? 1 : day.intValue(),
           hour.intValue(),
           minutes.intValue(),
           seconds.intValue(),
@@ -492,8 +492,8 @@ public class KnxDatapoint {
 
       return PlcDATE_AND_TIME.ofSegments(
           year.intValue(),
-          (month == 0) ? 1 : month.intValue(),
-          (day == 0) ? 1 : day.intValue(),
+          (month.intValue() == 0) ? 1 : month.intValue(),
+          (day.intValue() == 0) ? 1 : day.intValue(),
           hour.intValue(),
           minutes.intValue(),
           seconds.intValue(),

@@ -221,6 +221,7 @@ public class ${type.name} {
                         <#if case.name == "Struct" ||
                             ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
                             ((case.name == "DATE_AND_TIME") && (simpleField.name == "secondsSinceEpoch")) ||
+                            ((case.name == "DATE_AND_TIME") && (simpleField.name == "nanosecondsSinceEpoch)")) ||
                             ((case.name == "DATE") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day"))) ||
                             ((case.name == "TIME_OF_DAY") && ((simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds"))) ||
                         simpleField.name == "value">
@@ -322,7 +323,7 @@ public class ${type.name} {
                     <#break>
                 <#case "DATE_AND_TIME">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanoseconds")>
-            return PlcDATE_AND_TIME.ofSegments(year.intValue(), (month == 0) ? 1 : month.intValue(), (day == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanoseconds.intValue());
+            return PlcDATE_AND_TIME.ofSegments(year.intValue(), (month.intValue() == 0) ? 1 : month.intValue(), (day.intValue() == 0) ? 1 : day.intValue(), hour.intValue(), minutes.intValue(), seconds.intValue(), nanoseconds.intValue());
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
             return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
                     </#if>

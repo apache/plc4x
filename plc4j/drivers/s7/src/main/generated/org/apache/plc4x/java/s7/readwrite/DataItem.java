@@ -221,36 +221,50 @@ public class DataItem {
       return PlcLTIME_OF_DAY.ofNanosecondsSinceMidnight(nanosecondsSinceMidnight);
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
 
-      // Simple Field (year)
-      Integer year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
+      // Manual Field (year)
+      BigInteger year =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseBcdToByte(readBuffer));
 
-      // Simple Field (month)
-      Short month = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+      // Manual Field (month)
+      BigInteger month =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseBcdToByte(readBuffer));
 
-      // Simple Field (day)
-      Short day = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+      // Manual Field (day)
+      BigInteger day =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseBcdToByte(readBuffer));
 
-      // Simple Field (dayOfWeek)
-      Short dayOfWeek = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
+      // Manual Field (hour)
+      BigInteger hour =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseBcdToByte(readBuffer));
 
-      // Simple Field (hour)
-      Short hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+      // Manual Field (minutes)
+      BigInteger minutes =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseBcdToByte(readBuffer));
 
-      // Simple Field (minutes)
-      Short minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+      // Manual Field (seconds)
+      BigInteger seconds =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseBcdToByte(readBuffer));
 
-      // Simple Field (seconds)
-      Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+      // Manual Field (nanoseconds)
+      BigInteger nanoseconds =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7MsecToNsec(readBuffer));
 
-      // Simple Field (nanoseconds)
-      Long nanoseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
+      // Manual Field (dayOfWeek)
+      BigInteger dayOfWeek =
+          (BigInteger)
+              (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseS7DayOfWeek(readBuffer));
 
       return PlcDATE_AND_TIME.ofSegments(
           year.intValue(),
-          (month == 0) ? 1 : month.intValue(),
-          (day == 0) ? 1 : day.intValue(),
+          (month.intValue() == 0) ? 1 : month.intValue(),
+          (day.intValue() == 0) ? 1 : day.intValue(),
           hour.intValue(),
           minutes.intValue(),
           seconds.intValue(),
@@ -400,40 +414,30 @@ public class DataItem {
       /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
           "", 64, (BigInteger) (nanosecondsSinceMidnight));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
-      // Simple Field (year)
-      int year = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
-      // Simple Field (month)
-      short month = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (month)).shortValue());
-      // Simple Field (day)
-      short day = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
-      // Simple Field (dayOfWeek)
-      short dayOfWeek = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (dayOfWeek)).shortValue());
-      // Simple Field (hour)
-      short hour = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (hour)).shortValue());
-      // Simple Field (minutes)
-      short minutes = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (minutes)).shortValue());
-      // Simple Field (seconds)
-      short seconds = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
-      // Simple Field (nanoseconds)
-      long nanoseconds = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (nanoseconds)).longValue());
+      // Manual Field (year)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(
+          writeBuffer, _value.getDateTime().getYear());
+      // Manual Field (month)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(
+          writeBuffer, _value.getDateTime().getMonthValue());
+      // Manual Field (day)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(
+          writeBuffer, _value.getDateTime().getDayOfMonth());
+      // Manual Field (hour)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(
+          writeBuffer, _value.getDateTime().getHour());
+      // Manual Field (minutes)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(
+          writeBuffer, _value.getDateTime().getMinute());
+      // Manual Field (seconds)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(
+          writeBuffer, _value.getDateTime().getSecond());
+      // Manual Field (nanoseconds)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeNsecToS7Msec(
+          writeBuffer, _value.getDateTime().getNano());
+      // Manual Field (dayOfWeek)
+      org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeS7DayOfWeek(
+          writeBuffer, _value.getDateTime().getDayOfWeek().getValue());
     }
   }
 
@@ -521,22 +525,22 @@ public class DataItem {
       // Simple Field (nanosecondsSinceMidnight)
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
-      // Simple Field (year)
-      sizeInBits += 16;
-      // Simple Field (month)
+      // Manual Field (year)
       sizeInBits += 8;
-      // Simple Field (day)
+      // Manual Field (month)
       sizeInBits += 8;
-      // Simple Field (dayOfWeek)
+      // Manual Field (day)
       sizeInBits += 8;
-      // Simple Field (hour)
+      // Manual Field (hour)
       sizeInBits += 8;
-      // Simple Field (minutes)
+      // Manual Field (minutes)
       sizeInBits += 8;
-      // Simple Field (seconds)
+      // Manual Field (seconds)
       sizeInBits += 8;
-      // Simple Field (nanoseconds)
-      sizeInBits += 32;
+      // Manual Field (nanoseconds)
+      sizeInBits += 8;
+      // Manual Field (dayOfWeek)
+      sizeInBits += 8;
     }
     return sizeInBits;
   }

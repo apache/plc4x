@@ -801,17 +801,26 @@
         ['"IEC61131_LTIME_OF_DAY"' LTIME_OF_DAY
             [simple uint 64 nanosecondsSinceMidnight]
         ]
+
         // - Date & Time: interpreted as individual components.
+        //Note: 
+        //1. Bit size 64 is used to generate the BigInteger type object. 
+        //   Any other size generates the variable of the primitive type, 
+        //   which prevents the call to create the instance of the object
+        //   in the DataItem class from being generated.
+        //2. The "dayOfWeek" field is taken from the PLC, but is unused 
+        //   since it is generated internally in the LocalDateTime instances.
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
-            [simple uint 16 year]
-            [simple uint 8  month]
-            [simple uint 8  day]
-            [simple uint 8  dayOfWeek]
-            [simple uint 8  hour]
-            [simple uint 8  minutes]
-            [simple uint 8  seconds]
-            [simple uint 32 nanoseconds]
+            [manual uint 64  year        'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Year())'    '8']
+            [manual uint 64  month       'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().MonthValue())'    '8']
+            [manual uint 64  day         'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().DayOfMonth())'    '8']
+            [manual uint 64  hour        'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Hour())'    '8']
+            [manual uint 64  minutes     'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Minute())'    '8']
+            [manual uint 64  seconds     'STATIC_CALL("parseBcdToByte", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, _value.DateTime().Second())'    '8']
+            [manual uint 64  nanoseconds 'STATIC_CALL("parseS7MsecToNsec", readBuffer)'   'STATIC_CALL("serializeNsecToS7Msec", writeBuffer, _value.DateTime().Nano())'   '8']  //(01)
+            [manual uint 64  dayOfWeek   'STATIC_CALL("parseS7DayOfWeek", readBuffer)'   'STATIC_CALL("serializeS7DayOfWeek", writeBuffer, _value.DateTime().DayOfWeek().Value())'   '8']         
         ]
+
         // - Date & Time: Interpreted as "number of nanoseconds since 1990-01-01"
         //['"IEC61131_LDATE_AND_TIME"' LDATE_AND_TIME
         //    [implicit uint 16 nanosecondsSinceSiemensEpoch 'nanosecondsSinceEpoch ...']
@@ -891,8 +900,8 @@
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x18' TIME_OF_DAY   ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x19' TOD           ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x1A' DATE_AND_TIME ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
-    ['0x1B' DT            ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
+    ['0x1A' DATE_AND_TIME ['0x0F'     , 'X'             , '8'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
+    ['0x1B' DT            ['0x0F'     , 'B'             , '8'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)
