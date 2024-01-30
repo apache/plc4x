@@ -22,9 +22,10 @@ import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class ManualS7DriverTest extends ManualTest {
+public class ManualS71200DriverTest extends ManualTest {
 
     /*
      * Test program code on the PLC with the test-data.
@@ -65,16 +66,17 @@ public class ManualS7DriverTest extends ManualTest {
      *
      */
 
-    public ManualS7DriverTest(String connectionString) {
+    public ManualS71200DriverTest(String connectionString) {
         super(connectionString, true);
     }
 
     public static void main(String[] args) throws Exception {
-        ManualS7DriverTest test = new ManualS7DriverTest("s7://192.168.23.30");
+        ManualS71200DriverTest test = new ManualS71200DriverTest("s7://192.168.23.30");
         test.addTestCase("%DB4:0.0:BOOL", new PlcBOOL(true));
         test.addTestCase("%DB4:1:BYTE", new PlcBYTE(42));
         test.addTestCase("%DB4:2:WORD", new PlcWORD(42424));
         test.addTestCase("%DB4:4:DWORD", new PlcDWORD(4242442424L));
+        //test.addTestCase("%DB4:4:LWORD", new PlcLWORD(4242442424424244242L));
         test.addTestCase("%DB4:16:SINT", new PlcSINT(-42));
         test.addTestCase("%DB4:17:USINT", new PlcUSINT(42));
         test.addTestCase("%DB4:18:INT", new PlcINT(-2424));
@@ -82,9 +84,9 @@ public class ManualS7DriverTest extends ManualTest {
         test.addTestCase("%DB4:22:DINT", new PlcDINT(-242442424));
         test.addTestCase("%DB4:26:UDINT", new PlcUDINT(4242442424L));
         // Not supported in S7 1200
-        //test.addTestCase("%DB4:30:LINT", new PlcLINT(-4242442424242424242L));
+        //test.addTestCase("%DB4:30:LINT", new PlcLINT(-4242442424424244242L));
         // Not supported in S7 1200
-        //test.addTestCase("%DB4:38:ULINT", new PlcULINT(4242442424242424242L));
+        //test.addTestCase("%DB4:38:ULINT", new PlcULINT(4242442424424244242L));
         test.addTestCase("%DB4:46:REAL", new PlcREAL(3.141593F));
         // Not supported in S7 1200
         //test.addTestCase("%DB4:50:LREAL", new PlcLREAL(2.71828182846D));
@@ -101,12 +103,9 @@ public class ManualS7DriverTest extends ManualTest {
         //test.addTestCase("%DB4:62:LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S"));
         test.addTestCase("%DB4:70:DATE", new PlcDATE(LocalDate.parse("1998-03-28")));
         test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
+        //test.addTestCase("%DB4:62:LTIME_OF_DAY", new PlcLTIME_OF_DAY(Duration.parse(""));
         // Not supported in S7 1200
-        //test.addTestCase("%DB4:96:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
-        // Not supported in S7 1200
-        //test.addTestCase("%DB4:104:DT", "1992-03-29T00:00");
-        // Not supported in S7 1200
-        //test.addTestCase("%DB4:112:LDATE_AND_TIME", "1978-03-28T15:36:30");
+        test.addTestCase("%DB4:96:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         // Not supported in S7 1200
         //test.addTestCase("%DB4:124:LDT", "1978-03-28T15:36:30");
 

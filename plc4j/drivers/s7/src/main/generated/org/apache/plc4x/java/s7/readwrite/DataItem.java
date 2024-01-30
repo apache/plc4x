@@ -222,17 +222,13 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
 
       // Simple Field (year)
-      Integer year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
+      Short year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
 
       // Simple Field (month)
       Short month = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
 
       // Simple Field (day)
       Short day = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
-      // Simple Field (dayOfWeek)
-      Short dayOfWeek = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
 
       // Simple Field (hour)
       Short hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
@@ -243,18 +239,12 @@ public class DataItem {
       // Simple Field (seconds)
       Short seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
 
-      // Simple Field (nanoseconds)
-      Long nanoseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
+      // Simple Field (milliseconds)
+      Short milliseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readUnsignedShort("", 12);
 
-      return PlcDATE_AND_TIME.ofSegments(
-          year.intValue(),
-          (month == 0) ? 1 : month.intValue(),
-          (day == 0) ? 1 : day.intValue(),
-          hour.intValue(),
-          minutes.intValue(),
-          seconds.intValue(),
-          nanoseconds.intValue());
+      // Simple Field (dayOfWeek)
+      Byte dayOfWeek = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 4);
     }
     return null;
   }
@@ -401,9 +391,9 @@ public class DataItem {
           "", 64, (BigInteger) (nanosecondsSinceMidnight));
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
       // Simple Field (year)
-      int year = (int) _value.getInt();
+      short year = (short) _value.getShort();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (year)).intValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (year)).shortValue());
       // Simple Field (month)
       short month = (short) _value.getShort();
       /*TODO: migrate me*/
@@ -412,11 +402,6 @@ public class DataItem {
       short day = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (day)).shortValue());
-      // Simple Field (dayOfWeek)
-      short dayOfWeek = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (dayOfWeek)).shortValue());
       // Simple Field (hour)
       short hour = (short) _value.getShort();
       /*TODO: migrate me*/
@@ -429,11 +414,15 @@ public class DataItem {
       short seconds = (short) _value.getShort();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (seconds)).shortValue());
-      // Simple Field (nanoseconds)
-      long nanoseconds = (long) _value.getLong();
+      // Simple Field (milliseconds)
+      short milliseconds = (short) _value.getShort();
       /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (nanoseconds)).longValue());
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
+          "", 12, ((Number) (milliseconds)).shortValue());
+      // Simple Field (dayOfWeek)
+      byte dayOfWeek = (byte) _value.getByte();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (dayOfWeek)).byteValue());
     }
   }
 
@@ -522,12 +511,10 @@ public class DataItem {
       sizeInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
       // Simple Field (year)
-      sizeInBits += 16;
+      sizeInBits += 8;
       // Simple Field (month)
       sizeInBits += 8;
       // Simple Field (day)
-      sizeInBits += 8;
-      // Simple Field (dayOfWeek)
       sizeInBits += 8;
       // Simple Field (hour)
       sizeInBits += 8;
@@ -535,8 +522,10 @@ public class DataItem {
       sizeInBits += 8;
       // Simple Field (seconds)
       sizeInBits += 8;
-      // Simple Field (nanoseconds)
-      sizeInBits += 32;
+      // Simple Field (milliseconds)
+      sizeInBits += 12;
+      // Simple Field (dayOfWeek)
+      sizeInBits += 4;
     }
     return sizeInBits;
   }

@@ -246,7 +246,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight), nil
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
 		// Simple Field (year)
-		year, _yearErr := readBuffer.ReadUint16("year", 16)
+		year, _yearErr := readBuffer.ReadUint8("year", 8)
 		if _yearErr != nil {
 			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
@@ -261,12 +261,6 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		day, _dayErr := readBuffer.ReadUint8("day", 8)
 		if _dayErr != nil {
 			return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
-		}
-
-		// Simple Field (dayOfWeek)
-		_, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 8)
-		if _dayOfWeekErr != nil {
-			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
@@ -287,13 +281,18 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
 
-		// Simple Field (nanoseconds)
-		nanoseconds, _nanosecondsErr := readBuffer.ReadUint32("nanoseconds", 32)
-		if _nanosecondsErr != nil {
-			return nil, errors.Wrap(_nanosecondsErr, "Error parsing 'nanoseconds' field")
+		// Simple Field (milliseconds)
+		_, _millisecondsErr := readBuffer.ReadUint16("milliseconds", 12)
+		if _millisecondsErr != nil {
+			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
+		}
+
+		// Simple Field (dayOfWeek)
+		_, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 4)
+		if _dayOfWeekErr != nil {
+			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
 	}
 	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")
@@ -456,7 +455,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint16("year", 16, uint16(value.(values.PlcDATE_AND_TIME).GetYear())); _err != nil {
+		if _err := writeBuffer.WriteUint8("year", 8, uint8(value.(values.PlcDATE_AND_TIME).GetYear())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
@@ -468,11 +467,6 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		// Simple Field (day)
 		if _err := writeBuffer.WriteUint8("day", 8, uint8(value.(values.PlcDATE_AND_TIME).GetDay())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
-		}
-
-		// Simple Field (dayOfWeek)
-		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, uint8(value.(values.PlcDATE_AND_TIME).GetDayOfWeek())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
@@ -490,9 +484,14 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
-		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint32("nanoseconds", 32, uint32(value.(values.PlcDATE_AND_TIME).GetNanoseconds())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
+		// Simple Field (milliseconds)
+		if _err := writeBuffer.WriteUint16("milliseconds", 12, uint16(value.(values.PlcDATE_AND_TIME).GetMilliseconds())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
+		}
+
+		// Simple Field (dayOfWeek)
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 4, uint8(value.(values.PlcDATE_AND_TIME).GetDayOfWeek())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 	default:
 		// TODO: add more info which type it is actually

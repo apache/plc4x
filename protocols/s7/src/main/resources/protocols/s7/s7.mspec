@@ -802,15 +802,24 @@
             [simple uint 64 nanosecondsSinceMidnight]
         ]
         // - Date & Time: interpreted as individual components.
+        //   Format description: https://support.industry.siemens.com/cs/document/36479/date_and_time-format-bei-s7-?dti=0&lc=de-DE
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
-            [simple uint 16 year]
-            [simple uint 8  month]
-            [simple uint 8  day]
-            [simple uint 8  dayOfWeek]
-            [simple uint 8  hour]
-            [simple uint 8  minutes]
-            [simple uint 8  seconds]
-            [simple uint 32 nanoseconds]
+            // One byte with 2 4-bit BCD encoded values representing 90-99 = 1990-1999 and 00-89 = 2000-2089
+            [simple uint 8  year         encoding='"BCD"']
+            // One byte with 2 4-bit values representing 01(Jan) - 12(Dec)
+            [simple uint 8  month        encoding='"BCD"']
+            // One byte with 2 4-bit values representing 01 - 31
+            [simple uint 8  day          encoding='"BCD"']
+            // One byte with 2 4-bit values representing 00 - 23
+            [simple uint 8  hour         encoding='"BCD"']
+            // One byte with 2 4-bit values representing 00 - 59
+            [simple uint 8  minutes      encoding='"BCD"']
+            // One byte with 2 4-bit values representing 00 - 59
+            [simple uint 8  seconds      encoding='"BCD"']
+            // One and a half byte with 3 4-bit values representing 0 - 999
+            [simple uint 12 milliseconds encoding='"BCD"']
+            // Half a byte with one 4-bit value representing 1 - 7
+            [simple uint 4  dayOfWeek    encoding='"BCD"']
         ]
         // - Date & Time: Interpreted as "number of nanoseconds since 1990-01-01"
         //['"IEC61131_LDATE_AND_TIME"' LDATE_AND_TIME
