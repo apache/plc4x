@@ -1053,7 +1053,7 @@
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
           <!-- TODO: There currently is a significant performance degradation when using version 0.16 which will be fixed in version 0.16.1, once it's released -->
-          <version>0.15</version>
+          <version>0.16.1</version>
           <configuration>
             <!--
                 Make rat output the files with missing licensed directly into the
