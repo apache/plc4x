@@ -52,7 +52,9 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
         write_buffer.write_unsigned_byte(self.level, logical_name="level")
 
         # Simple Field (objectId)
-        write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
+        write_buffer.write_unsigned_byte(
+            self.object_id, bit_length=8, logical_name="objectId"
+        )
 
         write_buffer.pop_context("ModbusPDUReadDeviceIdentificationRequest")
 

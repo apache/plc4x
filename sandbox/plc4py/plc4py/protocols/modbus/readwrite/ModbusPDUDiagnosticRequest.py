@@ -42,10 +42,12 @@ class ModbusPDUDiagnosticRequest(ModbusPDU):
         write_buffer.push_context("ModbusPDUDiagnosticRequest")
 
         # Simple Field (subFunction)
-        write_buffer.write_unsigned_short(self.sub_function, logical_name="subFunction")
+        write_buffer.write_unsigned_short(
+            self.sub_function, bit_length=16, logical_name="subFunction"
+        )
 
         # Simple Field (data)
-        write_buffer.write_unsigned_short(self.data, logical_name="data")
+        write_buffer.write_unsigned_short(self.data, bit_length=16, logical_name="data")
 
         write_buffer.pop_context("ModbusPDUDiagnosticRequest")
 

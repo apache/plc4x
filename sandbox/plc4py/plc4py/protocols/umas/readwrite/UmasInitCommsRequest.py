@@ -42,7 +42,7 @@ class UmasInitCommsRequest(UmasPDUItem):
 
         # Simple Field (unknownObject)
         write_buffer.write_unsigned_byte(
-            self.unknown_object, logical_name="unknownObject"
+            self.unknown_object, bit_length=8, logical_name="unknownObject"
         )
 
         write_buffer.pop_context("UmasInitCommsRequest")

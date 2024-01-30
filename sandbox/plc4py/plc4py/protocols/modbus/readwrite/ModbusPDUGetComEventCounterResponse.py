@@ -42,10 +42,14 @@ class ModbusPDUGetComEventCounterResponse(ModbusPDU):
         write_buffer.push_context("ModbusPDUGetComEventCounterResponse")
 
         # Simple Field (status)
-        write_buffer.write_unsigned_short(self.status, logical_name="status")
+        write_buffer.write_unsigned_short(
+            self.status, bit_length=16, logical_name="status"
+        )
 
         # Simple Field (eventCount)
-        write_buffer.write_unsigned_short(self.event_count, logical_name="eventCount")
+        write_buffer.write_unsigned_short(
+            self.event_count, bit_length=16, logical_name="eventCount"
+        )
 
         write_buffer.pop_context("ModbusPDUGetComEventCounterResponse")
 

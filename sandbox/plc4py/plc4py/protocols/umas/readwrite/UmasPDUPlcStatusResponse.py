@@ -45,11 +45,13 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
         write_buffer.push_context("UmasPDUPlcStatusResponse")
 
         # Simple Field (notUsed)
-        write_buffer.write_unsigned_int(self.not_used, logical_name="notUsed")
+        write_buffer.write_unsigned_int(
+            self.not_used, bit_length=24, logical_name="notUsed"
+        )
 
         # Simple Field (numberOfBlocks)
         write_buffer.write_unsigned_byte(
-            self.number_of_blocks, logical_name="numberOfBlocks"
+            self.number_of_blocks, bit_length=8, logical_name="numberOfBlocks"
         )
 
         # Array Field (blocks)

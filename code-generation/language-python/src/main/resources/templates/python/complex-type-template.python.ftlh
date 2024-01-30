@@ -308,7 +308,13 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#elseif simpleField.type.isDataIoTypeReference()>
         write_buffer.${helper.getEnumDataWriterCall(simpleField.type, simpleField.name, "value")}(DataWriterDataIoDefault(write_buffer, (wb, val) -> ${simpleField.type.asComplexTypeReference().orElseThrow().name}.staticSerialize(wb, val<#if simpleField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(simpleField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>, logical_name="${simpleField.name}")
                         <#else>
-        write_buffer.${helper.getDataWriterCall(typedField.type, simpleField.name)}(self.${helper.camelCaseToSnakeCase(simpleField.name)}, logical_name="${simpleField.name}")</#if>
+                            <#if simpleField.type.isSimpleTypeReference()>
+                                <#assign simpleTypeReference = simpleField.type.asSimpleTypeReference().orElseThrow()>
+        write_buffer.${helper.getDataWriterCall(typedField.type, simpleField.name)}(self.${helper.camelCaseToSnakeCase(simpleField.name)},bit_length=${simpleTypeReference.sizeInBits},logical_name="${simpleField.name}")
+                            <#else>
+        write_buffer.${helper.getDataWriterCall(typedField.type, simpleField.name)}(self.${helper.camelCaseToSnakeCase(simpleField.name)},logical_name="${simpleField.name}")
+                            </#if>
+                        </#if>
                         <#break>
                     <#case "switch">
                         <#assign switchField = field.asSwitchField().orElseThrow()>

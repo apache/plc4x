@@ -50,14 +50,18 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
         write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
 
         # Simple Field (status)
-        write_buffer.write_unsigned_short(self.status, logical_name="status")
+        write_buffer.write_unsigned_short(
+            self.status, bit_length=16, logical_name="status"
+        )
 
         # Simple Field (eventCount)
-        write_buffer.write_unsigned_short(self.event_count, logical_name="eventCount")
+        write_buffer.write_unsigned_short(
+            self.event_count, bit_length=16, logical_name="eventCount"
+        )
 
         # Simple Field (messageCount)
         write_buffer.write_unsigned_short(
-            self.message_count, logical_name="messageCount"
+            self.message_count, bit_length=16, logical_name="messageCount"
         )
 
         # Array Field (events)

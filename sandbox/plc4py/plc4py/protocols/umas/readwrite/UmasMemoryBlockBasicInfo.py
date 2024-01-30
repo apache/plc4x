@@ -33,6 +33,7 @@ import math
 class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
     range: int
     not_sure: int
+    not_sure1: int
     hardware_id: int
     # Accessors for discriminator values.
     block_number: ClassVar[int] = 0x30
@@ -42,13 +43,24 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         write_buffer.push_context("UmasMemoryBlockBasicInfo")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, logical_name="range")
+        write_buffer.write_unsigned_short(
+            self.range, bit_length=16, logical_name="range"
+        )
 
         # Simple Field (notSure)
-        write_buffer.write_unsigned_int(self.not_sure, logical_name="notSure")
+        write_buffer.write_unsigned_short(
+            self.not_sure, bit_length=16, logical_name="notSure"
+        )
+
+        # Simple Field (notSure1)
+        write_buffer.write_unsigned_byte(
+            self.not_sure1, bit_length=8, logical_name="notSure1"
+        )
 
         # Simple Field (hardwareId)
-        write_buffer.write_unsigned_int(self.hardware_id, logical_name="hardwareId")
+        write_buffer.write_unsigned_long(
+            self.hardware_id, bit_length=40, logical_name="hardwareId"
+        )
 
         write_buffer.pop_context("UmasMemoryBlockBasicInfo")
 
@@ -60,13 +72,16 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         _value: UmasMemoryBlockBasicInfo = self
 
         # Simple field (range)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (notSure)
-        length_in_bits += 32
+        length_in_bits += 16
+
+        # Simple field (notSure1)
+        length_in_bits += 8
 
         # Simple field (hardwareId)
-        length_in_bits += 32
+        length_in_bits += 40
 
         return length_in_bits
 
@@ -74,27 +89,37 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
     def static_parse_builder(read_buffer: ReadBuffer, block_number: int, offset: int):
         read_buffer.push_context("UmasMemoryBlockBasicInfo")
 
-        range: int = read_buffer.read_unsigned_byte(
-            logical_name="range", bit_length=8, block_number=block_number, offset=offset
-        )
-
-        not_sure: int = read_buffer.read_unsigned_int(
-            logical_name="notSure",
-            bit_length=32,
+        range: int = read_buffer.read_unsigned_short(
+            logical_name="range",
+            bit_length=16,
             block_number=block_number,
             offset=offset,
         )
 
-        hardware_id: int = read_buffer.read_unsigned_int(
+        not_sure: int = read_buffer.read_unsigned_short(
+            logical_name="notSure",
+            bit_length=16,
+            block_number=block_number,
+            offset=offset,
+        )
+
+        not_sure1: int = read_buffer.read_unsigned_byte(
+            logical_name="notSure1",
+            bit_length=8,
+            block_number=block_number,
+            offset=offset,
+        )
+
+        hardware_id: int = read_buffer.read_unsigned_long(
             logical_name="hardwareId",
-            bit_length=32,
+            bit_length=40,
             block_number=block_number,
             offset=offset,
         )
 
         read_buffer.pop_context("UmasMemoryBlockBasicInfo")
         # Create the instance
-        return UmasMemoryBlockBasicInfoBuilder(range, not_sure, hardware_id)
+        return UmasMemoryBlockBasicInfoBuilder(range, not_sure, not_sure1, hardware_id)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -107,6 +132,7 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         return (
             (self.range == that.range)
             and (self.not_sure == that.not_sure)
+            and (self.not_sure1 == that.not_sure1)
             and (self.hardware_id == that.hardware_id)
             and super().equals(that)
             and True
@@ -130,12 +156,15 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
 class UmasMemoryBlockBasicInfoBuilder:
     range: int
     not_sure: int
+    not_sure1: int
     hardware_id: int
 
     def build(
         self,
     ) -> UmasMemoryBlockBasicInfo:
         umas_memory_block_basic_info: UmasMemoryBlockBasicInfo = (
-            UmasMemoryBlockBasicInfo(self.range, self.not_sure, self.hardware_id)
+            UmasMemoryBlockBasicInfo(
+                self.range, self.not_sure, self.not_sure1, self.hardware_id
+            )
         )
         return umas_memory_block_basic_info

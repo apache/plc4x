@@ -47,27 +47,31 @@ class UmasInitCommsResponse(UmasPDUItem):
 
         # Simple Field (maxFrameSize)
         write_buffer.write_unsigned_short(
-            self.max_frame_size, logical_name="maxFrameSize"
+            self.max_frame_size, bit_length=16, logical_name="maxFrameSize"
         )
 
         # Simple Field (firmwareVersion)
         write_buffer.write_unsigned_short(
-            self.firmware_version, logical_name="firmwareVersion"
+            self.firmware_version, bit_length=16, logical_name="firmwareVersion"
         )
 
         # Simple Field (notSure)
-        write_buffer.write_unsigned_int(self.not_sure, logical_name="notSure")
+        write_buffer.write_unsigned_int(
+            self.not_sure, bit_length=32, logical_name="notSure"
+        )
 
         # Simple Field (internalCode)
-        write_buffer.write_unsigned_int(self.internal_code, logical_name="internalCode")
+        write_buffer.write_unsigned_int(
+            self.internal_code, bit_length=32, logical_name="internalCode"
+        )
 
         # Simple Field (hostnameLength)
         write_buffer.write_unsigned_byte(
-            self.hostname_length, logical_name="hostnameLength"
+            self.hostname_length, bit_length=8, logical_name="hostnameLength"
         )
 
         # Simple Field (hostname)
-        write_buffer.write_str(self.hostname, logical_name="hostname")
+        write_buffer.write_str(self.hostname, bit_length=-1, logical_name="hostname")
 
         write_buffer.pop_context("UmasInitCommsResponse")
 

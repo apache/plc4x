@@ -45,22 +45,26 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         write_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, logical_name="range")
+        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
 
         # Simple Field (blockNumber)
-        write_buffer.write_unsigned_short(self.block_number, logical_name="blockNumber")
+        write_buffer.write_unsigned_short(
+            self.block_number, bit_length=16, logical_name="blockNumber"
+        )
 
         # Simple Field (offset)
-        write_buffer.write_unsigned_short(self.offset, logical_name="offset")
+        write_buffer.write_unsigned_short(
+            self.offset, bit_length=16, logical_name="offset"
+        )
 
         # Simple Field (unknownObject1)
         write_buffer.write_unsigned_short(
-            self.unknown_object1, logical_name="unknownObject1"
+            self.unknown_object1, bit_length=16, logical_name="unknownObject1"
         )
 
         # Simple Field (numberOfBytes)
         write_buffer.write_unsigned_short(
-            self.number_of_bytes, logical_name="numberOfBytes"
+            self.number_of_bytes, bit_length=16, logical_name="numberOfBytes"
         )
 
         write_buffer.pop_context("UmasPDUReadMemoryBlockRequest")

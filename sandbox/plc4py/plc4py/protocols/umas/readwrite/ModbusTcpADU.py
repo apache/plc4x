@@ -42,7 +42,9 @@ class ModbusTcpADU:
 
         # Simple Field (transactionIdentifier)
         write_buffer.write_unsigned_short(
-            self.transaction_identifier, logical_name="transactionIdentifier"
+            self.transaction_identifier,
+            bit_length=16,
+            logical_name="transactionIdentifier",
         )
 
         # Const Field (protocolIdentifier)
@@ -56,7 +58,7 @@ class ModbusTcpADU:
 
         # Simple Field (unitIdentifier)
         write_buffer.write_unsigned_byte(
-            self.unit_identifier, logical_name="unitIdentifier"
+            self.unit_identifier, bit_length=8, logical_name="unitIdentifier"
         )
 
         # Array Field (pduArray)

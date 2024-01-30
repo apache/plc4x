@@ -41,7 +41,9 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
         write_buffer.push_context("UmasPDUProjectInfoRequest")
 
         # Simple Field (subcode)
-        write_buffer.write_unsigned_byte(self.subcode, logical_name="subcode")
+        write_buffer.write_unsigned_byte(
+            self.subcode, bit_length=8, logical_name="subcode"
+        )
 
         write_buffer.pop_context("UmasPDUProjectInfoRequest")
 

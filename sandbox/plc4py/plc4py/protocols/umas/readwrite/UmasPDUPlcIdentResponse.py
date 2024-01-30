@@ -55,42 +55,54 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         write_buffer.push_context("UmasPDUPlcIdentResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, logical_name="range")
+        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
 
         # Simple Field (ident)
-        write_buffer.write_unsigned_int(self.ident, logical_name="ident")
+        write_buffer.write_unsigned_int(self.ident, bit_length=32, logical_name="ident")
 
         # Simple Field (model)
-        write_buffer.write_unsigned_short(self.model, logical_name="model")
+        write_buffer.write_unsigned_short(
+            self.model, bit_length=16, logical_name="model"
+        )
 
         # Simple Field (comVersion)
-        write_buffer.write_unsigned_short(self.com_version, logical_name="comVersion")
+        write_buffer.write_unsigned_short(
+            self.com_version, bit_length=16, logical_name="comVersion"
+        )
 
         # Simple Field (comPatch)
-        write_buffer.write_unsigned_short(self.com_patch, logical_name="comPatch")
+        write_buffer.write_unsigned_short(
+            self.com_patch, bit_length=16, logical_name="comPatch"
+        )
 
         # Simple Field (intVersion)
-        write_buffer.write_unsigned_short(self.int_version, logical_name="intVersion")
+        write_buffer.write_unsigned_short(
+            self.int_version, bit_length=16, logical_name="intVersion"
+        )
 
         # Simple Field (hardwareVersion)
         write_buffer.write_unsigned_short(
-            self.hardware_version, logical_name="hardwareVersion"
+            self.hardware_version, bit_length=16, logical_name="hardwareVersion"
         )
 
         # Simple Field (crashCode)
-        write_buffer.write_unsigned_int(self.crash_code, logical_name="crashCode")
+        write_buffer.write_unsigned_int(
+            self.crash_code, bit_length=32, logical_name="crashCode"
+        )
 
         # Simple Field (hostnameLength)
         write_buffer.write_unsigned_int(
-            self.hostname_length, logical_name="hostnameLength"
+            self.hostname_length, bit_length=32, logical_name="hostnameLength"
         )
 
         # Simple Field (hostname)
-        write_buffer.write_str(self.hostname, logical_name="hostname")
+        write_buffer.write_str(self.hostname, bit_length=-1, logical_name="hostname")
 
         # Simple Field (numberOfMemoryBanks)
         write_buffer.write_unsigned_byte(
-            self.number_of_memory_banks, logical_name="numberOfMemoryBanks"
+            self.number_of_memory_banks,
+            bit_length=8,
+            logical_name="numberOfMemoryBanks",
         )
 
         # Array Field (memoryIdents)

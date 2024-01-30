@@ -44,14 +44,18 @@ class ModbusPDUMaskWriteHoldingRegisterResponse(ModbusPDU):
 
         # Simple Field (referenceAddress)
         write_buffer.write_unsigned_short(
-            self.reference_address, logical_name="referenceAddress"
+            self.reference_address, bit_length=16, logical_name="referenceAddress"
         )
 
         # Simple Field (andMask)
-        write_buffer.write_unsigned_short(self.and_mask, logical_name="andMask")
+        write_buffer.write_unsigned_short(
+            self.and_mask, bit_length=16, logical_name="andMask"
+        )
 
         # Simple Field (orMask)
-        write_buffer.write_unsigned_short(self.or_mask, logical_name="orMask")
+        write_buffer.write_unsigned_short(
+            self.or_mask, bit_length=16, logical_name="orMask"
+        )
 
         write_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterResponse")
 

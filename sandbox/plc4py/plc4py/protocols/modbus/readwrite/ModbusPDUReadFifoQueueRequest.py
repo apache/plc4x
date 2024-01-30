@@ -42,7 +42,7 @@ class ModbusPDUReadFifoQueueRequest(ModbusPDU):
 
         # Simple Field (fifoPointerAddress)
         write_buffer.write_unsigned_short(
-            self.fifo_pointer_address, logical_name="fifoPointerAddress"
+            self.fifo_pointer_address, bit_length=16, logical_name="fifoPointerAddress"
         )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueRequest")

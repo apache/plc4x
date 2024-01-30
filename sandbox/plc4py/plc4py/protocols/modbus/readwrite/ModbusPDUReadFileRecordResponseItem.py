@@ -43,7 +43,7 @@ class ModbusPDUReadFileRecordResponseItem:
 
         # Simple Field (referenceType)
         write_buffer.write_unsigned_byte(
-            self.reference_type, logical_name="referenceType"
+            self.reference_type, bit_length=8, logical_name="referenceType"
         )
 
         # Array Field (data)

@@ -52,7 +52,9 @@ class UmasPDUItem(ABC, PlcMessage):
         write_buffer.push_context("UmasPDUItem")
 
         # Simple Field (pairingKey)
-        write_buffer.write_unsigned_byte(self.pairing_key, logical_name="pairingKey")
+        write_buffer.write_unsigned_byte(
+            self.pairing_key, bit_length=8, logical_name="pairingKey"
+        )
 
         # Discriminator Field (umasFunctionKey) (Used as input to a switch field)
         write_buffer.write_unsigned_byte(

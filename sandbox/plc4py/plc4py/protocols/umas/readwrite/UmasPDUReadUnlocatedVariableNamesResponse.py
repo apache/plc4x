@@ -39,6 +39,7 @@ import math
 class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
     range: int
     no_of_records: int
+    no_of_records_null: int
     records: List[UmasUnlocatedVariableReference]
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0xFE
@@ -48,11 +49,16 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_int(self.range, logical_name="range")
+        write_buffer.write_unsigned_int(self.range, bit_length=32, logical_name="range")
 
         # Simple Field (noOfRecords)
         write_buffer.write_unsigned_short(
-            self.no_of_records, logical_name="noOfRecords"
+            self.no_of_records, bit_length=16, logical_name="noOfRecords"
+        )
+
+        # Simple Field (noOfRecordsNull)
+        write_buffer.write_unsigned_byte(
+            self.no_of_records_null, bit_length=8, logical_name="noOfRecordsNull"
         )
 
         # Array Field (records)
@@ -72,6 +78,9 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
 
         # Simple field (noOfRecords)
         length_in_bits += 16
+
+        # Simple field (noOfRecordsNull)
+        length_in_bits += 8
 
         # Array field
         if self.records is not None:
@@ -98,6 +107,13 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
             umas_request_function_key=umas_request_function_key,
         )
 
+        no_of_records_null: int = read_buffer.read_unsigned_byte(
+            logical_name="noOfRecordsNull",
+            bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
+            umas_request_function_key=umas_request_function_key,
+        )
+
         records: List[Any] = read_buffer.read_array_field(
             logical_name="records",
             read_function=UmasUnlocatedVariableReference.static_parse,
@@ -109,7 +125,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesResponse")
         # Create the instance
         return UmasPDUReadUnlocatedVariableNamesResponseBuilder(
-            range, no_of_records, records
+            range, no_of_records, no_of_records_null, records
         )
 
     def equals(self, o: object) -> bool:
@@ -125,6 +141,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
         return (
             (self.range == that.range)
             and (self.no_of_records == that.no_of_records)
+            and (self.no_of_records_null == that.no_of_records_null)
             and (self.records == that.records)
             and super().equals(that)
             and True
@@ -148,10 +165,15 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasPDUItem):
 class UmasPDUReadUnlocatedVariableNamesResponseBuilder:
     range: int
     no_of_records: int
+    no_of_records_null: int
     records: List[UmasUnlocatedVariableReference]
 
     def build(self, pairing_key) -> UmasPDUReadUnlocatedVariableNamesResponse:
         umas_pdu_read_unlocated_variable_names_response: UmasPDUReadUnlocatedVariableNamesResponse = UmasPDUReadUnlocatedVariableNamesResponse(
-            pairing_key, self.range, self.no_of_records, self.records
+            pairing_key,
+            self.range,
+            self.no_of_records,
+            self.no_of_records_null,
+            self.records,
         )
         return umas_pdu_read_unlocated_variable_names_response

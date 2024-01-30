@@ -46,11 +46,13 @@ class ModbusPDUWriteMultipleHoldingRegistersRequest(ModbusPDU):
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address, logical_name="startingAddress"
+            self.starting_address, bit_length=16, logical_name="startingAddress"
         )
 
         # Simple Field (quantity)
-        write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
+        write_buffer.write_unsigned_short(
+            self.quantity, bit_length=16, logical_name="quantity"
+        )
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = int(len(self.value))

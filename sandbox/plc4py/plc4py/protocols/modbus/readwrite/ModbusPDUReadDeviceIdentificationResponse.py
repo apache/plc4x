@@ -67,7 +67,9 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         write_buffer.write_unsigned_byte(self.level, logical_name="level")
 
         # Simple Field (individualAccess)
-        write_buffer.write_bit(self.individual_access, logical_name="individualAccess")
+        write_buffer.write_bit(
+            self.individual_access, bit_length=1, logical_name="individualAccess"
+        )
 
         # Simple Field (conformityLevel)
         write_buffer.write_unsigned_byte(
@@ -79,7 +81,7 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
 
         # Simple Field (nextObjectId)
         write_buffer.write_unsigned_byte(
-            self.next_object_id, logical_name="nextObjectId"
+            self.next_object_id, bit_length=8, logical_name="nextObjectId"
         )
 
         # Implicit Field (number_of_objects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

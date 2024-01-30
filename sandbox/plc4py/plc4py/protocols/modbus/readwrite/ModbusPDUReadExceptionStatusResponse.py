@@ -41,7 +41,7 @@ class ModbusPDUReadExceptionStatusResponse(ModbusPDU):
         write_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
 
         # Simple Field (value)
-        write_buffer.write_unsigned_byte(self.value, logical_name="value")
+        write_buffer.write_unsigned_byte(self.value, bit_length=8, logical_name="value")
 
         write_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
 

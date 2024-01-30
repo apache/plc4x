@@ -334,5 +334,8 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
                 value,
             )
             src.frombytes(result)
-            self.bb[self.position : self.position + bit_length] = src[-bit_length:]
+            if bit_length < 8:
+                self.bb[self.position : self.position + bit_length] = src[-bit_length:]
+            else:
+                self.bb[self.position : self.position + bit_length] = src[:bit_length]
             self.position += bit_length

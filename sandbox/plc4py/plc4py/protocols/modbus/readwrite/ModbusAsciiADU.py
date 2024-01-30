@@ -46,7 +46,9 @@ class ModbusAsciiADU(ModbusADU):
         write_buffer.push_context("ModbusAsciiADU")
 
         # Simple Field (address)
-        write_buffer.write_unsigned_byte(self.address, logical_name="address")
+        write_buffer.write_unsigned_byte(
+            self.address, bit_length=8, logical_name="address"
+        )
 
         # Simple Field (pdu)
         write_buffer.write_serializable(self.pdu, logical_name="pdu")

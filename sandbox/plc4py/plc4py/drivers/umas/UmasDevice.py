@@ -99,6 +99,7 @@ class UmasDevice:
         await self._send_init_comms(transport, loop)
         await self._send_project_info(transport, loop)
         await self._send_read_memory_block(transport, loop)
+        await self._send_unlocated_variable_datatype_request(transport, loop)
         await self._send_unlocated_variable_request(transport, loop)
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
@@ -185,13 +186,34 @@ class UmasDevice:
         self.hardware_id = basic_info.hardware_id
         pass
 
+    async def _send_unlocated_variable_datatype_request(
+        self, transport: Transport, loop: AbstractEventLoop
+    ):
+        message_future = loop.create_future()
+
+        request_pdu = UmasPDUReadUnlocatedVariableNamesRequestBuilder(
+            range=0xdd03, block_no=0x0000, hardware_id=self.hardware_id
+        ).build(0)
+
+        protocol = transport.protocol
+        protocol.write_wait_for_response(
+            request_pdu,
+            transport,
+            message_future,
+        )
+
+        await message_future
+        datatype_result: UmasPDUReadUnlocatedVariableNamesResponse = (
+            message_future.result()
+        )
+
     async def _send_unlocated_variable_request(
         self, transport: Transport, loop: AbstractEventLoop
     ):
         message_future = loop.create_future()
 
         request_pdu = UmasPDUReadUnlocatedVariableNamesRequestBuilder(
-            block_no=0xFFFF, hardware_id=self.hardware_id, hardware_id_index=0x01
+            range=0xdd02, block_no=0xFFFF, hardware_id=self.hardware_id
         ).build(0)
 
         protocol = transport.protocol

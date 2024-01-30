@@ -42,10 +42,14 @@ class ModbusPDUWriteSingleRegisterResponse(ModbusPDU):
         write_buffer.push_context("ModbusPDUWriteSingleRegisterResponse")
 
         # Simple Field (address)
-        write_buffer.write_unsigned_short(self.address, logical_name="address")
+        write_buffer.write_unsigned_short(
+            self.address, bit_length=16, logical_name="address"
+        )
 
         # Simple Field (value)
-        write_buffer.write_unsigned_short(self.value, logical_name="value")
+        write_buffer.write_unsigned_short(
+            self.value, bit_length=16, logical_name="value"
+        )
 
         write_buffer.pop_context("ModbusPDUWriteSingleRegisterResponse")
 

@@ -45,7 +45,7 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
 
         # Simple Field (numberOfBytes)
         write_buffer.write_unsigned_short(
-            self.number_of_bytes, logical_name="numberOfBytes"
+            self.number_of_bytes, bit_length=16, logical_name="numberOfBytes"
         )
 
         # Array Field (block)

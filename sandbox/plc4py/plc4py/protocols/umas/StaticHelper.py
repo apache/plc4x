@@ -14,6 +14,7 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+from plc4py.spi.generation.ReadBuffer import ReadBuffer
 
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
@@ -105,9 +106,18 @@ def ascii_lrc_check(address: int, pdu: ModbusPDU) -> int:
     return lrc & 0xFF
 
 
-def parse_terminated_string(write_buffer, string_length):
-    pass
+def parse_terminated_string(read_buffer: ReadBuffer, string_length) -> str:
+    terminate: bool = False
+    byte_list: bytearray = bytearray()
+    while not terminate:
+        next_byte: int = read_buffer.read_byte()
+        if next_byte == 0x00:
+            terminate = True
+        else:
+            byte_list.append(next_byte)
+    result: str = byte_list.decode("UTF-8")
+    return result
 
 
-def serialize_terminated_string(read_buffer, value, string_length):
+def serialize_terminated_string(write_buffer, value, string_length):
     pass

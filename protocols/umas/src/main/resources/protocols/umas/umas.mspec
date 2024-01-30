@@ -83,9 +83,8 @@
             [simple     uint 16        numberOfBytes]
         ]
         ['0x26'     UmasPDUReadUnlocatedVariableNamesRequest
-            [const      uint 16         range 0xdd02]
-            [simple     uint 32         hardwareId]
-            [simple     uint 8          hardwareIdIndex]
+            [simple     uint 16         range]
+            [simple     uint 40         hardwareId]
             [simple     uint 16         blockNo]
             [const      uint 32         blank 0x0000]
         ]
@@ -124,6 +123,7 @@
         ['0xFE', '0x26'     UmasPDUReadUnlocatedVariableNamesResponse
             [simple     uint 32         range]
             [simple     uint 16         noOfRecords]
+            [simple     uint 8          noOfRecordsNull]
             [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
         ]
     ]
@@ -132,19 +132,19 @@
 [type UmasMemoryBlock(uint 16 blockNumber, uint 16 offset)
     [typeSwitch blockNumber, offset
         ['0x30', '0x00' UmasMemoryBlockBasicInfo
-            [simple     uint 8          range]
-            [simple uint 32 notSure]
-            [simple uint 32 hardwareId]
+            [simple     uint 16          range]
+            [simple uint 16 notSure]
+            [simple uint 8 notSure1]
+            [simple uint 40 hardwareId]
         ]
     ]
 ]
 
 [type UmasUnlocatedVariableReference
-    [simple     uint 16          unknown1]
-    [simple     uint 16          unknown2]
-    [simple     uint 16          unknown3]
+    [simple     uint 8           dataType]
+    [simple     uint 32          address]
     [simple     uint 16          unknown4]
-    [simple     uint 8           stringLength]
+    [simple     uint 16           stringLength]
     [simple     uint 8           stringType]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
 ]

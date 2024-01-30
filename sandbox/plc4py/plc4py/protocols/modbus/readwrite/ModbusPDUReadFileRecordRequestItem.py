@@ -39,20 +39,22 @@ class ModbusPDUReadFileRecordRequestItem:
 
         # Simple Field (referenceType)
         write_buffer.write_unsigned_byte(
-            self.reference_type, logical_name="referenceType"
+            self.reference_type, bit_length=8, logical_name="referenceType"
         )
 
         # Simple Field (fileNumber)
-        write_buffer.write_unsigned_short(self.file_number, logical_name="fileNumber")
+        write_buffer.write_unsigned_short(
+            self.file_number, bit_length=16, logical_name="fileNumber"
+        )
 
         # Simple Field (recordNumber)
         write_buffer.write_unsigned_short(
-            self.record_number, logical_name="recordNumber"
+            self.record_number, bit_length=16, logical_name="recordNumber"
         )
 
         # Simple Field (recordLength)
         write_buffer.write_unsigned_short(
-            self.record_length, logical_name="recordLength"
+            self.record_length, bit_length=16, logical_name="recordLength"
         )
 
         write_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")

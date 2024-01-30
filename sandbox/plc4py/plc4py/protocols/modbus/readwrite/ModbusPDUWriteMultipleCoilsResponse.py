@@ -43,11 +43,13 @@ class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address, logical_name="startingAddress"
+            self.starting_address, bit_length=16, logical_name="startingAddress"
         )
 
         # Simple Field (quantity)
-        write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
+        write_buffer.write_unsigned_short(
+            self.quantity, bit_length=16, logical_name="quantity"
+        )
 
         write_buffer.pop_context("ModbusPDUWriteMultipleCoilsResponse")
 

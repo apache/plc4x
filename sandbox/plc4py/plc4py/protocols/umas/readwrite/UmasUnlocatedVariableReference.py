@@ -30,9 +30,8 @@ import math
 
 @dataclass
 class UmasUnlocatedVariableReference:
-    unknown1: int
-    unknown2: int
-    unknown3: int
+    data_type: int
+    address: int
     unknown4: int
     string_length: int
     string_type: int
@@ -41,27 +40,32 @@ class UmasUnlocatedVariableReference:
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasUnlocatedVariableReference")
 
-        # Simple Field (unknown1)
-        write_buffer.write_unsigned_short(self.unknown1, logical_name="unknown1")
+        # Simple Field (dataType)
+        write_buffer.write_unsigned_byte(
+            self.data_type, bit_length=8, logical_name="dataType"
+        )
 
-        # Simple Field (unknown2)
-        write_buffer.write_unsigned_short(self.unknown2, logical_name="unknown2")
-
-        # Simple Field (unknown3)
-        write_buffer.write_unsigned_short(self.unknown3, logical_name="unknown3")
+        # Simple Field (address)
+        write_buffer.write_unsigned_int(
+            self.address, bit_length=32, logical_name="address"
+        )
 
         # Simple Field (unknown4)
-        write_buffer.write_unsigned_short(self.unknown4, logical_name="unknown4")
+        write_buffer.write_unsigned_short(
+            self.unknown4, bit_length=16, logical_name="unknown4"
+        )
 
         # Simple Field (stringLength)
-        write_buffer.write_unsigned_byte(
-            self.string_length, logical_name="stringLength"
+        write_buffer.write_unsigned_short(
+            self.string_length, bit_length=16, logical_name="stringLength"
         )
 
         # Simple Field (stringType)
-        write_buffer.write_unsigned_byte(self.string_type, logical_name="stringType")
+        write_buffer.write_unsigned_byte(
+            self.string_type, bit_length=8, logical_name="stringType"
+        )
         # Manual Field (value)
-        write_buffer.write_complex(
+        write_buffer.write_manual(
             write_function=lambda: StaticHelper.serialize_terminated_string(
                 write_buffer, self.value, self.string_length
             ),
@@ -77,20 +81,17 @@ class UmasUnlocatedVariableReference:
         length_in_bits: int = 0
         _value: UmasUnlocatedVariableReference = self
 
-        # Simple field (unknown1)
-        length_in_bits += 16
+        # Simple field (dataType)
+        length_in_bits += 8
 
-        # Simple field (unknown2)
-        length_in_bits += 16
-
-        # Simple field (unknown3)
-        length_in_bits += 16
+        # Simple field (address)
+        length_in_bits += 32
 
         # Simple field (unknown4)
         length_in_bits += 16
 
         # Simple field (stringLength)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (stringType)
         length_in_bits += 8
@@ -108,24 +109,20 @@ class UmasUnlocatedVariableReference:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasUnlocatedVariableReference")
 
-        unknown1: int = read_buffer.read_unsigned_short(
-            logical_name="unknown1", bit_length=16
+        data_type: int = read_buffer.read_unsigned_byte(
+            logical_name="dataType", bit_length=8
         )
 
-        unknown2: int = read_buffer.read_unsigned_short(
-            logical_name="unknown2", bit_length=16
-        )
-
-        unknown3: int = read_buffer.read_unsigned_short(
-            logical_name="unknown3", bit_length=16
+        address: int = read_buffer.read_unsigned_int(
+            logical_name="address", bit_length=32
         )
 
         unknown4: int = read_buffer.read_unsigned_short(
             logical_name="unknown4", bit_length=16
         )
 
-        string_length: int = read_buffer.read_unsigned_byte(
-            logical_name="stringLength", bit_length=8
+        string_length: int = read_buffer.read_unsigned_short(
+            logical_name="stringLength", bit_length=16
         )
 
         string_type: int = read_buffer.read_unsigned_byte(
@@ -143,13 +140,7 @@ class UmasUnlocatedVariableReference:
         # Create the instance
         _umas_unlocated_variable_reference: UmasUnlocatedVariableReference = (
             UmasUnlocatedVariableReference(
-                unknown1,
-                unknown2,
-                unknown3,
-                unknown4,
-                string_length,
-                string_type,
-                value,
+                data_type, address, unknown4, string_length, string_type, value
             )
         )
         return _umas_unlocated_variable_reference
@@ -163,9 +154,8 @@ class UmasUnlocatedVariableReference:
 
         that: UmasUnlocatedVariableReference = UmasUnlocatedVariableReference(o)
         return (
-            (self.unknown1 == that.unknown1)
-            and (self.unknown2 == that.unknown2)
-            and (self.unknown3 == that.unknown3)
+            (self.data_type == that.data_type)
+            and (self.address == that.address)
             and (self.unknown4 == that.unknown4)
             and (self.string_length == that.string_length)
             and (self.string_type == that.string_type)

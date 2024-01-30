@@ -38,16 +38,22 @@ class PlcMemoryBlockIdent:
         write_buffer.push_context("PlcMemoryBlockIdent")
 
         # Simple Field (blockType)
-        write_buffer.write_unsigned_byte(self.block_type, logical_name="blockType")
+        write_buffer.write_unsigned_byte(
+            self.block_type, bit_length=8, logical_name="blockType"
+        )
 
         # Simple Field (folio)
-        write_buffer.write_unsigned_byte(self.folio, logical_name="folio")
+        write_buffer.write_unsigned_byte(self.folio, bit_length=8, logical_name="folio")
 
         # Simple Field (status)
-        write_buffer.write_unsigned_short(self.status, logical_name="status")
+        write_buffer.write_unsigned_short(
+            self.status, bit_length=16, logical_name="status"
+        )
 
         # Simple Field (memoryLength)
-        write_buffer.write_unsigned_int(self.memory_length, logical_name="memoryLength")
+        write_buffer.write_unsigned_int(
+            self.memory_length, bit_length=32, logical_name="memoryLength"
+        )
 
         write_buffer.pop_context("PlcMemoryBlockIdent")
 
