@@ -105,7 +105,7 @@ public class ManualS71200DriverTest extends ManualTest {
         test.addTestCase("%DB4:72:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         //test.addTestCase("%DB4:62:LTIME_OF_DAY", new PlcLTIME_OF_DAY(Duration.parse(""));
         // Not supported in S7 1200
-        test.addTestCase("%DB4:96:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
+        //test.addTestCase("%DB4:96:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
         // Not supported in S7 1200
         //test.addTestCase("%DB4:124:LDT", "1978-03-28T15:36:30");
 

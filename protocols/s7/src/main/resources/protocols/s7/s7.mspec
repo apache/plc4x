@@ -803,6 +803,7 @@
         ]
         // - Date & Time: interpreted as individual components.
         //   Format description: https://support.industry.siemens.com/cs/document/36479/date_and_time-format-bei-s7-?dti=0&lc=de-DE
+        //   https://lothar-michaelis.de/sps-tutorial/datentypen.html
         ['"IEC61131_DATE_AND_TIME"' DATE_AND_TIME
             // One byte with 2 4-bit BCD encoded values representing 90-99 = 1990-1999 and 00-89 = 2000-2089
             [simple uint 8  year         encoding='"BCD"']

@@ -119,8 +119,10 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                         throw new SerializationException("'BCD' encoded value must be only one hexadecimal digit long");
                     }
                     bo.writeByte(true, bitLength, value);
+                    break;
                 case "default":
                     bo.writeByte(true, bitLength, value);
+                    break;
                 default:
                     throw new ParseException("unsupported encoding '" + encoding + "'");
             }
@@ -173,6 +175,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     // Write the last digit.
                     bo.writeByte(false, 4, (byte) (value % 10));
+                    break;
                 }
                 case "default":
                     bo.writeShort(true, bitLength, value);
@@ -229,6 +232,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     // Write the last digit.
                     bo.writeByte(false, 4, (byte) (value % 10));
+                    break;
                 }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
@@ -288,6 +292,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     // Write the last digit.
                     bo.writeByte(false, 4, (byte) (value % 10));
+                    break;
                 }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
