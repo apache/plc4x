@@ -30,20 +30,25 @@ import org.pcap4j.packet.Packet;
 import org.pcap4j.packet.UnknownPacket;
 
 import java.io.EOFException;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 public class ManualProfinetPcapTest {
 
     public static void main(String[] args) throws Exception {
-        try (PcapHandle handle = Pcaps.openOffline("/Users/cdutz/Projects/Apache/PLC4X/profinet-slow.pcapng", PcapHandle.TimestampPrecision.NANO);){
-            int lastIncomingCycleTime = 0;
-            int lastOutgoingCycleTime = 0;
-            int minDelay = 65000;
-            int maxDelay = 0;
+        try (PcapHandle handle = Pcaps.openOffline("/Users/cdutz/Projects/Apache/PLC4X/profinet.pcapng", PcapHandle.TimestampPrecision.NANO);){
+            int lastIncomingCycleCounter = 0;
+            double averageIncomingCycleCounter = 0.0;
+            int numberIncomingPackets = 0;
+            Timestamp lastIncomingCycleTime = null;
+            int lastOutgoingCycleCounter = 0;
+            Timestamp lastOutgoingCycleTime = null;
             while (true) {
                 try {
                     Packet packet = handle.getNextPacketEx();
+                    Timestamp timestamp = handle.getTimestamp();
+
                     EthernetPacket.EthernetHeader packetHeader = (EthernetPacket.EthernetHeader) packet.getHeader();
                     boolean fromDevice = Arrays.equals(new byte[]{(byte) 0xF8, (byte) 0xE4, (byte) 0x3B, (byte) 0xB6, (byte) 0x9B, (byte) 0xBF}, packetHeader.getSrcAddr().getAddress());
 
@@ -56,8 +61,24 @@ public class ManualProfinetPcapTest {
                             PnDcp_Pdu pnDcpPdu = PnDcp_Pdu.staticParse(readBuffer);
                             if(pnDcpPdu instanceof PnDcp_Pdu_RealTimeCyclic) {
                                 PnDcp_Pdu_RealTimeCyclic pnDcpPdu1 = (PnDcp_Pdu_RealTimeCyclic) pnDcpPdu;
-                                lastIncomingCycleTime = pnDcpPdu1.getCycleCounter();
-                                //System.out.printf("--> %d\n", pnDcpPdu1.getCycleCounter());
+
+                                if(lastIncomingCycleCounter != 0) {
+                                    int lastCycles;
+                                    if(pnDcpPdu1.getCycleCounter() > lastIncomingCycleCounter) {
+                                        lastCycles = pnDcpPdu1.getCycleCounter() - lastIncomingCycleCounter;
+                                    } else {
+                                        lastCycles = (pnDcpPdu1.getCycleCounter() + 0xFFFF) - lastIncomingCycleCounter;
+                                    }
+                                    averageIncomingCycleCounter = (numberIncomingPackets * averageIncomingCycleCounter + lastCycles) / (numberIncomingPackets + 1);
+
+                                    if (lastIncomingCycleTime != null) {
+                                        System.out.printf("--> %3d %3d            %f\n", lastCycles, (timestamp.getNanos() - lastIncomingCycleTime.getNanos()) / 1000000, averageIncomingCycleCounter);
+                                    }
+                                }
+
+                                numberIncomingPackets++;
+                                lastIncomingCycleCounter = pnDcpPdu1.getCycleCounter();
+                                lastIncomingCycleTime = timestamp;
                             }
                         } else {
                             System.out.println("Other packet");
@@ -68,17 +89,20 @@ public class ManualProfinetPcapTest {
                         PnDcp_Pdu pnDcpPdu = PnDcp_Pdu.staticParse(readBuffer);
                         if(pnDcpPdu instanceof PnDcp_Pdu_RealTimeCyclic) {
                             PnDcp_Pdu_RealTimeCyclic pnDcpPdu1 = (PnDcp_Pdu_RealTimeCyclic) pnDcpPdu;
-                            int difference = (pnDcpPdu1.getCycleCounter() < lastIncomingCycleTime) ? lastIncomingCycleTime - pnDcpPdu1.getCycleCounter() : pnDcpPdu1.getCycleCounter() - lastIncomingCycleTime;
-                            if(difference < 60000 && difference > 100) {
-                                if (difference < minDelay) {
-                                    minDelay = difference;
+                            if(lastOutgoingCycleCounter != 0) {
+                                int lastCycles;
+                                if(pnDcpPdu1.getCycleCounter() > lastOutgoingCycleCounter) {
+                                    lastCycles = pnDcpPdu1.getCycleCounter() - lastOutgoingCycleCounter;
+                                } else {
+                                    lastCycles = (pnDcpPdu1.getCycleCounter() + 0xFFFF) - lastOutgoingCycleCounter;
                                 }
-                                if (difference > maxDelay) {
-                                    maxDelay = difference;
+
+                                if (lastOutgoingCycleTime != null) {
+                                    System.out.printf("<--          %3d %3d\n", lastCycles, (timestamp.getNanos() - lastOutgoingCycleTime.getNanos()) / 1000000);
                                 }
-                                System.out.printf("<-- %10d %10d   %10d-%10d\n", difference, pnDcpPdu1.getCycleCounter() - lastOutgoingCycleTime, minDelay, maxDelay);
                             }
-                            lastOutgoingCycleTime = pnDcpPdu1.getCycleCounter();
+                            lastOutgoingCycleCounter = pnDcpPdu1.getCycleCounter();
+                            lastOutgoingCycleTime = timestamp;
                         }
                     } else {
                         System.out.println("Other packet");
