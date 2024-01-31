@@ -42,7 +42,11 @@ public class DataItem {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataItem.class);
 
   public static PlcValue staticParse(
-      ReadBuffer readBuffer, String dataProtocolId, Integer stringLength) throws ParseException {
+      ReadBuffer readBuffer,
+      String dataProtocolId,
+      ControllerType controllerType,
+      Integer stringLength)
+      throws ParseException {
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -250,15 +254,21 @@ public class DataItem {
   }
 
   public static void staticSerialize(
-      WriteBuffer writeBuffer, PlcValue _value, String dataProtocolId, Integer stringLength)
+      WriteBuffer writeBuffer,
+      PlcValue _value,
+      String dataProtocolId,
+      ControllerType controllerType,
+      Integer stringLength)
       throws SerializationException {
-    staticSerialize(writeBuffer, _value, dataProtocolId, stringLength, ByteOrder.BIG_ENDIAN);
+    staticSerialize(
+        writeBuffer, _value, dataProtocolId, controllerType, stringLength, ByteOrder.BIG_ENDIAN);
   }
 
   public static void staticSerialize(
       WriteBuffer writeBuffer,
       PlcValue _value,
       String dataProtocolId,
+      ControllerType controllerType,
       Integer stringLength,
       ByteOrder byteOrder)
       throws SerializationException {
@@ -426,11 +436,15 @@ public class DataItem {
     }
   }
 
-  public static int getLengthInBytes(PlcValue _value, String dataProtocolId, Integer stringLength) {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataProtocolId, stringLength) / 8.0);
+  public static int getLengthInBytes(
+      PlcValue _value, String dataProtocolId, ControllerType controllerType, Integer stringLength) {
+    return (int)
+        Math.ceil(
+            (float) getLengthInBits(_value, dataProtocolId, controllerType, stringLength) / 8.0);
   }
 
-  public static int getLengthInBits(PlcValue _value, String dataProtocolId, Integer stringLength) {
+  public static int getLengthInBits(
+      PlcValue _value, String dataProtocolId, ControllerType controllerType, Integer stringLength) {
     int sizeInBits = 0;
     if (EvaluationHelper.equals(dataProtocolId, "IEC61131_BOOL")) { // BOOL
       // Reserved Field

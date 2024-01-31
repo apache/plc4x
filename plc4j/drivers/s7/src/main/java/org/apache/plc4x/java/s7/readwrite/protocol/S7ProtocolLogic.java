@@ -36,7 +36,6 @@ import org.apache.plc4x.java.s7.events.S7Event;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
-import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
@@ -195,7 +194,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         // If the controller type is explicitly set, were finished with the login
                         // process. If it's set to ANY, we have to query the serial number information
                         // in order to detect the type of PLC.
-                        if (s7DriverContext.getControllerType() != S7ControllerType.ANY) {
+                        if (s7DriverContext.getControllerType() != ControllerType.ANY) {
                             // Send an event that connection setup is complete.
                             context.fireConnected();
                             return;
@@ -569,7 +568,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         } else {
             //TODO: Check for ALARM_S (S7300) and ALARM_8 (S7400), maybe we need verify the CPU
             AlarmStateType alarmType;
-            if (s7DriverContext.getControllerType() == S7ControllerType.S7_400) {
+            if (s7DriverContext.getControllerType() == ControllerType.S7_400) {
                 alarmType = AlarmStateType.ALARM_INITIATE;
             } else {
                 alarmType = AlarmStateType.ALARM_S_INITIATE;
@@ -754,7 +753,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             try {
                 short cpuSubFunction;
-                if (s7DriverContext.getControllerType() == S7ControllerType.S7_300) {
+                if (s7DriverContext.getControllerType() == ControllerType.S7_300) {
                     cpuSubFunction = 0x13;
                 } else {
                     cpuSubFunction = 0xf0;
@@ -1890,7 +1889,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
-                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
                 // Cap the length of the string with the maximum allowed size.
                 if(tag.getDataType() == TransportSize.STRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
@@ -1901,7 +1900,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     lengthInBits = lengthInBits * 8;
                 }             
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
-                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), stringLength);
+                DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
                 // Allocate enough space for all items.
                 if (byteBuffer == null) {
                     // TODO: This logic will cause problems when reading arrays of strings.
@@ -1924,14 +1923,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         try {
             int stringLength = (tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
+                // TODO: Pass the type of plc into the parse function ...
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                    stringLength);
+                    s7DriverContext.getControllerType(), stringLength);
             } else {
                 // Fetch all
                 final PlcValue[] resultItems = IntStream.range(0, tag.getNumberOfElements()).mapToObj(i -> {
                     try {
                         return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
-                            stringLength);
+                            s7DriverContext.getControllerType(), stringLength);
                     } catch (ParseException e) {
                         logger.warn("Error parsing tag item of type: '{}' (at position {}})", tag.getDataType().name(), i, e);
                     }
@@ -1976,25 +1976,25 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      * @param articleNumber article number string.
      * @return type of controller.
      */
-    private S7ControllerType decodeControllerType(String articleNumber) {
+    private ControllerType decodeControllerType(String articleNumber) {
         if (!articleNumber.startsWith("6ES7 ")) {
-            return S7ControllerType.ANY;
+            return ControllerType.ANY;
         }
         String model = articleNumber.substring(articleNumber.indexOf(' ') + 1, articleNumber.indexOf(' ') + 2);
         switch (model) {
             case "2":
-                return S7ControllerType.S7_1200;
+                return ControllerType.S7_1200;
             case "5":
-                return S7ControllerType.S7_1500;
+                return ControllerType.S7_1500;
             case "3":
-                return S7ControllerType.S7_300;
+                return ControllerType.S7_300;
             case "4":
-                return S7ControllerType.S7_400;
+                return ControllerType.S7_400;
             default:
                 if (logger.isInfoEnabled()) {
                     logger.info("Looking up unknown article number {}", articleNumber);
                 }
-                return S7ControllerType.ANY;
+                return ControllerType.ANY;
         }
     }
 
@@ -2051,8 +2051,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
 
     private boolean isFeatureSupported() {
-        return (s7DriverContext.getControllerType() == S7ControllerType.S7_300) ||
-            (s7DriverContext.getControllerType() == S7ControllerType.S7_400);
+        return (s7DriverContext.getControllerType() == ControllerType.S7_300) ||
+            (s7DriverContext.getControllerType() == ControllerType.S7_400);
     }
 
     private CompletableFuture<S7MessageUserData> reassembledMessage(short sequenceNumber, List<PlcValue> plcValues) {

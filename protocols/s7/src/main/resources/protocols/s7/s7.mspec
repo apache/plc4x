@@ -677,8 +677,8 @@
     ]
 ]
 
-[dataIo DataItem(vstring dataProtocolId, int 32 stringLength)
-    [typeSwitch dataProtocolId
+[dataIo DataItem(vstring dataProtocolId, ControllerType controllerType, int 32 stringLength)
+    [typeSwitch dataProtocolId, controllerType
         // -----------------------------------------
         // Bit
         // -----------------------------------------
@@ -1043,3 +1043,12 @@
     ['0X02' B10SEC]
 ]
 
+[enum ControllerType
+    [ANY    ]
+    [S7_200 ]
+    [S7_300 ]
+    [S7_400 ]
+    [S7_1200]
+    [S7_1500]
+    [LOGO   ]
+]
