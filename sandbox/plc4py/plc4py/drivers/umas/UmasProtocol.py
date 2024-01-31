@@ -54,6 +54,7 @@ class UmasProtocol(Plc4xBaseProtocol):
             pdu: ModbusPDU = ModbusPDU.static_parse(
                 read_buffer,
                 umas_request_function_key=self.messages[adu.transaction_identifier][0],
+                byte_length=len(adu.pdu_array) - 1,
             )
             if isinstance(pdu, UmasPDU):
                 self.messages[adu.transaction_identifier][1].set_result(pdu.item)
@@ -67,7 +68,7 @@ class UmasProtocol(Plc4xBaseProtocol):
     def write_wait_for_response(
         self, umas_pdu_item: UmasPDUItem, transport, message_future
     ):
-        pdu = UmasPDUBuilder(umas_pdu_item).build(umas_pdu_item.umas_function_key)
+        pdu = UmasPDUBuilder(umas_pdu_item).build(umas_pdu_item.umas_function_key, 0)
 
         write_buffer = WriteBufferByteBased(
             pdu.length_in_bytes(), ByteOrder.LITTLE_ENDIAN

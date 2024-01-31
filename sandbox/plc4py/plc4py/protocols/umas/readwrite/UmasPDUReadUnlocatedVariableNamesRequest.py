@@ -32,9 +32,11 @@ import math
 
 @dataclass
 class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
-    range: int
+    record_type: int
     hardware_id: int
     block_no: int
+    # Arguments.
+    byte_length: int
     BLANK: int = 0x0000
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0x26
@@ -43,9 +45,9 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
     def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
-        # Simple Field (range)
+        # Simple Field (recordType)
         write_buffer.write_unsigned_short(
-            self.range, bit_length=16, logical_name="range"
+            self.record_type, bit_length=16, logical_name="recordType"
         )
 
         # Simple Field (hardwareId)
@@ -70,7 +72,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         length_in_bits: int = super().length_in_bits()
         _value: UmasPDUReadUnlocatedVariableNamesRequest = self
 
-        # Simple field (range)
+        # Simple field (recordType)
         length_in_bits += 16
 
         # Simple field (hardwareId)
@@ -85,14 +87,17 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
-        range: int = read_buffer.read_unsigned_short(
-            logical_name="range",
+        record_type: int = read_buffer.read_unsigned_short(
+            logical_name="recordType",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         hardware_id: int = read_buffer.read_unsigned_long(
@@ -100,6 +105,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
             bit_length=40,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         block_no: int = read_buffer.read_unsigned_short(
@@ -107,18 +113,20 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         BLANK: int = read_buffer.read_unsigned_int(
             logical_name="blank",
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesRequest")
         # Create the instance
         return UmasPDUReadUnlocatedVariableNamesRequestBuilder(
-            range, hardware_id, block_no
+            record_type, hardware_id, block_no
         )
 
     def equals(self, o: object) -> bool:
@@ -132,7 +140,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
             UmasPDUReadUnlocatedVariableNamesRequest(o)
         )
         return (
-            (self.range == that.range)
+            (self.record_type == that.record_type)
             and (self.hardware_id == that.hardware_id)
             and (self.block_no == that.block_no)
             and super().equals(that)
@@ -155,12 +163,14 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
 
 @dataclass
 class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
-    range: int
+    record_type: int
     hardware_id: int
     block_no: int
 
-    def build(self, pairing_key) -> UmasPDUReadUnlocatedVariableNamesRequest:
+    def build(
+        self, byte_length: int, pairing_key
+    ) -> UmasPDUReadUnlocatedVariableNamesRequest:
         umas_pdu_read_unlocated_variable_names_request: UmasPDUReadUnlocatedVariableNamesRequest = UmasPDUReadUnlocatedVariableNamesRequest(
-            pairing_key, self.range, self.hardware_id, self.block_no
+            byte_length, pairing_key, self.record_type, self.hardware_id, self.block_no
         )
         return umas_pdu_read_unlocated_variable_names_request

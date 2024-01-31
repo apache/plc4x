@@ -33,6 +33,8 @@ import math
 @dataclass
 class UmasInitCommsRequest(UmasPDUItem):
     unknown_object: int
+    # Arguments.
+    byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0x01
     umas_request_function_key: ClassVar[int] = 0
@@ -60,7 +62,9 @@ class UmasInitCommsRequest(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasInitCommsRequest")
 
         unknown_object: int = read_buffer.read_unsigned_byte(
@@ -68,6 +72,7 @@ class UmasInitCommsRequest(UmasPDUItem):
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         read_buffer.pop_context("UmasInitCommsRequest")
@@ -106,8 +111,8 @@ class UmasInitCommsRequest(UmasPDUItem):
 class UmasInitCommsRequestBuilder:
     unknown_object: int
 
-    def build(self, pairing_key) -> UmasInitCommsRequest:
+    def build(self, byte_length: int, pairing_key) -> UmasInitCommsRequest:
         umas_init_comms_request: UmasInitCommsRequest = UmasInitCommsRequest(
-            pairing_key, self.unknown_object
+            byte_length, pairing_key, self.unknown_object
         )
         return umas_init_comms_request

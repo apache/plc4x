@@ -33,6 +33,8 @@ import math
 @dataclass
 class UmasPDUProjectInfoRequest(UmasPDUItem):
     subcode: int
+    # Arguments.
+    byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0x03
     umas_request_function_key: ClassVar[int] = 0
@@ -60,7 +62,9 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasPDUProjectInfoRequest")
 
         subcode: int = read_buffer.read_unsigned_byte(
@@ -68,6 +72,7 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         read_buffer.pop_context("UmasPDUProjectInfoRequest")
@@ -102,8 +107,8 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
 class UmasPDUProjectInfoRequestBuilder:
     subcode: int
 
-    def build(self, pairing_key) -> UmasPDUProjectInfoRequest:
+    def build(self, byte_length: int, pairing_key) -> UmasPDUProjectInfoRequest:
         umas_pdu_project_info_request: UmasPDUProjectInfoRequest = (
-            UmasPDUProjectInfoRequest(pairing_key, self.subcode)
+            UmasPDUProjectInfoRequest(byte_length, pairing_key, self.subcode)
         )
         return umas_pdu_project_info_request

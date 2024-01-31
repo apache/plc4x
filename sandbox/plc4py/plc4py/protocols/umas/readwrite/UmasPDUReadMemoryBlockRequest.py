@@ -37,6 +37,8 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
     offset: int
     unknown_object1: int
     number_of_bytes: int
+    # Arguments.
+    byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0x20
     umas_request_function_key: ClassVar[int] = 0
@@ -94,7 +96,9 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
         range: int = read_buffer.read_unsigned_byte(
@@ -102,6 +106,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         block_number: int = read_buffer.read_unsigned_short(
@@ -109,6 +114,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         offset: int = read_buffer.read_unsigned_short(
@@ -116,6 +122,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         unknown_object1: int = read_buffer.read_unsigned_short(
@@ -123,6 +130,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         number_of_bytes: int = read_buffer.read_unsigned_short(
@@ -130,6 +138,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         read_buffer.pop_context("UmasPDUReadMemoryBlockRequest")
@@ -178,9 +187,10 @@ class UmasPDUReadMemoryBlockRequestBuilder:
     unknown_object1: int
     number_of_bytes: int
 
-    def build(self, pairing_key) -> UmasPDUReadMemoryBlockRequest:
+    def build(self, byte_length: int, pairing_key) -> UmasPDUReadMemoryBlockRequest:
         umas_pdu_read_memory_block_request: UmasPDUReadMemoryBlockRequest = (
             UmasPDUReadMemoryBlockRequest(
+                byte_length,
                 pairing_key,
                 self.range,
                 self.block_number,

@@ -23,6 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
+from plc4py.protocols.umas.readwrite.VariableRequestReference import (
+    VariableRequestReference,
+)
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
@@ -33,52 +36,49 @@ import math
 
 
 @dataclass
-class UmasPDUPlcStatusResponse(UmasPDUItem):
-    not_used: int
-    number_of_blocks: int
-    blocks: List[int]
+class UmasPDUReadVariableRequest(UmasPDUItem):
+    crc: int
+    variable_count: int
+    variables: List[VariableRequestReference]
     # Arguments.
     byte_length: int
     # Accessors for discriminator values.
-    umas_function_key: ClassVar[int] = 0xFE
-    umas_request_function_key: ClassVar[int] = 0x04
+    umas_function_key: ClassVar[int] = 0x22
+    umas_request_function_key: ClassVar[int] = 0
 
     def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasPDUPlcStatusResponse")
+        write_buffer.push_context("UmasPDUReadVariableRequest")
 
-        # Simple Field (notUsed)
-        write_buffer.write_unsigned_int(
-            self.not_used, bit_length=24, logical_name="notUsed"
-        )
+        # Simple Field (crc)
+        write_buffer.write_unsigned_int(self.crc, bit_length=32, logical_name="crc")
 
-        # Simple Field (numberOfBlocks)
+        # Simple Field (variableCount)
         write_buffer.write_unsigned_byte(
-            self.number_of_blocks, bit_length=8, logical_name="numberOfBlocks"
+            self.variable_count, bit_length=8, logical_name="variableCount"
         )
 
-        # Array Field (blocks)
-        write_buffer.write_simple_array(
-            self.blocks, write_unsigned_int, logical_name="blocks"
-        )
+        # Array Field (variables)
+        write_buffer.write_complex_array(self.variables, logical_name="variables")
 
-        write_buffer.pop_context("UmasPDUPlcStatusResponse")
+        write_buffer.pop_context("UmasPDUReadVariableRequest")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = super().length_in_bits()
-        _value: UmasPDUPlcStatusResponse = self
+        _value: UmasPDUReadVariableRequest = self
 
-        # Simple field (notUsed)
-        length_in_bits += 24
+        # Simple field (crc)
+        length_in_bits += 32
 
-        # Simple field (numberOfBlocks)
+        # Simple field (variableCount)
         length_in_bits += 8
 
         # Array field
-        if self.blocks is not None:
-            length_in_bits += 32 * len(self.blocks)
+        if self.variables is not None:
+            for element in self.variables:
+                length_in_bits += element.length_in_bits()
 
         return length_in_bits
 
@@ -86,49 +86,49 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
     def static_parse_builder(
         read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
-        read_buffer.push_context("UmasPDUPlcStatusResponse")
+        read_buffer.push_context("UmasPDUReadVariableRequest")
 
-        not_used: int = read_buffer.read_unsigned_int(
-            logical_name="notUsed",
-            bit_length=24,
+        crc: int = read_buffer.read_unsigned_int(
+            logical_name="crc",
+            bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
         )
 
-        number_of_blocks: int = read_buffer.read_unsigned_byte(
-            logical_name="numberOfBlocks",
+        variable_count: int = read_buffer.read_unsigned_byte(
+            logical_name="variableCount",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
         )
 
-        blocks: List[Any] = read_buffer.read_array_field(
-            logical_name="blocks",
-            read_function=read_buffer.read_unsigned_int,
-            count=number_of_blocks,
+        variables: List[Any] = read_buffer.read_array_field(
+            logical_name="variables",
+            read_function=VariableRequestReference.static_parse,
+            count=variable_count,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
         )
 
-        read_buffer.pop_context("UmasPDUPlcStatusResponse")
+        read_buffer.pop_context("UmasPDUReadVariableRequest")
         # Create the instance
-        return UmasPDUPlcStatusResponseBuilder(not_used, number_of_blocks, blocks)
+        return UmasPDUReadVariableRequestBuilder(crc, variable_count, variables)
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasPDUPlcStatusResponse):
+        if not isinstance(o, UmasPDUReadVariableRequest):
             return False
 
-        that: UmasPDUPlcStatusResponse = UmasPDUPlcStatusResponse(o)
+        that: UmasPDUReadVariableRequest = UmasPDUReadVariableRequest(o)
         return (
-            (self.not_used == that.not_used)
-            and (self.number_of_blocks == that.number_of_blocks)
-            and (self.blocks == that.blocks)
+            (self.crc == that.crc)
+            and (self.variable_count == that.variable_count)
+            and (self.variables == that.variables)
             and super().equals(that)
             and True
         )
@@ -148,19 +148,15 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
 
 
 @dataclass
-class UmasPDUPlcStatusResponseBuilder:
-    not_used: int
-    number_of_blocks: int
-    blocks: List[int]
+class UmasPDUReadVariableRequestBuilder:
+    crc: int
+    variable_count: int
+    variables: List[VariableRequestReference]
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUPlcStatusResponse:
-        umas_pdu_plc_status_response: UmasPDUPlcStatusResponse = (
-            UmasPDUPlcStatusResponse(
-                byte_length,
-                pairing_key,
-                self.not_used,
-                self.number_of_blocks,
-                self.blocks,
+    def build(self, byte_length: int, pairing_key) -> UmasPDUReadVariableRequest:
+        umas_pdu_read_variable_request: UmasPDUReadVariableRequest = (
+            UmasPDUReadVariableRequest(
+                byte_length, pairing_key, self.crc, self.variable_count, self.variables
             )
         )
-        return umas_pdu_plc_status_response
+        return umas_pdu_read_variable_request

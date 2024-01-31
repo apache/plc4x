@@ -31,6 +31,8 @@ import math
 
 @dataclass
 class UmasPDUPlcStatusRequest(UmasPDUItem):
+    # Arguments.
+    byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0x04
     umas_request_function_key: ClassVar[int] = 0
@@ -50,7 +52,9 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasPDUPlcStatusRequest")
 
         read_buffer.pop_context("UmasPDUPlcStatusRequest")
@@ -83,8 +87,9 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
 
 @dataclass
 class UmasPDUPlcStatusRequestBuilder:
-    def build(self, pairing_key) -> UmasPDUPlcStatusRequest:
+    def build(self, byte_length: int, pairing_key) -> UmasPDUPlcStatusRequest:
         umas_pdu_plc_status_request: UmasPDUPlcStatusRequest = UmasPDUPlcStatusRequest(
+            byte_length,
             pairing_key,
         )
         return umas_pdu_plc_status_request

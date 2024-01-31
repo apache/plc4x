@@ -47,21 +47,20 @@
     [array      byte        pduArray         count   'length - 1']
 ]
 
-[discriminatedType ModbusPDU(uint 8 umasRequestFunctionKey)
+[discriminatedType ModbusPDU(uint 8 umasRequestFunctionKey, uint 16 byteLength)
     [discriminator bit         errorFlag]
     [discriminator uint 7      functionFlag]
     [typeSwitch errorFlag,functionFlag
         ['true'                     ModbusPDUError
             [simple ModbusErrorCode  exceptionCode]
         ]
-
         ['false','0x5a'     UmasPDU
-            [simple     UmasPDUItem('umasRequestFunctionKey')    item]
+            [simple     UmasPDUItem('umasRequestFunctionKey','byteLength - 1')    item]
         ]
     ]
 ]
 
-[type UmasPDUItem(uint 8 umasRequestFunctionKey) byteOrder='LITTLE_ENDIAN'
+[type UmasPDUItem(uint 8 umasRequestFunctionKey, uint 16 byteLength) byteOrder='LITTLE_ENDIAN'
     [simple     uint 8     pairingKey]
     [discriminator     uint 8     umasFunctionKey]
     [typeSwitch umasFunctionKey, umasRequestFunctionKey
@@ -82,13 +81,17 @@
             [simple     uint 16        unknownObject1]
             [simple     uint 16        numberOfBytes]
         ]
+        ['0x22'      UmasPDUReadVariableRequest
+            [simple     uint 32        crc]
+            [simple     uint 8        variableCount]
+            [array      VariableRequestReference variables count 'variableCount']
+        ]
         ['0x26'     UmasPDUReadUnlocatedVariableNamesRequest
-            [simple     uint 16         range]
+            [simple     uint 16         recordType]
             [simple     uint 40         hardwareId]
             [simple     uint 16         blockNo]
             [const      uint 32         blank 0x0000]
         ]
-
         ['0xFE', '0x01'     UmasInitCommsResponse
             [simple     uint 16         maxFrameSize]
             [simple     uint 16         firmwareVersion]
@@ -120,11 +123,8 @@
             [simple     uint 16         numberOfBytes]
             [array      uint 8          block count 'numberOfBytes']
         ]
-        ['0xFE', '0x26'     UmasPDUReadUnlocatedVariableNamesResponse
-            [simple     uint 32         range]
-            [simple     uint 16         noOfRecords]
-            [simple     uint 8          noOfRecordsNull]
-            [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
+        ['0xFE', '0x26'     UmasPDUReadUnlocatedVariableResponse
+            [array      uint 8          block count 'byteLength - 2']
         ]
     ]
 ]
@@ -140,12 +140,48 @@
     ]
 ]
 
+[type UmasVariableBlock(uint 16 recordFormat)
+    [typeSwitch recordFormat
+        ['0xdd02' UmasPDUReadUnlocatedVariableNamesResponse
+            [simple     uint 32         range]
+            [simple     uint 16         noOfRecords]
+            [simple     uint 8          noOfRecordsNull]
+            [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
+        ]
+        ['0xdd03' UmasPDUReadDatatypeNamesResponse
+            [simple     uint 24         range]
+            [simple     uint 16         noOfRecords]
+            [simple     uint 8          noOfRecordsNull]
+            [array      UmasDatatypeReference         records count 'noOfRecords']
+        ]
+    ]
+]
+
+[type VariableRequestReference
+    [simple     uint 8           dataType]
+    [simple     uint 16          block]
+    [const      uint 8           unknown1 0x01]
+    [simple     uint 16          baseOffset]
+    [simple     uint 8          offset]
+]
+
 [type UmasUnlocatedVariableReference
     [simple     uint 8           dataType]
-    [simple     uint 32          address]
+    [simple     uint 8           unknown1]
+    [simple     uint 16          block]
+    [simple     uint 8           offset]
+    [simple     uint 8           unknown5]
     [simple     uint 16          unknown4]
-    [simple     uint 16           stringLength]
-    [simple     uint 8           stringType]
+    [simple     uint 16          stringLength]
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
+]
+
+[type UmasDatatypeReference
+    [simple     uint 8           dataSize]
+    [simple     uint 16          unknown1]
+    [simple     uint 16          unknown4]
+    [simple     uint 8           dataType]
+    [simple     uint 8           stringLength]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
 ]
 
@@ -263,33 +299,21 @@
 ]
 
 [enum uint 8 UmasDataType(uint 8 dataTypeSize)
-    ['1' BOOL ['2']]
-    ['2' BYTE ['2']]
-    ['3' WORD ['2']]
-    ['4' DWORD ['4']]
-    ['5' LWORD ['8']]
-    ['6' SINT ['2']]
-    ['7' INT ['2']]
-    ['8' DINT ['4']]
-    ['9' LINT ['8']]
-    ['10' USINT ['2']]
-    ['11' UINT ['2']]
-    ['12' UDINT ['4']]
-    ['13' ULINT ['8']]
-    ['14' REAL ['4']]
-    ['15' LREAL ['8']]
-    ['16' TIME ['8']]
-    ['17' LTIME ['8']]
-    ['18' DATE ['8']]
-    ['19' LDATE ['8']]
-    ['20' TIME_OF_DAY ['8']]
-    ['21' LTIME_OF_DAY ['8']]
-    ['22' DATE_AND_TIME ['8']]
-    ['23' LDATE_AND_TIME ['8']]
-    ['24' CHAR ['1']]
-    ['25' WCHAR ['2']]
-    ['26' STRING ['1']]
-    ['27' WSTRING ['2']]
+    ['1' BOOL ['1']]
+    ['4' INT ['2']]
+    ['5' UINT ['2']]
+    ['6' DINT ['4']]
+    ['7' UDINT ['4']]
+    ['8' REAL ['4']]
+    ['9' STRING ['1']]
+    ['10' TIME ['4']]
+    ['14' DATE ['4']]
+    ['15' TOD ['4']]
+    ['16' DT ['4']]
+    ['21' BATE ['1']]
+    ['22' WORD ['2']]
+    ['23' DWORD ['4']]
+    ['25' EBOOL ['1']]
 ]
 
 [enum uint 8 ModbusErrorCode

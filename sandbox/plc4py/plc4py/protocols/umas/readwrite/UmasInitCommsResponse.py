@@ -38,6 +38,8 @@ class UmasInitCommsResponse(UmasPDUItem):
     internal_code: int
     hostname_length: int
     hostname: str
+    # Arguments.
+    byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x01
@@ -103,7 +105,9 @@ class UmasInitCommsResponse(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasInitCommsResponse")
 
         max_frame_size: int = read_buffer.read_unsigned_short(
@@ -111,6 +115,7 @@ class UmasInitCommsResponse(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         firmware_version: int = read_buffer.read_unsigned_short(
@@ -118,6 +123,7 @@ class UmasInitCommsResponse(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         not_sure: int = read_buffer.read_unsigned_int(
@@ -125,6 +131,7 @@ class UmasInitCommsResponse(UmasPDUItem):
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         internal_code: int = read_buffer.read_unsigned_int(
@@ -132,6 +139,7 @@ class UmasInitCommsResponse(UmasPDUItem):
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         hostname_length: int = read_buffer.read_unsigned_byte(
@@ -139,6 +147,7 @@ class UmasInitCommsResponse(UmasPDUItem):
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         hostname: str = read_buffer.read_str(
@@ -146,6 +155,7 @@ class UmasInitCommsResponse(UmasPDUItem):
             bit_length=hostname_length * int(8),
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         read_buffer.pop_context("UmasInitCommsResponse")
@@ -201,8 +211,9 @@ class UmasInitCommsResponseBuilder:
     hostname_length: int
     hostname: str
 
-    def build(self, pairing_key) -> UmasInitCommsResponse:
+    def build(self, byte_length: int, pairing_key) -> UmasInitCommsResponse:
         umas_init_comms_response: UmasInitCommsResponse = UmasInitCommsResponse(
+            byte_length,
             pairing_key,
             self.max_frame_size,
             self.firmware_version,

@@ -22,41 +22,45 @@ from dataclasses import dataclass
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.umas.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.GenericTypes import ByteOrder
+from typing import Any
 from typing import ClassVar
+from typing import List
 import math
 
 
 @dataclass
-class UmasPDU(ModbusPDU):
-    item: UmasPDUItem
+class UmasPDUReadUnlocatedVariableResponse(UmasPDUItem):
+    block: List[int]
     # Arguments.
-    umas_request_function_key: int
     byte_length: int
     # Accessors for discriminator values.
-    error_flag: ClassVar[bool] = False
-    function_flag: ClassVar[int] = 0x5A
+    umas_function_key: ClassVar[int] = 0xFE
+    umas_request_function_key: ClassVar[int] = 0x26
 
-    def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasPDU")
+    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+        write_buffer.push_context("UmasPDUReadUnlocatedVariableResponse")
 
-        # Simple Field (item)
-        write_buffer.write_serializable(self.item, logical_name="item")
+        # Array Field (block)
+        write_buffer.write_simple_array(
+            self.block, write_unsigned_byte, logical_name="block"
+        )
 
-        write_buffer.pop_context("UmasPDU")
+        write_buffer.pop_context("UmasPDUReadUnlocatedVariableResponse")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = super().length_in_bits()
-        _value: UmasPDU = self
+        _value: UmasPDUReadUnlocatedVariableResponse = self
 
-        # Simple field (item)
-        length_in_bits += self.item.length_in_bits()
+        # Array field
+        if self.block is not None:
+            length_in_bits += 8 * len(self.block)
 
         return length_in_bits
 
@@ -64,28 +68,32 @@ class UmasPDU(ModbusPDU):
     def static_parse_builder(
         read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
-        read_buffer.push_context("UmasPDU")
+        read_buffer.push_context("UmasPDUReadUnlocatedVariableResponse")
 
-        item: UmasPDUItem = read_buffer.read_complex(
-            read_function=UmasPDUItem.static_parse,
-            logical_name="item",
+        block: List[Any] = read_buffer.read_array_field(
+            logical_name="block",
+            read_function=read_buffer.read_unsigned_byte,
+            count=byte_length - int(2),
+            byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
         )
 
-        read_buffer.pop_context("UmasPDU")
+        read_buffer.pop_context("UmasPDUReadUnlocatedVariableResponse")
         # Create the instance
-        return UmasPDUBuilder(item)
+        return UmasPDUReadUnlocatedVariableResponseBuilder(block)
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasPDU):
+        if not isinstance(o, UmasPDUReadUnlocatedVariableResponse):
             return False
 
-        that: UmasPDU = UmasPDU(o)
-        return (self.item == that.item) and super().equals(that) and True
+        that: UmasPDUReadUnlocatedVariableResponse = (
+            UmasPDUReadUnlocatedVariableResponse(o)
+        )
+        return (self.block == that.block) and super().equals(that) and True
 
     def hash_code(self) -> int:
         return hash(self)
@@ -102,13 +110,13 @@ class UmasPDU(ModbusPDU):
 
 
 @dataclass
-class UmasPDUBuilder:
-    item: UmasPDUItem
+class UmasPDUReadUnlocatedVariableResponseBuilder:
+    block: List[int]
 
     def build(
-        self,
-        umas_request_function_key: int,
-        byte_length: int,
-    ) -> UmasPDU:
-        umas_pdu: UmasPDU = UmasPDU(umas_request_function_key, byte_length, self.item)
-        return umas_pdu
+        self, byte_length: int, pairing_key
+    ) -> UmasPDUReadUnlocatedVariableResponse:
+        umas_pdu_read_unlocated_variable_response: UmasPDUReadUnlocatedVariableResponse = UmasPDUReadUnlocatedVariableResponse(
+            byte_length, pairing_key, self.block
+        )
+        return umas_pdu_read_unlocated_variable_response

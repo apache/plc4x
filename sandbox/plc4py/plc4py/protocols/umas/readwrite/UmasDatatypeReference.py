@@ -29,42 +29,25 @@ import math
 
 
 @dataclass
-class UmasUnlocatedVariableReference:
-    data_type: int
+class UmasDatatypeReference:
+    data_size: int
     unknown1: int
-    block: int
-    offset: int
-    unknown5: int
     unknown4: int
+    data_type: int
     string_length: int
     value: str
 
     def serialize(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasUnlocatedVariableReference")
+        write_buffer.push_context("UmasDatatypeReference")
 
-        # Simple Field (dataType)
+        # Simple Field (dataSize)
         write_buffer.write_unsigned_byte(
-            self.data_type, bit_length=8, logical_name="dataType"
+            self.data_size, bit_length=8, logical_name="dataSize"
         )
 
         # Simple Field (unknown1)
-        write_buffer.write_unsigned_byte(
-            self.unknown1, bit_length=8, logical_name="unknown1"
-        )
-
-        # Simple Field (block)
         write_buffer.write_unsigned_short(
-            self.block, bit_length=16, logical_name="block"
-        )
-
-        # Simple Field (offset)
-        write_buffer.write_unsigned_byte(
-            self.offset, bit_length=8, logical_name="offset"
-        )
-
-        # Simple Field (unknown5)
-        write_buffer.write_unsigned_byte(
-            self.unknown5, bit_length=8, logical_name="unknown5"
+            self.unknown1, bit_length=16, logical_name="unknown1"
         )
 
         # Simple Field (unknown4)
@@ -72,9 +55,14 @@ class UmasUnlocatedVariableReference:
             self.unknown4, bit_length=16, logical_name="unknown4"
         )
 
+        # Simple Field (dataType)
+        write_buffer.write_unsigned_byte(
+            self.data_type, bit_length=8, logical_name="dataType"
+        )
+
         # Simple Field (stringLength)
-        write_buffer.write_unsigned_short(
-            self.string_length, bit_length=16, logical_name="stringLength"
+        write_buffer.write_unsigned_byte(
+            self.string_length, bit_length=8, logical_name="stringLength"
         )
         # Manual Field (value)
         write_buffer.write_manual(
@@ -84,35 +72,29 @@ class UmasUnlocatedVariableReference:
             logical_name="value",
         )
 
-        write_buffer.pop_context("UmasUnlocatedVariableReference")
+        write_buffer.pop_context("UmasDatatypeReference")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = 0
-        _value: UmasUnlocatedVariableReference = self
+        _value: UmasDatatypeReference = self
 
-        # Simple field (dataType)
+        # Simple field (dataSize)
         length_in_bits += 8
 
         # Simple field (unknown1)
-        length_in_bits += 8
-
-        # Simple field (block)
         length_in_bits += 16
-
-        # Simple field (offset)
-        length_in_bits += 8
-
-        # Simple field (unknown5)
-        length_in_bits += 8
 
         # Simple field (unknown4)
         length_in_bits += 16
 
+        # Simple field (dataType)
+        length_in_bits += 8
+
         # Simple field (stringLength)
-        length_in_bits += 16
+        length_in_bits += 8
 
         # Manual Field (value)
         length_in_bits += self.string_length * int(8)
@@ -121,38 +103,30 @@ class UmasUnlocatedVariableReference:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return UmasUnlocatedVariableReference.static_parse_context(read_buffer)
+        return UmasDatatypeReference.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.push_context("UmasUnlocatedVariableReference")
+        read_buffer.push_context("UmasDatatypeReference")
 
-        data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="dataType", bit_length=8
+        data_size: int = read_buffer.read_unsigned_byte(
+            logical_name="dataSize", bit_length=8
         )
 
-        unknown1: int = read_buffer.read_unsigned_byte(
-            logical_name="unknown1", bit_length=8
-        )
-
-        block: int = read_buffer.read_unsigned_short(
-            logical_name="block", bit_length=16
-        )
-
-        offset: int = read_buffer.read_unsigned_byte(
-            logical_name="offset", bit_length=8
-        )
-
-        unknown5: int = read_buffer.read_unsigned_byte(
-            logical_name="unknown5", bit_length=8
+        unknown1: int = read_buffer.read_unsigned_short(
+            logical_name="unknown1", bit_length=16
         )
 
         unknown4: int = read_buffer.read_unsigned_short(
             logical_name="unknown4", bit_length=16
         )
 
-        string_length: int = read_buffer.read_unsigned_short(
-            logical_name="stringLength", bit_length=16
+        data_type: int = read_buffer.read_unsigned_byte(
+            logical_name="dataType", bit_length=8
+        )
+
+        string_length: int = read_buffer.read_unsigned_byte(
+            logical_name="stringLength", bit_length=8
         )
 
         value = read_buffer.read_manual(
@@ -162,37 +136,26 @@ class UmasUnlocatedVariableReference:
             logical_name="value",
         )
 
-        read_buffer.pop_context("UmasUnlocatedVariableReference")
+        read_buffer.pop_context("UmasDatatypeReference")
         # Create the instance
-        _umas_unlocated_variable_reference: UmasUnlocatedVariableReference = (
-            UmasUnlocatedVariableReference(
-                data_type,
-                unknown1,
-                block,
-                offset,
-                unknown5,
-                unknown4,
-                string_length,
-                value,
-            )
+        _umas_datatype_reference: UmasDatatypeReference = UmasDatatypeReference(
+            data_size, unknown1, unknown4, data_type, string_length, value
         )
-        return _umas_unlocated_variable_reference
+        return _umas_datatype_reference
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasUnlocatedVariableReference):
+        if not isinstance(o, UmasDatatypeReference):
             return False
 
-        that: UmasUnlocatedVariableReference = UmasUnlocatedVariableReference(o)
+        that: UmasDatatypeReference = UmasDatatypeReference(o)
         return (
-            (self.data_type == that.data_type)
+            (self.data_size == that.data_size)
             and (self.unknown1 == that.unknown1)
-            and (self.block == that.block)
-            and (self.offset == that.offset)
-            and (self.unknown5 == that.unknown5)
             and (self.unknown4 == that.unknown4)
+            and (self.data_type == that.data_type)
             and (self.string_length == that.string_length)
             and (self.value == that.value)
             and True

@@ -36,6 +36,8 @@ import math
 class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
     number_of_bytes: int
     block: List[int]
+    # Arguments.
+    byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x20
@@ -72,7 +74,9 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+    ):
         read_buffer.push_context("UmasPDUReadMemoryBlockResponse")
 
         number_of_bytes: int = read_buffer.read_unsigned_short(
@@ -80,6 +84,7 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         block: List[Any] = read_buffer.read_array_field(
@@ -88,6 +93,7 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
             count=number_of_bytes,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
         )
 
         read_buffer.pop_context("UmasPDUReadMemoryBlockResponse")
@@ -128,10 +134,10 @@ class UmasPDUReadMemoryBlockResponseBuilder:
     number_of_bytes: int
     block: List[int]
 
-    def build(self, pairing_key) -> UmasPDUReadMemoryBlockResponse:
+    def build(self, byte_length: int, pairing_key) -> UmasPDUReadMemoryBlockResponse:
         umas_pdu_read_memory_block_response: UmasPDUReadMemoryBlockResponse = (
             UmasPDUReadMemoryBlockResponse(
-                pairing_key, self.number_of_bytes, self.block
+                byte_length, pairing_key, self.number_of_bytes, self.block
             )
         )
         return umas_pdu_read_memory_block_response
