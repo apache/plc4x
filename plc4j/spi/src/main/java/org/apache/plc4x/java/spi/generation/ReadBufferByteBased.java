@@ -190,13 +190,13 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     int numDigits = bitLength / 4;
                     short value = 0;
-                    for(int i = numDigits; i > 0; i--) {
+                    for(int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
                         }
                         // Shift the current digit to the required position and add it to the rest.
-                        value += (short) (digit * Math.pow(10, digit));
+                        value += (short) (digit * Math.pow(10, i));
                     }
                     return value;
                 case "default":
@@ -240,13 +240,13 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     int numDigits = bitLength / 4;
                     int value = 0;
-                    for(int i = numDigits; i > 0; i--) {
+                    for(int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
                         }
                         // Shift the current digit to the required position and add it to the rest.
-                        value += (int) (digit * Math.pow(10, digit));
+                        value += (int) (digit * Math.pow(10, i));
                     }
                     return value;
                 case "default":
@@ -293,13 +293,13 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     int numDigits = bitLength / 4;
                     long value = 0;
-                    for(int i = numDigits; i > 0; i--) {
+                    for(int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
                         }
                         // Shift the current digit to the required position and add it to the rest.
-                        value += (long) (digit * Math.pow(10, digit));
+                        value += (long) (digit * Math.pow(10, i));
                     }
                     return value;
                 case "default":
@@ -347,13 +347,13 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     int numDigits = bitLength / 4;
                     BigInteger value = BigInteger.ZERO;
-                    for(int i = numDigits; i > 0; i--) {
+                    for(int i = numDigits - 1; i >= 0; i--) {
                         byte digit = bi.readByte(true, 4);
                         if ((digit < 0) || (digit > 9)) {
                             throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
                         }
                         // Shift the current digit to the required position and add it to the rest.
-                        value = value.add(BigInteger.valueOf(digit).multiply(BigInteger.valueOf(10).pow(digit)));
+                        value = value.add(BigInteger.valueOf(digit).multiply(BigInteger.valueOf(10).pow(i)));
                     }
                     return value;
                 case "default":

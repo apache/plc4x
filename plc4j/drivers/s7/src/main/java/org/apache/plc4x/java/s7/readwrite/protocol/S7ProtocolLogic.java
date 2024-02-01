@@ -1890,15 +1890,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             ByteBuffer byteBuffer = null;
             for (int i = 0; i < tag.getNumberOfElements(); i++) {
                 int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
+
                 // Cap the length of the string with the maximum allowed size.
                 if(tag.getDataType() == TransportSize.STRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
                 } else if(tag.getDataType() == TransportSize.WSTRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
-                } else if((tag.getDataType() == TransportSize.S5TIME) ||
-                        (tag.getDataType() == TransportSize.DATE)) {
+                } else if(tag.getDataType() == TransportSize.S5TIME) {
                     lengthInBits = lengthInBits * 8;
-                }             
+                }
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
                 DataItem.staticSerialize(writeBuffer, plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
                 // Allocate enough space for all items.
@@ -2014,12 +2014,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         int numElements = s7Tag.getNumberOfElements();
         // For these date-types we have to convert the requests to simple byte-array requests
         // As otherwise the S7 will deny them with "Data type not supported" replies.
-        if ((transportSize == TransportSize.TIME) /*|| (transportSize == TransportSize.S7_S5TIME)*/ ||
-            (transportSize == TransportSize.LTIME) || (transportSize == TransportSize.DATE) ||
-            (transportSize == TransportSize.TIME_OF_DAY) || (transportSize == TransportSize.DATE_AND_TIME)) {
-            numElements = numElements * transportSize.getSizeInBytes();
-            transportSize = TransportSize.BYTE;
-        }
         if (transportSize == TransportSize.STRING) {
             transportSize = TransportSize.CHAR;
             int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
@@ -2028,6 +2022,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             transportSize = TransportSize.CHAR;
             int stringLength = (s7Tag instanceof S7StringFixedLengthTag) ? ((S7StringFixedLengthTag) s7Tag).getStringLength() : 254;
             numElements = numElements * (stringLength + 2) * 2;
+        }
+        if (transportSize.getCode() == 0x00) {
+            numElements = numElements * transportSize.getSizeInBytes();
+            transportSize = TransportSize.BYTE;
         }
         return new S7AddressAny(transportSize, numElements, s7Tag.getBlockNumber(),
             s7Tag.getMemoryArea(), s7Tag.getByteOffset(), s7Tag.getBitOffset());

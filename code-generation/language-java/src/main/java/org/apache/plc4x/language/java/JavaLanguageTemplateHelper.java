@@ -629,6 +629,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     return "_value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset())";
                 case "milliseconds":
                     return "_value.getDuration().toMillis()";
+                case "millisecondsOfSecond":
+                    return "_value.getTime().get(ChronoField.MILLI_OF_SECOND)";
                 case "millisecondsSinceMidnight":
                     if(simpleTypeReference.getSizeInBits() <= 63) {
                         return "_value.getTime().getLong(ChronoField.MILLI_OF_DAY)";

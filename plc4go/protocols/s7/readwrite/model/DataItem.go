@@ -245,8 +245,8 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight), nil
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
-		// Simple Field (year)
-		year, _yearErr := readBuffer.ReadUint8("year", 8)
+		// Manual Field (year)
+		year, _yearErr := ParseSiemensYear(ctx, readBuffer)
 		if _yearErr != nil {
 			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
@@ -281,10 +281,10 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
 
-		// Simple Field (milliseconds)
-		_, _millisecondsErr := readBuffer.ReadUint16("milliseconds", 12)
-		if _millisecondsErr != nil {
-			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
+		// Simple Field (millisecondsOfSecond)
+		_, _millisecondsOfSecondErr := readBuffer.ReadUint16("millisecondsOfSecond", 12)
+		if _millisecondsOfSecondErr != nil {
+			return nil, errors.Wrap(_millisecondsOfSecondErr, "Error parsing 'millisecondsOfSecond' field")
 		}
 
 		// Simple Field (dayOfWeek)
@@ -456,9 +456,10 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceMidnight' field")
 		}
 	case dataProtocolId == "IEC61131_DATE_AND_TIME": // DATE_AND_TIME
-		// Simple Field (year)
-		if _err := writeBuffer.WriteUint8("year", 8, uint8(value.(values.PlcDATE_AND_TIME).GetYear())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'year' field")
+		// Manual Field (year)
+		_yearErr := SerializeSiemensYear(ctx, writeBuffer, value)
+		if _yearErr != nil {
+			return errors.Wrap(_yearErr, "Error serializing 'year' field")
 		}
 
 		// Simple Field (month)
@@ -486,9 +487,9 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
-		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteUint16("milliseconds", 12, uint16(value.(values.PlcDATE_AND_TIME).GetMilliseconds())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
+		// Simple Field (millisecondsOfSecond)
+		if _err := writeBuffer.WriteUint16("millisecondsOfSecond", 12, uint16(value.(values.PlcDATE_AND_TIME).GetMillisecondsOfSecond())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'millisecondsOfSecond' field")
 		}
 
 		// Simple Field (dayOfWeek)

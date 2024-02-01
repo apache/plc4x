@@ -168,7 +168,14 @@ public class DataItem {
     } else if (EvaluationHelper.equals(
         dataProtocolId, (String) "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
       short year =
-          readSimpleField("year", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
+          readManualField(
+              "year",
+              readBuffer,
+              () ->
+                  (short)
+                      (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.parseSiemensYear(
+                          readBuffer)),
+              WithOption.WithEncoding("BCD"));
 
       short month =
           readSimpleField(
@@ -188,9 +195,11 @@ public class DataItem {
           readSimpleField(
               "seconds", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
-      short milliseconds =
+      short millisecondsOfSecond =
           readSimpleField(
-              "milliseconds", readUnsignedShort(readBuffer, 12), WithOption.WithEncoding("BCD"));
+              "millisecondsOfSecond",
+              readUnsignedShort(readBuffer, 12),
+              WithOption.WithEncoding("BCD"));
 
       byte dayOfWeek =
           readSimpleField(
@@ -202,7 +211,7 @@ public class DataItem {
           hour,
           minutes,
           seconds,
-          milliseconds);
+          millisecondsOfSecond);
     }
     return null;
   }
@@ -288,7 +297,7 @@ public class DataItem {
       lengthInBits += 64;
     } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_DATE")) { // DATE
       // Manual Field (daysSinceEpoch)
-      lengthInBits += 2;
+      lengthInBits += 16;
     } else if (EvaluationHelper.equals(
         dataProtocolId, (String) "IEC61131_TIME_OF_DAY")) { // TIME_OF_DAY
       // Simple field (millisecondsSinceMidnight)
@@ -299,7 +308,7 @@ public class DataItem {
       lengthInBits += 64;
     } else if (EvaluationHelper.equals(
         dataProtocolId, (String) "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
-      // Simple field (year)
+      // Manual Field (year)
       lengthInBits += 8;
 
       // Simple field (month)
@@ -317,7 +326,7 @@ public class DataItem {
       // Simple field (seconds)
       lengthInBits += 8;
 
-      // Simple field (milliseconds)
+      // Simple field (millisecondsOfSecond)
       lengthInBits += 12;
 
       // Simple field (dayOfWeek)
@@ -472,11 +481,13 @@ public class DataItem {
           writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(
         dataProtocolId, (String) "IEC61131_DATE_AND_TIME")) { // DATE_AND_TIME
-      // Simple Field (year)
-      writeSimpleField(
+      // Manual Field (year)
+      writeManualField(
           "year",
-          (short) _value.getDate().getYear(),
-          writeUnsignedShort(writeBuffer, 8),
+          () ->
+              org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.serializeSiemensYear(
+                  writeBuffer, _value),
+          writeBuffer,
           WithOption.WithEncoding("BCD"));
 
       // Simple Field (month)
@@ -514,10 +525,10 @@ public class DataItem {
           writeUnsignedShort(writeBuffer, 8),
           WithOption.WithEncoding("BCD"));
 
-      // Simple Field (milliseconds)
+      // Simple Field (millisecondsOfSecond)
       writeSimpleField(
-          "milliseconds",
-          (short) _value.getDuration().toMillis(),
+          "millisecondsOfSecond",
+          (short) _value.getTime().get(ChronoField.MILLI_OF_SECOND),
           writeUnsignedShort(writeBuffer, 12),
           WithOption.WithEncoding("BCD"));
 

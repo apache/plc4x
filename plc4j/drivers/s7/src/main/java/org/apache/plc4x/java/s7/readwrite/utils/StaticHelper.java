@@ -33,6 +33,7 @@ import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
 import org.apache.plc4x.java.s7.utils.S7DiagnosticEventId;
 import org.apache.plc4x.java.spi.codegen.WithOption;
+import org.apache.plc4x.java.spi.codegen.io.DataReader;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -55,6 +56,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.plc4x.java.spi.values.PlcDATE;
 import org.apache.plc4x.java.spi.values.PlcTIME;
+
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.readUnsignedShort;
 
 /**
  * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -1910,20 +1913,6 @@ public class StaticHelper {
 
     }
 
-//    public static Duration S5TimeToDuration(Short data) {
-//        Duration res;
-//        short t = data;
-//        long tv = (short) (((t & 0x000F)) + ((t & 0x00F0) >> 4) * 10 + ((t & 0x0F00) >> 8) * 100);
-//        long tb = (short) (10 * Math.pow(10, ((t & 0xF000) >> 12)));
-//        long totalms = tv * tb;
-//        if (totalms <= 9990000) {
-//            res = Duration.ofMillis(totalms);
-//        } else {
-//            res = Duration.ofMillis(9990000);
-//        }
-//        return res;
-//    }
-    
     public static Long s5TimeToDuration(Short data) {
         Duration res;
         short t = data;
@@ -2251,8 +2240,8 @@ public class StaticHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     if (format.contains("U")) {
@@ -2270,8 +2259,8 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "C":
                     if (format.contains("%T#")) {
 
@@ -2286,8 +2275,8 @@ public class StaticHelper {
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
                     if (format.contains("U")) {
@@ -2305,8 +2294,8 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
                     if (format.contains("U")) {
@@ -2325,6 +2314,7 @@ public class StaticHelper {
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
                     break;
+
                 case "X":
                     if (bytebuf.capacity() < Long.BYTES) break;
                     if (format.contains("U")) {
@@ -2343,6 +2333,7 @@ public class StaticHelper {
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
                     break;
+
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;
                     if (format.contains("U")) {
@@ -2361,13 +2352,13 @@ public class StaticHelper {
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
                     break;
+
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break;
                     if (format.contains("F")) {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
-                    ;
                     break;
             }
         }
@@ -2452,8 +2443,8 @@ public class StaticHelper {
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     strField = String.valueOf(bytebuf.getBoolean(0));
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "Y":
                     if (bytebuf.capacity() < Byte.BYTES) break;
                     if (format.contains("U")) {
@@ -2471,8 +2462,8 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "C":
                     if (format.contains("%T#")) {
 
@@ -2487,8 +2478,8 @@ public class StaticHelper {
                         }
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "W":
                     if (bytebuf.capacity() < Short.BYTES) break;
                     if (format.contains("U")) {
@@ -2506,8 +2497,8 @@ public class StaticHelper {
                         strField = String.format(format, value);
                     }
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "I":
                     if (bytebuf.capacity() < Integer.BYTES) break;
                     if (format.contains("U")) {
@@ -2524,10 +2515,9 @@ public class StaticHelper {
                         value = bytebuf.getInt(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "X":
                     if (bytebuf.capacity() < Long.BYTES) break;
                     if (format.contains("U")) {
@@ -2544,10 +2534,9 @@ public class StaticHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "D":
                     if (bytebuf.capacity() < Double.BYTES) break;
                     if (format.contains("U")) {
@@ -2564,37 +2553,20 @@ public class StaticHelper {
                         value = bytebuf.getLong(0);
                         strField = String.format(format, value);
                     }
-                    ;
                     strOut = strOut.replaceAll(matcher.group(0), strField);
-                    ;
                     break;
+
                 case "R":
                     if (bytebuf.capacity() < Float.BYTES) break;
                     if (format.contains("F")) {
                         strField = String.format(format, value);
                         strOut = strOut.replaceAll(matcher.group(0), strField);
                     }
-                    ;
                     break;
-
             }
         }
 
         return strOut;
-    }
-
-    public static LocalTime parseTiaTime(ReadBuffer io) {
-        try {
-            int millisSinceMidnight = io.readInt(32);
-            return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
-                millisSinceMidnight, ChronoUnit.MILLIS);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    public static void serializeTiaTime(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing TIME not implemented");
     }
 
     public static Long parseS5Time(ReadBuffer io) {
@@ -2602,7 +2574,7 @@ public class StaticHelper {
             short s5time = (short) io.readInt(16);
             return s5TimeToDuration(s5time);
         } catch (ParseException e) {
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -2612,33 +2584,9 @@ public class StaticHelper {
         System.out.println(">>>TIPO: " + value.getClass().getName() + " : " + shortValue);        
         try {
             io.writeUnsignedInt(16,shortValue);
-        } catch (SerializationException ex) {
-            ex.printStackTrace();
-            return;
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
         }
-
-    }
-
-    public static LocalTime parseTiaLTime(ReadBuffer io) {
-        throw new NotImplementedException("LTIME not implemented");
-    }
-
-    public static void serializeTiaLTime(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing LTIME not implemented");
-    }
-
-    public static LocalTime parseTiaTimeOfDay(ReadBuffer io) {
-        try {
-            long millisSinceMidnight = io.readUnsignedLong(32);
-            return LocalTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0).plus(
-                millisSinceMidnight, ChronoUnit.MILLIS);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
-    public static void serializeTiaTimeOfDay(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing TIME_OF_DAY not implemented");
     }
 
     private static final LocalDate siemensEpoch = LocalDate.of(1990, 1, 1);
@@ -2649,7 +2597,7 @@ public class StaticHelper {
             int daysSinceSiemensEpoch = io.readUnsignedInt(16);
             return daysSinceSiemensEpoch + daysBetweenUnixAndSiemensEpoch;
         } catch (ParseException e) {
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -2659,43 +2607,8 @@ public class StaticHelper {
         int daysSince1990 = userDate.getDaysSinceEpoch() - daysBetweenUnixAndSiemensEpoch;
         try {
             io.writeUnsignedInt(16, daysSince1990);
-        } catch (SerializationException ex) {
-            return;
-        }
-    }
-
-    //TODO: Call BCD converter
-    public static LocalDateTime parseTiaDateTime(ReadBuffer io) {
-        try {
-            int year = io.readUnsignedInt(16);
-            int month = io.readUnsignedInt(8);
-            int day = io.readUnsignedInt(8);
-            // Skip day-of-week
-            io.readByte();
-            int hour = io.readByte();
-            int minute = io.readByte();
-            int second = io.readByte();
-            int nanosecond = io.readUnsignedInt(24);
-            // Skip day-of-week
-            io.readByte();
-
-            return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static void serializeTiaDateTime(WriteBuffer io, PlcValue value) {
-        throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
-    }
-
-    public static String parseS7Char(ReadBuffer io, String encoding) throws ParseException {
-        if ("UTF-8".equalsIgnoreCase(encoding)) {
-            return io.readString(8, WithOption.WithEncoding(encoding));
-        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            return io.readString(16, WithOption.WithEncoding(encoding));
-        } else {
-            throw new PlcRuntimeException("Unsupported encoding");
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -2749,20 +2662,6 @@ public class StaticHelper {
             }
         } catch (ParseException e) {
             throw new PlcRuntimeException("Error parsing string", e);
-        }
-    }
-
-    /*
-     * A variable of data type CHAR (character) occupies one byte.
-     */
-    public static void serializeS7Char(WriteBuffer io, PlcValue value, String encoding) {
-        // TODO: Need to implement the serialization or we can't write strings
-        if ("UTF-8".equalsIgnoreCase(encoding)) {
-            //return io.readString(8, encoding);
-        } else if ("UTF-16".equalsIgnoreCase(encoding)) {
-            //return io.readString(16, encoding);
-        } else {
-            throw new PlcRuntimeException("Unsupported encoding");
         }
     }
 
@@ -2826,6 +2725,32 @@ public class StaticHelper {
                 throw new PlcRuntimeException("Unsupported encoding: " + encoding);
         }
 
+    }
+
+    public static short parseSiemensYear(ReadBuffer readBuffer) {
+        try {
+            short year = readBuffer.readUnsignedShort("year", 8, WithOption.WithEncoding("BCD"));
+            if(year < 90) {
+                return (short) (2000 + year);
+            } else {
+                return (short) (1900 + year);
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException("Error parsing year", e);
+        }
+    }
+
+    public static void serializeSiemensYear(WriteBuffer writeBuffer, PlcValue dateTime) {
+        try {
+            int year = dateTime.getDateTime().getYear();
+            if (year > 2000) {
+                writeBuffer.writeUnsignedShort("year", 8, (short) (year - 2000), WithOption.WithEncoding("BCD"));
+            } else {
+                writeBuffer.writeUnsignedShort("year", 8, (short) (year - 1900), WithOption.WithEncoding("BCD"));
+            }
+        } catch (SerializationException e) {
+            throw new RuntimeException("Error serializing year", e);
+        }
     }
 
 }

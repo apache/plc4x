@@ -309,12 +309,8 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
     } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
-                // Simple Field (year)
-                uint8_t year = 0;
-                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &year);
-                if(_res != OK) {
-                    return _res;
-                }
+                // Manual Field (year)
+                uint8_t year = (uint8_t) (plc4c_s7_read_write_parse_siemens_year(readBuffer));
 
                 *data_item = plc4c_data_create_date_and_time_data(year);
 
@@ -369,14 +365,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
                 *data_item = plc4c_data_create_date_and_time_data(seconds);
 
 
-                // Simple Field (milliseconds)
-                uint16_t milliseconds = 0;
-                _res = plc4c_spi_read_unsigned_short(readBuffer, 12, (uint16_t*) &milliseconds);
+                // Simple Field (millisecondsOfSecond)
+                uint16_t millisecondsOfSecond = 0;
+                _res = plc4c_spi_read_unsigned_short(readBuffer, 12, (uint16_t*) &millisecondsOfSecond);
                 if(_res != OK) {
                     return _res;
                 }
 
-                *data_item = plc4c_data_create_date_and_time_data(milliseconds);
+                *data_item = plc4c_data_create_date_and_time_data(millisecondsOfSecond);
 
 
                 // Simple Field (dayOfWeek)
@@ -558,11 +554,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
-                    // Simple field (year)
-                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
-                    if(_res != OK) {
-                        return _res;
-                    }
+                    // Manual Field (year)
 
                     // Simple field (month)
                     _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_time_value);
@@ -594,7 +586,7 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                         return _res;
                     }
 
-                    // Simple field (milliseconds)
+                    // Simple field (millisecondsOfSecond)
                     _res = plc4c_spi_write_unsigned_short(writeBuffer, 12, (*data_item)->data.date_and_time_value);
                     if(_res != OK) {
                         return _res;
@@ -709,7 +701,7 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE") == 0) { /* DATE */
 
         // Manual Field (daysSinceEpoch)
-        lengthInBits += 2;
+        lengthInBits += 16;
     } else     if(strcmp(dataProtocolId, "IEC61131_TIME_OF_DAY") == 0) { /* TIME_OF_DAY */
 
         // Simple field (millisecondsSinceMidnight)
@@ -720,7 +712,7 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
         lengthInBits += 64;
     } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_TIME") == 0) { /* DATE_AND_TIME */
 
-        // Simple field (year)
+        // Manual Field (year)
         lengthInBits += 8;
 
         // Simple field (month)
@@ -738,7 +730,7 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
         // Simple field (seconds)
         lengthInBits += 8;
 
-        // Simple field (milliseconds)
+        // Simple field (millisecondsOfSecond)
         lengthInBits += 12;
 
         // Simple field (dayOfWeek)

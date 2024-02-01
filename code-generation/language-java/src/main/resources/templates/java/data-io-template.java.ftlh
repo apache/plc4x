@@ -312,8 +312,8 @@ public class ${type.name} {
                     </#if>
                     <#break>
                 <#case "DATE_AND_TIME">
-                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "milliseconds")>
-                        return PlcDATE_AND_TIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, milliseconds);
+                    <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "millisecondsOfSecond")>
+                        return PlcDATE_AND_TIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, millisecondsOfSecond);
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
                         return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
                     </#if>

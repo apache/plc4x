@@ -169,12 +169,10 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     // Write all but the last digit, by dividing the number
                     // by powers of 10 and writing the last number.
-                    for(int i = numDigits; i > 1; i--) {
-                        short divisor = (short) Math.pow(10, i - 1);
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        short divisor = (short) Math.pow(10, i);
                         bo.writeByte(false, 4, (byte) ((value / divisor) % 10));
                     }
-                    // Write the last digit.
-                    bo.writeByte(false, 4, (byte) (value % 10));
                     break;
                 }
                 case "default":
@@ -226,12 +224,10 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     // Write all but the last digit, by dividing the number
                     // by powers of 10 and writing the last number.
-                    for(int i = numDigits; i > 1; i--) {
-                        int divisor = (int) Math.pow(10, i - 1);
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        int divisor = (int) Math.pow(10, i);
                         bo.writeByte(false, 4, (byte) ((value / divisor) % 10));
                     }
-                    // Write the last digit.
-                    bo.writeByte(false, 4, (byte) (value % 10));
                     break;
                 }
                 case "default":
@@ -286,12 +282,10 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     }
                     // Write all but the last digit, by dividing the number
                     // by powers of 10 and writing the last number.
-                    for(int i = numDigits; i > 1; i--) {
-                        long divisor = (long) Math.pow(10, i - 1);
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        long divisor = (long) Math.pow(10, i);
                         bo.writeByte(false, 4, (byte) ((value / divisor) % 10));
                     }
-                    // Write the last digit.
-                    bo.writeByte(false, 4, (byte) (value % 10));
                     break;
                 }
                 case "default":
