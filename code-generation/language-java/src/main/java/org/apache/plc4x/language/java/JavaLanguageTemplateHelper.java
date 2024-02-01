@@ -168,6 +168,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
+        if(typeReference.isArrayTypeReference() && typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isByteBased()) {
+            return "PlcRawByteArray";
+        }
         if (!(typeReference instanceof SimpleTypeReference)) {
             return "PlcStruct";
         }
@@ -586,6 +589,73 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", (String) " + fieldName + "" + writerArgsString + ", WithOption.WithEncoding(\"" + encoding + "\"))";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
+    }
+
+    public boolean isRawByteArray(DiscriminatedComplexTypeDefinition currentCase) {
+        Optional<Field> valueFieldOptional = currentCase.getFields().stream().filter(field -> field.isNamedField() && field.asNamedField().orElseThrow().getName().equals("value")).findFirst();
+        if(valueFieldOptional.isPresent()) {
+            Field valueField = valueFieldOptional.get();
+            if(valueField.isTypedField()) {
+                TypedField typedField = valueField.asTypedField().orElseThrow();
+                return typedField.getType().isArrayTypeReference() && typedField.getType().asArrayTypeReference().orElseThrow().getElementTypeReference().isByteBased();
+            }
+        }
+        return false;
+    }
+
+    public String getDataIoPropertyValue(PropertyField propertyField) {
+        TypeReference propertyFieldType = propertyField.getType();
+        if(propertyFieldType.isSimpleTypeReference()) {
+            SimpleTypeReference simpleTypeReference = propertyFieldType.asSimpleTypeReference().orElseThrow();
+            switch (propertyField.getName()) {
+                case "value":
+                    return "_value.get" + getLanguageTypeNameForTypeReference(simpleTypeReference) + "()";
+                case "year":
+                    return "_value.getDate().getYear()";
+                case "month":
+                    return "_value.getDate().getMonthValue()";
+                case "day":
+                case "dayOfMonth":
+                    return "_value.getDate().getDayOfMonth()";
+                case "dayOfWeek":
+                    return "_value.getDate().getDayOfWeek().getValue()";
+                case "hour":
+                    return "_value.getTime().getHour()";
+                case "minutes":
+                    return "_value.getTime().getMinute()";
+                case "seconds":
+                    return "_value.getTime().getSecond()";
+                case "secondsSinceEpoch":
+                    return "_value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset())";
+                case "milliseconds":
+                    return "_value.getDuration().toMillis()";
+                case "millisecondsSinceMidnight":
+                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                        return "_value.getTime().getLong(ChronoField.MILLI_OF_DAY)";
+                    } else {
+                        return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.MILLI_OF_DAY))";
+                    }
+                case "nanoseconds":
+                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                        return "_value.getDuration().toNanos()";
+                    } else {
+                        return "BigInteger.valueOf(_value.getDuration().toNanos())";
+                    }
+                case "nanosecondsSinceMidnight":
+                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                        return "_value.getTime().getLong(ChronoField.NANO_OF_DAY)";
+                    } else {
+                        return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_DAY))";
+                    }
+                case "nanosecondsSinceEpoch":
+                    return "BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().getId()))).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(_value.getDateTime().getNano()))";
+            }
+            if("value".equals(propertyField.getName())) {
+            } else {
+                return "hurz-" + propertyField.getName();
+            }
+        }
+        throw new UnsupportedOperationException("Non Simple types not yet supported.");
     }
 
     public String getReservedValue(ReservedField reservedField) {

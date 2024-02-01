@@ -653,7 +653,7 @@ public class S7CyclicEvent implements S7Event {
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
         int pos = index * Integer.BYTES;
         int value = byteBuf.getInt(pos);
-        Duration dr = StaticHelper.S7TimeToDuration(value);
+        Duration dr = StaticHelper.s7TimeToDuration(value);
         return LocalTime.of(dr.toHoursPart(), dr.toMinutesPart(), dr.toSecondsPart(), dr.toNanosPart());
     }
 
@@ -699,7 +699,7 @@ public class S7CyclicEvent implements S7Event {
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
         int pos = index * Short.BYTES;
         short value = byteBuf.getShort(pos);
-        return StaticHelper.S7DateToLocalDate(value);
+        return StaticHelper.s7DateToLocalDate(value);
     }
 
     @Override
@@ -743,7 +743,7 @@ public class S7CyclicEvent implements S7Event {
         }
         ByteBuf byteBuf = Unpooled.wrappedBuffer((byte[]) map.get(name));
         int pos = index * Long.BYTES;
-        return StaticHelper.S7DateTimeToLocalDateTime(byteBuf.slice(pos, Long.BYTES));
+        return StaticHelper.s7DateTimeToLocalDateTime(byteBuf.slice(pos, Long.BYTES));
     }
 
     @Override

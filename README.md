@@ -88,7 +88,7 @@ the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11 (Currently with Java 21 the Apache Kafka integration module is excluded from the build as the plugins it requires are incompatible with this version)
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 19 (We have tested all versions up to Java 21), however it's only the Java Tool UI, that requires this right now. All other modules need at least Java 11. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)

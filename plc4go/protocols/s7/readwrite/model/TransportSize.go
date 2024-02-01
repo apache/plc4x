@@ -472,7 +472,7 @@ func (e TransportSize) Code() uint8 {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 0x0F
+			return 0x0E
 		}
 	case 0x1B:
 		{ /* '0x1B' */
@@ -598,7 +598,7 @@ func (e TransportSize) SizeInBytes() uint8 {
 		}
 	case 0x1A:
 		{ /* '0x1A' */
-			return 12
+			return 8
 		}
 	case 0x1B:
 		{ /* '0x1B' */

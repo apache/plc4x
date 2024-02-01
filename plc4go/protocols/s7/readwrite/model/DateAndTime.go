@@ -136,26 +136,26 @@ func (m *_DateAndTime) GetTypeName() string {
 func (m *_DateAndTime) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
-	// Manual Field (year)
-	lengthInBits += uint16(int32(8))
+	// Simple field (year)
+	lengthInBits += 8
 
-	// Manual Field (month)
-	lengthInBits += uint16(int32(8))
+	// Simple field (month)
+	lengthInBits += 8
 
-	// Manual Field (day)
-	lengthInBits += uint16(int32(8))
+	// Simple field (day)
+	lengthInBits += 8
 
-	// Manual Field (hour)
-	lengthInBits += uint16(int32(8))
+	// Simple field (hour)
+	lengthInBits += 8
 
-	// Manual Field (minutes)
-	lengthInBits += uint16(int32(8))
+	// Simple field (minutes)
+	lengthInBits += 8
 
-	// Manual Field (seconds)
-	lengthInBits += uint16(int32(8))
+	// Simple field (seconds)
+	lengthInBits += 8
 
-	// Manual Field (msec)
-	lengthInBits += uint16(int32(12))
+	// Simple field (msec)
+	lengthInBits += 12
 
 	// Simple field (dow)
 	lengthInBits += 4
@@ -182,75 +182,54 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (year)
-	_year, _yearErr := BcdToInt(ctx, readBuffer)
+	// Simple Field (year)
+	_year, _yearErr := readBuffer.ReadUint8("year", 8)
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
 	}
-	var year uint8
-	if _year != nil {
-		year = _year.(uint8)
-	}
+	year := _year
 
-	// Manual Field (month)
-	_month, _monthErr := BcdToInt(ctx, readBuffer)
+	// Simple Field (month)
+	_month, _monthErr := readBuffer.ReadUint8("month", 8)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
 	}
-	var month uint8
-	if _month != nil {
-		month = _month.(uint8)
-	}
+	month := _month
 
-	// Manual Field (day)
-	_day, _dayErr := BcdToInt(ctx, readBuffer)
+	// Simple Field (day)
+	_day, _dayErr := readBuffer.ReadUint8("day", 8)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
 	}
-	var day uint8
-	if _day != nil {
-		day = _day.(uint8)
-	}
+	day := _day
 
-	// Manual Field (hour)
-	_hour, _hourErr := BcdToInt(ctx, readBuffer)
+	// Simple Field (hour)
+	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
 	}
-	var hour uint8
-	if _hour != nil {
-		hour = _hour.(uint8)
-	}
+	hour := _hour
 
-	// Manual Field (minutes)
-	_minutes, _minutesErr := BcdToInt(ctx, readBuffer)
+	// Simple Field (minutes)
+	_minutes, _minutesErr := readBuffer.ReadUint8("minutes", 8)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
 	}
-	var minutes uint8
-	if _minutes != nil {
-		minutes = _minutes.(uint8)
-	}
+	minutes := _minutes
 
-	// Manual Field (seconds)
-	_seconds, _secondsErr := BcdToInt(ctx, readBuffer)
+	// Simple Field (seconds)
+	_seconds, _secondsErr := readBuffer.ReadUint8("seconds", 8)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
 	}
-	var seconds uint8
-	if _seconds != nil {
-		seconds = _seconds.(uint8)
-	}
+	seconds := _seconds
 
-	// Manual Field (msec)
-	_msec, _msecErr := S7msecToInt(ctx, readBuffer)
+	// Simple Field (msec)
+	_msec, _msecErr := readBuffer.ReadUint16("msec", 12)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
 	}
-	var msec uint16
-	if _msec != nil {
-		msec = _msec.(uint16)
-	}
+	msec := _msec
 
 	// Simple Field (dow)
 	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)
@@ -293,44 +272,51 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return errors.Wrap(pushErr, "Error pushing for DateAndTime")
 	}
 
-	// Manual Field (year)
-	_yearErr := ByteToBcd(ctx, writeBuffer, m.GetYear())
+	// Simple Field (year)
+	year := uint8(m.GetYear())
+	_yearErr := writeBuffer.WriteUint8("year", 8, uint8((year)))
 	if _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
-	// Manual Field (month)
-	_monthErr := ByteToBcd(ctx, writeBuffer, m.GetMonth())
+	// Simple Field (month)
+	month := uint8(m.GetMonth())
+	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 
-	// Manual Field (day)
-	_dayErr := ByteToBcd(ctx, writeBuffer, m.GetDay())
+	// Simple Field (day)
+	day := uint8(m.GetDay())
+	_dayErr := writeBuffer.WriteUint8("day", 8, uint8((day)))
 	if _dayErr != nil {
 		return errors.Wrap(_dayErr, "Error serializing 'day' field")
 	}
 
-	// Manual Field (hour)
-	_hourErr := ByteToBcd(ctx, writeBuffer, m.GetHour())
+	// Simple Field (hour)
+	hour := uint8(m.GetHour())
+	_hourErr := writeBuffer.WriteUint8("hour", 8, uint8((hour)))
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 
-	// Manual Field (minutes)
-	_minutesErr := ByteToBcd(ctx, writeBuffer, m.GetMinutes())
+	// Simple Field (minutes)
+	minutes := uint8(m.GetMinutes())
+	_minutesErr := writeBuffer.WriteUint8("minutes", 8, uint8((minutes)))
 	if _minutesErr != nil {
 		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
 	}
 
-	// Manual Field (seconds)
-	_secondsErr := ByteToBcd(ctx, writeBuffer, m.GetSeconds())
+	// Simple Field (seconds)
+	seconds := uint8(m.GetSeconds())
+	_secondsErr := writeBuffer.WriteUint8("seconds", 8, uint8((seconds)))
 	if _secondsErr != nil {
 		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
 	}
 
-	// Manual Field (msec)
-	_msecErr := IntToS7msec(ctx, writeBuffer, m.GetMsec())
+	// Simple Field (msec)
+	msec := uint16(m.GetMsec())
+	_msecErr := writeBuffer.WriteUint16("msec", 12, uint16((msec)))
 	if _msecErr != nil {
 		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
 	}

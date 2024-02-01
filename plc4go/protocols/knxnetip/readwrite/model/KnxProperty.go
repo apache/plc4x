@@ -302,12 +302,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
-		// Simple Field (dayofmonth)
-		dayofmonth, _dayofmonthErr := readBuffer.ReadUint8("dayofmonth", 5)
-		if _dayofmonthErr != nil {
-			return nil, errors.Wrap(_dayofmonthErr, "Error parsing 'dayofmonth' field")
+		// Simple Field (dayOfMonth)
+		dayOfMonth, _dayOfMonthErr := readBuffer.ReadUint8("dayOfMonth", 5)
+		if _dayOfMonthErr != nil {
+			return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
 		}
-		_map["Struct"] = values.NewPlcUSINT(dayofmonth)
+		_map["Struct"] = values.NewPlcUSINT(dayOfMonth)
 
 		// Simple Field (dayofweek)
 		dayofweek, _dayofweekErr := readBuffer.ReadUint8("dayofweek", 3)
@@ -316,12 +316,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		}
 		_map["Struct"] = values.NewPlcUSINT(dayofweek)
 
-		// Simple Field (hourofday)
-		hourofday, _hourofdayErr := readBuffer.ReadUint8("hourofday", 5)
-		if _hourofdayErr != nil {
-			return nil, errors.Wrap(_hourofdayErr, "Error parsing 'hourofday' field")
+		// Simple Field (hour)
+		hour, _hourErr := readBuffer.ReadUint8("hour", 5)
+		if _hourErr != nil {
+			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
-		_map["Struct"] = values.NewPlcUSINT(hourofday)
+		_map["Struct"] = values.NewPlcUSINT(hour)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
@@ -787,30 +787,22 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		}
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcBOOL(value), nil
-	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((8)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // WORD
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
-	case propertyType == KnxPropertyDataType_PDT_BITSET16: // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((16)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+		return values.NewPlcWORD(value), nil
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // DWORD
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return values.NewPlcDWORD(value), nil
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
@@ -1046,9 +1038,9 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
-		// Simple Field (dayofmonth)
-		if _err := writeBuffer.WriteUint8("dayofmonth", 5, uint8(value.GetUint8())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayofmonth' field")
+		// Simple Field (dayOfMonth)
+		if _err := writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
 		// Simple Field (dayofweek)
@@ -1056,9 +1048,9 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 			return errors.Wrap(_err, "Error serializing 'dayofweek' field")
 		}
 
-		// Simple Field (hourofday)
-		if _err := writeBuffer.WriteUint8("hourofday", 5, uint8(value.GetUint8())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'hourofday' field")
+		// Simple Field (hour)
+		if _err := writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
@@ -1380,21 +1372,15 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // WORD
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_BITSET16: // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // DWORD
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)

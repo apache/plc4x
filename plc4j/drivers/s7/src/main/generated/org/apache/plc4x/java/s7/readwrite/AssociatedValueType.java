@@ -100,7 +100,7 @@ public class AssociatedValueType implements Message {
     writeManualField(
         "valueLength",
         () ->
-            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.LeftShift3(
+            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.leftShift3(
                 writeBuffer, valueLength),
         writeBuffer);
 
@@ -169,14 +169,14 @@ public class AssociatedValueType implements Message {
             readBuffer,
             () ->
                 (int)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.RightShift3(
+                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.rightShift3(
                         readBuffer, transportSize)));
 
     List<Short> data =
         readCountArrayField(
             "data",
             readUnsignedShort(readBuffer, 8),
-            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.EventItemLength(
+            org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.eventItemLength(
                 readBuffer, valueLength));
 
     readBuffer.closeContext("AssociatedValueType");

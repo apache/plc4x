@@ -292,9 +292,9 @@
 [type AssociatedValueType
     [simple DataTransportErrorCode returnCode]
     [simple DataTransportSize      transportSize]
-    //[manual uint 16                valueLength   'STATIC_CALL("RightShift3", readBuffer)' 'STATIC_CALL("LeftShift3", writeBuffer, valueLength)' '16']
-    [manual uint 16                valueLength  'STATIC_CALL("RightShift3", readBuffer, transportSize)' 'STATIC_CALL("LeftShift3", writeBuffer, valueLength)' '2']
-    [array  uint 8                 data          count    'STATIC_CALL("EventItemLength", readBuffer, valueLength)']
+    //[manual uint 16                valueLength   'STATIC_CALL("rightShift3", readBuffer)' 'STATIC_CALL("leftShift3", writeBuffer, valueLength)' '16']
+    [manual uint 16                valueLength  'STATIC_CALL("rightShift3", readBuffer, transportSize)' 'STATIC_CALL("leftShift3", writeBuffer, valueLength)' '2']
+    [array  uint 8                 data          count    'STATIC_CALL("eventItemLength", readBuffer, valueLength)']
 ]
 
 [type AssociatedQueryValueType
@@ -304,16 +304,15 @@
     [array  uint 8                 data          count    'valueLength']
 ]
 
-//TODO: Convert BCD to uint
 [type DateAndTime
-    [manual uint 8  year    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, year)'    '8']
-    [manual uint 8  month   'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, month)'   '8']
-    [manual uint 8  day     'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, day)'     '8']
-    [manual uint 8  hour    'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, hour)'    '8']
-    [manual uint 8  minutes 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, minutes)' '8']
-    [manual uint 8  seconds 'STATIC_CALL("BcdToInt", readBuffer)'    'STATIC_CALL("ByteToBcd", writeBuffer, seconds)' '8']
-    [manual uint 12 msec    'STATIC_CALL("S7msecToInt", readBuffer)' 'STATIC_CALL("IntToS7msec", writeBuffer, msec)'  '12']
-    [simple uint 4  dow                                                                                                         ]
+    [simple uint 8  year    encoding='"BCD"']
+    [simple uint 8  month   encoding='"BCD"']
+    [simple uint 8  day     encoding='"BCD"']
+    [simple uint 8  hour    encoding='"BCD"']
+    [simple uint 8  minutes encoding='"BCD"']
+    [simple uint 8  seconds encoding='"BCD"']
+    [simple uint 12 msec    encoding='"BCD"']
+    [simple uint 4  dow     encoding='"BCD"']
 ]
 
 [type State
@@ -351,14 +350,14 @@
 ]
 
 [type AlarmMessagePushType
-    [simple DateAndTime                TimeStamp]
+    [simple DateAndTime                timeStamp]
     [simple uint 8                     functionId]
     [simple uint 8                     numberOfObjects]
     [array  AlarmMessageObjectPushType messageObjects count 'numberOfObjects' ]
 ]
 
 [type AlarmMessageAckPushType
-    [simple DateAndTime                   TimeStamp]
+    [simple DateAndTime                   timeStamp]
     [simple uint 8                        functionId]
     [simple uint 8                        numberOfObjects]
     [array  AlarmMessageAckObjectPushType messageObjects count 'numberOfObjects' ]
@@ -370,7 +369,7 @@
     [simple uint 8                      numberOfObjects]
     [simple DataTransportErrorCode      returnCode]
     [simple DataTransportSize           transportSize]
-    [const  uint 16                     DataLength     0xFFFF]
+    [const  uint 16                     dataLength     0xFFFF]
     [array  AlarmMessageObjectQueryType messageObjects count   'STATIC_CALL("countAMOQT", readBuffer, dataLength)' ]
 ]
 
@@ -403,7 +402,7 @@
     [simple uint 8                      numberOfObjects]
     [simple DataTransportErrorCode      returnCode]
     [simple DataTransportSize           transportSize]
-    [const  uint 16                     DataLength     0xFFFF]
+    [const  uint 16                     dataLength     0xFFFF]
     [array  AlarmMessageObjectQueryType messageObjects count    'numberOfObjects' ]
 ]
 
@@ -536,13 +535,13 @@
 
         //USER and SYSTEM Messages
         ['0x04', '0x00', '0x03' S7PayloadDiagnosticMessage
-            [simple uint 16     EventId]
-            [simple uint 8      PriorityClass]
-            [simple uint 8      ObNumber]
-            [simple uint 16     DatId]
-            [simple uint 16     Info1]
-            [simple uint 32     Info2]
-            [simple DateAndTime TimeStamp]
+            [simple uint 16     eventId]
+            [simple uint 8      priorityClass]
+            [simple uint 8      obNumber]
+            [simple uint 16     datId]
+            [simple uint 16     info1]
+            [simple uint 32     info2]
+            [simple DateAndTime timeStamp]
         ]
 
         //PUSH message reception S7300 & S7400 (ALARM_SQ, ALARM_S, ALARM_SC, ...)
@@ -591,11 +590,11 @@
 
         //Subscription to PUSH messages
         ['0x04', '0x04', '0x02' S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-            [simple   uint 8         Subscription]
+            [simple   uint 8         subscription]
             [reserved uint 8         '0x00']
-            [simple   string         64             magicKey           ]
-            [optional AlarmStateType Alarmtype    'Subscription >= 128']
-            [optional uint 8         Reserve      'Subscription >= 128']
+            [simple   string 64      magicKey           ]
+            [optional AlarmStateType alarmtype    'subscription >= 128']
+            [optional uint 8         reserve      'subscription >= 128']
         ]
 
 	['0x04', '0x08', '0x02', '0x00' S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse]
@@ -651,24 +650,24 @@
         ]
 
         ['0x07', '0x08', '0x01' S7PayloadUserDataItemClkResponse(uint 16 dataLength)
-            [simple uint 8       Reserved]
-            [simple uint 8       Year1]
-            [simple DateAndTime TimeStamp]
+            [simple uint 8       res]
+            [simple uint 8       year1]
+            [simple DateAndTime  timeStamp]
         ]
 
         ['0x07', '0x04', '0x03' S7PayloadUserDataItemClkFRequest
         ]
 
         ['0x07', '0x08', '0x03' S7PayloadUserDataItemClkFResponse(uint 16 dataLength)
-            [simple uint 8       Reserved]
-            [simple uint 8       Year1]
-            [simple DateAndTime TimeStamp]
+            [simple uint 8       res]
+            [simple uint 8       year1]
+            [simple DateAndTime  timeStamp]
         ]
 
         ['0x07', '0x04', '0x04' S7PayloadUserDataItemClkSetRequest
             [reserved uint 8       '0x00']
             [reserved uint 8       '0x00']
-            [simple DateAndTime TimeStamp]
+            [simple DateAndTime timeStamp]
         ]
 
         ['0x07', '0x08', '0x04' S7PayloadUserDataItemClkSetResponse
@@ -901,7 +900,7 @@
     ['0x17' DATE          ['0x09'     , 'X'             , '2'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_DATE'         , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x18' TIME_OF_DAY   ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
     ['0x19' TOD           ['0x06'     , 'X'             , '4'                 , 'null'                  , 'BYTE_WORD_DWORD'              , 'IEC61131_TIME_OF_DAY'  , 'true'              , 'true'              , 'true'               , 'true'               , 'true'              ]]
-    ['0x1A' DATE_AND_TIME ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
+    ['0x1A' DATE_AND_TIME ['0x0E'     , 'X'             , '8'                 , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
     ['0x1B' DT            ['0x0F'     , 'X'             , '12'                , 'null'                  , 'null'                         , 'IEC61131_DATE_AND_TIME', 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
 ]
 

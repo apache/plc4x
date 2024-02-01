@@ -511,7 +511,7 @@ uint8_t plc4c_s7_read_write_transport_size_get_code(plc4c_s7_read_write_transpor
       return 6;
     }
     case plc4c_s7_read_write_transport_size_DATE_AND_TIME: { /* '0x1A' */
-      return 15;
+      return 14;
     }
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1B' */
       return 15;
@@ -557,8 +557,11 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
         case 11: {
             return plc4c_s7_read_write_transport_size_TIME;
         }
-        case 15: {
+        case 14: {
             return plc4c_s7_read_write_transport_size_DATE_AND_TIME;
+        }
+        case 15: {
+            return plc4c_s7_read_write_transport_size_DT;
         }
         case 19: {
             return plc4c_s7_read_write_transport_size_WCHAR;
@@ -650,7 +653,7 @@ uint8_t plc4c_s7_read_write_transport_size_get_size_in_bytes(plc4c_s7_read_write
       return 4;
     }
     case plc4c_s7_read_write_transport_size_DATE_AND_TIME: { /* '0x1A' */
-      return 12;
+      return 8;
     }
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1B' */
       return 12;
@@ -667,7 +670,7 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
             return plc4c_s7_read_write_transport_size_BOOL;
         }
         case 12: {
-            return plc4c_s7_read_write_transport_size_DATE_AND_TIME;
+            return plc4c_s7_read_write_transport_size_DT;
         }
         case 16: {
             return plc4c_s7_read_write_transport_size_ULINT;

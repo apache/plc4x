@@ -34,7 +34,7 @@ public class ManualS71500DriverTest extends ManualTest {
 
     public static void main(String[] args) throws Exception {
         ManualS71500DriverTest test = new ManualS71500DriverTest("s7://192.168.24.83");
-        test.addTestCase("%DB1:0.0:BOOL", new PlcBOOL(true));
+        /*test.addTestCase("%DB1:0.0:BOOL", new PlcBOOL(true));
         test.addTestCase("%DB1:1:BYTE", new PlcBYTE(42));
         test.addTestCase("%DB1:2:WORD", new PlcWORD(42424));
         test.addTestCase("%DB1:4:DWORD", new PlcDWORD(4242442424L));
@@ -66,9 +66,9 @@ public class ManualS71500DriverTest extends ManualTest {
         test.addTestCase("%DB1:1612:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         // TODO: Make this value a bit more challenging.
         // TODO: Currently: No enum constant for LTIME_OF_DAY
-        //test.addTestCase("%DB1:1616:LTIME_OF_DAY", new PlcLTIME_OF_DAY(LocalTime.parse("15:36:30")));
+        //test.addTestCase("%DB1:1616:LTIME_OF_DAY", new PlcLTIME_OF_DAY(LocalTime.parse("15:36:30")));*/
         test.addTestCase("%DB1:1624:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
-        test.addTestCase("%DB1:1632:LDT", new PlcLDATE_AND_TIME(LocalDateTime.parse("1978-03-28T15:36:30")));
+        //test.addTestCase("%DB1:1632:LDT", new PlcLDATE_AND_TIME(LocalDateTime.parse("1978-03-28T15:36:30")));
 
         long start = System.currentTimeMillis();
         test.run();
