@@ -473,12 +473,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         // Finish the request-transaction.
                         transaction.endRequest();
                     }));
-                // TODO: Remove this ...
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
@@ -800,7 +794,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     case LINT:
                         list.add(new PlcLINT(Long.reverseBytes(data.getLong(index))));
                         index += type.getSize();
-                        break;							  
+                        break;
                     case BOOL:
                         list.add(new PlcBOOL(data.getBoolean(index)));
                         index += type.getSize();
@@ -853,7 +847,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         // This is a different type of STRUCTURED data
                     }
                     return null;
-                }							  
+                }
                 default:
                     return null;
             }
