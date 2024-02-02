@@ -763,9 +763,10 @@ public enum KnxManufacturer {
   M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_(
       (int) 662, (int) 720, (String) "Foshan Haydn Technology Lighting Co.,Ltd."),
   M_KNXES_COMPANY_LIMITED((int) 663, (int) 721, (String) "KNXES COMPANY LIMITED"),
-  M_ABB___RESERVED((int) 664, (int) 43954, (String) "ABB - reserved"),
+  M_THE_AKUVOX_COMPANY((int) 664, (int) 722, (String) "The Akuvox Company"),
+  M_ABB___RESERVED((int) 665, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 665, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 666, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

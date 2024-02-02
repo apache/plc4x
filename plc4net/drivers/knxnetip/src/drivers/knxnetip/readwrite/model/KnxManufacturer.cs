@@ -688,8 +688,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ARKLYFE = 661,
         M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_ = 662,
         M_KNXES_COMPANY_LIMITED = 663,
-        M_ABB___RESERVED = 664,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 665,
+        M_THE_AKUVOX_COMPANY = 664,
+        M_ABB___RESERVED = 665,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 666,
     }
 
     public static class KnxManufacturerInfo
@@ -2583,10 +2584,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_KNXES_COMPANY_LIMITED: { /* '663' */
                     return 721;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '664' */
+                case KnxManufacturer.M_THE_AKUVOX_COMPANY: { /* '664' */
+                    return 722;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '665' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '665' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '666' */
                     return 43959;
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
@@ -4591,10 +4595,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_KNXES_COMPANY_LIMITED: { /* '663' */
                     return "KNXES COMPANY LIMITED";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '664' */
+                case KnxManufacturer.M_THE_AKUVOX_COMPANY: { /* '664' */
+                    return "The Akuvox Company";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '665' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '665' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '666' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
