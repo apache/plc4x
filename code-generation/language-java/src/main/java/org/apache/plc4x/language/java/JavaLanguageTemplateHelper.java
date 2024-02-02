@@ -657,10 +657,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     }
                 case "nanosecondsSinceEpoch":
                     return "BigInteger.valueOf(_value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset())).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(_value.getDateTime().getNano()))";
-            }
-            if("value".equals(propertyField.getName())) {
-            } else {
-                return "hurz-" + propertyField.getName();
+                default:
+                    throw new UnsupportedOperationException(String.format("Unsupported field name %s.", propertyField.getName()));
             }
         }
         throw new UnsupportedOperationException("Non Simple types not yet supported.");
