@@ -384,6 +384,98 @@ plc4c_return_code plc4c_s7_read_write_data_item_parse(plc4x_spi_context ctx, plc
 
                 *data_item = plc4c_data_create_date_and_time_data(dayOfWeek);
 
+    } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_LTIME") == 0) { /* DATE_AND_LTIME */
+
+                // Simple Field (nanosecondsSinceEpoch)
+                uint64_t nanosecondsSinceEpoch = 0;
+                _res = plc4c_spi_read_unsigned_long(readBuffer, 64, (uint64_t*) &nanosecondsSinceEpoch);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(nanosecondsSinceEpoch);
+
+    } else         if(strcmp(dataProtocolId, "IEC61131_DTL") == 0) { /* DATE_AND_LTIME */
+
+                // Simple Field (year)
+                uint16_t year = 0;
+                _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &year);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(year);
+
+
+                // Simple Field (month)
+                uint8_t month = 0;
+                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &month);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(month);
+
+
+                // Simple Field (day)
+                uint8_t day = 0;
+                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &day);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(day);
+
+
+                // Simple Field (dayOfWeek)
+                uint8_t dayOfWeek = 0;
+                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &dayOfWeek);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(dayOfWeek);
+
+
+                // Simple Field (hour)
+                uint8_t hour = 0;
+                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &hour);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(hour);
+
+
+                // Simple Field (minutes)
+                uint8_t minutes = 0;
+                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &minutes);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(minutes);
+
+
+                // Simple Field (seconds)
+                uint8_t seconds = 0;
+                _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &seconds);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(seconds);
+
+
+                // Simple Field (nannosecondsOfSecond)
+                uint32_t nannosecondsOfSecond = 0;
+                _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &nannosecondsOfSecond);
+                if(_res != OK) {
+                    return _res;
+                }
+
+                *data_item = plc4c_data_create_date_and_ltime_data(nannosecondsOfSecond);
+
     }
 
   return OK;
@@ -597,6 +689,62 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
                     if(_res != OK) {
                         return _res;
                     }
+        } else         if(strcmp(dataProtocolId, "IEC61131_DATE_AND_LTIME") == 0) { /* DATE_AND_LTIME */
+
+                    // Simple field (nanosecondsSinceEpoch)
+                    _res = plc4c_spi_write_unsigned_long(writeBuffer, 64, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+        } else         if(strcmp(dataProtocolId, "IEC61131_DTL") == 0) { /* DATE_AND_LTIME */
+
+                    // Simple field (year)
+                    _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (month)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (day)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (dayOfWeek)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (hour)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (minutes)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (seconds)
+                    _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
+
+                    // Simple field (nannosecondsOfSecond)
+                    _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, (*data_item)->data.date_and_ltime_value);
+                    if(_res != OK) {
+                        return _res;
+                    }
         }
   return OK;
 }
@@ -735,6 +883,35 @@ uint16_t plc4c_s7_read_write_data_item_length_in_bits(plc4x_spi_context ctx, plc
 
         // Simple field (dayOfWeek)
         lengthInBits += 4;
+    } else     if(strcmp(dataProtocolId, "IEC61131_DATE_AND_LTIME") == 0) { /* DATE_AND_LTIME */
+
+        // Simple field (nanosecondsSinceEpoch)
+        lengthInBits += 64;
+    } else     if(strcmp(dataProtocolId, "IEC61131_DTL") == 0) { /* DATE_AND_LTIME */
+
+        // Simple field (year)
+        lengthInBits += 16;
+
+        // Simple field (month)
+        lengthInBits += 8;
+
+        // Simple field (day)
+        lengthInBits += 8;
+
+        // Simple field (dayOfWeek)
+        lengthInBits += 8;
+
+        // Simple field (hour)
+        lengthInBits += 8;
+
+        // Simple field (minutes)
+        lengthInBits += 8;
+
+        // Simple field (seconds)
+        lengthInBits += 8;
+
+        // Simple field (nannosecondsOfSecond)
+        lengthInBits += 32;
     }
   return lengthInBits;
 }

@@ -320,9 +320,7 @@ public class Plc4xValue {
           "nanosecondsSinceEpoch",
           (BigInteger)
               BigInteger.valueOf(
-                      _value
-                          .getDateTime()
-                          .toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().getId())))
+                      _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()))
                   .multiply(BigInteger.valueOf(1000000000))
                   .add(BigInteger.valueOf(_value.getDateTime().getNano())),
           writeUnsignedBigInteger(writeBuffer, 64));
@@ -351,9 +349,7 @@ public class Plc4xValue {
           "nanosecondsSinceEpoch",
           (BigInteger)
               BigInteger.valueOf(
-                      _value
-                          .getDateTime()
-                          .toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().getId())))
+                      _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()))
                   .multiply(BigInteger.valueOf(1000000000))
                   .add(BigInteger.valueOf(_value.getDateTime().getNano())),
           writeUnsignedBigInteger(writeBuffer, 64));

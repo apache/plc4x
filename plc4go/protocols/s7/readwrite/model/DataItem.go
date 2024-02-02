@@ -293,6 +293,64 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
 		readBuffer.CloseContext("DataItem")
+	case dataProtocolId == "IEC61131_DATE_AND_LTIME": // DATE_AND_LTIME
+		// Simple Field (nanosecondsSinceEpoch)
+		_, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
+		if _nanosecondsSinceEpochErr != nil {
+			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
+		}
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcDATE_AND_LTIME(value), nil
+	case dataProtocolId == "IEC61131_DTL": // DATE_AND_LTIME
+		// Simple Field (year)
+		_, _yearErr := readBuffer.ReadUint16("year", 16)
+		if _yearErr != nil {
+			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
+		}
+
+		// Simple Field (month)
+		_, _monthErr := readBuffer.ReadUint8("month", 8)
+		if _monthErr != nil {
+			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
+		}
+
+		// Simple Field (day)
+		_, _dayErr := readBuffer.ReadUint8("day", 8)
+		if _dayErr != nil {
+			return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
+		}
+
+		// Simple Field (dayOfWeek)
+		_, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 8)
+		if _dayOfWeekErr != nil {
+			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
+		}
+
+		// Simple Field (hour)
+		_, _hourErr := readBuffer.ReadUint8("hour", 8)
+		if _hourErr != nil {
+			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
+		}
+
+		// Simple Field (minutes)
+		_, _minutesErr := readBuffer.ReadUint8("minutes", 8)
+		if _minutesErr != nil {
+			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
+		}
+
+		// Simple Field (seconds)
+		_, _secondsErr := readBuffer.ReadUint8("seconds", 8)
+		if _secondsErr != nil {
+			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
+		}
+
+		// Simple Field (nannosecondsOfSecond)
+		_, _nannosecondsOfSecondErr := readBuffer.ReadUint32("nannosecondsOfSecond", 32)
+		if _nannosecondsOfSecondErr != nil {
+			return nil, errors.Wrap(_nannosecondsOfSecondErr, "Error parsing 'nannosecondsOfSecond' field")
+		}
+		readBuffer.CloseContext("DataItem")
+		return values.NewPlcDATE_AND_LTIME(value), nil
 	}
 	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")
@@ -495,6 +553,51 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		// Simple Field (dayOfWeek)
 		if _err := writeBuffer.WriteUint8("dayOfWeek", 4, uint8(value.(values.PlcDATE_AND_TIME).GetDayOfWeek())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
+		}
+	case dataProtocolId == "IEC61131_DATE_AND_LTIME": // DATE_AND_LTIME
+		// Simple Field (nanosecondsSinceEpoch)
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.GetUint64())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
+		}
+	case dataProtocolId == "IEC61131_DTL": // DATE_AND_LTIME
+		// Simple Field (year)
+		if _err := writeBuffer.WriteUint16("year", 16, uint16(value.GetUint16())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'year' field")
+		}
+
+		// Simple Field (month)
+		if _err := writeBuffer.WriteUint8("month", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'month' field")
+		}
+
+		// Simple Field (day)
+		if _err := writeBuffer.WriteUint8("day", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'day' field")
+		}
+
+		// Simple Field (dayOfWeek)
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
+		}
+
+		// Simple Field (hour)
+		if _err := writeBuffer.WriteUint8("hour", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'hour' field")
+		}
+
+		// Simple Field (minutes)
+		if _err := writeBuffer.WriteUint8("minutes", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'minutes' field")
+		}
+
+		// Simple Field (seconds)
+		if _err := writeBuffer.WriteUint8("seconds", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'seconds' field")
+		}
+
+		// Simple Field (nannosecondsOfSecond)
+		if _err := writeBuffer.WriteUint32("nannosecondsOfSecond", 32, uint32(value.GetUint32())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'nannosecondsOfSecond' field")
 		}
 	default:
 		// TODO: add more info which type it is actually

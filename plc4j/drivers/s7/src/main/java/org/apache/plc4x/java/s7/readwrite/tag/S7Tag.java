@@ -89,9 +89,17 @@ public class S7Tag implements PlcTag, Serializable {
 
     @Override
     public PlcValueType getPlcValueType() {
-        //S5TIME is a specific type of Simatic S5/S7.
-        String name = dataType.name().equals("S5TIME")?"TIME":dataType.name();
-        return PlcValueType.valueOf(name);
+        // Translate non-standard tag names.
+        switch (dataType.name()) {
+            case "S5TIME":
+                return PlcValueType.TIME;
+            case "LDT":
+                return PlcValueType.DATE_AND_LTIME;
+            case "DTL":
+                return PlcValueType.DATE_AND_LTIME;
+            default:
+                return PlcValueType.valueOf(dataType.name());
+        }
     }
 
     @Override

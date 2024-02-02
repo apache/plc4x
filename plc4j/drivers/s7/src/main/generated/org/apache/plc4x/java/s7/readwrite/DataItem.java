@@ -212,6 +212,36 @@ public class DataItem {
           minutes,
           seconds,
           millisecondsOfSecond);
+    } else if (EvaluationHelper.equals(
+        dataProtocolId, (String) "IEC61131_DATE_AND_LTIME")) { // DATE_AND_LTIME
+      BigInteger nanosecondsSinceEpoch =
+          readSimpleField("nanosecondsSinceEpoch", readUnsignedBigInteger(readBuffer, 64));
+      return PlcDATE_AND_LTIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
+    } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_DTL")) { // DATE_AND_LTIME
+      int year = readSimpleField("year", readUnsignedInt(readBuffer, 16));
+
+      short month = readSimpleField("month", readUnsignedShort(readBuffer, 8));
+
+      short day = readSimpleField("day", readUnsignedShort(readBuffer, 8));
+
+      short dayOfWeek = readSimpleField("dayOfWeek", readUnsignedShort(readBuffer, 8));
+
+      short hour = readSimpleField("hour", readUnsignedShort(readBuffer, 8));
+
+      short minutes = readSimpleField("minutes", readUnsignedShort(readBuffer, 8));
+
+      short seconds = readSimpleField("seconds", readUnsignedShort(readBuffer, 8));
+
+      long nannosecondsOfSecond =
+          readSimpleField("nannosecondsOfSecond", readUnsignedLong(readBuffer, 32));
+      return PlcDATE_AND_LTIME.ofSegments(
+          year,
+          (month == 0) ? 1 : month,
+          (day == 0) ? 1 : day,
+          hour,
+          minutes,
+          seconds,
+          nannosecondsOfSecond);
     }
     return null;
   }
@@ -331,6 +361,34 @@ public class DataItem {
 
       // Simple field (dayOfWeek)
       lengthInBits += 4;
+    } else if (EvaluationHelper.equals(
+        dataProtocolId, (String) "IEC61131_DATE_AND_LTIME")) { // DATE_AND_LTIME
+      // Simple field (nanosecondsSinceEpoch)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_DTL")) { // DATE_AND_LTIME
+      // Simple field (year)
+      lengthInBits += 16;
+
+      // Simple field (month)
+      lengthInBits += 8;
+
+      // Simple field (day)
+      lengthInBits += 8;
+
+      // Simple field (dayOfWeek)
+      lengthInBits += 8;
+
+      // Simple field (hour)
+      lengthInBits += 8;
+
+      // Simple field (minutes)
+      lengthInBits += 8;
+
+      // Simple field (seconds)
+      lengthInBits += 8;
+
+      // Simple field (nannosecondsOfSecond)
+      lengthInBits += 32;
     }
 
     return lengthInBits;
@@ -538,6 +596,52 @@ public class DataItem {
           (byte) _value.getDate().getDayOfWeek().getValue(),
           writeUnsignedByte(writeBuffer, 4),
           WithOption.WithEncoding("BCD"));
+    } else if (EvaluationHelper.equals(
+        dataProtocolId, (String) "IEC61131_DATE_AND_LTIME")) { // DATE_AND_LTIME
+      // Simple Field (nanosecondsSinceEpoch)
+      writeSimpleField(
+          "nanosecondsSinceEpoch",
+          (BigInteger)
+              BigInteger.valueOf(
+                      _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()))
+                  .multiply(BigInteger.valueOf(1000000000))
+                  .add(BigInteger.valueOf(_value.getDateTime().getNano())),
+          writeUnsignedBigInteger(writeBuffer, 64));
+    } else if (EvaluationHelper.equals(dataProtocolId, (String) "IEC61131_DTL")) { // DATE_AND_LTIME
+      // Simple Field (year)
+      writeSimpleField("year", (int) _value.getDate().getYear(), writeUnsignedInt(writeBuffer, 16));
+
+      // Simple Field (month)
+      writeSimpleField(
+          "month", (short) _value.getDate().getMonthValue(), writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (day)
+      writeSimpleField(
+          "day", (short) _value.getDate().getDayOfMonth(), writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (dayOfWeek)
+      writeSimpleField(
+          "dayOfWeek",
+          (short) _value.getDate().getDayOfWeek().getValue(),
+          writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (hour)
+      writeSimpleField(
+          "hour", (short) _value.getTime().getHour(), writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (minutes)
+      writeSimpleField(
+          "minutes", (short) _value.getTime().getMinute(), writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (seconds)
+      writeSimpleField(
+          "seconds", (short) _value.getTime().getSecond(), writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (nannosecondsOfSecond)
+      writeSimpleField(
+          "nannosecondsOfSecond",
+          (long) _value.getTime().getLong(ChronoField.NANO_OF_SECOND),
+          writeUnsignedLong(writeBuffer, 32));
     }
   }
 }

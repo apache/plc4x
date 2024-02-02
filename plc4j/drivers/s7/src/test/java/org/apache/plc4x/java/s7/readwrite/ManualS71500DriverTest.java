@@ -21,10 +21,7 @@ package org.apache.plc4x.java.s7.readwrite;
 import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 
 public class ManualS71500DriverTest extends ManualTest {
 
@@ -62,8 +59,8 @@ public class ManualS71500DriverTest extends ManualTest {
         test.addTestCase("%DB1:1612:TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         test.addTestCase("%DB1:1616:LTIME_OF_DAY", new PlcLTIME_OF_DAY(LocalTime.parse("15:36:30")));
         test.addTestCase("%DB1:1624:DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
-        //test.addTestCase("%DB1:1632:LDATE_AND_TIME", new PlcLDATE_AND_TIME(LocalDateTime.parse("1978-03-28T15:36:30")));
-        //test.addTestCase("%DB1:1632:DATE_AND_LTIME", new PlcDATE_AND_LTIME(LocalDateTime.parse("1978-03-28T15:36:30")));
+        test.addTestCase("%DB1:1632:DATE_AND_LTIME", new PlcDATE_AND_LTIME(LocalDateTime.parse("1978-03-28T15:36:30")));
+        test.addTestCase("%DB1:1642:DTL", new PlcDATE_AND_LTIME(LocalDateTime.parse("1978-03-28T15:36:30").withNano(34002044)));
         long start = System.currentTimeMillis();
         test.run();
         long end = System.currentTimeMillis();

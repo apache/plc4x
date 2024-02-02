@@ -649,8 +649,14 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     } else {
                         return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_DAY))";
                     }
+                case "nannosecondsOfSecond":
+                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                        return "_value.getTime().getLong(ChronoField.NANO_OF_SECOND)";
+                    } else {
+                        return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_SECOND))";
+                    }
                 case "nanosecondsSinceEpoch":
-                    return "BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().getId()))).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(_value.getDateTime().getNano()))";
+                    return "BigInteger.valueOf(_value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset())).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(_value.getDateTime().getNano()))";
             }
             if("value".equals(propertyField.getName())) {
             } else {

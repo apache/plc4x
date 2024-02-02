@@ -149,14 +149,11 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_of(c
     if(strcmp(value_string, "DT") == 0) {
         return plc4c_s7_read_write_transport_size_DT;
     }
-    if(strcmp(value_string, "LDATE_AND_TIME") == 0) {
-        return plc4c_s7_read_write_transport_size_LDATE_AND_TIME;
+    if(strcmp(value_string, "DATE_AND_LTIME") == 0) {
+        return plc4c_s7_read_write_transport_size_DATE_AND_LTIME;
     }
     if(strcmp(value_string, "LDT") == 0) {
         return plc4c_s7_read_write_transport_size_LDT;
-    }
-    if(strcmp(value_string, "DATE_AND_LTIME") == 0) {
-        return plc4c_s7_read_write_transport_size_DATE_AND_LTIME;
     }
     if(strcmp(value_string, "DTL") == 0) {
         return plc4c_s7_read_write_transport_size_DTL;
@@ -165,7 +162,7 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_of(c
 }
 
 int plc4c_s7_read_write_transport_size_num_values() {
-  return 33;
+  return 32;
 }
 
 plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_for_index(int index) {
@@ -258,15 +255,12 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_value_for_
         return plc4c_s7_read_write_transport_size_DT;
       }
       case 29: {
-        return plc4c_s7_read_write_transport_size_LDATE_AND_TIME;
+        return plc4c_s7_read_write_transport_size_DATE_AND_LTIME;
       }
       case 30: {
         return plc4c_s7_read_write_transport_size_LDT;
       }
       case 31: {
-        return plc4c_s7_read_write_transport_size_DATE_AND_LTIME;
-      }
-      case 32: {
         return plc4c_s7_read_write_transport_size_DTL;
       }
       default: {
@@ -364,17 +358,14 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_300(plc4c_s7_read_writ
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return true;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return false;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
       return false;
     }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
-      return false;
-    }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
-      return true;
+      return false;
     }
     default: {
       return 0;
@@ -479,13 +470,10 @@ bool plc4c_s7_read_write_transport_size_get_supported__logo(plc4c_s7_read_write_
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return false;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return false;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return false;
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return false;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
@@ -594,13 +582,10 @@ uint8_t plc4c_s7_read_write_transport_size_get_code(plc4c_s7_read_write_transpor
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return 0;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return 0;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return 0;
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return 0;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
@@ -742,13 +727,10 @@ uint8_t plc4c_s7_read_write_transport_size_get_size_in_bytes(plc4c_s7_read_write
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return 8;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return 8;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return 8;
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return 8;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
@@ -872,17 +854,14 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_400(plc4c_s7_read_writ
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return true;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return false;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
       return false;
     }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
-      return false;
-    }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
-      return true;
+      return false;
     }
     default: {
       return 0;
@@ -987,17 +966,14 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1200(plc4c_s7_read_wri
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return false;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return false;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
       return false;
     }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
-      return true;
-    }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
-      return false;
+      return true;
     }
     default: {
       return 0;
@@ -1102,13 +1078,10 @@ uint8_t plc4c_s7_read_write_transport_size_get_short_name(plc4c_s7_read_write_tr
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return 'X';
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return 'X';
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return 'X';
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return 'X';
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
@@ -1229,13 +1202,10 @@ bool plc4c_s7_read_write_transport_size_get_supported__s7_1500(plc4c_s7_read_wri
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return true;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return true;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return true;
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return true;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
@@ -1344,13 +1314,10 @@ plc4c_s7_read_write_data_transport_size plc4c_s7_read_write_transport_size_get_d
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return plc4c_s7_read_write_data_transport_size_BYTE_WORD_DWORD;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
@@ -1474,17 +1441,14 @@ char* plc4c_s7_read_write_transport_size_get_data_protocol_id(plc4c_s7_read_writ
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return "IEC61131_DATE_AND_TIME";
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
-      return "IEC61131_LDATE_AND_TIME";
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
+      return "IEC61131_DATE_AND_LTIME";
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return "IEC61131_LDATE_AND_TIME";
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return "IEC61131_DATE_AND_LTIME";
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */
-      return "IEC61131_DATE_AND_LTIME";
+      return "IEC61131_DTL";
     }
     default: {
       return 0;
@@ -1514,14 +1478,14 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_first_
     if (strcmp(value, "IEC61131_DINT") == 0) {
         return plc4c_s7_read_write_transport_size_DINT;
     }
+    if (strcmp(value, "IEC61131_DTL") == 0) {
+        return plc4c_s7_read_write_transport_size_DTL;
+    }
     if (strcmp(value, "IEC61131_DWORD") == 0) {
         return plc4c_s7_read_write_transport_size_DWORD;
     }
     if (strcmp(value, "IEC61131_INT") == 0) {
         return plc4c_s7_read_write_transport_size_INT;
-    }
-    if (strcmp(value, "IEC61131_LDATE_AND_TIME") == 0) {
-        return plc4c_s7_read_write_transport_size_LDATE_AND_TIME;
     }
     if (strcmp(value, "IEC61131_LINT") == 0) {
         return plc4c_s7_read_write_transport_size_LINT;
@@ -1668,13 +1632,10 @@ plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size_get_base_t
     case plc4c_s7_read_write_transport_size_DT: { /* '0x1D' */
       return -1;
     }
-    case plc4c_s7_read_write_transport_size_LDATE_AND_TIME: { /* '0x1E' */
+    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x1E' */
       return -1;
     }
     case plc4c_s7_read_write_transport_size_LDT: { /* '0x1F' */
-      return -1;
-    }
-    case plc4c_s7_read_write_transport_size_DATE_AND_LTIME: { /* '0x20' */
       return -1;
     }
     case plc4c_s7_read_write_transport_size_DTL: { /* '0x21' */

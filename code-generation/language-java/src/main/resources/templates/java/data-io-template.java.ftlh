@@ -318,6 +318,13 @@ public class ${type.name} {
                         return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
                     </#if>
                     <#break>
+                <#case "DATE_AND_LTIME">
+                    <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+                        return PlcDATE_AND_LTIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
+                    <#elseif helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nannosecondsOfSecond")>
+                        return PlcDATE_AND_LTIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, nannosecondsOfSecond);
+                    </#if>
+                    <#break>
                 <#case "LDATE_AND_TIME">
                     <#if helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
                         return PlcLDATE_AND_TIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);

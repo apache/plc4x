@@ -1758,7 +1758,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     }
 
                     List<PlcValue> plcValues = new LinkedList<>();
-                    plcValues.add(PlcLDATE_AND_TIME.of(LocalDateTime.of(
+                    plcValues.add(PlcDATE_AND_LTIME.of(LocalDateTime.of(
                         dt.getYear() + 2000,
                         dt.getMonth(),
                         dt.getDay(),

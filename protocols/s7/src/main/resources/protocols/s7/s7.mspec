@@ -817,13 +817,28 @@
             // Half a byte with one 4-bit value representing 1 - 7
             [simple uint 4  dayOfWeek            encoding='"BCD"']
         ]
-        // - Date & Time: Interpreted as "number of nanoseconds since 1990-01-01"
-        //['"IEC61131_LDATE_AND_TIME"' LDATE_AND_TIME
-        //    [implicit uint 16 nanosecondsSinceSiemensEpoch 'nanosecondsSinceEpoch ...']
-        //    [virtual uint 16 nanosecondsSinceEpoch 'nanosecondsSinceSiemensEpoch ...']
-        //]
-        //['"IEC61131_LDT"' DATE_AND_LTIME
-        //]
+        // - Date & Time: Interpreted as "number of nanoseconds since 1970-01-01"
+        ['"IEC61131_DATE_AND_LTIME"' DATE_AND_LTIME
+            [simple uint 64 nanosecondsSinceEpoch]
+        ]
+        ['"IEC61131_DTL"' DATE_AND_LTIME
+            // One byte with 2 4-bit BCD encoded values representing 90-99 = 1990-1999 and 00-89 = 2000-2089
+            [simple uint 16 year                 ]
+            // One byte values representing 01(Jan) - 12(Dec)
+            [simple uint 8  month                ]
+            // One byte representing 01 - 31
+            [simple uint 8  day                  ]
+            // One byte representing 01 (Sunday) - 07 (Saturday)
+            [simple uint 8  dayOfWeek            ]
+            // One byte representing 00 - 23
+            [simple uint 8  hour                 ]
+            // One byte representing 00 - 59
+            [simple uint 8  minutes              ]
+            // One byte representing 00 - 59
+            [simple uint 8  seconds              ]
+            // Four byte with 3 4-bit values representing 0 - 999
+            [simple uint 32 nannosecondsOfSecond ]
+        ]
     ]
 ]
 
@@ -906,10 +921,9 @@
     ['0x1B' LTOD           ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_LTIME_OF_DAY'   , 'false'             , 'false'             , 'false'              , 'true'               , 'true'              ]]
     ['0x1C' DATE_AND_TIME  ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_TIME'  , 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
     ['0x1D' DT             ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_TIME'  , 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
-    ['0x1E' LDATE_AND_TIME ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_LDATE_AND_TIME' , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
-    ['0x1F' LDT            ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_LDATE_AND_TIME' , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
-    ['0x20' DATE_AND_LTIME ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_LTIME' , 'false'             , 'false'             , 'true'               , 'true'               , 'false'             ]]
-    ['0x21' DTL            ['0x00'     , 'X'             , '12'              , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_LTIME' , 'true'              , 'true'              , 'false'              , 'true'               , 'false'             ]]
+    ['0x1E' DATE_AND_LTIME ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_LTIME' , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
+    ['0x1F' LDT            ['0x00'     , 'X'             , '8'               , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DATE_AND_LTIME' , 'false'             , 'false'             , 'false'              , 'true'               , 'false'             ]]
+    ['0x21' DTL            ['0x00'     , 'X'             , '12'              , 'null'                , 'BYTE_WORD_DWORD'                  , 'IEC61131_DTL'            , 'false'             , 'false'             , 'true'               , 'true'               , 'false'             ]]
 ]
 
 [enum uint 8 MemoryArea(string 24 shortName)

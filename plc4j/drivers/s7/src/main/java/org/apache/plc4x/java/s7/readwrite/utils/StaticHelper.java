@@ -2581,7 +2581,6 @@ public class StaticHelper {
     public static void serializeS5Time(final WriteBuffer io, PlcValue value) {
         final PlcTIME time = (PlcTIME) value;
         Short shortValue = durationToS5Time(time.getDuration());
-        System.out.println(">>>TIPO: " + value.getClass().getName() + " : " + shortValue);        
         try {
             io.writeUnsignedInt(16,shortValue);
         } catch (SerializationException e) {
