@@ -24,6 +24,7 @@ import plc4py
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
+from plc4py.api.exceptions.exceptions import PlcConnectionException
 from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
@@ -46,6 +47,10 @@ class UmasConnection(PlcConnection):
     Umas TCP PLC connection implementation
     """
 
+    DEFAULT_TCP_CONNECTION_TIMEOUT = 10
+    DEFAULT_UMAS_CONNECTION_TIMEOUT = 60  # Long timeout to account for te 15s delay when first initiating a connection. Possibly just the simulator though.
+    log = logging.getLogger(__name__)
+
     def __init__(self, config: UmasConfiguration, transport: Plc4xBaseTransport):
         super().__init__(config)
         self._configuration: UmasConfiguration
@@ -59,23 +64,39 @@ class UmasConnection(PlcConnection):
         It creates the TCP connection to the Umas device before returning.
 
         :param url: PLC4X connection string of the Umas TCP connection
-        :return UmasConnection instance using the configuration from the url provided
+        :return UmasConnection: instance using the configuration from the url provided
         """
         config = UmasConfiguration(url)
         loop = asyncio.get_running_loop()
         connection_future = loop.create_future()
-        transport = await asyncio.wait_for(
-            TCPTransport.create(
-                protocol_factory=lambda: UmasProtocol(
-                    connection_future, False, config.unit_identifier
+        try:
+            logging.debug(f"Opening TCP connection for UMAS device {config.host}")
+            transport = await asyncio.wait_for(
+                TCPTransport.create(
+                    protocol_factory=lambda: UmasProtocol(
+                        connection_future, False, config.unit_identifier
+                    ),
+                    host=config.host,
+                    port=config.port,
                 ),
-                host=config.host,
-                port=config.port,
-            ),
-            10,
-        )
-        connection = UmasConnection(config, transport)
-        await connection._device.connect(transport)
+                UmasConnection.DEFAULT_TCP_CONNECTION_TIMEOUT,
+            )
+            connection = UmasConnection(config, transport)
+        except TimeoutError as e:
+            raise PlcConnectionException(
+                f"Timeout while opening TCP connection to umas device - {config.host}",
+                e,
+            )
+
+        try:
+            await asyncio.wait_for(
+                connection._device.connect(transport),
+                timeout=UmasConnection.DEFAULT_UMAS_CONNECTION_TIMEOUT,
+            )
+        except TimeoutError as e:
+            raise PlcConnectionException(
+                f"Time out while opening UMAS connection to device - {config.host}", e
+            )
         return connection
 
     def is_connected(self) -> bool:

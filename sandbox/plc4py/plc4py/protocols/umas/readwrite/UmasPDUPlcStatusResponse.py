@@ -34,7 +34,8 @@ import math
 
 @dataclass
 class UmasPDUPlcStatusResponse(UmasPDUItem):
-    not_used: int
+    not_used1: int
+    not_used2: int
     number_of_blocks: int
     blocks: List[int]
     # Arguments.
@@ -46,9 +47,14 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
     def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUPlcStatusResponse")
 
-        # Simple Field (notUsed)
-        write_buffer.write_unsigned_int(
-            self.not_used, bit_length=24, logical_name="notUsed"
+        # Simple Field (notUsed1)
+        write_buffer.write_unsigned_byte(
+            self.not_used1, bit_length=8, logical_name="notUsed1"
+        )
+
+        # Simple Field (notUsed2)
+        write_buffer.write_unsigned_short(
+            self.not_used2, bit_length=16, logical_name="notUsed2"
         )
 
         # Simple Field (numberOfBlocks)
@@ -58,7 +64,7 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
 
         # Array Field (blocks)
         write_buffer.write_simple_array(
-            self.blocks, write_unsigned_int, logical_name="blocks"
+            self.blocks, write_buffer.write_unsigned_int, logical_name="blocks"
         )
 
         write_buffer.pop_context("UmasPDUPlcStatusResponse")
@@ -70,8 +76,11 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
         length_in_bits: int = super().length_in_bits()
         _value: UmasPDUPlcStatusResponse = self
 
-        # Simple field (notUsed)
-        length_in_bits += 24
+        # Simple field (notUsed1)
+        length_in_bits += 8
+
+        # Simple field (notUsed2)
+        length_in_bits += 16
 
         # Simple field (numberOfBlocks)
         length_in_bits += 8
@@ -88,9 +97,17 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUPlcStatusResponse")
 
-        not_used: int = read_buffer.read_unsigned_int(
-            logical_name="notUsed",
-            bit_length=24,
+        not_used1: int = read_buffer.read_unsigned_byte(
+            logical_name="notUsed1",
+            bit_length=8,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
+            umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
+        )
+
+        not_used2: int = read_buffer.read_unsigned_short(
+            logical_name="notUsed2",
+            bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
@@ -115,7 +132,9 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
 
         read_buffer.pop_context("UmasPDUPlcStatusResponse")
         # Create the instance
-        return UmasPDUPlcStatusResponseBuilder(not_used, number_of_blocks, blocks)
+        return UmasPDUPlcStatusResponseBuilder(
+            not_used1, not_used2, number_of_blocks, blocks
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -126,7 +145,8 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
 
         that: UmasPDUPlcStatusResponse = UmasPDUPlcStatusResponse(o)
         return (
-            (self.not_used == that.not_used)
+            (self.not_used1 == that.not_used1)
+            and (self.not_used2 == that.not_used2)
             and (self.number_of_blocks == that.number_of_blocks)
             and (self.blocks == that.blocks)
             and super().equals(that)
@@ -149,7 +169,8 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
 
 @dataclass
 class UmasPDUPlcStatusResponseBuilder:
-    not_used: int
+    not_used1: int
+    not_used2: int
     number_of_blocks: int
     blocks: List[int]
 
@@ -158,7 +179,8 @@ class UmasPDUPlcStatusResponseBuilder:
             UmasPDUPlcStatusResponse(
                 byte_length,
                 pairing_key,
-                self.not_used,
+                self.not_used1,
+                self.not_used2,
                 self.number_of_blocks,
                 self.blocks,
             )

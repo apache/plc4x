@@ -52,7 +52,7 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
 
         # Array Field (fifoValue)
         write_buffer.write_simple_array(
-            self.fifo_value, write_unsigned_short, logical_name="fifoValue"
+            self.fifo_value, write_buffer.write_unsigned_short, logical_name="fifoValue"
         )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueResponse")

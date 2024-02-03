@@ -22,6 +22,15 @@ from asyncio import Transport, AbstractEventLoop
 from dataclasses import dataclass, field
 from typing import Dict, List
 
+from plc4py.drivers.umas.UmasTag import UmasTag
+
+from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import (
+    UmasPDUReadVariableResponse,
+)
+
+from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
+
+from plc4py.protocols.umas.readwrite.DataItem import DataItem
 from plc4py.protocols.umas.readwrite.VariableRequestReference import (
     VariableRequestReference,
 )
@@ -90,8 +99,9 @@ from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
 from plc4py.api.messages.PlcRequest import PlcReadRequest
 from plc4py.api.messages.PlcResponse import PlcReadResponse
-from plc4py.api.value.PlcValue import PlcValue
+from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
 from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.utils.GenericTypes import ByteOrder
 
 
@@ -103,17 +113,20 @@ class UmasDevice:
     max_frame_size: int = -1
     memory_blocks: List[PlcMemoryBlockIdent] = field(default_factory=lambda: [])
     hardware_id: int = -1
+    index: int = -1
 
     async def connect(self, transport: Transport):
         # Create future to be returned when a value is returned
         loop = asyncio.get_running_loop()
         await self._send_plc_ident(transport, loop)
         await self._send_init_comms(transport, loop)
+        await self._update_plc_project_info(transport, loop)
+
+    async def _update_plc_project_info(self, transport, loop):
         await self._send_project_info(transport, loop)
         await self._send_read_memory_block(transport, loop)
         await self._send_unlocated_variable_datatype_request(transport, loop)
         await self._send_unlocated_variable_request(transport, loop)
-        await self._send_read_variable_request(transport, loop)
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -190,13 +203,13 @@ class UmasDevice:
         memory_block_result: UmasPDUReadMemoryBlockResponse = message_future.result()
         read_buffer = ReadBufferByteBased(
             bytearray(memory_block_result.block),
-            ByteOrder.BIG_ENDIAN,
             ByteOrder.LITTLE_ENDIAN,
         )
         basic_info = UmasMemoryBlockBasicInfo.static_parse_builder(
             read_buffer, 0x30, 0x00
         ).build()
         self.hardware_id = basic_info.hardware_id
+        self.index = basic_info.index
         pass
 
     async def _send_unlocated_variable_datatype_request(
@@ -205,7 +218,10 @@ class UmasDevice:
         message_future = loop.create_future()
 
         request_pdu = UmasPDUReadUnlocatedVariableNamesRequestBuilder(
-            record_type=0xDD03, block_no=0x0000, hardware_id=self.hardware_id
+            record_type=0xDD03,
+            block_no=0x0000,
+            index=self.index,
+            hardware_id=self.hardware_id,
         ).build(0, 0)
 
         protocol = transport.protocol
@@ -234,7 +250,10 @@ class UmasDevice:
         message_future = loop.create_future()
 
         request_pdu = UmasPDUReadUnlocatedVariableNamesRequestBuilder(
-            record_type=0xDD02, block_no=0xFFFF, hardware_id=self.hardware_id
+            record_type=0xDD02,
+            block_no=0xFFFF,
+            index=self.index,
+            hardware_id=self.hardware_id,
         ).build(0, 0)
 
         protocol = transport.protocol
@@ -249,9 +268,7 @@ class UmasDevice:
             message_future.result()
         )
         read_buffer = ReadBufferByteBased(
-            bytearray(variable_name_response.block),
-            ByteOrder.BIG_ENDIAN,
-            ByteOrder.BIG_ENDIAN,
+            bytearray(variable_name_response.block), ByteOrder.LITTLE_ENDIAN
         )
         self.variables = UmasPDUReadUnlocatedVariableNamesResponse.static_parse_builder(
             read_buffer, 0xDD03
@@ -259,21 +276,31 @@ class UmasDevice:
         pass
 
     async def _send_read_variable_request(
-        self, transport: Transport, loop: AbstractEventLoop
+        self, transport: Transport, loop: AbstractEventLoop, request: PlcReadRequest
     ):
         message_future = loop.create_future()
 
+        tag_list: List[VariableRequestReference] = []
+        for kea, tag in request.tags.items():
+            found_record = None
+            for record in self.variables.records:
+                if tag.tag_name.lower() == record.value.lower():
+                    found_record = record
+                    break
+
+            if found_record is not None:
+                tag_list.append(
+                    VariableRequestReference(
+                        data_type=UmasDataType(record.data_type).request_size,
+                        block=found_record.block,
+                        base_offset=0x0000,
+                        offset=found_record.offset,
+                    )
+                )
         request_pdu = UmasPDUReadVariableRequestBuilder(
             crc=self.project_crc,
-            variable_count=0x01,
-            variables=[
-                VariableRequestReference(
-                    data_type=self.variables.records[1].data_type,
-                    block=self.variables.records[1].block,
-                    base_offset=0x0000,
-                    offset=self.variables.records[1].offset,
-                )
-            ],
+            variable_count=len(tag_list),
+            variables=tag_list,
         ).build(0, 0)
 
         protocol = transport.protocol
@@ -284,18 +311,22 @@ class UmasDevice:
         )
 
         await message_future
-        variable_name_response: UmasPDUReadUnlocatedVariableResponse = (
-            message_future.result()
-        )
+        variable_name_response: UmasPDUReadVariableResponse = message_future.result()
         read_buffer = ReadBufferByteBased(
-            bytearray(variable_name_response.block),
-            ByteOrder.BIG_ENDIAN,
-            ByteOrder.BIG_ENDIAN,
+            bytearray(variable_name_response.block), ByteOrder.LITTLE_ENDIAN
         )
-        basic_info = UmasPDUReadUnlocatedVariableNamesResponse.static_parse_builder(
-            read_buffer, 0xDD03
-        ).build()
-        pass
+        values: Dict[str, List[ResponseItem[PlcValue]]] = {}
+        for key, tag in request.tags.items():
+            response_items = [
+                ResponseItem(
+                    PlcResponseCode.OK,
+                    DataItem.static_parse(read_buffer, tag.data_type, tag.quantity),
+                )
+            ]
+            values[key] = response_items
+
+        response = PlcReadResponse(PlcResponseCode.OK, values)
+        return response
 
     async def read(
         self, request: PlcReadRequest, transport: Transport
@@ -303,4 +334,6 @@ class UmasDevice:
         """
         Reads one field from the Umas Device
         """
-        pass
+        loop = asyncio.get_running_loop()
+        response = await self._send_read_variable_request(transport, loop, request)
+        return response

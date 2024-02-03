@@ -28,11 +28,13 @@ async def manual_test_plc_driver_umas_connect():
     assert not connection.is_connected()
 
 
-async def manual_test_plc_driver_umas_read():
+async def test_plc_driver_umas_read():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://192.168.1.174:502") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item("Random Tag", "4x00001[10]")
+            builder.add_item("Random Tag 2", "test_DINT:DINT")
+            builder.add_item("Random Tag 1", "test_REAL:REAL")
+            builder.add_item("Random Tag 3", "test_BYTE:BYTE")
             request = builder.build()
 
         future = connection.execute(request)

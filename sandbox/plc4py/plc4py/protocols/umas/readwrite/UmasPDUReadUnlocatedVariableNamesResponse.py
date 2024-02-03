@@ -37,8 +37,8 @@ import math
 @dataclass
 class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
     range: int
+    unknown1: int
     no_of_records: int
-    no_of_records_null: int
     records: List[UmasUnlocatedVariableReference]
     # Accessors for discriminator values.
     record_format: ClassVar[int] = 0xDD02
@@ -47,16 +47,16 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_int(self.range, bit_length=32, logical_name="range")
+        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
+
+        # Simple Field (unknown1)
+        write_buffer.write_unsigned_int(
+            self.unknown1, bit_length=32, logical_name="unknown1"
+        )
 
         # Simple Field (noOfRecords)
         write_buffer.write_unsigned_short(
             self.no_of_records, bit_length=16, logical_name="noOfRecords"
-        )
-
-        # Simple Field (noOfRecordsNull)
-        write_buffer.write_unsigned_byte(
-            self.no_of_records_null, bit_length=8, logical_name="noOfRecordsNull"
         )
 
         # Array Field (records)
@@ -72,13 +72,13 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         _value: UmasPDUReadUnlocatedVariableNamesResponse = self
 
         # Simple field (range)
+        length_in_bits += 8
+
+        # Simple field (unknown1)
         length_in_bits += 32
 
         # Simple field (noOfRecords)
         length_in_bits += 16
-
-        # Simple field (noOfRecordsNull)
-        length_in_bits += 8
 
         # Array field
         if self.records is not None:
@@ -91,16 +91,16 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
     def static_parse_builder(read_buffer: ReadBuffer, record_format: int):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
 
-        range: int = read_buffer.read_unsigned_int(
-            logical_name="range", bit_length=32, record_format=record_format
+        range: int = read_buffer.read_unsigned_byte(
+            logical_name="range", bit_length=8, record_format=record_format
+        )
+
+        unknown1: int = read_buffer.read_unsigned_int(
+            logical_name="unknown1", bit_length=32, record_format=record_format
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
             logical_name="noOfRecords", bit_length=16, record_format=record_format
-        )
-
-        no_of_records_null: int = read_buffer.read_unsigned_byte(
-            logical_name="noOfRecordsNull", bit_length=8, record_format=record_format
         )
 
         records: List[Any] = read_buffer.read_array_field(
@@ -113,7 +113,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesResponse")
         # Create the instance
         return UmasPDUReadUnlocatedVariableNamesResponseBuilder(
-            range, no_of_records, no_of_records_null, records
+            range, unknown1, no_of_records, records
         )
 
     def equals(self, o: object) -> bool:
@@ -128,8 +128,8 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         )
         return (
             (self.range == that.range)
+            and (self.unknown1 == that.unknown1)
             and (self.no_of_records == that.no_of_records)
-            and (self.no_of_records_null == that.no_of_records_null)
             and (self.records == that.records)
             and super().equals(that)
             and True
@@ -152,14 +152,14 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
 @dataclass
 class UmasPDUReadUnlocatedVariableNamesResponseBuilder:
     range: int
+    unknown1: int
     no_of_records: int
-    no_of_records_null: int
     records: List[UmasUnlocatedVariableReference]
 
     def build(
         self,
     ) -> UmasPDUReadUnlocatedVariableNamesResponse:
         umas_pdu_read_unlocated_variable_names_response: UmasPDUReadUnlocatedVariableNamesResponse = UmasPDUReadUnlocatedVariableNamesResponse(
-            self.range, self.no_of_records, self.no_of_records_null, self.records
+            self.range, self.unknown1, self.no_of_records, self.records
         )
         return umas_pdu_read_unlocated_variable_names_response

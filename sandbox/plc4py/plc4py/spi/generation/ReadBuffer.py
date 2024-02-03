@@ -156,7 +156,7 @@ class ReadBufferByteBased(ReadBuffer):
         byte_order: ByteOrder,
         bit_order: ByteOrder = ByteOrder.BIG_ENDIAN,
     ):
-        if byte_order == ByteOrder.LITTLE_ENDIAN:
+        if bit_order == ByteOrder.LITTLE_ENDIAN:
             bb = bitarray(buffer=bb, endian=ByteOrder.get_short_name(bit_order))
             bb.bytereverse()
         self.bb = bitarray(
@@ -220,9 +220,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 16:
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (16 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "H", padded)[0]
             self.position += bit_length
             return result
 
@@ -235,10 +240,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 32:
             raise SerializationException("unsigned int can only contain max 32 bits")
         else:
-            ss = self.bb[self.position : bit_length]
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (32 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "I", padded)[0]
             self.position += bit_length
             return result
 
@@ -251,9 +260,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 64:
             raise SerializationException("unsigned long can only contain max 64 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (64 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "Q", padded)[0]
             self.position += bit_length
             return result
 
@@ -279,9 +293,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 16:
             raise SerializationException("signed short can only contain max 16 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (16 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "h", padded)[0]
             self.position += bit_length
             return result
 
@@ -292,9 +311,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 32:
             raise SerializationException("signed int can only contain max 32 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (32 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "i", padded)[0]
             self.position += bit_length
             return result
 
@@ -305,9 +329,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 64:
             raise SerializationException("signed long can only contain max 64 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (64 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "q", padded)[0]
             self.position += bit_length
             return result
 

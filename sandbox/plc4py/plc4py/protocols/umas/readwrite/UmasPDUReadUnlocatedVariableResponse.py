@@ -46,7 +46,7 @@ class UmasPDUReadUnlocatedVariableResponse(UmasPDUItem):
 
         # Array Field (block)
         write_buffer.write_simple_array(
-            self.block, write_unsigned_byte, logical_name="block"
+            self.block, write_buffer.write_unsigned_byte, logical_name="block"
         )
 
         write_buffer.pop_context("UmasPDUReadUnlocatedVariableResponse")

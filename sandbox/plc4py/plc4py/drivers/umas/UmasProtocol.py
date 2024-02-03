@@ -49,7 +49,7 @@ class UmasProtocol(Plc4xBaseProtocol):
         adu: ModbusTcpADU = ModbusTcpADU.static_parse(read_buffer)
         if adu.transaction_identifier in self.messages:
             read_buffer = ReadBufferByteBased(
-                bytearray(adu.pdu_array), byte_order=ByteOrder.BIG_ENDIAN
+                bytearray(adu.pdu_array), byte_order=ByteOrder.LITTLE_ENDIAN
             )
             pdu: ModbusPDU = ModbusPDU.static_parse(
                 read_buffer,
@@ -71,7 +71,7 @@ class UmasProtocol(Plc4xBaseProtocol):
         pdu = UmasPDUBuilder(umas_pdu_item).build(umas_pdu_item.umas_function_key, 0)
 
         write_buffer = WriteBufferByteBased(
-            pdu.length_in_bytes(), ByteOrder.LITTLE_ENDIAN
+            pdu.length_in_bytes(), byte_order=ByteOrder.LITTLE_ENDIAN
         )
         pdu.serialize(write_buffer)
 

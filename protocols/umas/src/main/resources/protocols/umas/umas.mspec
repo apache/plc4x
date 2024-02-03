@@ -88,7 +88,8 @@
         ]
         ['0x26'     UmasPDUReadUnlocatedVariableNamesRequest
             [simple     uint 16         recordType]
-            [simple     uint 40         hardwareId]
+            [simple     uint 8          index]
+            [simple     uint 32         hardwareId]
             [simple     uint 16         blockNo]
             [const      uint 32         blank 0x0000]
         ]
@@ -101,7 +102,7 @@
             [simple     vstring         'hostnameLength*8' hostname]
         ]
         ['0xFE', '0x02'     UmasPDUPlcIdentResponse
-            [simple     uint 8          range]
+            [simple     uint 16         range]
             [simple     uint 32         ident]
             [simple     uint 16         model]
             [simple     uint 16         comVersion]
@@ -109,19 +110,25 @@
             [simple     uint 16         intVersion]
             [simple     uint 16         hardwareVersion]
             [simple     uint 32         crashCode]
-            [simple     uint 32          hostnameLength]
+            [simple     uint 16         unknown1]
+            [simple     uint 8          hostnameLength]
             [simple     vstring         'hostnameLength*8' hostname]
             [simple     uint 8          numberOfMemoryBanks
             [array      PlcMemoryBlockIdent memoryIdents count 'numberOfMemoryBanks']
         ]
         ['0xFE', '0x04'     UmasPDUPlcStatusResponse
-            [simple     uint 24         notUsed]
+            [simple     uint 8          notUsed1]
+            [simple     uint 16         notUsed2]
             [simple     uint 8          numberOfBlocks]
             [array      uint 32         blocks count 'numberOfBlocks']
         ]
         ['0xFE', '0x20'     UmasPDUReadMemoryBlockResponse
+            [simple     uint 8          range]
             [simple     uint 16         numberOfBytes]
             [array      uint 8          block count 'numberOfBytes']
+        ]
+        ['0xFE', '0x22'     UmasPDUReadVariableResponse
+            [array      uint 8          block count 'byteLength - 2']
         ]
         ['0xFE', '0x26'     UmasPDUReadUnlocatedVariableResponse
             [array      uint 8          block count 'byteLength - 2']
@@ -134,8 +141,8 @@
         ['0x30', '0x00' UmasMemoryBlockBasicInfo
             [simple     uint 16          range]
             [simple uint 16 notSure]
-            [simple uint 8 notSure1]
-            [simple uint 40 hardwareId]
+            [simple uint 8  index]
+            [simple uint 32 hardwareId]
         ]
     ]
 ]
@@ -143,15 +150,15 @@
 [type UmasVariableBlock(uint 16 recordFormat)
     [typeSwitch recordFormat
         ['0xdd02' UmasPDUReadUnlocatedVariableNamesResponse
-            [simple     uint 32         range]
+            [simple     uint 8          range]
+            [simple     uint 32         unknown1]
             [simple     uint 16         noOfRecords]
-            [simple     uint 8          noOfRecordsNull]
             [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
         ]
         ['0xdd03' UmasPDUReadDatatypeNamesResponse
-            [simple     uint 24         range]
-            [simple     uint 16         noOfRecords]
-            [simple     uint 8          noOfRecordsNull]
+            [simple     uint 8         range]
+            [simple     uint 16        noOfRecordsNull]
+            [simple     uint 16        noOfRecords]
             [array      UmasDatatypeReference         records count 'noOfRecords']
         ]
     ]
@@ -162,7 +169,7 @@
     [simple     uint 16          block]
     [const      uint 8           unknown1 0x01]
     [simple     uint 16          baseOffset]
-    [simple     uint 8          offset]
+    [simple     uint 8           offset]
 ]
 
 [type UmasUnlocatedVariableReference
@@ -197,7 +204,7 @@
     [typeSwitch dataType,numberOfValues
         ['BOOL','1'  BOOL
             // TODO: Possibly change the order of the bit and the reserved part.
-            [reserved uint 15 '0x0000'                         ]
+            [reserved uint 7 '0x0000'                         ]
             [simple   bit     value                            ]
         ]
         ['BOOL'      List
@@ -205,7 +212,6 @@
             [array    bit     value count 'numberOfValues'     ]
         ]
         ['BYTE','1'  BYTE
-            [reserved uint 8 '0x00']
             [simple uint 8 value]
         ]
         ['BYTE' List
@@ -217,16 +223,6 @@
         ]
         ['DWORD'     DWORD
             [simple   uint 32 value]
-        ]
-        ['LWORD'     LWORD
-            [simple   uint 64 value]
-        ]
-        ['SINT','1' SINT
-            [reserved uint 8  '0x00']
-            [simple   int 8   value ]
-        ]
-        ['SINT' List
-            [array int 8 value count 'numberOfValues']
         ]
         ['INT','1' INT
             [simple int 16 value]
@@ -240,19 +236,6 @@
         ['DINT' List
             [array int 32 value count 'numberOfValues']
         ]
-        ['LINT','1' LINT
-            [simple int 64 value]
-        ]
-        ['LINT' List
-            [array int 64 value count 'numberOfValues']
-        ]
-        ['USINT','1' USINT
-            [reserved uint 8 '0x00']
-            [simple   uint 8 value ]
-        ]
-        ['USINT' List
-            [array uint 8 value count 'numberOfValues']
-        ]
         ['UINT','1' UINT
             [simple uint 16 value]
         ]
@@ -265,55 +248,41 @@
         ['UDINT' List
             [array uint 32 value count 'numberOfValues']
         ]
-        ['ULINT','1' ULINT
-            [simple uint 64 value]
-        ]
-        ['ULINT' List
-            [array uint 64 value count 'numberOfValues']
-        ]
         ['REAL','1' REAL
             [simple float 32  value]
         ]
         ['REAL' List
             [array float 32 value count 'numberOfValues']
         ]
-        ['LREAL','1' LREAL
-            [simple float 64  value]
-        ]
-        ['LREAL' List
-            [array float 64 value count 'numberOfValues']
-        ]
-        ['CHAR','1' CHAR
-            [simple string 8 value encoding='"UTF-8"']
-        ]
-        ['CHAR' List
-            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
-        ]
-        ['WCHAR','1' WCHAR
-            [simple string 16 value encoding='"UTF-16"']
-        ]
-        ['WCHAR' List
-            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
-        ]
     ]
 ]
 
-[enum uint 8 UmasDataType(uint 8 dataTypeSize)
-    ['1' BOOL ['1']]
-    ['4' INT ['2']]
-    ['5' UINT ['2']]
-    ['6' DINT ['4']]
-    ['7' UDINT ['4']]
-    ['8' REAL ['4']]
-    ['9' STRING ['1']]
-    ['10' TIME ['4']]
-    ['14' DATE ['4']]
-    ['15' TOD ['4']]
-    ['16' DT ['4']]
-    ['21' BATE ['1']]
-    ['22' WORD ['2']]
-    ['23' DWORD ['4']]
-    ['25' EBOOL ['1']]
+[enum uint 8 UmasDataType(uint 8 dataTypeSize, uint 8 requestSize)
+    ['1' BOOL ['1','1']]
+    ['2' UNKNOWN2 ['1','1']]
+    ['3' UNKNOWN3 ['1','1']]
+    ['4' INT ['2', '2']]
+    ['5' UINT ['2','2']]
+    ['6' DINT ['4','3']]
+    ['7' UDINT ['4','3']]
+    ['8' REAL ['4','3']]
+    ['9' STRING ['1','1']]
+    ['10' TIME ['4','3']]
+    ['11' UNKNOWN11 ['1','1']]
+    ['12' UNKNOWN12 ['1','1']]
+    ['13' UNKNOWN13 ['1','1']]
+    ['14' DATE ['4','3']]
+    ['15' TOD ['4','3']]
+    ['16' DT ['4','3']]
+    ['17' UNKNOWN17 ['1','1']]
+    ['18' UNKNOWN18 ['1','1']]
+    ['19' UNKNOWN19 ['1','1']]
+    ['20' UNKNOWN20 ['1','1']]
+    ['21' BYTE ['1','1']]
+    ['22' WORD ['2','2']]
+    ['23' DWORD ['4','3']]
+    ['24' UNKNOWN24 ['1','1']]
+    ['25' EBOOL ['1','1']]
 ]
 
 [enum uint 8 ModbusErrorCode

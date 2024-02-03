@@ -43,6 +43,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
     int_version: int
     hardware_version: int
     crash_code: int
+    unknown1: int
     hostname_length: int
     hostname: str
     number_of_memory_banks: int
@@ -57,7 +58,9 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         write_buffer.push_context("UmasPDUPlcIdentResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
+        write_buffer.write_unsigned_short(
+            self.range, bit_length=16, logical_name="range"
+        )
 
         # Simple Field (ident)
         write_buffer.write_unsigned_int(self.ident, bit_length=32, logical_name="ident")
@@ -92,9 +95,14 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
             self.crash_code, bit_length=32, logical_name="crashCode"
         )
 
+        # Simple Field (unknown1)
+        write_buffer.write_unsigned_short(
+            self.unknown1, bit_length=16, logical_name="unknown1"
+        )
+
         # Simple Field (hostnameLength)
-        write_buffer.write_unsigned_int(
-            self.hostname_length, bit_length=32, logical_name="hostnameLength"
+        write_buffer.write_unsigned_byte(
+            self.hostname_length, bit_length=8, logical_name="hostnameLength"
         )
 
         # Simple Field (hostname)
@@ -122,7 +130,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         _value: UmasPDUPlcIdentResponse = self
 
         # Simple field (range)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (ident)
         length_in_bits += 32
@@ -145,8 +153,11 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         # Simple field (crashCode)
         length_in_bits += 32
 
+        # Simple field (unknown1)
+        length_in_bits += 16
+
         # Simple field (hostnameLength)
-        length_in_bits += 32
+        length_in_bits += 8
 
         # Simple field (hostname)
         length_in_bits += self.hostname_length * int(8)
@@ -167,9 +178,9 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUPlcIdentResponse")
 
-        range: int = read_buffer.read_unsigned_byte(
+        range: int = read_buffer.read_unsigned_short(
             logical_name="range",
-            bit_length=8,
+            bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
@@ -231,9 +242,17 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
             byte_length=byte_length,
         )
 
-        hostname_length: int = read_buffer.read_unsigned_int(
+        unknown1: int = read_buffer.read_unsigned_short(
+            logical_name="unknown1",
+            bit_length=16,
+            byte_order=ByteOrder.LITTLE_ENDIAN,
+            umas_request_function_key=umas_request_function_key,
+            byte_length=byte_length,
+        )
+
+        hostname_length: int = read_buffer.read_unsigned_byte(
             logical_name="hostnameLength",
-            bit_length=32,
+            bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
@@ -275,6 +294,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
             int_version,
             hardware_version,
             crash_code,
+            unknown1,
             hostname_length,
             hostname,
             number_of_memory_banks,
@@ -298,6 +318,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
             and (self.int_version == that.int_version)
             and (self.hardware_version == that.hardware_version)
             and (self.crash_code == that.crash_code)
+            and (self.unknown1 == that.unknown1)
             and (self.hostname_length == that.hostname_length)
             and (self.hostname == that.hostname)
             and (self.number_of_memory_banks == that.number_of_memory_banks)
@@ -330,6 +351,7 @@ class UmasPDUPlcIdentResponseBuilder:
     int_version: int
     hardware_version: int
     crash_code: int
+    unknown1: int
     hostname_length: int
     hostname: str
     number_of_memory_banks: int
@@ -347,6 +369,7 @@ class UmasPDUPlcIdentResponseBuilder:
             self.int_version,
             self.hardware_version,
             self.crash_code,
+            self.unknown1,
             self.hostname_length,
             self.hostname,
             self.number_of_memory_banks,

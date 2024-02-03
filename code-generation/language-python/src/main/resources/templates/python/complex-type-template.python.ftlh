@@ -200,7 +200,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#if arrayField.type.elementTypeReference.isByteBased()>
         write_buffer.write_byte_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, logical_name="${namedField.name}")
                         <#elseif arrayField.type.elementTypeReference.isSimpleTypeReference()>
-        write_buffer.write_simple_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, ${helper.getDataWriterCall(arrayField.type.elementTypeReference, namedField.name)}, logical_name="${namedField.name}")
+        write_buffer.write_simple_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, write_buffer.${helper.getDataWriterCall(arrayField.type.elementTypeReference, namedField.name)}, logical_name="${namedField.name}")
                         <#else>
         write_buffer.write_complex_array(self.${helper.camelCaseToSnakeCase(namedField.name)}, logical_name="${namedField.name}")
                         </#if>

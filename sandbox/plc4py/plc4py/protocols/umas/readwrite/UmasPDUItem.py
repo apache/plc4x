@@ -235,6 +235,14 @@ class UmasPDUItem(ABC, PlcMessage):
             builder = UmasPDUReadMemoryBlockResponse.static_parse_builder(
                 read_buffer, umas_request_function_key, byte_length
             )
+        from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import (
+            UmasPDUReadVariableResponse,
+        )
+
+        if umas_function_key == int(0xFE) and umas_request_function_key == int(0x22):
+            builder = UmasPDUReadVariableResponse.static_parse_builder(
+                read_buffer, umas_request_function_key, byte_length
+            )
         from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableResponse import (
             UmasPDUReadUnlocatedVariableResponse,
         )
