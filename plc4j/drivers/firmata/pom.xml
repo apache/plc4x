@@ -88,6 +88,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>com.github.purejavacomm:purejavacomm</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-transport-serial</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
