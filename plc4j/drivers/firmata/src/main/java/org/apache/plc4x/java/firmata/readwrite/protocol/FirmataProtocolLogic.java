@@ -71,12 +71,22 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
         LOGGER.debug("Sending Firmata Reset Command");
         FirmataMessageCommand resetCommandMessage = new FirmataMessageCommand(new FirmataCommandSystemReset());
         context.sendRequest(resetCommandMessage)
+            .onTimeout(e -> {
+                LOGGER.info("Timeout during Connection establishment, closing channel...");
+            })
+            .onError((firmataMessage, throwable) -> {
+                LOGGER.error("Error during Connection establishment. Got: {}", firmataMessage.toString(), throwable);
+            })
+            // Technically the remote will send two messages, one containing only the version information,
+            // the second one also containing the name of the remote station. We simply wait for the
+            // second one and silently have the decode method drop the first.
             .expectResponse(FirmataMessage.class, REQUEST_TIMEOUT)
-            .only(FirmataMessageCommand.class)
-            .unwrap(FirmataMessageCommand::getCommand)
-            .only(FirmataCommandSysex.class)
-            .unwrap(FirmataCommandSysex::getCommand)
-            .only(SysexCommandReportFirmwareResponse.class)
+            .check(p -> p instanceof FirmataMessageCommand)
+            .unwrap(p -> ((FirmataMessageCommand) p).getCommand())
+            .check(p -> p instanceof FirmataCommandSysex)
+            .unwrap(p -> ((FirmataCommandSysex) p).getCommand())
+            .check(p -> p instanceof SysexCommandReportFirmwareResponse)
+            .unwrap(p -> (SysexCommandReportFirmwareResponse) p)
             .handle(sysexCommandReportFirmware -> {
                 String name = new String(sysexCommandReportFirmware.getFileName(), StandardCharsets.UTF_8);
                 LOGGER.info(String.format("Connected to Firmata host running version %s.%s with name %s",
