@@ -41,13 +41,19 @@ public abstract class ManualTest {
     private final boolean testWrite;
     private final List<TestCase> testCases;
 
+    private final int numRandomReads;
+
     public ManualTest(String connectionString) {
         this(connectionString, true);
     }
 
     public ManualTest(String connectionString, boolean testWrite) {
+        this(connectionString, testWrite, 100);
+    }
+    public ManualTest(String connectionString, boolean testWrite, int numRandomReads) {
         this.connectionString = connectionString;
         this.testWrite = testWrite;
+        this.numRandomReads = numRandomReads;
         testCases = new ArrayList<>();
     }
 
@@ -129,8 +135,8 @@ public abstract class ManualTest {
             // Read all items in one big request.
             // Shuffle the list of test cases and run the test 10 times.
             System.out.println("Reading all items together in random order");
-            for (int i = 0; i < 100; i++) {
-                System.out.println(" - run number " + i + " of " + 100);
+            for (int i = 0; i < numRandomReads; i++) {
+                System.out.println(" - run number " + i + " of " + numRandomReads);
                 final List<TestCase> shuffledTestcases = new ArrayList<>(testCases);
                 Collections.shuffle(shuffledTestcases);
 
