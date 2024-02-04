@@ -602,8 +602,7 @@ public class DataItem {
       writeSimpleField(
           "nanosecondsSinceEpoch",
           (BigInteger)
-              BigInteger.valueOf(
-                      _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()))
+              BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC))
                   .multiply(BigInteger.valueOf(1000000000))
                   .add(BigInteger.valueOf(_value.getDateTime().getNano())),
           writeUnsignedBigInteger(writeBuffer, 64));

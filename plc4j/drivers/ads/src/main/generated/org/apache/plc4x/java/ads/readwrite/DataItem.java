@@ -377,15 +377,14 @@ public class DataItem {
       // Simple Field (secondsSinceEpoch)
       writeSimpleField(
           "secondsSinceEpoch",
-          (long) _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()),
+          (long) _value.getDateTime().toEpochSecond(ZoneOffset.UTC),
           writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LDATE)) { // LDATE
       // Simple Field (nanosecondsSinceEpoch)
       writeSimpleField(
           "nanosecondsSinceEpoch",
           (BigInteger)
-              BigInteger.valueOf(
-                      _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()))
+              BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC))
                   .multiply(BigInteger.valueOf(1000000000))
                   .add(BigInteger.valueOf(_value.getDateTime().getNano())),
           writeUnsignedBigInteger(writeBuffer, 64));
@@ -405,7 +404,7 @@ public class DataItem {
       // Simple Field (secondsSinceEpoch)
       writeSimpleField(
           "secondsSinceEpoch",
-          (long) _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()),
+          (long) _value.getDateTime().toEpochSecond(ZoneOffset.UTC),
           writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(
         plcValueType, PlcValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
@@ -413,8 +412,7 @@ public class DataItem {
       writeSimpleField(
           "nanosecondsSinceEpoch",
           (BigInteger)
-              BigInteger.valueOf(
-                      _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()))
+              BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC))
                   .multiply(BigInteger.valueOf(1000000000))
                   .add(BigInteger.valueOf(_value.getDateTime().getNano())),
           writeUnsignedBigInteger(writeBuffer, 64));

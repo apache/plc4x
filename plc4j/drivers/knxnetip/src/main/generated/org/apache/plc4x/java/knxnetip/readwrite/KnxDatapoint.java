@@ -7611,7 +7611,7 @@ public class KnxDatapoint {
       // Simple Field (secondsSinceEpoch)
       writeSimpleField(
           "secondsSinceEpoch",
-          (long) _value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset()),
+          (long) _value.getDateTime().toEpochSecond(ZoneOffset.UTC),
           writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.TIME_OF_DAY)) { // TIME_OF_DAY

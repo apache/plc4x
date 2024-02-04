@@ -44,10 +44,7 @@ public class PlcDATE_AND_LTIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     public static PlcDATE_AND_LTIME ofNanosecondsSinceEpoch(BigInteger nanosecondsSinceEpoch) {
-        BigInteger epochSecond = nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000000000L));
-        BigInteger nanoOfSecond = nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000000000L));
-        return new PlcDATE_AND_LTIME(LocalDateTime.ofEpochSecond(epochSecond.longValue(), nanoOfSecond.intValue(),
-            ZoneOffset.UTC));
+        return new PlcDATE_AND_LTIME(nanosecondsSinceEpoch);
     }
 
     public PlcDATE_AND_LTIME(LocalDateTime value) {
@@ -55,9 +52,12 @@ public class PlcDATE_AND_LTIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     public PlcDATE_AND_LTIME(BigInteger nanosecondsSinceEpoch) {
-        super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000000000L)).longValue(),
-            nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000000000L)).intValue(),
-            ZoneOffset.UTC), true);
+        super(
+            LocalDateTime.ofEpochSecond(
+                nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000000000L)).longValue(),
+                nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000000000L)).intValue(),
+                ZoneOffset.UTC),
+            true);
     }
 
     public static PlcDATE_AND_LTIME ofSegments(int year, int month, int day, int hour, int minutes, int seconds, long nannosecondsOfSecond) {

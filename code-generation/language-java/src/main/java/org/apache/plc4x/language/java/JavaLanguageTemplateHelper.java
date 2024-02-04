@@ -626,7 +626,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case "seconds":
                     return "_value.getTime().getSecond()";
                 case "secondsSinceEpoch":
-                    return "_value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset())";
+                    return "_value.getDateTime().toEpochSecond(ZoneOffset.UTC)";
                 case "milliseconds":
                     return "_value.getDuration().toMillis()";
                 case "millisecondsOfSecond":
@@ -656,7 +656,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                         return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_SECOND))";
                     }
                 case "nanosecondsSinceEpoch":
-                    return "BigInteger.valueOf(_value.getDateTime().toEpochSecond(OffsetDateTime.now().getOffset())).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(_value.getDateTime().getNano()))";
+                    return "BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC)).multiply(BigInteger.valueOf(1000000000)).add(BigInteger.valueOf(_value.getDateTime().getNano()))";
                 default:
                     throw new UnsupportedOperationException(String.format("Unsupported field name %s.", propertyField.getName()));
             }

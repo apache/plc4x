@@ -68,6 +68,8 @@ public abstract class ManualTest {
             // Run all entries separately:
             for (TestCase testCase : testCases) {
                 String tagName = testCase.address;
+
+                System.out.println(" - Reading: " + tagName);
                 // Prepare the read-request
                 final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(tagName, testCase.address).build();
 
@@ -112,6 +114,7 @@ public abstract class ManualTest {
 
                 // Try writing the same value back to the PLC.
                 if (testWrite) {
+                    System.out.println(" - Writing: " + tagName);
                     PlcValue plcValue;
                     if (testCase.expectedReadValue instanceof PlcValue) {
                         plcValue = ((PlcValue) testCase.expectedReadValue);
