@@ -17,6 +17,7 @@
 # under the License.
 #
 from abc import abstractmethod
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Union, List, Dict
 
@@ -33,7 +34,7 @@ class PlcRequest(PlcMessage):
 
 @dataclass
 class PlcTagRequest(PlcRequest):
-    tags: Dict[str, PlcTag] = field(default_factory=lambda: {})
+    tags: Dict[str, PlcTag] = field(default_factory=lambda: OrderedDict())
 
     @property
     def tag_names(self):
