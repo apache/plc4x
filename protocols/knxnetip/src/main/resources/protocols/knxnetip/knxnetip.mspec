@@ -883,7 +883,7 @@
             [simple uint 4 month]
             [reserved uint 3 '0x00']
             [simple uint 5 dayOfMonth]
-            [simple uint 3 dayofweek]
+            [simple uint 3 dayOfWeek]
             [simple uint 5 hour]
             [reserved uint 2 '0x00']
             [simple uint 6 minutes]
