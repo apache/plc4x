@@ -1217,7 +1217,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                         tracer = tracer.dive("is _value");
                         sb.append(va.getName().substring(1)).append(va.getChild().map(child -> "." + toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, false)).orElse(""));
                     } else {
-                        sb.append(va.getName()).append((va.getChild().isPresent()) ?
+                        sb.append(camelCaseToSnakeCase(va.getName())).append((va.getChild().isPresent()) ?
                             ".get_" + camelCaseToSnakeCase(toVariableExpression(field, typeReference, va.getChild().orElseThrow(IllegalStateException::new), parserArguments, serializerArguments, false, suppressPointerAccess)) + "()" : "");
                     }
                 }

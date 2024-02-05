@@ -18,6 +18,7 @@
 #
 
 from plc4py.api.value.PlcValue import PlcValue
+from plc4py.protocols.umas import StaticHelper
 from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
@@ -28,6 +29,7 @@ from plc4py.spi.values.PlcValues import PlcDWORD
 from plc4py.spi.values.PlcValues import PlcINT
 from plc4py.spi.values.PlcValues import PlcList
 from plc4py.spi.values.PlcValues import PlcREAL
+from plc4py.spi.values.PlcValues import PlcSTRING
 from plc4py.spi.values.PlcValues import PlcUDINT
 from plc4py.spi.values.PlcValues import PlcUINT
 from plc4py.spi.values.PlcValues import PlcULINT
@@ -168,6 +170,26 @@ class DataItem:
                 )
 
             return PlcList(value)
+        if data_type == UmasDataType.STRING and number_of_values == int(1):  # STRING
+            # Manual Field (value)
+            value: str = (str)(
+                StaticHelper.parse_terminated_string_bytes(
+                    read_buffer, number_of_values
+                )
+            )
+
+            return PlcSTRING(value)
+        if data_type == UmasDataType.STRING:  # List
+            # Array field (value)
+            # Count array
+            item_count: int = int(number_of_values)
+            value: List[PlcValue] = []
+            for cur_item in range(item_count):
+                value.append(
+                    PlcREAL(float(read_buffer.read_float(32, logical_name="")))
+                )
+
+            return PlcList(value)
         return None
 
     @staticmethod
@@ -265,6 +287,16 @@ class DataItem:
                 value: float = val.get_float()
                 write_buffer.write_float((value), 32, "value")
 
+        if data_type == UmasDataType.STRING and number_of_values == int(1):  # STRING
+            # Manual Field (value)
+            serialize_terminated_string(write_buffer, self.value, self.number_of_values)
+        if data_type == UmasDataType.STRING:  # List
+            values: PlcList = _value
+
+            for val in values.get_list():
+                value: float = val.get_float()
+                write_buffer.write_float((value), 32, "value")
+
     @staticmethod
     def get_length_in_bytes(
         _value: PlcValue, data_type: UmasDataType, number_of_values: int
@@ -329,6 +361,12 @@ class DataItem:
             # Simple Field (value)
             size_in_bits += 32
         if data_type == UmasDataType.REAL:  # List
+            values: PlcList = _value
+            size_in_bits += len(values.get_list()) * 32
+        if data_type == UmasDataType.STRING and number_of_values == int(1):  # STRING
+            # Manual Field (value)
+            size_in_bits += self.number_of_values * int(8)
+        if data_type == UmasDataType.STRING:  # List
             values: PlcList = _value
             size_in_bits += len(values.get_list()) * 32
         return size_in_bits

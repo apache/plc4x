@@ -29,18 +29,25 @@ import math
 
 @dataclass
 class VariableRequestReference:
-    data_type: int
+    is_array: int
+    data_size_index: int
     block: int
     base_offset: int
     offset: int
+    array_length: int
     UNKNOWN1: int = 0x01
 
     def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("VariableRequestReference")
 
-        # Simple Field (dataType)
+        # Simple Field (isArray)
         write_buffer.write_unsigned_byte(
-            self.data_type, bit_length=8, logical_name="dataType"
+            self.is_array, bit_length=4, logical_name="isArray"
+        )
+
+        # Simple Field (dataSizeIndex)
+        write_buffer.write_unsigned_byte(
+            self.data_size_index, bit_length=4, logical_name="dataSizeIndex"
         )
 
         # Simple Field (block)
@@ -61,6 +68,12 @@ class VariableRequestReference:
             self.offset, bit_length=8, logical_name="offset"
         )
 
+        # Optional Field (arrayLength) (Can be skipped, if the value is null)
+        if self.is_array:
+            write_buffer.write_unsigned_short(
+                self.array_length, logical_name="arrayLength"
+            )
+
         write_buffer.pop_context("VariableRequestReference")
 
     def length_in_bytes(self) -> int:
@@ -70,8 +83,11 @@ class VariableRequestReference:
         length_in_bits: int = 0
         _value: VariableRequestReference = self
 
-        # Simple field (dataType)
-        length_in_bits += 8
+        # Simple field (isArray)
+        length_in_bits += 4
+
+        # Simple field (dataSizeIndex)
+        length_in_bits += 4
 
         # Simple field (block)
         length_in_bits += 16
@@ -85,6 +101,10 @@ class VariableRequestReference:
         # Simple field (offset)
         length_in_bits += 8
 
+        # Optional Field (arrayLength)
+        if self.is_array:
+            length_in_bits += 16
+
         return length_in_bits
 
     @staticmethod
@@ -95,8 +115,12 @@ class VariableRequestReference:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("VariableRequestReference")
 
-        data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="dataType", bit_length=8
+        is_array: int = read_buffer.read_unsigned_byte(
+            logical_name="isArray", bit_length=4
+        )
+
+        data_size_index: int = read_buffer.read_unsigned_byte(
+            logical_name="dataSizeIndex", bit_length=4
         )
 
         block: int = read_buffer.read_unsigned_short(
@@ -113,10 +137,16 @@ class VariableRequestReference:
             logical_name="offset", bit_length=8
         )
 
+        array_length: int = None
+        if is_array:
+            array_length = read_buffer.read_unsigned_short(logical_name="arrayLength")
+
         read_buffer.pop_context("VariableRequestReference")
         # Create the instance
         _variable_request_reference: VariableRequestReference = (
-            VariableRequestReference(data_type, block, base_offset, offset)
+            VariableRequestReference(
+                is_array, data_size_index, block, base_offset, offset, array_length
+            )
         )
         return _variable_request_reference
 
@@ -129,10 +159,12 @@ class VariableRequestReference:
 
         that: VariableRequestReference = VariableRequestReference(o)
         return (
-            (self.data_type == that.data_type)
+            (self.is_array == that.is_array)
+            and (self.data_size_index == that.data_size_index)
             and (self.block == that.block)
             and (self.base_offset == that.base_offset)
             and (self.offset == that.offset)
+            and (self.array_length == that.array_length)
             and True
         )
 

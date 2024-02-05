@@ -31,7 +31,7 @@ class UmasDataType(AutoNumberEnum):
     DINT = (6, int(3), int(4))
     UDINT = (7, int(3), int(4))
     REAL = (8, int(3), int(4))
-    STRING = (9, int(1), int(1))
+    STRING = (9, int(17), int(1))
     TIME = (10, int(3), int(4))
     UNKNOWN11 = (11, int(1), int(1))
     UNKNOWN12 = (12, int(1), int(1))

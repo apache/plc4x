@@ -119,5 +119,21 @@ def parse_terminated_string(read_buffer: ReadBuffer, string_length) -> str:
     return result
 
 
+def parse_terminated_string_bytes(read_buffer: ReadBuffer, string_length) -> str:
+    terminate: bool = False
+    byte_list: bytearray = bytearray()
+    while not terminate:
+        next_byte: int = read_buffer.read_byte()
+        if next_byte == 0x00:
+            terminate = True
+        else:
+            byte_list.append(next_byte)
+    length = len(byte_list)
+    for _ in range(1, 16 - length):
+        read_buffer.read_byte()
+    result: str = byte_list.decode("UTF-8")
+    return result
+
+
 def serialize_terminated_string(write_buffer, value, string_length):
     pass

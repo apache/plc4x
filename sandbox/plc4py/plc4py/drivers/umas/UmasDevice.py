@@ -23,7 +23,9 @@ from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 
-from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import UmasUnlocatedVariableReference
+from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
+    UmasUnlocatedVariableReference,
+)
 
 from plc4py.drivers.umas.UmasTag import UmasTag
 
@@ -276,7 +278,9 @@ class UmasDevice:
         variable_list = UmasPDUReadUnlocatedVariableNamesResponse.static_parse_builder(
             read_buffer, 0xDD03
         ).build()
-        self.tags = {variable.value.lower(): variable for variable in variable_list.records}
+        self.tags = {
+            variable.value.lower(): variable for variable in variable_list.records
+        }
 
         pass
 
@@ -285,8 +289,9 @@ class UmasDevice:
     ):
         message_future = loop.create_future()
 
-
-        sorted_variable_list: List[VariableRequestReference] = [variable_reference[1] for variable_reference in sorted_tags]
+        sorted_variable_list: List[VariableRequestReference] = [
+            variable_reference[1] for variable_reference in sorted_tags
+        ]
         request_pdu = UmasPDUReadVariableRequestBuilder(
             crc=self.project_crc,
             variable_count=len(sorted_variable_list),
@@ -311,7 +316,9 @@ class UmasDevice:
             response_items = [
                 ResponseItem(
                     PlcResponseCode.OK,
-                    DataItem.static_parse(read_buffer, request_tag.data_type, request_tag.quantity),
+                    DataItem.static_parse(
+                        read_buffer, request_tag.data_type, request_tag.quantity
+                    ),
                 )
             ]
             values[key] = response_items
@@ -324,25 +331,35 @@ class UmasDevice:
         for kea, tag in request.tags.items():
             record = self.tags[tag.tag_name.lower()]
             tag_list.append(
-                (kea,
-                 VariableRequestReference(
-                     data_type=UmasDataType(record.data_type).request_size,
-                     block=record.block,
-                     base_offset=0x0000,
-                     offset=record.offset,
-                 ))
+                (
+                    kea,
+                    VariableRequestReference(
+                        is_array=1 if tag.data_type == UmasDataType.STRING else 0,
+                        data_size_index=UmasDataType(record.data_type).request_size,
+                        block=record.block,
+                        base_offset=0x0000,
+                        offset=record.offset,
+                        array_length=0x0010
+                        if tag.data_type == UmasDataType.STRING
+                        else None,
+                    ),
+                )
             )
-        sorted_tags = sorted(tag_list, key=lambda x: (x[1].block * 100000) + x[1].base_offset + x[1].offset)
+        sorted_tags = sorted(
+            tag_list,
+            key=lambda x: (x[1].block * 100000) + x[1].base_offset + x[1].offset,
+        )
         return sorted_tags
 
-
     async def read(
-            self, request: PlcReadRequest, transport: Transport
-        ) -> PlcReadResponse:
-            """
-            Reads one field from the Umas Device
-            """
-            loop = asyncio.get_running_loop()
-            sorted_tags = self._sort_tags_based_on_memory_address(request)
-            response = await self._send_read_variable_request(transport, loop, request, sorted_tags)
-            return response
+        self, request: PlcReadRequest, transport: Transport
+    ) -> PlcReadResponse:
+        """
+        Reads one field from the Umas Device
+        """
+        loop = asyncio.get_running_loop()
+        sorted_tags = self._sort_tags_based_on_memory_address(request)
+        response = await self._send_read_variable_request(
+            transport, loop, request, sorted_tags
+        )
+        return response

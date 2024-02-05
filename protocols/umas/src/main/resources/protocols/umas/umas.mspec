@@ -165,11 +165,13 @@
 ]
 
 [type VariableRequestReference
-    [simple     uint 8           dataType]
+    [simple     uint 4           isArray]
+    [simple     uint 4           dataSizeIndex]
     [simple     uint 16          block]
     [const      uint 8           unknown1 0x01]
     [simple     uint 16          baseOffset]
     [simple     uint 8           offset]
+    [optional   uint 16          arrayLength 'isArray']
 ]
 
 [type UmasUnlocatedVariableReference
@@ -254,6 +256,12 @@
         ['REAL' List
             [array float 32 value count 'numberOfValues']
         ]
+        ['STRING','1' STRING
+            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, numberOfValues)' '(numberOfValues * 8)'']
+        ]
+        ['STRING' List
+            [array float 32 value count 'numberOfValues']
+        ]
     ]
 ]
 
@@ -266,7 +274,7 @@
     ['6' DINT ['4','3']]
     ['7' UDINT ['4','3']]
     ['8' REAL ['4','3']]
-    ['9' STRING ['1','1']]
+    ['9' STRING ['1','17']]
     ['10' TIME ['4','3']]
     ['11' UNKNOWN11 ['1','1']]
     ['12' UNKNOWN12 ['1','1']]
