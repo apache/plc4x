@@ -24,16 +24,19 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.firmata.readwrite.*;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
-import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagAnalog;
-import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
-import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagDigital;
 import org.apache.plc4x.java.firmata.readwrite.model.FirmataSubscriptionHandle;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagAnalog;
+import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagDigital;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
+import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
@@ -81,12 +84,11 @@ public class FirmataProtocolLogic extends Plc4xProtocolBase<FirmataMessage> impl
             // the second one also containing the name of the remote station. We simply wait for the
             // second one and silently have the decode method drop the first.
             .expectResponse(FirmataMessage.class, REQUEST_TIMEOUT)
-            .check(p -> p instanceof FirmataMessageCommand)
-            .unwrap(p -> ((FirmataMessageCommand) p).getCommand())
-            .check(p -> p instanceof FirmataCommandSysex)
-            .unwrap(p -> ((FirmataCommandSysex) p).getCommand())
-            .check(p -> p instanceof SysexCommandReportFirmwareResponse)
-            .unwrap(p -> (SysexCommandReportFirmwareResponse) p)
+            .only(FirmataMessageCommand.class)
+            .unwrap(FirmataMessageCommand::getCommand)
+            .only(FirmataCommandSysex.class)
+            .unwrap(FirmataCommandSysex::getCommand)
+            .only(SysexCommandReportFirmwareResponse.class)
             .handle(sysexCommandReportFirmware -> {
                 String name = new String(sysexCommandReportFirmware.getFileName(), StandardCharsets.UTF_8);
                 LOGGER.info(String.format("Connected to Firmata host running version %s.%s with name %s",

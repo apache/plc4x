@@ -161,8 +161,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 //context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .check(p -> p.getPayload() instanceof COTPPacketConnectionResponse)
-            .unwrap(p -> (COTPPacketConnectionResponse) p.getPayload())
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketConnectionResponse.class)
             .handle(cotpPacketConnectionResponse -> {
                 logger.debug("Got COTP Connection Response");
                 logger.debug("Sending S7 Connection Request");
@@ -209,14 +209,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                                 context.getChannel().close();
                             })
                             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-                            .check(p -> p.getPayload() instanceof COTPPacketData)
-                            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-                            .check(p -> p.getPayload() instanceof S7MessageUserData)
-                            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
-                            .check(p -> p.getPayload() instanceof S7PayloadUserData)
-                            .handle(messageUserData -> {
+                            .unwrap(TPKTPacket::getPayload)
+                            .only(COTPPacketData.class)
+                            .unwrap(COTPPacketData::getPayload)
+                            .only(S7MessageUserData.class)
+                            .unwrap(S7MessageUserData::getPayload)
+                            .only(S7PayloadUserData.class)
+                            .handle(payloadUserData -> {
                                 logger.debug("Got S7 Identification Response");
-                                S7PayloadUserData payloadUserData = (S7PayloadUserData) messageUserData.getPayload();
                                 extractControllerTypeAndFireConnected(context, payloadUserData);
                             });
                     });
@@ -297,7 +297,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         CompletableFuture<PlcReadResponse> clientFuture = new CompletableFuture<>();
 
         responseFuture.whenComplete((s7Message, throwable) -> {
-            if(throwable != null) {
+            if (throwable != null) {
                 clientFuture.completeExceptionally(new PlcProtocolException("Error reading", throwable));
             } else {
                 try {
@@ -346,7 +346,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         CompletableFuture<PlcWriteResponse> clientFuture = new CompletableFuture<>();
 
         responseFuture.whenComplete((s7Message, throwable) -> {
-            if(throwable != null) {
+            if (throwable != null) {
                 clientFuture.completeExceptionally(new PlcProtocolException("Error writing", throwable));
             } else {
                 try {
@@ -430,8 +430,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 .onTimeout(new TransactionErrorCallback<>(future, transaction))
                 .onError(new TransactionErrorCallback<>(future, transaction))
                 .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-                .check(p -> p.getPayload() instanceof COTPPacketData)
-                .unwrap(p -> ((COTPPacketData) p.getPayload()))
+                .unwrap(TPKTPacket::getPayload)
+                .only(COTPPacketData.class)
                 .unwrap(COTPPacket::getPayload)
                 .check(p -> p.getTpduReference() == tpduId)
                 .handle(p -> {
@@ -511,8 +511,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
             .handle(p -> {
@@ -1424,8 +1424,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             .onTimeout(new TransactionErrorCallback<>(future, transaction))
             .onError(new TransactionErrorCallback<>(future, transaction))
             .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> (COTPPacketData) p.getPayload())
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
             .check(p -> p.getPayload() != null)
             .unwrap(COTPPacket::getPayload)
             .check(p -> p.getTpduReference() == tpduId)
@@ -1892,11 +1892,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 int lengthInBits = DataItem.getLengthInBits(plcValue.getIndex(i), tag.getDataType().getDataProtocolId(), s7DriverContext.getControllerType(), stringLength);
 
                 // Cap the length of the string with the maximum allowed size.
-                if(tag.getDataType() == TransportSize.STRING) {
+                if (tag.getDataType() == TransportSize.STRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 8) + 16);
-                } else if(tag.getDataType() == TransportSize.WSTRING) {
+                } else if (tag.getDataType() == TransportSize.WSTRING) {
                     lengthInBits = Math.min(lengthInBits, (stringLength * 16) + 32);
-                } else if(tag.getDataType() == TransportSize.S5TIME) {
+                } else if (tag.getDataType() == TransportSize.S5TIME) {
                     lengthInBits = lengthInBits * 8;
                 }
                 final WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) Math.ceil(((float) lengthInBits) / 8.0f));
@@ -2068,10 +2068,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 //context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageUserData)
-            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
+            .unwrap(COTPPacketData::getPayload)
+            .only(S7MessageUserData.class)
             .check(p -> p.getPayload() instanceof S7PayloadUserData)
             .handle(future::complete);
 
@@ -2108,10 +2108,10 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 //context.getChannel().close();
             })
             .expectResponse(TPKTPacket.class, Duration.ofMillis(1000))
-            .check(p -> p.getPayload() instanceof COTPPacketData)
-            .unwrap(p -> ((COTPPacketData) p.getPayload()))
-            .check(p -> p.getPayload() instanceof S7MessageUserData)
-            .unwrap(p -> ((S7MessageUserData) p.getPayload()))
+            .unwrap(TPKTPacket::getPayload)
+            .only(COTPPacketData.class)
+            .unwrap(COTPPacketData::getPayload)
+            .only(S7MessageUserData.class)
             .check(p -> p.getPayload() instanceof S7PayloadUserData)
             .handle(future::complete);
 
