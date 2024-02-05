@@ -123,8 +123,10 @@ def parse_terminated_string_bytes(read_buffer: ReadBuffer, string_length) -> str
     terminate: bool = False
     byte_list: bytearray = bytearray()
     while not terminate:
+        if len(byte_list) == 16:
+            break
         next_byte: int = read_buffer.read_byte()
-        if next_byte == 0x00:
+        if next_byte == 0x00 or len(byte_list) == 16:
             terminate = True
         else:
             byte_list.append(next_byte)
