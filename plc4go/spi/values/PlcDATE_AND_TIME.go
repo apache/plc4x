@@ -93,6 +93,10 @@ func (m PlcDATE_AND_TIME) GetNanoseconds() uint32 {
 	return uint32(m.value.Nanosecond())
 }
 
+func (m PlcDATE_AND_TIME) GetMillisecondsOfSecond() uint64 {
+	return uint64(time.Duration(m.GetNanoseconds()).Milliseconds())
+}
+
 func (m PlcDATE_AND_TIME) IsDateTime() bool {
 	return true
 }

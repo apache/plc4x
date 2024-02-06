@@ -357,6 +357,7 @@
               <goal>custom</goal>
             </goals>
             <configuration>
+              <skip>${skipTests}</skip>
               <exec>gotestsum</exec>
               <customCommand>--junitfile</customCommand>
               <buildFlags>
