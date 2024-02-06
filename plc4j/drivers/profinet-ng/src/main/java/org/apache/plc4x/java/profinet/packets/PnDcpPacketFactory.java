@@ -56,16 +56,15 @@ public class PnDcpPacketFactory {
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
             .unwrap(ethernetFrame -> {
-                if(ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
                     return ((Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload()).getPayload();
                 }
                 return ethernetFrame.getPayload();
             })
             .check(ethernetFramePayload -> ethernetFramePayload instanceof Ethernet_FramePayload_PnDcp)
-            .unwrap(ethernetFramePayload -> (Ethernet_FramePayload_PnDcp) ethernetFramePayload)
+            .only(Ethernet_FramePayload_PnDcp.class)
             .unwrap(Ethernet_FramePayload_PnDcp::getPdu)
-            .check(pnDcpPdu -> pnDcpPdu instanceof PnDcp_Pdu_IdentifyRes)
-            .unwrap(pnDcpPdu -> (PnDcp_Pdu_IdentifyRes) pnDcpPdu)
+            .only(PnDcp_Pdu_IdentifyRes.class)
             .handle(future::complete);
         return future;
     }
@@ -102,26 +101,25 @@ public class PnDcpPacketFactory {
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
             .unwrap(ethernetFrame -> {
-                if(ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
                     return ((Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload()).getPayload();
                 }
                 return ethernetFrame.getPayload();
             })
-            .check(ethernetFramePayload -> ethernetFramePayload instanceof Ethernet_FramePayload_IPv4)
-            .unwrap(ethernetFramePayload -> (Ethernet_FramePayload_IPv4) ethernetFramePayload)
+            .only(Ethernet_FramePayload_IPv4.class)
             .unwrap(Ethernet_FramePayload_IPv4::getPayload)
-            .check((dceRpcPacket -> dceRpcPacket.getPayload() instanceof PnIoCm_Packet_Res))
-            .unwrap(dceRpcPacket -> (PnIoCm_Packet_Res) dceRpcPacket.getPayload())
+            .unwrap(DceRpc_Packet::getPayload)
+            .only(PnIoCm_Packet_Res.class)
             .handle(dceRpcPacketRes -> {
-                if(dceRpcPacketRes.getBlocks().size() != 2) {
+                if (dceRpcPacketRes.getBlocks().size() != 2) {
                     future.completeExceptionally(new PlcRuntimeException("Expected 2 blocks in the response"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
+                if (!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
                     future.completeExceptionally(new PlcRuntimeException("The first block was expected to be of type IODReadResponseHeader"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_IAndM0)) {
+                if (!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_IAndM0)) {
                     future.completeExceptionally(new PlcRuntimeException("The second block was expected to be of type PnIoCm_Block_IAndM0"));
                     return;
                 }
@@ -153,6 +151,7 @@ public class PnDcpPacketFactory {
 
         return createEthernetFrame(pnChannel, driverContext, packet);
     }
+
     public static CompletableFuture<PnIoCm_Block_IAndM1> sendReadIAndM1BlockRequest(ConversationContext<Ethernet_Frame> context, RawSocketChannel pnChannel, ProfinetDriverContext driverContext) {
         // TODO: Handle error responses quickly (If the device doesn't support PN CM, then we can abort a lot quicker.
         CompletableFuture<PnIoCm_Block_IAndM1> future = new CompletableFuture<>();
@@ -162,26 +161,25 @@ public class PnDcpPacketFactory {
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
             .unwrap(ethernetFrame -> {
-                if(ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
                     return ((Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload()).getPayload();
                 }
                 return ethernetFrame.getPayload();
             })
-            .check(ethernetFramePayload -> ethernetFramePayload instanceof Ethernet_FramePayload_IPv4)
-            .unwrap(ethernetFramePayload -> (Ethernet_FramePayload_IPv4) ethernetFramePayload)
+            .only(Ethernet_FramePayload_IPv4.class)
             .unwrap(Ethernet_FramePayload_IPv4::getPayload)
-            .check((dceRpcPacket -> dceRpcPacket.getPayload() instanceof PnIoCm_Packet_Res))
-            .unwrap(dceRpcPacket -> (PnIoCm_Packet_Res) dceRpcPacket.getPayload())
+            .unwrap(DceRpc_Packet::getPayload)
+            .only(PnIoCm_Packet_Res.class)
             .handle(dceRpcPacketRes -> {
-                if(dceRpcPacketRes.getBlocks().size() != 2) {
+                if (dceRpcPacketRes.getBlocks().size() != 2) {
                     future.completeExceptionally(new PlcRuntimeException("Expected 2 blocks in the response"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
+                if (!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
                     future.completeExceptionally(new PlcRuntimeException("The first block was expected to be of type IODReadResponseHeader"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_IAndM1)) {
+                if (!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_IAndM1)) {
                     future.completeExceptionally(new PlcRuntimeException("The second block was expected to be of type PnIoCm_Block_IAndM0"));
                     return;
                 }
@@ -223,34 +221,33 @@ public class PnDcpPacketFactory {
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
             .unwrap(ethernetFrame -> {
-                if(ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
                     return ((Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload()).getPayload();
                 }
                 return ethernetFrame.getPayload();
             })
-            .check(ethernetFramePayload -> ethernetFramePayload instanceof Ethernet_FramePayload_IPv4)
-            .unwrap(ethernetFramePayload -> (Ethernet_FramePayload_IPv4) ethernetFramePayload)
+            .only(Ethernet_FramePayload_IPv4.class)
             .unwrap(Ethernet_FramePayload_IPv4::getPayload)
             .unwrap(DceRpc_Packet::getPayload)
             .handle(dceRpcPacket -> {
-                if(dceRpcPacket instanceof PnIoCm_Packet_Rej) {
+                if (dceRpcPacket instanceof PnIoCm_Packet_Rej) {
                     future.completeExceptionally(new PlcRuntimeException("RealIdentificationData not supported"));
                     return;
                 }
-                if(!(dceRpcPacket instanceof PnIoCm_Packet_Res)) {
+                if (!(dceRpcPacket instanceof PnIoCm_Packet_Res)) {
                     future.completeExceptionally(new PlcRuntimeException("Unexpected response type"));
                     return;
                 }
                 PnIoCm_Packet_Res dceRpcPacketRes = (PnIoCm_Packet_Res) dceRpcPacket;
-                if(dceRpcPacketRes.getBlocks().size() != 2) {
+                if (dceRpcPacketRes.getBlocks().size() != 2) {
                     future.completeExceptionally(new PlcRuntimeException("Expected 2 blocks in the response"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
+                if (!(dceRpcPacketRes.getBlocks().get(0) instanceof IODReadResponseHeader)) {
                     future.completeExceptionally(new PlcRuntimeException("The first block was expected to be of type IODReadResponseHeader"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_RealIdentificationData)) {
+                if (!(dceRpcPacketRes.getBlocks().get(1) instanceof PnIoCm_Block_RealIdentificationData)) {
                     future.completeExceptionally(new PlcRuntimeException("The second block was expected to be of type PnIoCm_Block_RealIdentificationData"));
                     return;
                 }
@@ -288,27 +285,26 @@ public class PnDcpPacketFactory {
             .onTimeout(future::completeExceptionally)
             .onError((ethernetFrame, throwable) -> future.completeExceptionally(throwable))
             .unwrap(ethernetFrame -> {
-                if(ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
+                if (ethernetFrame.getPayload() instanceof Ethernet_FramePayload_VirtualLan) {
                     return ((Ethernet_FramePayload_VirtualLan) ethernetFrame.getPayload()).getPayload();
                 }
                 return ethernetFrame.getPayload();
             })
-            .check(ethernetFramePayload -> ethernetFramePayload instanceof Ethernet_FramePayload_IPv4)
-            .unwrap(ethernetFramePayload -> (Ethernet_FramePayload_IPv4) ethernetFramePayload)
+            .only(Ethernet_FramePayload_IPv4.class)
             .unwrap(Ethernet_FramePayload_IPv4::getPayload)
             .unwrap(DceRpc_Packet::getPayload)
             .check(pnIoCmPacket -> pnIoCmPacket instanceof PnIoCm_Packet_Rej || pnIoCmPacket instanceof PnIoCm_Packet_Res)
             .handle(dceRpcPacket -> {
-                if(dceRpcPacket instanceof PnIoCm_Packet_Rej) {
+                if (dceRpcPacket instanceof PnIoCm_Packet_Rej) {
                     future.completeExceptionally(new PlcRuntimeException("ParameterEnd not supported"));
                     return;
                 }
                 PnIoCm_Packet_Res dceRpcPacketRes = (PnIoCm_Packet_Res) dceRpcPacket;
-                if(dceRpcPacketRes.getBlocks().size() != 1) {
+                if (dceRpcPacketRes.getBlocks().size() != 1) {
                     future.completeExceptionally(new PlcRuntimeException("Expected 1 blocks in the response"));
                     return;
                 }
-                if(!(dceRpcPacketRes.getBlocks().get(0) instanceof PnIoCm_Control_Response_ParameterEnd)) {
+                if (!(dceRpcPacketRes.getBlocks().get(0) instanceof PnIoCm_Control_Response_ParameterEnd)) {
                     future.completeExceptionally(new PlcRuntimeException("The block was expected to be of type PnIoCm_Control_Response_ParameterEnd"));
                     return;
                 }
@@ -333,7 +329,7 @@ public class PnDcpPacketFactory {
                 Collections.singletonList(
                     new PnIoCm_Control_Response_ApplicationReady((short) 1, (short) 0,
                         arUuid, sessionKey, 0x0008, 0x0000))
-                )
+            )
         );
 
         InetSocketAddress localAddress = (InetSocketAddress) pnChannel.getLocalAddress();
@@ -404,9 +400,9 @@ public class PnDcpPacketFactory {
     /**
      * Simple helper that creates the UDP packet and Ethernet frame to transport the packet.
      *
-     * @param pnChannel the channel that contains the local and remote address information.
+     * @param pnChannel     the channel that contains the local and remote address information.
      * @param driverContext the context that contains the local and remote port information.
-     * @param packet the actual payload.
+     * @param packet        the actual payload.
      * @return an Ethernet frame that we can send.
      */
     protected static Ethernet_Frame createEthernetFrame(RawSocketChannel pnChannel, ProfinetDriverContext driverContext, DceRpc_Packet packet) {

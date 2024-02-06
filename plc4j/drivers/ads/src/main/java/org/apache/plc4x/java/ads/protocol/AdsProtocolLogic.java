@@ -19,11 +19,10 @@
 package org.apache.plc4x.java.ads.protocol;
 
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
-import org.apache.plc4x.java.ads.discovery.readwrite.*;
 import org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId;
+import org.apache.plc4x.java.ads.discovery.readwrite.*;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
-import org.apache.plc4x.java.ads.readwrite.DataItem;
 import org.apache.plc4x.java.ads.tag.AdsTag;
 import org.apache.plc4x.java.ads.tag.DirectAdsStringTag;
 import org.apache.plc4x.java.ads.tag.DirectAdsTag;
@@ -153,8 +152,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                     .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
                     .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
-                    .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDeviceInfoRequest.getInvokeId())
-                    .unwrap(response -> (AdsReadDeviceInfoResponse) response.getUserdata())
+                    .unwrap(AmsTCPPacket::getUserdata)
+                    .check(userdata -> userdata.getInvokeId() == readDeviceInfoRequest.getInvokeId())
+                    .only(AdsReadDeviceInfoResponse.class)
                     .handle(readDeviceInfoResponse -> {
                         readDeviceInfoTx.endRequest();
                         if (readDeviceInfoResponse.getResult() != ReturnCode.OK) {
@@ -179,8 +179,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                             .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
                             .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
-                            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readOnlineVersionNumberRequest.getInvokeId())
-                            .unwrap(response -> (AdsReadWriteResponse) response.getUserdata())
+                            .unwrap(AmsTCPPacket::getUserdata)
+                            .check(userdata -> userdata.getInvokeId() == readOnlineVersionNumberRequest.getInvokeId())
+                            .only(AdsReadWriteResponse.class)
                             .handle(readOnlineVersionNumberResponse -> {
                                 readOnlineVersionNumberTx.endRequest();
                                 if (readOnlineVersionNumberResponse.getResult() != ReturnCode.OK) {
@@ -202,8 +203,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                         .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                                         .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
                                         .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
-                                        .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readSymbolVersionNumberRequest.getInvokeId())
-                                        .unwrap(response -> (AdsReadResponse) response.getUserdata())
+                                        .unwrap(AmsTCPPacket::getUserdata)
+                                        .check(userdata -> userdata.getInvokeId() == readSymbolVersionNumberRequest.getInvokeId())
+                                        .only(AdsReadResponse.class)
                                         .handle(readSymbolVersionNumberResponse -> {
                                             readSymbolVersionNumberTx.endRequest();
                                             if (readSymbolVersionNumberResponse.getResult() != ReturnCode.OK) {
@@ -322,8 +324,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDataAndSymbolTableSizesRequest.getInvokeId())
-            .unwrap(response -> (AdsReadResponse) response.getUserdata())
+            .unwrap(AmsTCPPacket::getUserdata)
+            .check(userdata -> userdata.getInvokeId() == readDataAndSymbolTableSizesRequest.getInvokeId())
+            .only(AdsReadResponse.class)
             .handle(readDataAndSymbolTableSizesResponse -> {
                 readDataAndSymbolTableSizesTx.endRequest();
                 if (readDataAndSymbolTableSizesResponse.getResult() != ReturnCode.OK) {
@@ -346,8 +349,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                         .onTimeout(future::completeExceptionally)
                         .onError((p, e) -> future.completeExceptionally(e))
-                        .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDataTypeTableRequest.getInvokeId())
-                        .unwrap(response -> (AdsReadResponse) response.getUserdata())
+                        .unwrap(AmsTCPPacket::getUserdata)
+                        .check(userdata -> userdata.getInvokeId() == readDataTypeTableRequest.getInvokeId())
+                        .only(AdsReadResponse.class)
                         .handle(readDataTypeTableResponse -> {
                             readDataTypeTableTx.endRequest();
                             if (readDataTypeTableResponse.getResult() != ReturnCode.OK) {
@@ -376,8 +380,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                                 .onTimeout(future::completeExceptionally)
                                 .onError((p, e) -> future.completeExceptionally(e))
-                                .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readSymbolTableRequest.getInvokeId())
-                                .unwrap(response -> (AdsReadResponse) response.getUserdata())
+                                .unwrap(AmsTCPPacket::getUserdata)
+                                .check(userdata -> userdata.getInvokeId() == readSymbolTableRequest.getInvokeId())
+                                .only(AdsReadResponse.class)
                                 .handle(readSymbolTableResponse -> {
                                     readSymbolTableTx.endRequest();
                                     if (readSymbolTableResponse.getResult() != ReturnCode.OK) {
@@ -410,12 +415,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     consumer.put("onlineVersion", Collections.singletonList(plcSubscriptionEvent -> {
                                         long oldVersion = onlineVersion;
                                         long newVersion = plcSubscriptionEvent.getPlcValue("onlineVersion").getLong();
-                                        if(oldVersion != newVersion) {
-                                            if(invalidationLock.tryLock()) {
+                                        if (oldVersion != newVersion) {
+                                            if (invalidationLock.tryLock()) {
                                                 LOGGER.info("Detected change of the 'online-version', invalidating data type and symbol information.");
                                                 CompletableFuture<Void> reloadingFuture = readSymbolTableAndDatatypeTable(context);
                                                 reloadingFuture.whenComplete((unused, throwable) -> {
-                                                    if(throwable != null) {
+                                                    if (throwable != null) {
                                                         LOGGER.error("Error reloading data type and symbol data", throwable);
                                                     }
                                                     invalidationLock.unlock();
@@ -426,12 +431,12 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                     consumer.put("symbolVersion", Collections.singletonList(plcSubscriptionEvent -> {
                                         int oldVersion = symbolVersion;
                                         int newVersion = plcSubscriptionEvent.getPlcValue("symbolVersion").getInteger();
-                                        if(oldVersion != newVersion) {
-                                            if(invalidationLock.tryLock()) {
+                                        if (oldVersion != newVersion) {
+                                            if (invalidationLock.tryLock()) {
                                                 LOGGER.info("Detected change of the 'symbol-version', invalidating data type and symbol information.");
                                                 CompletableFuture<Void> reloadingFuture = readSymbolTableAndDatatypeTable(context);
                                                 reloadingFuture.whenComplete((unused, throwable) -> {
-                                                    if(throwable != null) {
+                                                    if (throwable != null) {
                                                         LOGGER.error("Error reloading data type and symbol data", throwable);
                                                     }
                                                     invalidationLock.unlock();
@@ -444,15 +449,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
 
                                     // Wait for the subscription to be finished
                                     subscriptionResponseCompletableFuture.whenComplete((plcSubscriptionResponse, throwable) -> {
-                                        if(throwable == null) {
+                                        if (throwable == null) {
                                             future.complete(null);
                                         }
                                     });
                                 }));
                         }));
-                    } catch (ParseException e) {
-                        future.completeExceptionally(new PlcException("Error loading the table sizes", e));
-                    }
+                } catch (ParseException e) {
+                    future.completeExceptionally(new PlcException("Error loading the table sizes", e));
+                }
             }));
         return future;
     }
@@ -499,17 +504,17 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 options.put("offset", new PlcUDINT(symbol.getOffset()));
                 options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
 
-                if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
+                if (plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
                     List<ArrayInfo> arrayInfo = new ArrayList<>();
                     for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
                         arrayInfo.add(new DefaultArrayInfo(
                             (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
                     }
-                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem( new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), itemName,
+                    DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), itemName,
                         true, !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
-                    if(interceptor.intercept(item)) {
+                    if (interceptor.intercept(item)) {
                         // Add the type itself.
                         resultsForQuery.add(item);
                     }
@@ -518,7 +523,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                         !symbol.getFlagReadOnly(), true, childMap, options);
 
                     // Check if this item should be added to the result
-                    if(interceptor.intercept(item)) {
+                    if (interceptor.intercept(item)) {
                         // Add the type itself.
                         resultsForQuery.add(item);
                     }
@@ -565,7 +570,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("offset", new PlcUDINT(baseOffset + child.getOffset()));
             options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
 
-            if(plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
+            if (plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
                 List<ArrayInfo> arrayInfo = new ArrayList<>();
                 for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
                     arrayInfo.add(new DefaultArrayInfo(
@@ -596,12 +601,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
             .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
-            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == readDeviceInfoRequest.getInvokeId())
-            .unwrap(response -> (AdsReadDeviceInfoResponse) response.getUserdata())
+            .unwrap(AmsTCPPacket::getUserdata)
+            .check(userdata -> userdata.getInvokeId() == readDeviceInfoRequest.getInvokeId())
+            .only(AdsReadDeviceInfoResponse.class)
             .handle(readDeviceInfoResponse -> {
-                    readDeviceInfoTx.endRequest();
+                readDeviceInfoTx.endRequest();
                 future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
-                }));
+            }));
         return future;
     }
 
@@ -670,7 +676,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         String dataTypeName = directAdsTag.getPlcDataType();
         AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
         long size;
-        if(adsDataTypeTableEntry == null) {
+        if (adsDataTypeTableEntry == null) {
             size = AdsDataType.valueOf(dataTypeName).getNumBytes();
         } else {
             size = adsDataTypeTableEntry.getSize();
@@ -687,8 +693,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(amsResponsePacket -> (AdsReadResponse) amsResponsePacket.getUserdata())
+            .unwrap(AmsTCPPacket::getUserdata)
+            .check(userdata -> userdata.getInvokeId() == amsPacket.getInvokeId())
+            .only(AdsReadResponse.class)
             .handle(response -> {
                 if (response.getResult() == ReturnCode.OK) {
                     final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, response);
@@ -714,7 +721,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 String dataTypeName = tag.getPlcDataType();
                 AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
                 long size;
-                if(adsDataTypeTableEntry == null) {
+                if (adsDataTypeTableEntry == null) {
                     size = AdsDataType.valueOf(dataTypeName).getNumBytes();
                 } else {
                     size = adsDataTypeTableEntry.getSize();
@@ -728,20 +735,20 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
             0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_READ.getValue(), resolvedTags.size(),
             expectedResponseDataSize, readRequest.getTagNames().stream().map(tagName -> {
-                AdsTag tag = (AdsTag) readRequest.getTag(tagName);
-                DirectAdsTag directAdsTag = resolvedTags.get(tag);
-                String dataTypeName = directAdsTag.getPlcDataType();
-                AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
-                long size;
-                if(adsDataTypeTableEntry == null) {
-                    size = AdsDataType.valueOf(dataTypeName).getNumBytes();
-                } else {
-                    size = adsDataTypeTableEntry.getSize();
-                }
-                return new AdsMultiRequestItemRead(
-                    directAdsTag.getIndexGroup(), directAdsTag.getIndexOffset(),
-                    (size * directAdsTag.getNumberOfElements()));
-            }).collect(Collectors.toList()), null);
+            AdsTag tag = (AdsTag) readRequest.getTag(tagName);
+            DirectAdsTag directAdsTag = resolvedTags.get(tag);
+            String dataTypeName = directAdsTag.getPlcDataType();
+            AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(dataTypeName);
+            long size;
+            if (adsDataTypeTableEntry == null) {
+                size = AdsDataType.valueOf(dataTypeName).getNumBytes();
+            } else {
+                size = adsDataTypeTableEntry.getSize();
+            }
+            return new AdsMultiRequestItemRead(
+                directAdsTag.getIndexGroup(), directAdsTag.getIndexOffset(),
+                (size * directAdsTag.getNumberOfElements()));
+        }).collect(Collectors.toList()), null);
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
         // Start a new request-transaction (Is ended in the response-handler)
@@ -750,8 +757,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(amsResponsePacket -> (AdsReadWriteResponse) amsResponsePacket.getUserdata())
+            .unwrap(AmsTCPPacket::getUserdata)
+            .check(userdata -> userdata.getInvokeId() == amsPacket.getInvokeId())
+            .only(AdsReadWriteResponse.class)
             .handle(response -> {
                 if (response.getResult() == ReturnCode.OK) {
                     final PlcReadResponse plcReadResponse = convertToPlc4xReadResponse(readRequest, response);
@@ -1007,8 +1015,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-                .unwrap(amsResponsePacket -> (AdsWriteResponse) amsResponsePacket.getUserdata())
+                .unwrap(AmsTCPPacket::getUserdata)
+                .check(userdata -> userdata.getInvokeId() == amsPacket.getInvokeId())
+                .only(AdsWriteResponse.class)
                 .handle(response -> {
                     if (response.getResult() == ReturnCode.OK) {
                         final PlcWriteResponse plcWriteResponse = convertToPlc4xWriteResponse(writeRequest, response);
@@ -1081,8 +1090,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
-            .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
-            .unwrap(responseAmsPacket -> (AdsReadWriteResponse) responseAmsPacket.getUserdata())
+            .unwrap(AmsTCPPacket::getUserdata)
+            .check(userdata -> userdata.getInvokeId() == amsPacket.getInvokeId())
+            .only(AdsReadWriteResponse.class)
             .handle(response -> {
                 if (response.getResult() == ReturnCode.OK) {
                     final PlcWriteResponse plcWriteResponse = convertToPlc4xWriteResponse(writeRequest, response);
@@ -1125,7 +1135,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             AdsDataTypeArrayInfo curArrayLevel = arrayInfo.get(0);
             List<? extends PlcValue> list = contextValue.getList();
-            if(curArrayLevel.getNumElements() != list.size()) {
+            if (curArrayLevel.getNumElements() != list.size()) {
                 throw new SerializationException(String.format(
                     "Expected a PlcList of size %d, but got one of size %d", curArrayLevel.getNumElements(), list.size()));
             }
@@ -1292,8 +1302,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == packet.getUserdata().getInvokeId())
-                .unwrap(responseAmsPacket -> (AdsAddDeviceNotificationResponse) responseAmsPacket.getUserdata())
+                .unwrap(AmsTCPPacket::getUserdata)
+                .check(userdata -> userdata.getInvokeId() == packet.getUserdata().getInvokeId())
+                .only(AdsAddDeviceNotificationResponse.class)
                 .handle(response -> {
                     if (response.getResult() == ReturnCode.OK) {
                         DefaultPlcSubscriptionTag subscriptionTag = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
@@ -1372,8 +1383,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 .expectResponse(AmsTCPPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == packet.getUserdata().getInvokeId())
-                .unwrap(responseAmsPacket -> (AdsDeleteDeviceNotificationResponse) responseAmsPacket.getUserdata())
+                .unwrap(AmsTCPPacket::getUserdata)
+                .check(userdata -> userdata.getInvokeId() == packet.getUserdata().getInvokeId())
+                .only(AdsDeleteDeviceNotificationResponse.class)
                 .handle(response -> {
                     if (response.getResult() == ReturnCode.OK) {
                         // After receiving the last DELETE_DEVICE_NOTIFICATION response, complete the PLC4X response.
@@ -1548,8 +1560,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
             .unwrap(AmsTCPPacket::getUserdata)
-            .check(AdsReadWriteResponse.class::isInstance)
-            .unwrap(AdsReadWriteResponse.class::cast)
+            .only(AdsReadWriteResponse.class)
             .handle(response -> {
                 if (response.getResult() != ReturnCode.OK) {
                     future.completeExceptionally(new PlcException("Couldn't retrieve handle for symbolic tag " +
@@ -1600,8 +1611,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             .onError((p, e) -> future.completeExceptionally(e))
             .check(responseAmsPacket -> responseAmsPacket.getUserdata().getInvokeId() == amsPacket.getInvokeId())
             .unwrap(AmsTCPPacket::getUserdata)
-            .check(AdsReadWriteResponse.class::isInstance)
-            .unwrap(AdsReadWriteResponse.class::cast)
+            .only(AdsReadWriteResponse.class)
             .handle(response -> {
                 ReadBuffer readBuffer = new ReadBufferByteBased(response.getData(), ByteOrder.LITTLE_ENDIAN);
                 Map<SymbolicAdsTag, Long> returnCodes = new HashMap<>();
@@ -1669,11 +1679,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 return null;
             }
             AdsSymbolTableEntry adsSymbolTableEntry = symbolTable.get(symbolicAddress);
-            if(adsSymbolTableEntry == null) {
+            if (adsSymbolTableEntry == null) {
                 throw new PlcInvalidTagException("Couldn't resolve symbolic address: " + symbolicAddress);
             }
             AdsDataTypeTableEntry dataTypeTableEntry = dataTypeTable.get(adsSymbolTableEntry.getDataTypeName());
-            if(dataTypeTableEntry == null) {
+            if (dataTypeTableEntry == null) {
                 throw new PlcInvalidTagException(
                     "Couldn't resolve datatype: '" + adsSymbolTableEntry.getDataTypeName() +
                         "' for address: '" + ((SymbolicAdsTag) tag).getSymbolicAddress() + "'");
@@ -1685,11 +1695,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         else {
             String symbolName = addressParts[0] + "." + addressParts[1];
             AdsSymbolTableEntry adsSymbolTableEntry = symbolTable.get(symbolName);
-            if(adsSymbolTableEntry == null) {
+            if (adsSymbolTableEntry == null) {
                 throw new PlcInvalidTagException("Couldn't resolve symbolic address: " + symbolName);
             }
             AdsDataTypeTableEntry adsDataTypeTableEntry = dataTypeTable.get(adsSymbolTableEntry.getDataTypeName());
-            if(adsDataTypeTableEntry == null) {
+            if (adsDataTypeTableEntry == null) {
                 throw new PlcInvalidTagException(
                     "Couldn't resolve datatype: '" + adsSymbolTableEntry.getDataTypeName() +
                         "' for address: '" + ((SymbolicAdsTag) tag).getSymbolicAddress() + "'");
@@ -1703,10 +1713,10 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     protected DirectAdsTag resolveDirectAdsTagForSymbolicNameFromDataType(List<String> remainingAddressParts, long currentGroup, long currentOffset, AdsDataTypeTableEntry adsDataTypeTableEntry) {
         if (remainingAddressParts.isEmpty()) {
             // TODO: Implement the Array support
-            if(adsDataTypeTableEntry.getDataType() == AdsDataType.CHAR.getValue()) {
+            if (adsDataTypeTableEntry.getDataType() == AdsDataType.CHAR.getValue()) {
                 int stringLength = (int) adsDataTypeTableEntry.getSize() - 1;
                 return new DirectAdsStringTag(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), stringLength, 1);
-            } else if(adsDataTypeTableEntry.getDataType() == AdsDataType.WCHAR.getValue()) {
+            } else if (adsDataTypeTableEntry.getDataType() == AdsDataType.WCHAR.getValue()) {
                 int stringLength = (int) (adsDataTypeTableEntry.getSize() - 2) / 2;
                 return new DirectAdsStringTag(currentGroup, currentOffset, adsDataTypeTableEntry.getDataTypeName(), stringLength, 1);
             } else {
@@ -1745,7 +1755,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             }
             // There seem to be some data types, that have odd names, but no children
             // So we'll check if their "simpleTypeName" matches instead.
-            if(dataTypeTableEntry.getChildren().isEmpty()) {
+            if (dataTypeTableEntry.getChildren().isEmpty()) {
                 try {
                     dataTypeName = dataTypeTableEntry.getSimpleTypeName();
                     if (dataTypeName.startsWith("STRING(")) {
