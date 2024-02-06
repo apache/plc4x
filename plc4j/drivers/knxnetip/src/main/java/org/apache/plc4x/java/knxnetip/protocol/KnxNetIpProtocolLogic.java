@@ -497,6 +497,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 ReadBuffer rawDataReader = new ReadBufferByteBased(payload);
                 final PlcValue value = KnxDatapoint.staticParse(rawDataReader,
                     groupAddress.getType());
+                LOGGER.trace("Incoming message {} with payload {} decoded to {}",
+                    groupAddress, Hex.encodeHexString(payload), (value != null) ? value.toString() : "");
 
                 // Assemble the plc4x return data-structure.
                 Map<String, PlcValue> dataPointMap = new HashMap<>();

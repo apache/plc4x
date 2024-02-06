@@ -452,9 +452,14 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         try {
             if (bitLength == 16) {
-                return readFloat16();
+                if("KNXFloat".equals(encoding)) {
+                    return readKnxFloat16();
+                } else {
+                    return readFloat16();
+                }
             } else if (bitLength == 32) {
                 return readFloat32(logicalName);
             } else {
@@ -465,37 +470,18 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         }
     }
 
-    private float readFloat16() throws IOException {
+    private float readKnxFloat16() throws IOException {
         // NOTE: KNX uses 4 bits as exponent and 11 as fraction
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 4);
         short fraction = bi.readShort(true, 11);
-        // This is a 12-bit 2's complement notation ... the first bit belongs to the last 11 bits.
-        // If the first bit is set, then we need to also set the upper 5 bits of the fraction part.
         if (sign) {
             fraction = (short) (fraction | 0xF800);
         }
-        if ((exponent >= 1) && (exponent < 15)) {
-            return (float) (0.01 * fraction * Math.pow(2, exponent));
-        }
-        if (exponent == 0) {
-            if (fraction == 0) {
-                return 0.0f;
-            } else {
-                return (2 ^ (-14)) * (fraction / 10f);
-            }
-        }
-        if (exponent == 15) {
-            if (fraction == 0) {
-                return sign ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
-            } else {
-                return Float.NaN;
-            }
-        }
-        throw new NumberFormatException();
+        return (float) (0.01 * fraction * Math.pow(2, exponent));
     }
 
-    /*private float readFloat16() throws IOException {
+    private float readFloat16() throws IOException {
         // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 5);
@@ -519,7 +505,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             }
         }
         throw new NumberFormatException();
-    }*/
+    }
 
     private float readFloat32(String logicalName) throws ParseException {
         int intValue = readInt(logicalName, 32);

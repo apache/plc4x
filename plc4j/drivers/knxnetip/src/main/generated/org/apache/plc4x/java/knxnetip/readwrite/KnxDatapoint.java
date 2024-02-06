@@ -791,145 +791,168 @@ public class KnxDatapoint {
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Tempd)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Tempa)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Lux)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Wsp)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Pres)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_Humidity)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_AirQuality)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_AirFlow)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Time1)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Time2)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Volt)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Curr)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_PowerDensity)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_KelvinPerPercent)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Power)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_Volume_Flow)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Rain_Amount)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Temp_F)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Wsp_kmh)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_Absolute_Humidity)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Concentration_ygm3)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Coefficient)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_TimeOfDay)) { // Struct
       Short reservedField0 =
@@ -1658,14 +1681,16 @@ public class KnxDatapoint {
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Volume_Flux_ls)) { // REAL
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float value = readSimpleField("value", readFloat(readBuffer, 16));
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Access_Data)) { // Struct
       Short reservedField0 =
@@ -3230,11 +3255,17 @@ public class KnxDatapoint {
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float tempsetpcomf = readSimpleField("tempsetpcomf", readFloat(readBuffer, 16));
+      float tempsetpcomf =
+          readSimpleField(
+              "tempsetpcomf", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
 
-      float tempsetpstdby = readSimpleField("tempsetpstdby", readFloat(readBuffer, 16));
+      float tempsetpstdby =
+          readSimpleField(
+              "tempsetpstdby", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
 
-      float tempsetpeco = readSimpleField("tempsetpeco", readFloat(readBuffer, 16));
+      float tempsetpeco =
+          readSimpleField(
+              "tempsetpeco", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("tempsetpcomf", new PlcREAL(tempsetpcomf));
@@ -3246,11 +3277,17 @@ public class KnxDatapoint {
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      float tempsetpshiftcomf = readSimpleField("tempsetpshiftcomf", readFloat(readBuffer, 16));
+      float tempsetpshiftcomf =
+          readSimpleField(
+              "tempsetpshiftcomf", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
 
-      float tempsetpshiftstdby = readSimpleField("tempsetpshiftstdby", readFloat(readBuffer, 16));
+      float tempsetpshiftstdby =
+          readSimpleField(
+              "tempsetpshiftstdby", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
 
-      float tempsetpshifteco = readSimpleField("tempsetpshifteco", readFloat(readBuffer, 16));
+      float tempsetpshifteco =
+          readSimpleField(
+              "tempsetpshifteco", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("tempsetpshiftcomf", new PlcREAL(tempsetpshiftcomf));
@@ -3904,16 +3941,28 @@ public class KnxDatapoint {
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
       float roomTemperatureSetpointComfort =
-          readSimpleField("roomTemperatureSetpointComfort", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointComfort",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       float roomTemperatureSetpointStandby =
-          readSimpleField("roomTemperatureSetpointStandby", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointStandby",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       float roomTemperatureSetpointEconomy =
-          readSimpleField("roomTemperatureSetpointEconomy", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointEconomy",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       float roomTemperatureSetpointBuildingProtection =
-          readSimpleField("roomTemperatureSetpointBuildingProtection", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointBuildingProtection",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put("roomTemperatureSetpointComfort", new PlcREAL(roomTemperatureSetpointComfort));
@@ -3929,17 +3978,28 @@ public class KnxDatapoint {
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
       float roomTemperatureSetpointShiftComfort =
-          readSimpleField("roomTemperatureSetpointShiftComfort", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointShiftComfort",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       float roomTemperatureSetpointShiftStandby =
-          readSimpleField("roomTemperatureSetpointShiftStandby", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointShiftStandby",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       float roomTemperatureSetpointShiftEconomy =
-          readSimpleField("roomTemperatureSetpointShiftEconomy", readFloat(readBuffer, 16));
+          readSimpleField(
+              "roomTemperatureSetpointShiftEconomy",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       float roomTemperatureSetpointShiftBuildingProtection =
           readSimpleField(
-              "roomTemperatureSetpointShiftBuildingProtection", readFloat(readBuffer, 16));
+              "roomTemperatureSetpointShiftBuildingProtection",
+              readFloat(readBuffer, 16),
+              WithOption.WithEncoding("KNXFloat"));
 
       Map<String, PlcValue> _map = new HashMap<>();
       _map.put(
@@ -8124,145 +8184,237 @@ public class KnxDatapoint {
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Tempd)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Tempa)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Lux)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Wsp)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Pres)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_Humidity)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_AirQuality)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_AirFlow)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Time1)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Time2)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Volt)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Curr)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_PowerDensity)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_KelvinPerPercent)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Power)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_Volume_Flow)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Rain_Amount)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Temp_F)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Value_Wsp_kmh)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Value_Absolute_Humidity)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Concentration_ygm3)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Coefficient)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType,
         KnxDatapointType.DPT_TimeOfDay)) { // Struct                // Output something here ...
@@ -8949,14 +9101,22 @@ public class KnxDatapoint {
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Volume_Flux_ls)) { // REAL
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
       // Simple Field (value)
-      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 16));
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
     } else if (EvaluationHelper.equals(
         datapointType,
         KnxDatapointType.DPT_Access_Data)) { // Struct                // Output something here ...
