@@ -130,10 +130,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
     @Override
     public void close(ConversationContext<TPKTPacket> context) {
-        // TODO Implement Closing on Protocol Level
-        clientExecutorService.close();
+        // TODO: Find out how to close this prior to Java 19
+        //clientExecutorService.close();
         tm.shutdown();
         eventLogic.stop();
+        // TODO Implement Closing on Protocol Level
     }
 
     @Override
