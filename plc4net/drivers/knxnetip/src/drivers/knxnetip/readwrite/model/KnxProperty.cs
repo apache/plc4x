@@ -672,18 +672,18 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // WORD
+            } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // BYTE
 
                 // Simple Field (value)
                 var value = readBuffer.ReadByte("", 8);
 
-                return new PlcWORD(value);
-            } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // DWORD
+                return new PlcBYTE(value);
+            } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // WORD
 
                 // Simple Field (value)
                 var value = readBuffer.ReadUshort("", 16);
 
-                return new PlcDWORD(value);
+                return new PlcWORD(value);
             } else if( propertyType == KnxPropertyDataType.PDT_ENUM8 ) { // USINT
 
                 // Simple Field (value)
@@ -1223,14 +1223,14 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // WORD
+        } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // BYTE
                 var writeBuffer = new WriteBuffer();
 
                 // Simple Field (value)
                 var value = (byte) _value.GetByte();
                 writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // DWORD
+        } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // WORD
                 var writeBuffer = new WriteBuffer();
 
                 // Simple Field (value)

@@ -350,8 +350,20 @@
             </configuration>
           </execution>
 
+          <!-- Disabling the default binding, because we're running a custom version after this -->
           <execution>
             <id>default-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>test</id>
             <phase>test</phase>
             <goals>
               <goal>custom</goal>
