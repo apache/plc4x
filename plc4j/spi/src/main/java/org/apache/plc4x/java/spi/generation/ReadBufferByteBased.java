@@ -137,7 +137,24 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
-            return bi.readByte(true, bitLength);
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "default":
+                    return bi.readByte(true, bitLength);
+                // BCD = Binary Encoded Decimal (A decimal number is represented by a sequence of 4 bit hexadecimal values from 0-9.
+                // https://www.elektronik-kompendium.de/sites/dig/1010311.htm
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    byte digit = bi.readByte(true, 4);
+                    if((digit < 0) || (digit > 9)) {
+                        throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                    }
+                    return digit;
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
+            }
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned byte", e);
         }
@@ -167,6 +184,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Short.parseShort(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    short value = 0;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (short) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     // No need to flip here as we're only reading one byte.
                     return bi.readShort(true, bitLength);
@@ -202,6 +234,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Integer.parseInt(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    int value = 0;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (int) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final int longValue = bi.readInt(true, bitLength);
@@ -240,6 +287,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Long.parseLong(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    long value = 0;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (long) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final long longValue = bi.readLong(true, bitLength);
@@ -279,6 +341,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return new BigInteger(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    BigInteger value = BigInteger.ZERO;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value = value.add(BigInteger.valueOf(digit).multiply(BigInteger.valueOf(10).pow(i)));
+                    }
+                    return value;
                 case "default":
                     // Read as signed value
                     long val = bi.readLong(false, bitLength);

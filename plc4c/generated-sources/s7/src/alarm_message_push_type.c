@@ -38,13 +38,13 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_push_type_parse(plc4x_spi_co
     return NO_MEMORY;
   }
 
-  // Simple Field (TimeStamp)
-  plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  // Simple Field (timeStamp)
+  plc4c_s7_read_write_date_and_time* timeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &timeStamp);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->time_stamp = TimeStamp;
+  (*_message)->time_stamp = timeStamp;
 
   // Simple Field (functionId)
   uint8_t functionId = 0;
@@ -88,7 +88,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_push_type_parse(plc4x_spi_co
 plc4c_return_code plc4c_s7_read_write_alarm_message_push_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_alarm_message_push_type* _message) {
   plc4c_return_code _res = OK;
 
-  // Simple Field (TimeStamp)
+  // Simple Field (timeStamp)
   _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->time_stamp);
   if(_res != OK) {
     return _res;
@@ -128,7 +128,7 @@ uint16_t plc4c_s7_read_write_alarm_message_push_type_length_in_bytes(plc4x_spi_c
 uint16_t plc4c_s7_read_write_alarm_message_push_type_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_alarm_message_push_type* _message) {
   uint16_t lengthInBits = 0;
 
-  // Simple field (TimeStamp)
+  // Simple field (timeStamp)
   lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->time_stamp);
 
   // Simple field (functionId)

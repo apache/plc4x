@@ -141,15 +141,15 @@ func (m *_S7PayloadDiagnosticMessage) GetTimeStamp() DateAndTime {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadDiagnosticMessage factory function for _S7PayloadDiagnosticMessage
-func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber uint8, DatId uint16, Info1 uint16, Info2 uint32, TimeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadDiagnosticMessage {
+func NewS7PayloadDiagnosticMessage(eventId uint16, priorityClass uint8, obNumber uint8, datId uint16, info1 uint16, info2 uint32, timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadDiagnosticMessage {
 	_result := &_S7PayloadDiagnosticMessage{
-		EventId:                EventId,
-		PriorityClass:          PriorityClass,
-		ObNumber:               ObNumber,
-		DatId:                  DatId,
-		Info1:                  Info1,
-		Info2:                  Info2,
-		TimeStamp:              TimeStamp,
+		EventId:                eventId,
+		PriorityClass:          priorityClass,
+		ObNumber:               obNumber,
+		DatId:                  datId,
+		Info1:                  info1,
+		Info2:                  info2,
+		TimeStamp:              timeStamp,
 		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
@@ -174,25 +174,25 @@ func (m *_S7PayloadDiagnosticMessage) GetTypeName() string {
 func (m *_S7PayloadDiagnosticMessage) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (EventId)
+	// Simple field (eventId)
 	lengthInBits += 16
 
-	// Simple field (PriorityClass)
+	// Simple field (priorityClass)
 	lengthInBits += 8
 
-	// Simple field (ObNumber)
+	// Simple field (obNumber)
 	lengthInBits += 8
 
-	// Simple field (DatId)
+	// Simple field (datId)
 	lengthInBits += 16
 
-	// Simple field (Info1)
+	// Simple field (info1)
 	lengthInBits += 16
 
-	// Simple field (Info2)
+	// Simple field (info2)
 	lengthInBits += 32
 
-	// Simple field (TimeStamp)
+	// Simple field (timeStamp)
 	lengthInBits += m.TimeStamp.GetLengthInBits(ctx)
 
 	return lengthInBits
@@ -217,59 +217,59 @@ func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (EventId)
-	_EventId, _EventIdErr := readBuffer.ReadUint16("EventId", 16)
-	if _EventIdErr != nil {
-		return nil, errors.Wrap(_EventIdErr, "Error parsing 'EventId' field of S7PayloadDiagnosticMessage")
+	// Simple Field (eventId)
+	_eventId, _eventIdErr := readBuffer.ReadUint16("eventId", 16)
+	if _eventIdErr != nil {
+		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of S7PayloadDiagnosticMessage")
 	}
-	EventId := _EventId
+	eventId := _eventId
 
-	// Simple Field (PriorityClass)
-	_PriorityClass, _PriorityClassErr := readBuffer.ReadUint8("PriorityClass", 8)
-	if _PriorityClassErr != nil {
-		return nil, errors.Wrap(_PriorityClassErr, "Error parsing 'PriorityClass' field of S7PayloadDiagnosticMessage")
+	// Simple Field (priorityClass)
+	_priorityClass, _priorityClassErr := readBuffer.ReadUint8("priorityClass", 8)
+	if _priorityClassErr != nil {
+		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of S7PayloadDiagnosticMessage")
 	}
-	PriorityClass := _PriorityClass
+	priorityClass := _priorityClass
 
-	// Simple Field (ObNumber)
-	_ObNumber, _ObNumberErr := readBuffer.ReadUint8("ObNumber", 8)
-	if _ObNumberErr != nil {
-		return nil, errors.Wrap(_ObNumberErr, "Error parsing 'ObNumber' field of S7PayloadDiagnosticMessage")
+	// Simple Field (obNumber)
+	_obNumber, _obNumberErr := readBuffer.ReadUint8("obNumber", 8)
+	if _obNumberErr != nil {
+		return nil, errors.Wrap(_obNumberErr, "Error parsing 'obNumber' field of S7PayloadDiagnosticMessage")
 	}
-	ObNumber := _ObNumber
+	obNumber := _obNumber
 
-	// Simple Field (DatId)
-	_DatId, _DatIdErr := readBuffer.ReadUint16("DatId", 16)
-	if _DatIdErr != nil {
-		return nil, errors.Wrap(_DatIdErr, "Error parsing 'DatId' field of S7PayloadDiagnosticMessage")
+	// Simple Field (datId)
+	_datId, _datIdErr := readBuffer.ReadUint16("datId", 16)
+	if _datIdErr != nil {
+		return nil, errors.Wrap(_datIdErr, "Error parsing 'datId' field of S7PayloadDiagnosticMessage")
 	}
-	DatId := _DatId
+	datId := _datId
 
-	// Simple Field (Info1)
-	_Info1, _Info1Err := readBuffer.ReadUint16("Info1", 16)
-	if _Info1Err != nil {
-		return nil, errors.Wrap(_Info1Err, "Error parsing 'Info1' field of S7PayloadDiagnosticMessage")
+	// Simple Field (info1)
+	_info1, _info1Err := readBuffer.ReadUint16("info1", 16)
+	if _info1Err != nil {
+		return nil, errors.Wrap(_info1Err, "Error parsing 'info1' field of S7PayloadDiagnosticMessage")
 	}
-	Info1 := _Info1
+	info1 := _info1
 
-	// Simple Field (Info2)
-	_Info2, _Info2Err := readBuffer.ReadUint32("Info2", 32)
-	if _Info2Err != nil {
-		return nil, errors.Wrap(_Info2Err, "Error parsing 'Info2' field of S7PayloadDiagnosticMessage")
+	// Simple Field (info2)
+	_info2, _info2Err := readBuffer.ReadUint32("info2", 32)
+	if _info2Err != nil {
+		return nil, errors.Wrap(_info2Err, "Error parsing 'info2' field of S7PayloadDiagnosticMessage")
 	}
-	Info2 := _Info2
+	info2 := _info2
 
-	// Simple Field (TimeStamp)
-	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
+	// Simple Field (timeStamp)
+	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _TimeStampErr != nil {
-		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of S7PayloadDiagnosticMessage")
+	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
+	if _timeStampErr != nil {
+		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadDiagnosticMessage")
 	}
-	TimeStamp := _TimeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for TimeStamp")
+	timeStamp := _timeStamp.(DateAndTime)
+	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadDiagnosticMessage"); closeErr != nil {
@@ -279,13 +279,13 @@ func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer u
 	// Create a partially initialized instance
 	_child := &_S7PayloadDiagnosticMessage{
 		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		EventId:                EventId,
-		PriorityClass:          PriorityClass,
-		ObNumber:               ObNumber,
-		DatId:                  DatId,
-		Info1:                  Info1,
-		Info2:                  Info2,
-		TimeStamp:              TimeStamp,
+		EventId:                eventId,
+		PriorityClass:          priorityClass,
+		ObNumber:               obNumber,
+		DatId:                  datId,
+		Info1:                  info1,
+		Info2:                  info2,
+		TimeStamp:              timeStamp,
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil
@@ -309,58 +309,58 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadDiagnosticMessage")
 		}
 
-		// Simple Field (EventId)
-		EventId := uint16(m.GetEventId())
-		_EventIdErr := writeBuffer.WriteUint16("EventId", 16, uint16((EventId)))
-		if _EventIdErr != nil {
-			return errors.Wrap(_EventIdErr, "Error serializing 'EventId' field")
+		// Simple Field (eventId)
+		eventId := uint16(m.GetEventId())
+		_eventIdErr := writeBuffer.WriteUint16("eventId", 16, uint16((eventId)))
+		if _eventIdErr != nil {
+			return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
 		}
 
-		// Simple Field (PriorityClass)
-		PriorityClass := uint8(m.GetPriorityClass())
-		_PriorityClassErr := writeBuffer.WriteUint8("PriorityClass", 8, uint8((PriorityClass)))
-		if _PriorityClassErr != nil {
-			return errors.Wrap(_PriorityClassErr, "Error serializing 'PriorityClass' field")
+		// Simple Field (priorityClass)
+		priorityClass := uint8(m.GetPriorityClass())
+		_priorityClassErr := writeBuffer.WriteUint8("priorityClass", 8, uint8((priorityClass)))
+		if _priorityClassErr != nil {
+			return errors.Wrap(_priorityClassErr, "Error serializing 'priorityClass' field")
 		}
 
-		// Simple Field (ObNumber)
-		ObNumber := uint8(m.GetObNumber())
-		_ObNumberErr := writeBuffer.WriteUint8("ObNumber", 8, uint8((ObNumber)))
-		if _ObNumberErr != nil {
-			return errors.Wrap(_ObNumberErr, "Error serializing 'ObNumber' field")
+		// Simple Field (obNumber)
+		obNumber := uint8(m.GetObNumber())
+		_obNumberErr := writeBuffer.WriteUint8("obNumber", 8, uint8((obNumber)))
+		if _obNumberErr != nil {
+			return errors.Wrap(_obNumberErr, "Error serializing 'obNumber' field")
 		}
 
-		// Simple Field (DatId)
-		DatId := uint16(m.GetDatId())
-		_DatIdErr := writeBuffer.WriteUint16("DatId", 16, uint16((DatId)))
-		if _DatIdErr != nil {
-			return errors.Wrap(_DatIdErr, "Error serializing 'DatId' field")
+		// Simple Field (datId)
+		datId := uint16(m.GetDatId())
+		_datIdErr := writeBuffer.WriteUint16("datId", 16, uint16((datId)))
+		if _datIdErr != nil {
+			return errors.Wrap(_datIdErr, "Error serializing 'datId' field")
 		}
 
-		// Simple Field (Info1)
-		Info1 := uint16(m.GetInfo1())
-		_Info1Err := writeBuffer.WriteUint16("Info1", 16, uint16((Info1)))
-		if _Info1Err != nil {
-			return errors.Wrap(_Info1Err, "Error serializing 'Info1' field")
+		// Simple Field (info1)
+		info1 := uint16(m.GetInfo1())
+		_info1Err := writeBuffer.WriteUint16("info1", 16, uint16((info1)))
+		if _info1Err != nil {
+			return errors.Wrap(_info1Err, "Error serializing 'info1' field")
 		}
 
-		// Simple Field (Info2)
-		Info2 := uint32(m.GetInfo2())
-		_Info2Err := writeBuffer.WriteUint32("Info2", 32, uint32((Info2)))
-		if _Info2Err != nil {
-			return errors.Wrap(_Info2Err, "Error serializing 'Info2' field")
+		// Simple Field (info2)
+		info2 := uint32(m.GetInfo2())
+		_info2Err := writeBuffer.WriteUint32("info2", 32, uint32((info2)))
+		if _info2Err != nil {
+			return errors.Wrap(_info2Err, "Error serializing 'info2' field")
 		}
 
-		// Simple Field (TimeStamp)
-		if pushErr := writeBuffer.PushContext("TimeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for TimeStamp")
+		// Simple Field (timeStamp)
+		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for timeStamp")
 		}
-		_TimeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("TimeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for TimeStamp")
+		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
+		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for timeStamp")
 		}
-		if _TimeStampErr != nil {
-			return errors.Wrap(_TimeStampErr, "Error serializing 'TimeStamp' field")
+		if _timeStampErr != nil {
+			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadDiagnosticMessage"); popErr != nil {

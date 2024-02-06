@@ -35,8 +35,8 @@ type S7PayloadUserDataItemClkResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem
-	// GetReserved returns Reserved (property field)
-	GetReserved() uint8
+	// GetRes returns Res (property field)
+	GetRes() uint8
 	// GetYear1 returns Year1 (property field)
 	GetYear1() uint8
 	// GetTimeStamp returns TimeStamp (property field)
@@ -53,7 +53,7 @@ type S7PayloadUserDataItemClkResponseExactly interface {
 // _S7PayloadUserDataItemClkResponse is the data-structure of this message
 type _S7PayloadUserDataItemClkResponse struct {
 	*_S7PayloadUserDataItem
-	Reserved  uint8
+	Res       uint8
 	Year1     uint8
 	TimeStamp DateAndTime
 }
@@ -95,8 +95,8 @@ func (m *_S7PayloadUserDataItemClkResponse) GetParent() S7PayloadUserDataItem {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_S7PayloadUserDataItemClkResponse) GetReserved() uint8 {
-	return m.Reserved
+func (m *_S7PayloadUserDataItemClkResponse) GetRes() uint8 {
+	return m.Res
 }
 
 func (m *_S7PayloadUserDataItemClkResponse) GetYear1() uint8 {
@@ -113,11 +113,11 @@ func (m *_S7PayloadUserDataItemClkResponse) GetTimeStamp() DateAndTime {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemClkResponse factory function for _S7PayloadUserDataItemClkResponse
-func NewS7PayloadUserDataItemClkResponse(Reserved uint8, Year1 uint8, TimeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkResponse {
+func NewS7PayloadUserDataItemClkResponse(res uint8, year1 uint8, timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkResponse {
 	_result := &_S7PayloadUserDataItemClkResponse{
-		Reserved:               Reserved,
-		Year1:                  Year1,
-		TimeStamp:              TimeStamp,
+		Res:                    res,
+		Year1:                  year1,
+		TimeStamp:              timeStamp,
 		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
@@ -142,13 +142,13 @@ func (m *_S7PayloadUserDataItemClkResponse) GetTypeName() string {
 func (m *_S7PayloadUserDataItemClkResponse) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (Reserved)
+	// Simple field (res)
 	lengthInBits += 8
 
-	// Simple field (Year1)
+	// Simple field (year1)
 	lengthInBits += 8
 
-	// Simple field (TimeStamp)
+	// Simple field (timeStamp)
 	lengthInBits += m.TimeStamp.GetLengthInBits(ctx)
 
 	return lengthInBits
@@ -173,31 +173,31 @@ func S7PayloadUserDataItemClkResponseParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (Reserved)
-	_Reserved, _ReservedErr := readBuffer.ReadUint8("Reserved", 8)
-	if _ReservedErr != nil {
-		return nil, errors.Wrap(_ReservedErr, "Error parsing 'Reserved' field of S7PayloadUserDataItemClkResponse")
+	// Simple Field (res)
+	_res, _resErr := readBuffer.ReadUint8("res", 8)
+	if _resErr != nil {
+		return nil, errors.Wrap(_resErr, "Error parsing 'res' field of S7PayloadUserDataItemClkResponse")
 	}
-	Reserved := _Reserved
+	res := _res
 
-	// Simple Field (Year1)
-	_Year1, _Year1Err := readBuffer.ReadUint8("Year1", 8)
-	if _Year1Err != nil {
-		return nil, errors.Wrap(_Year1Err, "Error parsing 'Year1' field of S7PayloadUserDataItemClkResponse")
+	// Simple Field (year1)
+	_year1, _year1Err := readBuffer.ReadUint8("year1", 8)
+	if _year1Err != nil {
+		return nil, errors.Wrap(_year1Err, "Error parsing 'year1' field of S7PayloadUserDataItemClkResponse")
 	}
-	Year1 := _Year1
+	year1 := _year1
 
-	// Simple Field (TimeStamp)
-	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
+	// Simple Field (timeStamp)
+	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _TimeStampErr != nil {
-		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of S7PayloadUserDataItemClkResponse")
+	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
+	if _timeStampErr != nil {
+		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadUserDataItemClkResponse")
 	}
-	TimeStamp := _TimeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for TimeStamp")
+	timeStamp := _timeStamp.(DateAndTime)
+	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemClkResponse"); closeErr != nil {
@@ -207,9 +207,9 @@ func S7PayloadUserDataItemClkResponseParseWithBuffer(ctx context.Context, readBu
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemClkResponse{
 		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		Reserved:               Reserved,
-		Year1:                  Year1,
-		TimeStamp:              TimeStamp,
+		Res:                    res,
+		Year1:                  year1,
+		TimeStamp:              timeStamp,
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
 	return _child, nil
@@ -233,30 +233,30 @@ func (m *_S7PayloadUserDataItemClkResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemClkResponse")
 		}
 
-		// Simple Field (Reserved)
-		Reserved := uint8(m.GetReserved())
-		_ReservedErr := writeBuffer.WriteUint8("Reserved", 8, uint8((Reserved)))
-		if _ReservedErr != nil {
-			return errors.Wrap(_ReservedErr, "Error serializing 'Reserved' field")
+		// Simple Field (res)
+		res := uint8(m.GetRes())
+		_resErr := writeBuffer.WriteUint8("res", 8, uint8((res)))
+		if _resErr != nil {
+			return errors.Wrap(_resErr, "Error serializing 'res' field")
 		}
 
-		// Simple Field (Year1)
-		Year1 := uint8(m.GetYear1())
-		_Year1Err := writeBuffer.WriteUint8("Year1", 8, uint8((Year1)))
-		if _Year1Err != nil {
-			return errors.Wrap(_Year1Err, "Error serializing 'Year1' field")
+		// Simple Field (year1)
+		year1 := uint8(m.GetYear1())
+		_year1Err := writeBuffer.WriteUint8("year1", 8, uint8((year1)))
+		if _year1Err != nil {
+			return errors.Wrap(_year1Err, "Error serializing 'year1' field")
 		}
 
-		// Simple Field (TimeStamp)
-		if pushErr := writeBuffer.PushContext("TimeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for TimeStamp")
+		// Simple Field (timeStamp)
+		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for timeStamp")
 		}
-		_TimeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("TimeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for TimeStamp")
+		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
+		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for timeStamp")
 		}
-		if _TimeStampErr != nil {
-			return errors.Wrap(_TimeStampErr, "Error serializing 'TimeStamp' field")
+		if _timeStampErr != nil {
+			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemClkResponse"); popErr != nil {

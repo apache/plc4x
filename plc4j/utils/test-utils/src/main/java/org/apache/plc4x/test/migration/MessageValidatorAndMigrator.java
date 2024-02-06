@@ -163,6 +163,9 @@ public class MessageValidatorAndMigrator {
                     }
                     LOGGER.info("Done migrating {}", path);
                     return true;
+                } else if(e instanceof MigrationException) {
+                    MigrationException me = (MigrationException) e;
+                    throw new RuntimeException("Output doesn't match.\nGot:\n" + me.newXml + "\nSet to auto migrate to fix", e);
                 } else {
                     throw new RuntimeException("Output doesn't match. Set to auto migrate to fix", e);
                 }

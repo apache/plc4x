@@ -18,17 +18,20 @@
  */
 package org.apache.plc4x.java.test.readwrite;
 
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import java.time.*;
 import java.util.*;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.EvaluationHelper;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.codegen.*;
+import org.apache.plc4x.java.spi.codegen.fields.*;
+import org.apache.plc4x.java.spi.codegen.io.*;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,25 +45,36 @@ public class DataIOType {
   public static PlcValue staticParse(ReadBuffer readBuffer, EnumType dataType)
       throws ParseException {
     if (EvaluationHelper.equals(dataType, EnumType.BOOL)) { // BOOL
-
-      // Simple Field (value)
-      Boolean value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(dataType, EnumType.UINT)) { // USINT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(dataType, EnumType.INT)) { // UINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcUINT(value);
     }
     return null;
+  }
+
+  public static int getLengthInBytes(PlcValue _value, EnumType dataType) {
+    return (int) Math.ceil((float) getLengthInBits(_value, dataType) / 8.0);
+  }
+
+  public static int getLengthInBits(PlcValue _value, EnumType dataType) {
+    int lengthInBits = 0;
+    if (EvaluationHelper.equals(dataType, EnumType.BOOL)) { // BOOL
+      // Simple field (value)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(dataType, EnumType.UINT)) { // USINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, EnumType.INT)) { // UINT
+      // Simple field (value)
+      lengthInBits += 16;
+    }
+
+    return lengthInBits;
   }
 
   public static void staticSerialize(WriteBuffer writeBuffer, PlcValue _value, EnumType dataType)
@@ -73,38 +87,13 @@ public class DataIOType {
       throws SerializationException {
     if (EvaluationHelper.equals(dataType, EnumType.BOOL)) { // BOOL
       // Simple Field (value)
-      boolean value = (boolean) _value.getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(dataType, EnumType.UINT)) { // USINT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, EnumType.INT)) { // UINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     }
-  }
-
-  public static int getLengthInBytes(PlcValue _value, EnumType dataType) {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataType) / 8.0);
-  }
-
-  public static int getLengthInBits(PlcValue _value, EnumType dataType) {
-    int sizeInBits = 0;
-    if (EvaluationHelper.equals(dataType, EnumType.BOOL)) { // BOOL
-      // Simple Field (value)
-      sizeInBits += 1;
-    } else if (EvaluationHelper.equals(dataType, EnumType.UINT)) { // USINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, EnumType.INT)) { // UINT
-      // Simple Field (value)
-      sizeInBits += 16;
-    }
-    return sizeInBits;
   }
 }

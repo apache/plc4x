@@ -18,11 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
-import static java.lang.Thread.currentThread;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static java.util.concurrent.ForkJoinPool.commonPool;
-
-import java.time.Instant;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +42,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -59,6 +55,10 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
+import static java.lang.Thread.currentThread;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static java.util.concurrent.ForkJoinPool.commonPool;
 
 public class SecureChannel {
 
@@ -214,8 +214,7 @@ public class SecureChannel {
                     .onError(error)
                     .unwrap(encryptionHandler::decodeMessage)
                     .unwrap(OpcuaAPU::getMessage)
-                    .check(OpcuaMessageResponse.class::isInstance)
-                    .unwrap(OpcuaMessageResponse.class::cast)
+                    .only(OpcuaMessageResponse.class)
                     .check(p -> {
                         if (p.getRequestId() == transactionId) {
                             try {
@@ -267,8 +266,8 @@ public class SecureChannel {
         Consumer<Integer> requestConsumer = t -> context
             .sendRequest(new OpcuaAPU(hello))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-            .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
-            .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
+            .unwrap(OpcuaAPU::getMessage)
+            .only(OpcuaAcknowledgeResponse.class)
             .handle(opcuaAcknowledgeResponse -> commonPool().submit(() -> onConnectOpenSecureChannel(context, opcuaAcknowledgeResponse)));
         channelTransactionManager.submit(requestConsumer, channelTransactionManager.getTransactionIdentifier());
     }
@@ -347,9 +346,9 @@ public class SecureChannel {
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
-                .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
-                .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
+                .unwrap(encryptionHandler::decodeMessage)
+                .unwrap(OpcuaAPU::getMessage)
+                .only(OpcuaOpenResponse.class)
                 .check(p -> p.getRequestId() == transactionId)
                 .handle(opcuaOpenResponse -> {
                     try {
@@ -731,8 +730,8 @@ public class SecureChannel {
         Consumer<Integer> requestConsumer = t -> {
             context.sendRequest(new OpcuaAPU(closeRequest))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
-                .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+                .unwrap(OpcuaAPU::getMessage)
+                .only(OpcuaMessageResponse.class)
                 .check(p -> p.getRequestId() == transactionId)
                 .handle(opcuaMessageResponse -> LOGGER.trace("Got Close Secure Channel Response" + opcuaMessageResponse.toString()));
 
@@ -761,8 +760,8 @@ public class SecureChannel {
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(hello))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-            .check(p -> p.getMessage() instanceof OpcuaAcknowledgeResponse)
-            .unwrap(p -> (OpcuaAcknowledgeResponse) p.getMessage())
+            .unwrap(OpcuaAPU::getMessage)
+            .only(OpcuaAcknowledgeResponse.class)
             .handle(opcuaAcknowledgeResponse -> {
                 LOGGER.debug("Got Hello Response Connection Response");
                 commonPool().submit(() -> onDiscoverOpenSecureChannel(context, opcuaAcknowledgeResponse));
@@ -825,8 +824,8 @@ public class SecureChannel {
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(openRequest))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
-                .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
+                .unwrap(OpcuaAPU::getMessage)
+                .only(OpcuaOpenResponse.class)
                 .check(p -> p.getRequestId() == transactionId)
                 .handle(opcuaOpenResponse -> {
                     try {
@@ -839,7 +838,7 @@ public class SecureChannel {
                             commonPool().submit(() -> {
                                 try {
                                     onDiscoverGetEndpointsRequest(context, opcuaOpenResponse,
-                                            (OpenSecureChannelResponse) message.getBody());
+                                        (OpenSecureChannelResponse) message.getBody());
                                 } catch (PlcConnectionException e) {
                                     LOGGER.error("Error occurred while connecting to OPC UA server");
                                 }
@@ -918,8 +917,8 @@ public class SecureChannel {
 
             Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(messageRequest))
                 .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
-                .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+                .unwrap(OpcuaAPU::getMessage)
+                .only(OpcuaMessageResponse.class)
                 .check(p -> p.getRequestId() == transactionId)
                 .handle(opcuaMessageResponse -> {
                     try {
@@ -998,8 +997,8 @@ public class SecureChannel {
 
         Consumer<Integer> requestConsumer = t -> context.sendRequest(new OpcuaAPU(closeRequest))
             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-            .check(p -> p.getMessage() instanceof OpcuaMessageResponse)
-            .unwrap(p -> (OpcuaMessageResponse) p.getMessage())
+            .unwrap(OpcuaAPU::getMessage)
+            .only(OpcuaMessageResponse.class)
             .check(p -> p.getRequestId() == transactionId)
             .handle(opcuaMessageResponse -> {
                 LOGGER.trace("Got Close Secure Channel Response" + opcuaMessageResponse.toString());
@@ -1015,7 +1014,7 @@ public class SecureChannel {
                 while (enableKeepalive.get()) {
 
                     final Instant sendNextKeepaliveAt = Instant.now()
-                            .plus(Duration.ofMillis((long) Math.ceil(this.lifetime * 0.75f)));
+                        .plus(Duration.ofMillis((long) Math.ceil(this.lifetime * 0.75f)));
 
                     while (Instant.now().isBefore(sendNextKeepaliveAt)) {
                         try {
@@ -1096,9 +1095,9 @@ public class SecureChannel {
 
                         Consumer<Integer> requestConsumer = t -> context.sendRequest(apu)
                             .expectResponse(OpcuaAPU.class, REQUEST_TIMEOUT)
-                            .unwrap(apuMessage -> encryptionHandler.decodeMessage(apuMessage))
-                            .check(p -> p.getMessage() instanceof OpcuaOpenResponse)
-                            .unwrap(p -> (OpcuaOpenResponse) p.getMessage())
+                            .unwrap(encryptionHandler::decodeMessage)
+                            .unwrap(OpcuaAPU::getMessage)
+                            .only(OpcuaOpenResponse.class)
                             .check(p -> {
                                 if (p.getRequestId() == transactionId) {
                                     senderSequenceNumber.incrementAndGet();
@@ -1229,7 +1228,7 @@ public class SecureChannel {
             driverContext.setTransportEndpoint(matcher.group("transportEndpoint"));
             return true;
         }
-        
+
         if (configuration.isDiscovery() && !this.endpoints.contains(matcher.group("transportHost"))) {
             return false;
         }

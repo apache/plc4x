@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,29 +17,25 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.profinet;
+package org.apache.plc4x.java.firmata.readwrite;
 
-import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-
-public class ManualProfinetIoTestWagoPNCoupler {
+public class FirmataManualTest {
 
     public static void main(String[] args) throws Exception {
-        // WireShark filter: "eth.addr == 00:30:de:61:37:79"
-        try(PlcConnection connection =  new DefaultPlcDriverManager().getConnection("profinet:raw://00:30:de:61:37:79?ip-address=192.168.24.51")) {
-            // Create and execute the subscription request.
-            PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder()
-                .addCyclicTagAddress("inputs", "1.1.INPUT.0:BYTE[10]", Duration.ofMillis(400))
-                .addCyclicTagAddress("output", "1.1.OUTPUT.0:DWORD", Duration.ofMillis(400))
-                .build();
-            PlcSubscriptionResponse subscriptionResponse = subscriptionRequest.execute().get(10000, TimeUnit.MILLISECONDS);
-            System.out.println(subscriptionResponse);
+
+        // Default for the Firmata Arduino sketch is, 57600 baud, 8 data-bits, no parity and one stop bit (Which is the default for the Serial transport)
+        try(PlcConnection connection = PlcDriverManager.getDefault().getConnectionManager().getConnection("firmata:///dev/tty.usbmodem2114401")) {
+            PlcSubscriptionRequest subscriptionRequest = connection.subscriptionRequestBuilder().addEventTagAddress("analog1", "analog:1").addPreRegisteredConsumer("analog1", plcSubscriptionEvent -> {
+                System.out.println("Incoming Event: " + plcSubscriptionEvent.getPlcValue("analog1").getInteger());
+            }).build();
+            PlcSubscriptionResponse plcSubscriptionResponse = subscriptionRequest.execute().get();
+            System.out.println(plcSubscriptionResponse);
+            Thread.sleep(10000);
         }
     }
-
 }

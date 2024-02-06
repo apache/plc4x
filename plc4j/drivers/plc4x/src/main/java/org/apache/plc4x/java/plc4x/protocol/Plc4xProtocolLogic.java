@@ -22,8 +22,8 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
-import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.plc4x.readwrite.*;
+import org.apache.plc4x.java.plc4x.tag.Plc4xTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
@@ -73,7 +73,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             })
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .check(p -> p.getRequestId() == requestId)
-            .unwrap(plc4xMessage -> (Plc4xConnectResponse) plc4xMessage)
+            .only(Plc4xConnectResponse.class)
             .handle(connectResponse -> {
                 // Save the connection id.
                 connectionId = connectResponse.getConnectionId();
@@ -108,7 +108,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(plc4xMessage -> plc4xMessage.getRequestId() == requestId)
-            .unwrap(plc4xMessage -> (Plc4xReadResponse) plc4xMessage)
+            .only(Plc4xReadResponse.class)
             .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xReadResponse -> {
                 Map<String, ResponseItem<PlcValue>> apiResponses = new HashMap<>();
@@ -152,7 +152,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             .expectResponse(Plc4xMessage.class, requestTimeout)
             .onTimeout(future::completeExceptionally)
             .check(p -> p.getRequestId() == requestId)
-            .unwrap(plc4xMessage -> (Plc4xWriteResponse) plc4xMessage)
+            .only(Plc4xWriteResponse.class)
             .check(plc4xReadResponse -> plc4xReadResponse.getConnectionId() == connectionId)
             .handle(plc4xWriteResponse -> {
                 Map<String, PlcResponseCode> apiResponses = new HashMap<>();

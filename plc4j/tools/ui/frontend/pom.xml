@@ -88,6 +88,7 @@
               <restOptionsType>AxiosRequestConfig</restOptionsType>
               <restResponseType>AxiosPromise</restResponseType>
               <outputFile>project/src/generated/plc4j-tools-ui-frontend.ts</outputFile>
+              <noFileComment>true</noFileComment>
             </configuration>
           </execution>
         </executions>

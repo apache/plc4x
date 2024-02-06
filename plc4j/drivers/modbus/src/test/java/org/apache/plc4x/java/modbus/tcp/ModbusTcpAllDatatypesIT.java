@@ -16,16 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.s7.readwrite.types;
+package org.apache.plc4x.java.modbus.tcp;
 
-public enum S7ControllerType {
+import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 
-    ANY,
-    S7_200,
-    S7_300,
-    S7_400,
-    S7_1200,
-    S7_1500,
-    LOGO
+public class ModbusTcpAllDatatypesIT extends DriverTestsuiteRunner {
+
+    public ModbusTcpAllDatatypesIT() {
+        super("/protocols/modbus/tcp/Modbus-all-datatypes.xml");
+    }
 
 }

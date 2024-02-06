@@ -51,33 +51,33 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
   }
 
   // Properties.
-  protected final short Reserved;
-  protected final short Year1;
-  protected final DateAndTime TimeStamp;
+  protected final short res;
+  protected final short year1;
+  protected final DateAndTime timeStamp;
 
   public S7PayloadUserDataItemClkResponse(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
       int dataLength,
-      short Reserved,
-      short Year1,
-      DateAndTime TimeStamp) {
+      short res,
+      short year1,
+      DateAndTime timeStamp) {
     super(returnCode, transportSize, dataLength);
-    this.Reserved = Reserved;
-    this.Year1 = Year1;
-    this.TimeStamp = TimeStamp;
+    this.res = res;
+    this.year1 = year1;
+    this.timeStamp = timeStamp;
   }
 
-  public short getReserved() {
-    return Reserved;
+  public short getRes() {
+    return res;
   }
 
   public short getYear1() {
-    return Year1;
+    return year1;
   }
 
   public DateAndTime getTimeStamp() {
-    return TimeStamp;
+    return timeStamp;
   }
 
   @Override
@@ -87,14 +87,14 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("S7PayloadUserDataItemClkResponse");
 
-    // Simple Field (Reserved)
-    writeSimpleField("Reserved", Reserved, writeUnsignedShort(writeBuffer, 8));
+    // Simple Field (res)
+    writeSimpleField("res", res, writeUnsignedShort(writeBuffer, 8));
 
-    // Simple Field (Year1)
-    writeSimpleField("Year1", Year1, writeUnsignedShort(writeBuffer, 8));
+    // Simple Field (year1)
+    writeSimpleField("year1", year1, writeUnsignedShort(writeBuffer, 8));
 
-    // Simple Field (TimeStamp)
-    writeSimpleField("TimeStamp", TimeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    // Simple Field (timeStamp)
+    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("S7PayloadUserDataItemClkResponse");
   }
@@ -110,14 +110,14 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
     S7PayloadUserDataItemClkResponse _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (Reserved)
+    // Simple field (res)
     lengthInBits += 8;
 
-    // Simple field (Year1)
+    // Simple field (year1)
     lengthInBits += 8;
 
-    // Simple field (TimeStamp)
-    lengthInBits += TimeStamp.getLengthInBits();
+    // Simple field (timeStamp)
+    lengthInBits += timeStamp.getLengthInBits();
 
     return lengthInBits;
   }
@@ -133,38 +133,38 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short Reserved = readSimpleField("Reserved", readUnsignedShort(readBuffer, 8));
+    short res = readSimpleField("res", readUnsignedShort(readBuffer, 8));
 
-    short Year1 = readSimpleField("Year1", readUnsignedShort(readBuffer, 8));
+    short year1 = readSimpleField("year1", readUnsignedShort(readBuffer, 8));
 
-    DateAndTime TimeStamp =
+    DateAndTime timeStamp =
         readSimpleField(
-            "TimeStamp",
+            "timeStamp",
             new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadUserDataItemClkResponse");
     // Create the instance
-    return new S7PayloadUserDataItemClkResponseBuilderImpl(Reserved, Year1, TimeStamp);
+    return new S7PayloadUserDataItemClkResponseBuilderImpl(res, year1, timeStamp);
   }
 
   public static class S7PayloadUserDataItemClkResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
-    private final short Reserved;
-    private final short Year1;
-    private final DateAndTime TimeStamp;
+    private final short res;
+    private final short year1;
+    private final DateAndTime timeStamp;
 
     public S7PayloadUserDataItemClkResponseBuilderImpl(
-        short Reserved, short Year1, DateAndTime TimeStamp) {
-      this.Reserved = Reserved;
-      this.Year1 = Year1;
-      this.TimeStamp = TimeStamp;
+        short res, short year1, DateAndTime timeStamp) {
+      this.res = res;
+      this.year1 = year1;
+      this.timeStamp = timeStamp;
     }
 
     public S7PayloadUserDataItemClkResponse build(
         DataTransportErrorCode returnCode, DataTransportSize transportSize, int dataLength) {
       S7PayloadUserDataItemClkResponse s7PayloadUserDataItemClkResponse =
           new S7PayloadUserDataItemClkResponse(
-              returnCode, transportSize, dataLength, Reserved, Year1, TimeStamp);
+              returnCode, transportSize, dataLength, res, year1, timeStamp);
       return s7PayloadUserDataItemClkResponse;
     }
   }
@@ -178,7 +178,7 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
       return false;
     }
     S7PayloadUserDataItemClkResponse that = (S7PayloadUserDataItemClkResponse) o;
-    return (getReserved() == that.getReserved())
+    return (getRes() == that.getRes())
         && (getYear1() == that.getYear1())
         && (getTimeStamp() == that.getTimeStamp())
         && super.equals(that)
@@ -187,7 +187,7 @@ public class S7PayloadUserDataItemClkResponse extends S7PayloadUserDataItem impl
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getReserved(), getYear1(), getTimeStamp());
+    return Objects.hash(super.hashCode(), getRes(), getYear1(), getTimeStamp());
   }
 
   @Override

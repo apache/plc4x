@@ -29,7 +29,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.apache.plc4x.java.spi.Plc4xNettyWrapper" level="TRACE"/>
+  <logger name="org.apache.plc4x.java.spi.Plc4xNettyWrapper" level="WARN"/>
 
   <root level="info">
     <appender-ref ref="STDOUT" />

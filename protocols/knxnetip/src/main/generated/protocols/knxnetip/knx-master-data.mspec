@@ -1411,8 +1411,10 @@
     ['660' M_3R ['718', '"3R"']]
     ['661' M_ARKLYFE ['719', '"Arklyfe"']]
     ['662' M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_ ['720', '"Foshan Haydn Technology Lighting Co.,Ltd."']]
-    ['663' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['664' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['663' M_KNXES_COMPANY_LIMITED ['721', '"KNXES COMPANY LIMITED"']]
+    ['664' M_THE_AKUVOX_COMPANY ['722', '"The Akuvox Company"']]
+    ['665' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['666' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
