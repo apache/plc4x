@@ -184,6 +184,12 @@ The `Go` drivers can be built by enabling the `with-go` profile:
 ./mvnw -P with-go install 
 ```
 
+The `Java` drivers can be built by enabling the `with-java` profile:
+
+```
+./mvnw -P with-java install 
+```
+
 The `C# / .Net` implementation is currently in a `work in progress` state.
 In order to be able to build the `C# / .Net` module, you currently need to activate the:
 `with-dotnet` profiles.
@@ -203,7 +209,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks install
+./mvnw -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks install
 ```
 
 ## Community

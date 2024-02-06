@@ -32,7 +32,7 @@ IFS='.' read -ra VERSION_SEGMENTS <<< "$RELEASE_VERSION"
 NEW_VERSION="${VERSION_SEGMENTS[0]}.${VERSION_SEGMENTS[1]}.$((VERSION_SEGMENTS[2] + 1))-SNAPSHOT"
 
 # 1. Do a simple release-prepare command with pushChanges=false (inside the Docker container)
-docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:prepare -DautoVersionSubmodules=true -DpushChanges=false -DreleaseVersion="$RELEASE_VERSION" -DdevelopmentVersion="$NEW_VERSION" -Dtag="v$RELEASE_VERSION"
+docker compose run --rm releaser bash /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:prepare -DautoVersionSubmodules=true -DpushChanges=false -DreleaseVersion="$RELEASE_VERSION" -DdevelopmentVersion="$NEW_VERSION" -Dtag="v$RELEASE_VERSION"
 if [ $? -ne 0 ]; then
     echo "Got non-0 exit code from docker compose, aborting."
     exit 1

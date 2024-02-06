@@ -17,7 +17,8 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -96,7 +97,8 @@
 
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
-    <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
+    <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output
+    </sonar.cfamily.build-wrapper-output>
 
     <plc4x-code-generation.version>1.7.0</plc4x-code-generation.version>
 
@@ -170,9 +172,6 @@
   <modules>
     <!-- Definition of the protocol message formats -->
     <module>protocols</module>
-
-    <!-- Build the Java part of plc4x -->
-    <module>plc4j</module>
   </modules>
 
   <dependencyManagement>
@@ -929,7 +928,7 @@
             </goals>
             <configuration>
               <rules>
-                <dependencyConvergence />
+                <dependencyConvergence/>
               </rules>
             </configuration>
           </execution>
@@ -1240,9 +1239,11 @@
           <!-- It seems that when going to 3.3.0 the apache-rat-plugin fails when the shade plugin is also being run -->
           <version>3.2.4</version>
           <configuration>
-            <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}</outputFile>
+            <outputFile>
+              ${project.build.directory}/${project.artifactId}-${project.version}-uber-jar.${project.packaging}
+            </outputFile>
             <transformers>
-              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
             </transformers>
             <filters>
               <filter>
@@ -1258,7 +1259,8 @@
                 </excludes>
               </filter>
             </filters>
-            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml
+            </dependencyReducedPomLocation>
           </configuration>
         </plugin>
 
@@ -1474,7 +1476,7 @@
           <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
         </configuration>
       </plugin-->
-     </plugins>
+    </plugins>
   </reporting>
 
   <!-- Make Snapshots of Apache projects available -->
@@ -1581,6 +1583,14 @@
       <id>with-go</id>
       <modules>
         <module>plc4go</module>
+      </modules>
+    </profile>
+
+    <!-- Build PLC4X including the Java modules -->
+    <profile>
+      <id>with-java</id>
+      <modules>
+        <module>plc4j</module>
       </modules>
     </profile>
 
@@ -1767,7 +1777,7 @@
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
         <enable-all-tests>true</enable-all-tests>
-        <excluded-test-groups />
+        <excluded-test-groups/>
       </properties>
     </profile>
 
@@ -1776,7 +1786,7 @@
       <properties>
         <skip-code-generation-tests>false</skip-code-generation-tests>
         <enable-all-tests>true</enable-all-tests>
-        <excluded-test-groups />
+        <excluded-test-groups/>
       </properties>
     </profile>
 

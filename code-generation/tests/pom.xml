@@ -61,6 +61,12 @@
     </profile>
 
     <profile>
+      <id>with-java</id>
+      <modules>
+      </modules>
+    </profile>
+
+    <profile>
       <id>with-python</id>
       <modules>
       </modules>
