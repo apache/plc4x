@@ -309,12 +309,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		}
 		_map["Struct"] = values.NewPlcUSINT(dayOfMonth)
 
-		// Simple Field (dayofweek)
-		dayofweek, _dayofweekErr := readBuffer.ReadUint8("dayofweek", 3)
-		if _dayofweekErr != nil {
-			return nil, errors.Wrap(_dayofweekErr, "Error parsing 'dayofweek' field")
+		// Simple Field (dayOfWeek)
+		dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 3)
+		if _dayOfWeekErr != nil {
+			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
-		_map["Struct"] = values.NewPlcUSINT(dayofweek)
+		_map["Struct"] = values.NewPlcUSINT(dayOfWeek)
 
 		// Simple Field (hour)
 		hour, _hourErr := readBuffer.ReadUint8("hour", 5)
@@ -1043,9 +1043,9 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
-		// Simple Field (dayofweek)
-		if _err := writeBuffer.WriteUint8("dayofweek", 3, uint8(value.GetUint8())); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayofweek' field")
+		// Simple Field (dayOfWeek)
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 3, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)

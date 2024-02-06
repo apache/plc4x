@@ -264,8 +264,8 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 // Simple Field (dayOfMonth)
                 var dayOfMonth = readBuffer.ReadByte("", 5);
 
-                // Simple Field (dayofweek)
-                var dayofweek = readBuffer.ReadByte("", 3);
+                // Simple Field (dayOfWeek)
+                var dayOfWeek = readBuffer.ReadByte("", 3);
 
                 // Simple Field (hour)
                 var hour = readBuffer.ReadByte("", 5);
@@ -894,9 +894,9 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 // Simple Field (dayOfMonth)
                 var dayOfMonth = (byte) _value.GetStruct()["dayOfMonth"].GetByte();
                 writeBuffer.WriteByte("", 5, (byte) (dayOfMonth));
-                // Simple Field (dayofweek)
-                var dayofweek = (byte) _value.GetStruct()["dayofweek"].GetByte();
-                writeBuffer.WriteByte("", 3, (byte) (dayofweek));
+                // Simple Field (dayOfWeek)
+                var dayOfWeek = (byte) _value.GetStruct()["dayOfWeek"].GetByte();
+                writeBuffer.WriteByte("", 3, (byte) (dayOfWeek));
                 // Simple Field (hour)
                 var hour = (byte) _value.GetStruct()["hour"].GetByte();
                 writeBuffer.WriteByte("", 5, (byte) (hour));

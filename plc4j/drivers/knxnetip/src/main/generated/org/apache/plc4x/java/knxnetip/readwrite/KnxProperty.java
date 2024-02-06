@@ -164,7 +164,7 @@ public class KnxProperty {
 
       byte dayOfMonth = readSimpleField("dayOfMonth", readUnsignedByte(readBuffer, 5));
 
-      byte dayofweek = readSimpleField("dayofweek", readUnsignedByte(readBuffer, 3));
+      byte dayOfWeek = readSimpleField("dayOfWeek", readUnsignedByte(readBuffer, 3));
 
       byte hour = readSimpleField("hour", readUnsignedByte(readBuffer, 5));
 
@@ -203,7 +203,7 @@ public class KnxProperty {
       _map.put("year", new PlcUSINT(year));
       _map.put("month", new PlcUSINT(month));
       _map.put("dayOfMonth", new PlcUSINT(dayOfMonth));
-      _map.put("dayofweek", new PlcUSINT(dayofweek));
+      _map.put("dayOfWeek", new PlcUSINT(dayOfWeek));
       _map.put("hour", new PlcUSINT(hour));
       _map.put("minutes", new PlcUSINT(minutes));
       _map.put("seconds", new PlcUSINT(seconds));
@@ -483,7 +483,7 @@ public class KnxProperty {
       // Simple field (dayOfMonth)
       lengthInBits += 5;
 
-      // Simple field (dayofweek)
+      // Simple field (dayOfWeek)
       lengthInBits += 3;
 
       // Simple field (hour)
