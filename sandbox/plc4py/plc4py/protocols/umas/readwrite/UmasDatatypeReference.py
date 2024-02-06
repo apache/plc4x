@@ -41,8 +41,8 @@ class UmasDatatypeReference:
         write_buffer.push_context("UmasDatatypeReference")
 
         # Simple Field (dataSize)
-        write_buffer.write_unsigned_byte(
-            self.data_size, bit_length=8, logical_name="dataSize"
+        write_buffer.write_unsigned_short(
+            self.data_size, bit_length=16, logical_name="dataSize"
         )
 
         # Simple Field (unknown1)
@@ -51,8 +51,8 @@ class UmasDatatypeReference:
         )
 
         # Simple Field (unknown4)
-        write_buffer.write_unsigned_short(
-            self.unknown4, bit_length=16, logical_name="unknown4"
+        write_buffer.write_unsigned_byte(
+            self.unknown4, bit_length=8, logical_name="unknown4"
         )
 
         # Simple Field (dataType)
@@ -82,13 +82,13 @@ class UmasDatatypeReference:
         _value: UmasDatatypeReference = self
 
         # Simple field (dataSize)
-        length_in_bits += 8
+        length_in_bits += 16
 
         # Simple field (unknown1)
         length_in_bits += 16
 
         # Simple field (unknown4)
-        length_in_bits += 16
+        length_in_bits += 8
 
         # Simple field (dataType)
         length_in_bits += 8
@@ -109,16 +109,16 @@ class UmasDatatypeReference:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasDatatypeReference")
 
-        data_size: int = read_buffer.read_unsigned_byte(
-            logical_name="dataSize", bit_length=8
+        data_size: int = read_buffer.read_unsigned_short(
+            logical_name="dataSize", bit_length=16
         )
 
         unknown1: int = read_buffer.read_unsigned_short(
             logical_name="unknown1", bit_length=16
         )
 
-        unknown4: int = read_buffer.read_unsigned_short(
-            logical_name="unknown4", bit_length=16
+        unknown4: int = read_buffer.read_unsigned_byte(
+            logical_name="unknown4", bit_length=8
         )
 
         data_type: int = read_buffer.read_unsigned_byte(

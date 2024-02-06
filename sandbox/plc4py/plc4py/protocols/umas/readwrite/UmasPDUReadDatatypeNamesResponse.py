@@ -35,7 +35,6 @@ import math
 @dataclass
 class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
     range: int
-    no_of_records_null: int
     no_of_records: int
     records: List[UmasDatatypeReference]
     # Accessors for discriminator values.
@@ -45,12 +44,7 @@ class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
         write_buffer.push_context("UmasPDUReadDatatypeNamesResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
-
-        # Simple Field (noOfRecordsNull)
-        write_buffer.write_unsigned_short(
-            self.no_of_records_null, bit_length=16, logical_name="noOfRecordsNull"
-        )
+        write_buffer.write_unsigned_int(self.range, bit_length=32, logical_name="range")
 
         # Simple Field (noOfRecords)
         write_buffer.write_unsigned_short(
@@ -70,10 +64,7 @@ class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
         _value: UmasPDUReadDatatypeNamesResponse = self
 
         # Simple field (range)
-        length_in_bits += 8
-
-        # Simple field (noOfRecordsNull)
-        length_in_bits += 16
+        length_in_bits += 32
 
         # Simple field (noOfRecords)
         length_in_bits += 16
@@ -89,12 +80,8 @@ class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
     def static_parse_builder(read_buffer: ReadBuffer, record_format: int):
         read_buffer.push_context("UmasPDUReadDatatypeNamesResponse")
 
-        range: int = read_buffer.read_unsigned_byte(
-            logical_name="range", bit_length=8, record_format=record_format
-        )
-
-        no_of_records_null: int = read_buffer.read_unsigned_short(
-            logical_name="noOfRecordsNull", bit_length=16, record_format=record_format
+        range: int = read_buffer.read_unsigned_int(
+            logical_name="range", bit_length=32, record_format=record_format
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
@@ -110,9 +97,7 @@ class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
 
         read_buffer.pop_context("UmasPDUReadDatatypeNamesResponse")
         # Create the instance
-        return UmasPDUReadDatatypeNamesResponseBuilder(
-            range, no_of_records_null, no_of_records, records
-        )
+        return UmasPDUReadDatatypeNamesResponseBuilder(range, no_of_records, records)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -124,7 +109,6 @@ class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
         that: UmasPDUReadDatatypeNamesResponse = UmasPDUReadDatatypeNamesResponse(o)
         return (
             (self.range == that.range)
-            and (self.no_of_records_null == that.no_of_records_null)
             and (self.no_of_records == that.no_of_records)
             and (self.records == that.records)
             and super().equals(that)
@@ -148,7 +132,6 @@ class UmasPDUReadDatatypeNamesResponse(UmasVariableBlock):
 @dataclass
 class UmasPDUReadDatatypeNamesResponseBuilder:
     range: int
-    no_of_records_null: int
     no_of_records: int
     records: List[UmasDatatypeReference]
 
@@ -157,7 +140,7 @@ class UmasPDUReadDatatypeNamesResponseBuilder:
     ) -> UmasPDUReadDatatypeNamesResponse:
         umas_pdu_read_datatype_names_response: UmasPDUReadDatatypeNamesResponse = (
             UmasPDUReadDatatypeNamesResponse(
-                self.range, self.no_of_records_null, self.no_of_records, self.records
+                self.range, self.no_of_records, self.records
             )
         )
         return umas_pdu_read_datatype_names_response

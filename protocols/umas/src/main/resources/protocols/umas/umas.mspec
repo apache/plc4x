@@ -156,8 +156,7 @@
             [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
         ]
         ['0xdd03' UmasPDUReadDatatypeNamesResponse
-            [simple     uint 8         range]
-            [simple     uint 16        noOfRecordsNull]
+            [simple     uint 32         range]
             [simple     uint 16        noOfRecords]
             [array      UmasDatatypeReference         records count 'noOfRecords']
         ]
@@ -186,9 +185,9 @@
 ]
 
 [type UmasDatatypeReference
-    [simple     uint 8           dataSize]
+    [simple     uint 16          dataSize]
     [simple     uint 16          unknown1]
-    [simple     uint 16          unknown4]
+    [simple     uint 8           unknown4]
     [simple     uint 8           dataType]
     [simple     uint 8           stringLength]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']

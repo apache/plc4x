@@ -21,7 +21,10 @@ import logging
 from asyncio import Transport, AbstractEventLoop
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, cast
+
+from plc4py.drivers.umas.UmasVariables import UmasVariable, UmasVariableBuilder
+from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
 
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
     UmasUnlocatedVariableReference,
@@ -119,6 +122,7 @@ class UmasDevice:
     memory_blocks: List[PlcMemoryBlockIdent] = field(default_factory=lambda: [])
     hardware_id: int = -1
     index: int = -1
+    data_types: List[UmasDatatypeReference] = field(default_factory=lambda: {})
 
     async def connect(self, transport: Transport):
         # Create future to be returned when a value is returned
@@ -132,6 +136,11 @@ class UmasDevice:
         await self._send_read_memory_block(transport, loop)
         await self._send_unlocated_variable_datatype_request(transport, loop)
         await self._send_unlocated_variable_request(transport, loop)
+        self.variables = self._generate_variable_tree()
+
+    def _generate_variable_tree(self) -> Dict[str, UmasVariable]:
+        return UmasVariableBuilder(self.tags, self.data_types).build()
+
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -241,13 +250,12 @@ class UmasDevice:
             message_future.result()
         )
         read_buffer = ReadBufferByteBased(
-            bytearray(data_type_response.block),
-            ByteOrder.BIG_ENDIAN,
-            ByteOrder.BIG_ENDIAN,
+            bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
         )
         basic_info = UmasPDUReadDatatypeNamesResponse.static_parse_builder(
             read_buffer, 0xDD03
         ).build()
+        self.data_types = basic_info.records
 
     async def _send_unlocated_variable_request(
         self, transport: Transport, loop: AbstractEventLoop
@@ -327,10 +335,15 @@ class UmasDevice:
         return response
 
     def _sort_tags_based_on_memory_address(self, request):
-        tag_list: List[Tuple[str, VariableRequestReference]] = []
+        tag_list: List[List[Tuple[str, VariableRequestReference]]] = [[]]
+        current_list = tag_list[0]
+        byte_count: int = 0
         for kea, tag in request.tags.items():
-            record = self.tags[tag.tag_name.lower()]
-            tag_list.append(
+            umas_tag = cast(UmasTag, tag)
+            record = self.tags[umas_tag.tag_name.lower()]
+            is_array = record.data
+            byte_count += umas_tag.data_type.dataTypeSize
+            current_list.append(
                 (
                     kea,
                     VariableRequestReference(
