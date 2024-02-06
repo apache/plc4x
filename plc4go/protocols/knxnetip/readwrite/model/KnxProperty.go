@@ -861,7 +861,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcBOOL(value), nil
-	case propertyType == KnxPropertyDataType_PDT_BITSET8: // WORD
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // BYTE
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
@@ -869,8 +869,8 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		}
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcWORD(value), nil
-	case propertyType == KnxPropertyDataType_PDT_BITSET16: // DWORD
+		return values.NewPlcBYTE(value), nil
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // WORD
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
@@ -878,7 +878,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		}
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcDWORD(value), nil
+		return values.NewPlcWORD(value), nil
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
@@ -1451,12 +1451,12 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_BITSET8: // WORD
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // BYTE
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_BITSET16: // DWORD
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // WORD
 		// Simple Field (value)
 		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")

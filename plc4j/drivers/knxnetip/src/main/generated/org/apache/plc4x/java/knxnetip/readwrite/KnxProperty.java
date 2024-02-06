@@ -339,12 +339,12 @@ public class KnxProperty {
 
       boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // WORD
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // BYTE
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
-      return new PlcWORD(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // DWORD
+      return new PlcBYTE(value);
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // WORD
       int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
-      return new PlcDWORD(value);
+      return new PlcWORD(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
@@ -686,10 +686,10 @@ public class KnxProperty {
 
       // Simple field (value)
       lengthInBits += 1;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // WORD
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // BYTE
       // Simple field (value)
       lengthInBits += 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // DWORD
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // WORD
       // Simple field (value)
       lengthInBits += 16;
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
@@ -861,10 +861,10 @@ public class KnxProperty {
 
       // Simple Field (value)
       writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // WORD
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // BYTE
       // Simple Field (value)
       writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // DWORD
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // WORD
       // Simple Field (value)
       writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
