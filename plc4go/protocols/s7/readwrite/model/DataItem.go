@@ -328,13 +328,13 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		readBuffer.CloseContext("DataItem")
 	case dataProtocolId == "IEC61131_DATE_AND_LTIME": // DATE_AND_LTIME
 		// Simple Field (nanosecondsSinceEpoch)
-		_, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
+		nanosecondsSinceEpoch, _nanosecondsSinceEpochErr := readBuffer.ReadUint64("nanosecondsSinceEpoch", 64)
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
 		_ = nanosecondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcDATE_AND_LTIME(value), nil
+		return values.NewPlcDATA_AND_LTIMEFromNanosecondsSinceEpoch(nanosecondsSinceEpoch), nil
 	case dataProtocolId == "IEC61131_DTL": // DATE_AND_LTIME
 		// Simple Field (year)
 		year, _yearErr := readBuffer.ReadUint16("year", 16)
@@ -392,7 +392,6 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		}
 		_ = nannosecondsOfSecond // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcDATE_AND_LTIME(value), nil
 	}
 	// TODO: add more info which type it is actually
 	return nil, errors.New("unsupported type")

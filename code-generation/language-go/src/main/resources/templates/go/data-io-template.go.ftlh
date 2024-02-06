@@ -177,6 +177,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				|| (simpleField.name == "seconds")
 				|| (simpleField.name == "nanoseconds")
 				|| (simpleField.name == "nannosecondsOfSecond")
+				|| (simpleField.name == "nanosecondsSinceEpoch")
 				|| (simpleField.name == "dayOfWeek")
 				)
 			)
@@ -256,6 +257,14 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
                 <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
 			return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
+                </#if>
+                <#break>
+            <#case "DATE_AND_LTIME">
+			readBuffer.CloseContext("${type.name}")
+                <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanoseconds")>
+			return values.NewPlcDATA_AND_LTIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
+                <#elseif helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+			return values.NewPlcDATA_AND_LTIMEFromNanosecondsSinceEpoch(nanosecondsSinceEpoch), nil
                 </#if>
                 <#break>
             <#case "LDATE_AND_TIME">
