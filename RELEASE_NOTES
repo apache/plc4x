@@ -5,7 +5,7 @@
 New Features
 ------------
 
-- API: Made several bits of information available via the APP
+- API: Made several bits of information available via the API
   allowing tools to provide more content assist when dealing
   with PLC4X connections.
 - S7: The S7 driver now supports reading of STRING and
