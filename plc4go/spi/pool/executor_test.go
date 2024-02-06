@@ -377,7 +377,6 @@ func Test_executor_getWorksItems(t *testing.T) {
 		worker       []*worker
 		workItems    chan workItem
 		traceWorkers bool
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -396,7 +395,7 @@ func Test_executor_getWorksItems(t *testing.T) {
 				worker:       tt.fields.worker,
 				workItems:    tt.fields.workItems,
 				traceWorkers: tt.fields.traceWorkers,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			assert.Equalf(t, tt.want, e.getWorksItems(), "getWorksItems()")
 		})
