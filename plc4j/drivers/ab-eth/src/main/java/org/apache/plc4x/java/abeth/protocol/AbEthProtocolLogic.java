@@ -68,6 +68,11 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     }
 
     @Override
+    public void close(ConversationContext<CIPEncapsulationPacket> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<CIPEncapsulationPacket> context) {
         logger.debug("Sending COTP Connection Request");
         CIPEncapsulationConnectionRequest connectionRequest =
@@ -132,11 +137,6 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
         }
         // TODO: Should return an aggregated future ....
         return null;
-    }
-
-    @Override
-    public void close(ConversationContext<CIPEncapsulationPacket> context) {
-
     }
 
     private PlcResponse decodeReadResponse(

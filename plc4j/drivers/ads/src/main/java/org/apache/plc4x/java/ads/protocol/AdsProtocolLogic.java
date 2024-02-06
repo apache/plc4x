@@ -103,13 +103,13 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
     }
 
     @Override
-    public void setConfiguration(AdsConfiguration configuration) {
-        this.configuration = configuration;
+    public void close(ConversationContext<AmsTCPPacket> context) {
+        tm.shutdown();
     }
 
     @Override
-    public void close(ConversationContext<AmsTCPPacket> context) {
-
+    public void setConfiguration(AdsConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override

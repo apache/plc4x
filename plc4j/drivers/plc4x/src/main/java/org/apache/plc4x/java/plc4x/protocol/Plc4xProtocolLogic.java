@@ -61,6 +61,11 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
     }
 
     @Override
+    public void close(ConversationContext<Plc4xMessage> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<Plc4xMessage> context) {
         final int requestId = txIdGenerator.getAndIncrement();
 
@@ -180,11 +185,6 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
     @Override
     public CompletableFuture<PlcUnsubscriptionResponse> unsubscribe(PlcUnsubscriptionRequest unsubscriptionRequest) {
         return super.unsubscribe(unsubscriptionRequest);
-    }
-
-    @Override
-    public void close(ConversationContext<Plc4xMessage> context) {
-        // Nothing to do here ...
     }
 
     @Override

@@ -125,6 +125,11 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     }
 
     @Override
+    public void close(ConversationContext<CANOpenFrame> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<CANOpenFrame> context) {
         try {
             if (configuration.isHeartbeat()) {
@@ -440,11 +445,6 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
     @Override
     public void unregister(PlcConsumerRegistration registration) {
         consumers.remove(registration);
-    }
-
-    @Override
-    public void close(ConversationContext<CANOpenFrame> context) {
-
     }
 
     @Override

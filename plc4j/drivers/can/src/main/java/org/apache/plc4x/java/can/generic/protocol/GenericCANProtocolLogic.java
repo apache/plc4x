@@ -63,6 +63,11 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     }
 
     @Override
+    public void close(ConversationContext<GenericFrame> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void setContext(ConversationContext<GenericFrame> context) {
         super.setContext(context);
     }
@@ -75,11 +80,6 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     @Override
     public void onDisconnect(ConversationContext<GenericFrame> context) {
         context.fireDisconnected();
-    }
-
-    @Override
-    public void close(ConversationContext<GenericFrame> context) {
-
     }
 
     @Override

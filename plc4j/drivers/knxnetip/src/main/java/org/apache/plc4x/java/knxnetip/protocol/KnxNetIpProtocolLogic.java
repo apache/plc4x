@@ -81,6 +81,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     }
 
     @Override
+    public void close(ConversationContext<KnxNetIpMessage> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<KnxNetIpMessage> context) {
         // Only the UDP transport supports login.
         if (!context.isPassive()) {
@@ -530,11 +535,6 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 Hex.encodeHexString(payload))
             );
         }
-    }
-
-    @Override
-    public void close(ConversationContext<KnxNetIpMessage> context) {
-        // TODO Implement Closing on Protocol Level
     }
 
     @Override

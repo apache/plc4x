@@ -129,6 +129,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     @Override
+    public void close(ConversationContext<TPKTPacket> context) {
+        // TODO Implement Closing on Protocol Level
+        clientExecutorService.close();
+        tm.shutdown();
+        EventLogic.stop();
+    }
+
+    @Override
     public void onConnect(ConversationContext<TPKTPacket> context) {
         if (context.isPassive()) {
             logger.info("S7 Driver running in PASSIVE mode.");
@@ -1520,12 +1528,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                 }
             }
         }
-    }
-
-    @Override
-    public void close(ConversationContext<TPKTPacket> context) {
-        // TODO Implement Closing on Protocol Level
-        EventLogic.stop();
     }
 
     private void extractControllerTypeAndFireConnected(ConversationContext<TPKTPacket> context, S7PayloadUserData payloadUserData) {

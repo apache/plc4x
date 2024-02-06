@@ -71,6 +71,11 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
     }
 
     @Override
+    public void close(ConversationContext<APDU> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<APDU> context) {
         // First we exchange a test-frame
         APDUUFormatTestFrameActivation testFrameActivation = new APDUUFormatTestFrameActivation(0x43);
@@ -97,12 +102,6 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
                     }));
             }));
     }
-
-    @Override
-    public void close(ConversationContext<APDU> context) {
-
-    }
-
 
     @Override
     protected void decode(ConversationContext<APDU> context, APDU msg) throws Exception {

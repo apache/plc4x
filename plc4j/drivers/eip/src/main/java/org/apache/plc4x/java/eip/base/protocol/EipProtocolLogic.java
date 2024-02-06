@@ -145,6 +145,11 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         this.tm = new RequestTransactionManager(1);
     }
 
+    @Override
+    public void close(ConversationContext<EipPacket> context) {
+        tm.shutdown();
+    }
+
     public CompletableFuture<Boolean> detectEndianness(ConversationContext<EipPacket> context) {
         logger.debug("Sending Unknown Command to determine Endianess");
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -1290,10 +1295,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             default:
                 return PlcResponseCode.INTERNAL_ERROR;
         }
-    }
-
-    @Override
-    public void close(ConversationContext<EipPacket> context) {
     }
 
 }
