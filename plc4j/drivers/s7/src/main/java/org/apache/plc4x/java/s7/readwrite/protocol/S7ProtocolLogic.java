@@ -94,11 +94,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      * Alarm filtering, ack, etc. must be performed by the client application.
      */
     private final BlockingQueue<S7Event> eventQueue = new ArrayBlockingQueue<>(1024);
-    private final S7ProtocolEventLogic EventLogic = new S7ProtocolEventLogic(eventQueue);
-    private final S7PlcSubscriptionHandle modeHandle = new S7PlcSubscriptionHandle(EventType.MODE, EventLogic);
-    private final S7PlcSubscriptionHandle sysHandle = new S7PlcSubscriptionHandle(EventType.SYS, EventLogic);
-    private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR, EventLogic);
-    private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM, EventLogic);
+    private final S7ProtocolEventLogic eventLogic = new S7ProtocolEventLogic(eventQueue);
+    private final S7PlcSubscriptionHandle modeHandle = new S7PlcSubscriptionHandle(EventType.MODE, eventLogic);
+    private final S7PlcSubscriptionHandle sysHandle = new S7PlcSubscriptionHandle(EventType.SYS, eventLogic);
+    private final S7PlcSubscriptionHandle usrHandle = new S7PlcSubscriptionHandle(EventType.USR, eventLogic);
+    private final S7PlcSubscriptionHandle almHandle = new S7PlcSubscriptionHandle(EventType.ALM, eventLogic);
     //private final S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(EventType.CYC, EventLogic);    
 
     /*
@@ -125,7 +125,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // No concurrent requests can be sent anyway. It will be updated when receiving the
         // S7ParameterSetupCommunication response.
         this.tm = new RequestTransactionManager(1);
-        EventLogic.start();
+        eventLogic.start();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // TODO Implement Closing on Protocol Level
         clientExecutorService.close();
         tm.shutdown();
-        EventLogic.stop();
+        eventLogic.stop();
     }
 
     @Override
@@ -242,7 +242,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         // 2. Performs the shutdown of the transaction executor.
         tm.shutdown();
         // 3. Finish the execution of the tasks for the handling of Events.
-        EventLogic.stop();
+        eventLogic.stop();
         // 4. Executes the closing of the main channel.
         context.getChannel().close();
         // 5. Here is the stop of any task or state machine that is added.
@@ -797,7 +797,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             eventQueue.add(cycEvent);
 
-            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, EventLogic);
+            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, eventLogic);
 
             ResponseItem<PlcSubscriptionHandle> response = new ResponseItem<>(PlcResponseCode.OK, cycHandle);
             plcSubscriptionRequest.getTagNames().forEach(s -> values.put(s, response));
@@ -817,7 +817,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
             eventQueue.add(cycEvent);
 
-            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, EventLogic);
+            S7PlcSubscriptionHandle cycHandle = new S7PlcSubscriptionHandle(strTagName, EventType.CYC, eventLogic);
             values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, cycHandle));
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
