@@ -5,11 +5,35 @@
 New Features
 ------------
 
+- API: Made several bits of information available via the APP
+  allowing tools to provide more content assist when dealing
+  with PLC4X connections.
+- S7: The S7 driver now supports reading of STRING and
+  WSTRING data-types without providing a maximum length.
+- Build: Worked on making PLC4X provide reproducible builds.
+- Added "Ping" functionality to: ADS, EIP, KNX, Mock, Modbus
+  and Simulated drivers.
+
 Incompatible changes
 --------------------
 
+- Java 8 is no longer officially supported and Java 11 is the
+  new base-line.
+- The configuration syntax for configuring transport-related
+  config options in the connection-string was updated to be
+  now prefixed with the transport name the option belongs to.
+
 Bug Fixes
 ---------
+
+- S7: Several bugs and issues regarding supporting various
+  duration, date and time data-types.
+- S7: Implemented the missing 64bit (L-) types.
+- KNX: Fixed an issue with decoding 16 bit floating point
+  numbers.
+- NiFi-Integration: The NiFi integration module was greatly
+  improved.
+- Core: Fixed several leaks of open threads.
 
 ==============================================================
 Apache PLC4X 0.11.0
