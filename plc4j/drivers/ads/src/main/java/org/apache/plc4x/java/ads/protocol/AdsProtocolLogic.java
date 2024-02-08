@@ -1063,6 +1063,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             serializedTag -> serializedTag.length).sum();
 
         // Copy all serialized tags into one buffer.
+        // This is intentionally not "LittleEndian" as we're just concatenating the serialized values.
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(serializedSize);
         for (byte[] serializedTag : serializedTags) {
             try {
@@ -1117,7 +1118,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // Get the data type, allocate enough memory and serialize the value based on the
         // structure defined by the data type.
         AdsDataTypeTableEntry dataType = dataTypeTable.get(datatypeName);
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) dataType.getSize());
+        WriteBufferByteBased writeBuffer = new WriteBufferByteBased((int) dataType.getSize(), ByteOrder.LITTLE_ENDIAN);
         List<AdsDataTypeArrayInfo> arrayInfo = dataType.getArrayInfo();
         serializeInternal(plcValue, dataType, arrayInfo, writeBuffer);
         return writeBuffer.getBytes();
