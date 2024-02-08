@@ -25,6 +25,10 @@ from typing import Dict, List, Tuple, cast
 
 from plc4py.drivers.umas.UmasVariables import UmasVariable, UmasVariableBuilder
 from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
+from plc4py.protocols.umas.readwrite.UmasPDUReadUmasUDTDefinitionResponse import (
+    UmasPDUReadUmasUDTDefinitionResponse,
+)
+from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
 
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
     UmasUnlocatedVariableReference,
@@ -123,6 +127,9 @@ class UmasDevice:
     hardware_id: int = -1
     index: int = -1
     data_types: List[UmasDatatypeReference] = field(default_factory=lambda: {})
+    data_type_children: Dict[str, UmasDatatypeReference] = field(
+        default_factory=lambda: {}
+    )
 
     async def connect(self, transport: Transport):
         # Create future to be returned when a value is returned
@@ -134,13 +141,32 @@ class UmasDevice:
     async def _update_plc_project_info(self, transport, loop):
         await self._send_project_info(transport, loop)
         await self._send_read_memory_block(transport, loop)
-        await self._send_unlocated_variable_datatype_request(transport, loop)
-        await self._send_unlocated_variable_request(transport, loop)
+        offset = 0x0000
+        first_message = True
+        while offset != 0x0000 or first_message:
+            first_message = False
+            offset = await self._send_unlocated_variable_datatype_request(
+                transport, loop, offset
+            )
+        for data_type in self.data_types:
+            if data_type.class_identifier == 2:
+                await self._send_unlocated_variable_datatype_format_request(
+                    transport, loop, data_type.data_type, data_type.value
+                )
+        offset = 0x0000
+        first_message = True
+        while offset != 0x0000 or first_message:
+            first_message = False
+            offset = await self._send_unlocated_variable_request(
+                transport, loop, offset
+            )
+
         self.variables = self._generate_variable_tree()
 
     def _generate_variable_tree(self) -> Dict[str, UmasVariable]:
-        return UmasVariableBuilder(self.tags, self.data_types).build()
-
+        return UmasVariableBuilder(
+            self.tags, self.data_types, self.data_type_children
+        ).build()
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -224,10 +250,9 @@ class UmasDevice:
         ).build()
         self.hardware_id = basic_info.hardware_id
         self.index = basic_info.index
-        pass
 
     async def _send_unlocated_variable_datatype_request(
-        self, transport: Transport, loop: AbstractEventLoop
+        self, transport: Transport, loop: AbstractEventLoop, offset: int = 0x0000
     ):
         message_future = loop.create_future()
 
@@ -235,6 +260,7 @@ class UmasDevice:
             record_type=0xDD03,
             block_no=0x0000,
             index=self.index,
+            offset=offset,
             hardware_id=self.hardware_id,
         ).build(0, 0)
 
@@ -252,13 +278,46 @@ class UmasDevice:
         read_buffer = ReadBufferByteBased(
             bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
         )
-        basic_info = UmasPDUReadDatatypeNamesResponse.static_parse_builder(
-            read_buffer, 0xDD03
-        ).build()
+        basic_info = UmasPDUReadDatatypeNamesResponse.static_parse(read_buffer)
         self.data_types = basic_info.records
+        return basic_info.next_address
+
+    async def _send_unlocated_variable_datatype_format_request(
+        self,
+        transport: Transport,
+        loop: AbstractEventLoop,
+        index: int,
+        data_type_name: str,
+    ):
+        message_future = loop.create_future()
+
+        request_pdu = UmasPDUReadUnlocatedVariableNamesRequestBuilder(
+            record_type=0xDD02,
+            block_no=index,
+            index=self.index,
+            offset=0x0000,
+            hardware_id=self.hardware_id,
+        ).build(0, 0)
+
+        protocol = transport.protocol
+        protocol.write_wait_for_response(
+            request_pdu,
+            transport,
+            message_future,
+        )
+
+        await message_future
+        data_type_response: UmasPDUReadUnlocatedVariableResponse = (
+            message_future.result()
+        )
+        read_buffer = ReadBufferByteBased(
+            bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
+        )
+        basic_info = UmasPDUReadUmasUDTDefinitionResponse.static_parse(read_buffer)
+        self.data_type_children[data_type_name] = basic_info.records
 
     async def _send_unlocated_variable_request(
-        self, transport: Transport, loop: AbstractEventLoop
+        self, transport: Transport, loop: AbstractEventLoop, offset: int = 0x0000
     ):
         message_future = loop.create_future()
 
@@ -266,6 +325,7 @@ class UmasDevice:
             record_type=0xDD02,
             block_no=0xFFFF,
             index=self.index,
+            offset=offset,
             hardware_id=self.hardware_id,
         ).build(0, 0)
 
@@ -283,14 +343,12 @@ class UmasDevice:
         read_buffer = ReadBufferByteBased(
             bytearray(variable_name_response.block), ByteOrder.LITTLE_ENDIAN
         )
-        variable_list = UmasPDUReadUnlocatedVariableNamesResponse.static_parse_builder(
-            read_buffer, 0xDD03
-        ).build()
-        self.tags = {
-            variable.value.lower(): variable for variable in variable_list.records
-        }
-
-        pass
+        variable_list = UmasPDUReadUnlocatedVariableNamesResponse.static_parse(
+            read_buffer
+        )
+        for variable in variable_list.records:
+            self.tags[variable.value.lower()] = variable
+        return variable_list.next_address
 
     async def _send_read_variable_request(
         self, transport: Transport, loop: AbstractEventLoop, request, sorted_tags

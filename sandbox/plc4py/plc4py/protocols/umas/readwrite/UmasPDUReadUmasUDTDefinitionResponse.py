@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
+from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
@@ -31,27 +31,21 @@ import math
 
 
 @dataclass
-class UmasPDUReadDatatypeNamesResponse:
+class UmasPDUReadUmasUDTDefinitionResponse:
     range: int
-    next_address: int
     unknown1: int
     no_of_records: int
-    records: List[UmasDatatypeReference]
+    records: List[UmasUDTDefinition]
 
     def serialize(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasPDUReadDatatypeNamesResponse")
+        write_buffer.push_context("UmasPDUReadUmasUDTDefinitionResponse")
 
         # Simple Field (range)
         write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
 
-        # Simple Field (nextAddress)
-        write_buffer.write_unsigned_short(
-            self.next_address, bit_length=16, logical_name="nextAddress"
-        )
-
         # Simple Field (unknown1)
-        write_buffer.write_unsigned_byte(
-            self.unknown1, bit_length=8, logical_name="unknown1"
+        write_buffer.write_unsigned_int(
+            self.unknown1, bit_length=32, logical_name="unknown1"
         )
 
         # Simple Field (noOfRecords)
@@ -62,23 +56,20 @@ class UmasPDUReadDatatypeNamesResponse:
         # Array Field (records)
         write_buffer.write_complex_array(self.records, logical_name="records")
 
-        write_buffer.pop_context("UmasPDUReadDatatypeNamesResponse")
+        write_buffer.pop_context("UmasPDUReadUmasUDTDefinitionResponse")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = 0
-        _value: UmasPDUReadDatatypeNamesResponse = self
+        _value: UmasPDUReadUmasUDTDefinitionResponse = self
 
         # Simple field (range)
         length_in_bits += 8
 
-        # Simple field (nextAddress)
-        length_in_bits += 16
-
         # Simple field (unknown1)
-        length_in_bits += 8
+        length_in_bits += 32
 
         # Simple field (noOfRecords)
         length_in_bits += 16
@@ -92,20 +83,16 @@ class UmasPDUReadDatatypeNamesResponse:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return UmasPDUReadDatatypeNamesResponse.static_parse_context(read_buffer)
+        return UmasPDUReadUmasUDTDefinitionResponse.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.push_context("UmasPDUReadDatatypeNamesResponse")
+        read_buffer.push_context("UmasPDUReadUmasUDTDefinitionResponse")
 
         range: int = read_buffer.read_unsigned_byte(logical_name="range", bit_length=8)
 
-        next_address: int = read_buffer.read_unsigned_short(
-            logical_name="nextAddress", bit_length=16
-        )
-
-        unknown1: int = read_buffer.read_unsigned_byte(
-            logical_name="unknown1", bit_length=8
+        unknown1: int = read_buffer.read_unsigned_int(
+            logical_name="unknown1", bit_length=32
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
@@ -114,30 +101,29 @@ class UmasPDUReadDatatypeNamesResponse:
 
         records: List[Any] = read_buffer.read_array_field(
             logical_name="records",
-            read_function=UmasDatatypeReference.static_parse,
+            read_function=UmasUDTDefinition.static_parse,
             count=no_of_records,
         )
 
-        read_buffer.pop_context("UmasPDUReadDatatypeNamesResponse")
+        read_buffer.pop_context("UmasPDUReadUmasUDTDefinitionResponse")
         # Create the instance
-        _umas_pdu_read_datatype_names_response: UmasPDUReadDatatypeNamesResponse = (
-            UmasPDUReadDatatypeNamesResponse(
-                range, next_address, unknown1, no_of_records, records
-            )
+        _umas_pdu_read_umas_udt_definition_response: UmasPDUReadUmasUDTDefinitionResponse = UmasPDUReadUmasUDTDefinitionResponse(
+            range, unknown1, no_of_records, records
         )
-        return _umas_pdu_read_datatype_names_response
+        return _umas_pdu_read_umas_udt_definition_response
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasPDUReadDatatypeNamesResponse):
+        if not isinstance(o, UmasPDUReadUmasUDTDefinitionResponse):
             return False
 
-        that: UmasPDUReadDatatypeNamesResponse = UmasPDUReadDatatypeNamesResponse(o)
+        that: UmasPDUReadUmasUDTDefinitionResponse = (
+            UmasPDUReadUmasUDTDefinitionResponse(o)
+        )
         return (
             (self.range == that.range)
-            and (self.next_address == that.next_address)
             and (self.unknown1 == that.unknown1)
             and (self.no_of_records == that.no_of_records)
             and (self.records == that.records)

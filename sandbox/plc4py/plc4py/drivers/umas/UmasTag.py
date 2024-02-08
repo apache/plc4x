@@ -51,8 +51,6 @@ class UmasTag(PlcTag):
     def create(cls, address_string):
         matcher = cls._matcher(address_string)
         tag_name: str = matcher.group("tag")
-        ZZZ = matcher.group("elementNb")
-        pass
         quantity: int = (
             int(matcher.group("elementNb"))
             if "elementNb" in matcher.groupdict()
@@ -60,7 +58,6 @@ class UmasTag(PlcTag):
             and len(matcher.group("elementNb")) is not 0
             else 1
         )
-        ZZ = matcher.group("dataType")
         data_type = (
             UmasDataType[matcher.group("dataType")]
             if "dataType" in matcher.groupdict()

@@ -91,7 +91,8 @@
             [simple     uint 8          index]
             [simple     uint 32         hardwareId]
             [simple     uint 16         blockNo]
-            [const      uint 32         blank 0x0000]
+            [simple     uint 16         offset]
+            [const      uint 16         blank 0x00]
         ]
         ['0xFE', '0x01'     UmasInitCommsResponse
             [simple     uint 16         maxFrameSize]
@@ -147,20 +148,27 @@
     ]
 ]
 
-[type UmasVariableBlock(uint 16 recordFormat)
-    [typeSwitch recordFormat
-        ['0xdd02' UmasPDUReadUnlocatedVariableNamesResponse
-            [simple     uint 8          range]
-            [simple     uint 32         unknown1]
-            [simple     uint 16         noOfRecords]
-            [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
-        ]
-        ['0xdd03' UmasPDUReadDatatypeNamesResponse
-            [simple     uint 32         range]
-            [simple     uint 16        noOfRecords]
-            [array      UmasDatatypeReference         records count 'noOfRecords']
-        ]
-    ]
+[type UmasPDUReadUnlocatedVariableNamesResponse
+    [simple     uint 8          range]
+    [simple     uint 16         nextAddress]
+    [simple     uint 16         unknown1]
+    [simple     uint 16         noOfRecords]
+    [array      UmasUnlocatedVariableReference         records count 'noOfRecords']
+]
+
+[type UmasPDUReadUmasUDTDefinitionResponse
+    [simple     uint 8          range]
+    [simple     uint 32         unknown1]
+    [simple     uint 16         noOfRecords]
+    [array      UmasUDTDefinition         records count 'noOfRecords']
+]
+
+[type UmasPDUReadDatatypeNamesResponse
+    [simple     uint 8         range]
+    [simple     uint 16        nextAddress]
+    [simple     uint 8         unknown1]
+    [simple     uint 16        noOfRecords]
+    [array      UmasDatatypeReference         records count 'noOfRecords']
 ]
 
 [type VariableRequestReference
@@ -184,10 +192,18 @@
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
 ]
 
+[type UmasUDTDefinition
+    [simple     uint 16          dataType]
+    [simple     uint 16          offset]
+    [simple     uint 16          unknown5]
+    [simple     uint 16          unknown4]
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, -1)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, -1)' '(stringLength * 8)'']
+]
+
 [type UmasDatatypeReference
     [simple     uint 16          dataSize]
     [simple     uint 16          unknown1]
-    [simple     uint 8           unknown4]
+    [simple     uint 8           classIdentifier]
     [simple     uint 8           dataType]
     [simple     uint 8           stringLength]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']

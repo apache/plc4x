@@ -29,72 +29,63 @@ import math
 
 
 @dataclass
-class UmasDatatypeReference:
-    data_size: int
-    unknown1: int
-    class_identifier: int
+class UmasUDTDefinition:
     data_type: int
-    string_length: int
+    offset: int
+    unknown5: int
+    unknown4: int
     value: str
 
     def serialize(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasDatatypeReference")
-
-        # Simple Field (dataSize)
-        write_buffer.write_unsigned_short(
-            self.data_size, bit_length=16, logical_name="dataSize"
-        )
-
-        # Simple Field (unknown1)
-        write_buffer.write_unsigned_short(
-            self.unknown1, bit_length=16, logical_name="unknown1"
-        )
-
-        # Simple Field (classIdentifier)
-        write_buffer.write_unsigned_byte(
-            self.class_identifier, bit_length=8, logical_name="classIdentifier"
-        )
+        write_buffer.push_context("UmasUDTDefinition")
 
         # Simple Field (dataType)
-        write_buffer.write_unsigned_byte(
-            self.data_type, bit_length=8, logical_name="dataType"
+        write_buffer.write_unsigned_short(
+            self.data_type, bit_length=16, logical_name="dataType"
         )
 
-        # Simple Field (stringLength)
-        write_buffer.write_unsigned_byte(
-            self.string_length, bit_length=8, logical_name="stringLength"
+        # Simple Field (offset)
+        write_buffer.write_unsigned_short(
+            self.offset, bit_length=16, logical_name="offset"
+        )
+
+        # Simple Field (unknown5)
+        write_buffer.write_unsigned_short(
+            self.unknown5, bit_length=16, logical_name="unknown5"
+        )
+
+        # Simple Field (unknown4)
+        write_buffer.write_unsigned_short(
+            self.unknown4, bit_length=16, logical_name="unknown4"
         )
         # Manual Field (value)
         write_buffer.write_manual(
             write_function=lambda: StaticHelper.serialize_terminated_string(
-                write_buffer, self.value, self.string_length
+                write_buffer, self.value, 1
             ),
             logical_name="value",
         )
 
-        write_buffer.pop_context("UmasDatatypeReference")
+        write_buffer.pop_context("UmasUDTDefinition")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = 0
-        _value: UmasDatatypeReference = self
-
-        # Simple field (dataSize)
-        length_in_bits += 16
-
-        # Simple field (unknown1)
-        length_in_bits += 16
-
-        # Simple field (classIdentifier)
-        length_in_bits += 8
+        _value: UmasUDTDefinition = self
 
         # Simple field (dataType)
-        length_in_bits += 8
+        length_in_bits += 16
 
-        # Simple field (stringLength)
-        length_in_bits += 8
+        # Simple field (offset)
+        length_in_bits += 16
+
+        # Simple field (unknown5)
+        length_in_bits += 16
+
+        # Simple field (unknown4)
+        length_in_bits += 16
 
         # Manual Field (value)
         length_in_bits += self.string_length * int(8)
@@ -103,60 +94,53 @@ class UmasDatatypeReference:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return UmasDatatypeReference.static_parse_context(read_buffer)
+        return UmasUDTDefinition.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.push_context("UmasDatatypeReference")
+        read_buffer.push_context("UmasUDTDefinition")
 
-        data_size: int = read_buffer.read_unsigned_short(
-            logical_name="dataSize", bit_length=16
+        data_type: int = read_buffer.read_unsigned_short(
+            logical_name="dataType", bit_length=16
         )
 
-        unknown1: int = read_buffer.read_unsigned_short(
-            logical_name="unknown1", bit_length=16
+        offset: int = read_buffer.read_unsigned_short(
+            logical_name="offset", bit_length=16
         )
 
-        class_identifier: int = read_buffer.read_unsigned_byte(
-            logical_name="classIdentifier", bit_length=8
+        unknown5: int = read_buffer.read_unsigned_short(
+            logical_name="unknown5", bit_length=16
         )
 
-        data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="dataType", bit_length=8
-        )
-
-        string_length: int = read_buffer.read_unsigned_byte(
-            logical_name="stringLength", bit_length=8
+        unknown4: int = read_buffer.read_unsigned_short(
+            logical_name="unknown4", bit_length=16
         )
 
         value = read_buffer.read_manual(
-            read_function=lambda: StaticHelper.parse_terminated_string(
-                read_buffer, string_length
-            ),
+            read_function=lambda: StaticHelper.parse_terminated_string(read_buffer, 1),
             logical_name="value",
         )
 
-        read_buffer.pop_context("UmasDatatypeReference")
+        read_buffer.pop_context("UmasUDTDefinition")
         # Create the instance
-        _umas_datatype_reference: UmasDatatypeReference = UmasDatatypeReference(
-            data_size, unknown1, class_identifier, data_type, string_length, value
+        _umas_udt_definition: UmasUDTDefinition = UmasUDTDefinition(
+            data_type, offset, unknown5, unknown4, value
         )
-        return _umas_datatype_reference
+        return _umas_udt_definition
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasDatatypeReference):
+        if not isinstance(o, UmasUDTDefinition):
             return False
 
-        that: UmasDatatypeReference = UmasDatatypeReference(o)
+        that: UmasUDTDefinition = UmasUDTDefinition(o)
         return (
-            (self.data_size == that.data_size)
-            and (self.unknown1 == that.unknown1)
-            and (self.class_identifier == that.class_identifier)
-            and (self.data_type == that.data_type)
-            and (self.string_length == that.string_length)
+            (self.data_type == that.data_type)
+            and (self.offset == that.offset)
+            and (self.unknown5 == that.unknown5)
+            and (self.unknown4 == that.unknown4)
             and (self.value == that.value)
             and True
         )

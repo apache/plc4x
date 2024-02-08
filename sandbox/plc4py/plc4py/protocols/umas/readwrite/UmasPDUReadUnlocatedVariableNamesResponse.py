@@ -25,33 +25,35 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
     UmasUnlocatedVariableReference,
 )
-from plc4py.protocols.umas.readwrite.UmasVariableBlock import UmasVariableBlock
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
-from typing import ClassVar
 from typing import List
 import math
 
 
 @dataclass
-class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
+class UmasPDUReadUnlocatedVariableNamesResponse:
     range: int
+    next_address: int
     unknown1: int
     no_of_records: int
     records: List[UmasUnlocatedVariableReference]
-    # Accessors for discriminator values.
-    record_format: ClassVar[int] = 0xDD02
 
-    def serialize_umas_variable_block_child(self, write_buffer: WriteBuffer):
+    def serialize(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
 
         # Simple Field (range)
         write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
 
+        # Simple Field (nextAddress)
+        write_buffer.write_unsigned_short(
+            self.next_address, bit_length=16, logical_name="nextAddress"
+        )
+
         # Simple Field (unknown1)
-        write_buffer.write_unsigned_int(
-            self.unknown1, bit_length=32, logical_name="unknown1"
+        write_buffer.write_unsigned_short(
+            self.unknown1, bit_length=16, logical_name="unknown1"
         )
 
         # Simple Field (noOfRecords)
@@ -68,14 +70,17 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
-        length_in_bits: int = super().length_in_bits()
+        length_in_bits: int = 0
         _value: UmasPDUReadUnlocatedVariableNamesResponse = self
 
         # Simple field (range)
         length_in_bits += 8
 
+        # Simple field (nextAddress)
+        length_in_bits += 16
+
         # Simple field (unknown1)
-        length_in_bits += 32
+        length_in_bits += 16
 
         # Simple field (noOfRecords)
         length_in_bits += 16
@@ -88,33 +93,41 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, record_format: int):
-        read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
-
-        range: int = read_buffer.read_unsigned_byte(
-            logical_name="range", bit_length=8, record_format=record_format
+    def static_parse(read_buffer: ReadBuffer, **kwargs):
+        return UmasPDUReadUnlocatedVariableNamesResponse.static_parse_context(
+            read_buffer
         )
 
-        unknown1: int = read_buffer.read_unsigned_int(
-            logical_name="unknown1", bit_length=32, record_format=record_format
+    @staticmethod
+    def static_parse_context(read_buffer: ReadBuffer):
+        read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
+
+        range: int = read_buffer.read_unsigned_byte(logical_name="range", bit_length=8)
+
+        next_address: int = read_buffer.read_unsigned_short(
+            logical_name="nextAddress", bit_length=16
+        )
+
+        unknown1: int = read_buffer.read_unsigned_short(
+            logical_name="unknown1", bit_length=16
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
-            logical_name="noOfRecords", bit_length=16, record_format=record_format
+            logical_name="noOfRecords", bit_length=16
         )
 
         records: List[Any] = read_buffer.read_array_field(
             logical_name="records",
             read_function=UmasUnlocatedVariableReference.static_parse,
             count=no_of_records,
-            record_format=record_format,
         )
 
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesResponse")
         # Create the instance
-        return UmasPDUReadUnlocatedVariableNamesResponseBuilder(
-            range, unknown1, no_of_records, records
+        _umas_pdu_read_unlocated_variable_names_response: UmasPDUReadUnlocatedVariableNamesResponse = UmasPDUReadUnlocatedVariableNamesResponse(
+            range, next_address, unknown1, no_of_records, records
         )
+        return _umas_pdu_read_unlocated_variable_names_response
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -128,10 +141,10 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         )
         return (
             (self.range == that.range)
+            and (self.next_address == that.next_address)
             and (self.unknown1 == that.unknown1)
             and (self.no_of_records == that.no_of_records)
             and (self.records == that.records)
-            and super().equals(that)
             and True
         )
 
@@ -147,19 +160,3 @@ class UmasPDUReadUnlocatedVariableNamesResponse(UmasVariableBlock):
         #    raise PlcRuntimeException(e)
 
         # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
-
-
-@dataclass
-class UmasPDUReadUnlocatedVariableNamesResponseBuilder:
-    range: int
-    unknown1: int
-    no_of_records: int
-    records: List[UmasUnlocatedVariableReference]
-
-    def build(
-        self,
-    ) -> UmasPDUReadUnlocatedVariableNamesResponse:
-        umas_pdu_read_unlocated_variable_names_response: UmasPDUReadUnlocatedVariableNamesResponse = UmasPDUReadUnlocatedVariableNamesResponse(
-            self.range, self.unknown1, self.no_of_records, self.records
-        )
-        return umas_pdu_read_unlocated_variable_names_response
