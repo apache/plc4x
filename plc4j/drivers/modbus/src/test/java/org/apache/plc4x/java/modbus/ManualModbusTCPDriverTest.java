@@ -22,10 +22,8 @@ import org.apache.plc4x.java.spi.values.*;
 import org.apache.plc4x.test.manual.ManualTest;
 import org.junit.jupiter.api.Disabled;
 
-import java.util.Arrays;
-
 @Disabled("Manual Test")
-public class ManualModbusDriverTest extends ManualTest {
+public class ManualModbusTCPDriverTest extends ManualTest {
 
     /*
      * Test program code on the PLC with the test-data.
@@ -66,12 +64,12 @@ public class ManualModbusDriverTest extends ManualTest {
      *
      */
 
-    public ManualModbusDriverTest(String connectionString) {
+    public ManualModbusTCPDriverTest(String connectionString) {
         super(connectionString, true);
     }
 
     public static void main(String[] args) throws Exception {
-        ManualModbusDriverTest test = new ManualModbusDriverTest("modbus-tcp://192.168.23.30");
+        ManualModbusTCPDriverTest test = new ManualModbusTCPDriverTest("modbus-tcp://192.168.23.30");
         test.addTestCase("holding-register:1:BOOL", new PlcBOOL(true)); // 0001
         test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 2A
         test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8

@@ -21,6 +21,7 @@ package org.apache.plc4x.java.transport.serial;
 
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
 public class DefaultSerialTransportConfiguration implements SerialTransportConfiguration {
 
@@ -36,9 +37,9 @@ public class DefaultSerialTransportConfiguration implements SerialTransportConfi
     @IntDefaultValue(1)
     private int numStopBits;
 
-    @ConfigurationParameter("parity-bits")
-    @IntDefaultValue(0)
-    private int parityBits;
+    @ConfigurationParameter("parity")
+    @StringDefaultValue("NO_PARITY")
+    private SerialChannelOptionsParity parity;
 
     @Override
     public int getBaudRate() {
@@ -68,12 +69,12 @@ public class DefaultSerialTransportConfiguration implements SerialTransportConfi
     }
 
     @Override
-    public int getParityBits() {
-        return parityBits;
+    public SerialChannelOptionsParity getParity() {
+        return parity;
     }
 
-    public void setParityBits(int parityBits) {
-        this.parityBits = parityBits;
+    public void setParity(SerialChannelOptionsParity parity) {
+        this.parity = parity;
     }
 
 }

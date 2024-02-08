@@ -272,6 +272,9 @@ public class ConfigurationFactory {
         if ((field.getType() == double.class) || (field.getType() == Double.class)) {
             return Double.parseDouble(valueString);
         }
+        if (field.getType().isEnum()) {
+            return parseEnumValue(field, valueString);
+        }
         throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
     }
 
@@ -294,9 +297,16 @@ public class ConfigurationFactory {
         }
         StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
         if (stringDefaultValue != null) {
+            if (field.getType().isEnum()) {
+                return parseEnumValue(field, stringDefaultValue.value());
+            }
             return stringDefaultValue.value();
         }
         return null;
+    }
+
+    private static Enum<?> parseEnumValue(Field field, String valueString) {
+        return Enum.valueOf((Class<Enum>) field.getType(), valueString);
     }
 
     /**

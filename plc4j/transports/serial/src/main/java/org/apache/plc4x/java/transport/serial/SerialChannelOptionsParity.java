@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,18 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.transport.serial;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+public enum SerialChannelOptionsParity {
+    NO_PARITY(0),
+    ODD_PARITY(1),
+    EVEN_PARITY(2),
+    MARK_PARITY(3),
+    SPACE_PARITY(4);
 
-public interface SerialTransportConfiguration extends TransportConfiguration {
+    public final int value;
 
-    int getBaudRate();
-
-    int getNumDataBits();
-
-    int getNumStopBits();
-
-    SerialChannelOptionsParity getParity();
+    SerialChannelOptionsParity(int value) {
+        this.value = value;
+    }
 
 }

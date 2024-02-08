@@ -136,6 +136,13 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-serial</artifactId>
+      <version>0.12.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
       <version>0.12.0-SNAPSHOT</version>
       <classifier>tests</classifier>

@@ -203,4 +203,9 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         return future;
     }
 
+    @Override
+    protected void decode(ConversationContext<ModbusRtuADU> context, ModbusRtuADU msg) throws Exception {
+        System.out.println(msg);
+    }
+
 }
