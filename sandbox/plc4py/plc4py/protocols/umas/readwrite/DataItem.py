@@ -46,6 +46,7 @@ class DataItem:
         read_buffer: ReadBuffer, data_type: UmasDataType, number_of_values: int
     ):
         if data_type == UmasDataType.BOOL and number_of_values == int(1):  # BOOL
+
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(7, logical_name="")
             if reserved != int(0x0000):
@@ -71,6 +72,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
 
@@ -85,16 +87,19 @@ class DataItem:
 
             return PlcList(value)
         if data_type == UmasDataType.WORD:  # WORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
             return PlcWORD(value)
         if data_type == UmasDataType.DWORD:  # DWORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
             return PlcDWORD(value)
         if data_type == UmasDataType.INT and number_of_values == int(1):  # INT
+
             # Simple Field (value)
             value: int = read_buffer.read_short(16, logical_name="")
 
@@ -109,6 +114,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == UmasDataType.DINT and number_of_values == int(1):  # DINT
+
             # Simple Field (value)
             value: int = read_buffer.read_int(32, logical_name="")
 
@@ -123,6 +129,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == UmasDataType.UINT and number_of_values == int(1):  # UINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
@@ -139,6 +146,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == UmasDataType.UDINT and number_of_values == int(1):  # UDINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
@@ -155,6 +163,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == UmasDataType.REAL and number_of_values == int(1):  # REAL
+
             # Simple Field (value)
             value: float = read_buffer.read_float(32, logical_name="")
 
@@ -201,12 +210,14 @@ class DataItem:
         byte_order: ByteOrder,
     ) -> None:
         if data_type == UmasDataType.BOOL and number_of_values == int(1):  # BOOL
+
             # Reserved Field
             write_buffer.write_byte(int(0x0000), 7, "int0x0000")
             # Simple Field (value)
             value: bool = _value.get_bool()
             write_buffer.write_bit((value), "value")
         if data_type == UmasDataType.BOOL:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -214,10 +225,12 @@ class DataItem:
                 write_buffer.write_bit((value), "value")
 
         if data_type == UmasDataType.BYTE and number_of_values == int(1):  # BYTE
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_byte((value), 8, "value")
         if data_type == UmasDataType.BYTE:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -225,18 +238,22 @@ class DataItem:
                 write_buffer.write_bit((value), "value")
 
         if data_type == UmasDataType.WORD:  # WORD
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_short((value), 16, "value")
         if data_type == UmasDataType.DWORD:  # DWORD
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_int((value), 32, "value")
         if data_type == UmasDataType.INT and number_of_values == int(1):  # INT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_short((value), 16, "value")
         if data_type == UmasDataType.INT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -244,10 +261,12 @@ class DataItem:
                 write_buffer.write_short((value), 16, "value")
 
         if data_type == UmasDataType.DINT and number_of_values == int(1):  # DINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_int((value), 32, "value")
         if data_type == UmasDataType.DINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -255,10 +274,12 @@ class DataItem:
                 write_buffer.write_int((value), 32, "value")
 
         if data_type == UmasDataType.UINT and number_of_values == int(1):  # UINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_short((value), 16, "value")
         if data_type == UmasDataType.UINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -266,10 +287,12 @@ class DataItem:
                 write_buffer.write_unsigned_short((value), 16, "value")
 
         if data_type == UmasDataType.UDINT and number_of_values == int(1):  # UDINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_int((value), 32, "value")
         if data_type == UmasDataType.UDINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -277,10 +300,12 @@ class DataItem:
                 write_buffer.write_unsigned_int((value), 32, "value")
 
         if data_type == UmasDataType.REAL and number_of_values == int(1):  # REAL
+
             # Simple Field (value)
             value: float = _value.get_float()
             write_buffer.write_float((value), 32, "value")
         if data_type == UmasDataType.REAL:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -288,9 +313,11 @@ class DataItem:
                 write_buffer.write_float((value), 32, "value")
 
         if data_type == UmasDataType.STRING and number_of_values == int(1):  # STRING
+
             # Manual Field (value)
             serialize_terminated_string(write_buffer, self.value, self.number_of_values)
         if data_type == UmasDataType.STRING:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():

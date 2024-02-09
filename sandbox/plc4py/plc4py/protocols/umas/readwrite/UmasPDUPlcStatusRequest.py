@@ -87,6 +87,7 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
 
 @dataclass
 class UmasPDUPlcStatusRequestBuilder:
+
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcStatusRequest:
         umas_pdu_plc_status_request: UmasPDUPlcStatusRequest = UmasPDUPlcStatusRequest(
             byte_length,

@@ -27,7 +27,9 @@ from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
 
 
 class UmasTag(PlcTag):
-    _ADDRESS_PATTERN: str = "^(?P<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)"
+    _ADDRESS_PATTERN: str = (
+        "^(?P<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)"
+    )
 
     _ADDRESS_COMPILED: Pattern[AnyStr] = re.compile(_ADDRESS_PATTERN)
     _DEFAULT_DATA_TYPE: UmasDataType = UmasDataType.INT

@@ -35,7 +35,7 @@ from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
 
 @dataclass
 class UmasProtocol(Plc4xBaseProtocol):
-    unit_identifier: int = 0
+    unit_identifier: int = 1
     messages: Dict[int, Tuple[int, Future]] = field(default_factory=lambda: {})
     _transaction_generator: AtomicInteger = field(
         default_factory=lambda: AtomicInteger()

@@ -32,6 +32,7 @@ import math
 
 @dataclass
 class UmasMemoryBlock(ABC, PlcMessage):
+
     # Abstract accessors for discriminator values.
     @property
     def block_number(self) -> int:
@@ -66,6 +67,7 @@ class UmasMemoryBlock(ABC, PlcMessage):
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
+
         if kwargs is None:
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 2, but got None"
@@ -106,6 +108,7 @@ class UmasMemoryBlock(ABC, PlcMessage):
         )
 
         if block_number == int(0x30) and offset == int(0x00):
+
             builder = UmasMemoryBlockBasicInfo.static_parse_builder(
                 read_buffer, block_number, offset
             )

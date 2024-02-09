@@ -16,6 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+import asyncio
+import logging
 import time
 
 from plc4py.PlcDriverManager import PlcDriverManager
@@ -28,13 +30,29 @@ async def manual_test_plc_driver_umas_connect():
     assert not connection.is_connected()
 
 
-async def test_plc_driver_umas_read():
+async def manual_test_plc_driver_umas_read():
+    log = logging.getLogger(__name__)
+
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://192.168.1.174:502") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item("Random Tag 2", "test_DINT:DINT")
-            builder.add_item("Random Tag 1", "test_REAL:REAL")
-            builder.add_item("Random Tag 3", "test_BYTE:BYTE")
+            builder.add_item(f"Random Tag {1}", "testing:DINT")
+            request = builder.build()
+
+        future = connection.execute(request)
+        await future
+        response = future.result()
+        value = response.values["Random Tag 1"][0].value
+        log.error(f"Read tag test_REAL - {value}")
+        await asyncio.sleep(1)
+    pass
+
+
+async def manual_test_plc_driver_umas_browse():
+    driver_manager = PlcDriverManager()
+    async with driver_manager.connection("umas://192.168.1.174:502") as connection:
+        with connection.browse_request_builder() as builder:
+            builder.add_query("All Tags", "*")
             request = builder.build()
 
         future = connection.execute(request)

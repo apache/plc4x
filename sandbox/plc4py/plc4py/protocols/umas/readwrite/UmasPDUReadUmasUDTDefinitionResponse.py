@@ -107,7 +107,9 @@ class UmasPDUReadUmasUDTDefinitionResponse:
 
         read_buffer.pop_context("UmasPDUReadUmasUDTDefinitionResponse")
         # Create the instance
-        _umas_pdu_read_umas_udt_definition_response: UmasPDUReadUmasUDTDefinitionResponse = UmasPDUReadUmasUDTDefinitionResponse(
+        _umas_pdu_read_umas_udt_definition_response: (
+            UmasPDUReadUmasUDTDefinitionResponse
+        ) = UmasPDUReadUmasUDTDefinitionResponse(
             range, unknown1, no_of_records, records
         )
         return _umas_pdu_read_umas_udt_definition_response

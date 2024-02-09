@@ -206,7 +206,9 @@ class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
     def build(
         self, byte_length: int, pairing_key
     ) -> UmasPDUReadUnlocatedVariableNamesRequest:
-        umas_pdu_read_unlocated_variable_names_request: UmasPDUReadUnlocatedVariableNamesRequest = UmasPDUReadUnlocatedVariableNamesRequest(
+        umas_pdu_read_unlocated_variable_names_request: (
+            UmasPDUReadUnlocatedVariableNamesRequest
+        ) = UmasPDUReadUnlocatedVariableNamesRequest(
             byte_length,
             pairing_key,
             self.record_type,

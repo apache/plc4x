@@ -84,6 +84,7 @@ class ModbusPDU(ABC, PlcMessage):
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
+
         if kwargs is None:
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 2, but got None"
@@ -141,12 +142,14 @@ class ModbusPDU(ABC, PlcMessage):
         from plc4py.protocols.umas.readwrite.ModbusPDUError import ModbusPDUError
 
         if error_flag == bool(True):
+
             builder = ModbusPDUError.static_parse_builder(
                 read_buffer, umas_request_function_key, byte_length
             )
         from plc4py.protocols.umas.readwrite.UmasPDU import UmasPDU
 
         if error_flag == bool(False) and function_flag == int(0x5A):
+
             builder = UmasPDU.static_parse_builder(
                 read_buffer, umas_request_function_key, byte_length
             )

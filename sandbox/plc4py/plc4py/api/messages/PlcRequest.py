@@ -42,7 +42,23 @@ class PlcTagRequest(PlcRequest):
 
 
 @dataclass
+class PlcQueryRequest(PlcRequest):
+    queries: Dict[str, str] = field(default_factory=lambda: OrderedDict())
+
+    @property
+    def query_names(self):
+        return [quary_name for quary_name in self.queries.keys()]
+
+
+@dataclass
 class PlcReadRequest(PlcTagRequest):
+    """
+    Base type for all messages sent from the plc4x system to a connected plc.
+    """
+
+
+@dataclass
+class PlcBrowseRequest(PlcQueryRequest):
     """
     Base type for all messages sent from the plc4x system to a connected plc.
     """
@@ -55,4 +71,14 @@ class ReadRequestBuilder(GenericGenerator):
 
     @abstractmethod
     def add_item(self, tag_name: str, address_string: str) -> None:
+        pass
+
+
+class BrowseRequestBuilder(GenericGenerator):
+    @abstractmethod
+    def build(self) -> PlcBrowseRequest:
+        pass
+
+    @abstractmethod
+    def add_query(self, query_name: str, query: str) -> None:
         pass

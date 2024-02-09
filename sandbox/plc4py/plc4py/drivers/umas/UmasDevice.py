@@ -17,102 +17,72 @@
 # under the License.
 #
 import asyncio
-import logging
 from asyncio import Transport, AbstractEventLoop
-from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, cast
 
+from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
+
+from plc4py.api.messages.PlcRequest import PlcReadRequest, PlcBrowseRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcBrowseResponse
+from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
+from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
+from plc4py.drivers.umas.UmasTag import UmasTag
 from plc4py.drivers.umas.UmasVariables import UmasVariable, UmasVariableBuilder
+from plc4py.protocols.umas.readwrite import UmasPDUReadUnlocatedVariableResponse
+from plc4py.protocols.umas.readwrite.DataItem import DataItem
+from plc4py.protocols.umas.readwrite.PlcMemoryBlockIdent import PlcMemoryBlockIdent
 from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
+from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import (
+    UmasInitCommsRequestBuilder,
+)
+from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import UmasInitCommsResponse
+from plc4py.protocols.umas.readwrite.UmasMemoryBlockBasicInfo import (
+    UmasMemoryBlockBasicInfo,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import (
+    UmasPDUPlcIdentRequestBuilder,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import (
+    UmasPDUPlcIdentResponse,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusRequest import (
+    UmasPDUPlcStatusRequestBuilder,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusResponse import (
+    UmasPDUPlcStatusResponse,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUReadDatatypeNamesResponse import (
+    UmasPDUReadDatatypeNamesResponse,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockRequest import (
+    UmasPDUReadMemoryBlockRequestBuilder,
+)
+from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockResponse import (
+    UmasPDUReadMemoryBlockResponse,
+)
 from plc4py.protocols.umas.readwrite.UmasPDUReadUmasUDTDefinitionResponse import (
     UmasPDUReadUmasUDTDefinitionResponse,
 )
-from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
-
-from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
-    UmasUnlocatedVariableReference,
-)
-
-from plc4py.drivers.umas.UmasTag import UmasTag
-
-from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import (
-    UmasPDUReadVariableResponse,
-)
-
-from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
-
-from plc4py.protocols.umas.readwrite.DataItem import DataItem
-from plc4py.protocols.umas.readwrite.VariableRequestReference import (
-    VariableRequestReference,
-)
-
-from plc4py.protocols.umas.readwrite.UmasPDUReadVariableRequest import (
-    UmasPDUReadVariableRequestBuilder,
-)
-
-from plc4py.protocols.umas.readwrite import UmasPDUReadUnlocatedVariableResponse
-from plc4py.protocols.umas.readwrite.UmasPDUReadDatatypeNamesResponse import (
-    UmasPDUReadDatatypeNamesResponse,
+from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNamesRequest import (
+    UmasPDUReadUnlocatedVariableNamesRequestBuilder,
 )
 from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNamesResponse import (
     UmasPDUReadUnlocatedVariableNamesResponse,
 )
-
-from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNamesRequest import (
-    UmasPDUReadUnlocatedVariableNamesRequestBuilder,
+from plc4py.protocols.umas.readwrite.UmasPDUReadVariableRequest import (
+    UmasPDUReadVariableRequestBuilder,
 )
-
-from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNames import (
-    UmasPDUReadUnlocatedVariableNamesBuilder,
+from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import (
+    UmasPDUReadVariableResponse,
 )
-
-from plc4py.protocols.umas.readwrite.UmasMemoryBlockBasicInfo import (
-    UmasMemoryBlockBasicInfo,
+from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
+    UmasUnlocatedVariableReference,
+)
+from plc4py.protocols.umas.readwrite.VariableRequestReference import (
+    VariableRequestReference,
 )
 from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
-
-from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockResponse import (
-    UmasPDUReadMemoryBlockResponse,
-)
-
-from plc4py.protocols.umas.readwrite.PlcMemoryBlockIdent import PlcMemoryBlockIdent
-from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentResponse import (
-    UmasPDUPlcIdentResponse,
-)
-
-from plc4py.protocols.umas.readwrite.UmasPDUReadMemoryBlockRequest import (
-    UmasPDUReadMemoryBlockRequestBuilder,
-)
-
-from plc4py.protocols.umas.readwrite.UmasInitCommsResponse import UmasInitCommsResponse
-
-from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusResponse import (
-    UmasPDUPlcStatusResponse,
-)
-
-from plc4py.protocols.umas.readwrite.UmasPDUPlcStatusRequest import (
-    UmasPDUPlcStatusRequestBuilder,
-)
-
-from plc4py.protocols.umas.readwrite.UmasPDUProjectInfoRequest import (
-    UmasPDUProjectInfoRequest,
-    UmasPDUProjectInfoRequestBuilder,
-)
-
-from plc4py.protocols.umas.readwrite.UmasInitCommsRequest import (
-    UmasInitCommsRequestBuilder,
-)
-
-from plc4py.protocols.umas.readwrite.UmasPDUPlcIdentRequest import (
-    UmasPDUPlcIdentRequestBuilder,
-)
-from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
-
-from plc4py.api.messages.PlcRequest import PlcReadRequest
-from plc4py.api.messages.PlcResponse import PlcReadResponse
-from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
-from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.utils.GenericTypes import ByteOrder
 
@@ -120,53 +90,71 @@ from plc4py.utils.GenericTypes import ByteOrder
 @dataclass
 class UmasDevice:
     _configuration: UmasConfiguration
-    tags: Dict[str, UmasUnlocatedVariableReference] = field(default_factory=lambda: {})
     project_crc: int = -1
     max_frame_size: int = -1
     memory_blocks: List[PlcMemoryBlockIdent] = field(default_factory=lambda: [])
     hardware_id: int = -1
     index: int = -1
-    data_types: List[UmasDatatypeReference] = field(default_factory=lambda: {})
-    data_type_children: Dict[str, UmasDatatypeReference] = field(
-        default_factory=lambda: {}
-    )
 
     async def connect(self, transport: Transport):
         # Create future to be returned when a value is returned
         loop = asyncio.get_running_loop()
         await self._send_plc_ident(transport, loop)
         await self._send_init_comms(transport, loop)
-        await self._update_plc_project_info(transport, loop)
+
+    async def _is_crc_valid(self, transport: Transport, loop: AbstractEventLoop):
+        old_crc = self.project_crc
+        await self._send_project_info(transport, loop)
+        if old_crc == -1 or (old_crc != self.project_crc):
+            return False
+        return True
 
     async def _update_plc_project_info(self, transport, loop):
-        await self._send_project_info(transport, loop)
+        if await self._is_crc_valid(transport, loop):
+            return
+
         await self._send_read_memory_block(transport, loop)
         offset = 0x0000
         first_message = True
+        data_types: List[UmasDatatypeReference] = {}
         while offset != 0x0000 or first_message:
             first_message = False
-            offset = await self._send_unlocated_variable_datatype_request(
+            offset, data_types = await self._send_unlocated_variable_datatype_request(
                 transport, loop, offset
             )
-        for data_type in self.data_types:
+        data_type_children: Dict[str, List[UmasUDTDefinition]] = {}
+        for data_type in data_types:
             if data_type.class_identifier == 2:
-                await self._send_unlocated_variable_datatype_format_request(
-                    transport, loop, data_type.data_type, data_type.value
+                data_type_children[data_type.value] = (
+                    await self._send_unlocated_variable_datatype_format_request(
+                        transport, loop, data_type.data_type, data_type.value
+                    )
                 )
         offset = 0x0000
         first_message = True
+        tags: Dict[str, UmasUnlocatedVariableReference] = {}
         while offset != 0x0000 or first_message:
             first_message = False
-            offset = await self._send_unlocated_variable_request(
+            offset, tag_chunk = await self._send_unlocated_variable_request(
                 transport, loop, offset
             )
+            tags = {**tags, **tag_chunk}
+        self.variables = self._generate_variable_tree(
+            tags, data_types, data_type_children
+        )
 
-        self.variables = self._generate_variable_tree()
-
-    def _generate_variable_tree(self) -> Dict[str, UmasVariable]:
-        return UmasVariableBuilder(
-            self.tags, self.data_types, self.data_type_children
-        ).build()
+    def _generate_variable_tree(
+        self,
+        tags: Dict[str, UmasUnlocatedVariableReference],
+        data_types: List[UmasDatatypeReference],
+        data_type_children: Dict[str, List[UmasUDTDefinition]],
+    ) -> Dict[str, UmasVariable]:
+        return_dict = {}
+        for kea, tag in tags.items():
+            return_dict[kea] = UmasVariableBuilder(
+                kea, tag, data_types, data_type_children
+            ).build()
+        return return_dict
 
     async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
@@ -279,8 +267,7 @@ class UmasDevice:
             bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
         )
         basic_info = UmasPDUReadDatatypeNamesResponse.static_parse(read_buffer)
-        self.data_types = basic_info.records
-        return basic_info.next_address
+        return basic_info.next_address, basic_info.records
 
     async def _send_unlocated_variable_datatype_format_request(
         self,
@@ -314,7 +301,7 @@ class UmasDevice:
             bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
         )
         basic_info = UmasPDUReadUmasUDTDefinitionResponse.static_parse(read_buffer)
-        self.data_type_children[data_type_name] = basic_info.records
+        return basic_info.records
 
     async def _send_unlocated_variable_request(
         self, transport: Transport, loop: AbstractEventLoop, offset: int = 0x0000
@@ -346,9 +333,10 @@ class UmasDevice:
         variable_list = UmasPDUReadUnlocatedVariableNamesResponse.static_parse(
             read_buffer
         )
+        tags: Dict[str, UmasUnlocatedVariableReference] = {}
         for variable in variable_list.records:
-            self.tags[variable.value.lower()] = variable
-        return variable_list.next_address
+            tags[variable.value.lower()] = variable
+        return variable_list.next_address, tags
 
     async def _send_read_variable_request(
         self, transport: Transport, loop: AbstractEventLoop, request, sorted_tags
@@ -434,6 +422,7 @@ class UmasDevice:
         Reads one field from the Umas Device
         """
         loop = asyncio.get_running_loop()
+        await self._update_plc_project_info(transport, loop)
         sorted_tag_list = self._sort_tags_based_on_memory_address(request)
         response = PlcReadResponse(PlcResponseCode.OK, {})
         for sorted_tags in sorted_tag_list:
@@ -443,3 +432,19 @@ class UmasDevice:
             response.code = response_chunk.code
             response.values = {**response.values, **response_chunk.values}
         return response
+
+    async def browse(
+        self, request: PlcBrowseRequest, transport: Transport
+    ) -> PlcBrowseResponse:
+        """
+        Returns all the tags from the tag dictionary
+        """
+        loop = asyncio.get_running_loop()
+        await self._update_plc_project_info(transport, loop)
+        response_items = {}
+        for key, query in request.queries.items():
+            response_items[key] = [
+                ResponseItem[UmasTag](PlcResponseCode.OK, tag)
+                for tag in self.variables.values()
+            ]
+        return PlcBrowseResponse(PlcResponseCode.OK, response_items)

@@ -87,6 +87,7 @@ class UmasPDUPlcIdentRequest(UmasPDUItem):
 
 @dataclass
 class UmasPDUPlcIdentRequestBuilder:
+
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcIdentRequest:
         umas_pdu_plc_ident_request: UmasPDUPlcIdentRequest = UmasPDUPlcIdentRequest(
             byte_length,

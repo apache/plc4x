@@ -116,7 +116,7 @@ class UmasPDUReadUnlocatedVariableResponseBuilder:
     def build(
         self, byte_length: int, pairing_key
     ) -> UmasPDUReadUnlocatedVariableResponse:
-        umas_pdu_read_unlocated_variable_response: UmasPDUReadUnlocatedVariableResponse = UmasPDUReadUnlocatedVariableResponse(
-            byte_length, pairing_key, self.block
-        )
+        umas_pdu_read_unlocated_variable_response: (
+            UmasPDUReadUnlocatedVariableResponse
+        ) = UmasPDUReadUnlocatedVariableResponse(byte_length, pairing_key, self.block)
         return umas_pdu_read_unlocated_variable_response

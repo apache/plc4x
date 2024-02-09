@@ -84,6 +84,7 @@ class ModbusPDUReportServerIdRequest(ModbusPDU):
 
 @dataclass
 class ModbusPDUReportServerIdRequestBuilder:
+
     def build(
         self,
     ) -> ModbusPDUReportServerIdRequest:

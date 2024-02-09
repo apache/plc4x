@@ -25,11 +25,17 @@ from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcConnectionException
-from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
+from plc4py.api.messages.PlcResponse import (
+    PlcResponse,
+    PlcReadResponse,
+    PlcBrowseResponse,
+)
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
     PlcRequest,
     PlcReadRequest,
+    BrowseRequestBuilder,
+    PlcBrowseRequest,
 )
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
@@ -37,7 +43,10 @@ from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
 from plc4py.drivers.umas.UmasDevice import UmasDevice
 from plc4py.drivers.umas.UmasProtocol import UmasProtocol
 from plc4py.drivers.umas.UmasTag import UmasTagBuilder
-from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
+from plc4py.spi.messages.PlcRequest import (
+    DefaultReadRequestBuilder,
+    DefaultBrowseRequestBuilder,
+)
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
@@ -123,6 +132,12 @@ class UmasConnection(PlcConnection):
         """
         return DefaultReadRequestBuilder(UmasTagBuilder)
 
+    def browse_request_builder(self) -> BrowseRequestBuilder:
+        """
+        :return: browse request builder.
+        """
+        return DefaultBrowseRequestBuilder()
+
     def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
         """
         Executes a PlcRequest as long as it's already connected
@@ -135,6 +150,9 @@ class UmasConnection(PlcConnection):
         if isinstance(request, PlcReadRequest):
             return self._read(request)
 
+        if isinstance(request, PlcBrowseRequest):
+            return self._browse(request)
+
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
     def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
@@ -145,16 +163,42 @@ class UmasConnection(PlcConnection):
             logging.error("No device is set in the Umas connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
+        # TODO: Insert Optimizer base on data from a browse request
         async def _request(req, device) -> PlcReadResponse:
             try:
                 response = await asyncio.wait_for(device.read(req, self._transport), 10)
                 return response
-            except Exception as e:
+            except Exception:
                 # TODO:- This exception is very general and probably should be replaced
-                logging.exception()
+                self.log.exception("Caught an exception while executing a read request")
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
         logging.debug("Sending read request to UmasDevice")
+        future = asyncio.ensure_future(_request(request, self._device))
+        return future
+
+    def _browse(self, request: PlcBrowseRequest) -> Awaitable[PlcBrowseResponse]:
+        """
+        Executes a PlcBrowseRequest
+        """
+        if self._device is None:
+            logging.error("No device is set in the Umas connection!")
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+        async def _request(req, device) -> PlcBrowseResponse:
+            try:
+                response = await asyncio.wait_for(
+                    device.browse(req, self._transport), 10
+                )
+                return response
+            except Exception:
+                # TODO:- This exception is very general and probably should be replaced
+                self.log.exception(
+                    "Caught an exception while executing a browse request"
+                )
+                return PlcBrowseResponse(PlcResponseCode.INTERNAL_ERROR, {})
+
+        logging.debug("Sending browse request to UmasDevice")
         future = asyncio.ensure_future(_request(request, self._device))
         return future
 
