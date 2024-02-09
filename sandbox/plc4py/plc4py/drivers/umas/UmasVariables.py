@@ -22,7 +22,9 @@ from typing import Dict, List, Pattern, AnyStr
 
 from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
 
-from plc4py.protocols.umas.readwrite.VariableRequestReference import VariableRequestReference
+from plc4py.protocols.umas.readwrite.VariableRequestReference import (
+    VariableRequestReference,
+)
 
 from plc4py.api.exceptions.exceptions import PlcDataTypeNotFoundException
 from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
@@ -41,25 +43,28 @@ class UmasVariable:
     offset: int
 
     def get_variable_reference(self, address: str) -> VariableRequestReference:
-        raise NotImplementedError(f"UmasVariable subclass not implemented for variable {self.variable_name}")
+        raise NotImplementedError(
+            f"UmasVariable subclass not implemented for variable {self.variable_name}"
+        )
 
     def get_byte_length(self) -> int:
-        raise NotImplementedError(f"UmasVariable subclass not implemented for variable {self.variable_name}")
+        raise NotImplementedError(
+            f"UmasVariable subclass not implemented for variable {self.variable_name}"
+        )
 
 
 @dataclass
 class UmasElementryVariable(UmasVariable):
-
     def get_variable_reference(self, address: str) -> VariableRequestReference:
         if self.data_type == UmasDataType.STRING.value:
             return VariableRequestReference(
-                            is_array=1,
-                            data_size_index=UmasDataType(self.data_type).request_size,
-                            block=self.block_no,
-                            base_offset=0x0000,
-                            offset=self.offset,
-                            array_length=16
-                        )
+                is_array=1,
+                data_size_index=UmasDataType(self.data_type).request_size,
+                block=self.block_no,
+                base_offset=0x0000,
+                offset=self.offset,
+                array_length=16,
+            )
         else:
             return VariableRequestReference(
                 is_array=0,
@@ -67,8 +72,9 @@ class UmasElementryVariable(UmasVariable):
                 block=self.block_no,
                 base_offset=0x0000,
                 offset=self.offset,
-                array_length=None
+                array_length=None,
             )
+
     def get_byte_length(self) -> int:
         return 7
 
@@ -82,10 +88,11 @@ class UmasCustomVariable(UmasVariable):
         child_index = None
         if len(split_tag_address) > 1:
             child_index = split_tag_address[1]
-            return self.children[child_index].get_variable_reference(".".join(split_tag_address[1:]))
+            return self.children[child_index].get_variable_reference(
+                ".".join(split_tag_address[1:])
+            )
         else:
             raise NotImplementedError("Unable to read structures of UDT's")
-
 
     def get_byte_length(self) -> int:
         byte_count = 0
@@ -111,8 +118,9 @@ class UmasArrayVariable(UmasVariable):
                 data_size_index=data_type_enum.request_size,
                 block=self.block_no,
                 base_offset=0x0000,
-                offset=self.offset + (address_index - self.start_index) * data_type_enum.data_type_size,
-                array_length=None
+                offset=self.offset
+                + (address_index - self.start_index) * data_type_enum.data_type_size,
+                array_length=None,
             )
         else:
             return VariableRequestReference(
@@ -121,8 +129,9 @@ class UmasArrayVariable(UmasVariable):
                 block=self.block_no,
                 base_offset=0x0000,
                 offset=self.offset,
-                array_length=self.end_index-self.start_index + 1
+                array_length=self.end_index - self.start_index + 1,
             )
+
     def get_byte_length(self) -> int:
         return 9
 
@@ -157,13 +166,18 @@ class UmasVariableBuilder:
                 for data_type_reference in self.data_type_references:
                     if data_type_reference.data_type == data_type:
                         if data_type_reference.class_identifier == 2:
-                            custom_children: Dict[str, UmasUDTDefinition] = {definition.value: definition for definition in self.udt_definitions[data_type_reference.value]}
+                            custom_children: Dict[str, UmasUDTDefinition] = {
+                                definition.value: definition
+                                for definition in self.udt_definitions[
+                                    data_type_reference.value
+                                ]
+                            }
                             return_dict[tag_name_key] = UmasCustomVariableBuilder(
                                 tag_reference,
                                 data_type_reference,
                                 custom_children,
                                 self.data_type_references,
-                                self.udt_definitions
+                                self.udt_definitions,
                             ).build()
                         elif data_type_reference.class_identifier == 4:
                             match = _ARRAY_COMPILED.match(data_type_reference.value)
@@ -174,7 +188,7 @@ class UmasVariableBuilder:
                                 tag_reference.block,
                                 tag_reference.offset,
                                 int(match.group("start_number")),
-                                int(match.group("end_number"))
+                                int(match.group("end_number")),
                             )
                         found_data_type = True
                         break
@@ -212,14 +226,18 @@ class UmasCustomVariableBuilder:
                 for data_type_reference in self.data_type_references:
                     if data_type_reference.data_type == data_type:
                         if data_type_reference.class_identifier == 2:
-                            custom_children: Dict[str, UmasUDTDefinition] = {definition.value: definition for definition in
-                                                                        self.udt_definitions[data_type_reference.value]}
+                            custom_children: Dict[str, UmasUDTDefinition] = {
+                                definition.value: definition
+                                for definition in self.udt_definitions[
+                                    data_type_reference.value
+                                ]
+                            }
                             children[tag_name_key] = UmasCustomVariableBuilder(
                                 self.tag_reference,
                                 data_type_reference,
                                 custom_children,
                                 self.data_type_references,
-                                self.udt_definitions
+                                self.udt_definitions,
                             ).build()
                         elif data_type_reference.class_identifier == 4:
                             match = _ARRAY_COMPILED.match(data_type_reference.value)
@@ -228,9 +246,9 @@ class UmasCustomVariableBuilder:
                                 tag_reference.value,
                                 data_type.value,
                                 self.tag_reference.block,
-                                tag_reference.offset +  self.tag_reference.offset,
+                                tag_reference.offset + self.tag_reference.offset,
                                 int(match.group("start_number")),
-                                int(match.group("end_number"))
+                                int(match.group("end_number")),
                             )
                         found_data_type = True
                         break
@@ -239,8 +257,10 @@ class UmasCustomVariableBuilder:
                         f"Could not find data type {data_type} for tag {tag_name_key}"
                     )
 
-        return UmasCustomVariable(self.tag_reference.value,
-                                self.data_type_reference.data_type,
-                                self.tag_reference.block,
-                                self.tag_reference.offset,
-                                children)
+        return UmasCustomVariable(
+            self.tag_reference.value,
+            self.data_type_reference.data_type,
+            self.tag_reference.block,
+            self.tag_reference.offset,
+            children,
+        )

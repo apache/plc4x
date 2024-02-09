@@ -387,9 +387,7 @@ class UmasDevice:
             response_items = [
                 ResponseItem(
                     PlcResponseCode.OK,
-                    DataItem.static_parse(
-                        read_buffer, request_tag.data_type, quantity
-                    ),
+                    DataItem.static_parse(read_buffer, request_tag.data_type, quantity),
                 )
             ]
             values[key] = response_items
