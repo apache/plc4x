@@ -33,7 +33,7 @@
     </parameter>
     <parameter>
       <name>sourceAmsPort</name>
-      <value>48898</value>
+      <value>65534</value>
     </parameter>
     <parameter>
       <name>targetAmsNetId</name>
@@ -41,7 +41,7 @@
     </parameter>
     <parameter>
       <name>targetAmsPort</name>
-      <value>48898</value>
+      <value>851</value>
     </parameter>
   </driver-parameters>
 
@@ -383,7 +383,7 @@
       </AmsTCPPacket>
     </incoming-plc-message>
     <!-- Read the size of the symbol table and datatype tables -->
-    <outgoing-plc-message>
+    <outgoing-plc-message name="Read 'size of symbol- and datatype table' Request">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">44</length>
@@ -436,7 +436,7 @@
         </userdata>
       </AmsTCPPacket>
     </outgoing-plc-message>
-    <incoming-plc-message>
+    <incoming-plc-message name="Read 'size of symbol- and datatype table' Response">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">64</length>
@@ -492,7 +492,7 @@
       </AmsTCPPacket>
     </incoming-plc-message>
     <!-- Load the datatype table information -->
-    <outgoing-plc-message>
+    <outgoing-plc-message name="Read 'datatype table' Request">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">44</length>
@@ -545,7 +545,7 @@
         </userdata>
       </AmsTCPPacket>
     </outgoing-plc-message>
-    <incoming-plc-message>
+    <incoming-plc-message name="Read 'datatype table' Response">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">35976</length>
@@ -601,7 +601,7 @@
       </AmsTCPPacket>
     </incoming-plc-message>
     <!-- Read the symbol-table -->
-    <outgoing-plc-message>
+    <outgoing-plc-message name="Read 'symbol table' Request">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">44</length>
@@ -654,7 +654,7 @@
         </userdata>
       </AmsTCPPacket>
     </outgoing-plc-message>
-    <incoming-plc-message>
+    <incoming-plc-message name="Read 'symbol table' Response">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">42104</length>
@@ -713,7 +713,7 @@
       Subscribe to changes in the "online-version" number
       (So we can detect plc programm updates while being connected)
     -->
-    <outgoing-plc-message>
+    <outgoing-plc-message name="Subscribe 'online-version' Request">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">72</length>
@@ -773,7 +773,7 @@
         </userdata>
       </AmsTCPPacket>
     </outgoing-plc-message>
-    <incoming-plc-message>
+    <incoming-plc-message name="Subscribe 'online-version' Response">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">40</length>
@@ -831,7 +831,7 @@
       Subscribe to changes in the "offline-version" number
       (So we can detect plc programm updates while being connected)
     -->
-    <outgoing-plc-message>
+    <outgoing-plc-message name="Subscribe 'offline-version' Request">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">72</length>
@@ -891,7 +891,7 @@
         </userdata>
       </AmsTCPPacket>
     </outgoing-plc-message>
-    <incoming-plc-message>
+    <incoming-plc-message name="Subscribe 'offline-version' Response">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">40</length>
@@ -950,7 +950,7 @@
       (As we've also just manually read these, they will match the ones we read and
       no action will be taken by the driver)
     -->
-    <incoming-plc-message>
+    <incoming-plc-message name="Subscription 'offline- and online-version' Notification">
       <AmsTCPPacket>
         <reserved dataType="uint" bitLength="16">0</reserved>
         <length dataType="uint" bitLength="32">73</length>
@@ -1088,7 +1088,7 @@
           </userdata>
         </AmsTCPPacket>
       </outgoing-plc-message>
-      <incoming-plc-message>
+      <incoming-plc-message name="Receive Read Response">
         <AmsTCPPacket>
           <reserved dataType="uint" bitLength="16">0</reserved>
           <length dataType="uint" bitLength="32">376</length>
