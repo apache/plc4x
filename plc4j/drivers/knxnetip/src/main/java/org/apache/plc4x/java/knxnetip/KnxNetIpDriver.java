@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpRawSocketTransportConfiguration;
@@ -26,7 +27,6 @@ import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpUdpTransportConfigur
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTagHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
@@ -81,7 +81,7 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> impleme
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return KnxNetIpConfiguration.class;
     }
 

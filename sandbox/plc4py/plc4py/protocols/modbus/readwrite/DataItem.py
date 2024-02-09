@@ -52,6 +52,7 @@ class DataItem:
         read_buffer: ReadBuffer, data_type: ModbusDataType, number_of_values: int
     ):
         if data_type == ModbusDataType.BOOL and number_of_values == int(1):  # BOOL
+
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_int(15, logical_name="")
             if reserved != int(0x0000):
@@ -77,6 +78,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.BYTE and number_of_values == int(1):  # BYTE
+
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
             if reserved != int(0x00):
@@ -102,21 +104,25 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.WORD:  # WORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
             return PlcWORD(value)
         if data_type == ModbusDataType.DWORD:  # DWORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
             return PlcDWORD(value)
         if data_type == ModbusDataType.LWORD:  # LWORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
             return PlcLWORD(value)
         if data_type == ModbusDataType.SINT and number_of_values == int(1):  # SINT
+
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
             if reserved != int(0x00):
@@ -144,6 +150,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.INT and number_of_values == int(1):  # INT
+
             # Simple Field (value)
             value: int = read_buffer.read_short(16, logical_name="")
 
@@ -158,6 +165,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.DINT and number_of_values == int(1):  # DINT
+
             # Simple Field (value)
             value: int = read_buffer.read_int(32, logical_name="")
 
@@ -172,6 +180,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.LINT and number_of_values == int(1):  # LINT
+
             # Simple Field (value)
             value: int = read_buffer.read_long(64, logical_name="")
 
@@ -186,6 +195,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.USINT and number_of_values == int(1):  # USINT
+
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
             if reserved != int(0x00):
@@ -213,6 +223,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.UINT and number_of_values == int(1):  # UINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
@@ -229,6 +240,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.UDINT and number_of_values == int(1):  # UDINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
@@ -245,6 +257,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.ULINT and number_of_values == int(1):  # ULINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
@@ -261,6 +274,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.REAL and number_of_values == int(1):  # REAL
+
             # Simple Field (value)
             value: float = read_buffer.read_float(32, logical_name="")
 
@@ -277,6 +291,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.LREAL and number_of_values == int(1):  # LREAL
+
             # Simple Field (value)
             value: float = read_buffer.read_double(64, logical_name="")
 
@@ -293,6 +308,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.CHAR and number_of_values == int(1):  # CHAR
+
             # Simple Field (value)
             value: str = read_buffer.read_str(8, logical_name="", encoding="")
 
@@ -311,6 +327,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == ModbusDataType.WCHAR and number_of_values == int(1):  # WCHAR
+
             # Simple Field (value)
             value: str = read_buffer.read_str(16, logical_name="", encoding="")
 
@@ -339,12 +356,14 @@ class DataItem:
         byte_order: ByteOrder,
     ) -> None:
         if data_type == ModbusDataType.BOOL and number_of_values == int(1):  # BOOL
+
             # Reserved Field
             write_buffer.write_unsigned_short(int(0x0000), 15, "int0x0000")
             # Simple Field (value)
             value: bool = _value.get_bool()
             write_buffer.write_bit((value), "value")
         if data_type == ModbusDataType.BOOL:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -352,12 +371,14 @@ class DataItem:
                 write_buffer.write_bit((value), "value")
 
         if data_type == ModbusDataType.BYTE and number_of_values == int(1):  # BYTE
+
             # Reserved Field
             write_buffer.write_byte(int(0x00), 8, "int0x00")
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_byte((value), 8, "value")
         if data_type == ModbusDataType.BYTE:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -365,24 +386,29 @@ class DataItem:
                 write_buffer.write_bit((value), "value")
 
         if data_type == ModbusDataType.WORD:  # WORD
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_short((value), 16, "value")
         if data_type == ModbusDataType.DWORD:  # DWORD
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_int((value), 32, "value")
         if data_type == ModbusDataType.LWORD:  # LWORD
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_long((value), 64, "value")
         if data_type == ModbusDataType.SINT and number_of_values == int(1):  # SINT
+
             # Reserved Field
             write_buffer.write_byte(int(0x00), 8, "int0x00")
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_signed_byte((value), 8, "value")
         if data_type == ModbusDataType.SINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -390,10 +416,12 @@ class DataItem:
                 write_buffer.write_signed_byte((value), 8, "value")
 
         if data_type == ModbusDataType.INT and number_of_values == int(1):  # INT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_short((value), 16, "value")
         if data_type == ModbusDataType.INT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -401,10 +429,12 @@ class DataItem:
                 write_buffer.write_short((value), 16, "value")
 
         if data_type == ModbusDataType.DINT and number_of_values == int(1):  # DINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_int((value), 32, "value")
         if data_type == ModbusDataType.DINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -412,10 +442,12 @@ class DataItem:
                 write_buffer.write_int((value), 32, "value")
 
         if data_type == ModbusDataType.LINT and number_of_values == int(1):  # LINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_long((value), 64, "value")
         if data_type == ModbusDataType.LINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -423,12 +455,14 @@ class DataItem:
                 write_buffer.write_long((value), 64, "value")
 
         if data_type == ModbusDataType.USINT and number_of_values == int(1):  # USINT
+
             # Reserved Field
             write_buffer.write_byte(int(0x00), 8, "int0x00")
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_byte((value), 8, "value")
         if data_type == ModbusDataType.USINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -436,10 +470,12 @@ class DataItem:
                 write_buffer.write_byte((value), 8, "value")
 
         if data_type == ModbusDataType.UINT and number_of_values == int(1):  # UINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_short((value), 16, "value")
         if data_type == ModbusDataType.UINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -447,10 +483,12 @@ class DataItem:
                 write_buffer.write_unsigned_short((value), 16, "value")
 
         if data_type == ModbusDataType.UDINT and number_of_values == int(1):  # UDINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_int((value), 32, "value")
         if data_type == ModbusDataType.UDINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -458,10 +496,12 @@ class DataItem:
                 write_buffer.write_unsigned_int((value), 32, "value")
 
         if data_type == ModbusDataType.ULINT and number_of_values == int(1):  # ULINT
+
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_unsigned_long((value), 64, "value")
         if data_type == ModbusDataType.ULINT:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -469,10 +509,12 @@ class DataItem:
                 write_buffer.write_unsigned_long((value), 64, "value")
 
         if data_type == ModbusDataType.REAL and number_of_values == int(1):  # REAL
+
             # Simple Field (value)
             value: float = _value.get_float()
             write_buffer.write_float((value), 32, "value")
         if data_type == ModbusDataType.REAL:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -480,10 +522,12 @@ class DataItem:
                 write_buffer.write_float((value), 32, "value")
 
         if data_type == ModbusDataType.LREAL and number_of_values == int(1):  # LREAL
+
             # Simple Field (value)
             value: float = _value.get_float()
             write_buffer.write_double((value), 64, "value")
         if data_type == ModbusDataType.LREAL:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -491,10 +535,12 @@ class DataItem:
                 write_buffer.write_double((value), 64, "value")
 
         if data_type == ModbusDataType.CHAR and number_of_values == int(1):  # CHAR
+
             # Simple Field (value)
             value: str = _value.get_str()
             write_buffer.write_str((value), 8, "UTF-8", "value")
         if data_type == ModbusDataType.CHAR:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():
@@ -502,10 +548,12 @@ class DataItem:
                 write_buffer.write_str((value), 8, "UTF-8", "value")
 
         if data_type == ModbusDataType.WCHAR and number_of_values == int(1):  # WCHAR
+
             # Simple Field (value)
             value: str = _value.get_str()
             write_buffer.write_str((value), 16, "UTF-16", "value")
         if data_type == ModbusDataType.WCHAR:  # List
+
             values: PlcList = _value
 
             for val in values.get_list():

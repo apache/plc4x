@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
@@ -44,6 +45,11 @@ public interface PlcDriver {
      * @return name of the implemented protocol.
      */
     String getProtocolName();
+
+    /**
+     * @return the type of the Configuration used by this driver.
+     */
+    Class<? extends PlcConnectionConfiguration> getConfigurationType();
 
     /**
      * Provides driver metadata.

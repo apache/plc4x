@@ -123,7 +123,7 @@ class ModbusPDUWriteSingleRegisterRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteSingleRegisterRequest:
-        modbus_pdu_write_single_register_request: ModbusPDUWriteSingleRegisterRequest = ModbusPDUWriteSingleRegisterRequest(
-            self.address, self.value
-        )
+        modbus_pdu_write_single_register_request: (
+            ModbusPDUWriteSingleRegisterRequest
+        ) = ModbusPDUWriteSingleRegisterRequest(self.address, self.value)
         return modbus_pdu_write_single_register_request

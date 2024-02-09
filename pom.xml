@@ -127,7 +127,7 @@
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.15.6</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
-    <groovy.version>4.0.17</groovy.version>
+    <groovy.version>4.0.18</groovy.version>
     <gson.version>2.10.1</gson.version>
     <guava.version>33.0.0-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
@@ -137,7 +137,8 @@
     <woodstox-core.version>6.5.1</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.4</jaxb.version>
-    <jetty-util.version>12.0.5</jetty-util.version>
+    <!-- Starting with Jetty 12 Java 17 is required -->
+    <jetty-util.version>11.0.19</jetty-util.version>
     <jna.version>5.14.0</jna.version>
     <joda-time.version>2.12.6</joda-time.version>
     <jserialcom.version>2.10.4</jserialcom.version>
@@ -146,15 +147,15 @@
     <logback.version>1.4.14</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <milo.version>0.6.11</milo.version>
-    <mockito.version>5.8.0</mockito.version>
-    <netty.version>4.1.104.Final</netty.version>
+    <mockito.version>5.10.0</mockito.version>
+    <netty.version>4.1.106.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.11</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.9.1</xmlunit.version>
 
     <!-- Site properties -->
-    <asciidoctor.maven.plugin.version>2.2.4</asciidoctor.maven.plugin.version>
+    <asciidoctor.maven.plugin.version>2.2.5</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.11</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.2.14</asciidoctorj.diagram.version>
 
@@ -905,6 +906,20 @@
               <fail>true</fail>
             </configuration>
           </execution>
+          <!-- Ensure dependencies are compatible with Java 11 -->
+          <execution>
+            <id>enforce-java-compatability</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <enforceBytecodeVersion>
+                  <maxJdkVersion>11</maxJdkVersion>
+                </enforceBytecodeVersion>
+              </rules>
+            </configuration>
+          </execution>
           <!-- Ensure we're not mixing dependency versions -->
           <execution>
             <id>enforce-version-convergence</id>
@@ -1037,7 +1052,8 @@
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>0.16</version>
+          <!-- TODO: There currently is a significant performance degradation when using version 0.16 which will be fixed in version 0.16.1, once it's released -->
+          <version>0.15</version>
           <configuration>
             <!--
                 Make rat output the files with missing licensed directly into the
@@ -1342,7 +1358,8 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.27.7-b1</version>
+          <!-- Not all versions have all types of binaries deployed -->
+          <version>3.26.3-b1</version>
         </plugin>
 
         <plugin>
@@ -1872,7 +1889,7 @@
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>
-            <version>2.7.10</version>
+            <version>2.7.11</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <configuration>

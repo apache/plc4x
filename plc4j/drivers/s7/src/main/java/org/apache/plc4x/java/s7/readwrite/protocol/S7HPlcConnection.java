@@ -26,6 +26,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -87,7 +88,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         boolean canBrowse,
         PlcTagHandler tagHandler,
         PlcValueHandler valueHandler,
-        Configuration configuration,
+        PlcConnectionConfiguration configuration,
         ChannelFactory channelFactory,
         ChannelFactory secondaryChannelFactory,
         boolean fireDiscoverEvent,

@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
@@ -80,7 +81,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
         }
 
         // Create the configuration object.
-        Configuration configuration = configurationFactory.createConfiguration(
+        PlcConnectionConfiguration configuration = configurationFactory.createConfiguration(
             getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
@@ -182,7 +183,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         throw new UnsupportedOperationException("getConfigurationType, Not supported yet.");
     }
 

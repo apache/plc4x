@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.java.df1;
 
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.df1.configuration.Df1Configuration;
 import org.apache.plc4x.java.df1.field.Df1TagHandler;
 import org.apache.plc4x.java.df1.protocol.Df1ProtocolLogic;
 import org.apache.plc4x.java.df1.readwrite.DF1Command;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -41,7 +41,7 @@ public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return Df1Configuration.class;
     }
 

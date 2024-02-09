@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         # 8 not anymore supported for building
-        java: [ 11, 17, 18 ]
+        java: [ 11, 17, 21 ]
         os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -71,7 +71,7 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Cache local Maven repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}

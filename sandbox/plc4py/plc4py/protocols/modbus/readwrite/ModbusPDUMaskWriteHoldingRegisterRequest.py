@@ -140,7 +140,9 @@ class ModbusPDUMaskWriteHoldingRegisterRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUMaskWriteHoldingRegisterRequest:
-        modbus_pdu_mask_write_holding_register_request: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(
+        modbus_pdu_mask_write_holding_register_request: (
+            ModbusPDUMaskWriteHoldingRegisterRequest
+        ) = ModbusPDUMaskWriteHoldingRegisterRequest(
             self.reference_address, self.and_mask, self.or_mask
         )
         return modbus_pdu_mask_write_holding_register_request

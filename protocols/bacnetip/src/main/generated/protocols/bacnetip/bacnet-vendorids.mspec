@@ -1472,6 +1472,9 @@
   ['1457' AETERLINK_CORPORATION ['1457', '"Aeterlink Corporation"']]
   ['1458' ALPHA_EPSILON_AUTOMATION ['1458', '"Alpha Epsilon Automation"']]
   ['1459' ASTRALITE_INC ['1459', '"Astralite Inc."']]
+  ['1460' DELTA_FIRE_LTDA ['1460', '"Delta Fire Ltda."']]
+  ['1461' BOCK_WATER_HEATERS_INC ['1461', '"Bock Water Heaters, Inc."']]
+  ['1462' CLEAVER_BROOKS ['1462', '"Cleaver-Brooks"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

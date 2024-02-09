@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.configuration;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -54,15 +55,15 @@ public class ConfigurationFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
-                                                           String transportConfig, String paramString) {
+    public <T extends PlcConnectionConfiguration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+                                                                        String transportConfig, String paramString) {
 
         // Get a map of all parameters in the connection string.
         Map<String, List<String>> paramStringValues = splitQuery(paramString);
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, paramStringValues);
     }
 
-    public <T extends Configuration> T createPrefixedConfiguration(Class<T> pClazz, String prefix, String protocolCode,
+    public <T extends PlcConnectionConfiguration> T createPrefixedConfiguration(Class<T> pClazz, String prefix, String protocolCode,
                                                                    String transportCode, String transportConfig,
                                                                    String paramString) {
 
@@ -79,7 +80,7 @@ public class ConfigurationFactory {
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, filteredParamStringValues);
     }
 
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+    public <T extends PlcConnectionConfiguration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
                                                            String transportConfig, Map<String, List<String>> paramStringValues) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
@@ -172,7 +173,7 @@ public class ConfigurationFactory {
         return instance;
     }
 
-    public static <T> T configure(Configuration configuration, T obj) {
+    public static <T> T configure(PlcConnectionConfiguration configuration, T obj) {
         // Check if in this object is configurable at all.
         if (ClassUtils.isAssignable(obj.getClass(), HasConfiguration.class)) {
             // Check if the type declared by the HasConfiguration interface is
@@ -210,7 +211,7 @@ public class ConfigurationFactory {
      * @param field name of the field.
      * @return name of the configuration (either from the annotation or from the field itself)
      */
-    private static String getConfigurationName(Field field) {
+    public static String getConfigurationName(Field field) {
         if (field.getAnnotation(ComplexConfigurationParameter.class) != null) {
             return field.getAnnotation(ComplexConfigurationParameter.class).prefix();
         } else if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
@@ -274,7 +275,7 @@ public class ConfigurationFactory {
         throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
     }
 
-    private static Object getDefaultValueFromAnnotation(Field field) {
+    public static Object getDefaultValueFromAnnotation(Field field) {
         IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
         if (intDefaultValue != null) {
             return intDefaultValue.value();

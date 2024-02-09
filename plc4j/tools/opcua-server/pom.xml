@@ -28,7 +28,7 @@
 
   <artifactId>plc4x-opcua-server</artifactId>
 
-  <name>PLC4J: Integrations: Eclipse Milo OPC UA Server</name>
+  <name>PLC4J: Tools: OPC-UA Server</name>
 
   <properties>
     <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>

@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.firmata.readwrite;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.firmata.readwrite.configuration.FirmataConfiguration;
 import org.apache.plc4x.java.firmata.readwrite.context.FirmataDriverContext;
@@ -26,7 +27,6 @@ import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTag;
 import org.apache.plc4x.java.firmata.readwrite.tag.FirmataTagHandler;
 import org.apache.plc4x.java.firmata.readwrite.protocol.FirmataProtocolLogic;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -48,7 +48,7 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return FirmataConfiguration.class;
     }
 

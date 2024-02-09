@@ -138,7 +138,7 @@ class ModbusPDUReadDeviceIdentificationRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDeviceIdentificationRequest:
-        modbus_pdu_read_device_identification_request: ModbusPDUReadDeviceIdentificationRequest = ModbusPDUReadDeviceIdentificationRequest(
-            self.level, self.object_id
-        )
+        modbus_pdu_read_device_identification_request: (
+            ModbusPDUReadDeviceIdentificationRequest
+        ) = ModbusPDUReadDeviceIdentificationRequest(self.level, self.object_id)
         return modbus_pdu_read_device_identification_request

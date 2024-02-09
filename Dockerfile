@@ -20,7 +20,7 @@
 # This is the image we'll use to execute the build (and give it the name 'build').
 # (This image is based on Ubuntu)
 # Fixed version of this in order to have a fixed JDK version
-FROM azul/zulu-openjdk:11 as build
+FROM azul/zulu-openjdk:17 as build
 
 # Install some stuff we need to run the build
 RUN apt update -y

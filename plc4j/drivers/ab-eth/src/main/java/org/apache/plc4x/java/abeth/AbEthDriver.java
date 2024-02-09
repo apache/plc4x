@@ -25,11 +25,11 @@ import org.apache.plc4x.java.abeth.tag.AbEthTag;
 import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -52,7 +52,7 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> imp
 
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return AbEthConfiguration.class;
     }
 

@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
-public interface Configuration {
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+
+public interface Configuration extends PlcConnectionConfiguration {
 
 }

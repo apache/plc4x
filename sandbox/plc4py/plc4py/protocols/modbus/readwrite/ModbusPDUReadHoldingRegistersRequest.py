@@ -123,7 +123,7 @@ class ModbusPDUReadHoldingRegistersRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadHoldingRegistersRequest:
-        modbus_pdu_read_holding_registers_request: ModbusPDUReadHoldingRegistersRequest = ModbusPDUReadHoldingRegistersRequest(
-            self.starting_address, self.quantity
-        )
+        modbus_pdu_read_holding_registers_request: (
+            ModbusPDUReadHoldingRegistersRequest
+        ) = ModbusPDUReadHoldingRegistersRequest(self.starting_address, self.quantity)
         return modbus_pdu_read_holding_registers_request

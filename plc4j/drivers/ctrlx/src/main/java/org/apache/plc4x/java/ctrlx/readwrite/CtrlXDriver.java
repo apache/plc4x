@@ -23,6 +23,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
@@ -98,6 +99,11 @@ public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvide
             String.format("%s://%s", transportCode, transportConfig),
             usernamePasswordAuthentication.getUsername(),
             usernamePasswordAuthentication.getPassword());
+    }
+
+    @Override
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+        return CtrlXConfiguration.class;
     }
 
     @Override

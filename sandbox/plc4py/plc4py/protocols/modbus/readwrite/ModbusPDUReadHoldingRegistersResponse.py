@@ -119,7 +119,7 @@ class ModbusPDUReadHoldingRegistersResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadHoldingRegistersResponse:
-        modbus_pdu_read_holding_registers_response: ModbusPDUReadHoldingRegistersResponse = ModbusPDUReadHoldingRegistersResponse(
-            self.value
-        )
+        modbus_pdu_read_holding_registers_response: (
+            ModbusPDUReadHoldingRegistersResponse
+        ) = ModbusPDUReadHoldingRegistersResponse(self.value)
         return modbus_pdu_read_holding_registers_response

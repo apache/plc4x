@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetRawSocketTransportConfiguration;
@@ -26,7 +27,6 @@ import org.apache.plc4x.java.bacnetip.configuration.BacNetUdpTransportConfigurat
 import org.apache.plc4x.java.bacnetip.tag.BacNetIpTagHandler;
 import org.apache.plc4x.java.bacnetip.protocol.BacNetIpProtocolLogic;
 import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
@@ -50,7 +50,7 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> implements Transpo
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
         return BacNetIpConfiguration.class;
     }
 

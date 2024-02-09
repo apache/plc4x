@@ -64,7 +64,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		return errors.Wrap(err, "error extracting protocol specific options")
 	}
 
-	communicationChannels, err := buildupCommunicationChannels(interfaces, specificOptions.bacNetPort)
+	communicationChannels, err := buildupCommunicationChannels(ctx, interfaces, specificOptions.bacNetPort)
 	if err != nil {
 		return errors.Wrap(err, "error building communication channels")
 	}
@@ -90,6 +90,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChannels []communicationChannel, specificOptions *protocolSpecificOptions) (chan receivedBvlcMessage, error) {
 	incomingBVLCChannel := make(chan receivedBvlcMessage)
 	for _, communicationChannelInstance := range communicationChannels {
+		if err := ctx.Err(); err != nil {
+			return incomingBVLCChannel, err
+		}
 		// Prepare the discovery packet data
 		{
 			var lowLimit driverModel.BACnetContextTagUnsignedInteger
@@ -161,6 +164,10 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 
 		go func(communicationChannelInstance communicationChannel) {
 			for {
+				if err := ctx.Err(); err != nil {
+					d.log.Debug().Err(err).Msg("ending")
+					return
+				}
 				blockingReadChan := make(chan bool)
 				go func() {
 					buf := make([]byte, 4096)
@@ -197,6 +204,10 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 
 		go func(communicationChannelInstance communicationChannel) {
 			for {
+				if err := ctx.Err(); err != nil {
+					d.log.Debug().Err(err).Msg("ending")
+					return
+				}
 				blockingReadChan := make(chan bool)
 				go func() {
 					buf := make([]byte, 4096)
@@ -235,6 +246,10 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 
 func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), incomingBVLCChannel chan receivedBvlcMessage) {
 	for {
+		if err := ctx.Err(); err != nil {
+			// TODO: maybe we log something, but maybe it is fine
+			return
+		}
 		select {
 		case receivedBvlc := <-incomingBVLCChannel:
 			var npdu driverModel.NPDU
@@ -297,15 +312,21 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 	}
 }
 
-func buildupCommunicationChannels(interfaces []net.Interface, bacNetPort int) (communicationChannels []communicationChannel, err error) {
+func buildupCommunicationChannels(ctx context.Context, interfaces []net.Interface, bacNetPort int) (communicationChannels []communicationChannel, err error) {
 	// Iterate over all network devices of this system.
 	for _, networkInterface := range interfaces {
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
 		unicastInterfaceAddress, err := networkInterface.Addrs()
 		if err != nil {
 			return nil, errors.Wrapf(err, "Error getting Addresses for %v", networkInterface)
 		}
 		// Iterate over all addresses the current interface has configured
 		for _, unicastAddress := range unicastInterfaceAddress {
+			if err := ctx.Err(); err != nil {
+				return nil, err
+			}
 			var ipAddr net.IP
 			switch addr := unicastAddress.(type) {
 			// If the device is configured to communicate with a subnet

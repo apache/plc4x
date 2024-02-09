@@ -20,6 +20,7 @@
 package cache
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -35,6 +36,7 @@ import (
 
 type PlcConnectionCache interface {
 	GetConnection(connectionString string) <-chan plc4go.PlcConnectionConnectResult
+	GetConnectionWithContext(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult
 	Close() <-chan PlcConnectionCacheCloseResult
 }
 
@@ -141,12 +143,16 @@ func (c *plcConnectionCache) GetTracer() tracer.Tracer {
 }
 
 func (c *plcConnectionCache) GetConnection(connectionString string) <-chan plc4go.PlcConnectionConnectResult {
+	return c.GetConnectionWithContext(context.Background(), connectionString)
+}
+
+func (c *plcConnectionCache) GetConnectionWithContext(ctx context.Context, connectionString string) <-chan plc4go.PlcConnectionConnectResult {
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 
 	go func() {
 		c.cacheLock.Lock()
 
-		// If a connection for this connection string didn'c exist yet, create a new container
+		// If a connection for this connection string didn't exist yet, create a new container
 		// and make that container connect.
 		if _, ok := c.connections[connectionString]; !ok {
 			if c.tracer != nil {
@@ -161,7 +167,7 @@ func (c *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 			c.connections[connectionString] = cc
 			// Initialize the connection itself.
 			go func(cc2 *connectionContainer) {
-				cc2.connect()
+				cc2.connect(ctx)
 			}(cc)
 		}
 
@@ -180,8 +186,10 @@ func (c *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 		maximumWaitTimeout := time.NewTimer(c.maxWaitTime)
 		defer utils.CleanupTimer(maximumWaitTimeout)
 		select {
-		// Wait till we get a lease.
-		case connectionResponse := <-leaseChan:
+		case <-ctx.Done(): // abort on context cancel
+			ch <- _default.NewDefaultPlcConnectionCloseResult(nil, ctx.Err())
+
+		case connectionResponse := <-leaseChan: // Wait till we get a lease.
 			c.log.Debug().Str("connectionString", connectionString).Msg("Successfully got lease to connection")
 			responseTimeout := time.NewTimer(10 * time.Millisecond)
 			defer utils.CleanupTimer(responseTimeout)
@@ -203,12 +211,11 @@ func (c *plcConnectionCache) GetConnection(connectionString string) <-chan plc4g
 				}
 			}
 
-		// Timeout after the maximum waiting time.
-		case <-maximumWaitTimeout.C:
+		case <-maximumWaitTimeout.C: // Timeout after the maximum waiting time.
 			// In this case we need to drain the chan and return it immediate
 			go func() {
 				<-leaseChan
-				_ = connection.returnConnection(StateIdle)
+				_ = connection.returnConnection(ctx, StateIdle)
 			}()
 			if c.tracer != nil {
 				c.tracer.AddTransactionalTrace(txId, "get-connection", "timeout")

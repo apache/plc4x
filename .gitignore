@@ -55,7 +55,7 @@ buildNumber.properties
 *.tmp
 *.bak
 *.swp
-*~.nib
+#*~.nib
 local.properties
 .settings/
 .loadpath
@@ -75,7 +75,7 @@ local.properties
 .worksheet
 
 # Emacs backup files
-*~
+#*~
 .scannerwork
 
 spock-reports
@@ -119,7 +119,7 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-exclude ruby specifics:
+#exclude ruby specifics:
 
 *.gem
 *.rbc
@@ -201,6 +201,17 @@ DartConfiguration.tcl
 /out/
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/codeStyles/Project.xml
+/.idea/.name
 
 # Develocity
 .mvn/.gradle-enterprise/
+
+# UI
+/plc4j/tools/ui/frontend/project/node/
+/plc4j/tools/ui/frontend/project/node_modules/
+/plc4j/tools/ui/frontend/project/dist/
+/plc4j/tools/ui/frontend/project/.vite/**
+/storage/**
+/derby.log
+/plc4j/tools/ui/frontend/frontend/.idea/vcs.xml
+/plc4j/tools/ui/frontend/frontend/.idea/workspace.xml
