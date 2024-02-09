@@ -379,11 +379,16 @@ class UmasDevice:
         values: Dict[str, List[ResponseItem[PlcValue]]] = {}
         for key, tag in sorted_tags:
             request_tag = request.tags[key]
+            if tag.is_array:
+                quantity = tag.array_length
+            else:
+                quantity = 1
+
             response_items = [
                 ResponseItem(
                     PlcResponseCode.OK,
                     DataItem.static_parse(
-                        read_buffer, request_tag.data_type, request_tag.quantity
+                        read_buffer, request_tag.data_type, quantity
                     ),
                 )
             ]
@@ -394,33 +399,35 @@ class UmasDevice:
 
     def _sort_tags_based_on_memory_address(self, request):
         tag_list: List[List[Tuple[str, VariableRequestReference]]] = [[]]
-        current_list = tag_list[0]
+        current_list_index = 0
+        current_list = tag_list[current_list_index]
         byte_count: int = 0
         for kea, tag in request.tags.items():
             umas_tag = cast(UmasTag, tag)
-            record = self.tags[umas_tag.tag_name.lower()]
-            is_array = record.data
-            byte_count += umas_tag.data_type.dataTypeSize
+            base_tag_name = umas_tag.tag_name.split(".")[0]
+            variable = self.variables[base_tag_name.lower()]
+
+            if byte_count + variable.get_byte_length() > self.max_frame_size:
+                current_list_index += 1
+                tag_list.append([])
+                current_list = tag_list[current_list_index]
+                byte_count = 0
+            byte_count += variable.get_byte_length()
             current_list.append(
                 (
                     kea,
-                    VariableRequestReference(
-                        is_array=1 if tag.data_type == UmasDataType.STRING else 0,
-                        data_size_index=UmasDataType(record.data_type).request_size,
-                        block=record.block,
-                        base_offset=0x0000,
-                        offset=record.offset,
-                        array_length=0x0010
-                        if tag.data_type == UmasDataType.STRING
-                        else None,
-                    ),
+                    variable.get_variable_reference(umas_tag.tag_name),
                 )
             )
-        sorted_tags = sorted(
-            tag_list,
-            key=lambda x: (x[1].block * 100000) + x[1].base_offset + x[1].offset,
-        )
-        return sorted_tags
+        sorted_tag_lists: List[List[Tuple[str, VariableRequestReference]]] = []
+        for request in tag_list:
+            sorted_tags = sorted(
+                request,
+                key=lambda x: (x[1].block * 100000) + x[1].base_offset + x[1].offset,
+            )
+            sorted_tag_lists.append(sorted_tags)
+
+        return sorted_tag_lists
 
     async def read(
         self, request: PlcReadRequest, transport: Transport
@@ -429,8 +436,12 @@ class UmasDevice:
         Reads one field from the Umas Device
         """
         loop = asyncio.get_running_loop()
-        sorted_tags = self._sort_tags_based_on_memory_address(request)
-        response = await self._send_read_variable_request(
-            transport, loop, request, sorted_tags
-        )
+        sorted_tag_list = self._sort_tags_based_on_memory_address(request)
+        response = PlcReadResponse(PlcResponseCode.OK, {})
+        for sorted_tags in sorted_tag_list:
+            response_chunk = await self._send_read_variable_request(
+                transport, loop, request, sorted_tags
+            )
+            response.code = response_chunk.code
+            response.values = {**response.values, **response_chunk.values}
         return response

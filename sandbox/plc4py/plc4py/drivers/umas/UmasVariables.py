@@ -20,6 +20,10 @@ import re
 from dataclasses import dataclass
 from typing import Dict, List, Pattern, AnyStr
 
+from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
+
+from plc4py.protocols.umas.readwrite.VariableRequestReference import VariableRequestReference
+
 from plc4py.api.exceptions.exceptions import PlcDataTypeNotFoundException
 from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
 from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
@@ -36,21 +40,91 @@ class UmasVariable:
     block_no: int
     offset: int
 
+    def get_variable_reference(self, address: str) -> VariableRequestReference:
+        raise NotImplementedError(f"UmasVariable subclass not implemented for variable {self.variable_name}")
+
+    def get_byte_length(self) -> int:
+        raise NotImplementedError(f"UmasVariable subclass not implemented for variable {self.variable_name}")
+
 
 @dataclass
 class UmasElementryVariable(UmasVariable):
-    pass
+
+    def get_variable_reference(self, address: str) -> VariableRequestReference:
+        if self.data_type == UmasDataType.STRING.value:
+            return VariableRequestReference(
+                            is_array=1,
+                            data_size_index=UmasDataType(self.data_type).request_size,
+                            block=self.block_no,
+                            base_offset=0x0000,
+                            offset=self.offset,
+                            array_length=16
+                        )
+        else:
+            return VariableRequestReference(
+                is_array=0,
+                data_size_index=UmasDataType(self.data_type).request_size,
+                block=self.block_no,
+                base_offset=0x0000,
+                offset=self.offset,
+                array_length=None
+            )
+    def get_byte_length(self) -> int:
+        return 7
 
 
 @dataclass
 class UmasCustomVariable(UmasVariable):
     children: Dict[str, UmasVariable]
 
+    def get_variable_reference(self, address: str) -> VariableRequestReference:
+        split_tag_address: List[str] = address.split(".")
+        child_index = None
+        if len(split_tag_address) > 1:
+            child_index = split_tag_address[1]
+            return self.children[child_index].get_variable_reference(".".join(split_tag_address[1:]))
+        else:
+            raise NotImplementedError("Unable to read structures of UDT's")
+
+
+    def get_byte_length(self) -> int:
+        byte_count = 0
+        for key, child in self.children.items():
+            byte_count += child.get_byte_length()
+        return byte_count
+
 
 @dataclass
 class UmasArrayVariable(UmasVariable):
     start_index: int
     end_index: int
+
+    def get_variable_reference(self, address: str) -> VariableRequestReference:
+        split_tag_address: List[str] = address.split(".")
+        address_index = None
+        if len(split_tag_address) > 1:
+            address_index = int(split_tag_address[1])
+        data_type_enum = UmasDataType(self.data_type)
+        if address_index:
+            return VariableRequestReference(
+                is_array=0,
+                data_size_index=data_type_enum.request_size,
+                block=self.block_no,
+                base_offset=0x0000,
+                offset=self.offset + (address_index - self.start_index) * data_type_enum.data_type_size,
+                array_length=None
+            )
+        else:
+            return VariableRequestReference(
+                is_array=1,
+                data_size_index=data_type_enum.request_size,
+                block=self.block_no,
+                base_offset=0x0000,
+                offset=self.offset,
+                array_length=self.end_index-self.start_index + 1
+            )
+    def get_byte_length(self) -> int:
+        return 9
 
 
 @dataclass
@@ -93,13 +167,14 @@ class UmasVariableBuilder:
                             ).build()
                         elif data_type_reference.class_identifier == 4:
                             match = _ARRAY_COMPILED.match(data_type_reference.value)
+                            data_type = UmasDataType[match.group("data_type")]
                             return_dict[tag_name_key] = UmasArrayVariable(
                                 tag_reference.value,
-                                data_type_reference.data_type,
+                                data_type.value,
                                 tag_reference.block,
                                 tag_reference.offset,
-                                match.group("start_number"),
-                                match.group("end_number")
+                                int(match.group("start_number")),
+                                int(match.group("end_number"))
                             )
                         found_data_type = True
                         break
@@ -130,7 +205,7 @@ class UmasCustomVariableBuilder:
                     tag_name_key,
                     data_type,
                     self.tag_reference.block,
-                    tag_reference.offset,
+                    tag_reference.offset + self.tag_reference.offset,
                 )
             else:
                 found_data_type = False
@@ -148,13 +223,14 @@ class UmasCustomVariableBuilder:
                             ).build()
                         elif data_type_reference.class_identifier == 4:
                             match = _ARRAY_COMPILED.match(data_type_reference.value)
+                            data_type = UmasDataType[match.group("data_type")]
                             children[tag_name_key] = UmasArrayVariable(
                                 tag_reference.value,
-                                data_type_reference.data_type,
+                                data_type.value,
                                 self.tag_reference.block,
-                                tag_reference.offset,
-                                match.group("start_number"),
-                                match.group("end_number")
+                                tag_reference.offset +  self.tag_reference.offset,
+                                int(match.group("start_number")),
+                                int(match.group("end_number"))
                             )
                         found_data_type = True
                         break

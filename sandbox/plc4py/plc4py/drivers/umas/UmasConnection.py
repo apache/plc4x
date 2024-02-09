@@ -147,10 +147,11 @@ class UmasConnection(PlcConnection):
 
         async def _request(req, device) -> PlcReadResponse:
             try:
-                response = await asyncio.wait_for(device.read(req, self._transport), 5)
+                response = await asyncio.wait_for(device.read(req, self._transport), 10)
                 return response
             except Exception as e:
                 # TODO:- This exception is very general and probably should be replaced
+                logging.exception()
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
         logging.debug("Sending read request to UmasDevice")
