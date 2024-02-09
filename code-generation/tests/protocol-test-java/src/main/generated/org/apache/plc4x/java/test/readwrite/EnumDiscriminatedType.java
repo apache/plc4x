@@ -97,8 +97,9 @@ public abstract class EnumDiscriminatedType implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     EnumType discr =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "discr",
+            "EnumType",
             new DataReaderEnumDefault<>(EnumType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
