@@ -1130,7 +1130,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                      WriteBufferByteBased writeBuffer) throws SerializationException {
 
         // An array type: Recursively iterate over the elements
-        if (arrayInfo.size() > 0) {
+        if (!arrayInfo.isEmpty()) {
             if (!contextValue.isList()) {
                 throw new SerializationException("Expected a PlcList, but got a " + contextValue.getPlcValueType().name());
             }
@@ -1146,7 +1146,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
 
         // A complex type
-        else if (dataType.getChildren().size() > 0) {
+        else if (!dataType.getChildren().isEmpty()) {
             if (!contextValue.isStruct()) {
                 throw new SerializationException("Expected a PlcStruct, but got a " + contextValue.getPlcValueType().name());
             }
