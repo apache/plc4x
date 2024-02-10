@@ -57,14 +57,6 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         bb.position(position);
     }
 
-    /**
-     * @deprecated use {@link WriteBufferByteBased#getBytes()}
-     */
-    @Deprecated
-    public byte[] getData() {
-        return getBytes();
-    }
-
     public byte[] getBytes() {
         return ArrayUtils.subarray(bb.array(), 0, getPos());
     }

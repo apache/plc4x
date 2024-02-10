@@ -60,7 +60,7 @@ public class Df1Protocol extends ByteToMessageCodec<DF1Command> {
         // Serialize the message
         WriteBufferByteBased writeBuffer = new WriteBufferByteBased(frame.getLengthInBytes());
         frame.serialize(writeBuffer);
-        byte[] data = writeBuffer.getData();
+        byte[] data = writeBuffer.getBytes();
 
         // Send the serialized data
         // ctx.writeAndFlush(data);

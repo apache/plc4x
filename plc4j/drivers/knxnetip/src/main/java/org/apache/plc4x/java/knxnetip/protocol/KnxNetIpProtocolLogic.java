@@ -308,7 +308,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 try {
                     final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(KnxDatapoint.getLengthInBytes(value, groupAddress.getType()));
                     KnxDatapoint.staticSerialize(writeBuffer, value, groupAddress.getType());
-                    final byte[] serialized = writeBuffer.getData();
+                    final byte[] serialized = writeBuffer.getBytes();
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
@@ -612,7 +612,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         } catch (Exception e) {
             throw new PlcRuntimeException("Error converting tag into knx address data.", e);
         }
-        return address.getData();
+        return address.getBytes();
     }
 
     protected static String toString(KnxAddress knxAddress) {

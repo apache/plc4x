@@ -50,7 +50,9 @@ public class ModbusAsciiConfiguration implements Configuration {
 
     @Override
     public String toString() {
-        return "Configuration{" +
+        return "ModbusAsciiConfiguration{" +
+            "requestTimeout=" + requestTimeout +
+            ", unitIdentifier=" + unitIdentifier +
             '}';
     }
 
