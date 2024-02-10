@@ -128,8 +128,9 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceChoice serviceChoice =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "serviceChoice",
+            "BACnetConfirmedServiceChoice",
             new DataReaderEnumDefault<>(
                 BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
     long serviceRequestPayloadLength =

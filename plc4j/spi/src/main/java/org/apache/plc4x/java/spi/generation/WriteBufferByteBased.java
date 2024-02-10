@@ -461,7 +461,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             }
             case "UTF16":
             case "UTF16BE": {
-                bytes = value.getBytes(StandardCharsets.UTF_16);
+                bytes = value.getBytes(StandardCharsets.UTF_16BE);
                 break;
             }
             case "UTF16LE":

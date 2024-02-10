@@ -866,7 +866,7 @@
               <ResponseItem>
                 <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
                 <value>
-                  <PlcSINT dataType="byte" bitLength="8">0xd6</PlcSINT>
+                  <PlcSINT dataType="int" bitLength="8">-42</PlcSINT>
                 </value>
               </ResponseItem>
             </hurz>
@@ -957,7 +957,7 @@
               </PlcTagRequest>
               <values isList="true">
                 <hurz>
-                  <PlcSINT dataType="byte" bitLength="8">0xd6</PlcSINT>
+                  <PlcSINT dataType="int" bitLength="8">-42</PlcSINT>
                 </hurz>
               </values>
             </PlcWriteRequest>

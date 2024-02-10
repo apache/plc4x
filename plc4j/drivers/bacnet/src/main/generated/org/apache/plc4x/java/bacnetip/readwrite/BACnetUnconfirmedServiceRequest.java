@@ -118,8 +118,9 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetUnconfirmedServiceChoice serviceChoice =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "serviceChoice",
+            "BACnetUnconfirmedServiceChoice",
             new DataReaderEnumDefault<>(
                 BACnetUnconfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
 

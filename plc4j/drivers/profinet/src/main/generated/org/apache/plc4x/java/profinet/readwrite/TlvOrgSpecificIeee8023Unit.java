@@ -98,8 +98,9 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvIEEESubType subType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "subType",
+            "TlvIEEESubType",
             new DataReaderEnumDefault<>(
                 TlvIEEESubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
