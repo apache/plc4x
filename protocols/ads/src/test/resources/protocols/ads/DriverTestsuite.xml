@@ -1143,6 +1143,100 @@
           </userdata>
         </AmsTCPPacket>
       </incoming-plc-message>
+      <api-response name="Report Read Response to application">
+        <PlcReadResponse>
+          <request>
+            <PlcReadRequest>
+              <PlcTagRequest>
+                <tags isList="true">
+                  <hurz>
+                    <SymbolicAdsTag>
+                      <symbolicAddress dataType="string" bitLength="128" encoding="UTF-8">MAIN.hurz_Struct</symbolicAddress>
+                    </SymbolicAdsTag>
+                  </hurz>
+                </tags>
+              </PlcTagRequest>
+            </PlcReadRequest>
+          </request>
+          <values isList="true">
+            <hurz>
+              <ResponseItem>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcStruct>
+                    <hurz_STRING>
+                      <PlcSTRING dataType="string" bitLength="32" encoding="UTF-8">hurz</PlcSTRING>
+                    </hurz_STRING>
+                    <hurz_LTIME>
+                      <PlcLTIME dataType="string" bitLength="192" encoding="UTF-8">PT24015H23M12.034002044S</PlcLTIME>
+                    </hurz_LTIME>
+                    <hurz_LWORD>
+                      <PlcLWORD dataType="int" bitLength="64">4</PlcLWORD>
+                    </hurz_LWORD>
+                    <hurz_REAL>
+                      <PlcREAL dataType="float" bitLength="32">13.0</PlcREAL>
+                    </hurz_REAL>
+                    <hurz_ULINT>
+                      <PlcULINT dataType="int" bitLength="64">12</PlcULINT>
+                    </hurz_ULINT>
+                    <hurz_WSTRING>
+                      <PlcWSTRING dataType="string" bitLength="80" encoding="UTF-8">wolf</PlcWSTRING>
+                    </hurz_WSTRING>
+                    <hurz_LINT>
+                      <PlcLINT dataType="int" bitLength="64">11</PlcLINT>
+                    </hurz_LINT>
+                    <hurz_DATE_AND_TIME>
+                      <PlcDATE_AND_TIME dataType="string" bitLength="152" encoding="UTF-8">1996-05-06T15:36:30</PlcDATE_AND_TIME>
+                    </hurz_DATE_AND_TIME>
+                    <hurz_UINT>
+                      <PlcUINT dataType="int" bitLength="16">8</PlcUINT>
+                    </hurz_UINT>
+                    <hurz_SINT>
+                      <PlcSINT dataType="int" bitLength="8">5</PlcSINT>
+                    </hurz_SINT>
+                    <hurz_USINT>
+                      <PlcUSINT dataType="int" bitLength="8">6</PlcUSINT>
+                    </hurz_USINT>
+                    <hurz_LREAL>
+                      <PlcLREAL dataType="float" bitLength="64">14.0</PlcLREAL>
+                    </hurz_LREAL>
+                    <hurz_TIME_OF_DAY>
+                      <PlcTIME_OF_DAY dataType="string" bitLength="96" encoding="UTF-8">15:36:30.123</PlcTIME_OF_DAY>
+                    </hurz_TIME_OF_DAY>
+                    <hurz_BOOL>
+                      <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                    </hurz_BOOL>
+                    <hurz_DINT>
+                      <PlcDINT dataType="int" bitLength="32">9</PlcDINT>
+                    </hurz_DINT>
+                    <hurz_UDINT>
+                      <PlcUDINT dataType="int" bitLength="32">10</PlcUDINT>
+                    </hurz_UDINT>
+                    <hurz_BYTE>
+                      <PlcBYTE dataType="int" bitLength="8">1</PlcBYTE>
+                    </hurz_BYTE>
+                    <hurz_TIME>
+                      <PlcTIME dataType="int" bitLength="32">1234</PlcTIME>
+                    </hurz_TIME>
+                    <hurz_DWORD>
+                      <PlcDWORD dataType="int" bitLength="32">3</PlcDWORD>
+                    </hurz_DWORD>
+                    <hurz_INT>
+                      <PlcINT dataType="int" bitLength="16">7</PlcINT>
+                    </hurz_INT>
+                    <hurz_WORD>
+                      <PlcWORD dataType="int" bitLength="16">2</PlcWORD>
+                    </hurz_WORD>
+                    <hurz_DATE>
+                      <PlcDATE dataType="string" bitLength="80" encoding="UTF-8">1978-03-28</PlcDATE>
+                    </hurz_DATE>
+                  </PlcStruct>
+                </value>
+              </ResponseItem>
+            </hurz>
+          </values>
+        </PlcReadResponse>
+      </api-response>
     </steps>
   </testcase>
 
@@ -1150,14 +1244,84 @@
     <name>Single element write request for "Struct" type field</name>
     <steps>
       <api-request name="Receive Write Request from application">
-        <TestReadRequest>
+        <TestWriteRequest>
           <tags isList="true">
-            <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
+            <tag className="org.apache.plc4x.test.driver.internal.api.TestValueTag">
               <name>hurz</name>
               <address>MAIN.hurz_Struct</address>
+              <value>
+                <PlcStruct>
+                  <hurz_STRING>
+                    <PlcSTRING dataType="string" bitLength="32" encoding="UTF-8">hurz</PlcSTRING>
+                  </hurz_STRING>
+                  <hurz_LTIME>
+                    <PlcLTIME dataType="string" bitLength="192" encoding="UTF-8">PT24015H23M12.034002044S</PlcLTIME>
+                  </hurz_LTIME>
+                  <hurz_LWORD>
+                    <PlcLWORD dataType="int" bitLength="64">4</PlcLWORD>
+                  </hurz_LWORD>
+                  <hurz_REAL>
+                    <PlcREAL dataType="float" bitLength="32">13.0</PlcREAL>
+                  </hurz_REAL>
+                  <hurz_ULINT>
+                    <PlcULINT dataType="int" bitLength="64">12</PlcULINT>
+                  </hurz_ULINT>
+                  <hurz_WSTRING>
+                    <PlcWSTRING dataType="string" bitLength="80" encoding="UTF-8">wolf</PlcWSTRING>
+                  </hurz_WSTRING>
+                  <hurz_LINT>
+                    <PlcLINT dataType="int" bitLength="64">11</PlcLINT>
+                  </hurz_LINT>
+                  <hurz_DATE_AND_TIME>
+                    <PlcDATE_AND_TIME dataType="string" bitLength="152" encoding="UTF-8">1996-05-06T15:36:30</PlcDATE_AND_TIME>
+                  </hurz_DATE_AND_TIME>
+                  <hurz_UINT>
+                    <PlcUINT dataType="int" bitLength="16">8</PlcUINT>
+                  </hurz_UINT>
+                  <hurz_SINT>
+                    <PlcSINT dataType="int" bitLength="8">5</PlcSINT>
+                  </hurz_SINT>
+                  <hurz_USINT>
+                    <PlcUSINT dataType="int" bitLength="8">6</PlcUSINT>
+                  </hurz_USINT>
+                  <hurz_LREAL>
+                    <PlcLREAL dataType="float" bitLength="64">14.0</PlcLREAL>
+                  </hurz_LREAL>
+                  <hurz_TIME_OF_DAY>
+                    <PlcTIME_OF_DAY dataType="string" bitLength="96" encoding="UTF-8">15:36:30.123</PlcTIME_OF_DAY>
+                  </hurz_TIME_OF_DAY>
+                  <hurz_BOOL>
+                    <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                  </hurz_BOOL>
+                  <hurz_DINT>
+                    <PlcDINT dataType="int" bitLength="32">9</PlcDINT>
+                  </hurz_DINT>
+                  <hurz_UDINT>
+                    <PlcUDINT dataType="int" bitLength="32">10</PlcUDINT>
+                  </hurz_UDINT>
+                  <hurz_BYTE>
+                    <PlcBYTE dataType="int" bitLength="8">1</PlcBYTE>
+                  </hurz_BYTE>
+                  <hurz_TIME>
+                    <PlcTIME dataType="int" bitLength="32">1234</PlcTIME>
+                  </hurz_TIME>
+                  <hurz_DWORD>
+                    <PlcDWORD dataType="int" bitLength="32">3</PlcDWORD>
+                  </hurz_DWORD>
+                  <hurz_INT>
+                    <PlcINT dataType="int" bitLength="16">7</PlcINT>
+                  </hurz_INT>
+                  <hurz_WORD>
+                    <PlcWORD dataType="int" bitLength="16">2</PlcWORD>
+                  </hurz_WORD>
+                  <hurz_DATE>
+                    <PlcDATE dataType="string" bitLength="80" encoding="UTF-8">1978-03-28</PlcDATE>
+                  </hurz_DATE>
+                </PlcStruct>
+              </value>
             </tag>
           </tags>
-        </TestReadRequest>
+        </TestWriteRequest>
       </api-request>
       <outgoing-plc-message name="Send Ads Write Request">
         <AmsTCPPacket>
