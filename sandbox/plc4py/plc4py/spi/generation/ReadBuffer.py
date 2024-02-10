@@ -150,12 +150,17 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
 
 
 class ReadBufferByteBased(ReadBuffer):
-    def __init__(self, bb: bytearray, byte_order: ByteOrder):
-        if byte_order == ByteOrder.LITTLE_ENDIAN:
-            bb = bitarray(buffer=bb)
+    def __init__(
+        self,
+        bb: bytearray,
+        byte_order: ByteOrder,
+        bit_order: ByteOrder = ByteOrder.BIG_ENDIAN,
+    ):
+        if bit_order == ByteOrder.LITTLE_ENDIAN:
+            bb = bitarray(buffer=bb, endian=ByteOrder.get_short_name(bit_order))
             bb.bytereverse()
         self.bb = bitarray(
-            buffer=memoryview(bb), endian=ByteOrder.get_short_name(byte_order)
+            buffer=memoryview(bb), endian=ByteOrder.get_short_name(bit_order)
         )
         self.byte_order = byte_order
         self.position = 0
@@ -215,9 +220,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 16:
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (16 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "H", padded)[0]
             self.position += bit_length
             return result
 
@@ -230,10 +240,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 32:
             raise SerializationException("unsigned int can only contain max 32 bits")
         else:
-            ss = self.bb[self.position : bit_length]
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (32 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "I", padded)[0]
             self.position += bit_length
             return result
 
@@ -246,9 +260,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 64:
             raise SerializationException("unsigned long can only contain max 64 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (64 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "Q", padded)[0]
             self.position += bit_length
             return result
 
@@ -274,9 +293,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 16:
             raise SerializationException("signed short can only contain max 16 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (16 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "h", padded)[0]
             self.position += bit_length
             return result
 
@@ -287,9 +311,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 32:
             raise SerializationException("signed int can only contain max 32 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (32 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "i", padded)[0]
             self.position += bit_length
             return result
 
@@ -300,9 +329,14 @@ class ReadBufferByteBased(ReadBuffer):
         elif bit_length > 64:
             raise SerializationException("signed long can only contain max 64 bits")
         else:
-            result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+            if byte_order == ByteOrder.LITTLE_ENDIAN:
+                endian_string = "<"
+            else:
+                endian_string = ">"
+            padded = (64 - bit_length) * bitarray("0") + bitarray(
+                self.bb[self.position : self.position + bit_length]
             )
+            result: int = struct.unpack(endian_string + "q", padded)[0]
             self.position += bit_length
             return result
 
@@ -340,7 +374,11 @@ class ReadBufferByteBased(ReadBuffer):
 
     def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
         if isinstance(read_function, types.FunctionType):
-            return read_function(self, **kwargs)
+            return read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+
+    def read_manual(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+        if isinstance(read_function, types.FunctionType):
+            return read_function()
 
     def read_enum(
         self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
@@ -359,7 +397,13 @@ class ReadBufferByteBased(ReadBuffer):
         raise NotImplementedError
 
     def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
-        raise NotImplementedError
+        byte_order = kwargs.get("byte_order", self.byte_order)
+        result: str = struct.unpack(
+            str(int(bit_length / 8)) + "s",
+            self.bb[self.position : self.position + bit_length],
+        )[0]
+        self.position += bit_length
+        return result
 
     def read_array_field(
         self,
@@ -373,7 +417,9 @@ class ReadBufferByteBased(ReadBuffer):
         if count is not None:
             parsed_array = []
             for _ in range(count):
-                parsed_array.append(read_function(self, **kwargs))
+                parsed_array.append(
+                    read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+                )
             return parsed_array
         else:
             raise NotImplementedError

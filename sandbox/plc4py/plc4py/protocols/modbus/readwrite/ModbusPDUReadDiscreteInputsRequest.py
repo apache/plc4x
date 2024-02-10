@@ -23,9 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
 import math
 
 
@@ -34,20 +34,22 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
     starting_address: int
     quantity: int
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x02
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x02
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadDiscreteInputsRequest")
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address, logical_name="startingAddress"
+            self.starting_address, bit_length=16, logical_name="startingAddress"
         )
 
         # Simple Field (quantity)
-        write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
+        write_buffer.write_unsigned_short(
+            self.quantity, bit_length=16, logical_name="quantity"
+        )
 
         write_buffer.pop_context("ModbusPDUReadDiscreteInputsRequest")
 
@@ -112,7 +114,7 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadDiscreteInputsRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUReadDiscreteInputsRequestBuilder:
     starting_address: int
     quantity: int
 

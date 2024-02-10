@@ -70,3 +70,21 @@ class PlcReadResponse(PlcTagResponse):
 
     def get_int(self, name: str, index: int = 0) -> int:
         return cast(int, self.values[name][index].value.value)
+
+
+@dataclass
+class PlcQueryResponse(PlcResponse):
+    tags: Dict[str, List[ResponseItem[PlcTag]]]
+
+    @property
+    def tag_names(self):
+        return [tag_name for tag_name in self.tags.keys()]
+
+    def response_code(self, name: str) -> PlcResponseCode:
+        pass
+
+
+@dataclass
+class PlcBrowseResponse(PlcQueryResponse):
+    def get_tags(self) -> Dict[str, List[ResponseItem[PlcTag]]]:
+        return self.tags

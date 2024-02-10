@@ -38,7 +38,6 @@ class ModbusADU(ABC, PlcMessage):
 
     # Abstract accessors for discriminator values.
     @property
-    @abstractmethod
     def driver_type(self) -> DriverType:
         pass
 
@@ -74,14 +73,14 @@ class ModbusADU(ABC, PlcMessage):
             )
 
         driver_type: DriverType = 0
-        if isinstance(kwargs.get("driverType"), DriverType):
-            driver_type = DriverType(kwargs.get("driverType"))
-        elif isinstance(kwargs.get("driverType"), str):
-            driver_type = DriverType(str(kwargs.get("driverType")))
+        if isinstance(kwargs.get("driver_type"), DriverType):
+            driver_type = DriverType(kwargs.get("driver_type"))
+        elif isinstance(kwargs.get("driver_type"), str):
+            driver_type = DriverType(str(kwargs.get("driver_type")))
         else:
             raise PlcRuntimeException(
                 "Argument 0 expected to be of type DriverType or a string which is parseable but was "
-                + kwargs.get("driverType").getClass().getName()
+                + kwargs.get("driver_type").getClass().getName()
             )
 
         response: bool = False
@@ -164,6 +163,7 @@ class ModbusADU(ABC, PlcMessage):
         # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
+@dataclass
 class ModbusADUBuilder:
     def build(self, response: bool) -> ModbusADU:
         pass

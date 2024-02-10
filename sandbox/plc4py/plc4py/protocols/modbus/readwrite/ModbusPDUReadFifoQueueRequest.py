@@ -23,9 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
 import math
 
 
@@ -33,16 +33,16 @@ import math
 class ModbusPDUReadFifoQueueRequest(ModbusPDU):
     fifo_pointer_address: int
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x18
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x18
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFifoQueueRequest")
 
         # Simple Field (fifoPointerAddress)
         write_buffer.write_unsigned_short(
-            self.fifo_pointer_address, logical_name="fifoPointerAddress"
+            self.fifo_pointer_address, bit_length=16, logical_name="fifoPointerAddress"
         )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueRequest")
@@ -100,7 +100,7 @@ class ModbusPDUReadFifoQueueRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadFifoQueueRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUReadFifoQueueRequestBuilder:
     fifo_pointer_address: int
 
     def build(

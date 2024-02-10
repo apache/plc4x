@@ -24,11 +24,11 @@ from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
-from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import ClassVar
 import math
 
 
@@ -41,14 +41,16 @@ class ModbusTcpADU(ModbusADU):
     response: bool
     PROTOCOL_IDENTIFIER: int = 0x0000
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.MODBUS_TCP
+    driver_type: ClassVar[DriverType] = DriverType.MODBUS_TCP
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusTcpADU")
 
         # Simple Field (transactionIdentifier)
         write_buffer.write_unsigned_short(
-            self.transaction_identifier, logical_name="transactionIdentifier"
+            self.transaction_identifier,
+            bit_length=16,
+            logical_name="transactionIdentifier",
         )
 
         # Const Field (protocolIdentifier)
@@ -62,7 +64,7 @@ class ModbusTcpADU(ModbusADU):
 
         # Simple Field (unitIdentifier)
         write_buffer.write_unsigned_byte(
-            self.unit_identifier, logical_name="unitIdentifier"
+            self.unit_identifier, bit_length=8, logical_name="unitIdentifier"
         )
 
         # Simple Field (pdu)
@@ -173,7 +175,7 @@ class ModbusTcpADU(ModbusADU):
 
 
 @dataclass
-class ModbusTcpADUBuilder(ModbusADUBuilder):
+class ModbusTcpADUBuilder:
     transaction_identifier: int
     unit_identifier: int
     pdu: ModbusPDU

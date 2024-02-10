@@ -36,7 +36,9 @@ class Dummy:
         write_buffer.push_context("Dummy")
 
         # Simple Field (dummy)
-        write_buffer.write_unsigned_short(self.dummy, logical_name="dummy")
+        write_buffer.write_unsigned_short(
+            self.dummy, bit_length=16, logical_name="dummy"
+        )
 
         write_buffer.pop_context("Dummy")
 
