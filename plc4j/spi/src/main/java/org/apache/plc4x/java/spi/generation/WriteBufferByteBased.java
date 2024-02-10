@@ -460,16 +460,13 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 break;
             }
             case "UTF16":
-            case "UTF16LE":
             case "UTF16BE": {
-                bytes = value.getBytes(StandardCharsets.UTF_16);
-                if(bytes.length > 2) {
-                    bytes = new byte[] {
-                        bytes[2], bytes[3]
-                    };
-                }
+                bytes = value.getBytes(StandardCharsets.UTF_16BE);
                 break;
             }
+            case "UTF16LE":
+                bytes = value.getBytes(StandardCharsets.UTF_16LE);
+                break;
             default:
                 throw new SerializationException("Unsupported encoding: " + encoding);
         }

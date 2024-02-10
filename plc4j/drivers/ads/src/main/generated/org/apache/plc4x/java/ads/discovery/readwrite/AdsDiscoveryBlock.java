@@ -99,8 +99,9 @@ public abstract class AdsDiscoveryBlock implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AdsDiscoveryBlockType blockType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "blockType",
+            "AdsDiscoveryBlockType",
             new DataReaderEnumDefault<>(
                 AdsDiscoveryBlockType::enumForValue, readUnsignedInt(readBuffer, 16)));
 

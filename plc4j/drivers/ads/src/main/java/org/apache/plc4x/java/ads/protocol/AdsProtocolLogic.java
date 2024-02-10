@@ -883,12 +883,15 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 int startPos = readBuffer.getPos();
                 int curPos = 0;
                 for (AdsDataTypeTableChildEntry child : adsDataTypeTableEntry.getChildren()) {
+                    // In some cases the starting position of the data is not where we are expecting it.
+                    // So we need to skip some bytes.
                     if (child.getOffset() > curPos) {
                         long skipBytes = child.getOffset() - curPos;
                         for (long i = 0; i < skipBytes; i++) {
                             readBuffer.readByte();
                         }
                     }
+
                     String propertyName = child.getPropertyName();
                     AdsDataTypeTableEntry propertyDataTypeTableEntry = dataTypeTable.get(child.getDataTypeName());
                     PlcValueType propertyPlcValueType = getPlcValueTypeForAdsDataType(propertyDataTypeTableEntry);
@@ -900,6 +903,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     }
                     PlcValue propertyValue = parsePlcValue(propertyPlcValueType, propertyDataTypeTableEntry, strLen, readBuffer);
                     properties.put(propertyName, propertyValue);
+
                     curPos = readBuffer.getPos() - startPos;
                 }
                 return new PlcStruct(properties);
@@ -1130,7 +1134,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                      WriteBufferByteBased writeBuffer) throws SerializationException {
 
         // An array type: Recursively iterate over the elements
-        if (arrayInfo.size() > 0) {
+        if (!arrayInfo.isEmpty()) {
             if (!contextValue.isList()) {
                 throw new SerializationException("Expected a PlcList, but got a " + contextValue.getPlcValueType().name());
             }
@@ -1146,18 +1150,31 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         }
 
         // A complex type
-        else if (dataType.getChildren().size() > 0) {
+        else if (!dataType.getChildren().isEmpty()) {
             if (!contextValue.isStruct()) {
                 throw new SerializationException("Expected a PlcStruct, but got a " + contextValue.getPlcValueType().name());
             }
             PlcStruct plcStruct = (PlcStruct) contextValue;
+            int startPos = writeBuffer.getPos();
+            int curPos = 0;
             for (AdsDataTypeTableChildEntry child : dataType.getChildren()) {
                 AdsDataTypeTableEntry childDataType = dataTypeTable.get(child.getDataTypeName());
                 if (!plcStruct.hasKey(child.getPropertyName())) {
                     throw new SerializationException("PlcStruct is missing a child with the name " + child.getPropertyName());
                 }
+                // In some cases the starting position of the data is not where we are expecting it.
+                // So we need to add some fill-bytes.
+                if (child.getOffset() > curPos) {
+                    long fillBytes = child.getOffset() - curPos;
+                    for(long i = 0; i < fillBytes; i++) {
+                        writeBuffer.writeByte("fillByte", (byte) 0x00);
+                    }
+                }
+
                 PlcValue childValue = plcStruct.getValue(child.getPropertyName());
                 serializeInternal(childValue, childDataType, childDataType.getArrayInfo(), writeBuffer);
+
+                curPos = writeBuffer.getPos() - startPos;
             }
         }
 

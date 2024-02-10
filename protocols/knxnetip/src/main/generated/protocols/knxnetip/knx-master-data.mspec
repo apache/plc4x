@@ -1414,8 +1414,9 @@
     ['663' M_KNXES_COMPANY_LIMITED ['721', '"KNXES COMPANY LIMITED"']]
     ['664' M_THE_AKUVOX_COMPANY ['722', '"The Akuvox Company"']]
     ['665' M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_ ['723', '"NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."']]
-    ['666' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['667' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['666' M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD ['724', '"Shenzhen Haizhichuang Technology Co., Ltd"']]
+    ['667' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['668' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
