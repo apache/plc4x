@@ -114,7 +114,7 @@
             [simple     uint 16         unknown1]
             [simple     uint 8          hostnameLength]
             [simple     vstring         'hostnameLength*8' hostname]
-            [simple     uint 8          numberOfMemoryBanks
+            [simple     uint 8          numberOfMemoryBanks]
             [array      PlcMemoryBlockIdent memoryIdents count 'numberOfMemoryBanks']
         ]
         ['0xFE', '0x04'     UmasPDUPlcStatusResponse
@@ -189,7 +189,7 @@
     [simple     uint 8           unknown5]
     [simple     uint 16          unknown4]
     [simple     uint 16          stringLength]
-    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
 ]
 
 [type UmasUDTDefinition
@@ -197,7 +197,7 @@
     [simple     uint 16          offset]
     [simple     uint 16          unknown5]
     [simple     uint 16          unknown4]
-    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, -1)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, -1)' '(stringLength * 8)'']
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, -1)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, -1)' '(stringLength * 8)']
 ]
 
 [type UmasDatatypeReference
@@ -206,7 +206,7 @@
     [simple     uint 8           classIdentifier]
     [simple     uint 8           dataType]
     [simple     uint 8           stringLength]
-    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)'']
+    [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
 ]
 
 [type PlcMemoryBlockIdent
@@ -272,7 +272,7 @@
             [array float 32 value count 'numberOfValues']
         ]
         ['STRING','1' STRING
-            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, numberOfValues)' '(numberOfValues * 8)'']
+            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, numberOfValues)' '(numberOfValues * 8)']
         ]
         ['STRING' List
             [array float 32 value count 'numberOfValues']

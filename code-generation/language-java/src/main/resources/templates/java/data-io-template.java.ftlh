@@ -313,7 +313,7 @@ public class ${type.name} {
                     <#break>
                 <#case "DATE_AND_TIME">
                     <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "millisecondsOfSecond")>
-                        return PlcDATE_AND_TIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, millisecondsOfSecond);
+                        return PlcDATE_AND_TIME.ofSegments(year, (month == 0) ? 1 : month, (day == 0) ? 1 : day, hour, minutes, seconds, millisecondsOfSecond * 1000000);
                     <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
                         return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
                     </#if>

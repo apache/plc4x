@@ -313,7 +313,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             else if (plcValue instanceof PlcList) {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                byte[] data = writeBuffer.getData();
+                byte[] data = writeBuffer.getBytes();
                 if (((ModbusTag) tag).getDataType() == ModbusDataType.BOOL) {
                     //Reverse Bits in each byte as
                     //they should be ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
@@ -327,7 +327,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             } else {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                return writeBuffer.getData();
+                return writeBuffer.getBytes();
             }
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);
