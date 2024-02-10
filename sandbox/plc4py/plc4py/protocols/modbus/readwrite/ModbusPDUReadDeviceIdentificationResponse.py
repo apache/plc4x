@@ -35,10 +35,10 @@ from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationObject import (
     ModbusDeviceInformationObject,
 )
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
+from typing import ClassVar
 from typing import List
 import math
 
@@ -53,9 +53,9 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
     objects: List[ModbusDeviceInformationObject]
     MEI_TYPE: int = 0x0E
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x2B
-    response: bool = True
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x2B
+    response: ClassVar[bool] = True
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadDeviceIdentificationResponse")
@@ -67,7 +67,9 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         write_buffer.write_unsigned_byte(self.level, logical_name="level")
 
         # Simple Field (individualAccess)
-        write_buffer.write_bit(self.individual_access, logical_name="individualAccess")
+        write_buffer.write_bit(
+            self.individual_access, bit_length=1, logical_name="individualAccess"
+        )
 
         # Simple Field (conformityLevel)
         write_buffer.write_unsigned_byte(
@@ -79,7 +81,7 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
 
         # Simple Field (nextObjectId)
         write_buffer.write_unsigned_byte(
-            self.next_object_id, logical_name="nextObjectId"
+            self.next_object_id, bit_length=8, logical_name="nextObjectId"
         )
 
         # Implicit Field (number_of_objects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -225,7 +227,7 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadDeviceIdentificationResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUReadDeviceIdentificationResponseBuilder:
     level: ModbusDeviceInformationLevel
     individual_access: bool
     conformity_level: ModbusDeviceInformationConformityLevel

@@ -204,7 +204,7 @@ def test_write_buffer_write_unsigned_int_big_endian(mocker) -> None:
     # Testing incompatible format being sent to it.
     wb.write_unsigned_int(0x12, 32)
     ba: memoryview = wb.get_bytes()
-    assert ba.obj == bitarray("00010010 00000000 00000000 00000000", endian="big")
+    assert ba.obj == bitarray("00000000 00000000 00000000 00010010", endian="big")
 
 
 def test_write_buffer_write_unsigned_long_little_endian(mocker) -> None:
@@ -222,7 +222,7 @@ def test_write_buffer_write_unsigned_long_big_endian(mocker) -> None:
     wb.write_unsigned_long(0x12, 64)
     ba: memoryview = wb.get_bytes()
     assert ba.obj == bitarray(
-        "00010010 00000000 00000000 00000000 00000000 00000000 00000000 00000000",
+        "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00010010",
         endian="big",
     )
 
@@ -282,4 +282,4 @@ def test_write_buffer_set_float_big_endian(mocker) -> None:
     wb: WriteBufferByteBased = WriteBufferByteBased(1, ByteOrder.BIG_ENDIAN)
     wb.write_float(-1, 32)
     ba: memoryview = wb.get_bytes()
-    assert ba.obj == bitarray("00000000000000001000000010111111", endian="big")
+    assert ba.obj == bitarray("10111111100000000000000000000000", endian="big")

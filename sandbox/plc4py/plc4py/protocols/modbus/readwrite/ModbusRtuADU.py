@@ -25,11 +25,11 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADU
-from plc4py.protocols.modbus.readwrite.ModbusADU import ModbusADUBuilder
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import ClassVar
 import math
 
 
@@ -40,13 +40,15 @@ class ModbusRtuADU(ModbusADU):
     # Arguments.
     response: bool
     # Accessors for discriminator values.
-    driver_type: DriverType = DriverType.MODBUS_RTU
+    driver_type: ClassVar[DriverType] = DriverType.MODBUS_RTU
 
     def serialize_modbus_adu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusRtuADU")
 
         # Simple Field (address)
-        write_buffer.write_unsigned_byte(self.address, logical_name="address")
+        write_buffer.write_unsigned_byte(
+            self.address, bit_length=8, logical_name="address"
+        )
 
         # Simple Field (pdu)
         write_buffer.write_serializable(self.pdu, logical_name="pdu")
@@ -139,7 +141,7 @@ class ModbusRtuADU(ModbusADU):
 
 
 @dataclass
-class ModbusRtuADUBuilder(ModbusADUBuilder):
+class ModbusRtuADUBuilder:
     address: int
     pdu: ModbusPDU
 

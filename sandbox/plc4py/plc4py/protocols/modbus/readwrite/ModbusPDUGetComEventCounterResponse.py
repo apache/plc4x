@@ -23,9 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
 import math
 
 
@@ -34,18 +34,22 @@ class ModbusPDUGetComEventCounterResponse(ModbusPDU):
     status: int
     event_count: int
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x0B
-    response: bool = True
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x0B
+    response: ClassVar[bool] = True
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUGetComEventCounterResponse")
 
         # Simple Field (status)
-        write_buffer.write_unsigned_short(self.status, logical_name="status")
+        write_buffer.write_unsigned_short(
+            self.status, bit_length=16, logical_name="status"
+        )
 
         # Simple Field (eventCount)
-        write_buffer.write_unsigned_short(self.event_count, logical_name="eventCount")
+        write_buffer.write_unsigned_short(
+            self.event_count, bit_length=16, logical_name="eventCount"
+        )
 
         write_buffer.pop_context("ModbusPDUGetComEventCounterResponse")
 
@@ -112,7 +116,7 @@ class ModbusPDUGetComEventCounterResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUGetComEventCounterResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUGetComEventCounterResponseBuilder:
     status: int
     event_count: int
 

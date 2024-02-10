@@ -173,9 +173,9 @@ class ${type.name}:
                     <#break>
                     <#case "manual">
                         <#assign manualField=field.asManualField().orElseThrow()>
-
+                            <@emitImport import="from plc4py.protocols.${protocolName} import StaticHelper" />
             # Manual Field (${helper.camelCaseToSnakeCase(manualField.name)})
-            ${helper.camelCaseToSnakeCase(manualField.name)}: ${helper.getLanguageTypeNameForField(field)} = (${helper.getLanguageTypeNameForField(manualField)}) (${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression,parserArguments)})
+            ${helper.camelCaseToSnakeCase(manualField.name)}: ${helper.getLanguageTypeNameForField(field)} = (${helper.getLanguageTypeNameForField(manualField)}) (StaticHelper.${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})
                         <#if manualField.name == "value">
                             <#assign valueDefined=true>
                         </#if>

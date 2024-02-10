@@ -31,6 +31,10 @@ class PlcConnectionException(Exception):
     logging.error("Unable to establish a connection to the plc")
 
 
+class PlcDataTypeNotFoundException(Exception):
+    logging.error("Unable to find data type in data dictionary")
+
+
 class PlcFieldParseException(Exception):
     pass
 

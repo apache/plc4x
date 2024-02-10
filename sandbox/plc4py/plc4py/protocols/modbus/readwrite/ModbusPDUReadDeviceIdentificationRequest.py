@@ -26,9 +26,9 @@ from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import (
     ModbusDeviceInformationLevel,
 )
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
 import math
 
 
@@ -38,9 +38,9 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
     object_id: int
     MEI_TYPE: int = 0x0E
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x2B
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x2B
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
@@ -52,7 +52,9 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
         write_buffer.write_unsigned_byte(self.level, logical_name="level")
 
         # Simple Field (objectId)
-        write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
+        write_buffer.write_unsigned_byte(
+            self.object_id, bit_length=8, logical_name="objectId"
+        )
 
         write_buffer.pop_context("ModbusPDUReadDeviceIdentificationRequest")
 
@@ -129,7 +131,7 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadDeviceIdentificationRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUReadDeviceIdentificationRequestBuilder:
     level: ModbusDeviceInformationLevel
     object_id: int
 

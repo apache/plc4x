@@ -32,7 +32,7 @@ from plc4py.utils.ConnectionStringHandling import get_protocol_code
 @dataclass
 class PlcDriverManager:
     class_loader: PluginManager = field(default_factory=lambda: PluginManager("plc4py"))
-    _driverMap: Dict[str, Type[PlcDriver]] = field(default_factory=lambda: {})
+    _driver_map: Dict[str, Type[PlcDriver]] = field(default_factory=lambda: {})
 
     def __post_init__(self):
         logging.info(
@@ -45,13 +45,13 @@ class PlcDriverManager:
 
         self.class_loader.register(plc4py.drivers)
         self.class_loader.load_setuptools_entrypoints("plc4py.drivers")
-        self._driverMap = {
+        self._driver_map = {
             key: loader
             for key, loader in zip(
                 self.class_loader.hook.key(), self.class_loader.hook.get_driver()
             )
         }
-        for driver in self._driverMap:
+        for driver in self._driver_map:
             logging.info(f"... {driver} .. OK")
         self.class_loader.check_pending()
 
@@ -76,14 +76,14 @@ class PlcDriverManager:
         :return: plc connection
         """
         protocol_code = get_protocol_code(url)
-        return await self._driverMap[protocol_code]().get_connection(url)
+        return await self._driver_map[protocol_code]().get_connection(url)
 
     def list_drivers(self) -> List[str]:
         """
         Returns the codes of the drivers which are currently registered at the PlcDriverManager
         :return: Set of driver codes for all drivers registered
         """
-        return list(self._driverMap.keys())
+        return list(self._driver_map.keys())
 
     def get_driver(self, protocol_code: str) -> Type[PlcDriver]:
         """
@@ -91,7 +91,7 @@ class PlcDriverManager:
         :param protocol_code: protocolCode protocol code identifying the driver
         :return: Driver instance for the given protocol
         """
-        return self._driverMap[protocol_code]
+        return self._driver_map[protocol_code]
 
     def get_driver_for_url(self, url: str) -> Type[PlcDriver]:
         """
@@ -100,4 +100,4 @@ class PlcDriverManager:
         :return: the protocol code
         """
         protocol_code = get_protocol_code(url)
-        return self._driverMap[protocol_code]
+        return self._driver_map[protocol_code]

@@ -23,9 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
 import math
 
 
@@ -34,18 +34,22 @@ class ModbusPDUWriteSingleRegisterRequest(ModbusPDU):
     address: int
     value: int
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x06
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x06
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUWriteSingleRegisterRequest")
 
         # Simple Field (address)
-        write_buffer.write_unsigned_short(self.address, logical_name="address")
+        write_buffer.write_unsigned_short(
+            self.address, bit_length=16, logical_name="address"
+        )
 
         # Simple Field (value)
-        write_buffer.write_unsigned_short(self.value, logical_name="value")
+        write_buffer.write_unsigned_short(
+            self.value, bit_length=16, logical_name="value"
+        )
 
         write_buffer.pop_context("ModbusPDUWriteSingleRegisterRequest")
 
@@ -112,7 +116,7 @@ class ModbusPDUWriteSingleRegisterRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUWriteSingleRegisterRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUWriteSingleRegisterRequestBuilder:
     address: int
     value: int
 

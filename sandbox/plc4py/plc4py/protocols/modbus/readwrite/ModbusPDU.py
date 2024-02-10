@@ -35,17 +35,14 @@ class ModbusPDU(ABC, PlcMessage):
 
     # Abstract accessors for discriminator values.
     @property
-    @abstractmethod
     def error_flag(self) -> bool:
         pass
 
     @property
-    @abstractmethod
     def function_flag(self) -> int:
         pass
 
     @property
-    @abstractmethod
     def response(self) -> bool:
         pass
 
@@ -57,17 +54,11 @@ class ModbusPDU(ABC, PlcMessage):
         write_buffer.push_context("ModbusPDU")
 
         # Discriminator Field (errorFlag) (Used as input to a switch field)
-        write_buffer.write_bit(
-            self.error_flag,
-            logical_name="errorFlag",
-            bit_length=1,
-        )
+        write_buffer.write_bit(self.error_flag, logical_name="errorFlag", bit_length=1)
 
         # Discriminator Field (functionFlag) (Used as input to a switch field)
         write_buffer.write_unsigned_byte(
-            self.function_flag,
-            logical_name="functionFlag",
-            bit_length=7,
+            self.function_flag, logical_name="functionFlag", bit_length=7
         )
 
         # Switch field (Serialize the sub-type)
@@ -677,6 +668,7 @@ class ModbusPDU(ABC, PlcMessage):
         # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
+@dataclass
 class ModbusPDUBuilder:
     def build(
         self,

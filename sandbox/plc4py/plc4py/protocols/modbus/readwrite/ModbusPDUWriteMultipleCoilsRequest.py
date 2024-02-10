@@ -23,10 +23,10 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
+from typing import ClassVar
 from typing import List
 import math
 
@@ -37,20 +37,22 @@ class ModbusPDUWriteMultipleCoilsRequest(ModbusPDU):
     quantity: int
     value: List[int]
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x0F
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x0F
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUWriteMultipleCoilsRequest")
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address, logical_name="startingAddress"
+            self.starting_address, bit_length=16, logical_name="startingAddress"
         )
 
         # Simple Field (quantity)
-        write_buffer.write_unsigned_short(self.quantity, logical_name="quantity")
+        write_buffer.write_unsigned_short(
+            self.quantity, bit_length=16, logical_name="quantity"
+        )
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = int(len(self.value))
@@ -143,7 +145,7 @@ class ModbusPDUWriteMultipleCoilsRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUWriteMultipleCoilsRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUWriteMultipleCoilsRequestBuilder:
     starting_address: int
     quantity: int
     value: List[int]

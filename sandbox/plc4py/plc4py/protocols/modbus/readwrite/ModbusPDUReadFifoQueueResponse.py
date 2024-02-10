@@ -23,10 +23,10 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
+from typing import ClassVar
 from typing import List
 import math
 
@@ -35,9 +35,9 @@ import math
 class ModbusPDUReadFifoQueueResponse(ModbusPDU):
     fifo_value: List[int]
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x18
-    response: bool = True
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x18
+    response: ClassVar[bool] = True
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadFifoQueueResponse")
@@ -52,7 +52,7 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
 
         # Array Field (fifoValue)
         write_buffer.write_simple_array(
-            self.fifo_value, write_unsigned_short, logical_name="fifoValue"
+            self.fifo_value, write_buffer.write_unsigned_short, logical_name="fifoValue"
         )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueResponse")
@@ -124,7 +124,7 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadFifoQueueResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUReadFifoQueueResponseBuilder:
     fifo_value: List[int]
 
     def build(

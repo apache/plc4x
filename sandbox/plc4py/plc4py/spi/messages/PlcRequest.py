@@ -20,6 +20,8 @@
 from plc4py.api.messages.PlcRequest import (
     PlcReadRequest,
     ReadRequestBuilder,
+    BrowseRequestBuilder,
+    PlcBrowseRequest,
 )
 
 
@@ -41,3 +43,15 @@ class DefaultReadRequestBuilder(ReadRequestBuilder):
     def add_item(self, tag_name: str, address_string: str) -> None:
         tag = self.tag_builder.create(address_string)
         self.read_request.tags[tag_name] = tag
+
+
+class DefaultBrowseRequestBuilder(BrowseRequestBuilder):
+    def __init__(self):
+        super().__init__()
+        self.browse_request = PlcBrowseRequest()
+
+    def build(self) -> PlcBrowseRequest:
+        return self.browse_request
+
+    def add_query(self, query_name: str, query: str) -> None:
+        self.browse_request.queries[query_name] = query
