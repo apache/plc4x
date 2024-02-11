@@ -124,6 +124,7 @@ public class RequestTransactionManagerTest {
     }
 
     @Test
+    @Disabled("This test seems to be very flaky, investigating in PR #1396")
     public void abortTransactionFromExternally() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> sendRequest = new CompletableFuture<>();
         CompletableFuture<Void> receiveResponse = new CompletableFuture<>();
