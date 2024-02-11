@@ -34,49 +34,7 @@ Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/
 
 === Connection String Options
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-|Code
-2+|`ADS`
-
-|Name
-2+|ADS Protocol
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-ads</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `tcp`
-3+|Supported Operations
-
-|
-| `read`
-| 
-
-3+|Options
-
-| AmsNetId
-| getTargetAmsNetId()
-| setTargetAmsNetId(AmsNetId targetAmsNetId)
-
-| AmsNetIdConverter
-| 
-|
-
-| targetAmsPort
-| getDefaultPort(48898)
-| Defaults to 48898
-
-|===
+include::../../../../../plc4j/drivers/all/src/site/generated/ads.adoc[]
 
 [%header, cols=3*]
 |===

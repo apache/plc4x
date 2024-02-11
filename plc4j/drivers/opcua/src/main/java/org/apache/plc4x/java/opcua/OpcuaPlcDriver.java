@@ -32,6 +32,7 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
@@ -52,8 +53,8 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
     }
 
     @Override

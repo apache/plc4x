@@ -52,9 +52,12 @@
       <item name="Adopters" href="users/adopters.html"/>
       <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
       <item name="Commercial support" href="users/commercial-support.html"/>
-      <item name="Getting Started" href="users/gettingstarted.html">
+      <item name="Getting Started" href="users/getting-started/index.html">
+        <item name="C" href="users/getting-started/plc4c.html"/>
+        <item name="C#" href="users/getting-started/plc4cs.html"/>
         <item name="Go" href="users/getting-started/plc4go.html"/>
         <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="Python" href="users/getting-started/plc4py.html"/>
         <item name="Using SNAPSHOTS" href="users/getting-started/using-snapshots.html"/>
         <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
         <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
@@ -63,16 +66,21 @@
       <item name="Protocols" href="users/protocols/index.html">
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
         <item name="ADS/AMS" href="users/protocols/ads.html"/>
-        <item name="BACnet/IP" href="users/protocols/bacnetip.html"/>
+        <item name="BACnet/IP" href="users/protocols/bacnet.html"/>
+        <item name="C-Bus" href="users/protocols/c-bus.html"/>
         <item name="CANopen" href="users/protocols/canopen.html"/>
+        <item name="CtrlX" href="users/protocols/ctrlx.html"/>
         <item name="DeltaV" href="users/protocols/deltav.html"/>
         <item name="DF1" href="users/protocols/df1.html"/>
-        <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
+        <item name="EtherNet/IP" href="users/protocols/eip.html"/>
         <item name="Firmata" href="users/protocols/firmata.html"/>
+        <item name="Generic CAN" href="users/protocols/genericcan.html"/>
+        <item name="IEC-60870" href="users/protocols/ied-60870.html"/>
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Logix" href="users/protocols/logix.html"/>
-        <item name="Modbus" href="users/protocols/modbus.html"/>
-        <item name="OPC UA" href="users/protocols/opc-ua.html"/>
+        <item name="Modbus (TCP/RTU/ASCII)" href="users/protocols/modbus.html"/>
+        <item name="OPC UA" href="users/protocols/opcua.html"/>
+        <item name="Open-Protocol (Torque-Tools)" href="users/protocols/open-protocol.html"/>
         <item name="PLC4X (Proxy)" href="users/protocols/plc4x.html"/>
         <item name="PROFINET" href="users/protocols/profinet.html"/>
         <item name="S7 (Step7)" href="users/protocols/s7.html"/>

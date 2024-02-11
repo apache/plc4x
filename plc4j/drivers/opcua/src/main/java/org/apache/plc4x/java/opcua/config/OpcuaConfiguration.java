@@ -18,12 +18,13 @@
  */
 package org.apache.plc4x.java.opcua.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
-public class OpcuaConfiguration implements Configuration {
+public class OpcuaConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("protocolCode")
     private String protocolCode;
@@ -36,12 +37,18 @@ public class OpcuaConfiguration implements Configuration {
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
+    @Description("Controls the feature of the discovery endpoint of an OPC UA server which every server\n" +
+        "will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly\n" +
+        "configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by\n" +
+        "configuring it with a `false` value.")
     private boolean discovery;
 
     @ConfigurationParameter("username")
+    @Description("A username to authenticate to the OPCUA server with.")
     private String username;
 
     @ConfigurationParameter("password")
+    @Description("A password to authenticate to the OPCUA server with.")
     private String password;
 
     @ConfigurationParameter("securityPolicy")

@@ -102,19 +102,6 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://edgent.apache.org';" style="cursor:pointer;">
-                                           <div class="d-flex align-items-center justify-content-center h-100">
-                                               <img src="images/integrations/apache_edgent_logo.png" alt="Card image cap">
-                                           </div>
-                                           <div class="card-body">
-                                               <h5 class="card-title"><b>Apache Edgent</b></h5>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                               <div class="carousel-item">
-                                   <div class="col-md-12 col-lg-4">
-                                       <div class="card h-100 p-5 justify-content-center"
                                             onclick="location.href='https://iotdb.apache.org';" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_iotdb_logo.png" alt="Card image cap">

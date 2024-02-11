@@ -21,7 +21,6 @@ package org.apache.plc4x.java.examples.hellodiscovery;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +44,7 @@ public class HelloDiscovery {
         }
 
         PlcDriverManager plcDriverManager = PlcDriverManager.getDefault();
-        Set<String> driverCodes = plcDriverManager.listDrivers();
+        Set<String> driverCodes = plcDriverManager.listProtocolCodes();
         for (String driverCode : driverCodes) {
             PlcDriver driver = plcDriverManager.getDriver(driverCode);
 

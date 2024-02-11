@@ -40,6 +40,8 @@ import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.transport.can.CANTransport;
 
+import java.util.Optional;
+
 /**
  */
 public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
@@ -75,8 +77,8 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "socketcan";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("socketcan");
     }
 
     @Override

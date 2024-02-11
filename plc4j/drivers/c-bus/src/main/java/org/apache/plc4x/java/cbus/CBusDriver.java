@@ -20,6 +20,7 @@ package org.apache.plc4x.java.cbus;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
 import org.apache.plc4x.java.cbus.configuration.CBusTcpTransportConfiguration;
@@ -30,13 +31,14 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-public class CBusDriver extends GeneratedDriverBase<CBusCommand> implements TransportConfigurationTypeProvider {
+public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
 
     @Override
     public String getProtocolCode() {
@@ -49,8 +51,8 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> implements Tran
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
     }
 
     @Override
@@ -122,12 +124,17 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> implements Tran
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return CBusTcpTransportConfiguration.class;
+                return Optional.of(CBusTcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

@@ -26,16 +26,18 @@ import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 /**
@@ -44,7 +46,7 @@ import java.util.function.ToIntFunction;
  * - TCP
  * - Serial
  */
-public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> implements TransportConfigurationTypeProvider {
+public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
 
     @Override
     public String getProtocolCode() {
@@ -92,8 +94,8 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> implements T
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
     }
 
     @Override
@@ -141,12 +143,17 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> implements T
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return AdsTcpTransportConfiguration.class;
+                return Optional.of(AdsTcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

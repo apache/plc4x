@@ -20,11 +20,11 @@ package org.apache.plc4x.java.transport.rawsocket;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 import org.apache.plc4x.java.utils.rawsockets.netty.address.RawSocketAddress;
 
 import java.net.InetSocketAddress;
@@ -105,7 +105,7 @@ public class RawSocketTransport implements Transport, HasConfiguration<RawSocket
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigType() {
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
         return DefaultRawSocketTransportConfiguration.class;
     }
 

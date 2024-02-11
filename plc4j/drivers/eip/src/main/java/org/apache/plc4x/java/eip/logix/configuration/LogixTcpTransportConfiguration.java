@@ -16,10 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.configuration;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+package org.apache.plc4x.java.eip.logix.configuration;
 
-public interface Configuration extends PlcConnectionConfiguration {
+import org.apache.plc4x.java.eip.base.EIPDriver;
+import org.apache.plc4x.java.transport.tcp.DefaultTcpTransportConfiguration;
+
+public class LogixTcpTransportConfiguration extends DefaultTcpTransportConfiguration {
+
+    @Override
+    public int getDefaultPort() {
+        return EIPDriver.PORT;
+    }
 
 }

@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.transport.pcapreplay;
 
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
 import org.apache.plc4x.java.transport.pcap.DefaultPcapTransportConfiguration;
@@ -28,13 +29,16 @@ public abstract class DefaultPcapReplayTransportConfiguration extends DefaultPca
 
     @ConfigurationParameter("replay-speed-factor")
     @FloatDefaultValue(1.0f)
+    @Description("When running in pcap-replay mode, the speed in which the replay should be done. `1.0f` being the normal speed.")
     private float replaySpeedFactor;
 
     @ConfigurationParameter("loop")
     @BooleanDefaultValue(false)
+    @Description("When running in pcap-replay mode, tell if the replay should start from the beginning once it reaches the end of the recording.")
     private boolean loop;
 
     @ConfigurationParameter("filter")
+    @Description("Filter expression used to filter out unwanted packets from the replay.")
     private String filter;
 
     @Override

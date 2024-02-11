@@ -1,0 +1,49 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+[cols="2,2a,2a,2a,4a"]
+|===
+|Name |Type |Default Value |Required |Description
+|Name 4+|Opcua
+|Code 4+|`opcua`
+|Maven Dependency 4+|
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.apache.plc4x</groupId>
+  <artifactId>plc4j-driver-opcua</artifactId>
+  <version>{current-last-released-version}</version>
+</dependency>
+----
+|Default Transport 4+|`tcp`
+|Supported Transports 4+|
+5+|Config options:
+|`protocolCode` |string | | |
+|`transportCode` |string | | |
+|`transportConfig` |string | | |
+|`discovery` |boolean |true | |Controls the feature of the discovery endpoint of an OPC UA server which every server
+will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
+configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
+configuring it with a `false` value.
+|`username` |string | | |A username to authenticate to the OPCUA server with.
+|`password` |string | | |A password to authenticate to the OPCUA server with.
+|`securityPolicy` |string |None | |
+|`keyStoreFile` |string | | |
+|`certDirectory` |string | | |
+|`keyStorePassword` |string | | |
+|===

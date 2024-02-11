@@ -19,11 +19,11 @@
 
 package org.apache.plc4x.java.spi.configuration.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
 
-public class TestConfigurationParameterConverter implements Configuration {
+public class TestConfigurationParameterConverter implements PlcConnectionConfiguration {
 
     @ConfigurationParameter
     @ParameterConverter(ParameterConverterTypeConverter.class)

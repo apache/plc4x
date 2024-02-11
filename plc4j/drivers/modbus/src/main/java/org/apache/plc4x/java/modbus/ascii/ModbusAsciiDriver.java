@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
 import org.apache.plc4x.java.modbus.ascii.protocol.ModbusAsciiProtocolLogic;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
@@ -35,14 +36,15 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> implements TransportConfigurationTypeProvider {
+public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
 
     @Override
     public String getProtocolCode() {
@@ -60,8 +62,8 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> imple
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "serial";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("serial");
     }
 
     /**
@@ -188,12 +190,17 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> imple
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Arrays.asList("tcp", "serial");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return ModbusTcpTransportConfiguration.class;
+                return Optional.of(ModbusTcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Getting Started
+== Getting Started with Java
 
 === Using the PLC4J API directly
 

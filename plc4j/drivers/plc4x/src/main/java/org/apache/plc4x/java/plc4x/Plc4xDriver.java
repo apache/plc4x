@@ -20,6 +20,7 @@ package org.apache.plc4x.java.plc4x;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xTcpTransportConfiguration;
 import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;
@@ -29,13 +30,14 @@ import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> implements TransportConfigurationTypeProvider {
+public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
 
     @Override
     public String getProtocolCode() {
@@ -63,9 +65,9 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> implements Tr
     }
 
     @Override
-    protected String getDefaultTransport() {
+    public Optional<String> getDefaultTransportCode() {
         // TODO: This should be TLS (which we currently don't have yet).
-        return "tcp";
+        return Optional.of("tcp");
     }
 
     /**
@@ -107,12 +109,17 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> implements Tr
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return Plc4xTcpTransportConfiguration.class;
+                return Optional.of(Plc4xTcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

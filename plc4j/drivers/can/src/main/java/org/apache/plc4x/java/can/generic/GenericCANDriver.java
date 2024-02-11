@@ -36,6 +36,8 @@ import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.transport.can.CANTransport;
 
+import java.util.Optional;
+
 /**
  * A generic purpose CAN driver which is able to work with any compatible CAN transport.
  *
@@ -74,8 +76,8 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "socketcan";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("socketcan");
     }
 
     @Override

@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.simulated.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 
-public class SimulatedConfiguration implements Configuration {
+public class SimulatedConfiguration implements PlcConnectionConfiguration {
 }

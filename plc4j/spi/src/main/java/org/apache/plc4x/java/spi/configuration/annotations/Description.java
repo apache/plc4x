@@ -16,10 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.transport;
+package org.apache.plc4x.java.spi.configuration.annotations;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface TransportConfiguration extends Configuration {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Description {
+
+    String value() default "";
 
 }

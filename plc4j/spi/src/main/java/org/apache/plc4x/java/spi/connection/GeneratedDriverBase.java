@@ -22,15 +22,13 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
@@ -94,8 +92,6 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected abstract PlcValueHandler getValueHandler();
 
-    protected abstract String getDefaultTransport();
-
     protected abstract ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer();
 
     protected ProtocolStackConfigurer<BASE_PACKET> getStackConfigurer(Transport transport) {
@@ -122,7 +118,11 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
         final String protocolCode = matcher.group("protocolCode");
         String transportCodeMatch = matcher.group("transportCode");
-        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransport();
+        if(transportCodeMatch == null && getDefaultTransportCode().isEmpty()) {
+            throw new PlcConnectionException(
+                "This driver has no default transport and no transport code was provided.");
+        }
+        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
 
@@ -155,23 +155,15 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
 
         // Find out the type of the transport configuration.
-        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
-        if(this instanceof TransportConfigurationTypeProvider) {
-            TransportConfigurationTypeProvider transportConfigurationTypeProvider =
-                (TransportConfigurationTypeProvider) this;
-            Class<? extends TransportConfiguration> driverTransportConfigurationType =
-                transportConfigurationTypeProvider.getTransportConfigurationType(transportCode);
-            if(driverTransportConfigurationType != null) {
-                transportConfigurationType = driverTransportConfigurationType;
-            }
+        Class<? extends PlcTransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        if(getTransportConfigurationType(transportCode).isPresent()) {
+            transportConfigurationType = getTransportConfigurationType(transportCode).get();
         }
         // Use the transport configuration type to actually configure the transport instance.
-        if(transportConfigurationType != null) {
-            Configuration transportConfiguration = configurationFactory
-                .createPrefixedConfiguration(transportConfigurationType,
-                    transportCode, protocolCode, transportCode, transportConfig, paramString);
-            configure(transportConfiguration, transport);
-        }
+        PlcTransportConfiguration plcTransportConfiguration = configurationFactory
+            .createTransportConfiguration(transportConfigurationType,
+                protocolCode, transportCode, transportConfig, paramString);
+        configure(plcTransportConfiguration, transport);
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);

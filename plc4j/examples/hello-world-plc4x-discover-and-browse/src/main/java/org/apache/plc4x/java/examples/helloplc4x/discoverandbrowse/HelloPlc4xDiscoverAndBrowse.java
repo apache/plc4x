@@ -37,7 +37,7 @@ public class HelloPlc4xDiscoverAndBrowse {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
         PlcDriverManager driverManager = PlcDriverManager.getDefault();
         PlcConnectionManager connectionManager = driverManager.getConnectionManager();
-        for (String protocolCode : driverManager.listDrivers()) {
+        for (String protocolCode : driverManager.listProtocolCodes()) {
             PlcDriver driver = driverManager.getDriver(protocolCode);
             if (driver.getMetadata().canDiscover()) {
                 logger.info("Performing discovery for {} protocol", driver.getProtocolName());

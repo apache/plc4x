@@ -20,8 +20,8 @@
 package org.apache.plc4x.java.profinet.config;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
@@ -32,7 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ProfinetConfiguration implements Configuration {
+public class ProfinetConfiguration implements PlcConnectionConfiguration {
 
     @Required
     @ConfigurationParameter("gsd-directory")

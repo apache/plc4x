@@ -18,15 +18,16 @@
  */
 package org.apache.plc4x.java.spi.events;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 
 public class DiscoveredEvent {
 
-    private final Configuration configuration;
+    private final PlcConnectionConfiguration configuration;
 
-    public DiscoveredEvent(Configuration c) {
+    public DiscoveredEvent(PlcConnectionConfiguration c) {
         this.configuration = c;
     }
 
-    public Configuration getConfiguration() { return configuration; }
+    public PlcConnectionConfiguration getConfiguration() { return configuration; }
+
 }

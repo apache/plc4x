@@ -53,7 +53,7 @@ public class DriverService {
 
     public List<Driver> getDriverList() {
         List<Driver> drivers = new ArrayList<>();
-        for (String protocolCode : driverManager.listDrivers()) {
+        for (String protocolCode : driverManager.listProtocolCodes()) {
             try {
                 PlcDriver driver = driverManager.getDriver(protocolCode);
                 PlcDriverMetadata metadata = driver.getMetadata();
@@ -80,7 +80,7 @@ public class DriverService {
 
     public void discover(String protocolCode) {
         if(ALL_DRIVERS.equals(protocolCode)) {
-            for (String curProtocolCode : driverManager.listDrivers()) {
+            for (String curProtocolCode : driverManager.listProtocolCodes()) {
                 try {
                     if("modbus-tcp".equals(curProtocolCode)) {
                         continue;

@@ -16,11 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.api.configuration;
 
-package org.apache.plc4x.java.spi.transport;
-
-public interface TransportConfigurationTypeProvider {
-
-    Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode);
-
+public interface PlcTransportConfiguration extends PlcConfiguration {
 }

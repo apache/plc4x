@@ -32,6 +32,8 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -55,8 +57,8 @@ public class S7Driver extends S7HGeneratedDriverBase {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
     }
 
     @Override

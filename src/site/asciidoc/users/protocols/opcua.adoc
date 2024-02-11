@@ -18,57 +18,21 @@
 :icons: font
 
 == OPC UA
+
 === Connection String Options
+
+include::../../../../../plc4j/drivers/all/src/site/generated/opcua.adoc[]
 
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`opcua`
-
-|Name
-2+|OPC UA
-
-|Maven Dependency
-2+|
-
-----
-
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-opcua</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-
-----
-
-|Default Transport:
-2+| `tcp`
-
-|Compatible Transports:
-2+| - `tcp` (Default Port: 4840)
-
-
 3+|Supported Operations
 
 || `read`      |The read interface allows for reading the full range of supported PLC4X data types in single and bulk requests
 || `write`     |The write interface allows for writing the full range of supported PLC4X data types in single and bulk requests
 || `subscribe` |Subscriptions are possible with events on event- and cyclic-basis
 
-
-3+|Options
-
-|| `discovery`  |   Controls the feature of the discovery endpoint of an OPC UA server which every server
-will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly
-configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by
-configuring it with a `false` value.
-
-|| `username`  |   A username to authenticate to the OPCUA server with.
-|| `password`  |   A password to authenticate to the OPCUA server with. |
-
 |===
-
 === Connection String
 
 The OPC UA drivers uses the connection string

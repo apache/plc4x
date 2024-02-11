@@ -20,6 +20,7 @@ package org.apache.plc4x.java.profinet;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
@@ -37,14 +38,15 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.pcap4j.core.*;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implements TransportConfigurationTypeProvider {
+public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     public static final String DRIVER_CODE = "profinet";
 
@@ -81,8 +83,8 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "raw";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("raw");
     }
 
     @Override
@@ -165,12 +167,17 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("raw");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "raw":
-                return ProfinetRawSocketTransportConfiguration.class;
+                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

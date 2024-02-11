@@ -110,7 +110,7 @@ public class DefaultPlcDriverManager implements PlcDriverManager, PlcConnectionM
      * Returns the codes of all of the drivers which are currently registered at the PlcDriverManager
      * @return Set of driver codes for all drivers registered
      */
-    public Set<String> listDrivers() {
+    public Set<String> listProtocolCodes() {
         return driverMap.keySet();
     }
 

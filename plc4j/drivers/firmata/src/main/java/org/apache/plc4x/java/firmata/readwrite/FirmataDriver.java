@@ -32,6 +32,7 @@ import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -53,8 +54,8 @@ public class FirmataDriver extends GeneratedDriverBase<FirmataMessage> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "serial";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("serial");
     }
 
     @Override

@@ -19,5 +19,5 @@
 
 package org.apache.plc4x.java.api.configuration;
 
-public interface PlcConnectionConfiguration {
+public interface PlcConnectionConfiguration extends PlcConfiguration {
 }
