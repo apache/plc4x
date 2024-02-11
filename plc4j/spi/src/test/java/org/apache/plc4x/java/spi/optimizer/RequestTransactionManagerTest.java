@@ -132,23 +132,25 @@ public class RequestTransactionManagerTest {
         RequestTransactionManager tm = new RequestTransactionManager();
         RequestTransactionManager.RequestTransaction handle = tm.startRequest();
         handle.submit(() -> {
-            // ...
+            // Completing this future simulates "having sent the request" and
+            // it makes the main test continue.
             sendRequest.complete(null);
-            // Receive
             receiveResponse.thenAccept((n) -> {
+                // Receive (This code should actually never be run)
                 handle.endRequest();
                 transactionIsFinished.complete(null);
             });
         });
 
-        // Assert that there is a request going on
+        // Wait until the sendRequest future is completed inside the transaction.
         sendRequest.get();
 
-        // Exception case
+        // Now fail the transaction (Simulating anything going wrong while processing it)
         handle.failRequest(new RuntimeException());
 
         // Wait that the fail is handled internally surely
-        Thread.sleep(100);
+        // Commented out, as all operations in "failRequest" are executed immediately.
+        //Thread.sleep(100);
 
         // Assert that no requests are active
         assertEquals(0, tm.getNumberOfActiveRequests());
