@@ -35,22 +35,10 @@ type OpcuaOpenResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	MessagePDU
-	// GetChunk returns Chunk (property field)
-	GetChunk() string
-	// GetSecureChannelId returns SecureChannelId (property field)
-	GetSecureChannelId() int32
-	// GetSecurityPolicyUri returns SecurityPolicyUri (property field)
-	GetSecurityPolicyUri() PascalString
-	// GetSenderCertificate returns SenderCertificate (property field)
-	GetSenderCertificate() PascalByteString
-	// GetReceiverCertificateThumbprint returns ReceiverCertificateThumbprint (property field)
-	GetReceiverCertificateThumbprint() PascalByteString
-	// GetSequenceNumber returns SequenceNumber (property field)
-	GetSequenceNumber() int32
-	// GetRequestId returns RequestId (property field)
-	GetRequestId() int32
+	// GetOpenResponse returns OpenResponse (property field)
+	GetOpenResponse() OpenChannelMessage
 	// GetMessage returns Message (property field)
-	GetMessage() []byte
+	GetMessage() Payload
 }
 
 // OpcuaOpenResponseExactly can be used when we want exactly this type and not a type which fulfills OpcuaOpenResponse.
@@ -63,14 +51,11 @@ type OpcuaOpenResponseExactly interface {
 // _OpcuaOpenResponse is the data-structure of this message
 type _OpcuaOpenResponse struct {
 	*_MessagePDU
-	Chunk                         string
-	SecureChannelId               int32
-	SecurityPolicyUri             PascalString
-	SenderCertificate             PascalByteString
-	ReceiverCertificateThumbprint PascalByteString
-	SequenceNumber                int32
-	RequestId                     int32
-	Message                       []byte
+	OpenResponse OpenChannelMessage
+	Message      Payload
+
+	// Arguments.
+	TotalLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -91,7 +76,9 @@ func (m *_OpcuaOpenResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaOpenResponse) InitializeParent(parent MessagePDU) {}
+func (m *_OpcuaOpenResponse) InitializeParent(parent MessagePDU, chunk ChunkType) {
+	m.Chunk = chunk
+}
 
 func (m *_OpcuaOpenResponse) GetParent() MessagePDU {
 	return m._MessagePDU
@@ -102,35 +89,11 @@ func (m *_OpcuaOpenResponse) GetParent() MessagePDU {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_OpcuaOpenResponse) GetChunk() string {
-	return m.Chunk
+func (m *_OpcuaOpenResponse) GetOpenResponse() OpenChannelMessage {
+	return m.OpenResponse
 }
 
-func (m *_OpcuaOpenResponse) GetSecureChannelId() int32 {
-	return m.SecureChannelId
-}
-
-func (m *_OpcuaOpenResponse) GetSecurityPolicyUri() PascalString {
-	return m.SecurityPolicyUri
-}
-
-func (m *_OpcuaOpenResponse) GetSenderCertificate() PascalByteString {
-	return m.SenderCertificate
-}
-
-func (m *_OpcuaOpenResponse) GetReceiverCertificateThumbprint() PascalByteString {
-	return m.ReceiverCertificateThumbprint
-}
-
-func (m *_OpcuaOpenResponse) GetSequenceNumber() int32 {
-	return m.SequenceNumber
-}
-
-func (m *_OpcuaOpenResponse) GetRequestId() int32 {
-	return m.RequestId
-}
-
-func (m *_OpcuaOpenResponse) GetMessage() []byte {
+func (m *_OpcuaOpenResponse) GetMessage() Payload {
 	return m.Message
 }
 
@@ -140,17 +103,11 @@ func (m *_OpcuaOpenResponse) GetMessage() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaOpenResponse factory function for _OpcuaOpenResponse
-func NewOpcuaOpenResponse(chunk string, secureChannelId int32, securityPolicyUri PascalString, senderCertificate PascalByteString, receiverCertificateThumbprint PascalByteString, sequenceNumber int32, requestId int32, message []byte) *_OpcuaOpenResponse {
+func NewOpcuaOpenResponse(openResponse OpenChannelMessage, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaOpenResponse {
 	_result := &_OpcuaOpenResponse{
-		Chunk:                         chunk,
-		SecureChannelId:               secureChannelId,
-		SecurityPolicyUri:             securityPolicyUri,
-		SenderCertificate:             senderCertificate,
-		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
-		SequenceNumber:                sequenceNumber,
-		RequestId:                     requestId,
-		Message:                       message,
-		_MessagePDU:                   NewMessagePDU(),
+		OpenResponse: openResponse,
+		Message:      message,
+		_MessagePDU:  NewMessagePDU(chunk),
 	}
 	_result._MessagePDU._MessagePDUChildRequirements = _result
 	return _result
@@ -174,34 +131,11 @@ func (m *_OpcuaOpenResponse) GetTypeName() string {
 func (m *_OpcuaOpenResponse) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (chunk)
-	lengthInBits += 8
+	// Simple field (openResponse)
+	lengthInBits += m.OpenResponse.GetLengthInBits(ctx)
 
-	// Implicit Field (messageSize)
-	lengthInBits += 32
-
-	// Simple field (secureChannelId)
-	lengthInBits += 32
-
-	// Simple field (securityPolicyUri)
-	lengthInBits += m.SecurityPolicyUri.GetLengthInBits(ctx)
-
-	// Simple field (senderCertificate)
-	lengthInBits += m.SenderCertificate.GetLengthInBits(ctx)
-
-	// Simple field (receiverCertificateThumbprint)
-	lengthInBits += m.ReceiverCertificateThumbprint.GetLengthInBits(ctx)
-
-	// Simple field (sequenceNumber)
-	lengthInBits += 32
-
-	// Simple field (requestId)
-	lengthInBits += 32
-
-	// Array field
-	if len(m.Message) > 0 {
-		lengthInBits += 8 * uint16(len(m.Message))
-	}
+	// Simple field (message)
+	lengthInBits += m.Message.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
@@ -210,11 +144,11 @@ func (m *_OpcuaOpenResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaOpenResponseParse(ctx context.Context, theBytes []byte, response bool) (OpcuaOpenResponse, error) {
-	return OpcuaOpenResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
+func OpcuaOpenResponseParse(ctx context.Context, theBytes []byte, totalLength uint32, response bool) (OpcuaOpenResponse, error) {
+	return OpcuaOpenResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), totalLength, response)
 }
 
-func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaOpenResponse, error) {
+func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaOpenResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	log := zerolog.Ctx(ctx)
@@ -225,84 +159,30 @@ func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (chunk)
-	_chunk, _chunkErr := readBuffer.ReadString("chunk", uint32(8), "UTF-8")
-	if _chunkErr != nil {
-		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of OpcuaOpenResponse")
+	// Simple Field (openResponse)
+	if pullErr := readBuffer.PullContext("openResponse"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for openResponse")
 	}
-	chunk := _chunk
-
-	// Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	messageSize, _messageSizeErr := readBuffer.ReadInt32("messageSize", 32)
-	_ = messageSize
-	if _messageSizeErr != nil {
-		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field of OpcuaOpenResponse")
+	_openResponse, _openResponseErr := OpenChannelMessageParseWithBuffer(ctx, readBuffer, bool(response))
+	if _openResponseErr != nil {
+		return nil, errors.Wrap(_openResponseErr, "Error parsing 'openResponse' field of OpcuaOpenResponse")
 	}
-
-	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := readBuffer.ReadInt32("secureChannelId", 32)
-	if _secureChannelIdErr != nil {
-		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of OpcuaOpenResponse")
-	}
-	secureChannelId := _secureChannelId
-
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of OpcuaOpenResponse")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	openResponse := _openResponse.(OpenChannelMessage)
+	if closeErr := readBuffer.CloseContext("openResponse"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for openResponse")
 	}
 
-	// Simple Field (senderCertificate)
-	if pullErr := readBuffer.PullContext("senderCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for senderCertificate")
+	// Simple Field (message)
+	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for message")
 	}
-	_senderCertificate, _senderCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _senderCertificateErr != nil {
-		return nil, errors.Wrap(_senderCertificateErr, "Error parsing 'senderCertificate' field of OpcuaOpenResponse")
+	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(uint32(totalLength)-uint32(openResponse.GetLengthInBytes(ctx)))-uint32(uint32(16))))
+	if _messageErr != nil {
+		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaOpenResponse")
 	}
-	senderCertificate := _senderCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("senderCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for senderCertificate")
-	}
-
-	// Simple Field (receiverCertificateThumbprint)
-	if pullErr := readBuffer.PullContext("receiverCertificateThumbprint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for receiverCertificateThumbprint")
-	}
-	_receiverCertificateThumbprint, _receiverCertificateThumbprintErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _receiverCertificateThumbprintErr != nil {
-		return nil, errors.Wrap(_receiverCertificateThumbprintErr, "Error parsing 'receiverCertificateThumbprint' field of OpcuaOpenResponse")
-	}
-	receiverCertificateThumbprint := _receiverCertificateThumbprint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("receiverCertificateThumbprint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for receiverCertificateThumbprint")
-	}
-
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadInt32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of OpcuaOpenResponse")
-	}
-	sequenceNumber := _sequenceNumber
-
-	// Simple Field (requestId)
-	_requestId, _requestIdErr := readBuffer.ReadInt32("requestId", 32)
-	if _requestIdErr != nil {
-		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of OpcuaOpenResponse")
-	}
-	requestId := _requestId
-	// Byte Array field (message)
-	numberOfBytesmessage := int(uint16(uint16(uint16(uint16(messageSize)-uint16((utils.InlineIf(bool((securityPolicyUri.GetStringLength()) == (-(1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(securityPolicyUri.GetStringLength()) }).(uint16))))-uint16((utils.InlineIf(bool((senderCertificate.GetStringLength()) == (-(1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(senderCertificate.GetStringLength()) }).(uint16))))-uint16((utils.InlineIf(bool((receiverCertificateThumbprint.GetStringLength()) == (-(1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(receiverCertificateThumbprint.GetStringLength()) }).(uint16)))) - uint16(uint16(32)))
-	message, _readArrayErr := readBuffer.ReadByteArray("message", numberOfBytesmessage)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'message' field of OpcuaOpenResponse")
+	message := _message.(Payload)
+	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for message")
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaOpenResponse"); closeErr != nil {
@@ -311,15 +191,9 @@ func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_OpcuaOpenResponse{
-		_MessagePDU:                   &_MessagePDU{},
-		Chunk:                         chunk,
-		SecureChannelId:               secureChannelId,
-		SecurityPolicyUri:             securityPolicyUri,
-		SenderCertificate:             senderCertificate,
-		ReceiverCertificateThumbprint: receiverCertificateThumbprint,
-		SequenceNumber:                sequenceNumber,
-		RequestId:                     requestId,
-		Message:                       message,
+		_MessagePDU:  &_MessagePDU{},
+		OpenResponse: openResponse,
+		Message:      message,
 	}
 	_child._MessagePDU._MessagePDUChildRequirements = _child
 	return _child, nil
@@ -343,81 +217,28 @@ func (m *_OpcuaOpenResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for OpcuaOpenResponse")
 		}
 
-		// Simple Field (chunk)
-		chunk := string(m.GetChunk())
-		_chunkErr := writeBuffer.WriteString("chunk", uint32(8), "UTF-8", (chunk))
-		if _chunkErr != nil {
-			return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
+		// Simple Field (openResponse)
+		if pushErr := writeBuffer.PushContext("openResponse"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for openResponse")
+		}
+		_openResponseErr := writeBuffer.WriteSerializable(ctx, m.GetOpenResponse())
+		if popErr := writeBuffer.PopContext("openResponse"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for openResponse")
+		}
+		if _openResponseErr != nil {
+			return errors.Wrap(_openResponseErr, "Error serializing 'openResponse' field")
 		}
 
-		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
-		if _messageSizeErr != nil {
-			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
+		// Simple Field (message)
+		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for message")
 		}
-
-		// Simple Field (secureChannelId)
-		secureChannelId := int32(m.GetSecureChannelId())
-		_secureChannelIdErr := writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
-		if _secureChannelIdErr != nil {
-			return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
+		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
+		if popErr := writeBuffer.PopContext("message"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for message")
 		}
-
-		// Simple Field (securityPolicyUri)
-		if pushErr := writeBuffer.PushContext("securityPolicyUri"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityPolicyUri")
-		}
-		_securityPolicyUriErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityPolicyUri())
-		if popErr := writeBuffer.PopContext("securityPolicyUri"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityPolicyUri")
-		}
-		if _securityPolicyUriErr != nil {
-			return errors.Wrap(_securityPolicyUriErr, "Error serializing 'securityPolicyUri' field")
-		}
-
-		// Simple Field (senderCertificate)
-		if pushErr := writeBuffer.PushContext("senderCertificate"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for senderCertificate")
-		}
-		_senderCertificateErr := writeBuffer.WriteSerializable(ctx, m.GetSenderCertificate())
-		if popErr := writeBuffer.PopContext("senderCertificate"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for senderCertificate")
-		}
-		if _senderCertificateErr != nil {
-			return errors.Wrap(_senderCertificateErr, "Error serializing 'senderCertificate' field")
-		}
-
-		// Simple Field (receiverCertificateThumbprint)
-		if pushErr := writeBuffer.PushContext("receiverCertificateThumbprint"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for receiverCertificateThumbprint")
-		}
-		_receiverCertificateThumbprintErr := writeBuffer.WriteSerializable(ctx, m.GetReceiverCertificateThumbprint())
-		if popErr := writeBuffer.PopContext("receiverCertificateThumbprint"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for receiverCertificateThumbprint")
-		}
-		if _receiverCertificateThumbprintErr != nil {
-			return errors.Wrap(_receiverCertificateThumbprintErr, "Error serializing 'receiverCertificateThumbprint' field")
-		}
-
-		// Simple Field (sequenceNumber)
-		sequenceNumber := int32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteInt32("sequenceNumber", 32, int32((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
-		}
-
-		// Simple Field (requestId)
-		requestId := int32(m.GetRequestId())
-		_requestIdErr := writeBuffer.WriteInt32("requestId", 32, int32((requestId)))
-		if _requestIdErr != nil {
-			return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
-		}
-
-		// Array Field (message)
-		// Byte Array field (message)
-		if err := writeBuffer.WriteByteArray("message", m.GetMessage()); err != nil {
-			return errors.Wrap(err, "Error serializing 'message' field")
+		if _messageErr != nil {
+			return errors.Wrap(_messageErr, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaOpenResponse"); popErr != nil {
@@ -427,6 +248,16 @@ func (m *_OpcuaOpenResponse) SerializeWithWriteBuffer(ctx context.Context, write
 	}
 	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
+
+////
+// Arguments Getter
+
+func (m *_OpcuaOpenResponse) GetTotalLength() uint32 {
+	return m.TotalLength
+}
+
+//
+////
 
 func (m *_OpcuaOpenResponse) isOpcuaOpenResponse() bool {
 	return true

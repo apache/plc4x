@@ -35,18 +35,10 @@ type OpcuaMessageResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	MessagePDU
-	// GetChunk returns Chunk (property field)
-	GetChunk() string
-	// GetSecureChannelId returns SecureChannelId (property field)
-	GetSecureChannelId() int32
-	// GetSecureTokenId returns SecureTokenId (property field)
-	GetSecureTokenId() int32
-	// GetSequenceNumber returns SequenceNumber (property field)
-	GetSequenceNumber() int32
-	// GetRequestId returns RequestId (property field)
-	GetRequestId() int32
+	// GetSecurityHeader returns SecurityHeader (property field)
+	GetSecurityHeader() SecurityHeader
 	// GetMessage returns Message (property field)
-	GetMessage() []byte
+	GetMessage() Payload
 }
 
 // OpcuaMessageResponseExactly can be used when we want exactly this type and not a type which fulfills OpcuaMessageResponse.
@@ -59,12 +51,11 @@ type OpcuaMessageResponseExactly interface {
 // _OpcuaMessageResponse is the data-structure of this message
 type _OpcuaMessageResponse struct {
 	*_MessagePDU
-	Chunk           string
-	SecureChannelId int32
-	SecureTokenId   int32
-	SequenceNumber  int32
-	RequestId       int32
-	Message         []byte
+	SecurityHeader SecurityHeader
+	Message        Payload
+
+	// Arguments.
+	TotalLength uint32
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,7 +76,9 @@ func (m *_OpcuaMessageResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaMessageResponse) InitializeParent(parent MessagePDU) {}
+func (m *_OpcuaMessageResponse) InitializeParent(parent MessagePDU, chunk ChunkType) {
+	m.Chunk = chunk
+}
 
 func (m *_OpcuaMessageResponse) GetParent() MessagePDU {
 	return m._MessagePDU
@@ -96,27 +89,11 @@ func (m *_OpcuaMessageResponse) GetParent() MessagePDU {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_OpcuaMessageResponse) GetChunk() string {
-	return m.Chunk
+func (m *_OpcuaMessageResponse) GetSecurityHeader() SecurityHeader {
+	return m.SecurityHeader
 }
 
-func (m *_OpcuaMessageResponse) GetSecureChannelId() int32 {
-	return m.SecureChannelId
-}
-
-func (m *_OpcuaMessageResponse) GetSecureTokenId() int32 {
-	return m.SecureTokenId
-}
-
-func (m *_OpcuaMessageResponse) GetSequenceNumber() int32 {
-	return m.SequenceNumber
-}
-
-func (m *_OpcuaMessageResponse) GetRequestId() int32 {
-	return m.RequestId
-}
-
-func (m *_OpcuaMessageResponse) GetMessage() []byte {
+func (m *_OpcuaMessageResponse) GetMessage() Payload {
 	return m.Message
 }
 
@@ -126,15 +103,11 @@ func (m *_OpcuaMessageResponse) GetMessage() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaMessageResponse factory function for _OpcuaMessageResponse
-func NewOpcuaMessageResponse(chunk string, secureChannelId int32, secureTokenId int32, sequenceNumber int32, requestId int32, message []byte) *_OpcuaMessageResponse {
+func NewOpcuaMessageResponse(securityHeader SecurityHeader, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaMessageResponse {
 	_result := &_OpcuaMessageResponse{
-		Chunk:           chunk,
-		SecureChannelId: secureChannelId,
-		SecureTokenId:   secureTokenId,
-		SequenceNumber:  sequenceNumber,
-		RequestId:       requestId,
-		Message:         message,
-		_MessagePDU:     NewMessagePDU(),
+		SecurityHeader: securityHeader,
+		Message:        message,
+		_MessagePDU:    NewMessagePDU(chunk),
 	}
 	_result._MessagePDU._MessagePDUChildRequirements = _result
 	return _result
@@ -158,28 +131,11 @@ func (m *_OpcuaMessageResponse) GetTypeName() string {
 func (m *_OpcuaMessageResponse) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (chunk)
-	lengthInBits += 8
+	// Simple field (securityHeader)
+	lengthInBits += m.SecurityHeader.GetLengthInBits(ctx)
 
-	// Implicit Field (messageSize)
-	lengthInBits += 32
-
-	// Simple field (secureChannelId)
-	lengthInBits += 32
-
-	// Simple field (secureTokenId)
-	lengthInBits += 32
-
-	// Simple field (sequenceNumber)
-	lengthInBits += 32
-
-	// Simple field (requestId)
-	lengthInBits += 32
-
-	// Array field
-	if len(m.Message) > 0 {
-		lengthInBits += 8 * uint16(len(m.Message))
-	}
+	// Simple field (message)
+	lengthInBits += m.Message.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
@@ -188,11 +144,11 @@ func (m *_OpcuaMessageResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaMessageResponseParse(ctx context.Context, theBytes []byte, response bool) (OpcuaMessageResponse, error) {
-	return OpcuaMessageResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
+func OpcuaMessageResponseParse(ctx context.Context, theBytes []byte, totalLength uint32, response bool) (OpcuaMessageResponse, error) {
+	return OpcuaMessageResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), totalLength, response)
 }
 
-func OpcuaMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaMessageResponse, error) {
+func OpcuaMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaMessageResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	log := zerolog.Ctx(ctx)
@@ -203,52 +159,30 @@ func OpcuaMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (chunk)
-	_chunk, _chunkErr := readBuffer.ReadString("chunk", uint32(8), "UTF-8")
-	if _chunkErr != nil {
-		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of OpcuaMessageResponse")
+	// Simple Field (securityHeader)
+	if pullErr := readBuffer.PullContext("securityHeader"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for securityHeader")
 	}
-	chunk := _chunk
+	_securityHeader, _securityHeaderErr := SecurityHeaderParseWithBuffer(ctx, readBuffer)
+	if _securityHeaderErr != nil {
+		return nil, errors.Wrap(_securityHeaderErr, "Error parsing 'securityHeader' field of OpcuaMessageResponse")
+	}
+	securityHeader := _securityHeader.(SecurityHeader)
+	if closeErr := readBuffer.CloseContext("securityHeader"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for securityHeader")
+	}
 
-	// Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	messageSize, _messageSizeErr := readBuffer.ReadInt32("messageSize", 32)
-	_ = messageSize
-	if _messageSizeErr != nil {
-		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field of OpcuaMessageResponse")
+	// Simple Field (message)
+	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for message")
 	}
-
-	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := readBuffer.ReadInt32("secureChannelId", 32)
-	if _secureChannelIdErr != nil {
-		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of OpcuaMessageResponse")
+	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16))))
+	if _messageErr != nil {
+		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaMessageResponse")
 	}
-	secureChannelId := _secureChannelId
-
-	// Simple Field (secureTokenId)
-	_secureTokenId, _secureTokenIdErr := readBuffer.ReadInt32("secureTokenId", 32)
-	if _secureTokenIdErr != nil {
-		return nil, errors.Wrap(_secureTokenIdErr, "Error parsing 'secureTokenId' field of OpcuaMessageResponse")
-	}
-	secureTokenId := _secureTokenId
-
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadInt32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of OpcuaMessageResponse")
-	}
-	sequenceNumber := _sequenceNumber
-
-	// Simple Field (requestId)
-	_requestId, _requestIdErr := readBuffer.ReadInt32("requestId", 32)
-	if _requestIdErr != nil {
-		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of OpcuaMessageResponse")
-	}
-	requestId := _requestId
-	// Byte Array field (message)
-	numberOfBytesmessage := int(uint16(messageSize) - uint16(uint16(24)))
-	message, _readArrayErr := readBuffer.ReadByteArray("message", numberOfBytesmessage)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'message' field of OpcuaMessageResponse")
+	message := _message.(Payload)
+	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for message")
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaMessageResponse"); closeErr != nil {
@@ -257,13 +191,9 @@ func OpcuaMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_OpcuaMessageResponse{
-		_MessagePDU:     &_MessagePDU{},
-		Chunk:           chunk,
-		SecureChannelId: secureChannelId,
-		SecureTokenId:   secureTokenId,
-		SequenceNumber:  sequenceNumber,
-		RequestId:       requestId,
-		Message:         message,
+		_MessagePDU:    &_MessagePDU{},
+		SecurityHeader: securityHeader,
+		Message:        message,
 	}
 	_child._MessagePDU._MessagePDUChildRequirements = _child
 	return _child, nil
@@ -287,52 +217,28 @@ func (m *_OpcuaMessageResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for OpcuaMessageResponse")
 		}
 
-		// Simple Field (chunk)
-		chunk := string(m.GetChunk())
-		_chunkErr := writeBuffer.WriteString("chunk", uint32(8), "UTF-8", (chunk))
-		if _chunkErr != nil {
-			return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
+		// Simple Field (securityHeader)
+		if pushErr := writeBuffer.PushContext("securityHeader"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for securityHeader")
+		}
+		_securityHeaderErr := writeBuffer.WriteSerializable(ctx, m.GetSecurityHeader())
+		if popErr := writeBuffer.PopContext("securityHeader"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for securityHeader")
+		}
+		if _securityHeaderErr != nil {
+			return errors.Wrap(_securityHeaderErr, "Error serializing 'securityHeader' field")
 		}
 
-		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
-		if _messageSizeErr != nil {
-			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
+		// Simple Field (message)
+		if pushErr := writeBuffer.PushContext("message"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for message")
 		}
-
-		// Simple Field (secureChannelId)
-		secureChannelId := int32(m.GetSecureChannelId())
-		_secureChannelIdErr := writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
-		if _secureChannelIdErr != nil {
-			return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
+		_messageErr := writeBuffer.WriteSerializable(ctx, m.GetMessage())
+		if popErr := writeBuffer.PopContext("message"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for message")
 		}
-
-		// Simple Field (secureTokenId)
-		secureTokenId := int32(m.GetSecureTokenId())
-		_secureTokenIdErr := writeBuffer.WriteInt32("secureTokenId", 32, int32((secureTokenId)))
-		if _secureTokenIdErr != nil {
-			return errors.Wrap(_secureTokenIdErr, "Error serializing 'secureTokenId' field")
-		}
-
-		// Simple Field (sequenceNumber)
-		sequenceNumber := int32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteInt32("sequenceNumber", 32, int32((sequenceNumber)))
-		if _sequenceNumberErr != nil {
-			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
-		}
-
-		// Simple Field (requestId)
-		requestId := int32(m.GetRequestId())
-		_requestIdErr := writeBuffer.WriteInt32("requestId", 32, int32((requestId)))
-		if _requestIdErr != nil {
-			return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
-		}
-
-		// Array Field (message)
-		// Byte Array field (message)
-		if err := writeBuffer.WriteByteArray("message", m.GetMessage()); err != nil {
-			return errors.Wrap(err, "Error serializing 'message' field")
+		if _messageErr != nil {
+			return errors.Wrap(_messageErr, "Error serializing 'message' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaMessageResponse"); popErr != nil {
@@ -342,6 +248,16 @@ func (m *_OpcuaMessageResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 	}
 	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
+
+////
+// Arguments Getter
+
+func (m *_OpcuaMessageResponse) GetTotalLength() uint32 {
+	return m.TotalLength
+}
+
+//
+////
 
 func (m *_OpcuaMessageResponse) isOpcuaMessageResponse() bool {
 	return true

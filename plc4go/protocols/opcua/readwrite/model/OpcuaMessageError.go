@@ -35,8 +35,6 @@ type OpcuaMessageError interface {
 	utils.LengthAware
 	utils.Serializable
 	MessagePDU
-	// GetChunk returns Chunk (property field)
-	GetChunk() string
 	// GetError returns Error (property field)
 	GetError() OpcuaStatusCode
 	// GetReason returns Reason (property field)
@@ -53,7 +51,6 @@ type OpcuaMessageErrorExactly interface {
 // _OpcuaMessageError is the data-structure of this message
 type _OpcuaMessageError struct {
 	*_MessagePDU
-	Chunk  string
 	Error  OpcuaStatusCode
 	Reason PascalString
 }
@@ -76,7 +73,9 @@ func (m *_OpcuaMessageError) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaMessageError) InitializeParent(parent MessagePDU) {}
+func (m *_OpcuaMessageError) InitializeParent(parent MessagePDU, chunk ChunkType) {
+	m.Chunk = chunk
+}
 
 func (m *_OpcuaMessageError) GetParent() MessagePDU {
 	return m._MessagePDU
@@ -86,10 +85,6 @@ func (m *_OpcuaMessageError) GetParent() MessagePDU {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_OpcuaMessageError) GetChunk() string {
-	return m.Chunk
-}
 
 func (m *_OpcuaMessageError) GetError() OpcuaStatusCode {
 	return m.Error
@@ -105,12 +100,11 @@ func (m *_OpcuaMessageError) GetReason() PascalString {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(chunk string, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
+func NewOpcuaMessageError(error OpcuaStatusCode, reason PascalString, chunk ChunkType) *_OpcuaMessageError {
 	_result := &_OpcuaMessageError{
-		Chunk:       chunk,
 		Error:       error,
 		Reason:      reason,
-		_MessagePDU: NewMessagePDU(),
+		_MessagePDU: NewMessagePDU(chunk),
 	}
 	_result._MessagePDU._MessagePDUChildRequirements = _result
 	return _result
@@ -133,12 +127,6 @@ func (m *_OpcuaMessageError) GetTypeName() string {
 
 func (m *_OpcuaMessageError) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
-
-	// Simple field (chunk)
-	lengthInBits += 8
-
-	// Implicit Field (messageSize)
-	lengthInBits += 32
 
 	// Simple field (error)
 	lengthInBits += 32
@@ -167,20 +155,6 @@ func OpcuaMessageErrorParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-
-	// Simple Field (chunk)
-	_chunk, _chunkErr := readBuffer.ReadString("chunk", uint32(8), "UTF-8")
-	if _chunkErr != nil {
-		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of OpcuaMessageError")
-	}
-	chunk := _chunk
-
-	// Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	messageSize, _messageSizeErr := readBuffer.ReadInt32("messageSize", 32)
-	_ = messageSize
-	if _messageSizeErr != nil {
-		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field of OpcuaMessageError")
-	}
 
 	// Simple Field (error)
 	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
@@ -215,7 +189,6 @@ func OpcuaMessageErrorParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	// Create a partially initialized instance
 	_child := &_OpcuaMessageError{
 		_MessagePDU: &_MessagePDU{},
-		Chunk:       chunk,
 		Error:       error,
 		Reason:      reason,
 	}
@@ -239,20 +212,6 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("OpcuaMessageError"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for OpcuaMessageError")
-		}
-
-		// Simple Field (chunk)
-		chunk := string(m.GetChunk())
-		_chunkErr := writeBuffer.WriteString("chunk", uint32(8), "UTF-8", (chunk))
-		if _chunkErr != nil {
-			return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
-		}
-
-		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
-		if _messageSizeErr != nil {
-			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
 		}
 
 		// Simple Field (error)
