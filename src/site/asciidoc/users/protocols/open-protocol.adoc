@@ -21,4 +21,4 @@
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/open-protocol.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/open-protocol.adoc[]

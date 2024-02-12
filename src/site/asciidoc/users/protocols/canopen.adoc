@@ -25,7 +25,7 @@ CANopen is a specific protocol built on top of CAN bus.
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/canopen.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/canopen.adoc[]
 
 [cols="2,2a,5a"]
 |===

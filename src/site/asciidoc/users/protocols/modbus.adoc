@@ -23,15 +23,15 @@
 
 ==== Modbus TCP
 
-include::../../../../../plc4j/drivers/all/src/site/generated/modbus-tcp.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/modbus-tcp.adoc[]
 
 ==== Modbus RTU
 
-include::../../../../../plc4j/drivers/all/src/site/generated/modbus-rtu.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/modbus-rtu.adoc[]
 
 ==== Modbus ASCII
 
-include::../../../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
 
 === Supported Operations
 

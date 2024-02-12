@@ -91,7 +91,7 @@ The SCHEMA and DOMAINE NAME are almost standard for any URL and do not require f
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/s7.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/s7.adoc[]
 
 [cols="2,2a,5a"]
 |===

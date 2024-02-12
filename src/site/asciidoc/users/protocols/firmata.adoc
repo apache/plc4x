@@ -27,7 +27,7 @@ This driver is built to be compatible with the `StandardFirmata Arduino Sketch` 
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/firmata.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/firmata.adoc[]
 
 [cols="2,2a,5a"]
 |===

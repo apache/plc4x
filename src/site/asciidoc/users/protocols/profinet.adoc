@@ -30,7 +30,7 @@ sudo setcap cap_net_raw,cap_net_admin=eip /usr/lib/jvm/jdk-19/bin/java
 ----
 The executable will change based on the jdk and OS you are using.
 
-include::../../../../../plc4j/drivers/all/src/site/generated/profinet.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/profinet.adoc[]
 
 [cols="2,2a,5a"]
 |===

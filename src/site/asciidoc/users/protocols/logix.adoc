@@ -21,7 +21,7 @@
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/logix.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/logix.adoc[]
 
 === Individual Resource Address Format
 

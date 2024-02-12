@@ -75,7 +75,7 @@
         <item name="EtherNet/IP" href="users/protocols/eip.html"/>
         <item name="Firmata" href="users/protocols/firmata.html"/>
         <item name="Generic CAN" href="users/protocols/genericcan.html"/>
-        <item name="IEC-60870" href="users/protocols/ied-60870.html"/>
+        <item name="IEC-60870" href="users/protocols/iec-60870.html"/>
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Logix" href="users/protocols/logix.html"/>
         <item name="Modbus (TCP/RTU/ASCII)" href="users/protocols/modbus.html"/>

@@ -21,7 +21,7 @@
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/plc4x.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/plc4x.adoc[]
 
 === Connection String Options
 

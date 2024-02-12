@@ -21,7 +21,7 @@
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/eip.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/eip.adoc[]
 
 === Address Format
 

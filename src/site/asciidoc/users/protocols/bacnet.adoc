@@ -25,7 +25,7 @@ image::bacnet_banner.png[banner,512,167]
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/bacnet-ip.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/bacnet-ip.adoc[]
 
 [%header, cols=3*]
 |===

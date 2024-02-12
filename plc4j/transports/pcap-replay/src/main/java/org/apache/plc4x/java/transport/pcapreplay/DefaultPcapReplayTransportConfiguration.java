@@ -29,12 +29,18 @@ public abstract class DefaultPcapReplayTransportConfiguration extends DefaultPca
 
     @ConfigurationParameter("replay-speed-factor")
     @FloatDefaultValue(1.0f)
-    @Description("When running in pcap-replay mode, the speed in which the replay should be done. `1.0f` being the normal speed.")
+    @Description("Numeric value for changing the replay speed:\n" +
+        "- 1 = Normal speed (default)\n" +
+        "- 0 = Maximum speed\n" +
+        "- 0.5 = Half speed\n" +
+        "- 2 = Double speed")
     private float replaySpeedFactor;
 
     @ConfigurationParameter("loop")
     @BooleanDefaultValue(false)
-    @Description("When running in pcap-replay mode, tell if the replay should start from the beginning once it reaches the end of the recording.")
+    @Description("Should the replay start at the beginning of the file as soon as the end is reached?\n" +
+        "- true = Automatically start again\n" +
+        "- false = Stop at the end (default)")
     private boolean loop;
 
     @ConfigurationParameter("filter")

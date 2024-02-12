@@ -22,7 +22,7 @@ image::knx_banner.png[banner,512,167]
 
 === Connection String Options
 
-include::../../../../../plc4j/drivers/all/src/site/generated/knxnet-ip.adoc[]
+include::../../../plc4j/drivers/all/src/site/generated/knxnet-ip.adoc[]
 
 === Individual Resource Address Format
 
