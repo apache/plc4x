@@ -73,11 +73,11 @@ public class SecureChannelTransactionManager {
      * @return the next sequential request handle
      */
     public int getRequestHandle() {
-        int transactionId = requestHandleGenerator.getAndIncrement();
+        int requestHandle = requestHandleGenerator.getAndIncrement();
         if (requestHandleGenerator.get() == SecureChannelTransactionManager.DEFAULT_MAX_REQUEST_ID) {
             requestHandleGenerator.set(0);
         }
-        return transactionId;
+        return requestHandle;
     }
 
 }

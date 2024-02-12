@@ -94,7 +94,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
     @Override
     public void close(ConversationContext<OpcuaAPU> context) {
-        //Nothing
+        tm.shutdown();
     }
 
     @Override
@@ -106,7 +106,15 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             subscriber.getValue().stopSubscriber();
         }
 
-        channel.onDisconnect();
+        RequestTransaction tx = tm.startRequest();
+        tx.submit(() -> {
+            try {
+                channel.onDisconnect();
+                tx.endRequest();
+            } catch (Exception e) {
+                tx.failRequest(e);
+            }
+        });
     }
 
     @Override

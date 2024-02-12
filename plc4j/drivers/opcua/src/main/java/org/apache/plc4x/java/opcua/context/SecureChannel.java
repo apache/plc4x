@@ -415,10 +415,7 @@ public class SecureChannel {
             });
     }
 
-    public CompletableFuture<EndpointDescription> onDiscoverGetEndpointsRequest(
-        OpenSecureChannelResponse openSecureChannelResponse) {
-//        ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
-//        securityHeader.set(new SecurityHeader(securityToken.getChannelId(), securityToken.getTokenId()));
+    public CompletableFuture<EndpointDescription> onDiscoverGetEndpointsRequest(OpenSecureChannelResponse openSecureChannelResponse) {
         RequestHeader requestHeader = conversation.createRequestHeader();
 
         GetEndpointsRequest endpointsRequest = new GetEndpointsRequest(
@@ -432,12 +429,13 @@ public class SecureChannel {
 
         return conversation.submit(endpointsRequest, GetEndpointsResponse.class).thenApply(response -> {
             List<ExtensionObjectDefinition> endpoints = response.getEndpoints();
+            MessageSecurityMode effectiveMode = this.configuration.getSecurityPolicy() == SecurityPolicy.NONE ? MessageSecurityMode.messageSecurityModeNone : this.configuration.getMessageSecurity().getMode();
             for (ExtensionObjectDefinition endpoint : endpoints) {
                 EndpointDescription endpointDescription = (EndpointDescription) endpoint;
 
                 boolean urlMatch = endpointDescription.getEndpointUrl().getStringValue().equals(this.endpoint.getStringValue());
                 boolean policyMatch = endpointDescription.getSecurityPolicyUri().getStringValue().equals(this.configuration.getSecurityPolicy().getSecurityPolicyUri());
-                boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(this.configuration.getMessageSecurity().getMode());
+                boolean msgSecurityMatch = endpointDescription.getSecurityMode().equals(effectiveMode);
 
                 LOGGER.debug("Validate OPC UA endpoint {} during discovery phase."
                     + "Expected {}. Endpoint policy {} looking for {}. Message security {}, looking for {}", endpointDescription.getEndpointUrl().getStringValue(), this.endpoint.getStringValue(),
@@ -450,7 +448,8 @@ public class SecureChannel {
                 }
             }
 
-            throw new IllegalArgumentException("Could not find endpoint matching client configuration");
+            throw new IllegalArgumentException("Could not find endpoint matching client configuration. Tested " + endpoints.size() + " endpoints. "
+                + "None matched " + this.endpoint.getStringValue() + " " + this.configuration.getSecurityPolicy().getSecurityPolicyUri() + " " + this.configuration.getMessageSecurity().getMode());
         });
     }
 
