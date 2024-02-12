@@ -29,7 +29,7 @@ type DriverContext struct {
 
 func NewDriverContext(configuration Configuration) DriverContext {
 	return DriverContext{
-		fireDiscoverEvent:            configuration.isEncrypted,
+		fireDiscoverEvent:            configuration.IsEncrypted,
 		awaitSetupComplete:           true,
 		awaitDisconnectComplete:      true,
 		awaitSessionDiscoverComplete: true,

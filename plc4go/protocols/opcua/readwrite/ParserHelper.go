@@ -40,6 +40,12 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return model.ImageGIFParseWithBuffer(context.Background(), io)
 	case "EncodedTicket":
 		return model.EncodedTicketParseWithBuffer(context.Background(), io)
+	case "OpenChannelMessage":
+		response, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.OpenChannelMessageParseWithBuffer(context.Background(), io, response)
 	case "ImageJPG":
 		return model.ImageJPGParseWithBuffer(context.Background(), io)
 	case "PascalByteString":
@@ -70,6 +76,8 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return model.FourByteNodeIdParseWithBuffer(context.Background(), io)
 	case "AudioDataType":
 		return model.AudioDataTypeParseWithBuffer(context.Background(), io)
+	case "SecurityHeader":
+		return model.SecurityHeaderParseWithBuffer(context.Background(), io)
 	case "UserIdentityTokenDefinition":
 		identifier, err := utils.StrToString(arguments[0])
 		if err != nil {
@@ -80,12 +88,24 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return model.ContinuationPointParseWithBuffer(context.Background(), io)
 	case "Variant":
 		return model.VariantParseWithBuffer(context.Background(), io)
+	case "Payload":
+		extensible, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		byteCount, err := utils.StrToUint32(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.PayloadParseWithBuffer(context.Background(), io, extensible, byteCount)
 	case "ExtensionObjectEncodingMask":
 		return model.ExtensionObjectEncodingMaskParseWithBuffer(context.Background(), io)
 	case "DurationString":
 		return model.DurationStringParseWithBuffer(context.Background(), io)
 	case "Structure":
 		return model.StructureParseWithBuffer(context.Background(), io)
+	case "OpcuaConstants":
+		return model.OpcuaConstantsParseWithBuffer(context.Background(), io)
 	case "ExtensionHeader":
 		return model.ExtensionHeaderParseWithBuffer(context.Background(), io)
 	case "UtcTime":
@@ -98,6 +118,8 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return model.MessagePDUParseWithBuffer(context.Background(), io, response)
 	case "Counter":
 		return model.CounterParseWithBuffer(context.Background(), io)
+	case "SequenceHeader":
+		return model.SequenceHeaderParseWithBuffer(context.Background(), io)
 	case "NodeId":
 		return model.NodeIdParseWithBuffer(context.Background(), io)
 	case "RsaEncryptedSecret":
@@ -144,6 +166,8 @@ func (m OpcuaParserHelper) Parse(typeName string, arguments []string, io utils.R
 		return model.ExtensionObjectDefinitionParseWithBuffer(context.Background(), io, identifier)
 	case "ExpandedNodeId":
 		return model.ExpandedNodeIdParseWithBuffer(context.Background(), io)
+	case "OpcuaProtocolLimits":
+		return model.OpcuaProtocolLimitsParseWithBuffer(context.Background(), io)
 	case "NumericRange":
 		return model.NumericRangeParseWithBuffer(context.Background(), io)
 	case "SemanticVersionString":

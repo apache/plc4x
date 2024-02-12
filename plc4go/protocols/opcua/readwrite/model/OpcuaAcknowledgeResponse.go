@@ -35,18 +35,10 @@ type OpcuaAcknowledgeResponse interface {
 	utils.LengthAware
 	utils.Serializable
 	MessagePDU
-	// GetChunk returns Chunk (property field)
-	GetChunk() string
 	// GetVersion returns Version (property field)
-	GetVersion() int32
-	// GetReceiveBufferSize returns ReceiveBufferSize (property field)
-	GetReceiveBufferSize() int32
-	// GetSendBufferSize returns SendBufferSize (property field)
-	GetSendBufferSize() int32
-	// GetMaxMessageSize returns MaxMessageSize (property field)
-	GetMaxMessageSize() int32
-	// GetMaxChunkCount returns MaxChunkCount (property field)
-	GetMaxChunkCount() int32
+	GetVersion() uint32
+	// GetLimits returns Limits (property field)
+	GetLimits() OpcuaProtocolLimits
 }
 
 // OpcuaAcknowledgeResponseExactly can be used when we want exactly this type and not a type which fulfills OpcuaAcknowledgeResponse.
@@ -59,12 +51,8 @@ type OpcuaAcknowledgeResponseExactly interface {
 // _OpcuaAcknowledgeResponse is the data-structure of this message
 type _OpcuaAcknowledgeResponse struct {
 	*_MessagePDU
-	Chunk             string
-	Version           int32
-	ReceiveBufferSize int32
-	SendBufferSize    int32
-	MaxMessageSize    int32
-	MaxChunkCount     int32
+	Version uint32
+	Limits  OpcuaProtocolLimits
 }
 
 ///////////////////////////////////////////////////////////
@@ -85,7 +73,9 @@ func (m *_OpcuaAcknowledgeResponse) GetResponse() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_OpcuaAcknowledgeResponse) InitializeParent(parent MessagePDU) {}
+func (m *_OpcuaAcknowledgeResponse) InitializeParent(parent MessagePDU, chunk ChunkType) {
+	m.Chunk = chunk
+}
 
 func (m *_OpcuaAcknowledgeResponse) GetParent() MessagePDU {
 	return m._MessagePDU
@@ -96,28 +86,12 @@ func (m *_OpcuaAcknowledgeResponse) GetParent() MessagePDU {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_OpcuaAcknowledgeResponse) GetChunk() string {
-	return m.Chunk
-}
-
-func (m *_OpcuaAcknowledgeResponse) GetVersion() int32 {
+func (m *_OpcuaAcknowledgeResponse) GetVersion() uint32 {
 	return m.Version
 }
 
-func (m *_OpcuaAcknowledgeResponse) GetReceiveBufferSize() int32 {
-	return m.ReceiveBufferSize
-}
-
-func (m *_OpcuaAcknowledgeResponse) GetSendBufferSize() int32 {
-	return m.SendBufferSize
-}
-
-func (m *_OpcuaAcknowledgeResponse) GetMaxMessageSize() int32 {
-	return m.MaxMessageSize
-}
-
-func (m *_OpcuaAcknowledgeResponse) GetMaxChunkCount() int32 {
-	return m.MaxChunkCount
+func (m *_OpcuaAcknowledgeResponse) GetLimits() OpcuaProtocolLimits {
+	return m.Limits
 }
 
 ///////////////////////
@@ -126,15 +100,11 @@ func (m *_OpcuaAcknowledgeResponse) GetMaxChunkCount() int32 {
 ///////////////////////////////////////////////////////////
 
 // NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(chunk string, version int32, receiveBufferSize int32, sendBufferSize int32, maxMessageSize int32, maxChunkCount int32) *_OpcuaAcknowledgeResponse {
+func NewOpcuaAcknowledgeResponse(version uint32, limits OpcuaProtocolLimits, chunk ChunkType) *_OpcuaAcknowledgeResponse {
 	_result := &_OpcuaAcknowledgeResponse{
-		Chunk:             chunk,
-		Version:           version,
-		ReceiveBufferSize: receiveBufferSize,
-		SendBufferSize:    sendBufferSize,
-		MaxMessageSize:    maxMessageSize,
-		MaxChunkCount:     maxChunkCount,
-		_MessagePDU:       NewMessagePDU(),
+		Version:     version,
+		Limits:      limits,
+		_MessagePDU: NewMessagePDU(chunk),
 	}
 	_result._MessagePDU._MessagePDUChildRequirements = _result
 	return _result
@@ -158,26 +128,11 @@ func (m *_OpcuaAcknowledgeResponse) GetTypeName() string {
 func (m *_OpcuaAcknowledgeResponse) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (chunk)
-	lengthInBits += 8
-
-	// Implicit Field (messageSize)
-	lengthInBits += 32
-
 	// Simple field (version)
 	lengthInBits += 32
 
-	// Simple field (receiveBufferSize)
-	lengthInBits += 32
-
-	// Simple field (sendBufferSize)
-	lengthInBits += 32
-
-	// Simple field (maxMessageSize)
-	lengthInBits += 32
-
-	// Simple field (maxChunkCount)
-	lengthInBits += 32
+	// Simple field (limits)
+	lengthInBits += m.Limits.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
@@ -201,54 +156,25 @@ func OpcuaAcknowledgeResponseParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (chunk)
-	_chunk, _chunkErr := readBuffer.ReadString("chunk", uint32(8), "UTF-8")
-	if _chunkErr != nil {
-		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of OpcuaAcknowledgeResponse")
-	}
-	chunk := _chunk
-
-	// Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	messageSize, _messageSizeErr := readBuffer.ReadInt32("messageSize", 32)
-	_ = messageSize
-	if _messageSizeErr != nil {
-		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field of OpcuaAcknowledgeResponse")
-	}
-
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadInt32("version", 32)
+	_version, _versionErr := readBuffer.ReadUint32("version", 32)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of OpcuaAcknowledgeResponse")
 	}
 	version := _version
 
-	// Simple Field (receiveBufferSize)
-	_receiveBufferSize, _receiveBufferSizeErr := readBuffer.ReadInt32("receiveBufferSize", 32)
-	if _receiveBufferSizeErr != nil {
-		return nil, errors.Wrap(_receiveBufferSizeErr, "Error parsing 'receiveBufferSize' field of OpcuaAcknowledgeResponse")
+	// Simple Field (limits)
+	if pullErr := readBuffer.PullContext("limits"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for limits")
 	}
-	receiveBufferSize := _receiveBufferSize
-
-	// Simple Field (sendBufferSize)
-	_sendBufferSize, _sendBufferSizeErr := readBuffer.ReadInt32("sendBufferSize", 32)
-	if _sendBufferSizeErr != nil {
-		return nil, errors.Wrap(_sendBufferSizeErr, "Error parsing 'sendBufferSize' field of OpcuaAcknowledgeResponse")
+	_limits, _limitsErr := OpcuaProtocolLimitsParseWithBuffer(ctx, readBuffer)
+	if _limitsErr != nil {
+		return nil, errors.Wrap(_limitsErr, "Error parsing 'limits' field of OpcuaAcknowledgeResponse")
 	}
-	sendBufferSize := _sendBufferSize
-
-	// Simple Field (maxMessageSize)
-	_maxMessageSize, _maxMessageSizeErr := readBuffer.ReadInt32("maxMessageSize", 32)
-	if _maxMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxMessageSizeErr, "Error parsing 'maxMessageSize' field of OpcuaAcknowledgeResponse")
+	limits := _limits.(OpcuaProtocolLimits)
+	if closeErr := readBuffer.CloseContext("limits"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for limits")
 	}
-	maxMessageSize := _maxMessageSize
-
-	// Simple Field (maxChunkCount)
-	_maxChunkCount, _maxChunkCountErr := readBuffer.ReadInt32("maxChunkCount", 32)
-	if _maxChunkCountErr != nil {
-		return nil, errors.Wrap(_maxChunkCountErr, "Error parsing 'maxChunkCount' field of OpcuaAcknowledgeResponse")
-	}
-	maxChunkCount := _maxChunkCount
 
 	if closeErr := readBuffer.CloseContext("OpcuaAcknowledgeResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaAcknowledgeResponse")
@@ -256,13 +182,9 @@ func OpcuaAcknowledgeResponseParseWithBuffer(ctx context.Context, readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_OpcuaAcknowledgeResponse{
-		_MessagePDU:       &_MessagePDU{},
-		Chunk:             chunk,
-		Version:           version,
-		ReceiveBufferSize: receiveBufferSize,
-		SendBufferSize:    sendBufferSize,
-		MaxMessageSize:    maxMessageSize,
-		MaxChunkCount:     maxChunkCount,
+		_MessagePDU: &_MessagePDU{},
+		Version:     version,
+		Limits:      limits,
 	}
 	_child._MessagePDU._MessagePDUChildRequirements = _child
 	return _child, nil
@@ -286,53 +208,23 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(pushErr, "Error pushing for OpcuaAcknowledgeResponse")
 		}
 
-		// Simple Field (chunk)
-		chunk := string(m.GetChunk())
-		_chunkErr := writeBuffer.WriteString("chunk", uint32(8), "UTF-8", (chunk))
-		if _chunkErr != nil {
-			return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
-		}
-
-		// Implicit Field (messageSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		messageSize := int32(int32(m.GetLengthInBytes(ctx)))
-		_messageSizeErr := writeBuffer.WriteInt32("messageSize", 32, int32((messageSize)))
-		if _messageSizeErr != nil {
-			return errors.Wrap(_messageSizeErr, "Error serializing 'messageSize' field")
-		}
-
 		// Simple Field (version)
-		version := int32(m.GetVersion())
-		_versionErr := writeBuffer.WriteInt32("version", 32, int32((version)))
+		version := uint32(m.GetVersion())
+		_versionErr := writeBuffer.WriteUint32("version", 32, uint32((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		// Simple Field (receiveBufferSize)
-		receiveBufferSize := int32(m.GetReceiveBufferSize())
-		_receiveBufferSizeErr := writeBuffer.WriteInt32("receiveBufferSize", 32, int32((receiveBufferSize)))
-		if _receiveBufferSizeErr != nil {
-			return errors.Wrap(_receiveBufferSizeErr, "Error serializing 'receiveBufferSize' field")
+		// Simple Field (limits)
+		if pushErr := writeBuffer.PushContext("limits"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for limits")
 		}
-
-		// Simple Field (sendBufferSize)
-		sendBufferSize := int32(m.GetSendBufferSize())
-		_sendBufferSizeErr := writeBuffer.WriteInt32("sendBufferSize", 32, int32((sendBufferSize)))
-		if _sendBufferSizeErr != nil {
-			return errors.Wrap(_sendBufferSizeErr, "Error serializing 'sendBufferSize' field")
+		_limitsErr := writeBuffer.WriteSerializable(ctx, m.GetLimits())
+		if popErr := writeBuffer.PopContext("limits"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for limits")
 		}
-
-		// Simple Field (maxMessageSize)
-		maxMessageSize := int32(m.GetMaxMessageSize())
-		_maxMessageSizeErr := writeBuffer.WriteInt32("maxMessageSize", 32, int32((maxMessageSize)))
-		if _maxMessageSizeErr != nil {
-			return errors.Wrap(_maxMessageSizeErr, "Error serializing 'maxMessageSize' field")
-		}
-
-		// Simple Field (maxChunkCount)
-		maxChunkCount := int32(m.GetMaxChunkCount())
-		_maxChunkCountErr := writeBuffer.WriteInt32("maxChunkCount", 32, int32((maxChunkCount)))
-		if _maxChunkCountErr != nil {
-			return errors.Wrap(_maxChunkCountErr, "Error serializing 'maxChunkCount' field")
+		if _limitsErr != nil {
+			return errors.Wrap(_limitsErr, "Error serializing 'limits' field")
 		}
 
 		if popErr := writeBuffer.PopContext("OpcuaAcknowledgeResponse"); popErr != nil {
