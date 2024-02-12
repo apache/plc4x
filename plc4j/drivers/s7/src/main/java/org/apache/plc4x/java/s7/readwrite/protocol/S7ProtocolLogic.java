@@ -1463,14 +1463,16 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
      * 01. S7ModeEvent:
      * 02. S7UserEvent:
      * 03. S7SysEvent:
-     * 04. S7CyclicEvent:
+     * 04. S7AlarmEvent
+     * 05. S7CyclicEvent:
+     * 06. S7CyclicEvent:
      * 
      * TODO: Use mspec to generate types that allow better interpretation of 
      * the code using "instanceof".
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
-        System.out.println(msg);
+        
         final S7Message s7msg = msg.getPayload().getPayload();
         final S7Parameter parameter = s7msg.getParameter();
         final S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();       
@@ -1516,16 +1518,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             (myParameter.getCpuSubfunction() == 0x16))) { //(04)
                         
                         payload.getItems().forEach(item ->{
-                            //if (item instanceof S7PayloadDiagnosticMessage) {
-                                //final S7PayloadDiagnosticMessage pload = (S7PayloadDiagnosticMessage) item; 
-                                S7AlarmEvent alrmEvent = new S7AlarmEvent(item);
-                                eventQueue.add(alrmEvent);                                
-                            //} 
+                            S7AlarmEvent alrmEvent = new S7AlarmEvent(item);
+                            eventQueue.add(alrmEvent);                                
                         });
                         
                                                 
                     } else if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x13)) {
-
+                        //TODO: Requires reverse engineering.
                     } else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x01)) { //(05)
 
                         S7ParameterUserDataItemCPUFunctions parameterItem =
@@ -1557,9 +1556,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                         eventQueue.add(cycEvent);
 
                     } else if ((myParameter.getCpuFunctionType() == 0x08) && (myParameter.getCpuSubfunction() == 0x01)) {
-
+                        //TODO: Requires reverse engineering.
                     } else if ((myParameter.getCpuFunctionType() == 0x08) && (myParameter.getCpuSubfunction() == 0x04)) {
-
+                        //TODO: Requires reverse engineering.
                     }
                 }
             }
