@@ -21,6 +21,8 @@ package cbus
 
 import (
 	"github.com/rs/zerolog"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"reflect"
 	"strconv"
 
@@ -45,6 +47,7 @@ type Configuration struct {
 }
 
 func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configuration, error) {
+	titleOptions(options)
 	configuration := createDefaultConfiguration()
 	reflectConfiguration := reflect.ValueOf(&configuration).Elem()
 	for i := 0; i < reflectConfiguration.NumField(); i++ {
@@ -70,6 +73,13 @@ func ParseFromOptions(log zerolog.Logger, options map[string][]string) (Configur
 		}
 	}
 	return configuration, nil
+}
+
+func titleOptions(options map[string][]string) {
+	caser := cases.Title(language.AmericanEnglish)
+	for key, value := range options {
+		options[caser.String(key)] = value
+	}
 }
 
 func createDefaultConfiguration() Configuration {

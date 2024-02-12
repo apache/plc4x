@@ -128,14 +128,14 @@ type SecureChannel struct {
 func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Configuration) *SecureChannel {
 	s := &SecureChannel{
 		configuration:             configuration,
-		endpoint:                  readWriteModel.NewPascalString(configuration.endpoint),
-		username:                  configuration.username,
-		password:                  configuration.password,
-		securityPolicy:            "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.securityPolicy,
+		endpoint:                  readWriteModel.NewPascalString(configuration.Endpoint),
+		username:                  configuration.Username,
+		password:                  configuration.Password,
+		securityPolicy:            "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.SecurityPolicy,
 		sessionName:               "UaSession:" + APPLICATION_TEXT.GetStringValue() + ":" + uniuri.NewLen(20),
 		authenticationToken:       readWriteModel.NewNodeIdTwoByte(0),
 		clientNonce:               []byte(uniuri.NewLen(40)),
-		keyStoreFile:              configuration.keyStoreFile,
+		keyStoreFile:              configuration.KeyStoreFile,
 		channelTransactionManager: NewSecureChannelTransactionManager(log),
 		lifetime:                  DEFAULT_CONNECTION_LIFETIME,
 		log:                       log,
@@ -143,18 +143,18 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 	s.requestHandleGenerator.Store(1)
 	s.channelId.Store(1)
 	s.tokenId.Store(1)
-	ckp := configuration.ckp
-	if configuration.securityPolicy == "Basic256Sha256" {
+	ckp := configuration.Ckp
+	if configuration.SecurityPolicy == "Basic256Sha256" {
 		//Sender Certificate gets populated during the 'discover' phase when encryption is enabled.
-		s.senderCertificate = configuration.senderCertificate
-		s.encryptionHandler = NewEncryptionHandler(s.log, ckp, s.senderCertificate, configuration.securityPolicy)
+		s.senderCertificate = configuration.SenderCertificate
+		s.encryptionHandler = NewEncryptionHandler(s.log, ckp, s.senderCertificate, configuration.SecurityPolicy)
 		certificate := ckp.getCertificate()
 		s.publicCertificate = readWriteModel.NewPascalByteString(int32(len(certificate.Raw)), certificate.Raw)
 		s.isEncrypted = true
 
-		s.thumbprint = configuration.thumbprint
+		s.thumbprint = configuration.Thumbprint
 	} else {
-		s.encryptionHandler = NewEncryptionHandler(s.log, ckp, s.senderCertificate, configuration.securityPolicy)
+		s.encryptionHandler = NewEncryptionHandler(s.log, ckp, s.senderCertificate, configuration.SecurityPolicy)
 		s.publicCertificate = NULL_BYTE_STRING
 		s.thumbprint = NULL_BYTE_STRING
 		s.isEncrypted = false
@@ -163,7 +163,7 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 	// Generate a list of endpoints we can use.
 	{
 		var err error
-		address, err := url.Parse("none://" + configuration.host)
+		address, err := url.Parse("none://" + configuration.Host)
 		if err == nil {
 			if names, lookupErr := net.LookupHost(address.Host); lookupErr == nil {
 				s.endpoints = append(s.endpoints, names[rand.Intn(len(names))])
@@ -611,11 +611,11 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 	s.encryptionHandler.setServerCertificate(certificate)
 	s.senderNonce = sessionResponse.GetServerNonce().GetStringValue()
 	endpoints := make([]string, 3)
-	if address, err := url.Parse(s.configuration.host); err != nil {
+	if address, err := url.Parse(s.configuration.Host); err != nil {
 		if names, err := net.LookupAddr(address.Host); err != nil {
-			endpoints[0] = "opc.tcp://" + names[rand.Intn(len(names))] + ":" + s.configuration.port + s.configuration.transportEndpoint
+			endpoints[0] = "opc.tcp://" + names[rand.Intn(len(names))] + ":" + s.configuration.Port + s.configuration.TransportEndpoint
 		}
-		endpoints[1] = "opc.tcp://" + address.Hostname() + ":" + s.configuration.port + s.configuration.transportEndpoint
+		endpoints[1] = "opc.tcp://" + address.Hostname() + ":" + s.configuration.Port + s.configuration.TransportEndpoint
 		//endpoints[2] = "opc.tcp://" + address.getCanonicalHostName() + ":" + s.configuration.getPort() + s.configuration.transportEndpoint// TODO: not sure how to get that in golang
 	}
 
@@ -1190,11 +1190,11 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 						endpointDescription := endpoint.(readWriteModel.EndpointDescription)
 						if endpointDescription.GetEndpointUrl().GetStringValue() == (s.endpoint.GetStringValue()) && endpointDescription.GetSecurityPolicyUri().GetStringValue() == (s.securityPolicy) {
 							s.log.Info().Str("stringValue", s.endpoint.GetStringValue()).Msg("Found OPC UA endpoint")
-							s.configuration.senderCertificate = endpointDescription.GetServerCertificate().GetStringValue()
+							s.configuration.SenderCertificate = endpointDescription.GetServerCertificate().GetStringValue()
 						}
 					}
 
-					digest := sha1.Sum(s.configuration.senderCertificate)
+					digest := sha1.Sum(s.configuration.SenderCertificate)
 					s.thumbprint = readWriteModel.NewPascalByteString(int32(len(digest)), digest[:])
 
 					go s.onDiscoverCloseSecureChannel(ctx, codec, response)
@@ -1538,20 +1538,20 @@ func (s *SecureChannel) isEndpoint(endpoint readWriteModel.EndpointDescription) 
 		Str("transportEndpoint", matches["transportEndpoint"]).
 		Msg("Using Endpoint")
 
-	if s.configuration.discovery && !slices.Contains(s.endpoints, matches["transportHost"]) {
+	if s.configuration.Discovery && !slices.Contains(s.endpoints, matches["transportHost"]) {
 		return false
 	}
 
-	if s.configuration.port != matches["transportPort"] {
+	if s.configuration.Port != matches["transportPort"] {
 		return false
 	}
 
-	if s.configuration.transportEndpoint != matches["transportEndpoint"] {
+	if s.configuration.TransportEndpoint != matches["transportEndpoint"] {
 		return false
 	}
 
-	if !s.configuration.discovery {
-		s.configuration.host = matches["transportHost"]
+	if !s.configuration.Discovery {
+		s.configuration.Host = matches["transportHost"]
 	}
 
 	return true

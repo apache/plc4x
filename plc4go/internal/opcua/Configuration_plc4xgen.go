@@ -43,36 +43,36 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteString("code", uint32(len(d.code)*8), "UTF-8", d.code); err != nil {
+	if err := writeBuffer.WriteString("code", uint32(len(d.Code)*8), "UTF-8", d.Code); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("host", uint32(len(d.host)*8), "UTF-8", d.host); err != nil {
+	if err := writeBuffer.WriteString("host", uint32(len(d.Host)*8), "UTF-8", d.Host); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("port", uint32(len(d.port)*8), "UTF-8", d.port); err != nil {
+	if err := writeBuffer.WriteString("port", uint32(len(d.Port)*8), "UTF-8", d.Port); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("endpoint", uint32(len(d.endpoint)*8), "UTF-8", d.endpoint); err != nil {
+	if err := writeBuffer.WriteString("endpoint", uint32(len(d.Endpoint)*8), "UTF-8", d.Endpoint); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("transportEndpoint", uint32(len(d.transportEndpoint)*8), "UTF-8", d.transportEndpoint); err != nil {
+	if err := writeBuffer.WriteString("transportEndpoint", uint32(len(d.TransportEndpoint)*8), "UTF-8", d.TransportEndpoint); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("params", uint32(len(d.params)*8), "UTF-8", d.params); err != nil {
+	if err := writeBuffer.WriteString("params", uint32(len(d.Params)*8), "UTF-8", d.Params); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteBit("isEncrypted", d.isEncrypted); err != nil {
+	if err := writeBuffer.WriteBit("isEncrypted", d.IsEncrypted); err != nil {
 		return err
 	}
 
-	if d.thumbprint != nil {
-		if serializableField, ok := d.thumbprint.(utils.Serializable); ok {
+	if d.Thumbprint != nil {
+		if serializableField, ok := d.Thumbprint.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext("thumbprint"); err != nil {
 				return err
 			}
@@ -83,45 +83,45 @@ func (d *Configuration) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				return err
 			}
 		} else {
-			stringValue := fmt.Sprintf("%v", d.thumbprint)
+			stringValue := fmt.Sprintf("%v", d.Thumbprint)
 			if err := writeBuffer.WriteString("thumbprint", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
 				return err
 			}
 		}
 	}
-	if err := writeBuffer.WriteByteArray("senderCertificate", d.senderCertificate); err != nil {
+	if err := writeBuffer.WriteByteArray("senderCertificate", d.SenderCertificate); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteBit("discovery", d.discovery); err != nil {
+	if err := writeBuffer.WriteBit("discovery", d.Discovery); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("username", uint32(len(d.username)*8), "UTF-8", d.username); err != nil {
+	if err := writeBuffer.WriteString("username", uint32(len(d.Username)*8), "UTF-8", d.Username); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("password", uint32(len(d.password)*8), "UTF-8", d.password); err != nil {
+	if err := writeBuffer.WriteString("password", uint32(len(d.Password)*8), "UTF-8", d.Password); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("securityPolicy", uint32(len(d.securityPolicy)*8), "UTF-8", d.securityPolicy); err != nil {
+	if err := writeBuffer.WriteString("securityPolicy", uint32(len(d.SecurityPolicy)*8), "UTF-8", d.SecurityPolicy); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("keyStoreFile", uint32(len(d.keyStoreFile)*8), "UTF-8", d.keyStoreFile); err != nil {
+	if err := writeBuffer.WriteString("keyStoreFile", uint32(len(d.KeyStoreFile)*8), "UTF-8", d.KeyStoreFile); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("certDirectory", uint32(len(d.certDirectory)*8), "UTF-8", d.certDirectory); err != nil {
+	if err := writeBuffer.WriteString("certDirectory", uint32(len(d.CertDirectory)*8), "UTF-8", d.CertDirectory); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("keyStorePassword", uint32(len(d.keyStorePassword)*8), "UTF-8", d.keyStorePassword); err != nil {
+	if err := writeBuffer.WriteString("keyStorePassword", uint32(len(d.KeyStorePassword)*8), "UTF-8", d.KeyStorePassword); err != nil {
 		return err
 	}
 	{
-		_value := fmt.Sprintf("%v", d.ckp)
+		_value := fmt.Sprintf("%v", d.Ckp)
 
 		if err := writeBuffer.WriteString("ckp", uint32(len(_value)*8), "UTF-8", _value); err != nil {
 			return err
