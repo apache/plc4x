@@ -63,6 +63,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.plc4x.java.s7.events.S7AlarmEvent;
+import org.apache.plc4x.java.s7.events.S7ModeEvent;
+import org.apache.plc4x.java.s7.events.S7SysEvent;
+import org.apache.plc4x.java.s7.events.S7UserEvent;
 
 /**
  * The S7 Protocol states that there can not be more then {min(maxAmqCaller, maxAmqCallee} "ongoing" requests.
@@ -1448,32 +1452,60 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
     }
 
     /**
-     * This method is only called when there is no Response Handler.
+     * DECODE:
+     * This method is called when there is no handler for the message. 
+     * By default it must correspond to asynchronous events, which if so, 
+     * must be transferred to the event queue.
+     * 
+     * The event's own information is encapsulated in the parameters and payload
+     * field. From this it is abstracted to the corresponding event model.
+     * 
+     * 01. S7ModeEvent:
+     * 02. S7UserEvent:
+     * 03. S7SysEvent:
+     * 04. S7CyclicEvent:
+     * 
+     * TODO: Use mspec to generate types that allow better interpretation of 
+     * the code using "instanceof".
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
-
-        S7Message s7msg = msg.getPayload().getPayload();
-        S7Parameter parameter = s7msg.getParameter();
-        if (parameter instanceof S7ParameterModeTransition) {
-            // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
-            //eventQueue.add(parameter);
+        System.out.println(msg);
+        final S7Message s7msg = msg.getPayload().getPayload();
+        final S7Parameter parameter = s7msg.getParameter();
+        final S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();       
+        
+        if (parameter instanceof S7ParameterModeTransition) {  //(01)  
+            
+            S7ModeEvent modeEvent = new S7ModeEvent((S7ParameterModeTransition) parameter);
+            eventQueue.add(modeEvent);
+            
         } else if (parameter instanceof S7ParameterUserData) {
+            
             S7ParameterUserData parameterUD = (S7ParameterUserData) parameter;
             List<S7ParameterUserDataItem> parameterUDItems = parameterUD.getItems();
+            
             for (S7ParameterUserDataItem parameterUDItem : parameterUDItems) {
+                
                 if (parameterUDItem instanceof S7ParameterUserDataItemCPUFunctions) {
+                    
                     S7ParameterUserDataItemCPUFunctions myParameter = (S7ParameterUserDataItemCPUFunctions) parameterUDItem;
-                    //TODO: Check from mspec. We can try using "instanceof"
-                    if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x03)) {
-                        S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
-                        List<S7PayloadUserDataItem> items = payload.getItems();
-                        for (S7PayloadUserDataItem item : items) {
+                    
+                    if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x03)) { //(02)                      
+                        
+                        payload.getItems().forEach(item ->{
                             if (item instanceof S7PayloadDiagnosticMessage) {
-                                // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
-                                //eventQueue.add(item);
-                            }
-                        }
+                                final S7PayloadDiagnosticMessage pload = (S7PayloadDiagnosticMessage) item; 
+                                if ((pload.getEventId() >= 0x0A000) & (pload.getEventId() <= 0x0BFFF)) {
+                                    S7UserEvent userEvent = new S7UserEvent(pload);
+                                    eventQueue.add(userEvent);                                
+                                } else {
+                                    S7SysEvent sysEvent = new S7SysEvent(pload);
+                                    eventQueue.add(sysEvent);                                        
+                                }
+                            } 
+                        });
+
                     } else if ((myParameter.getCpuFunctionType() == 0x00) &&
                         ((myParameter.getCpuSubfunction() == 0x05) ||
                             (myParameter.getCpuSubfunction() == 0x06) ||
@@ -1481,20 +1513,24 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             (myParameter.getCpuSubfunction() == 0x11) ||
                             (myParameter.getCpuSubfunction() == 0x12) ||
                             (myParameter.getCpuSubfunction() == 0x13) ||
-                            (myParameter.getCpuSubfunction() == 0x16))) {
-                        S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
-                        List<S7PayloadUserDataItem> items = payload.getItems();
-                        // TODO: The eventQueue is only drained in the S7ProtocolEventLogic.ObjectProcessor and here only messages of type S7Event are processed, so S7PayloadUserDataItem elements will just be ignored.
-                        //eventQueue.addAll(items);
+                            (myParameter.getCpuSubfunction() == 0x16))) { //(04)
+                        
+                        payload.getItems().forEach(item ->{
+                            //if (item instanceof S7PayloadDiagnosticMessage) {
+                                //final S7PayloadDiagnosticMessage pload = (S7PayloadDiagnosticMessage) item; 
+                                S7AlarmEvent alrmEvent = new S7AlarmEvent(item);
+                                eventQueue.add(alrmEvent);                                
+                            //} 
+                        });
+                        
+                                                
                     } else if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x13)) {
 
-                    } else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x01)) {
+                    } else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x01)) { //(05)
 
                         S7ParameterUserDataItemCPUFunctions parameterItem =
                             (S7ParameterUserDataItemCPUFunctions)
                                 ((S7ParameterUserData) parameter).getItems().get(0);
-
-                        S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
 
                         S7PayloadUserDataItemCyclicServicesPush payloadItem =
                             (S7PayloadUserDataItemCyclicServicesPush)
@@ -1505,12 +1541,11 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                             payloadItem);
                         eventQueue.add(cycEvent);
 
-                    } else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x05)) {
+                    } else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x05)) { //(06)
+                        
                         S7ParameterUserDataItemCPUFunctions parameterItem =
                             (S7ParameterUserDataItemCPUFunctions)
                                 ((S7ParameterUserData) parameter).getItems().get(0);
-
-                        S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
 
                         S7PayloadUserDataItemCyclicServicesChangeDrivenPush payloadItem =
                             (S7PayloadUserDataItemCyclicServicesChangeDrivenPush)
