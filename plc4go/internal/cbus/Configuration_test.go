@@ -114,7 +114,7 @@ func TestParseFromOptions(t *testing.T) {
 				},
 			},
 			want: Configuration{
-				Srchk:                 true, // Note: at the moment the fields are case-sensitive so the key above is just ignored
+				Srchk:                 false,
 				Exstat:                true,
 				Pun:                   false,
 				LocalSal:              true,
