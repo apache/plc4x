@@ -89,13 +89,27 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return AdsConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(AdsTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -106,11 +120,6 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new PlcValueHandler();
-    }
-
-    @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
     }
 
     /**
@@ -140,20 +149,6 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
             }
             return -1;
         }
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(AdsTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

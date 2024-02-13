@@ -49,8 +49,27 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return LogixConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(LogixTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -66,11 +85,6 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected boolean awaitDisconnectComplete() {
         return true;
-    }
-
-    @Override
-    public Optional<String> getDefaultTransportCode() {
-        return Optional.of("tcp");
     }
 
     @Override
@@ -120,20 +134,6 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     public EipTag prepareTag(String query){
         return EipTag.of(query);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(LogixTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

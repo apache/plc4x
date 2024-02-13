@@ -28,6 +28,8 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
@@ -43,13 +45,18 @@ public class DF1PlcDriver extends GeneratedDriverBase<DF1Command> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return Df1Configuration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("serial");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("serial");
     }
 
     @Override

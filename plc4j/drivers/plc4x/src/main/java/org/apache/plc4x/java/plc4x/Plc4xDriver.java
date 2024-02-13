@@ -50,8 +50,28 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return Plc4xConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(Plc4xTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        // TODO: This should be TLS (which we currently don't have yet).
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -62,12 +82,6 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
     @Override
     protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new PlcValueHandler();
-    }
-
-    @Override
-    public Optional<String> getDefaultTransportCode() {
-        // TODO: This should be TLS (which we currently don't have yet).
-        return Optional.of("tcp");
     }
 
     /**
@@ -106,20 +120,6 @@ public class Plc4xDriver extends GeneratedDriverBase<Plc4xMessage> {
             }
             return -1;
         }
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(Plc4xTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

@@ -37,24 +37,11 @@
  - `tcp`
  - `pcap`
 5+|Config options:
-|`ede-file-path` |string | | |Path to the location of a single EDE file, that contains the descriptor for the target device.
-|`ede-directory-path` |string | | |Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.
+|`ede-file-path` |STRING || |Path to the location of a single EDE file, that contains the descriptor for the target device.
+|`ede-directory-path` |STRING || |Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.
 5+|Transport config options:
 5+| - `udp`
-|`udp.local-port` |int |-1 | |Some connections require a UDP listener to listen on a fixed port.
-Use this configuration option in order to define the port number of the local port.
 5+| - `tcp`
 5+| - `pcap`
-|`pcap.support-vlans` |boolean |false | |Enables support for VLans
-|`pcap.replay-speed-factor` |float |1.0 | |Numeric value for changing the replay speed:
-- 1 = Normal speed (default)
-- 0 = Maximum speed
-- 0.5 = Half speed
-- 2 = Double speed
-|`pcap.loop` |boolean |false | |Should the replay start at the beginning of the file as soon as the end is reached?
-- true = Automatically start again
-- false = Stop at the end (default)
-|`pcap.filter` |string | | |Filter expression used to filter out unwanted packets from the replay.
-|`pcap.support-vlans` |boolean |false | |Should VLan packets be automatically unpacked?
-|`pcap.protocol-id` |int |-1 | |When provided, filters all packets to let only packets matching this ethernet protocol-id pass.
+|`pcap.support-vlans` |BOOLEAN |false| |Enables support for VLans
 |===

@@ -35,12 +35,9 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`backplane` |int | | |Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.
-|`slot` |int | | |The slot within the backplane the CPU is located.
-|`bigEndian` |boolean | | |Configure if the connection should be set to transport data in Big-Endian format, or not.
+|`` |INT || |Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.
+|`` |INT || |The slot within the backplane the CPU is located.
+|`` |BOOLEAN || |Configure if the connection should be set to transport data in Big-Endian format, or not.
 5+|Transport config options:
 5+| - `tcp`
-|`tcp.keep-alive` |boolean |false | |Should keep-alive packets be sent?
-|`tcp.no-delay` |boolean |true | |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |int |1000 | |Timeout after which a connection will be treated as disconnected.
 |===

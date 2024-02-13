@@ -39,11 +39,6 @@ public class ApiMockDriver implements PlcDriver {
     }
 
     @Override
-    public Class<PlcConnectionConfiguration> getConfigurationType() {
-        return null;
-    }
-
-    @Override
     public PlcConnection getConnection(String url) {
         MockPlcConnection connection = mock(MockPlcConnection.class);
         when(connection.isConnected()).thenReturn(true);

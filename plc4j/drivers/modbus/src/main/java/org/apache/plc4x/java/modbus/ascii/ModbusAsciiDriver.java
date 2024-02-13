@@ -57,13 +57,27 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ModbusAsciiConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(ModbusTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("serial");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("tcp", "serial");
     }
 
     /**
@@ -187,20 +201,6 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
             encodedWriteBuffer.writeShort(8, (short) 0x0a);
             return encodedWriteBuffer;
         }
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Arrays.asList("tcp", "serial");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(ModbusTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

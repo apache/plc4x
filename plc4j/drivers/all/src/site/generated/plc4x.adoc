@@ -35,11 +35,8 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`remote-connection-string` |string | | |URL-Encoded connection string to use on the proxy side to reach the given PLC.
-|`request-timeout` |int |5000 | |Default timeout for all types of requests.
+|`remote-connection-string` |STRING || |URL-Encoded connection string to use on the proxy side to reach the given PLC.
+|`request-timeout` |INT |5000| |Default timeout for all types of requests.
 5+|Transport config options:
 5+| - `tcp`
-|`tcp.keep-alive` |boolean |false | |Should keep-alive packets be sent?
-|`tcp.no-delay` |boolean |true | |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |int |1000 | |Timeout after which a connection will be treated as disconnected.
 |===

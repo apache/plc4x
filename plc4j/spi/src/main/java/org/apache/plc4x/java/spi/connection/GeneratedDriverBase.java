@@ -24,15 +24,26 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.metadata.Option;
+import org.apache.plc4x.java.api.metadata.OptionMetadata;
+import org.apache.plc4x.java.api.metadata.OptionType;
+import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 import org.apache.plc4x.java.spi.generation.Message;
+import org.apache.plc4x.java.spi.metadata.DefaultOption;
+import org.apache.plc4x.java.spi.metadata.DefaultOptionMetadata;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
 
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
@@ -46,7 +57,212 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     public static final Pattern URI_PATTERN = Pattern.compile(
         "^(?<protocolCode>[a-z0-9\\-]*)(:(?<transportCode>[a-z0-9]*))?://(?<transportConfig>[^?]*)(\\?(?<paramString>.*))?");
 
-    public abstract Class<? extends PlcConnectionConfiguration> getConfigurationType();
+    /**
+     * Configuration class for configuration introspection
+     *
+     * @return the configuration class
+     */
+    protected abstract Class<? extends PlcConnectionConfiguration> getConfigurationClass();
+
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        return Optional.empty();
+    }
+
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.empty();
+    }
+
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public PlcDriverMetadata getMetadata() {
+        return new PlcDriverMetadata() {
+            @Override
+            public Optional<String> getDefaultTransportCode() {
+                return GeneratedDriverBase.this.getDefaultTransportCode();
+            }
+
+            @Override
+            public List<String> getSupportedTransportCodes() {
+                return GeneratedDriverBase.this.getSupportedTransportCodes();
+            }
+
+            @Override
+            public Optional<OptionMetadata> getProtocolConfigurationOptionMetadata() {
+                var clazz = getConfigurationClass();
+                if (clazz == null) {
+                    return Optional.empty();
+                }
+                var options = Arrays.stream(clazz.getDeclaredFields()).map(field -> {
+                        String key = "";
+                        var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
+                        if (configurationParameterAnnotation != null) {
+                            key = configurationParameterAnnotation.value();
+                        }
+                        String description = "";
+                        var descriptionAnnotation = field.getAnnotation(Description.class);
+                        if (descriptionAnnotation != null) {
+                            description = descriptionAnnotation.value();
+                        }
+                        boolean required = false;
+                        var requiredAnnotation = field.getAnnotation(Required.class);
+                        if (requiredAnnotation != null) {
+                            required = true;
+                        }
+                        OptionType type;
+                        switch (field.getType().getSimpleName()) {
+                            case "boolean":
+                            case "Boolean":
+                                type = OptionType.BOOLEAN;
+                                break;
+                            case "float":
+                            case "Float":
+                                type = OptionType.FLOAT;
+                                break;
+                            case "double":
+                            case "Double":
+                                type = OptionType.DOUBLE;
+                                break;
+                            case "int":
+                            case "Integer":
+                                type = OptionType.INT;
+                                break;
+                            case "long":
+                            case "Long":
+                                type = OptionType.LONG;
+                                break;
+                            case "String":
+                                type = OptionType.STRING;
+                                break;
+                            default:
+                                type = OptionType.STRUCT;
+                                break;
+                        }
+                        Object defaultValue = null;
+                        var booleanDefaultValueAnnotation = field.getAnnotation(BooleanDefaultValue.class);
+                        if (booleanDefaultValueAnnotation != null) {
+                            defaultValue = booleanDefaultValueAnnotation.value();
+                        }
+                        var doubleDefaultValueAnnotation = field.getAnnotation(DoubleDefaultValue.class);
+                        if (doubleDefaultValueAnnotation != null) {
+                            defaultValue = doubleDefaultValueAnnotation.value();
+                        }
+                        var floatDefaultValueAnnotation = field.getAnnotation(FloatDefaultValue.class);
+                        if (floatDefaultValueAnnotation != null) {
+                            defaultValue = floatDefaultValueAnnotation.value();
+                        }
+                        var intDefaultValueAnnotation = field.getAnnotation(IntDefaultValue.class);
+                        if (intDefaultValueAnnotation != null) {
+                            defaultValue = intDefaultValueAnnotation.value();
+                        }
+                        var longDefaultValueAnnotation = field.getAnnotation(LongDefaultValue.class);
+                        if (longDefaultValueAnnotation != null) {
+                            defaultValue = longDefaultValueAnnotation.value();
+                        }
+                        var stringDefaultValueAnnotation = field.getAnnotation(StringDefaultValue.class);
+                        if (stringDefaultValueAnnotation != null) {
+                            type = OptionType.STRING;
+                            defaultValue = stringDefaultValueAnnotation.value();
+                        }
+                        return new DefaultOption(key, type, description, required, defaultValue);
+                    })
+                    .map(Option.class::cast)
+                    .collect(Collectors.toList());
+                return Optional.of(new DefaultOptionMetadata(options));
+            }
+
+            @Override
+            public Optional<OptionMetadata> getTransportConfigurationOptionMetadata(String transportCode) {
+                var clazzOption = getTransportConfigurationClass(transportCode);
+                if (clazzOption.isEmpty()) {
+                    return Optional.empty();
+                }
+                var clazz = clazzOption.get();
+                var options = Arrays.stream(clazz.getDeclaredFields()).map(field -> {
+                        String key = "";
+                        var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
+                        if (configurationParameterAnnotation != null) {
+                            key = configurationParameterAnnotation.value();
+                        }
+                        String description = "";
+                        var descriptionAnnotation = field.getAnnotation(Description.class);
+                        if (descriptionAnnotation != null) {
+                            description = descriptionAnnotation.value();
+                        }
+                        boolean required = false;
+                        var requiredAnnotation = field.getAnnotation(Required.class);
+                        if (requiredAnnotation != null) {
+                            required = true;
+                        }
+                        OptionType type;
+                        switch (field.getType().getSimpleName()) {
+                            case "boolean":
+                            case "Boolean":
+                                type = OptionType.BOOLEAN;
+                                break;
+                            case "float":
+                            case "Float":
+                                type = OptionType.FLOAT;
+                                break;
+                            case "double":
+                            case "Double":
+                                type = OptionType.DOUBLE;
+                                break;
+                            case "int":
+                            case "Integer":
+                                type = OptionType.INT;
+                                break;
+                            case "long":
+                            case "Long":
+                                type = OptionType.LONG;
+                                break;
+                            case "String":
+                                type = OptionType.STRING;
+                                break;
+                            default:
+                                type = OptionType.STRUCT;
+                                break;
+                        }
+                        Object defaultValue = null;
+                        var booleanDefaultValueAnnotation = field.getAnnotation(BooleanDefaultValue.class);
+                        if (booleanDefaultValueAnnotation != null) {
+                            defaultValue = booleanDefaultValueAnnotation.value();
+                        }
+                        var doubleDefaultValueAnnotation = field.getAnnotation(DoubleDefaultValue.class);
+                        if (doubleDefaultValueAnnotation != null) {
+                            defaultValue = doubleDefaultValueAnnotation.value();
+                        }
+                        var floatDefaultValueAnnotation = field.getAnnotation(FloatDefaultValue.class);
+                        if (floatDefaultValueAnnotation != null) {
+                            defaultValue = floatDefaultValueAnnotation.value();
+                        }
+                        var intDefaultValueAnnotation = field.getAnnotation(IntDefaultValue.class);
+                        if (intDefaultValueAnnotation != null) {
+                            defaultValue = intDefaultValueAnnotation.value();
+                        }
+                        var longDefaultValueAnnotation = field.getAnnotation(LongDefaultValue.class);
+                        if (longDefaultValueAnnotation != null) {
+                            defaultValue = longDefaultValueAnnotation.value();
+                        }
+                        var stringDefaultValueAnnotation = field.getAnnotation(StringDefaultValue.class);
+                        if (stringDefaultValueAnnotation != null) {
+                            defaultValue = stringDefaultValueAnnotation.value();
+                        }
+                        return new DefaultOption(key, type, description, required, defaultValue);
+                    })
+                    .map(Option.class::cast)
+                    .collect(Collectors.toList());
+                return Optional.of(new DefaultOptionMetadata(options));
+            }
+
+            @Override
+            public boolean canDiscover() {
+                return false;
+            }
+        };
+    }
 
     protected boolean canPing() {
         return false;
@@ -118,11 +334,11 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
         }
         final String protocolCode = matcher.group("protocolCode");
         String transportCodeMatch = matcher.group("transportCode");
-        if(transportCodeMatch == null && getDefaultTransportCode().isEmpty()) {
+        if (transportCodeMatch == null && getMetadata().getDefaultTransportCode().isEmpty()) {
             throw new PlcConnectionException(
                 "This driver has no default transport and no transport code was provided.");
         }
-        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransportCode().get();
+        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getMetadata().getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
 
@@ -135,7 +351,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
         // Create the configuration object.
         PlcConnectionConfiguration configuration = configurationFactory
-            .createConfiguration(getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+            .createConfiguration(getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -156,8 +372,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
         // Find out the type of the transport configuration.
         Class<? extends PlcTransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
-        if(getTransportConfigurationType(transportCode).isPresent()) {
-            transportConfigurationType = getTransportConfigurationType(transportCode).get();
+        if (getTransportConfigurationClass(transportCode).isPresent()) {
+            transportConfigurationType = getTransportConfigurationClass(transportCode).get();
         }
         // Use the transport configuration type to actually configure the transport instance.
         PlcTransportConfiguration plcTransportConfiguration = configurationFactory

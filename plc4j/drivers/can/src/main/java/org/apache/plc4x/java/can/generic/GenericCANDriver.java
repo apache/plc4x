@@ -56,7 +56,12 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("socketcan");
+    }
+
+    @Override
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return GenericCANConfiguration.class;
     }
 
@@ -73,11 +78,6 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     @Override
     protected boolean canWrite() {
         return true;
-    }
-
-    @Override
-    public Optional<String> getDefaultTransportCode() {
-        return Optional.of("socketcan");
     }
 
     @Override

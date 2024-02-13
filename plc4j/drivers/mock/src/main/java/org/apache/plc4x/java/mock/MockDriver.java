@@ -67,9 +67,4 @@ public class MockDriver implements PlcDriver {
         return MockTag.of(tagAddress);
     }
 
-    @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
-        return null;
-    }
-
 }

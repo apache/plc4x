@@ -54,13 +54,27 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return AbEthConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(AbEthTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("raw");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -107,20 +121,6 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
     @Override
     public PlcTag prepareTag(String tagAddress) {
         return AbEthTag.of(tagAddress);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(AbEthTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

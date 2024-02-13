@@ -53,18 +53,27 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return OpenProtocolConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(OpenProtocolTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("tcp");
     }
 
     @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> false;
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -125,20 +134,6 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     @Override
     public OpenProtocolTag prepareTag(String tagAddress){
         return OpenProtocolTag.of(tagAddress);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(OpenProtocolTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
+import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
@@ -83,7 +84,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
         // Create the configuration object.
         PlcConnectionConfiguration configuration = configurationFactory.createConfiguration(
-            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+            getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -104,8 +105,8 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
         // Find out the type of the transport configuration.
         Class<? extends PlcTransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
-        if(getTransportConfigurationType(transportCode).isPresent()) {
-            transportConfigurationType = getTransportConfigurationType(transportCode).get();
+        if(getTransportConfigurationClass(transportCode).isPresent()) {
+            transportConfigurationType = getTransportConfigurationClass(transportCode).get();
         }
         // Use the transport configuration type to actually configure the transport instance.
         PlcTransportConfiguration transportConfiguration =
@@ -176,11 +177,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
-        throw new UnsupportedOperationException("getConfigurationType, Not supported yet.");
-    }
-
-    @Override
     protected PlcTagHandler getTagHandler() {
         throw new UnsupportedOperationException("getTagHandler, Not supported yet.");
     }
@@ -209,17 +205,27 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
     }
 
     @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return S7Configuration.class;
     }
 
     @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
         switch (transportCode) {
             case "tcp":
                 return Optional.of(S7TcpTransportConfiguration.class);
         }
         return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
 }

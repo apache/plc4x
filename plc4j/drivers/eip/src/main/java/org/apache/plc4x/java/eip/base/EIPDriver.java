@@ -66,8 +66,27 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return EIPConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(EipTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -87,11 +106,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected boolean awaitDisconnectComplete() {
         return true;
-    }
-
-    @Override
-    public Optional<String> getDefaultTransportCode() {
-        return Optional.of("tcp");
     }
 
     @Override
@@ -138,7 +152,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
         // Create the configuration object.
         configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+            getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
@@ -246,20 +260,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     public EipTag prepareTag(String query){
         return EipTag.of(query);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(EipTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

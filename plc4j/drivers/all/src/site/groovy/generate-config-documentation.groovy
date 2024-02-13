@@ -18,90 +18,13 @@
  */
 
 import org.apache.plc4x.java.DefaultPlcDriverManager
-import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter
-import org.apache.plc4x.java.spi.configuration.annotations.Description
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.LongDefaultValue
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue
 import org.apache.maven.artifact.Artifact
+import org.apache.plc4x.java.api.metadata.Option
 
-import java.lang.reflect.Array
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
-
-def static getAllFields(Class<?> type) {
-    def fields = new ArrayList();
-    fields.addAll(type.getDeclaredFields())
-    if(type.superclass) {
-        fields.addAll(getAllFields(type.superclass))
-    }
-    return fields
-}
-
-def static outputFields(List<Field> fields, String prefix, PrintStream printStream) {
-    for (final def field in fields) {
-        // Skip constants.
-        if(Modifier.isFinal(field.getModifiers())) {
-            continue
-        }
-
-        var name = ((prefix) ? prefix + "." : "") + field.name
-        var configurationParameterAnnotation = field.annotations.find( annotation -> annotation.annotationType().name.endsWith("ConfigurationParameter") )
-        if(!configurationParameterAnnotation) {
-            continue;
-        }
-        if(configurationParameterAnnotation instanceof ComplexConfigurationParameter) {
-            def parameterPrefix = ((ComplexConfigurationParameter) configurationParameterAnnotation).prefix()
-            def parameterType = field.type
-            def parameterFields = getAllFields(parameterType)
-            outputFields(parameterFields, ((prefix) ? prefix + "." : "") + parameterPrefix, printStream)
-            return
-        } else {
-            def parameterName = ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
-            if (parameterName && parameterName.length() > 0) {
-                name = ((prefix) ? prefix + "." : "") + ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
-            }
-        }
-        var type = field.type.name
-        if (type == "java.lang.String") {
-            type = "string"
-        }
-        var defaultValueAnnotation = field.annotations.find { annotation -> annotation.annotationType().name.endsWith("DefaultValue") }
-        var defaultValue = ""
-        if (defaultValueAnnotation) {
-            switch (defaultValueAnnotation.annotationType().name) {
-                case "org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue":
-                    defaultValue = ((BooleanDefaultValue) defaultValueAnnotation).value().booleanValue()
-                    break
-                case "org.apache.plc4x.java.spi.configuration.annotations.defaults.DoubleDefaultValue":
-                    defaultValue = ((DoubleDefaultValue) defaultValueAnnotation).value().doubleValue()
-                    break
-                case "org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue":
-                    defaultValue = ((FloatDefaultValue) defaultValueAnnotation).value().floatValue()
-                    break
-                case "org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue":
-                    defaultValue = ((IntDefaultValue) defaultValueAnnotation).value().intValue()
-                    break
-                case "org.apache.plc4x.java.spi.configuration.annotations.defaults.LongDefaultValue":
-                    defaultValue = ((LongDefaultValue) defaultValueAnnotation).value().longValue()
-                    break
-                case "org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue":
-                    defaultValue = ((StringDefaultValue) defaultValueAnnotation).value().toString()
-                    break
-            }
-        }
-        var requiredAnnotation = field.annotations.find { annotation -> annotation.annotationType().name == "org.apache.plc4x.java.spi.configuration.annotations.Required" }
-        var required = (requiredAnnotation) ? "required" : ""
-        var descriptionAnnotation = field.annotations.find { annotation -> annotation.annotationType().name == "org.apache.plc4x.java.spi.configuration.annotations.Description" }
-        var description = ""
-        if (descriptionAnnotation != null) {
-            description = ((Description) descriptionAnnotation).value()
-        }
-        printStream.println "|`" + name + "` |" + type + " |" + defaultValue + " |" + required + " |" + description
+def static outputOptions(List<Option> options, String prefix, PrintStream printStream) {
+    options.each {option->
+        def name = prefix?"$prefix.$option.key":option.key
+        printStream.println "|`$name` |$option.type |${option.defaultValue.orElse(' ')}|${option.required?'required':''} |$option.description"
     }
 }
 
@@ -116,8 +39,7 @@ try {
     for (Artifact artifact : artifacts) {
         classpathElements.add(artifact.getFile().toURI().toURL())
     }
-    moduleClassloader = new URLClassLoader(
-        classpathElements.toArray(new URL[0]), this.class.getClassLoader())
+    moduleClassloader = new URLClassLoader(classpathElements.toArray(new URL[0]), this.class.getClassLoader())
 } catch (MalformedURLException e) {
     throw new Exception(
         "Error creating classloader for loading message format schema from module dependencies", e);
@@ -176,30 +98,26 @@ for (final def protocolCode in plcDriverManager.listProtocolCodes()) {
         "  <version>{current-last-released-version}</version>\n" +
         "</dependency>\n" +
         "----"
-    if(driver.defaultTransportCode.isPresent()) {
-        printStream.println "|Default Transport 4+|`" + driver.defaultTransportCode.get() + "`"
+    if(driver.metadata.defaultTransportCode.isPresent()) {
+        printStream.println "|Default Transport 4+|`" + driver.metadata.defaultTransportCode.get() + "`"
     }
     printStream.println "|Supported Transports 4+|"
-    for (final def transportCode in driver.supportedTransportCodes) {
+    for (final def transportCode in driver.metadata.supportedTransportCodes) {
         // TODO: Make it output stuff like the "default port" for UDP and TCP
         printStream.println " - `" + transportCode + "`"
     }
     printStream.println "5+|Config options:"
-    def configurationType = driver.getConfigurationType()
 
     // Output the configuration options of the driver itself.
-    def fields = getAllFields(configurationType)
-    outputFields(fields, null, printStream)
+   driver.metadata.protocolConfigurationOptionMetadata.map {outputOptions(it.options, null, printStream)}
 
     // Output the configuration options of the transports the driver supports.
-    if(!driver.supportedTransportCodes.empty) {
+    if(!driver.metadata.supportedTransportCodes.empty) {
         printStream.println "5+|Transport config options:"
-        for (final def transportCode in driver.supportedTransportCodes) {
+        for (final def transportCode in driver.metadata.supportedTransportCodes) {
             printStream.println "5+| - `" + transportCode + "`"
-            def transportConfigurationType = driver.getTransportConfigurationType(transportCode)
-            if (transportConfigurationType.present) {
-                def transportConfigurationFields = getAllFields(transportConfigurationType.get())
-                outputFields(transportConfigurationFields, transportCode, printStream)
+            driver.metadata.getTransportConfigurationOptionMetadata(transportCode).map {
+                outputOptions(it.options, transportCode, printStream)
             }
         }
     }

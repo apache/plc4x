@@ -58,8 +58,31 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return KnxNetIpConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return Optional.of(KnxNetIpUdpTransportConfiguration.class);
+            case "pcap":
+                return Optional.of(KnxNetIpPcapReplayTransportConfiguration.class);
+            case "raw":
+                return Optional.of(KnxNetIpRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("udp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("udp", "pcap", "raw");
     }
 
     @Override
@@ -80,11 +103,6 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     @Override
     protected boolean canSubscribe() {
         return true;
-    }
-
-    @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
-        return KnxNetIpConfiguration.class;
     }
 
     @Override
@@ -127,24 +145,6 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     @Override
     public KnxNetIpTag prepareTag(String tagAddress){
         return KnxNetIpTag.of(tagAddress);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Arrays.asList("udp", "pcap", "raw");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "udp":
-                return Optional.of(KnxNetIpUdpTransportConfiguration.class);
-            case "pcap":
-                return Optional.of(KnxNetIpPcapReplayTransportConfiguration.class);
-            case "raw":
-                return Optional.of(KnxNetIpRawSocketTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

@@ -35,12 +35,9 @@
 |Supported Transports 4+|
  - `raw`
 5+|Config options:
-|`gsd-directory` |string |~/.gsd |required |
-|`dap-id` |string | | |
-|`ip-address` |string | | |
+|`gsd-directory` |STRING |~/.gsd|required |
+|`dap-id` |STRING || |
+|`ip-address` |STRING || |
 5+|Transport config options:
 5+| - `raw`
-|`raw.resolve-mac-address` |boolean | | |If set to true, the transport will automatically resolve the MAC address for a given IP address (Allows connecting to a raw-socket device using the devices host-name or ip-address).
-|`raw.support-vlans` |boolean |false | |Should VLan packets be automatically unpacked?
-|`raw.protocol-id` |int |-1 | |When provided, filters all packets to let only packets matching this ethernet protocol-id pass.
 |===

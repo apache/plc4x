@@ -57,11 +57,6 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
-        return CANOpenConfiguration.class;
-    }
-
-    @Override
     protected boolean canRead() {
         return true;
     }
@@ -77,7 +72,12 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return CANOpenConfiguration.class;
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("socketcan");
     }
 

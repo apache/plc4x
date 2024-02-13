@@ -19,12 +19,11 @@
 package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
+import org.apache.plc4x.java.api.metadata.OptionMetadata;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
 
@@ -42,7 +41,7 @@ import java.util.Optional;
 public interface PlcDriver {
 
     /**
-     * @return code of the implemented protocol. This is usually a lot shorter than the String returned by @see #getProtocolName().
+     * @return code of the implemented protocol. This is usually a lot shorter than the String returned by @see#getProtocolName().
      */
     String getProtocolCode();
 
@@ -52,33 +51,36 @@ public interface PlcDriver {
     String getProtocolName();
 
     /**
-     * @return the type of the Configuration used by this driver.
-     */
-    Class<? extends PlcConnectionConfiguration> getConfigurationType();
-
-    default Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        return Optional.empty();
-    }
-
-    /**
      * @return Provides driver metadata.
      */
     default PlcDriverMetadata getMetadata() {
-        return () -> false;
-    }
+        return new PlcDriverMetadata() {
 
-    /**
-     * @return Optional that allows returning the transport code of a default transport.
-     */
-    default Optional<String> getDefaultTransportCode() {
-        return Optional.empty();
-    }
+            @Override
+            public Optional<String> getDefaultTransportCode() {
+                return Optional.empty();
+            }
 
-    /**
-     * @return List of explicitly supported transport codes.
-     */
-    default List<String> getSupportedTransportCodes() {
-        return Collections.emptyList();
+            @Override
+            public List<String> getSupportedTransportCodes() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public Optional<OptionMetadata> getProtocolConfigurationOptionMetadata() {
+                return Optional.empty();
+            }
+
+            @Override
+            public Optional<OptionMetadata> getTransportConfigurationOptionMetadata(String transportCode) {
+                return Optional.empty();
+            }
+
+            @Override
+            public boolean canDiscover() {
+                return false;
+            }
+        };
     }
 
     /**

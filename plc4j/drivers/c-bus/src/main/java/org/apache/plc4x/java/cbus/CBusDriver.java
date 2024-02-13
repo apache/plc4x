@@ -50,10 +50,6 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
         return "Clipsal C-Bus";
     }
 
-    @Override
-    public Optional<String> getDefaultTransportCode() {
-        return Optional.of("tcp");
-    }
 
     @Override
     protected boolean canRead() {
@@ -61,8 +57,27 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return CBusConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(CBusTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -121,20 +136,6 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
                 byteBuf.readByte();
             }
         }
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("tcp");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(CBusTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

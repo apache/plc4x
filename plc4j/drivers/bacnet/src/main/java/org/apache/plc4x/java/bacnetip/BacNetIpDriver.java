@@ -52,13 +52,31 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return BacNetIpConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return Optional.of(BacNetUdpTransportConfiguration.class);
+            case "raw":
+                return Optional.of(BacNetRawSocketTransportConfiguration.class);
+            case "pcap":
+                return Optional.of(BacNetPcapReplayTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("udp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("udp", "tcp", "pcap");
     }
 
     @Override
@@ -115,24 +133,6 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
                 byteBuf.readByte();
             }
         }
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Arrays.asList("udp", "tcp", "pcap");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "udp":
-                return Optional.of(BacNetUdpTransportConfiguration.class);
-            case "raw":
-                return Optional.of(BacNetRawSocketTransportConfiguration.class);
-            case "pcap":
-                return Optional.of(BacNetPcapReplayTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

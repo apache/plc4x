@@ -61,11 +61,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
-    }
-
-    @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         try {
             ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs(), new HashMap<>());
@@ -78,13 +73,27 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ProfinetConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "raw":
+                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("raw");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("raw");
     }
 
     @Override
@@ -164,20 +173,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     @Override
     public ProfinetTag prepareTag(String query) {
         return ProfinetTag.of(query);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("raw");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "raw":
-                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

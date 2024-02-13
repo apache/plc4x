@@ -35,10 +35,7 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`station` |int | | |Id of the station we want to connect to
+|`` |INT || |Id of the station we want to connect to
 5+|Transport config options:
 5+| - `tcp`
-|`tcp.keep-alive` |boolean |false | |Should keep-alive packets be sent?
-|`tcp.no-delay` |boolean |true | |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |int |1000 | |Timeout after which a connection will be treated as disconnected.
 |===

@@ -26,7 +26,6 @@ import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.channel.ProfinetChannel;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.config.ProfinetRawSocketTransportConfiguration;
@@ -87,11 +86,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
-    }
-
-    @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         // TODO: This should actually happen in the execute method of the discoveryRequest and not here ...
         try {
@@ -104,13 +98,27 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ProfinetConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "raw":
+                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("raw");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("raw");
     }
 
     @Override
@@ -208,7 +216,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
             logger.info("Setting remote PROFINET device IP using DCP");
             ConfigurationFactory configurationFactory = new ConfigurationFactory();
             ProfinetConfiguration configuration = (ProfinetConfiguration) configurationFactory
-                .createConfiguration(getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+                .createConfiguration(getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
             if (configuration == null) {
                 throw new PlcConnectionException("Unsupported configuration");
             }
@@ -327,17 +335,4 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
         return super.getConnection(connectionString, authentication);
     }
 
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Collections.singletonList("raw");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "raw":
-                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
-        }
-        return Optional.empty();
-    }
 }

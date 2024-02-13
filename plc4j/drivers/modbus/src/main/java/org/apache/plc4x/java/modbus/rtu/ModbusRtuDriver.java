@@ -53,13 +53,27 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     }
 
     @Override
-    public Class<? extends PlcConnectionConfiguration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ModbusRtuConfiguration.class;
     }
 
     @Override
-    public Optional<String> getDefaultTransportCode() {
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(ModbusTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
         return Optional.of("serial");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("tcp", "serial");
     }
 
     /**
@@ -135,20 +149,6 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     @Override
     public ModbusTag prepareTag(String tagAddress){
         return ModbusTag.of(tagAddress);
-    }
-
-    @Override
-    public List<String> getSupportedTransportCodes() {
-        return Arrays.asList("tcp", "serial");
-    }
-
-    @Override
-    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return Optional.of(ModbusTcpTransportConfiguration.class);
-        }
-        return Optional.empty();
     }
 
 }

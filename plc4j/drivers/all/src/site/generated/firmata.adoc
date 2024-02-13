@@ -33,5 +33,8 @@
 ----
 |Default Transport 4+|`serial`
 |Supported Transports 4+|
+ - `serial`
 5+|Config options:
+5+|Transport config options:
+5+| - `serial`
 |===

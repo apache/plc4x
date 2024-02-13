@@ -35,11 +35,8 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`request-timeout` |int |5000 | |Default timeout for all types of requests.
-|`unit-identifier` |int |1 | |Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
+|`request-timeout` |INT |5000| |Default timeout for all types of requests.
+|`unit-identifier` |INT |1| |Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
 5+|Transport config options:
 5+| - `tcp`
-|`tcp.keep-alive` |boolean |false | |Should keep-alive packets be sent?
-|`tcp.no-delay` |boolean |true | |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |int |1000 | |Timeout after which a connection will be treated as disconnected.
 |===
