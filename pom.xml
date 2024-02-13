@@ -159,7 +159,7 @@
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.6</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.11</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.2.17</asciidoctorj.diagram.version>
+    <asciidoctorj.diagram.version>2.3.0</asciidoctorj.diagram.version>
 
     <skip-code-generation>false</skip-code-generation>
     <skip-code-generation-tests>true</skip-code-generation-tests>
