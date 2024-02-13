@@ -59,7 +59,6 @@ Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`trust-store-type` |string |pkcs12 | |Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).
 Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`trust-store-password` |string | | |Password used to open trust store.
-|`serverCertificate` |java.security.cert.X509Certificate | | |
 |`channel-lifetime` |long |3600000 | |Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.
 |`session-timeout` |long |120000 | |Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.
 |`negotiation-timeout` |long |60000 | |Timeout for all negotiation steps prior acceptance of application level operations - this timeout applies to open secure channel, create session and close calls. Defaults to 60 seconds.

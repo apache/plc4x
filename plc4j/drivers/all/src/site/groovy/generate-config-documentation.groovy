@@ -51,18 +51,19 @@ def static outputFields(List<Field> fields, String prefix, PrintStream printStre
 
         var name = ((prefix) ? prefix + "." : "") + field.name
         var configurationParameterAnnotation = field.annotations.find( annotation -> annotation.annotationType().name.endsWith("ConfigurationParameter") )
-        if(configurationParameterAnnotation) {
-            if(configurationParameterAnnotation instanceof ComplexConfigurationParameter) {
-                def parameterPrefix = ((ComplexConfigurationParameter) configurationParameterAnnotation).prefix()
-                def parameterType = field.type
-                def parameterFields = getAllFields(parameterType)
-                outputFields(parameterFields, ((prefix) ? prefix + "." : "") + parameterPrefix, printStream)
-                return
-            } else {
-                def parameterName = ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
-                if (parameterName && parameterName.length() > 0) {
-                    name = ((prefix) ? prefix + "." : "") + ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
-                }
+        if(!configurationParameterAnnotation) {
+            continue;
+        }
+        if(configurationParameterAnnotation instanceof ComplexConfigurationParameter) {
+            def parameterPrefix = ((ComplexConfigurationParameter) configurationParameterAnnotation).prefix()
+            def parameterType = field.type
+            def parameterFields = getAllFields(parameterType)
+            outputFields(parameterFields, ((prefix) ? prefix + "." : "") + parameterPrefix, printStream)
+            return
+        } else {
+            def parameterName = ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
+            if (parameterName && parameterName.length() > 0) {
+                name = ((prefix) ? prefix + "." : "") + ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
             }
         }
         var type = field.type.name
