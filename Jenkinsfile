@@ -180,7 +180,7 @@ pipeline {
             steps {
                 echo 'Building Site'
                 // Generate the driver documentation.
-                sh './mvnw -Djava.version=1.8 -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl :plc4j-driver-all'
+                sh './mvnw -Djava.version=1.8 -P${JENKINS_PROFILE},with-java,skip-prerequisite-check site -X -pl :plc4j-driver-all'
                 // Build the actual website.
                 sh './mvnw -Djava.version=1.8 -P${JENKINS_PROFILE},skip-prerequisite-check site -X -pl .'
             }
