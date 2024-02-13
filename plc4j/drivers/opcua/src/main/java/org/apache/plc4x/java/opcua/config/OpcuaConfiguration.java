@@ -18,92 +18,122 @@
  */
 package org.apache.plc4x.java.opcua.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.LongDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
-public class OpcuaConfiguration implements Configuration {
+public class OpcuaConfiguration implements PlcConnectionConfiguration {
 
-    public static final long DEFAULT_CHANNEL_LIFETIME = 3600000;
-
-    public static final long DEFAULT_SESSION_TIMEOUT = 120000;
-    public static final long DEFAULT_NEGOTIATION_TIMEOUT = 60000;
-
-    public static final long DEFAULT_REQUEST_TIMEOUT = 30000;
-
-    @ConfigurationParameter("protocolCode")
+    @ConfigurationParameter("protocol-code")
     private String protocolCode;
 
-    @ConfigurationParameter("transportCode")
+    @ConfigurationParameter("transport-code")
     private String transportCode;
 
-    @ConfigurationParameter("transportConfig")
+    @ConfigurationParameter("transport-config")
     private String transportConfig;
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
+    @Description("Controls the feature of the discovery endpoint of an OPC UA server which every server\n" +
+        "will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly\n" +
+        "configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by\n" +
+        "configuring it with a `false` value.\n" +
+        "\n" +
+        "The discovery phase is always conducted using `NONE` security policy.")
     private boolean discovery;
 
     @ConfigurationParameter("username")
+    @Description("A username to authenticate to the OPCUA server with.")
     private String username;
 
     @ConfigurationParameter("password")
+    @Description("A password to authenticate to the OPCUA server with.")
     private String password;
 
-    @ConfigurationParameter("securityPolicy")
-    private SecurityPolicy securityPolicy = SecurityPolicy.NONE;
+    @ConfigurationParameter("security-policy")
+    @StringDefaultValue("NONE")
+    @Description("The security policy applied to communication channel between driver and OPC UA server.\n" +
+        "Default value assumes. Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.")
+    private SecurityPolicy securityPolicy;
 
-    @ConfigurationParameter("messageSecurity")
-    private MessageSecurity messageSecurity = MessageSecurity.SIGN_ENCRYPT;
+    @ConfigurationParameter("message-security")
+    @StringDefaultValue("SIGN_ENCRYPT")
+    @Description("The security policy applied to messages exchanged after handshake phase.\n" +
+        "Possible options are `NONE`, `SIGN`, `SIGN_ENCRYPT`.\n" +
+        "This option is effective only when `securityPolicy` turns encryption (anything beyond `NONE`).")
+    private MessageSecurity messageSecurity;
 
-    @ConfigurationParameter("keyStoreFile")
+    @ConfigurationParameter("key-store-file")
+    @Description("The Keystore file used to lookup client certificate and its private key.")
     private String keyStoreFile;
 
-    @ConfigurationParameter("keyStoreType")
-    private String keyStoreType = KeyStore.getDefaultType();
+    @ConfigurationParameter("key-store-type")
+    @StringDefaultValue("pkcs12")
+    @Description("Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).\n" +
+        "Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.")
+    private String keyStoreType;
 
-    @ConfigurationParameter("keyStorePassword")
+    @ConfigurationParameter("key-store-password")
+    @Description("Java keystore password used to access keystore and private key.")
     private String keyStorePassword;
 
-    @ConfigurationParameter("serverCertificateFile")
+    @ConfigurationParameter("server-certificate-file")
+    @Description("Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.")
     private String serverCertificateFile;
 
-    @ConfigurationParameter("trustStoreFile")
+    @ConfigurationParameter("trust-store-file")
+    @Description("The trust store file used to verify server certificates and its chain.")
     private String trustStoreFile;
 
-    @ConfigurationParameter("trustStoreType")
-    private String trustStoreType = KeyStore.getDefaultType();
+    @ConfigurationParameter("trust-store-type")
+    @StringDefaultValue("pkcs12")
+    @Description("Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).\n" +
+        "Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.")
+    private String trustStoreType;
 
-    @ConfigurationParameter("trustStorePassword")
+    @ConfigurationParameter("trust-store-password")
+    @Description("Password used to open trust store.")
     private String trustStorePassword;
 
     // the discovered certificate when discovery is enabled
     private X509Certificate serverCertificate;
 
-    @ConfigurationParameter("channelLifetime")
-    private long channelLifetime = DEFAULT_CHANNEL_LIFETIME;
+    @ConfigurationParameter("channel-lifetime")
+    @LongDefaultValue(3600000)
+    @Description("Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.")
+    private long channelLifetime;
 
-    @ConfigurationParameter("sessionTimeout")
-    private long sessionTimeout = DEFAULT_SESSION_TIMEOUT;
+    @ConfigurationParameter("session-timeout")
+    @LongDefaultValue(120000)
+    @Description("Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.")
+    private long sessionTimeout;
 
-    @ConfigurationParameter("negotiationTimeout")
-    private long negotiationTimeout = DEFAULT_NEGOTIATION_TIMEOUT;
+    @ConfigurationParameter("negotiation-timeout")
+    @LongDefaultValue(60000)
+    @Description("Timeout for all negotiation steps prior acceptance of application level operations - this timeout applies to open secure channel, create session and close calls. Defaults to 60 seconds.")
+    private long negotiationTimeout;
 
-    @ConfigurationParameter("requestTimeout")
-    private long requestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    @ConfigurationParameter("request-timeout")
+    @LongDefaultValue(30000)
+    @Description("Timeout for read/write/subscribe calls. Value in milliseconds.")
+    private long requestTimeout;
 
     @ComplexConfigurationParameter(prefix = "encoding", defaultOverrides = {}, requiredOverrides = {})
-    private Limits limits = new Limits();
+    @Description("TCP encoding options")
+    private Limits limits;
 
     public String getProtocolCode() {
         return protocolCode;

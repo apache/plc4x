@@ -24,21 +24,22 @@ import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.ctrlx.readwrite.configuration.CtrlXConfiguration;
 import org.apache.plc4x.java.ctrlx.readwrite.connection.CtrlXConnection;
 import org.apache.plc4x.java.ctrlx.readwrite.discovery.CtrlXPlcDiscoverer;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvider {
+public class CtrlXDriver implements PlcDriver {
 
     @Override
     public String getProtocolCode() {
@@ -78,7 +79,7 @@ public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvide
         }
 
         // Create the configuration object.
-        Configuration configuration = configurationFactory
+        PlcConnectionConfiguration configuration = configurationFactory
             .createConfiguration(CtrlXConfiguration.class, protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
@@ -106,15 +107,20 @@ public class CtrlXDriver implements PlcDriver, TransportConfigurationTypeProvide
         return CtrlXConfiguration.class;
     }
 
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        return null;
-    }
-
 
     @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         return new DefaultPlcDiscoveryRequest.Builder(new CtrlXPlcDiscoverer());
+    }
+
+    @Override
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
+        return Optional.empty();
     }
 
 }

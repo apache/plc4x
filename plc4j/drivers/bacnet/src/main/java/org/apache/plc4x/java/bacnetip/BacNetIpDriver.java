@@ -20,6 +20,7 @@ package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetRawSocketTransportConfiguration;
@@ -30,14 +31,15 @@ import org.apache.plc4x.java.bacnetip.readwrite.BVLC;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-public class BacNetIpDriver extends GeneratedDriverBase<BVLC> implements TransportConfigurationTypeProvider {
+public class BacNetIpDriver extends GeneratedDriverBase<BVLC> {
 
     @Override
     public String getProtocolCode() {
@@ -55,8 +57,8 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> implements Transpo
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "udp";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("udp");
     }
 
     @Override
@@ -116,15 +118,21 @@ public class BacNetIpDriver extends GeneratedDriverBase<BVLC> implements Transpo
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Arrays.asList("udp", "tcp", "pcap");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "udp":
-                return BacNetUdpTransportConfiguration.class;
+                return Optional.of(BacNetUdpTransportConfiguration.class);
             case "raw":
-                return BacNetRawSocketTransportConfiguration.class;
+                return Optional.of(BacNetRawSocketTransportConfiguration.class);
             case "pcap":
-                return BacNetPcapReplayTransportConfiguration.class;
+                return Optional.of(BacNetPcapReplayTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
+
 }

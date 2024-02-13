@@ -20,12 +20,17 @@ package org.apache.plc4x.java.api;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcNotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * General interface defining the minimal methods required for adding a new type of driver to the PLC4J system.
@@ -51,11 +56,29 @@ public interface PlcDriver {
      */
     Class<? extends PlcConnectionConfiguration> getConfigurationType();
 
+    default Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
+        return Optional.empty();
+    }
+
     /**
-     * Provides driver metadata.
+     * @return Provides driver metadata.
      */
     default PlcDriverMetadata getMetadata() {
         return () -> false;
+    }
+
+    /**
+     * @return Optional that allows returning the transport code of a default transport.
+     */
+    default Optional<String> getDefaultTransportCode() {
+        return Optional.empty();
+    }
+
+    /**
+     * @return List of explicitly supported transport codes.
+     */
+    default List<String> getSupportedTransportCodes() {
+        return Collections.emptyList();
     }
 
     /**

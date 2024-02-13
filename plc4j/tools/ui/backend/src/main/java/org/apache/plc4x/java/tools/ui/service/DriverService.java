@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -53,7 +53,7 @@ public class DriverService {
 
     public List<Driver> getDriverList() {
         List<Driver> drivers = new ArrayList<>();
-        for (String protocolCode : driverManager.listDrivers()) {
+        for (String protocolCode : driverManager.listProtocolCodes()) {
             try {
                 PlcDriver driver = driverManager.getDriver(protocolCode);
                 PlcDriverMetadata metadata = driver.getMetadata();
@@ -80,7 +80,7 @@ public class DriverService {
 
     public void discover(String protocolCode) {
         if(ALL_DRIVERS.equals(protocolCode)) {
-            for (String curProtocolCode : driverManager.listDrivers()) {
+            for (String curProtocolCode : driverManager.listProtocolCodes()) {
                 try {
                     if("modbus-tcp".equals(curProtocolCode)) {
                         continue;

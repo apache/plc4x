@@ -18,11 +18,11 @@
  */
 package org.apache.plc4x.java.transport.udp;
 
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -87,7 +87,7 @@ public class UdpTransport implements Transport, HasConfiguration<UdpTransportCon
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigType() {
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
         return DefaultUdpTransportConfiguration.class;
     }
 

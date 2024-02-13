@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.transport;
 
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 
 public interface Transport {
@@ -28,7 +29,7 @@ public interface Transport {
 
     ChannelFactory createChannelFactory(String transportConfig);
 
-    default Class<? extends TransportConfiguration> getTransportConfigType() {
+    default Class<? extends PlcTransportConfiguration> getTransportConfigType() {
         return null;
     }
 

@@ -21,7 +21,9 @@ package org.apache.plc4x.java.spi.configuration;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.plc4x.java.api.configuration.PlcConfiguration;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
@@ -63,14 +65,13 @@ public class ConfigurationFactory {
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, paramStringValues);
     }
 
-    public <T extends PlcConnectionConfiguration> T createPrefixedConfiguration(Class<T> pClazz, String prefix, String protocolCode,
-                                                                   String transportCode, String transportConfig,
-                                                                   String paramString) {
-
+    public <T extends PlcTransportConfiguration> T createTransportConfiguration(Class<T> pClazz, String protocolCode,
+                                                                                String transportCode, String transportConfig,
+                                                                                String paramString) {
         // Get a map of all parameters in the connection string.
         Map<String, List<String>> paramStringValues = splitQuery(paramString);
-        // Filter out the properties, that don't have the current prefix
-        prefix = prefix + ".";
+        // Filter out the properties, that don't have the current transport code as prefix.
+        String prefix = transportCode + ".";
         Map<String, List<String>> filteredParamStringValues = new HashMap<>();
         for (String paramName : paramStringValues.keySet()) {
             if(paramName.startsWith(prefix)) {
@@ -80,7 +81,7 @@ public class ConfigurationFactory {
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, filteredParamStringValues);
     }
 
-    public <T extends PlcConnectionConfiguration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+    public <T> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
                                                            String transportConfig, Map<String, List<String>> paramStringValues) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
@@ -117,15 +118,15 @@ public class ConfigurationFactory {
             //    private String protocolCode;
             paramStringValues = new HashMap<>(paramStringValues);
             List<String> previousValue;
-            previousValue = paramStringValues.put("protocolCode", List.of(protocolCode));
+            previousValue = paramStringValues.put("protocol-code", List.of(protocolCode));
             if (previousValue != null) {
                 LOGGER.warn("protocolCode with value {} overridden by", protocolCode);
             }
-            previousValue = paramStringValues.put("transportCode", List.of(transportCode));
+            previousValue = paramStringValues.put("transport-code", List.of(transportCode));
             if (previousValue != null) {
                 LOGGER.warn("transportCode with value {} overridden by", transportCode);
             }
-            previousValue = paramStringValues.put("transportConfig", List.of(transportConfig));
+            previousValue = paramStringValues.put("transport-config", List.of(transportConfig));
             if (previousValue != null) {
                 LOGGER.warn("transportConfig with value {} overridden by", transportConfig);
             }
@@ -144,8 +145,8 @@ public class ConfigurationFactory {
                             filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
                         }
                     }
-                    Class<Configuration> configType = (Class<Configuration>) field.getType();
-                    Configuration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+                    Class<PlcConfiguration> configType = (Class<PlcConfiguration>) field.getType();
+                    PlcConfiguration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
                     FieldUtils.writeField(instance, field.getName(), configValue, true);
                 } else if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
@@ -173,7 +174,7 @@ public class ConfigurationFactory {
         return instance;
     }
 
-    public static <T> T configure(PlcConnectionConfiguration configuration, T obj) {
+    public static <T> T configure(PlcConfiguration configuration, T obj) {
         // Check if in this object is configurable at all.
         if (ClassUtils.isAssignable(obj.getClass(), HasConfiguration.class)) {
             // Check if the type declared by the HasConfiguration interface is
@@ -282,6 +283,10 @@ public class ConfigurationFactory {
         IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
         if (intDefaultValue != null) {
             return intDefaultValue.value();
+        }
+        LongDefaultValue longDefaultValue = field.getAnnotation(LongDefaultValue.class);
+        if(longDefaultValue != null) {
+            return longDefaultValue.value();
         }
         BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
         if (booleanDefaultValue != null) {

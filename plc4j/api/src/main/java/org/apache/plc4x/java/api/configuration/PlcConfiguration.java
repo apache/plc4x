@@ -16,10 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.transport;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+package org.apache.plc4x.java.api.configuration;
 
-public interface TransportConfiguration extends Configuration {
-
+public interface PlcConfiguration {
 }

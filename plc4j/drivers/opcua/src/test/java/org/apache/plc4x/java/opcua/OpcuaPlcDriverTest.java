@@ -525,10 +525,10 @@ public class OpcuaPlcDriverTest {
             case Aes256_Sha256_RsaPss:
                 Path keyStoreFile = Paths.get(System.getProperty("java.io.tmpdir"), "server", "security", "example-server.pfx");
                 String connectionParams = Stream.of(
-                        entry("keyStoreFile", keyStoreFile.toAbsolutePath().toString().replace("\\", "/")), // handle windows paths
-                        entry("keyStorePassword", "password"),
-                        entry("securityPolicy", policy.name()),
-                        entry("messageSecurity", messageSecurity.name())
+                        entry("key-store-file", keyStoreFile.toAbsolutePath().toString().replace("\\", "/")), // handle windows paths
+                        entry("key-store-password", "password"),
+                        entry("security-policy", policy.name()),
+                        entry("message-security", messageSecurity.name())
                     )
                     .map(tuple -> tuple.getKey() + "=" + URLEncoder.encode(tuple.getValue(), Charset.defaultCharset()))
                     .collect(Collectors.joining(paramDivider));

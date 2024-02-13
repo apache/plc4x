@@ -21,6 +21,7 @@ package org.apache.plc4x.java.bacnetip.configuration;
 
 import org.apache.plc4x.java.bacnetip.readwrite.BacnetConstants;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.transport.rawsocket.DefaultRawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
@@ -30,6 +31,7 @@ public class BacNetRawSocketTransportConfiguration extends DefaultRawSocketTrans
 
     @ConfigurationParameter("resolve-mac-address")
     @BooleanDefaultValue(true)
+    @Description("Controls, if mac-addresses should be resolved upon connection.")
     private boolean resolveMacAddress;
 
     @Override

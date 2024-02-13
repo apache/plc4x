@@ -21,29 +21,30 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
-public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> implements TransportConfigurationTypeProvider {
+public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
 
     private static final Logger logger = LoggerFactory.getLogger(S7HGeneratedDriverBase.class);
 
@@ -68,7 +69,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
 
         final String protocolCode = matcher.group("protocolCode");
         final String transportCode = (matcher.group("transportCode") != null) ?
-            matcher.group("transportCode") : getDefaultTransport();
+            matcher.group("transportCode") : getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String transportConfig2 = (hmatcher.matches()) ? matcher.group("transportConfig2") : null;
         final String paramString = matcher.group("paramString");
@@ -102,23 +103,15 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
         }
 
         // Find out the type of the transport configuration.
-        Class<? extends TransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
-        if(this instanceof TransportConfigurationTypeProvider) {
-            TransportConfigurationTypeProvider transportConfigurationTypeProvider =
-                (TransportConfigurationTypeProvider) this;
-            Class<? extends TransportConfiguration> driverTransportConfigurationType =
-                transportConfigurationTypeProvider.getTransportConfigurationType(transportCode);
-            if(driverTransportConfigurationType != null) {
-                transportConfigurationType = driverTransportConfigurationType;
-            }
+        Class<? extends PlcTransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        if(getTransportConfigurationType(transportCode).isPresent()) {
+            transportConfigurationType = getTransportConfigurationType(transportCode).get();
         }
         // Use the transport configuration type to actually configure the transport instance.
-        if(transportConfigurationType != null) {
-            Configuration transportConfiguration = configurationFactory
-                .createPrefixedConfiguration(transportConfigurationType,
-                    transportCode, protocolCode, transportCode, transportConfig, paramString);
-            configure(transportConfiguration, transport);
-        }
+        PlcTransportConfiguration transportConfiguration =
+            configurationFactory.createTransportConfiguration(
+                transportConfigurationType, protocolCode, transportCode, transportConfig, paramString);
+        configure(transportConfiguration, transport);
 
         // Create an instance of the communication channel which the driver should use.
         ChannelFactory channelFactory = transport.createChannelFactory(transportConfig);
@@ -196,12 +189,6 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
     protected PlcValueHandler getValueHandler() {
         throw new UnsupportedOperationException("getValueHandler, Not supported yet.");
     }
-
-    @Override
-    protected String getDefaultTransport() {
-        throw new UnsupportedOperationException("getDefaultTransport, Not supported yet.");
-    }
-
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         throw new UnsupportedOperationException("getStackConfigurer, Not supported yet.");
@@ -222,12 +209,17 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> impl
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return S7TcpTransportConfiguration.class;
+                return Optional.of(S7TcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.spi.parser;
 
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
@@ -39,7 +39,7 @@ class ConnectionParserTest {
         assertEquals(1, properties.getSlotId());
     }
 
-    public static class PropertiesDescriptor implements Configuration {
+    public static class PropertiesDescriptor implements PlcConnectionConfiguration {
 
         @ConfigurationParameter("rackId")
         @IntDefaultValue(1)

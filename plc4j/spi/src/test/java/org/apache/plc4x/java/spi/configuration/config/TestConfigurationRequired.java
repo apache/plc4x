@@ -19,11 +19,11 @@
 
 package org.apache.plc4x.java.spi.configuration.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
 
-public class TestConfigurationRequired implements Configuration {
+public class TestConfigurationRequired implements PlcConnectionConfiguration {
 
     @ConfigurationParameter
     @Required

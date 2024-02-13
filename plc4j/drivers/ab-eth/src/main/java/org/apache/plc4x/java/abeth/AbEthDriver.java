@@ -26,17 +26,19 @@ import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> implements TransportConfigurationTypeProvider {
+public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
     public static final int AB_ETH_PORT = 2222;
 
@@ -57,8 +59,8 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> imp
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "raw";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("raw");
     }
 
     @Override
@@ -108,12 +110,17 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> imp
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return AbEthTcpTransportConfiguration.class;
+                return Optional.of(AbEthTcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }

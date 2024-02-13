@@ -21,28 +21,13 @@
 
 === Connection String Options
 
+include::../../../plc4j/drivers/all/src/site/generated/plc4x.adoc[]
+
+=== Connection String Options
+
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`plc4x`
-
-|Name
-2+|PLC4X (Proxy-Protocol)
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-plc4x</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+|`tcp`
 
 3+|Supported Operations:
 |
@@ -52,15 +37,6 @@
 |
 2+| `subscribe`
 
-3+|Options
-
-|
-| `remote-connection-string`
-| URL-Encoded connection string to use on the proxy side to reach the given PLC.
-
-|
-| `request-timeout` (5000ms)
-| Timeout for operations (Defaults to 5s)
 |===
 
 === Individual Resource Address Format

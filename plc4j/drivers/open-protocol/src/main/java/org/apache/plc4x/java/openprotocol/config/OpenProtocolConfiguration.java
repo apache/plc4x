@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.openprotocol.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 
-public class OpenProtocolConfiguration implements Configuration {
+public class OpenProtocolConfiguration implements PlcConnectionConfiguration {
 
     @Override
     public String toString() {

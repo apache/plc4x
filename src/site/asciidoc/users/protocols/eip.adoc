@@ -20,54 +20,14 @@
 == EtherNet/IP
 
 === Connection String Options
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
 
-|Code
-2+|`eip`
-
-|Name
-2+|EtherNet/IP Protocol
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-eip</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+|`tcp`
-
-3+|Supported Operations
-|
-| `read`
-|Read tags from a PLC4X device
-
-|
-| `write`
-|Write values to tags on a PLC4X device
-
-3+|Options
-
-|
-| `backplane`
-| `backplane` value for the client (PLC4X device). Mandatory.
-
-|
-| `slot` 
-| `slot` value for the client (PLC4X device). Mandatory.
-|===
+include::../../../plc4j/drivers/all/src/site/generated/eip.adoc[]
 
 === Address Format
+
 To read and write data to a PLC4X device, the EtherNet/IP driver uses symbolic segments.
  This is used to refer to objects through their symbolic names. This makes reading data a lot easier, as you do not
  need to specify the Datatype for reading.
- 
 
 ----
 

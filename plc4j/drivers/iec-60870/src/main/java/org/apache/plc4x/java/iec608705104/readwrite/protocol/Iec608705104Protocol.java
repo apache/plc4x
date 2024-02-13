@@ -81,7 +81,7 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
         APDUUFormatTestFrameActivation testFrameActivation = new APDUUFormatTestFrameActivation(0x43);
         RequestTransactionManager.RequestTransaction testFrameTx = tm.startRequest();
         testFrameTx.submit(() -> context.sendRequest(testFrameActivation)
-            .expectResponse(APDU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .expectResponse(APDU.class, Duration.ofMillis(configuration.getRequestTimeout()))
             .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
             .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
             .only(APDUUFormatTestFrameConfirmation.class)
@@ -92,7 +92,7 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
                 APDUUFormatStartDataTransferActivation startDataTransferActivation = new APDUUFormatStartDataTransferActivation(0x07);
                 RequestTransactionManager.RequestTransaction startDataTransferTx = tm.startRequest();
                 startDataTransferTx.submit(() -> context.sendRequest(startDataTransferActivation)
-                    .expectResponse(APDU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                    .expectResponse(APDU.class, Duration.ofMillis(configuration.getRequestTimeout()))
                     .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
                     .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
                     .only(APDUUFormatStartDataTransferConfirmation.class)

@@ -18,10 +18,10 @@
  */
 package org.apache.plc4x.java.transport.pcap;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
-public interface PcapTransportConfiguration extends TransportConfiguration {
+public interface PcapTransportConfiguration extends PlcTransportConfiguration {
     int NO_DEFAULT_PORT = -1;
 
     boolean getSupportVlans();

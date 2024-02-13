@@ -18,14 +18,16 @@
  */
 package org.apache.plc4x.java.cbus.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 
-public class CBusConfiguration implements Configuration {
+public class CBusConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("srchk")
     @BooleanDefaultValue(false)
+    @Description("Source check.")
     public boolean srchk = false;
 
     public boolean isSrchk() {

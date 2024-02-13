@@ -20,6 +20,7 @@ package org.apache.plc4x.java.openprotocol;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolTcpTransportConfiguration;
@@ -32,13 +33,14 @@ import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage> implements TransportConfigurationTypeProvider {
+public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage> {
 
     @Override
     public String getProtocolCode() {
@@ -56,8 +58,8 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    public Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
     }
 
     @Override
@@ -126,12 +128,17 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
+    public List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
+    }
+
+    @Override
+    public Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationType(String transportCode) {
         switch (transportCode) {
             case "tcp":
-                return OpenProtocolTcpTransportConfiguration.class;
+                return Optional.of(OpenProtocolTcpTransportConfiguration.class);
         }
-        return null;
+        return Optional.empty();
     }
 
 }
