@@ -118,15 +118,15 @@ public class ConfigurationFactory {
             //    private String protocolCode;
             paramStringValues = new HashMap<>(paramStringValues);
             List<String> previousValue;
-            previousValue = paramStringValues.put("protocolCode", List.of(protocolCode));
+            previousValue = paramStringValues.put("protocol-code", List.of(protocolCode));
             if (previousValue != null) {
                 LOGGER.warn("protocolCode with value {} overridden by", protocolCode);
             }
-            previousValue = paramStringValues.put("transportCode", List.of(transportCode));
+            previousValue = paramStringValues.put("transport-code", List.of(transportCode));
             if (previousValue != null) {
                 LOGGER.warn("transportCode with value {} overridden by", transportCode);
             }
-            previousValue = paramStringValues.put("transportConfig", List.of(transportConfig));
+            previousValue = paramStringValues.put("transport-config", List.of(transportConfig));
             if (previousValue != null) {
                 LOGGER.warn("transportConfig with value {} overridden by", transportConfig);
             }
@@ -145,8 +145,8 @@ public class ConfigurationFactory {
                             filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
                         }
                     }
-                    Class<PlcConnectionConfiguration> configType = (Class<PlcConnectionConfiguration>) field.getType();
-                    PlcConnectionConfiguration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+                    Class<PlcConfiguration> configType = (Class<PlcConfiguration>) field.getType();
+                    PlcConfiguration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
                     FieldUtils.writeField(instance, field.getName(), configValue, true);
                 } else if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
@@ -283,6 +283,10 @@ public class ConfigurationFactory {
         IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
         if (intDefaultValue != null) {
             return intDefaultValue.value();
+        }
+        LongDefaultValue longDefaultValue = field.getAnnotation(LongDefaultValue.class);
+        if(longDefaultValue != null) {
+            return longDefaultValue.value();
         }
         BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
         if (booleanDefaultValue != null) {

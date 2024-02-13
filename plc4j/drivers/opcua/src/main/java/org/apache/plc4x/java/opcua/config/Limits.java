@@ -19,34 +19,31 @@
 
 package org.apache.plc4x.java.opcua.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.api.configuration.PlcConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class Limits implements Configuration {
+public class Limits implements PlcConfiguration {
 
-    private static final int DEFAULT_RECEIVE_BUFFER_SIZE = 65535;
-    private static final int DEFAULT_SEND_BUFFER_SIZE = 65535;
-    private static final int DEFAULT_MAX_MESSAGE_SIZE = 2097152;
-    private static final int DEFAULT_MAX_CHUNK_COUNT = 64;
-
-    @ConfigurationParameter("receiveBufferSize")
+    @ConfigurationParameter("receive-buffer-size")
+    @IntDefaultValue(65535)
+    @Description("Maximum size of received TCP transport message chunk value in bytes.")
     private int receiveBufferSize;
-    @ConfigurationParameter("sendBufferSize")
+    @ConfigurationParameter("send-buffer-size")
+    @IntDefaultValue(65535)
+    @Description("Maximum size of sent transport message chunk.")
     private int sendBufferSize;
-    @ConfigurationParameter("maxMessageSize")
+    @ConfigurationParameter("max-message-size")
+    @IntDefaultValue(2097152)
+    @Description("Maximum size of complete message.")
     private int maxMessageSize;
-    @ConfigurationParameter("maxChunkCount")
+    @ConfigurationParameter("max-chunk-count")
+    @IntDefaultValue(64)
+    @Description("Maximum number of chunks for both sent and received messages.")
     private int maxChunkCount;
 
     public Limits() {
-        this(DEFAULT_RECEIVE_BUFFER_SIZE, DEFAULT_SEND_BUFFER_SIZE, DEFAULT_MAX_MESSAGE_SIZE, DEFAULT_MAX_CHUNK_COUNT);
-    }
-
-    public Limits(int receiveBufferSize, int sendBufferSize, int maxMessageSize, int maxChunkCount) {
-        this.receiveBufferSize = receiveBufferSize;
-        this.sendBufferSize = sendBufferSize;
-        this.maxMessageSize = maxMessageSize;
-        this.maxChunkCount = maxChunkCount;
     }
 
     public int getReceiveBufferSize() {

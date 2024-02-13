@@ -18,6 +18,7 @@
  */
 
 import org.apache.plc4x.java.DefaultPlcDriverManager
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter
 import org.apache.plc4x.java.spi.configuration.annotations.Description
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue
@@ -28,7 +29,9 @@ import org.apache.plc4x.java.spi.configuration.annotations.defaults.LongDefaultV
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue
 import org.apache.maven.artifact.Artifact
 
+import java.lang.reflect.Array
 import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 def static getAllFields(Class<?> type) {
     def fields = new ArrayList();
@@ -41,12 +44,25 @@ def static getAllFields(Class<?> type) {
 
 def static outputFields(List<Field> fields, String prefix, PrintStream printStream) {
     for (final def field in fields) {
+        // Skip constants.
+        if(Modifier.isFinal(field.getModifiers())) {
+            continue
+        }
+
         var name = ((prefix) ? prefix + "." : "") + field.name
         var configurationParameterAnnotation = field.annotations.find( annotation -> annotation.annotationType().name.endsWith("ConfigurationParameter") )
         if(configurationParameterAnnotation) {
-            def parameterName =((ConfigurationParameter) configurationParameterAnnotation).value().toString()
-            if(parameterName && parameterName.length() > 0) {
-                name = ((prefix) ? prefix + "." : "") + ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
+            if(configurationParameterAnnotation instanceof ComplexConfigurationParameter) {
+                def parameterPrefix = ((ComplexConfigurationParameter) configurationParameterAnnotation).prefix()
+                def parameterType = field.type
+                def parameterFields = getAllFields(parameterType)
+                outputFields(parameterFields, ((prefix) ? prefix + "." : "") + parameterPrefix, printStream)
+                return
+            } else {
+                def parameterName = ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
+                if (parameterName && parameterName.length() > 0) {
+                    name = ((prefix) ? prefix + "." : "") + ((ConfigurationParameter) configurationParameterAnnotation).value().toString()
+                }
             }
         }
         var type = field.type.name

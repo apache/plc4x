@@ -145,7 +145,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                 LOGGER.error("Failed to establish connection", error);
                 return;
             }
-            LOGGER.error("Established connection to server", error);
+            LOGGER.info("Established connection to server", error);
             context.fireConnected();
         });
     }
