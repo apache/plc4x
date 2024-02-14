@@ -75,6 +75,7 @@ Here comes an example application, that uses the connection cache:
 [NOTE]
 =====================================================================
 To use the Connection Cache you have to add a dependency to the `plc4j-connection-cache` module.
+[subs=attributes+]
 ----
     <dependency>
       <groupId>org.apache.plc4x</groupId>

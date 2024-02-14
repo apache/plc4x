@@ -92,6 +92,7 @@ for (final def protocolCode in plcDriverManager.listProtocolCodes()) {
     def uriString = resource.toExternalForm()
     var moduleName = uriString.substring(uriString.indexOf("plc4j-driver-"), uriString.indexOf("/", uriString.indexOf("plc4j-driver-")))
     printStream.println "\n" +
+        "[subs=attributes+]\n"
         "----\n" +
         "<dependency>\n" +
         "  <groupId>org.apache.plc4x</groupId>\n" +
