@@ -37,7 +37,7 @@ public class AdsConfiguration implements PlcConnectionConfiguration {
     @Required
     @ConfigurationParameter("target-ams-net-id")
     @ParameterConverter(AmsNetIdConverter.class)
-    @Description("AMS-Net-Id of the target.")
+    @Description("AMS-Net-Id of the target. An AMS-Net-Id has the regular format of an IPv4 IP-Address, however with 6 segments instead of 4.")
     protected AmsNetId targetAmsNetId;
 
     @Required
@@ -48,7 +48,7 @@ public class AdsConfiguration implements PlcConnectionConfiguration {
     @Required
     @ConfigurationParameter("source-ams-net-id")
     @ParameterConverter(AmsNetIdConverter.class)
-    @Description("AMS-Net-Id of the source.")
+    @Description("AMS-Net-Id of the source. An AMS-Net-Id has the regular format of an IPv4 IP-Address, however with 6 segments instead of 4.")
     protected AmsNetId sourceAmsNetId;
 
     @Required

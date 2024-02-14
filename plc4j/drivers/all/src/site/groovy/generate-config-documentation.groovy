@@ -44,6 +44,7 @@ try {
     throw new Exception(
         "Error creating classloader for loading message format schema from module dependencies", e);
 }
+Thread.currentThread().setContextClassLoader(moduleClassloader)
 
 // Create a driver manager instance, that is using our custom built classloader.
 def plcDriverManager = new DefaultPlcDriverManager(moduleClassloader)

@@ -35,13 +35,15 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`` |STRUCT || |
-|`target-ams-net-id` |STRUCT ||required |AMS-Net-Id of the target.
-|`target-ams-port` |INT ||required |AMS port of the target.
-|`source-ams-net-id` |STRUCT ||required |AMS-Net-Id of the source.
-|`source-ams-port` |INT ||required |AMS port of the source.
+|`target-ams-net-id` |STRING | |required |AMS-Net-Id of the target.
+|`target-ams-port` |INT | |required |AMS port of the target.
+|`source-ams-net-id` |STRING | |required |AMS-Net-Id of the source.
+|`source-ams-port` |INT | |required |AMS port of the source.
 |`timeout-request` |INT |4000| |Default timeout for all types of requests.
 |`load-symbol-and-data-type-tables` |BOOLEAN |true| |Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, symbolic addresses will manually be resolved as soon as an address is used.
 5+|Transport config options:
 5+| - `tcp`
+|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
+|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
+|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
 |===

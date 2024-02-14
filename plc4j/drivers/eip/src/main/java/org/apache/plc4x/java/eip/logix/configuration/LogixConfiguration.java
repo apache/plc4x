@@ -25,7 +25,7 @@ import org.apache.plc4x.java.spi.configuration.annotations.Description;
 public class LogixConfiguration extends EIPConfiguration {
 
     @ConfigurationParameter("communication-path")
-    @Description("The communication path allows for connection routing across multiple backplanes. It uses a common format found in logix controllers.\n" +
+    @Description("The communication path allows for connection routing across multiple backplanes. It uses a common format found in Logix controllers.\n" +
         "It consists of pairs of values, each pair begins with either 1 (Backplane) or 2 (Ethernet), followed by a slot in the case of a backplane address,\n" +
         "or if using Ethernet an ip address. e.g. [1,4,2,192.168.0.1,1,1] - Routes to the 4th slot in the first rack, which is a ethernet module, it then connects to the address 192.168.0.1, then finds the module in slot 1.")
     private String communicationPath;

@@ -30,9 +30,7 @@ import org.apache.plc4x.java.api.metadata.OptionType;
 import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.Description;
-import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.metadata.DefaultOption;
@@ -40,6 +38,7 @@ import org.apache.plc4x.java.spi.metadata.DefaultOptionMetadata;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,6 +85,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
             @Override
             public List<String> getSupportedTransportCodes() {
+                List<String> supportedTransportCodes = GeneratedDriverBase.this.getSupportedTransportCodes();
+                if(supportedTransportCodes.isEmpty() && (getDefaultTransportCode().isPresent())) {
+                    return Collections.singletonList(getDefaultTransportCode().get());
+                }
                 return GeneratedDriverBase.this.getSupportedTransportCodes();
             }
 
@@ -95,11 +98,23 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                 if (clazz == null) {
                     return Optional.empty();
                 }
-                var options = Arrays.stream(clazz.getDeclaredFields()).map(field -> {
-                        String key = "";
+                var options = getAllFields(clazz).stream().map(field -> {
+                        String key = null;
                         var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
                         if (configurationParameterAnnotation != null) {
                             key = configurationParameterAnnotation.value();
+                            if(key.isEmpty()) {
+                                key = field.getName();
+                            }
+                        } else {
+                            var complexConfigurationParameterAnnotation = field.getAnnotation(ComplexConfigurationParameter.class);
+                            if (complexConfigurationParameterAnnotation != null) {
+                                key = complexConfigurationParameterAnnotation.prefix();
+                                // TODO: Add support for listing the options of a complex configuration parameter.
+                            }
+                        }
+                        if(key == null) {
+                            return null;
                         }
                         String description = "";
                         var descriptionAnnotation = field.getAnnotation(Description.class);
@@ -137,7 +152,13 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                                 type = OptionType.STRING;
                                 break;
                             default:
-                                type = OptionType.STRUCT;
+                                // If there's a property-converter, use "STRING" as type.
+                                var parameterConverterAnnotation = field.getAnnotation(ParameterConverter.class);
+                                if(parameterConverterAnnotation != null) {
+                                   type = OptionType.STRING;
+                                } else {
+                                    type = OptionType.STRUCT;
+                                }
                                 break;
                         }
                         Object defaultValue = null;
@@ -168,6 +189,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                         }
                         return new DefaultOption(key, type, description, required, defaultValue);
                     })
+                    .filter(Objects::nonNull)
                     .map(Option.class::cast)
                     .collect(Collectors.toList());
                 return Optional.of(new DefaultOptionMetadata(options));
@@ -175,16 +197,28 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
             @Override
             public Optional<OptionMetadata> getTransportConfigurationOptionMetadata(String transportCode) {
-                var clazzOption = getTransportConfigurationClass(transportCode);
+                var clazzOption = resolveTransportConfigurationClass(transportCode);
                 if (clazzOption.isEmpty()) {
                     return Optional.empty();
                 }
                 var clazz = clazzOption.get();
-                var options = Arrays.stream(clazz.getDeclaredFields()).map(field -> {
-                        String key = "";
+                var options = getAllFields(clazz).stream().map(field -> {
+                        String key = null;
                         var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
                         if (configurationParameterAnnotation != null) {
                             key = configurationParameterAnnotation.value();
+                            if(key.isEmpty()) {
+                                key = field.getName();
+                            }
+                        } else {
+                            var complexConfigurationParameterAnnotation = field.getAnnotation(ComplexConfigurationParameter.class);
+                            if (complexConfigurationParameterAnnotation != null) {
+                                key = complexConfigurationParameterAnnotation.prefix();
+                                // TODO: Add support for listing the options of a complex configuration parameter.
+                            }
+                        }
+                        if(key == null) {
+                            return null;
                         }
                         String description = "";
                         var descriptionAnnotation = field.getAnnotation(Description.class);
@@ -222,7 +256,13 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                                 type = OptionType.STRING;
                                 break;
                             default:
-                                type = OptionType.STRUCT;
+                                // If there's a property-converter, use "STRING" as type.
+                                var parameterConverterAnnotation = field.getAnnotation(ParameterConverter.class);
+                                if(parameterConverterAnnotation != null) {
+                                    type = OptionType.STRING;
+                                } else {
+                                    type = OptionType.STRUCT;
+                                }
                                 break;
                         }
                         Object defaultValue = null;
@@ -252,6 +292,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                         }
                         return new DefaultOption(key, type, description, required, defaultValue);
                     })
+                    .filter(Objects::nonNull)
                     .map(Option.class::cast)
                     .collect(Collectors.toList());
                 return Optional.of(new DefaultOptionMetadata(options));
@@ -428,6 +469,38 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             getStackConfigurer(transport),
             getOptimizer(),
             authentication);
+    }
+
+    protected Optional<Class<? extends PlcTransportConfiguration>> resolveTransportConfigurationClass(String transportCode) {
+        if (getTransportConfigurationClass(transportCode).isPresent()) {
+            return Optional.of(getTransportConfigurationClass(transportCode).get());
+        }
+
+        // Try to find a suitable transport-type for creating the communication channel.
+        Transport transport = null;
+        ServiceLoader<Transport> transportLoader = ServiceLoader.load(
+            Transport.class, Thread.currentThread().getContextClassLoader());
+        for (Transport curTransport : transportLoader) {
+            if (curTransport.getTransportCode().equals(transportCode)) {
+                transport = curTransport;
+                break;
+            }
+        }
+        if (transport == null) {
+            return Optional.empty();
+        }
+
+        // Find out the type of the transport configuration.
+        Class<? extends PlcTransportConfiguration> transportConfigurationType = transport.getTransportConfigType();
+        return Optional.of(transportConfigurationType);
+    }
+
+    protected List<Field> getAllFields(Class<?> type) {
+        List<Field> fields = new ArrayList<>(Arrays.asList(type.getDeclaredFields()));
+        if(type.getSuperclass() != null) {
+            fields.addAll(getAllFields(type.getSuperclass()));
+        }
+        return fields;
     }
 
 }
