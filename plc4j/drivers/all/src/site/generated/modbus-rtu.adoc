@@ -40,11 +40,17 @@
 |`request-timeout` |INT |5000| |Default timeout for all types of requests.
 |`unit-identifier` |INT |1| |Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
 5+|Transport config options:
-5+| - `tcp`
+5+|
++++
+<h4>tcp</h4>
++++
 |`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
 |`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
 |`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
-5+| - `serial`
+5+|
++++
+<h4>serial</h4>
++++
 |`serial.baud-rate` |INT |57600| |Baud-rate the serial port is set to.
 Typical values are:
 - 9600

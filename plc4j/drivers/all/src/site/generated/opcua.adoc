@@ -70,7 +70,10 @@ Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`encoding.max-message-size` |INT |2097152| |Maximum size of complete message.
 |`encoding.max-chunk-count` |INT |64| |Maximum number of chunks for both sent and received messages.
 5+|Transport config options:
-5+| - `tcp`
+5+|
++++
+<h4>tcp</h4>
++++
 |`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
 |`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
 |`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.

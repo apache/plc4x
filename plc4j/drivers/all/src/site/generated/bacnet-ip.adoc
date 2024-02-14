@@ -41,14 +41,23 @@
 |`ede-file-path` |STRING | | |Path to the location of a single EDE file, that contains the descriptor for the target device.
 |`ede-directory-path` |STRING | | |Path to the directory used for storing multiple EDE files. These files contain the descriptors for the possible target devices.
 5+|Transport config options:
-5+| - `udp`
+5+|
++++
+<h4>udp</h4>
++++
 |`udp.local-port` |INT |-1| |Some connections require a UDP listener to listen on a fixed port.
 Use this configuration option in order to define the port number of the local port.
-5+| - `tcp`
+5+|
++++
+<h4>tcp</h4>
++++
 |`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
 |`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
 |`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
-5+| - `pcap`
+5+|
++++
+<h4>pcap</h4>
++++
 |`pcap.support-vlans` |BOOLEAN |false| |Enables support for VLans
 |`pcap.replay-speed-factor` |FLOAT |1.0| |Numeric value for changing the replay speed:
 - 1 = Normal speed (default)

@@ -39,5 +39,8 @@
 |`node-id` |INT | | |Node id of the target device.
 |`request-timeout` |INT |1000| |Default timeout for all types of requests.
 5+|Transport config options:
-5+| - `socketcan`
+5+|
++++
+<h4>socketcan</h4>
++++
 |===

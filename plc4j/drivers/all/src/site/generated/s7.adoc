@@ -57,7 +57,10 @@
 |`ping-time` |INT |0| |If your application requires sampling times greater than the set "read-timeout" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily.
 |`retry-time` |INT |0| |Time value in seconds at which the execution of the PING will be scheduled. Generally set by developer experience, but generally should be the same as (read-timeout / 2).
 5+|Transport config options:
-5+| - `tcp`
+5+|
++++
+<h4>tcp</h4>
++++
 |`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
 |`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
 |`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.

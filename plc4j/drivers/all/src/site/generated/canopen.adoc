@@ -40,5 +40,8 @@
 |`heartbeat` |BOOLEAN | | |Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.
 |`request-timeout` |INT |1000| |Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.
 5+|Transport config options:
-5+| - `socketcan`
+5+|
++++
+<h4>socketcan</h4>
++++
 |===

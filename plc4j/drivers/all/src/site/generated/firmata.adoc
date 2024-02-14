@@ -37,7 +37,10 @@
  - `serial`
 5+|Config options:
 5+|Transport config options:
-5+| - `serial`
+5+|
++++
+<h4>serial</h4>
++++
 |`serial.baud-rate` |INT |57600| |Baud-rate the serial port is set to.
 Typical values are:
 - 9600
