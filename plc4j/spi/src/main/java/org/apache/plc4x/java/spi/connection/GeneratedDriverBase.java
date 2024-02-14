@@ -136,7 +136,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                                 option.getType(),
                                 option.getDescription(),
                                 option.isRequired(),
-                                option.getDefaultValue()
+                                option.getDefaultValue().orElse(null)
                             ))
                             .collect(Collectors.toList());
                     }
