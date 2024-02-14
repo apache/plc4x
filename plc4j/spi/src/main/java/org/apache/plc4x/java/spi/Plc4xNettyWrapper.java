@@ -28,7 +28,7 @@ import io.vavr.control.Either;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultConversationContext;

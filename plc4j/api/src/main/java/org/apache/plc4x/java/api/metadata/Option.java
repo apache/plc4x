@@ -19,6 +19,8 @@
 
 package org.apache.plc4x.java.api.metadata;
 
+import org.apache.plc4x.java.api.types.OptionType;
+
 import java.util.Optional;
 
 public interface Option {

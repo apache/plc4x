@@ -45,13 +45,11 @@ public class DriverService {
 
     public List<Driver> getDriverList() {
         List<Driver> drivers = new ArrayList<>();
-        for (String protocolCode : driverManager.listProtocolCodes()) {
+        for (String protocolCode : driverManager.getProtocolCodes()) {
             try {
                 PlcDriver driver = driverManager.getDriver(protocolCode);
                 PlcDriverMetadata metadata = driver.getMetadata();
-                // TODO: Get a list of all directly supported transports and for each a list of the configuration options.
-
-//                drivers.add(new Driver(protocolCode, driver.getProtocolName(), metadata.canDiscover(), metadata, null));
+                drivers.add(new Driver(protocolCode, driver.getProtocolName(), metadata));
             } catch (Exception e) {
                 throw new RuntimeException("Error retrieving driver list", e);
             }
@@ -61,13 +59,13 @@ public class DriverService {
 
     public void discover(String protocolCode) {
         if(ALL_DRIVERS.equals(protocolCode)) {
-            for (String curProtocolCode : driverManager.listProtocolCodes()) {
+            for (String curProtocolCode : driverManager.getProtocolCodes()) {
                 try {
                     if("modbus-tcp".equals(curProtocolCode)) {
                         continue;
                     }
                     PlcDriver driver = driverManager.getDriver(curProtocolCode);
-                    if (driver.getMetadata().canDiscover()) {
+                    if (driver.getMetadata().isDiscoverySupported()) {
                         discoverProtocol(curProtocolCode);
                     }
                 } catch (PlcConnectionException e) {
@@ -82,7 +80,7 @@ public class DriverService {
     private void discoverProtocol(String protocolCode) {
         try {
             PlcDriver driver = driverManager.getDriver(protocolCode);
-            if (!driver.getMetadata().canDiscover()) {
+            if (!driver.getMetadata().isDiscoverySupported()) {
                 throw new RuntimeException("Driver doesn't support discovery");
             } else {
                 PlcDiscoveryRequest request = driver.discoveryRequestBuilder().addQuery("all", "*").build();

@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.cbus;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
 import org.apache.plc4x.java.cbus.configuration.CBusTcpTransportConfiguration;

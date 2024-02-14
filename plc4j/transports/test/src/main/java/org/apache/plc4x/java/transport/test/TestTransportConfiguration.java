@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.transport.test;
 
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
 public class TestTransportConfiguration implements PlcTransportConfiguration {
 

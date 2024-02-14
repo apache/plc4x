@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.profinet.config;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;

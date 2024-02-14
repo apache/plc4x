@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.spi.parser;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;

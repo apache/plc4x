@@ -50,5 +50,6 @@ public interface PlcDriverMetadata {
     /**
      * @return true, if the current driver supports discovery.
      */
-    boolean canDiscover();
+    boolean isDiscoverySupported();
+
 }

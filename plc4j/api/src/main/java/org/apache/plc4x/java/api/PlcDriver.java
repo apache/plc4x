@@ -77,7 +77,7 @@ public interface PlcDriver {
             }
 
             @Override
-            public boolean canDiscover() {
+            public boolean isDiscoverySupported() {
                 return false;
             }
         };

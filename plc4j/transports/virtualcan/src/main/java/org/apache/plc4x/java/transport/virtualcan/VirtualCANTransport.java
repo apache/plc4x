@@ -19,7 +19,7 @@
 package org.apache.plc4x.java.transport.virtualcan;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.transport.can.CANFrameBuilder;

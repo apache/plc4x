@@ -20,7 +20,7 @@ package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
 import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;

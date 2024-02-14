@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.plc4x;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xConfiguration;
 import org.apache.plc4x.java.plc4x.config.Plc4xTcpTransportConfiguration;
 import org.apache.plc4x.java.plc4x.tag.Plc4XTagHandler;

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.transport.can;
 
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
 public interface CANTransportConfiguration extends PlcTransportConfiguration {
 

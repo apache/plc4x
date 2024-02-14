@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.transport.pcap;
 
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 public interface PcapTransportConfiguration extends PlcTransportConfiguration {

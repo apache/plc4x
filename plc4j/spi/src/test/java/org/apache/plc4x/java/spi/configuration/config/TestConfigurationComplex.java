@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.spi.configuration.config;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
 
 public class TestConfigurationComplex implements PlcConnectionConfiguration {

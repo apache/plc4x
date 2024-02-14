@@ -24,6 +24,7 @@ import java.util.List;
 public interface OptionMetadata {
 
     List<Option> getOptions();
+
     List<Option> getRequiredOptions();
 
 }

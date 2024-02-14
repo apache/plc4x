@@ -19,10 +19,9 @@
 package org.apache.plc4x.java.modbus.tcp;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;

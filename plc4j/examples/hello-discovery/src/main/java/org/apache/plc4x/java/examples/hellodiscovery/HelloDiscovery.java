@@ -44,12 +44,12 @@ public class HelloDiscovery {
         }
 
         PlcDriverManager plcDriverManager = PlcDriverManager.getDefault();
-        Set<String> driverCodes = plcDriverManager.listProtocolCodes();
+        Set<String> driverCodes = plcDriverManager.getProtocolCodes();
         for (String driverCode : driverCodes) {
             PlcDriver driver = plcDriverManager.getDriver(driverCode);
 
             // Check if this driver supports discovery.
-            if(driver.getMetadata().canDiscover()) {
+            if(driver.getMetadata().isDiscoverySupported()) {
                 logger.info("Executing Discovery for Driver: {}", driverCode);
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
                 PlcDiscoveryResponse discoveryResponse = discoveryRequest.executeWithHandler(

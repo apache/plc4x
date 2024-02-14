@@ -59,7 +59,7 @@ public class HelloWebservice {
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support subscriptions.
-            if (!plcConnection.getMetadata().canSubscribe()) {
+            if (!plcConnection.getMetadata().isSubscribeSupported()) {
                 logger.error("This connection doesn't support subscriptions.");
                 return;
             }

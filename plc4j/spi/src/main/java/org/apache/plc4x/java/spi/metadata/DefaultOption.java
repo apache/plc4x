@@ -20,7 +20,7 @@
 package org.apache.plc4x.java.spi.metadata;
 
 import org.apache.plc4x.java.api.metadata.Option;
-import org.apache.plc4x.java.api.metadata.OptionType;
+import org.apache.plc4x.java.api.types.OptionType;
 
 import java.util.Optional;
 

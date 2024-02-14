@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.can.generic;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.can.generic.configuration.GenericCANConfiguration;

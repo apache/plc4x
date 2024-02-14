@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.opcua.config;
 
-import org.apache.plc4x.java.api.configuration.PlcConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;

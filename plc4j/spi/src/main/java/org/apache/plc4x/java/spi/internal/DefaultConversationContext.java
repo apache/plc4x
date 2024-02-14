@@ -24,7 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.time.Duration;
 import java.util.function.Consumer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectedEvent;

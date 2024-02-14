@@ -19,9 +19,8 @@
 package org.apache.plc4x.java.openprotocol;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolConfiguration;
 import org.apache.plc4x.java.openprotocol.config.OpenProtocolTcpTransportConfiguration;
 import org.apache.plc4x.java.openprotocol.protocol.OpenProtocolProtocolLogic;

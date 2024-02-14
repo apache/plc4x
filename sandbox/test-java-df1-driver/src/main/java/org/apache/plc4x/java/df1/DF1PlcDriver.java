@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.df1;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.df1.configuration.Df1Configuration;
 import org.apache.plc4x.java.df1.field.Df1TagHandler;
 import org.apache.plc4x.java.df1.protocol.Df1ProtocolLogic;

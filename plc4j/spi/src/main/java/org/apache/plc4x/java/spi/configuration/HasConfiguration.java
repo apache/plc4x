@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.spi.configuration;
 
-import org.apache.plc4x.java.api.configuration.PlcConfiguration;
-
 /**
  * (Marker) Interface which can be used to tell PLC4X that a class (that is instantiated by PLC4X)
  * has a Configuration.

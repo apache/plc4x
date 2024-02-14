@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.transport.udp;
 
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
 public interface UdpTransportConfiguration extends PlcTransportConfiguration {
 

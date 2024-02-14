@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpRawSocketTransportConfiguration;

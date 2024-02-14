@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.bacnetip;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetIpConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetPcapReplayTransportConfiguration;
 import org.apache.plc4x.java.bacnetip.configuration.BacNetRawSocketTransportConfiguration;

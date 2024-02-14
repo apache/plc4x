@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.transport.can.CANTransport.FrameHandler;
 import org.apache.plc4x.java.transport.can.FrameData;

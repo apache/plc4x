@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.transport.tcp;
 
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
 /**
  * boolean keepalive = Boolean.parseBoolean(getPropertyOrDefault(SO_KEEPALIVE, "true"));

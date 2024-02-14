@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.spi.transport;
 
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 
 public interface Transport {

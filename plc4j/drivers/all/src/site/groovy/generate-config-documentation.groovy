@@ -50,7 +50,7 @@ Thread.currentThread().setContextClassLoader(moduleClassloader)
 def plcDriverManager = new DefaultPlcDriverManager(moduleClassloader)
 
 // Process all driver information.
-for (final def protocolCode in plcDriverManager.listProtocolCodes()) {
+for (final def protocolCode in plcDriverManager.getProtocolCodes()) {
     def outputFile = new File(project.getBasedir(), "src/site/generated/" + protocolCode + ".adoc")
     // In order to re-generate this file, make sure it doesn't exist.
     if(outputFile.exists()) {

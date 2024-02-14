@@ -37,7 +37,7 @@ function getByDriverTree(driverList: Driver[], deviceList: Device[]):TreeItemDat
                 name: value.name,
                 type: "DRIVER",
                 driver: value,
-                supportsDiscovery: value.supportsDiscovery,
+                supportsDiscovery: value.metadata.discoverySupported,
                 supportsBrowsing: false,
                 supportsReading: false,
                 supportsWriting: false,

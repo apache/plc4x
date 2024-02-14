@@ -19,8 +19,8 @@
 package org.apache.plc4x.java.iec608705104.readwrite;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014Configuration;
 import org.apache.plc4x.java.iec608705104.readwrite.configuration.Iec608705014TcpTransportConfiguration;
 import org.apache.plc4x.java.iec608705104.readwrite.protocol.Iec608705104Protocol;

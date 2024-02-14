@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.df1.configuration;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 
 public class Df1Configuration implements PlcConnectionConfiguration {

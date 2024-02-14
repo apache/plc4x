@@ -47,7 +47,7 @@ public class HelloPlc4xRead {
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support reading of data.
-            if (!plcConnection.getMetadata().canRead()) {
+            if (!plcConnection.getMetadata().isReadSupported()) {
                 logger.error("This connection doesn't support reading.");
                 return;
             }

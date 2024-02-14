@@ -17,14 +17,7 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.api.metadata;
+package org.apache.plc4x.java.spi.configuration;
 
-public enum OptionType {
-    BOOLEAN,
-    INT,
-    LONG,
-    FLOAT,
-    DOUBLE,
-    STRING,
-    STRUCT
+public interface PlcConfiguration {
 }
