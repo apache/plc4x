@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.connection;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.configuration.PlcConfiguration;
 import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
@@ -86,7 +87,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
             @Override
             public List<String> getSupportedTransportCodes() {
                 List<String> supportedTransportCodes = GeneratedDriverBase.this.getSupportedTransportCodes();
-                if(supportedTransportCodes.isEmpty() && (getDefaultTransportCode().isPresent())) {
+                if (supportedTransportCodes.isEmpty() && (getDefaultTransportCode().isPresent())) {
                     return Collections.singletonList(getDefaultTransportCode().get());
                 }
                 return GeneratedDriverBase.this.getSupportedTransportCodes();
@@ -98,100 +99,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                 if (clazz == null) {
                     return Optional.empty();
                 }
-                var options = getAllFields(clazz).stream().map(field -> {
-                        String key = null;
-                        var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
-                        if (configurationParameterAnnotation != null) {
-                            key = configurationParameterAnnotation.value();
-                            if(key.isEmpty()) {
-                                key = field.getName();
-                            }
-                        } else {
-                            var complexConfigurationParameterAnnotation = field.getAnnotation(ComplexConfigurationParameter.class);
-                            if (complexConfigurationParameterAnnotation != null) {
-                                key = complexConfigurationParameterAnnotation.prefix();
-                                // TODO: Add support for listing the options of a complex configuration parameter.
-                            }
-                        }
-                        if(key == null) {
-                            return null;
-                        }
-                        String description = "";
-                        var descriptionAnnotation = field.getAnnotation(Description.class);
-                        if (descriptionAnnotation != null) {
-                            description = descriptionAnnotation.value();
-                        }
-                        boolean required = false;
-                        var requiredAnnotation = field.getAnnotation(Required.class);
-                        if (requiredAnnotation != null) {
-                            required = true;
-                        }
-                        OptionType type;
-                        switch (field.getType().getSimpleName()) {
-                            case "boolean":
-                            case "Boolean":
-                                type = OptionType.BOOLEAN;
-                                break;
-                            case "float":
-                            case "Float":
-                                type = OptionType.FLOAT;
-                                break;
-                            case "double":
-                            case "Double":
-                                type = OptionType.DOUBLE;
-                                break;
-                            case "int":
-                            case "Integer":
-                                type = OptionType.INT;
-                                break;
-                            case "long":
-                            case "Long":
-                                type = OptionType.LONG;
-                                break;
-                            case "String":
-                                type = OptionType.STRING;
-                                break;
-                            default:
-                                // If there's a property-converter, use "STRING" as type.
-                                var parameterConverterAnnotation = field.getAnnotation(ParameterConverter.class);
-                                if(parameterConverterAnnotation != null) {
-                                   type = OptionType.STRING;
-                                } else {
-                                    type = OptionType.STRUCT;
-                                }
-                                break;
-                        }
-                        Object defaultValue = null;
-                        var booleanDefaultValueAnnotation = field.getAnnotation(BooleanDefaultValue.class);
-                        if (booleanDefaultValueAnnotation != null) {
-                            defaultValue = booleanDefaultValueAnnotation.value();
-                        }
-                        var doubleDefaultValueAnnotation = field.getAnnotation(DoubleDefaultValue.class);
-                        if (doubleDefaultValueAnnotation != null) {
-                            defaultValue = doubleDefaultValueAnnotation.value();
-                        }
-                        var floatDefaultValueAnnotation = field.getAnnotation(FloatDefaultValue.class);
-                        if (floatDefaultValueAnnotation != null) {
-                            defaultValue = floatDefaultValueAnnotation.value();
-                        }
-                        var intDefaultValueAnnotation = field.getAnnotation(IntDefaultValue.class);
-                        if (intDefaultValueAnnotation != null) {
-                            defaultValue = intDefaultValueAnnotation.value();
-                        }
-                        var longDefaultValueAnnotation = field.getAnnotation(LongDefaultValue.class);
-                        if (longDefaultValueAnnotation != null) {
-                            defaultValue = longDefaultValueAnnotation.value();
-                        }
-                        var stringDefaultValueAnnotation = field.getAnnotation(StringDefaultValue.class);
-                        if (stringDefaultValueAnnotation != null) {
-                            type = OptionType.STRING;
-                            defaultValue = stringDefaultValueAnnotation.value();
-                        }
-                        return new DefaultOption(key, type, description, required, defaultValue);
-                    })
-                    .filter(Objects::nonNull)
-                    .map(Option.class::cast)
-                    .collect(Collectors.toList());
+                var options = getOptions(clazz);
                 return Optional.of(new DefaultOptionMetadata(options));
             }
 
@@ -202,100 +110,120 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                     return Optional.empty();
                 }
                 var clazz = clazzOption.get();
-                var options = getAllFields(clazz).stream().map(field -> {
-                        String key = null;
-                        var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
-                        if (configurationParameterAnnotation != null) {
-                            key = configurationParameterAnnotation.value();
-                            if(key.isEmpty()) {
-                                key = field.getName();
-                            }
-                        } else {
-                            var complexConfigurationParameterAnnotation = field.getAnnotation(ComplexConfigurationParameter.class);
-                            if (complexConfigurationParameterAnnotation != null) {
-                                key = complexConfigurationParameterAnnotation.prefix();
-                                // TODO: Add support for listing the options of a complex configuration parameter.
-                            }
-                        }
-                        if(key == null) {
-                            return null;
-                        }
-                        String description = "";
-                        var descriptionAnnotation = field.getAnnotation(Description.class);
-                        if (descriptionAnnotation != null) {
-                            description = descriptionAnnotation.value();
-                        }
-                        boolean required = false;
-                        var requiredAnnotation = field.getAnnotation(Required.class);
-                        if (requiredAnnotation != null) {
-                            required = true;
-                        }
-                        OptionType type;
-                        switch (field.getType().getSimpleName()) {
-                            case "boolean":
-                            case "Boolean":
-                                type = OptionType.BOOLEAN;
-                                break;
-                            case "float":
-                            case "Float":
-                                type = OptionType.FLOAT;
-                                break;
-                            case "double":
-                            case "Double":
-                                type = OptionType.DOUBLE;
-                                break;
-                            case "int":
-                            case "Integer":
-                                type = OptionType.INT;
-                                break;
-                            case "long":
-                            case "Long":
-                                type = OptionType.LONG;
-                                break;
-                            case "String":
-                                type = OptionType.STRING;
-                                break;
-                            default:
-                                // If there's a property-converter, use "STRING" as type.
-                                var parameterConverterAnnotation = field.getAnnotation(ParameterConverter.class);
-                                if(parameterConverterAnnotation != null) {
-                                    type = OptionType.STRING;
-                                } else {
-                                    type = OptionType.STRUCT;
-                                }
-                                break;
-                        }
-                        Object defaultValue = null;
-                        var booleanDefaultValueAnnotation = field.getAnnotation(BooleanDefaultValue.class);
-                        if (booleanDefaultValueAnnotation != null) {
-                            defaultValue = booleanDefaultValueAnnotation.value();
-                        }
-                        var doubleDefaultValueAnnotation = field.getAnnotation(DoubleDefaultValue.class);
-                        if (doubleDefaultValueAnnotation != null) {
-                            defaultValue = doubleDefaultValueAnnotation.value();
-                        }
-                        var floatDefaultValueAnnotation = field.getAnnotation(FloatDefaultValue.class);
-                        if (floatDefaultValueAnnotation != null) {
-                            defaultValue = floatDefaultValueAnnotation.value();
-                        }
-                        var intDefaultValueAnnotation = field.getAnnotation(IntDefaultValue.class);
-                        if (intDefaultValueAnnotation != null) {
-                            defaultValue = intDefaultValueAnnotation.value();
-                        }
-                        var longDefaultValueAnnotation = field.getAnnotation(LongDefaultValue.class);
-                        if (longDefaultValueAnnotation != null) {
-                            defaultValue = longDefaultValueAnnotation.value();
-                        }
-                        var stringDefaultValueAnnotation = field.getAnnotation(StringDefaultValue.class);
-                        if (stringDefaultValueAnnotation != null) {
-                            defaultValue = stringDefaultValueAnnotation.value();
-                        }
-                        return new DefaultOption(key, type, description, required, defaultValue);
-                    })
+                var options = getOptions(clazz);
+                return Optional.of(new DefaultOptionMetadata(options));
+            }
+
+            private List<Option> getOptions(Class<? extends PlcConfiguration> clazz) {
+                return getAllFields(clazz).stream()
+                    .map(this::optionsForField)
+                    .flatMap(Collection::stream)
                     .filter(Objects::nonNull)
                     .map(Option.class::cast)
                     .collect(Collectors.toList());
-                return Optional.of(new DefaultOptionMetadata(options));
+            }
+
+            private List<DefaultOption> optionsForField(Field field) {
+                // check if this is a complex configuration parameter and bail early
+                var complexConfigurationParameterAnnotation = field.getAnnotation(ComplexConfigurationParameter.class);
+                if (complexConfigurationParameterAnnotation != null) {
+                    var prefix = complexConfigurationParameterAnnotation.prefix();
+                    if (PlcConfiguration.class.isAssignableFrom(field.getType())) {
+                        return getOptions((Class<? extends PlcConfiguration>) field.getType())
+                            .stream()
+                            .map(option -> new DefaultOption(
+                                prefix + "." + option.getKey(),
+                                option.getType(),
+                                option.getDescription(),
+                                option.isRequired(),
+                                option.getDefaultValue()
+                            ))
+                            .collect(Collectors.toList());
+                    }
+                }
+                String key = null;
+                var configurationParameterAnnotation = field.getAnnotation(ConfigurationParameter.class);
+                if (configurationParameterAnnotation != null) {
+                    key = configurationParameterAnnotation.value();
+                    if (key.isEmpty()) {
+                        key = field.getName();
+                    }
+                }
+                if (key == null) {
+                    return Collections.emptyList();
+                }
+                String description = "";
+                var descriptionAnnotation = field.getAnnotation(Description.class);
+                if (descriptionAnnotation != null) {
+                    description = descriptionAnnotation.value();
+                }
+                boolean required = false;
+                var requiredAnnotation = field.getAnnotation(Required.class);
+                if (requiredAnnotation != null) {
+                    required = true;
+                }
+                OptionType type;
+                switch (field.getType().getSimpleName()) {
+                    case "boolean":
+                    case "Boolean":
+                        type = OptionType.BOOLEAN;
+                        break;
+                    case "float":
+                    case "Float":
+                        type = OptionType.FLOAT;
+                        break;
+                    case "double":
+                    case "Double":
+                        type = OptionType.DOUBLE;
+                        break;
+                    case "int":
+                    case "Integer":
+                        type = OptionType.INT;
+                        break;
+                    case "long":
+                    case "Long":
+                        type = OptionType.LONG;
+                        break;
+                    case "String":
+                        type = OptionType.STRING;
+                        break;
+                    default:
+                        // If there's a property-converter, use "STRING" as type.
+                        var parameterConverterAnnotation = field.getAnnotation(ParameterConverter.class);
+                        if (parameterConverterAnnotation != null) {
+                            type = OptionType.STRING;
+                        } else {
+                            type = OptionType.STRUCT;
+                        }
+                        break;
+                }
+                Object defaultValue = null;
+                var booleanDefaultValueAnnotation = field.getAnnotation(BooleanDefaultValue.class);
+                if (booleanDefaultValueAnnotation != null) {
+                    defaultValue = booleanDefaultValueAnnotation.value();
+                }
+                var doubleDefaultValueAnnotation = field.getAnnotation(DoubleDefaultValue.class);
+                if (doubleDefaultValueAnnotation != null) {
+                    defaultValue = doubleDefaultValueAnnotation.value();
+                }
+                var floatDefaultValueAnnotation = field.getAnnotation(FloatDefaultValue.class);
+                if (floatDefaultValueAnnotation != null) {
+                    defaultValue = floatDefaultValueAnnotation.value();
+                }
+                var intDefaultValueAnnotation = field.getAnnotation(IntDefaultValue.class);
+                if (intDefaultValueAnnotation != null) {
+                    defaultValue = intDefaultValueAnnotation.value();
+                }
+                var longDefaultValueAnnotation = field.getAnnotation(LongDefaultValue.class);
+                if (longDefaultValueAnnotation != null) {
+                    defaultValue = longDefaultValueAnnotation.value();
+                }
+                var stringDefaultValueAnnotation = field.getAnnotation(StringDefaultValue.class);
+                if (stringDefaultValueAnnotation != null) {
+                    type = OptionType.STRING;
+                    defaultValue = stringDefaultValueAnnotation.value();
+                }
+                return Collections.singletonList(new DefaultOption(key, type, description, required, defaultValue));
             }
 
             @Override
@@ -497,7 +425,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
     protected List<Field> getAllFields(Class<?> type) {
         List<Field> fields = new ArrayList<>(Arrays.asList(type.getDeclaredFields()));
-        if(type.getSuperclass() != null) {
+        if (type.getSuperclass() != null) {
             fields.addAll(getAllFields(type.getSuperclass()));
         }
         return fields;
