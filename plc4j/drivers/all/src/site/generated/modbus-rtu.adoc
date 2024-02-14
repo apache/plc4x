@@ -24,6 +24,7 @@
 |Code 4+|`modbus-rtu`
 |Maven Dependency 4+|
 
+[subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
@@ -64,7 +65,7 @@ Typical values are:
 - 1
 - 2
 (The theoretical 1.5 stop-bits setting is not supported)
-|`serial.parity` |STRING |NO_PARITY| |Number of bits used to calculate data parity.
+|`serial.parity` |STRUCT |NO_PARITY| |Number of bits used to calculate data parity.
 This is used to detect errors in transmission.
 Allowed values are:
 - NO_PARITY

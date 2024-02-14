@@ -24,6 +24,7 @@
 |Code 4+|`opcua`
 |Maven Dependency 4+|
 
+[subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
@@ -64,10 +65,7 @@ Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.
 |`session-timeout` |LONG |120000| |Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.
 |`negotiation-timeout` |LONG |60000| |Timeout for all negotiation steps prior acceptance of application level operations - this timeout applies to open secure channel, create session and close calls. Defaults to 60 seconds.
 |`request-timeout` |LONG |30000| |Timeout for read/write/subscribe calls. Value in milliseconds.
-|`encoding.receive-buffer-size` |INT |Optional[65535]| |Maximum size of received TCP transport message chunk value in bytes.
-|`encoding.send-buffer-size` |INT |Optional[65535]| |Maximum size of sent transport message chunk.
-|`encoding.max-message-size` |INT |Optional[2097152]| |Maximum size of complete message.
-|`encoding.max-chunk-count` |INT |Optional[64]| |Maximum number of chunks for both sent and received messages.
+|`encoding` |STRUCT | | |TCP encoding options
 5+|Transport config options:
 5+| - `tcp`
 |`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?

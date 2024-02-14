@@ -24,6 +24,7 @@
 |Code 4+|`bacnet-ip`
 |Maven Dependency 4+|
 
+[subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>
