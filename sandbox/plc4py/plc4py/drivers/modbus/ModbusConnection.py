@@ -21,7 +21,7 @@ import logging
 from typing import Type, Awaitable
 
 import plc4py
-from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
@@ -41,7 +41,7 @@ from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection):
+class ModbusConnection(PlcConnection, PlcConnectionMetaData):
     """
     Modbus TCP PLC connection implementation
     """
@@ -131,6 +131,34 @@ class ModbusConnection(PlcConnection):
         logging.debug("Sending read request to ModbusDevice")
         future = asyncio.ensure_future(_request(request, self._device))
         return future
+
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        return True
+
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        return False
+
+    def is_subscribe_supported(self) -> bool:
+        """
+        Indicates if the connection supports subscription requests.
+        :return: True if connection supports subscriptions, False otherwise
+        """
+        return False
+
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        return False
 
 
 class ModbusDriver(PlcDriver):

@@ -19,15 +19,17 @@
 
 === Using the PLC4Py API directly
 
-Currently, you need to install PLC4Py from the GitHub repository instead of pypi. Navigate to the sandbox/plc4py directory
-and run. This will install plc4py in your global repository.
+Currently, you need to install PLC4Py from the GitHub repository instead of pypi.
+Once we have decided that PLC4Py is in a position to release we will publish to pypi.
+
+Navigate to the sandbox/plc4py directory and run. This will install plc4py in your global repository.
 
 [subs=attributes+]
 ----
    pip install .
 ----
 
-You now should be able to use PLC4PY in your application. A short example is shown below.
+You now should be able to use PLC4Py in your application. A minimal example is shown below.
 
 ----
 from plc4py.PlcDriverManager import PlcDriverManager
@@ -50,11 +52,11 @@ PLC4X generally supports a very limited set of functions, which is not due to th
 
 The basic functions supported by PLCs and therefore supported by PLC4X are:
 
-* Discover Devices
+* Discover Devices (Not yet available for PLC4Py)
 * List resources in the PLC
 * Read data
-* Write data
-* Subscribe for data
+* Write data (Not yet available for PLC4Py)
+* Subscribe for data (Not yet available for PLC4Py)
 
 In general, we will try to offer as many features as possible.
 So if a protocol doesn't support subscription based communication it is our goal to simulate this by polling in the background, so it is transparent for the users (This simulation feature hasn't been implemented yet though, but it's on our roadmap).
@@ -62,32 +64,29 @@ So if a protocol doesn't support subscription based communication it is our goal
 But there are some cases in which we can't simulate or features are simply disabled intentionally:
 
 * If a PLC and/or protocol don't support writing or browsing, we simply can't provide this functionality.
-* Also do we plan on providing stripped down versions of drivers, that for example intentionally don't support any writing of data.
 
 Therefore, we use metadata to check programmatically, if a given feature is available.
 
 ==== Reading Data
 
 ----
-// Check if this connection support reading of data.
-if (!plcConnection.getMetadata().isReadSupported()) {
-  logger.error("This connection doesn't support reading.");
-  return;
-}
+
+# Check if this connection support reading of data.
+if connection.is_read_supported():
+    logger.error("This connection doesn't support reading.")
+
 ----
 
 As soon as you have ensured that a feature is available, you are ready to build a first request.
-This is done by getting a `PlcReadRequest.Builder`:
+This is done by getting a `ReadRequestBuilder`:
 
 ----
-// Create a new read request:
-// - Give the single item requested an alias name
-PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-builder.addTagAddress("value-1", "%Q0.4:BOOL");
-builder.addTagAddress("value-2", "%Q0:BYTE");
-builder.addTagAddress("value-3", "%I0.2:BOOL");
-builder.addTagAddress("value-4", "%DB.DB1.4:INT");
-PlcReadRequest readRequest = builder.build();
+# Create a new read request:
+# - Give the single item requested an alias name
+with connection.read_request_builder() as builder:
+    builder.add_item("Random Tag", "4x00001[10]")
+    builder.add_item("Random Tag", "4x00011")
+    request = builder.build()
 ----
 
 So, as you can see, you prepare a request, by adding tag addresses to the request and in the end by calling the `build` method.

@@ -75,3 +75,38 @@ class PlcConnection(GenericGenerator):
         future = loop.create_future()
         future.set_result(PlcResponse(code))
         return future
+
+
+class PlcConnectionMetaData:
+
+    @abstractmethod
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def is_subscribe_supported(self) -> bool:
+        """
+        Indicates if the connection supports subscription requests.
+        :return: True if connection supports subscriptions, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        pass
