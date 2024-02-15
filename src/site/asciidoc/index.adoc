@@ -40,7 +40,7 @@
                         industrial
                         programmable logic controllers (PLCs) using a variety of protocols but with a shared API.</div>
                     <div class="center text-center">
-                    <a href="users/gettingstarted.html"
+                    <a href="users/getting-started/plc4j.html"
                        class="plc4x-button plc4x-button-large plc4x-button-primary text-center"><i
                             class="fas fa-rocket"></i> Get started
                     </a>
