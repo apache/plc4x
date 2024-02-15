@@ -60,12 +60,11 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
     public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
         CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
 
-        // 0x00 should be the "vendor-id" and is part of the basic level
-        // This is theoretically required, however have I never come across
-        // an implementation that actually provides it.
-        final ModbusPDU identificationRequestPdu = new ModbusPDUReadDeviceIdentificationRequest(
-            ModbusDeviceInformationLevel.BASIC, (short) 0x00);
-        ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, identificationRequestPdu);
+        // As it seems that even, if Modbus defines a DeviceIdentificationRequest, no device actually implements this.
+        // So we fall back to a request, that most certainly is implemented by any device. Even if the device doesn't
+        // have any holding-register:1, it should still gracefully respond.
+        ModbusPDU readRequestPdu = getReadRequestPdu(pingAddress);
+        ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(modbusRtuADU)

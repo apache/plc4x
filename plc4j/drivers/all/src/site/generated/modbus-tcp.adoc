@@ -38,6 +38,7 @@
 5+|Config options:
 |`request-timeout` |INT |5000| |Default timeout for all types of requests.
 |`unit-identifier` |INT |1| |Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
+|`ping-address` |STRING |4x00001:BOOL| |Simple address, that the driver will use to check, if the connection to a given device is active (Defaults to reading holding-register 1).
 5+|Transport config options:
 5+|
 +++

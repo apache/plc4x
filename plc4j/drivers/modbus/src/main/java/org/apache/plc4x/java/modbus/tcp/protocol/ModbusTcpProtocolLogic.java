@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpConfiguration;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -48,6 +49,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
     public void setConfiguration(ModbusTcpConfiguration configuration) {
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.unitIdentifier = (short) configuration.getUnitIdentifier();
+        this.pingAddress = new ModbusTagHandler().parseTag(configuration.getPingAddress());
         this.tm = new RequestTransactionManager(1);
     }
 
@@ -60,17 +62,16 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
     public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
         CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
 
-        // 0x00 should be the "vendor-id" and is part of the basic level
-        // This is theoretically required, however have I never come across
-        // an implementation that actually provides it.
-        final ModbusPDU identificationRequestPdu = new ModbusPDUReadDeviceIdentificationRequest(
-            ModbusDeviceInformationLevel.BASIC, (short) 0x00);
+        // As it seems that even, if Modbus defines a DeviceIdentificationRequest, no device actually implements this.
+        // So we fall back to a request, that most certainly is implemented by any device. Even if the device doesn't
+        // have any holding-register:1, it should still gracefully respond.
+        ModbusPDU readRequestPdu = getReadRequestPdu(pingAddress);
         int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
         if (transactionIdentifierGenerator.get() == 0xFFFF) {
             transactionIdentifierGenerator.set(1);
         }
-        ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, identificationRequestPdu);
+        ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(modbusTcpADU)

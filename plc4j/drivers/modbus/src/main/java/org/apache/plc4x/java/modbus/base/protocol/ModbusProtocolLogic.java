@@ -48,6 +48,8 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected final DriverType driverType;
     protected Duration requestTimeout;
     protected short unitIdentifier;
+    protected PlcTag pingAddress;
+
     protected RequestTransactionManager tm;
     protected final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
     protected final static int FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH = 2;

@@ -57,8 +57,8 @@ export interface ApplicationEvent extends EventObject {
 }
 
 export interface OptionMetadata {
-    options: Option[];
     requiredOptions: Option[];
+    options: Option[];
 }
 
 export interface EventObject extends Serializable {
