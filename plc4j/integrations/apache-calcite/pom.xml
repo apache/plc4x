@@ -32,7 +32,7 @@
   <name>PLC4J: Integrations: Apache Calcite</name>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T07:25:19Z</project.build.outputTimestamp>
     <calcite-core.version>1.36.0</calcite-core.version>
   </properties>
 
