@@ -22,18 +22,30 @@
 # 0. Check if the release properties file exists.
 
 # 1. Do a simple release-perform command skip signing of artifacts and deploy to local directory (inside the Docker container)
+echo "Performing Release:"
 docker compose run --rm releaser bash /ws/mvnw -e -Dmaven.repo.local=/ws/out/.repository -DaltDeploymentRepository=snapshot-repo::default::file:/ws/out/.local-artifacts-dir release:perform
+if [ $? -ne 0 ]; then
+    echo "Got non-0 exit code from docker compose, aborting."
+    exit 1
+fi
 
 # 2. Sign all artifacts
+echo "Signing artifacts:"
 find ./out/.local-artifacts-dir -print | grep -E '^((.*\.pom)|(.*\.jar)|(.*\.kar)|(.*\.nar)|(.*-features\.xml)|(.*-cycloneds\.json)|(.*-cycloneds\.xml)|(.*-site\.xml)|(.*\.zip))$' | while read -r line ; do
     echo "Processing $line"
     gpg -ab "$line"
 done
 
 # 3. Deploy the artifacts to Nexus
+echo "Deploying artifacts:"
 ../mvnw -f jenkins.pom -X -P deploy-releases wagon:upload
+if [ $? -ne 0 ]; then
+    echo "Got non-0 exit code from maven deployment, aborting."
+    exit 1
+fi
 
 # 4. Prepare a directory for the release candidate
+echo "Staging release candidate:"
 RELEASE_VERSION=$(find ../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/ -maxdepth 1 -type d | grep -vE 'plc4x-parent/$' | xargs -n 1 basename)
 mkdir -p "../out/stage/${RELEASE_VERSION}/rc1"
 cp ../README.md "../out/stage/${RELEASE_VERSION}/rc1/README"
