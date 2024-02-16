@@ -26,7 +26,7 @@
     <parent>
         <groupId>org.apache</groupId>
         <artifactId>apache</artifactId>
-        <version>22</version>
+        <version>31</version>
     </parent>
 
     <groupId>org.apache.plc4x</groupId>
@@ -62,6 +62,24 @@
                             <includes>**</includes>
                             <serverId>apache.snapshots.https</serverId>
                             <url>${distMgmtSnapshotsUrl}</url>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>deploy-releases</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <version>2.0.0</version>
+                        <configuration>
+                            <fromDir>${project.basedir}/out/.local-artifacts-dir</fromDir>
+                            <includes>**</includes>
+                            <serverId>apache.releases.https</serverId>
+                            <url>${distMgmtReleasesUrl}</url>
                         </configuration>
                     </plugin>
                 </plugins>
