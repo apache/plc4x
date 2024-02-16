@@ -73,7 +73,8 @@ Incompatible changes\n\
 \n\
 Bug Fixes\n\
 ---------\n\
-\
+\n\
+==============================================================\n\
 "
 echo NEW_VERSION
 sed -i '' "1s/.*/$NEW_HEADER/" ../RELEASE_NOTES
