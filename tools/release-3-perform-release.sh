@@ -39,10 +39,6 @@ done
 # 3. Deploy the artifacts to Nexus
 echo "Deploying artifacts:"
 ../mvnw -f ../jenkins.pom -X -P deploy-releases wagon:upload
-if [ $? -ne 0 ]; then
-    echo "Got non-0 exit code from maven deployment, aborting."
-    exit 1
-fi
 
 # 4. Prepare a directory for the release candidate
 echo "Staging release candidate:"
@@ -55,6 +51,10 @@ cp ../RELEASE_NOTES "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}"
 cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-source-release.zip"
 cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip.asc" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-source-release.zip.asc"
 cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip.sha512" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-source-release.zip.sha512"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.json" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.json"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.json.asc" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.json.asc"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.xml" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.xml"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.xml.asc" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.xml.asc"
 
 # 5. Upload the release candidate artifacts to SVN
 cd "../out/stage/${RELEASE_VERSION}" || exit
