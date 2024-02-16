@@ -1920,7 +1920,7 @@
                   <goal>deploy</goal>
                 </goals>
                 <configuration>
-                  <altReleaseDeploymentRepository>apache.releases.https::/ws/out/.local-artifacts-dir</altReleaseDeploymentRepository>
+                  <altReleaseDeploymentRepository>apache.releases.https::file:/ws/out/.local-artifacts-dir</altReleaseDeploymentRepository>
                 </configuration>
               </execution>
             </executions>
