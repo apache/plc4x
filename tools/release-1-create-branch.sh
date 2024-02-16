@@ -41,7 +41,7 @@ echo "New develop Version: '$NEW_VERSION'"
 # 2. Ask if the RELEASE_NOTES have been filled out at all (local)
 read -p "Have the RELEASE_NOTES been updated for this version? (yes/no) " yn
 case $yn in
-	yes ) echo continuing with the proess;;
+	yes ) echo continuing with the process;;
 	no ) echo Please update the RELEASE_NOTES first;
 		exit 1;;
 	* ) echo invalid response;
