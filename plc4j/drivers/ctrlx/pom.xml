@@ -32,7 +32,7 @@
   <description>Implementation of a driver able to communicate with Boschrexroth CtrlX controllers.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:32:22Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
   </properties>
 
   <build>

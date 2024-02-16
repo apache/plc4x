@@ -33,7 +33,7 @@
   <description>Server that can be used by drivers of the 'plc4x' protocol to relay requests which are then executed on this machine.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:32:22Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
   </properties>
 
   <build>

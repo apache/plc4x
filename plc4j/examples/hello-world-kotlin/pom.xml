@@ -30,7 +30,7 @@
   <name>PLC4J: Examples: Hello-World: Kotlin</name>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:25:01Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <project.build.outputTimestamp>2024-02-16T14:32:21Z</project.build.outputTimestamp>
     <kotlin.version>1.9.22</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>

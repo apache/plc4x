@@ -33,7 +33,7 @@
   <description>Protocol specification for the Firmata protocol, mostly used for Arduino communication.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:32:21Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
