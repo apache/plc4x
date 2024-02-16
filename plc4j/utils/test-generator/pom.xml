@@ -24,7 +24,7 @@
   <parent>
     <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.13.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils-test-generator</artifactId>
@@ -33,7 +33,7 @@
   <description>Generates tests.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:25:01Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:32:22Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -102,12 +102,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -141,17 +141,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-iec-60870</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
