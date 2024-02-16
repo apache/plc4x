@@ -209,7 +209,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks install
+./mvnw -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks,update-generated-code install
 ```
 
 ## Community

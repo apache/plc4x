@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.13.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-open-protocol</artifactId>
@@ -32,7 +32,7 @@
   <description>Implementation of a PLC4X driver for the Open-Protocol protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T11:48:19Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T13:55:14Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -99,23 +99,23 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-serial</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -126,14 +126,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-open-protocol</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -179,7 +179,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-open-protocol</artifactId>
-          <version>0.13.0-SNAPSHOT</version>
+          <version>0.12.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

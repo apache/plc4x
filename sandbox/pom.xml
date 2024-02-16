@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.13.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.sandbox</groupId>
@@ -35,7 +35,7 @@
   <description>Place where new stuff is located before it is regarded production-quality.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T11:48:19Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T13:55:11Z</project.build.outputTimestamp>
   </properties>
 
   <build>
