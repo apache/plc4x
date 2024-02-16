@@ -48,7 +48,7 @@
             </goals>
             <configuration>
               <protocolName>test</protocolName>
-              <languageName>java</languageName>
+              <languageName>python</languageName>
               <outputFlavor>read-write</outputFlavor>
             </configuration>
           </execution>
