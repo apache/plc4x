@@ -28,9 +28,9 @@
     <relativePath>../../../..</relativePath>
   </parent>
 
-  <artifactId>plc4j-java-mspec-test</artifactId>
+  <artifactId>plc4j-python-mspec-test</artifactId>
 
-  <name>PLC4J: Driver: Java Mspec Test</name>
+  <name>PLC4J: Driver: Python Mspec Test</name>
   <description></description>
 
   <build>
@@ -174,7 +174,7 @@
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java</artifactId>
+      <artifactId>plc4x-code-generation-language-python</artifactId>
       <version>@project.version@</version>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
