@@ -33,7 +33,7 @@
   <description>Fake protocol intended for demonstrating the different features and aspects of MSpec.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:27Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T10:03:35Z</project.build.outputTimestamp>
   </properties>
 
   <build>

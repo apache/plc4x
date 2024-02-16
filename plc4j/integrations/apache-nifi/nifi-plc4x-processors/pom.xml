@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>org.apache.plc4x</groupId>
 		<artifactId>plc4j-apache-nifi</artifactId>
-		<version>0.13.0-SNAPSHOT</version>
+		<version>0.12.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>plc4j-nifi-plc4x-processors</artifactId>
@@ -31,24 +31,24 @@
 	<name>PLC4J: Integrations: Apache Nifi: Processors</name>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:40:12Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T10:03:36Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-api</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-connection-cache</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-spi</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.nifi</groupId>
@@ -118,55 +118,55 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-modbus</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-opcua</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-s7</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-simulated</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-pcap-replay</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-raw-socket</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-serial</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-tcp</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-transport-udp</artifactId>
-			<version>0.13.0-SNAPSHOT</version>
+			<version>0.12.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 

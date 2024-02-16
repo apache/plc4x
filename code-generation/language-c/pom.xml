@@ -33,7 +33,7 @@
   <description>Code generation template for generating C code</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:26Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T10:03:34Z</project.build.outputTimestamp>
   </properties>
 
   <build>
