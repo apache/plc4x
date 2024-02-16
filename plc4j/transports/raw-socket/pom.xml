@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-transports</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.0</version>
   </parent>
 
   <artifactId>plc4j-transport-raw-socket</artifactId>
@@ -32,34 +32,34 @@
   <description>Base classes needed to implement plc4x drivers based on Raw Socket connections.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T15:44:54Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-pcap-shared</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-raw-sockets</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
     </dependency>
 
     <dependency>

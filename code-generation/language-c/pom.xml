@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.0</version>
   </parent>
 
   <artifactId>plc4x-code-generation-language-c</artifactId>
@@ -33,7 +33,7 @@
   <description>Code generation template for generating C code</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T15:44:54Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -88,7 +88,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
     </dependency>
 
     <dependency>
@@ -107,7 +107,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
       <scope>compile</scope>
     </dependency>
 
@@ -115,13 +115,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-protocol-test</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.0</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
