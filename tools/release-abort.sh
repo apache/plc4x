@@ -56,6 +56,7 @@ echo "git push origin --delete v{version}"
 # Delete left-over files from the last attempt.
 find .. -type f -name 'release.properties' -delete
 find .. -type f -name 'pom.xml.versionsBackup' -delete
+find .. -type f -name 'pom.xml.releaseBackup' -delete
 
 # Set the local development version back to the initial one.
 ../mvnw -f ../pom.xml -e -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,update-generated-code -Dmaven.repo.local="$DIRECTORY/../out/.repository" versions:set -DnewVersion="$PRE_RELEASE_VERSION"
