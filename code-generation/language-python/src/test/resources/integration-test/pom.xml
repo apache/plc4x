@@ -30,7 +30,7 @@
 
   <artifactId>plc4j-python-mspec-test</artifactId>
 
-  <name>PLC4J: Driver: Python Mspec Test</name>
+  <name>PLC4PY: Driver: Python Mspec Test</name>
   <description></description>
 
   <build>
