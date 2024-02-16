@@ -52,6 +52,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# 4. Make sure the generated driver documentation is up-to-date.
+docker compose run --rm releaser bash /ws/mvnw -e -P with-java -Dmaven.repo.local=/ws/out/.repository clean site -pl :plc4j-driver-all
+if [ $? -ne 0 ]; then
+    echo "Got non-0 exit code from docker compose, aborting."
+    exit 1
+fi
+
 # Check if there is unchanged files (or committing and pushing nothing will fail) (local)
 if [[ $(git status --porcelain) ]]; then
   echo "Committing changes."

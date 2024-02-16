@@ -20,7 +20,7 @@ Incompatible changes
 - Java 8 is no longer officially supported and Java 11 is the
   new base-line.
 - Renamed the PlcDriverManager method `listDrivers` to
-  `listProtocolCodes`
+  `getProtocolCodes`
 - The configuration syntax for configuring transport-related
   config options in the connection-string was updated to be
   now prefixed with the transport name the option belongs to.
