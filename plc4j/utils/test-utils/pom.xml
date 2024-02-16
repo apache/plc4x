@@ -33,7 +33,7 @@
   <description>A set of test utils. Especially defining the test-categories used to categorize tests.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:17:42Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:17:50Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>

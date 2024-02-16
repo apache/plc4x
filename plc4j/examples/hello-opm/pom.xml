@@ -32,7 +32,7 @@
   <description>Hello World example of PLC4X using the OPM feature.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:17:42Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:17:50Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.examples.helloopm.HelloOpm</app.main.class>
   </properties>
 
