@@ -1909,6 +1909,22 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-deploy</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+                <configuration>
+                  <altReleaseDeploymentRepository>apache.releases.https::/ws/out/.local-artifacts-dir</altReleaseDeploymentRepository>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <!--
             Generate an SBOM for the project
           -->
