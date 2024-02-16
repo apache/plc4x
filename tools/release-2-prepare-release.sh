@@ -26,7 +26,7 @@ if [[ $(git status --porcelain) ]]; then
   exit 1
 fi
 
-PROJECT_VERSION=$(../mvnw -f ../pom.xml -q -Dexec.executable=echo -Dexec.args="${project.version}" --non-recursive exec:exec)
+PROJECT_VERSION=$(../mvnw -f ../pom.xml -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec)
 RELEASE_VERSION=${PROJECT_VERSION%"-SNAPSHOT"}
 IFS='.' read -ra VERSION_SEGMENTS <<< "$RELEASE_VERSION"
 NEW_VERSION="${VERSION_SEGMENTS[0]}.${VERSION_SEGMENTS[1]}.$((VERSION_SEGMENTS[2] + 1))-SNAPSHOT"
