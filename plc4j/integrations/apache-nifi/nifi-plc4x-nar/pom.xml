@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>org.apache.plc4x</groupId>
 		<artifactId>plc4j-apache-nifi</artifactId>
-		<version>0.12.0-SNAPSHOT</version>
+		<version>0.13.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>plc4j-nifi-plc4x-nar</artifactId>
@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-nifi-plc4x-processors</artifactId>
-			<version>0.12.0-SNAPSHOT</version>
+			<version>0.13.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -74,14 +74,14 @@
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-api</artifactId>
-			<version>0.12.0-SNAPSHOT</version>
+			<version>0.13.0-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Bundle Drivers -->
 		<dependency>
 			<groupId>org.apache.plc4x</groupId>
 			<artifactId>plc4j-driver-all</artifactId>
-			<version>0.12.0-SNAPSHOT</version>
+			<version>0.13.0-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 	</dependencies>
