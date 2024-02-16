@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.13.0-SNAPSHOT</version>
+    <version>0.12.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-spi</artifactId>
@@ -31,7 +31,7 @@
   <description>Internal API Module.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T07:25:19Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T08:53:05Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
@@ -76,7 +76,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
+      <version>0.12.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
