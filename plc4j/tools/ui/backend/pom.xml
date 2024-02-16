@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools-ui</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-tools-ui-backend</artifactId>
@@ -114,17 +114,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-cache</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-all</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
 

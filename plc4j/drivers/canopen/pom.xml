@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-canopen</artifactId>
@@ -33,7 +33,7 @@
   <description>Implementation of CANopen driver.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T08:53:06Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:17:42Z</project.build.outputTimestamp>
   </properties>
 
   <build>
@@ -91,24 +91,24 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-can</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-can</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -133,13 +133,13 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-test</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -151,7 +151,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-canopen</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -189,7 +189,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-canopen</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.12.1-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

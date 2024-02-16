@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-integrations</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-apache-kafka</artifactId>
@@ -32,7 +32,7 @@
   <description>Integration module for integrating PLC4X into Apache Kafka (Kafka-Connect-Plugin)</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T08:53:06Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:17:42Z</project.build.outputTimestamp>
     <kafka.version>3.2.0</kafka.version>
     <kafka.connect.maven.plugin.version>0.12.0</kafka.connect.maven.plugin.version>
   </properties>
@@ -156,17 +156,17 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-scraper</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-cache</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -186,7 +186,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-all</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.12.1-SNAPSHOT</version>
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>
