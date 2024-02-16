@@ -35,7 +35,7 @@
   <description>Parent of all java based application example modules.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T13:55:12Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:25:00Z</project.build.outputTimestamp>
     <app.main.class>override-this-property-in-application-pom</app.main.class>
   </properties>
 

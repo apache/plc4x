@@ -32,7 +32,7 @@
 	<name>PLC4J: Integrations: Apache Nifi: NAR</name>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T13:55:15Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:25:00Z</project.build.outputTimestamp>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<source.skip>true</source.skip>
 	</properties>

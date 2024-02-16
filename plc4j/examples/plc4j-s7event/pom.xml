@@ -35,7 +35,7 @@
   </description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T13:55:14Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:25:00Z</project.build.outputTimestamp>
   </properties>
 
   <!-- TODO: This is only needed, because the example accesses direct types of the S7 driver we should refactor this to something that is a pure PLC4X API type of thing -->

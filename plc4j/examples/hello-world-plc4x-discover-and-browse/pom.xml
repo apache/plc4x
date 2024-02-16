@@ -32,7 +32,7 @@
   <description>Hello world application for PLC4X using the discovery and browse-API.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T13:55:14Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:25:00Z</project.build.outputTimestamp>
     <app.main.class>
       org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse.HelloPlc4xDiscoverAndBrowse
     </app.main.class>

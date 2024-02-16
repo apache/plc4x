@@ -34,7 +34,7 @@
   <description>Collection of base-types for implementing different types of drivers.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T13:55:13Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:25:00Z</project.build.outputTimestamp>
   </properties>
 
   <modules>
