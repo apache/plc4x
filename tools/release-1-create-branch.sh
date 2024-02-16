@@ -52,7 +52,7 @@ read -p "What is your apache user-id? " userId
 read -p "What is your real name? " realName
 
 # 3. Do a simple maven branch command with pushChanges=false (inside the Docker container)
-docker compose run --rm releaser bash git config --global user.email "$userId@apache.org" && git config --global user.name "$realName" && /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpushChanges=false -DdevelopmentVersion="$NEW_VERSION" -DbranchName="$BRANCH_NAME"
+docker compose run --rm releaser bash sudo git config --global user.email "$userId@apache.org" && git sudo config --global user.name "$realName" && /ws/mvnw -e -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox -Dmaven.repo.local=/ws/out/.repository release:branch -DautoVersionSubmodules=true -DpushChanges=false -DdevelopmentVersion="$NEW_VERSION" -DbranchName="$BRANCH_NAME"
 if [ $? -ne 0 ]; then
     echo "Got non-0 exit code from docker compose, aborting."
     exit 1
