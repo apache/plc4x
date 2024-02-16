@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools</artifactId>
-    <version>0.12.0</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-opcua-server</artifactId>
@@ -31,7 +31,7 @@
   <name>PLC4J: Tools: OPC-UA Server</name>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T15:44:54Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T15:57:46Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
   </properties>
 
@@ -95,20 +95,20 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-connection-cache</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <!-- Include all drivers -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-all</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>

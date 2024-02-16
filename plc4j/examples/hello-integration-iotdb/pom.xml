@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.12.0</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-hello-integration-iotdb</artifactId>
@@ -32,7 +32,7 @@
   <description>Application outputting PLC data into IoTDB.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T15:44:54Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T15:57:46Z</project.build.outputTimestamp>
     <iotdb.version>1.2.2</iotdb.version>
 
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>
@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>

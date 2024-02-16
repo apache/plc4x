@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.12.0</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-hello-world-plc4x-discover-and-browse</artifactId>
@@ -32,7 +32,7 @@
   <description>Hello world application for PLC4X using the discovery and browse-API.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T15:44:54Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T15:57:46Z</project.build.outputTimestamp>
     <app.main.class>
       org.apache.plc4x.java.examples.helloplc4x.discoverandbrowse.HelloPlc4xDiscoverAndBrowse
     </app.main.class>
@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>

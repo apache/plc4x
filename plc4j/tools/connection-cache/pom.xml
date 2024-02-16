@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-tools</artifactId>
-    <version>0.12.0</version>
+    <version>0.12.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-connection-cache</artifactId>
@@ -33,26 +33,26 @@
   <description>An implementation of a connection cache.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T15:44:54Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T15:57:46Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-ads</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-mock</artifactId>
-      <version>0.12.0</version>
+      <version>0.12.1-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
