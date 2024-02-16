@@ -27,6 +27,7 @@
   </parent>
 
   <artifactId>plc4j-tools-ui-application</artifactId>
+  <name>PLC4J: Tools: Application</name>
 
   <build>
     <plugins>

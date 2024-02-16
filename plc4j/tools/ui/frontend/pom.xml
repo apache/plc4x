@@ -27,6 +27,7 @@
   </parent>
 
   <artifactId>plc4j-tools-ui-frontend</artifactId>
+  <name>PLC4J: Tools: Frontend</name>
 
   <properties>
   </properties>

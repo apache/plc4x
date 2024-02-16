@@ -27,6 +27,7 @@
   </parent>
 
   <artifactId>plc4j-tools-ui-backend</artifactId>
+  <name>PLC4J: Tools: Backend</name>
 
   <build>
     <plugins>
