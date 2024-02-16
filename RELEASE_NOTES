@@ -13,6 +13,8 @@ New Features
 - Build: Worked on making PLC4X provide reproducible builds.
 - Added "Ping" functionality to: ADS, EIP, KNX, Mock, Modbus
   and Simulated drivers.
+- The OPC-UA Java driver now support certificate-based
+  authentication and encryption.
 
 Incompatible changes
 --------------------
@@ -21,6 +23,11 @@ Incompatible changes
   new base-line.
 - Renamed the PlcDriverManager method `listDrivers` to
   `getProtocolCodes`
+- Renamed the PlcDriverMetadata method `canDiscover` to
+  `isDiscoverySupported`
+- Renamed the PlcConnectionMetadata methods `canRead`, `canWrite`
+  `canSubscribe` and `canBrowse` to `isReadSupported`,
+  `isWriteSupported`, `isSubscribeSupported` and `isBrowseSupported`
 - The configuration syntax for configuring transport-related
   config options in the connection-string was updated to be
   now prefixed with the transport name the option belongs to.
