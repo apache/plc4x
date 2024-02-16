@@ -1,6 +1,6 @@
 /*-
  * #%L
- * plc4j-tools-ui-frontend
+ * PLC4J: Tools: Frontend
  * %%
  * Copyright (C) 2017 - 2024 The Apache Software Foundation
  * %%
@@ -57,8 +57,8 @@ export interface ApplicationEvent extends EventObject {
 }
 
 export interface OptionMetadata {
-    requiredOptions: Option[];
     options: Option[];
+    requiredOptions: Option[];
 }
 
 export interface EventObject extends Serializable {
@@ -69,8 +69,8 @@ export interface Option {
     key: string;
     type: OptionType;
     defaultValue?: any;
-    description: string;
     required: boolean;
+    description: string;
 }
 
 export interface Serializable {
