@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4net</artifactId>
@@ -104,7 +104,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -150,7 +150,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-knxnetip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>

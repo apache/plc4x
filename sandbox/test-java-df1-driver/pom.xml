@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.plc4x.sandbox</groupId>
     <artifactId>plc4x-sandbox</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>test-java-df1-driver</artifactId>
@@ -38,18 +38,18 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-serial</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <optional>true</optional>
     </dependency>
 
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -123,7 +123,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
@@ -169,7 +169,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-df1</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
