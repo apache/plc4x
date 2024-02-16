@@ -35,7 +35,7 @@
 
   <build>
     <plugins>
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.plc4x.plugins</groupId>
         <artifactId>plc4x-maven-plugin</artifactId>
         <version>${plc4x-code-generation.version}</version>
@@ -53,7 +53,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -90,41 +90,6 @@
   </build>
 
 <dependencies>
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-api</artifactId>
-    <version>@project.version@</version>
-  </dependency>
-
-  <dependency>
-    <groupId>org.apache.plc4x</groupId>
-    <artifactId>plc4j-spi</artifactId>
-    <version>@project.version@</version>
-  </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-transport-tcp</artifactId>
-      <version>@project.version@</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>@project.version@</version>
-      <scope>test</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-code-generation-language-python</artifactId>
