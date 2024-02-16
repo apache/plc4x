@@ -32,7 +32,7 @@
   <description>Implementation of a PLC4X driver for the IEC 60870-5-104 protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:27Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:40:12Z</project.build.outputTimestamp>
   </properties>
 
   <build>

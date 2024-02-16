@@ -33,7 +33,7 @@
   <description>Base protocol specifications for the Simulated protocol</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:27Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:40:12Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>

@@ -33,7 +33,7 @@
   <description>Implementation of a PLC4X driver able to speak with devices using the OPC UA protocol.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:28Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:40:12Z</project.build.outputTimestamp>
   </properties>
 
   <build>

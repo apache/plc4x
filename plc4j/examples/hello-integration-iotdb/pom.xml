@@ -32,7 +32,7 @@
   <description>Application outputting PLC data into IoTDB.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:27Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:40:12Z</project.build.outputTimestamp>
     <iotdb.version>1.2.2</iotdb.version>
 
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>

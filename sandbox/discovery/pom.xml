@@ -32,7 +32,7 @@
   <description>Implementation of a PLC4X driver which provides discovery services. It's not actually a real diver, but more utilizes the drivers discovery mechanisms in a way that it integrates into the PLC4X API nicely.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T09:32:26Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T09:40:12Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
