@@ -27,7 +27,7 @@ if [[ $(git status --porcelain) ]]; then
 fi
 
 # 1. Get and calculate the current version (local)
-PROJECT_VERSION=$(../mvnw -f ../pom.xml -q -Dexec.executable=echo -Dexec.args="${project.version}" --non-recursive exec:exec)
+PROJECT_VERSION=$(../mvnw -f ../pom.xml -q -Dexec.executable=echo -Dexec.args="\${project.version}" --non-recursive exec:exec)
 RELEASE_VERSION=${PROJECT_VERSION%"-SNAPSHOT"}
 RELEASE_SHORT_VERSION=${RELEASE_VERSION%".0"}
 BRANCH_NAME="rel/$RELEASE_SHORT_VERSION"
