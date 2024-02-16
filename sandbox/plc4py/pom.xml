@@ -34,7 +34,7 @@
   <description>Implementation of the protocol adapters for usage as Python library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T10:41:15Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T11:07:25Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the python sources -->
     <sonar.sources>plc4py</sonar.sources>
     <option.with-proxies>OFF</option.with-proxies>

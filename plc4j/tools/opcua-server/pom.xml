@@ -31,7 +31,7 @@
   <name>PLC4J: Tools: OPC-UA Server</name>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T10:41:16Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T11:07:25Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.opcuaserver.OPCUAServer</app.main.class>
   </properties>
 
