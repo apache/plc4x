@@ -31,32 +31,34 @@ fi
 
 # 2. Sign all artifacts
 echo "Signing artifacts:"
-find ./out/.local-artifacts-dir -print | grep -E '^((.*\.pom)|(.*\.jar)|(.*\.kar)|(.*\.nar)|(.*-features\.xml)|(.*-cycloneds\.json)|(.*-cycloneds\.xml)|(.*-site\.xml)|(.*\.zip))$' | while read -r line ; do
+find ../out/.local-artifacts-dir -print | grep -E '^((.*\.pom)|(.*\.jar)|(.*\.kar)|(.*\.nar)|(.*-features\.xml)|(.*-cyclonedx\.json)|(.*-cyclonedx\.xml)|(.*-site\.xml)|(.*\.zip))$' | while read -r line ; do
     echo "Processing $line"
     gpg -ab "$line"
 done
 
 # 3. Deploy the artifacts to Nexus
 echo "Deploying artifacts:"
-../mvnw -f jenkins.pom -X -P deploy-releases wagon:upload
-if [ $? -ne 0 ]; then
-    echo "Got non-0 exit code from maven deployment, aborting."
-    exit 1
-fi
+../mvnw -f ../jenkins.pom -X -P deploy-releases wagon:upload
 
 # 4. Prepare a directory for the release candidate
 echo "Staging release candidate:"
+read -r -p 'Release-Candidate number: ' rcNumber
+RELEASE_CANDIDATE="rc$rcNumber"
 RELEASE_VERSION=$(find ../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/ -maxdepth 1 -type d | grep -vE 'plc4x-parent/$' | xargs -n 1 basename)
-mkdir -p "../out/stage/${RELEASE_VERSION}/rc1"
-cp ../README.md "../out/stage/${RELEASE_VERSION}/rc1/README"
-cp ../RELEASE_NOTES "../out/stage/${RELEASE_VERSION}/rc1"
-cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip" "../out/stage/${RELEASE_VERSION}/rc1/apache-plc4x-${RELEASE_VERSION}-source-release.zip"
-cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip.asc" "../out/stage/${RELEASE_VERSION}/rc1/apache-plc4x-${RELEASE_VERSION}-source-release.zip.asc"
-cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip.sha512" "../out/stage/${RELEASE_VERSION}/rc1/apache-plc4x-${RELEASE_VERSION}-source-release.zip.sha512"
+mkdir -p "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}"
+cp ../README.md "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/README"
+cp ../RELEASE_NOTES "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-source-release.zip"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip.asc" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-source-release.zip.asc"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-source-release.zip.sha512" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-source-release.zip.sha512"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.json" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.json"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.json.asc" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.json.asc"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.xml" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.xml"
+cp "../out/.local-artifacts-dir/org/apache/plc4x/plc4x-parent/${RELEASE_VERSION}/plc4x-parent-${RELEASE_VERSION}-cyclonedx.xml.asc" "../out/stage/${RELEASE_VERSION}/${RELEASE_CANDIDATE}/apache-plc4x-${RELEASE_VERSION}-cyclonedx.xml.asc"
 
 # 5. Upload the release candidate artifacts to SVN
 cd "../out/stage/${RELEASE_VERSION}" || exit
-svn import rc1 "https://dist.apache.org/repos/dist/dev/plc4x/${RELEASE_VERSION}/rc1" -m"Staging of rc1 of PLC4X ${RELEASE_VERSION}"
+svn import "${RELEASE_CANDIDATE}" "https://dist.apache.org/repos/dist/dev/plc4x/${RELEASE_VERSION}/${RELEASE_CANDIDATE}" -m"Staging of ${RELEASE_CANDIDATE} of PLC4X ${RELEASE_VERSION}"
 
 # 6. Close the Nexus staging repository
 

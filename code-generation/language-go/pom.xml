@@ -56,6 +56,8 @@
             <configuration>
               <skipInvocation>${skip-code-generation-tests}</skipInvocation>
               <debug>true</debug>
+              <!-- Use the "test" scope for filling the tests local repository -->
+              <scope>test</scope>
               <streamLogsOnFailures>true</streamLogsOnFailures>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <projectsDirectory>src/test/resources</projectsDirectory>
