@@ -34,7 +34,7 @@
   <description>Implementation of the protocol adapters for usage as Java library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T11:24:16Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T11:48:18Z</project.build.outputTimestamp>
   </properties>
 
   <modules>

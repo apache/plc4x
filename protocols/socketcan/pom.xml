@@ -33,7 +33,7 @@
   <description>Protocol of binary representation of SocketCAN frames.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T11:24:17Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T11:48:18Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>
