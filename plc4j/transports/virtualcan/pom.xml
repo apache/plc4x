@@ -32,7 +32,7 @@
   <description>Virtual CAN transport which does work without any real CAN interface.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T10:03:36Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T10:07:27Z</project.build.outputTimestamp>
   </properties>
 
   <dependencies>

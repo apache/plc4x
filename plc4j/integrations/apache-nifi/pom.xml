@@ -33,7 +33,7 @@
 	<description>Integration module for integrating PLC4X into Apache Nifi.</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T10:03:35Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T10:07:27Z</project.build.outputTimestamp>
   	<nifi.version>1.25.0</nifi.version>
 		<avro.version>1.11.3</avro.version>
 	</properties>

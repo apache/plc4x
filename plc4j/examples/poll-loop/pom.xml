@@ -33,7 +33,7 @@
   <description>Fetches data in a continuous loop</description>
 
   <properties>
-    <project.build.outputTimestamp>2024-02-16T10:03:35Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T10:07:27Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.examples.helloplc4x.HelloPlc4x</app.main.class>
   </properties>
 
