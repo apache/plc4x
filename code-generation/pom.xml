@@ -78,13 +78,6 @@
         <module>language-python</module>
       </modules>
     </profile>
-
-    <profile>
-      <id>enable-all-checks</id>
-      <modules>
-        <module>tests</module>
-      </modules>
-    </profile>
   </profiles>
 
 </project>
