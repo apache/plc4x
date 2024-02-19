@@ -46,6 +46,11 @@ class PlcValue(Generic[T], ABC):
     def get_raw(self):
         return self.value
 
+    def __len__(self):
+        if isinstance(self.value, list):
+            return len(self.value)
+        return 1
+
 
 class PlcResponseCode(Enum):
     OK = auto()

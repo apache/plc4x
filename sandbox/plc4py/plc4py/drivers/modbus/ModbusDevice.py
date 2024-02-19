@@ -121,14 +121,10 @@ class ModbusDevice:
         result = message_future.result()
 
         if isinstance(result, ModbusPDUError):
-            response_items = [
-                ResponseItem(
-                    PlcResponseCode.ACCESS_DENIED, PlcNull(result.exception_code)
-                )
-            ]
+            response_item = ResponseItem(PlcResponseCode.ACCESS_DENIED, PlcNull(result.exception_code))
 
             response = PlcReadResponse(
-                PlcResponseCode.OK, {request.tag_names[0]: response_items}
+                PlcResponseCode.OK, {request.tag_names[0]: response_item}
             )
             return response
 
@@ -147,9 +143,9 @@ class ModbusDevice:
             request.tags[request.tag_names[0]].quantity,
         )
 
-        response_items = [ResponseItem(PlcResponseCode.OK, returned_value)]
+        response_item = ResponseItem(PlcResponseCode.OK, returned_value)
 
         response = PlcReadResponse(
-            PlcResponseCode.OK, {request.tag_names[0]: response_items}
+            PlcResponseCode.OK, {request.tag_names[0]: response_item}
         )
         return response

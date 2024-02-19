@@ -96,57 +96,47 @@ If you are using the `BrowseApi` you might also have been provided with `Tag` ob
 The request is sent to the PLC by issuing the `execute` method on the request object:
 
 ----
-CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-asyncResponse.whenComplete((response, throwable) -> {
-  try {
-    ... process the response ...
-  } catch (Exception e) {
-    ... Handle any errors ...
-  }
-});
+try:
+    future = connection.execute(request)
+    await future
+    response = future.result()
+except TimeOutException:
+    # Handle timeout error
+except ...
+    # Handle all your other errors
+
 ----
 
 In general, all requests are executed asynchronously.
-As soon as the request is fully processed, the callback gets called and will contain a `readResponse`, if everything went right or a `throwable` if there were problems.
+As soon as the request is fully processed, the callback gets called and will contain a `readResponse`, if everything went right or an excception  if there were problems.
 
-However, if you want to write your code in a more synchronous fashion, the following alternative will provide this:
-
-----
-PlcReadResponse response = readRequest.execute().get(5000, TimeUnit.MILLISECONDS);
-----
-
-Processing of the responses is identical in both cases in the synchronous approach you however need to catch any exceptions.
 
 The following example will demonstrate some of the options you have:
 
 ----
-for (String tagName : response.getTagNames()) {
-    if(response.getResponseCode(tagName) == PlcResponseCode.OK) {
-        int numValues = response.getNumberOfValues(tagName);
-        // If it's just one element, output just one single line.
-        if(numValues == 1) {
-            logger.info("Value[" + tagName + "]: " + response.getObject(tagName));
-        }
-        // If it's more than one element, output each in a single row.
-        else {
-            logger.info("Value[" + tagName + "]:");
-            for(int i = 0; i < numValues; i++) {
-                logger.info(" - " + response.getObject(tagName, i));
-            }
-        }
-    }
-    // Something went wrong, to output an error message instead.
-    else {
-        logger.error("Error[" + tagName + "]: " + response.getResponseCode(tagName).name());
-    }
-}
+for tag_name in response.tag_names:
+    if response.tags[tag_name].response_code == PlcResponseCode.OK:
+        num_values: int = len(response.tags[tag_name].value)
+        # If it's just one element, output just one single line.
+        if num_values == 1:
+            logger.info("Value[" + tag_name + "]: " + response.tags[tag_name].value)
+
+        # If it's more than one element, output each in a single row.
+        else:
+            logger.info("Value[" + tag_name + "]:")
+            for i in response.tags[tag_name].value.get_list():
+                logger.info(" - " + str(i))
+
+    # Something went wrong, to output an error message instead.
+    else:
+        logger.error("Error[" + tag_name + "]: " + response.tags[tag_name].name())
 ----
 
 In the for-loop, we are demonstrating how the user can iterate over the tag aliases in the response.
 In case of an ordinary read request, this will be predefined by the items in the request, however in case of a subscription response, the response might only contain some of the items that were subscribed.
 
 Before accessing the data, it is advisable to check if an item was correctly returned.
-This is done by the `getResponseCode` method for a given alias.
+This is done by the `response_code` property for a given alias.
 If this is `PlcResponseCode.OK`, everything is ok, however it could be one of the following:
 
 - NOT_FOUND

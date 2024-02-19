@@ -32,19 +32,16 @@ class PlcResponse(PlcMessage):
     from a plc to the plc4x system.
     """
 
-    code: PlcResponseCode
+    response_code: PlcResponseCode
 
 
 @dataclass
 class PlcTagResponse(PlcResponse):
-    values: Dict[str, List[ResponseItem[PlcValue]]]
+    tags: Dict[str, ResponseItem[PlcValue]]
 
     @property
     def tag_names(self):
-        return [tag_name for tag_name in self.values.keys()]
-
-    def response_code(self, name: str) -> PlcResponseCode:
-        pass
+        return [tag_name for tag_name in self.tags.keys()]
 
 
 @dataclass
@@ -53,23 +50,20 @@ class PlcReadResponse(PlcTagResponse):
     Response to a {@link PlcReadRequest}.
     """
 
-    def get_plc_value(self, name: str, index: int = 0) -> PlcValue:
-        return self.values[name][index].value
+    def get_plc_value(self, name: str) -> PlcValue:
+        return self.tags[name].value
 
-    def number_of_values(self, name: str) -> int:
-        return len(self.values[name])
+    def is_boolean(self, name: str):
+        return isinstance(self.tags[name].value.value, bool)
 
-    def is_boolean(self, name: str, index: int = 0):
-        return isinstance(self.values[name][index].value.value, bool)
+    def get_boolean(self, name: str) -> bool:
+        return cast(bool, self.tags[name].value.value)
 
-    def get_boolean(self, name: str, index: int = 0) -> bool:
-        return cast(bool, self.values[name][index].value.value)
+    def is_int(self, name: str):
+        return isinstance(self.tags[name].value.value, int)
 
-    def is_int(self, name: str, index: int = 0):
-        return isinstance(self.values[name][index].value.value, int)
-
-    def get_int(self, name: str, index: int = 0) -> int:
-        return cast(int, self.values[name][index].value.value)
+    def get_int(self, name: str) -> int:
+        return cast(int, self.tags[name].value.value)
 
 
 @dataclass
@@ -79,9 +73,6 @@ class PlcQueryResponse(PlcResponse):
     @property
     def tag_names(self):
         return [tag_name for tag_name in self.tags.keys()]
-
-    def response_code(self, name: str) -> PlcResponseCode:
-        pass
 
 
 @dataclass

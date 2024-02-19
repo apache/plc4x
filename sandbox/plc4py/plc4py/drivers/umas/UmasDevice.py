@@ -364,7 +364,7 @@ class UmasDevice:
         read_buffer = ReadBufferByteBased(
             bytearray(variable_name_response.block), ByteOrder.LITTLE_ENDIAN
         )
-        values: Dict[str, List[ResponseItem[PlcValue]]] = {}
+        values: Dict[str, ResponseItem[PlcValue]] = {}
         for key, tag in sorted_tags:
             request_tag = request.tags[key]
             if tag.is_array:
@@ -372,13 +372,12 @@ class UmasDevice:
             else:
                 quantity = 1
 
-            response_items = [
-                ResponseItem(
+            response_item = ResponseItem(
                     PlcResponseCode.OK,
                     DataItem.static_parse(read_buffer, request_tag.data_type, quantity),
                 )
-            ]
-            values[key] = response_items
+
+            values[key] = response_item
 
         response = PlcReadResponse(PlcResponseCode.OK, values)
         return response
