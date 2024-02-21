@@ -67,6 +67,13 @@ class PlcReadResponse(PlcTagResponse):
 
 
 @dataclass
+class PlcWriteResponse(PlcTagResponse):
+    """
+    Response to a {@link PlcWriteRequest}.
+    """
+
+
+@dataclass
 class PlcQueryResponse(PlcResponse):
     tags: Dict[str, List[ResponseItem[PlcTag]]]
 

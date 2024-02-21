@@ -48,8 +48,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import
 )
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 
-from plc4py.api.messages.PlcRequest import PlcReadRequest
-from plc4py.api.messages.PlcResponse import PlcReadResponse
+from plc4py.api.messages.PlcRequest import PlcReadRequest, PlcWriteRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcWriteResponse
 from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest import (
     ModbusPDUReadHoldingRegistersRequest,
@@ -121,7 +121,9 @@ class ModbusDevice:
         result = message_future.result()
 
         if isinstance(result, ModbusPDUError):
-            response_item = ResponseItem(PlcResponseCode.ACCESS_DENIED, PlcNull(result.exception_code))
+            response_item = ResponseItem(
+                PlcResponseCode.ACCESS_DENIED, PlcNull(result.exception_code)
+            )
 
             response = PlcReadResponse(
                 PlcResponseCode.OK, {request.tag_names[0]: response_item}
@@ -149,3 +151,11 @@ class ModbusDevice:
             PlcResponseCode.OK, {request.tag_names[0]: response_item}
         )
         return response
+
+    async def write(
+        self, request: PlcWriteRequest, transport: Transport
+    ) -> PlcWriteResponse:
+        """
+        Writes one field from the Modbus Device
+        """
+        pass

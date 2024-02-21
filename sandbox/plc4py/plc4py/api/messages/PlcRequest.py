@@ -23,6 +23,7 @@ from typing import Union, List, Dict
 
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcMessage import PlcMessage
+from plc4py.api.value.PlcValue import PlcValue
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
@@ -53,8 +54,17 @@ class PlcQueryRequest(PlcRequest):
 @dataclass
 class PlcReadRequest(PlcTagRequest):
     """
-    Base type for all messages sent from the plc4x system to a connected plc.
+    Base type for all read messages sent from the plc4x system to a connected plc.
     """
+
+
+@dataclass
+class PlcWriteRequest(PlcTagRequest):
+    """
+    Base type for all write messages sent from the plc4x system to a connected plc.
+    """
+
+    values: Dict[str, PlcValue] = field(default_factory=lambda: OrderedDict())
 
 
 @dataclass
@@ -71,6 +81,16 @@ class ReadRequestBuilder(GenericGenerator):
 
     @abstractmethod
     def add_item(self, tag_name: str, address_string: str) -> None:
+        pass
+
+
+class WriteRequestBuilder(GenericGenerator):
+    @abstractmethod
+    def build(self) -> PlcWriteRequest:
+        pass
+
+    @abstractmethod
+    def add_item(self, tag_name: str, address_string: str, value: PlcValue) -> None:
         pass
 
 

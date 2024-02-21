@@ -148,18 +148,10 @@ If this is `PlcResponseCode.OK`, everything is ok, however it could be one of th
 
 Assuming the return code was `OK`, we can continue accessing the data.
 
-As some tags support reading arrays, with the method `getNumberOfValues` the user can check how many items of a given type are returned.
-For convenience the response object has single-argument methods for accessing the data, which default to returning the first element.
+As all PlcValue items support the len property, the user can check how many items of a given type are returned by calling len(response.tags[tag_name].value)
 
-    response.getObject(fieldName)
+You can then treat the values in the PlcList as a list using response.tags[tag_name].value.get_list()
 
-If you want to access a given element number, please use the two-argument version instead:
-
-    response.getObject(fieldName, 42)
-
-PLC4X provides getters and setters for a wide variety of Java types and automatically handles the type conversion.
-However, when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
-In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
 
 ==== Writing Data
 

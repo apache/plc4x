@@ -29,6 +29,8 @@ from plc4py.api.messages.PlcResponse import (
     PlcResponse,
     PlcReadResponse,
     PlcBrowseResponse,
+    PlcTagResponse,
+    PlcWriteResponse,
 )
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
@@ -36,6 +38,7 @@ from plc4py.api.messages.PlcRequest import (
     PlcReadRequest,
     BrowseRequestBuilder,
     PlcBrowseRequest,
+    PlcWriteRequest,
 )
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
@@ -43,15 +46,17 @@ from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
 from plc4py.drivers.umas.UmasDevice import UmasDevice
 from plc4py.drivers.umas.UmasProtocol import UmasProtocol
 from plc4py.drivers.umas.UmasTag import UmasTagBuilder
+from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.PlcRequest import (
     DefaultReadRequestBuilder,
     DefaultBrowseRequestBuilder,
 )
+from plc4py.spi.messages.PlcWriter import PlcWriter
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class UmasConnection(PlcConnection, PlcConnectionMetaData):
+class UmasConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData):
     """
     Umas TCP PLC connection implementation
     """
@@ -174,6 +179,26 @@ class UmasConnection(PlcConnection, PlcConnectionMetaData):
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
         logging.debug("Sending read request to UmasDevice")
+        future = asyncio.ensure_future(_request(request, self._device))
+        return future
+
+    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcTagResponse]:
+        """
+        Executes a PlcWriteRequest
+        """
+        if self._device is None:
+            logging.error("No device is set in the umas connection!")
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+        async def _request(req, device) -> PlcWriteResponse:
+            try:
+                response = await asyncio.wait_for(device.write(req, self._transport), 5)
+                return response
+            except Exception as e:
+                # TODO:- This exception is very general and probably should be replaced
+                return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
+
+        logging.debug("Sending write request to ModbusDevice")
         future = asyncio.ensure_future(_request(request, self._device))
         return future
 

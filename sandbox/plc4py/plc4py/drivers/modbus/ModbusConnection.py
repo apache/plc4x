@@ -24,11 +24,17 @@ import plc4py
 from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
-from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
+from plc4py.api.messages.PlcResponse import (
+    PlcResponse,
+    PlcReadResponse,
+    PlcWriteResponse,
+    PlcTagResponse,
+)
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
     PlcRequest,
     PlcReadRequest,
+    PlcWriteRequest,
 )
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
@@ -36,12 +42,14 @@ from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusDevice import ModbusDevice
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
 from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
+from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
+from plc4py.spi.messages.PlcWriter import PlcWriter
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection, PlcConnectionMetaData):
+class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData):
     """
     Modbus TCP PLC connection implementation
     """
@@ -118,7 +126,7 @@ class ModbusConnection(PlcConnection, PlcConnectionMetaData):
         """
         if self._device is None:
             logging.error("No device is set in the modbus connection!")
-            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+            return self._default_failed_read_request(PlcResponseCode.NOT_CONNECTED)
 
         async def _request(req, device) -> PlcReadResponse:
             try:
@@ -129,6 +137,26 @@ class ModbusConnection(PlcConnection, PlcConnectionMetaData):
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
         logging.debug("Sending read request to ModbusDevice")
+        future = asyncio.ensure_future(_request(request, self._device))
+        return future
+
+    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcTagResponse]:
+        """
+        Executes a PlcWriteRequest
+        """
+        if self._device is None:
+            logging.error("No device is set in the modbus connection!")
+            return self._default_failed_write_request(PlcResponseCode.NOT_CONNECTED)
+
+        async def _request(req, device) -> PlcWriteResponse:
+            try:
+                response = await asyncio.wait_for(device.write(req, self._transport), 5)
+                return response
+            except Exception as e:
+                # TODO:- This exception is very general and probably should be replaced
+                return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
+
+        logging.debug("Sending write request to ModbusDevice")
         future = asyncio.ensure_future(_request(request, self._device))
         return future
 
@@ -144,7 +172,7 @@ class ModbusConnection(PlcConnection, PlcConnectionMetaData):
         Indicates if the connection supports write requests.
         :return: True if connection supports writing, False otherwise
         """
-        return False
+        return True
 
     def is_subscribe_supported(self) -> bool:
         """

@@ -20,7 +20,7 @@ import asyncio
 from abc import abstractmethod
 from typing import Awaitable
 
-from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
+from plc4py.api.messages.PlcResponse import PlcResponse, PlcTagResponse, PlcReadResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
@@ -63,7 +63,7 @@ class PlcConnection(GenericGenerator):
         """
         pass
 
-    def _default_failed_request(
+    def _default_failed_read_request(
         self, code: PlcResponseCode
     ) -> Awaitable[PlcReadResponse]:
         """
