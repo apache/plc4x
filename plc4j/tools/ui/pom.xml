@@ -35,7 +35,7 @@
 
   <properties>
     <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
-    <spring-boot.version>3.2.2</spring-boot.version>
+    <spring-boot.version>3.2.3</spring-boot.version>
     <!--
       This dependency is the reason we need at least Java 19 for the UI (otherwise 17 would have been enough)
       unfortunately the version 16 branch is vulnerable to a critical security vulnerability.
