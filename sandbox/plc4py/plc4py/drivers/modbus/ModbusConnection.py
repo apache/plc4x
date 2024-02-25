@@ -117,22 +117,27 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
 
         if isinstance(request, PlcReadRequest):
             return self._read(request)
+        elif isinstance(request, PlcWriteRequest):
+            return self._write(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+    def _check_connection(self) -> bool:
+        return self._device is None
 
     def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
         """
         Executes a PlcReadRequest
         """
-        if self._device is None:
+        if self._check_connection():
             logging.error("No device is set in the modbus connection!")
-            return self._default_failed_read_request(PlcResponseCode.NOT_CONNECTED)
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         async def _request(req, device) -> PlcReadResponse:
             try:
                 response = await asyncio.wait_for(device.read(req, self._transport), 5)
                 return response
-            except Exception as e:
+            except Exception:
                 # TODO:- This exception is very general and probably should be replaced
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
@@ -144,15 +149,15 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         """
         Executes a PlcWriteRequest
         """
-        if self._device is None:
+        if self._check_connection():
             logging.error("No device is set in the modbus connection!")
-            return self._default_failed_write_request(PlcResponseCode.NOT_CONNECTED)
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         async def _request(req, device) -> PlcWriteResponse:
             try:
                 response = await asyncio.wait_for(device.write(req, self._transport), 5)
                 return response
-            except Exception as e:
+            except Exception:
                 # TODO:- This exception is very general and probably should be replaced
                 return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
 

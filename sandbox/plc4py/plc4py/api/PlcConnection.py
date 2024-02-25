@@ -18,12 +18,14 @@
 #
 import asyncio
 from abc import abstractmethod
-from typing import Awaitable
+from typing import Awaitable, Dict, Union
 
-from plc4py.api.messages.PlcResponse import PlcResponse, PlcTagResponse, PlcReadResponse
+from plc4py.api.messages.PlcResponse import PlcResponse, PlcTagResponse, PlcReadResponse, PlcWriteResponse, \
+    PlcBrowseResponse
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
-from plc4py.api.value.PlcValue import PlcResponseCode
+from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
@@ -63,9 +65,9 @@ class PlcConnection(GenericGenerator):
         """
         pass
 
-    def _default_failed_read_request(
+    def _default_failed_request(
         self, code: PlcResponseCode
-    ) -> Awaitable[PlcReadResponse]:
+    ) -> Awaitable[Union[PlcReadResponse, PlcWriteResponse, PlcBrowseResponse]]:
         """
         Returns a default PlcResponse, mainly used in case of a failed request
         :param code: The response code to return
