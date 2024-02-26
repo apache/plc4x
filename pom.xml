@@ -293,7 +293,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.19.2</version>
+        <version>1.20.0</version>
       </dependency>
 
       <dependency>
