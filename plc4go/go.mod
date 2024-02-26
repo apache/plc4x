@@ -36,7 +36,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20230208211350-7dfff1ce7854
 	github.com/rs/zerolog v1.32.0
-	github.com/schollz/progressbar/v3 v3.14.1
+	github.com/schollz/progressbar/v3 v3.14.2
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
@@ -66,7 +66,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
