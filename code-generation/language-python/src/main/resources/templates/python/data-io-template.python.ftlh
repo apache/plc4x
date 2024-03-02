@@ -78,7 +78,7 @@ class ${type.name}:
                         <#else>
                         ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments))}
                         </#if>
-                        <#sep> and </#sep>
+                        <#sep> & </#sep>
                     </#list>
                     :</@compress>  # ${case.name}
                 <#else>
@@ -102,7 +102,7 @@ class ${type.name}:
             <@emitImport import="from typing import List" />
             <@emitImport import="from plc4py.api.value.PlcValue import PlcValue" />
             ${helper.camelCaseToSnakeCase(arrayField.name)}: List[PlcValue] = []
-            for cur_item in range(item_count):
+            for _ in range(item_count):
                 ${helper.camelCaseToSnakeCase(arrayField.name)}.append(${helper.getPlcValueTypeForTypeReference(elementTypeReference)}(${helper.getLanguageTypeNameForTypeReference(elementTypeReference, false)}(<#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "", arrayField)})<#else>${elementTypeReference.asComplexTypeReference().orElseThrow().name}IO.static_parse(read_buffer<#if elementTypeReference.params.isPresent()>, <#list elementTypeReference.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index), true)}) (${helper.toParseExpression(arrayField, elementTypeReference, parserArgument,parserArguments)})<#sep>, </#sep></#list></#if>)</#if>))
 
             <#-- In all other cases do we have to work with a list, that is later converted to an array -->
@@ -340,9 +340,8 @@ class ${type.name}:
     def static_serialize(write_buffer: WriteBuffer, _value: PlcValue<#if type.parserArguments.isPresent()>, <#list type.parserArguments.orElseThrow() as parserArgument>${helper.camelCaseToSnakeCase(parserArgument.name)}: ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}<#sep>, </#sep></#list></#if>, byte_order: ByteOrder) -> None:
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
-        <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
-            <#if case.discriminatorValueTerms?has_content>
-        if <@compress single_line=true>
+        if <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case><#if case.discriminatorValueTerms?has_content> <@compress single_line=true>
+
                 <#list case.discriminatorValueTerms as discriminatorValueTerm>
                     <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
                     <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
@@ -436,7 +435,7 @@ class ${type.name}:
                     <#break>
                 </#switch>
             </#list>
-        <#sep></#sep></#list>
+        <#sep><@compress single_line=true>elif </@compress></#sep></#list>
 </#if>
 
     <@emitImport import="import math" />
