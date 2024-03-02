@@ -45,6 +45,7 @@ def tcp_server():
         yield tcp_server
 
 
+@pytest.mark.asyncio
 async def test_base_transport_is_reading(mocker) -> None:
     """
     Unit test for the Base PLC4X Transport, is reading.
@@ -61,6 +62,7 @@ async def test_base_transport_is_reading(mocker) -> None:
     assert transport.is_reading()
 
 
+@pytest.mark.asyncio
 async def test_tcp_transport(mocker, tcp_server) -> None:
     """
     Unit test for the TCP Transport, write
