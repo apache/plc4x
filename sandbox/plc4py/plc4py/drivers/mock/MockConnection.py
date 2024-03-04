@@ -169,6 +169,34 @@ class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
         future = asyncio.ensure_future(_request(request, self.device))
         return future
 
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        return True
+
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        return False
+
+    def is_subscribe_supported(self) -> bool:
+        """
+        Indicates if the connection supports subscription requests.
+        :return: True if connection supports subscriptions, False otherwise
+        """
+        return False
+
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        return False
+
 
 class MockDriver(PlcDriver):
     def __init__(self):

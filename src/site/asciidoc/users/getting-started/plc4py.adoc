@@ -17,7 +17,7 @@
 
 == Getting Started with Python
 
-=== Using the PLC4Py API directly
+=== Using the PLC4PY API directly
 
 Currently, you need to install PLC4Py from the GitHub repository instead of pypi.
 Once we have decided that PLC4Py is in a position to release we will publish to pypi.
@@ -84,8 +84,8 @@ This is done by getting a `ReadRequestBuilder`:
 # Create a new read request:
 # - Give the single item requested an alias name
 with connection.read_request_builder() as builder:
-    builder.add_item("Random Tag", "4x00001[10]")
-    builder.add_item("Random Tag", "4x00011")
+    builder.add_item("Random Tag 1", "4x00001[10]")
+    builder.add_item("Random Tag 2", "4x00011")
     request = builder.build()
 ----
 
@@ -108,7 +108,7 @@ except ...
 ----
 
 In general, all requests are executed asynchronously.
-As soon as the request is fully processed, the callback gets called and will contain a `readResponse`, if everything went right or an excception  if there were problems.
+As soon as the request is fully processed, the callback gets called and will contain a `ReadResponse`, if everything went right or an excception  if there were problems.
 
 
 The following example will demonstrate some of the options you have:
@@ -120,15 +120,13 @@ for tag_name in response.tag_names:
         # If it's just one element, output just one single line.
         if num_values == 1:
             logger.info("Value[" + tag_name + "]: " + response.tags[tag_name].value)
-
-        # If it's more than one element, output each in a single row.
         else:
+            # If it's more than one element, output each in a single row.
             logger.info("Value[" + tag_name + "]:")
             for i in response.tags[tag_name].value.get_list():
                 logger.info(" - " + str(i))
-
-    # Something went wrong, to output an error message instead.
     else:
+        # Something went wrong, to output an error message instead.
         logger.error("Error[" + tag_name + "]: " + response.tags[tag_name].name())
 ----
 
@@ -161,10 +159,9 @@ So first it is advisable to check if this connection is even able to write data:
 
 ----
 // Check if this connection support writing of data.
-if (!plcConnection.getMetadata().isWriteSupported()) {
-  logger.error("This connection doesn't support writing.");
-  return;
-}
+if not plc_connection.is_write_supported():
+  logger.error("This connection doesn't support writing.")
+  return
 ----
 
 As soon as we are sure that we can write, we create a new `PlcWriteRequest.Builder`:
@@ -172,99 +169,37 @@ As soon as we are sure that we can write, we create a new `PlcWriteRequest.Build
 ----
 // Create a new write request:
 // - Give the single item requested an alias name
-// - Pass in the data you want to write (for arrays, pass in one value for every element)
-PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-builder.addTagAddress("value-1", "%Q0.4:BOOL", true);
-builder.addTagAddress("value-2", "%Q0:BYTE", (byte) 0xFF);
-builder.addTagAddress("value-4", "%DB.DB1.4:INT[3]", 7, 23, 42);
-PlcWriteRequest writeRequest = builder.build();
+// - Pass in the data you want to write (for arrays, pass in a list of values)
+with connection.write_request_builder() as builder:
+    builder.add_item("Random Tag 1", "4x00001[2]", [1, 2])
+    builder.add_item("Random Tag 2", "4x00011", 1)
+    request = builder.build()
 ----
 
 The same way read requests are sent to the PLC by issuing the `execute` method on the request object:
 
 ----
-CompletableFuture<? extends PlcWriteResponse> asyncResponse = writeRequest.execute();
-asyncResponse.whenComplete((response, throwable) -> {
-  ... process the response ...
-});
-----
-
-You could here also use the blocking option:
-
-----
-PlcWriteResponse response = writeRequest.execute().get();
+try:
+    future = connection.execute(request)
+    await future
+    response = future.result()
+except TimeOutException:
+    # Handle timeout error
+except ...
+    # Handle all your other errors
 ----
 
 As we don't have to process the data itself, for the write request, it's enough to simply check the return code for each field.
 
 ----
-for (String tagName : response.getTagNames()) {
-    if(response.getResponseCode(tagName) == PlcResponseCode.OK) {
-        logger.info("Value[" + tagName + "]: updated");
-    }
-    // Something went wrong, to output an error message instead.
-    else {
-        logger.error("Error[" + tagName + "]: " + response.getResponseCode(tagName).name());
-    }
-}
+for tag_name in response.tag_names:
+    if response.tags[tag_name].response_code == PlcResponseCode.OK:
+        logger.info("Value[" + tag_name + "]: updated");
+    else:
+        # Something went wrong, to output an error message instead.
+        logger.error("Error[" + tag_name + "]: " + response.tags[tag_name].name())
 ----
 
 ==== Subscribing to Data
 
-Subscribing to data can be considered similar to reading data, at least the subscription itself if very similar to reading of data.
-
-First of all we first have to check if the connection supports this:
-
-----
-// Check if this connection support subscribing to data.
-if (!plcConnection.getMetadata().isSubscribeSupported()) {
-    logger.error("This connection doesn't support subscribing.");
-    return;
-}
-----
-
-Now we'll create the subscription request.
-
-The main difference is that while reading there is only one form how you could read, with subscriptions there are different forms of subscriptions:
-
-- Change of state (Event is sent as soon as a value changes)
-- Cyclic (The Event is sent in regular cyclic intervals)
-- Event (The Event is usually explicitly sent form the PLC as a signal)
-
-Therefore instead of using a normal `addItem` or `addTag` in newer versions, there are tree different methods as you can see in the following examples.
-
-----
-// Create a new subscription request:
-// - Give the single tag requested an alias name
-PlcSubscriptionRequest.Builder builder = plcConnection.subscriptionRequestBuilder();
-builder.addChangeOfStateTagAddress("value-1", "{some address}");
-builder.addCyclicTagAddress("value-2", "{some address}", Duration.ofMillis(1000));
-builder.addEventTagAddress("value-3", "{some alarm address}");
-PlcSubscriptionRequest subscriptionRequest = builder.build();
-----
-
-NOTE: The `addCyclicField`/`addCyclicTagAddress` method requires a third parameter `duration`.
-
-The request itself is executed exactly the same way the read and write operations are executed, using the `execute` method, therefore just the short synchronous version here (The async version works just as good)
-
-----
-PlcSubscriptionResponse response = subscriptionRequest.execute().get();
-----
-
-Now comes the little more tricky part, as subscriptions are always asynchronous, we have to register a callback for the connection to call as soon as there is news available:
-
-In general, you can't say how many of your subscribed fields will be available in every callback.
-So it is double important to check or iterate over the field names.
-
-----
-for (String subscriptionName : response.getFieldNames()) {
-    final PlcSubscriptionHandle subscriptionHandle = response.getSubscriptionHandle(subscriptionName);
-    subscriptionHandle.register(plcSubscriptionEvent -> {
-        for (String tagName : plcSubscriptionEvent.getTagNames()) {
-            System.out.println(plcSubscriptionEvent.getPlcValue(tagName));
-        }
-    });
-}
-----
-
-NOTE: Here there currently is a double iteration over the field names, this will probably change soon.
+Coming Soon

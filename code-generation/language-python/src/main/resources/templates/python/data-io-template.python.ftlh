@@ -357,14 +357,13 @@ class ${type.name}:
             <#else>
                 <#assign defaultCaseOutput=true>
             </#if>
-
             <#list case.fields as field>
                 <#switch field.typeName>
                     <#case "array">
                         <#assign arrayField=field.asArrayField().orElseThrow()>
                         <#assign elementTypeReference=arrayField.type.elementTypeReference>
-            values: PlcList = _value
-
+                        <@emitImport import="from typing import cast" />
+            values: PlcList = cast(PlcList, _value)
                         <#if case.name == "Struct">
             for val in values.getStruct().get("${arrayField.name}").get_list():
                 <#if elementTypeReference.isByteBased()>
@@ -396,22 +395,26 @@ class ${type.name}:
             # Const Field (${constField.name})
             ${helper.getWriteBufferWriteMethodCall(constField.type.asSimpleTypeReference().orElseThrow(), constField.referenceValue, constField)}
                     <#break>
+
                     <#case "enum">
                         <#assign enumField=field.asEnumField().orElseThrow()>
             # Enum field (${enumField.name})
             ${enumField.name}: ${helper.getLanguageTypeNameForField(field)} = _value.get_${helper.camelCaseToSnakeCase(enumField.name?cap_first)}()
             ${helper.getWriteBufferWriteMethodCall(helper.getEnumBaseTypeReference(field.asTypedField().orElseThrow().type), "(" + enumField.name + ".value)", enumField)}
                     <#break>
+
                     <#case "manual">
                         <#assign manualField=field.asManualField().orElseThrow()>
             # Manual Field (${manualField.name})
             ${helper.toSerializationExpression(manualField, manualField.type, manualField.serializeExpression, type.parserArguments.orElse(null))}
                     <#break>
+
                     <#case "reserved">
                         <#assign reservedField=field.asReservedField().orElseThrow()>
             # Reserved Field
             ${helper.getWriteBufferWriteMethodCall(reservedField.type.asSimpleTypeReference().orElseThrow(), helper.getReservedValue(reservedField), reservedField)}
                     <#break>
+
                     <#case "simple">
                         <#assign simpleField=field.asSimpleField().orElseThrow()>
             # Simple Field (${simpleField.name})
@@ -429,10 +432,13 @@ class ${type.name}:
                         </#if>
                         <#if simpleField.type.isSimpleTypeReference()>
             ${helper.getWriteBufferWriteMethodCall(simpleField.type.asSimpleTypeReference().orElseThrow(), "(" + simpleField.name + ")", simpleField)}
+
                         <#else>
             ${simpleField.type.asComplexTypeReference().orElseThrow().name}IO.static_serialize(write_buffer, ${helper.camelCaseToSnakeCase(simpleField.name)})
+
                         </#if>
                     <#break>
+
                 </#switch>
             </#list>
         <#sep><@compress single_line=true>elif </@compress></#sep></#list>
@@ -451,9 +457,7 @@ class ${type.name}:
         size_in_bits: int = 0
         <#assign defaultCaseOutput=false>
         <#assign dataIoTypeDefinition=type.asDataIoTypeDefinition().orElseThrow()>
-        <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case>
-        <#if case.discriminatorValueTerms?has_content>
-        if <@compress single_line=true>
+        if <#list dataIoTypeDefinition.switchField.orElseThrow().cases as case><#if case.discriminatorValueTerms?has_content> <@compress single_line=true>
             <#list case.discriminatorValueTerms as discriminatorValueTerm>
             <#assign discriminatorExpression=dataIoTypeDefinition.switchField.orElseThrow().discriminatorExpressions[discriminatorValueTerm?index].asLiteral().orElseThrow().asVariableLiteral().orElseThrow()>
             <#assign discriminatorType=helper.getDiscriminatorTypes()[discriminatorExpression.name]>
@@ -463,7 +467,7 @@ class ${type.name}:
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     </#if>
-            <#sep> and </#sep>
+            <#sep> & </#sep>
             </#list>
         </@compress>: # ${case.name}
         <#else>
@@ -474,7 +478,8 @@ class ${type.name}:
             <#case "array">
                 <#assign arrayField=field.asArrayField().orElseThrow()>
                 <#assign elementTypeReference=arrayField.type.elementTypeReference>
-                values: PlcList = _value
+                <@emitImport import="from typing import cast" />
+                values: PlcList = cast(PlcList, _value)
                 <#if case.name == "Struct">
                 # TODO: Finish this!
                 <#elseif elementTypeReference.isComplexTypeReference()>
@@ -511,7 +516,7 @@ class ${type.name}:
                 <#break>
             </#switch>
             </#list>
-        <#sep></#sep></#list>
+        <#sep><@compress single_line=true>elif </@compress></#sep></#list>
         return size_in_bits
 
 

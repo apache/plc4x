@@ -177,7 +177,7 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         Indicates if the connection supports write requests.
         :return: True if connection supports writing, False otherwise
         """
-        return True
+        return False
 
     def is_subscribe_supported(self) -> bool:
         """
