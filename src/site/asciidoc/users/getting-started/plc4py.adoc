@@ -34,13 +34,14 @@ You now should be able to use PLC4Py in your application. A minimal example is s
 ----
 from plc4py.PlcDriverManager import PlcDriverManager
 
-connection_string: = "modbus://192.168.1.174:502";
+connection_string = "modbus://192.168.1.174:502";
 
 driver_manager = PlcDriverManager()
-async with driver_manager.connection(connection_string) as connection:
-    with connection.read_request_builder() as builder:
-        builder.add_item("Random Tag", "4x00001[10]")
-        request = builder.build()
+async def communicate_with_plc():
+    async with driver_manager.connection(connection_string) as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001[10]")
+            request = builder.build()
 
     future = connection.execute(request)
     await future
