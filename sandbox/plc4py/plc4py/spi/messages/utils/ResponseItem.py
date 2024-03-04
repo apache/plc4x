@@ -28,5 +28,5 @@ T = TypeVar("T", bound=PlcValue)
 
 @dataclass
 class ResponseItem(Generic[T], ABC):
-    code: PlcResponseCode
+    response_code: PlcResponseCode
     value: T

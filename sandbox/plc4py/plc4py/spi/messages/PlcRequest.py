@@ -16,13 +16,16 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
+from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcRequest import (
     PlcReadRequest,
     ReadRequestBuilder,
     BrowseRequestBuilder,
     PlcBrowseRequest,
+    WriteRequestBuilder,
+    PlcWriteRequest,
 )
+from plc4py.api.value.PlcValue import PlcValue
 
 
 class TagBuilder:
@@ -43,6 +46,27 @@ class DefaultReadRequestBuilder(ReadRequestBuilder):
     def add_item(self, tag_name: str, address_string: str) -> None:
         tag = self.tag_builder.create(address_string)
         self.read_request.tags[tag_name] = tag
+
+    def add_tag(self, tag_name: str, tag: PlcTag) -> None:
+        self.read_request.tags[tag_name] = tag
+
+
+class DefaultWriteRequestBuilder(WriteRequestBuilder):
+    def __init__(self, tag_builder: TagBuilder):
+        super().__init__()
+        self.write_request = PlcWriteRequest()
+        self.tag_builder = tag_builder
+
+    def build(self) -> PlcWriteRequest:
+        return self.write_request
+
+    def add_item(self, tag_name: str, address_string: str, value: PlcValue) -> None:
+        tag = self.tag_builder.create(address_string)
+        self.write_request.tags[tag_name] = tag
+        self.write_request.values[tag_name] = value
+
+    def add_tag(self, tag_name: str, tag: PlcTag, value: PlcValue) -> None:
+        self.write_request.tags[tag_name] = tag
 
 
 class DefaultBrowseRequestBuilder(BrowseRequestBuilder):

@@ -20,9 +20,12 @@ import asyncio
 import logging
 import time
 
+import pytest
+
 from plc4py.PlcDriverManager import PlcDriverManager
 
 
+@pytest.mark.asyncio
 async def manual_test_plc_driver_umas_connect():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://127.0.0.1:5555") as connection:
@@ -30,11 +33,12 @@ async def manual_test_plc_driver_umas_connect():
     assert not connection.is_connected()
 
 
+@pytest.mark.asyncio
 async def manual_test_plc_driver_umas_read():
     log = logging.getLogger(__name__)
 
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("umas://192.168.1.174:502") as connection:
+    async with driver_manager.connection("umas://192.168.1.177:502") as connection:
         with connection.read_request_builder() as builder:
             builder.add_item(f"Random Tag {1}", "testing:DINT")
             request = builder.build()
@@ -42,12 +46,13 @@ async def manual_test_plc_driver_umas_read():
         future = connection.execute(request)
         await future
         response = future.result()
-        value = response.values["Random Tag 1"][0].value
+        value = response.tags["Random Tag 1"][0].value
         log.error(f"Read tag test_REAL - {value}")
         await asyncio.sleep(1)
     pass
 
 
+@pytest.mark.asyncio
 async def manual_test_plc_driver_umas_browse():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://192.168.1.174:502") as connection:

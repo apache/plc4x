@@ -22,13 +22,15 @@ import logging
 from dataclasses import dataclass, field
 from typing import Awaitable, Type, List, Dict
 
+from plc4py.spi.messages.PlcWriter import PlcWriter
+
 from plc4py.drivers.mock import MockTag
 from plc4py.drivers.mock.MockTag import MockTagBuilder
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
 
 import plc4py
 
-from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
@@ -37,8 +39,13 @@ from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
     PlcReadRequest,
     PlcRequest,
+    PlcWriteRequest,
 )
-from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcResponse
+from plc4py.api.messages.PlcResponse import (
+    PlcReadResponse,
+    PlcResponse,
+    PlcWriteResponse,
+)
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import PlcReader
@@ -49,22 +56,22 @@ from plc4py.spi.values.PlcValues import PlcINT
 
 @dataclass
 class MockDevice:
-    def read(self, tag: MockTag) -> List[ResponseItem[PlcValue]]:
+    def read(self, tag: MockTag) -> ResponseItem[PlcValue]:
         """
         Reads one field from the Mock Device
         """
         logging.debug(f"Reading field {str(tag)} from Mock Device")
 
         if tag.data_type == "BOOL":
-            return [ResponseItem(PlcResponseCode.OK, PlcBOOL(False))]
+            return ResponseItem(PlcResponseCode.OK, PlcBOOL(False))
         elif tag.data_type == "INT":
-            return [ResponseItem(PlcResponseCode.OK, PlcINT(0))]
+            return ResponseItem(PlcResponseCode.OK, PlcINT(0))
         else:
             raise PlcFieldParseException
 
 
 @dataclass
-class MockConnection(PlcConnection, PlcReader):
+class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData):
     _is_connected: bool = False
     device: MockDevice = field(default_factory=lambda: MockDevice())
 
@@ -138,6 +145,57 @@ class MockConnection(PlcConnection, PlcReader):
         logging.debug("Sending read request to MockDevice")
         future = asyncio.ensure_future(_request(request, self.device))
         return future
+
+    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcWriteResponse]:
+        """
+        Executes a PlcReadRequest
+        """
+        if self.device is None:
+            logging.error("No device is set in the mock connection!")
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+        async def _request(req, device) -> PlcReadResponse:
+            try:
+                response = PlcReadResponse(
+                    PlcResponseCode.OK,
+                    {tag_name: device.read(tag) for tag_name, tag in req.tags.items()},
+                )
+                return response
+            except Exception as e:
+                # TODO:- This exception is very general and probably should be replaced
+                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.tags, {})
+
+        logging.debug("Sending read request to MockDevice")
+        future = asyncio.ensure_future(_request(request, self.device))
+        return future
+
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        return True
+
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        return False
+
+    def is_subscribe_supported(self) -> bool:
+        """
+        Indicates if the connection supports subscription requests.
+        :return: True if connection supports subscriptions, False otherwise
+        """
+        return False
+
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        return False
 
 
 class MockDriver(PlcDriver):

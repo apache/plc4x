@@ -16,8 +16,22 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from plc4py.spi.values.Common import Serializable
+
+from typing import Awaitable
+
+from plc4py.api.messages.PlcRequest import PlcWriteRequest
+from plc4py.api.messages.PlcResponse import PlcWriteResponse
 
 
-class PlcMessage(Serializable):
-    pass
+class PlcWriter:
+    """
+    Interface implemented by all PlcConnections that are able to write from remote resources.
+    """
+
+    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcWriteResponse]:
+        """
+        Writes a requested value to a PLC
+
+        :param request: object describing the type and location of the value
+        :return: Future, giving async access to the returned value
+        """

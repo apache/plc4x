@@ -18,6 +18,8 @@
 #
 from typing import cast
 
+import pytest
+
 from plc4py import __version__
 from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.PlcConnection import PlcConnection
@@ -32,24 +34,28 @@ def test_version():
     assert __version__ == "0.1.0"
 
 
+@pytest.mark.asyncio
 async def test_plc_driver_manager_init():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, PlcConnection)
 
 
+@pytest.mark.asyncio
 async def manual_test_plc_driver_manager_init_modbus():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("nodbus:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, ModbusConnection)
 
 
+@pytest.mark.asyncio
 async def test_plc_driver_manager_init_mock():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, MockConnection)
 
 
+@pytest.mark.asyncio
 async def test_plc_driver_manager_init_mock_read_request():
     driver_manager = PlcDriverManager()
     tag = "1:BOOL"
@@ -63,4 +69,4 @@ async def test_plc_driver_manager_init_mock_read_request():
             )
 
     # verify that request has one field
-    assert response.code == PlcResponseCode.OK
+    assert response.response_code == PlcResponseCode.OK

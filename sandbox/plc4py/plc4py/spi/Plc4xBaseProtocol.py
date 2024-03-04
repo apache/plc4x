@@ -17,7 +17,7 @@
 # under the License.
 #
 
-from asyncio import Protocol, Future
+from asyncio import Protocol, Future, BaseProtocol
 from dataclasses import dataclass
 from typing import Union
 
@@ -30,7 +30,7 @@ class Plc4xBaseProtocol(Protocol):
     def data_received(self, data) -> None:
         self.handler.set_result(data)
 
-    def connection_made(self):
+    def connection_made(self, transport):
         self.connected = True
 
     def connection_lost(self, exc: Union[Exception, None]) -> None:

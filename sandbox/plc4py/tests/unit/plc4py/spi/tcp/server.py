@@ -45,4 +45,3 @@ class Server:
             while True:
                 message = connection.recv(1024)
                 count = connection.send(message)
-        self._sock.close()

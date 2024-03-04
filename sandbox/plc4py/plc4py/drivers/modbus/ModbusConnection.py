@@ -21,14 +21,20 @@ import logging
 from typing import Type, Awaitable
 
 import plc4py
-from plc4py.api.PlcConnection import PlcConnection
+from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
-from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
+from plc4py.api.messages.PlcResponse import (
+    PlcResponse,
+    PlcReadResponse,
+    PlcWriteResponse,
+    PlcTagResponse,
+)
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
     PlcRequest,
     PlcReadRequest,
+    PlcWriteRequest,
 )
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
@@ -36,12 +42,14 @@ from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusDevice import ModbusDevice
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
 from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
+from plc4py.spi.messages.PlcReader import PlcReader
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
+from plc4py.spi.messages.PlcWriter import PlcWriter
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection):
+class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData):
     """
     Modbus TCP PLC connection implementation
     """
@@ -109,14 +117,19 @@ class ModbusConnection(PlcConnection):
 
         if isinstance(request, PlcReadRequest):
             return self._read(request)
+        elif isinstance(request, PlcWriteRequest):
+            return self._write(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+    def _check_connection(self) -> bool:
+        return self._device is None
 
     def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
         """
         Executes a PlcReadRequest
         """
-        if self._device is None:
+        if self._check_connection():
             logging.error("No device is set in the modbus connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
@@ -124,13 +137,61 @@ class ModbusConnection(PlcConnection):
             try:
                 response = await asyncio.wait_for(device.read(req, self._transport), 5)
                 return response
-            except Exception as e:
+            except Exception:
                 # TODO:- This exception is very general and probably should be replaced
                 return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
         logging.debug("Sending read request to ModbusDevice")
         future = asyncio.ensure_future(_request(request, self._device))
         return future
+
+    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcTagResponse]:
+        """
+        Executes a PlcWriteRequest
+        """
+        if self._check_connection():
+            logging.error("No device is set in the modbus connection!")
+            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
+
+        async def _request(req, device) -> PlcWriteResponse:
+            try:
+                response = await asyncio.wait_for(device.write(req, self._transport), 5)
+                return response
+            except Exception:
+                # TODO:- This exception is very general and probably should be replaced
+                return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
+
+        logging.debug("Sending write request to ModbusDevice")
+        future = asyncio.ensure_future(_request(request, self._device))
+        return future
+
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        return True
+
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        return False
+
+    def is_subscribe_supported(self) -> bool:
+        """
+        Indicates if the connection supports subscription requests.
+        :return: True if connection supports subscriptions, False otherwise
+        """
+        return False
+
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        return False
 
 
 class ModbusDriver(PlcDriver):
