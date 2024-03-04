@@ -32,11 +32,12 @@ Navigate to the sandbox/plc4py directory and run. This will install plc4py in yo
 You now should be able to use PLC4Py in your application. A minimal example is shown below.
 
 ----
+import asyncio
 from plc4py.PlcDriverManager import PlcDriverManager
 
-connection_string = "modbus://192.168.1.174:502";
-
+connection_string = "modbus://192.168.1.174:502"
 driver_manager = PlcDriverManager()
+
 async def communicate_with_plc():
     async with driver_manager.connection(connection_string) as connection:
         with connection.read_request_builder() as builder:
@@ -47,6 +48,7 @@ async def communicate_with_plc():
     await future
     response = future.result()
 
+asyncio.run(communicate_with_plc())
 ----
 
 PLC4X generally supports a very limited set of functions, which is not due to the fact, that we didn't implement things, but that PLCs generally support a very limited set of functions.
