@@ -101,6 +101,7 @@ class ConnectionContainer {
                 // If something goes wrong, close all waiting futures exceptionally.
                 LOGGER.warn("Can't get connection for {} complete queue items exceptionally", connectionUrl, e);
                 queue.forEach(future -> future.completeExceptionally(e));
+                connection = null;
             }
         }
 
