@@ -52,7 +52,7 @@
       <item name="Section Home" href="users/index.html"/>
       <item name="Download" href="users/download.html"/>
       <item name="Adopters" href="users/adopters.html"/>
-      <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
+      <item name="Bug &amp; Issue Tracker" href="users/issues.html"/>
       <item name="Commercial support" href="users/commercial-support.html"/>
       <item name="Getting Started" href="users/getting-started/index.html">
         <item name="C" href="users/getting-started/plc4c.html"/>
@@ -145,7 +145,6 @@
         <item name="Wiki" href="developers/infrastructure/wiki.html"/>
         <item name="Build VM" href="developers/infrastructure/vm.html"/>
         <item name="Website" href="developers/infrastructure/website.html"/>
-        <item name="IoT VPN" href="developers/infrastructure/vpn.html"/>
       </item>
       <item name="Releasing" href="developers/release/index.html">
         <item name="Releasing" href="developers/release/release.html"/>

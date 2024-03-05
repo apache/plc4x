@@ -18,46 +18,23 @@
 
 == Continuous Integration
 
-We are currently using Apache's `Jenkins` as single CI system.
+We are currently using the following CI systems.
 
 - Apache's Jenkins at: https://ci-builds.apache.org/job/PLC4X/
+- GitHub Actions at: https://github.com/apache/plc4x/actions
 
-However we might add Travis for automatically building and testing Pull-Requests in the near future.
+The build on Jenkins is generally responsible for building and testing the state of the project on the `development` branch.
+It is currently the only service that is able to build and deploy the `SNAPSHOT` artifacts and is also responsible for building and updating our website.
 
-Hereby Apache Jenkins' clearly is responsible for running the full testsuite with all integration-tests.
-Also only jobs on Apache Jenkins are allowed to publish SNAPSHOT versions of the Maven artifacts to `Apaches Nexus` at: https://repository.apache.org.
+GitHub Actions on the other side responsible for doing the main part of the testing.
+It not only builds and runs the tests on a matrix of operating systems as well as with a number of java versions.
+It also is configured to run the tests on pull-requests.
 
 === Structure of the Jenkins Pipeline build
 
 We are using the Jenkins `multi-branch pipeline plugin` to automatically setup build for branches based upon the build definition in the `Jenkinsfile` in the root of the project.
 
-In general it builds the `develop` branch and all branches starting with the prefix `feature/`.
-However when building the `develop` branch some additional steps are performed.
+In general, it builds the `develop` branch and all branches starting with the prefix `feature/`.
+However, when building the `develop` branch some additional steps are performed.
 
 When building `develop` the build not only builds the project itself and runs all tests, it also runs the `sonarcloud` analysis, deploys the artifacts built to the `Apache Nexus` as well as generates and deploys the website.
-
-The general structure of the build is as follows:
-
-[blockdiag,developers-ci-pipeline,svg]
-....
-{
-  Start [shape = beginpoint];
-  Initialization [label = "Initialization"];
-  Cleanup [label = "Cleanup"];
-  Checkout [color = "#068D9D", textcolor="#FFFFFF"];
-  Build [label = "Build"];
-  BuildDevelop [label = "Build develop"];
-  CodeQuality [label = "Code Quality"];
-  Deploy [label = "Deploy"];
-  BuildSite [label = "Build Site"];
-  StageSite [label = "Stage site"];
-  DeploySite [label = "Deploy site"];
-  Finish [shape = endpoint];
-
-  Start -> Initialization -> Cleanup -> Checkout;
-  Checkout -> Build [label = "feature branch"];
-  Build -> Finish;
-  Checkout -> BuildDevelop [label = "develop"];
-  BuildDevelop -> CodeQuality -> Deploy -> BuildSite -> StageSite -> DeploySite; -> Finish;
-}
-....
