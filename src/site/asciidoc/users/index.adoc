@@ -225,14 +225,14 @@ Currently, we support the following protocols:
 Another speciality, which is why it's called PLC4 *X* and not PLC4 *J*, is that we generally try to make our drivers available in various programming languages. In contrast to other projects, we don't do this by wrapping C-type libraries with stubs for various languages, we generate most of our code and are hereby able to build implementation native to the language being used, which lets us take full advantage of the corresponding programming language features and concepts.
 
 ++++
-<div id="protocolCarousel" class="carousel slide" data-ride="carousel">
+<div id="languageCarousel" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='getting-started/plc4c.adoc';" style="cursor:pointer;">
           <div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/languages/c_logo.png" alt="Card image cap">
+            <img src="../images/languages/c_logo.png" alt="Card image cap">
           </div>
           <div class="card-body">
             <h5 class="card-title"><b>C</b></h5>
@@ -240,12 +240,12 @@ Another speciality, which is why it's called PLC4 *X* and not PLC4 *J*, is that 
         </div>
       </div>
     </div>
-    <div class="carousel-item active">
+    <div class="carousel-item">
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='getting-started/plc4cs.adoc';" style="cursor:pointer;">
           <div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/languages/cs_logo.png" alt="Card image cap">
+            <img src="../images/languages/cs_logo.png" alt="Card image cap">
           </div>
           <div class="card-body">
             <h5 class="card-title"><b>C#</b></h5>
@@ -253,12 +253,12 @@ Another speciality, which is why it's called PLC4 *X* and not PLC4 *J*, is that 
         </div>
       </div>
     </div>
-    <div class="carousel-item active">
+    <div class="carousel-item">
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='getting-started/plc4go.adoc';" style="cursor:pointer;">
           <div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/languages/go_logo.png" alt="Card image cap">
+            <img src="../images/languages/go_logo.png" alt="Card image cap">
           </div>
           <div class="card-body">
             <h5 class="card-title"><b>Go</b></h5>
@@ -266,12 +266,12 @@ Another speciality, which is why it's called PLC4 *X* and not PLC4 *J*, is that 
         </div>
       </div>
     </div>
-    <div class="carousel-item active">
+    <div class="carousel-item">
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='getting-started/plc4j.adoc';" style="cursor:pointer;">
           <div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/languages/java_logo.png" alt="Card image cap">
+            <img src="../images/languages/java_logo.png" alt="Card image cap">
           </div>
           <div class="card-body">
             <h5 class="card-title"><b>Java</b></h5>
@@ -279,12 +279,12 @@ Another speciality, which is why it's called PLC4 *X* and not PLC4 *J*, is that 
         </div>
       </div>
     </div>
-    <div class="carousel-item active">
+    <div class="carousel-item">
       <div class="col-md-12 col-lg-4">
         <div class="card h-100 p-5 justify-content-center"
              onclick="location.href='getting-started/plc4py.adoc';" style="cursor:pointer;">
           <div class="d-flex align-items-center justify-content-center h-100">
-            <img src="images/languages/python_logo.png" alt="Card image cap">
+            <img src="../images/languages/python_logo.png" alt="Card image cap">
           </div>
           <div class="card-body">
             <h5 class="card-title"><b>Python</b></h5>
@@ -293,11 +293,11 @@ Another speciality, which is why it's called PLC4 *X* and not PLC4 *J*, is that 
       </div>
     </div>
   </div>
-  <a class="carousel-control-prev" href="#protocolCarousel" role="button" data-slide="prev">
+  <a class="carousel-control-prev" href="#languageCarousel" role="button" data-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="sr-only">Previous</span>
   </a>
-  <a class="carousel-control-next" href="#protocolCarousel" role="button" data-slide="next">
+  <a class="carousel-control-next" href="#languageCarousel" role="button" data-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
@@ -410,7 +410,7 @@ Besides providing access to devices using one of above protocols, Apache PLC4X a
                                          onclick="location.href='https://hop.apache.org';"
                                          style="cursor:pointer;">
                                         <div class="d-flex align-items-center justify-content-center h-100">
-                                            <img src="images/integrations/apache_hop_logo.png" alt="Card image cap">
+                                            <img src="../images/integrations/apache_hop_logo.png" alt="Card image cap">
                                         </div>
                                         <div class="card-body">
                                             <h5 class="card-title"><b>Apache Hop™</b></h5>

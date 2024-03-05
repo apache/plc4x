@@ -206,9 +206,9 @@ As soon as we are sure that we can write, we create a new `PlcWriteRequest.Build
 // - Give the single item requested an alias name
 // - Pass in the data you want to write (for arrays, pass in one value for every element)
 PlcWriteRequest.Builder builder = plcConnection.writeRequestBuilder();
-builder.addTagAddress("value-1", "%Q0.4:BOOL", true);
-builder.addTagAddress("value-2", "%Q0:BYTE", (byte) 0xFF);
-builder.addTagAddress("value-4", "%DB.DB1.4:INT[3]", 7, 23, 42);
+builder.addTagAddress("value-1", "%Q0.4:BOOL", new PlcBOOL(true));
+builder.addTagAddress("value-2", "%Q0:BYTE", new PlcBYTE((byte) 0xFF));
+builder.addTagAddress("value-4", "%DB.DB1.4:INT[3]", new PlcINT(7), new PlcINT(23), new PlcINT(42));
 PlcWriteRequest writeRequest = builder.build();
 ----
 
