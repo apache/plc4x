@@ -20,7 +20,6 @@ package org.apache.plc4x.java.can.generic;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -39,9 +38,9 @@ public class GenericCANDriverTest {
 
         assertNotNull(connection);
         assertTrue(connection.isConnected());
-        assertFalse(connection.getMetadata().canRead());
-        assertTrue(connection.getMetadata().canWrite());
-        assertTrue(connection.getMetadata().canSubscribe());
+        assertFalse(connection.getMetadata().isReadSupported());
+        assertTrue(connection.getMetadata().isWriteSupported());
+        assertTrue(connection.getMetadata().isSubscribeSupported());
     }
 
     @Test

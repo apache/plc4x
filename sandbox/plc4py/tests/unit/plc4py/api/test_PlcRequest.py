@@ -84,7 +84,7 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
         response = await connection.execute(request)
 
     # verify that request has one field
-    assert response.code == PlcResponseCode.NOT_CONNECTED
+    assert response.response_code == PlcResponseCode.NOT_CONNECTED
 
 
 @pytest.mark.asyncio
@@ -107,9 +107,9 @@ async def test_read_request_builder_non_empty_request_connected_bool(mocker) -> 
         )
 
     # verify that request has one field
-    assert response.code == PlcResponseCode.OK
+    assert response.response_code == PlcResponseCode.OK
 
-    value = response.values["Random Tag"][0].value
+    value = response.tags["Random Tag"].value
     assert not value.get_bool()
 
 
@@ -133,9 +133,9 @@ async def test_read_request_builder_non_empty_request_connected_int(mocker) -> N
         )
 
     # verify that request has one field
-    assert response.code == PlcResponseCode.OK
+    assert response.response_code == PlcResponseCode.OK
 
-    value = response.values["Random Tag"][0].value
+    value = response.tags["Random Tag"].value
     assert value.get_int() == 0
 
 
@@ -147,7 +147,7 @@ def test_read_response_boolean_response(mocker) -> None:
     """
     response = PlcReadResponse(
         PlcResponseCode.OK,
-        {"1:BOOL": [ResponseItem(PlcResponseCode.OK, PlcBOOL(True))]},
+        {"1:BOOL": ResponseItem(PlcResponseCode.OK, PlcBOOL(True))},
     )
     assert response.get_boolean("1:BOOL")
     assert isinstance(response.get_plc_value("1:BOOL"), PlcBOOL)
@@ -161,7 +161,7 @@ def test_read_response_int_response(mocker) -> None:
     """
     response = PlcReadResponse(
         PlcResponseCode.OK,
-        {"1:INT": [ResponseItem(PlcResponseCode.OK, PlcINT(10))]},
+        {"1:INT": ResponseItem(PlcResponseCode.OK, PlcINT(10))},
     )
     assert response.get_int("1:INT") == 10
     assert isinstance(response.get_plc_value("1:INT"), PlcINT)

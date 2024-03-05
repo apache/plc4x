@@ -376,7 +376,7 @@ def cEnabled = false
 def dotnetEnabled = false
 def goEnabled = false
 // Java is always enabled ...
-def javaEnabled = true
+def javaEnabled = false
 def pythonEnabled = false
 def sandboxEnabled = false
 def apacheReleaseEnabled = false
@@ -388,6 +388,8 @@ for (def activeProfile : activeProfiles) {
         dotnetEnabled = true
     } else if (activeProfile == "with-go") {
         goEnabled = true
+    } else if (activeProfile == "with-java") {
+        javaEnabled = true
     } else if (activeProfile == "with-python") {
         pythonEnabled = true
     } else if (activeProfile == "with-sandbox") {

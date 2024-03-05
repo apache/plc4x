@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -74,12 +74,12 @@ function App() {
                     }
                     case "UPDATED": {
                         const action:DeviceAction = {device: deviceEvent.source}
-                        updateDevice(action)
+                        store.dispatch(updateDevice(action));
                         break;
                     }
                     case "DELETED": {
                         const action: DeviceAction = {device: deviceEvent.source}
-                        deleteDevice(action)
+                        store.dispatch(deleteDevice(action));
                         break;
                     }
                 }

@@ -41,15 +41,17 @@ class ModbusPDUWriteFileRecordRequestItem:
 
         # Simple Field (referenceType)
         write_buffer.write_unsigned_byte(
-            self.reference_type, logical_name="referenceType"
+            self.reference_type, bit_length=8, logical_name="referenceType"
         )
 
         # Simple Field (fileNumber)
-        write_buffer.write_unsigned_short(self.file_number, logical_name="fileNumber")
+        write_buffer.write_unsigned_short(
+            self.file_number, bit_length=16, logical_name="fileNumber"
+        )
 
         # Simple Field (recordNumber)
         write_buffer.write_unsigned_short(
-            self.record_number, logical_name="recordNumber"
+            self.record_number, bit_length=16, logical_name="recordNumber"
         )
 
         # Implicit Field (record_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -118,7 +120,9 @@ class ModbusPDUWriteFileRecordRequestItem:
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordRequestItem")
         # Create the instance
-        _modbus_pdu_write_file_record_request_item: ModbusPDUWriteFileRecordRequestItem = ModbusPDUWriteFileRecordRequestItem(
+        _modbus_pdu_write_file_record_request_item: (
+            ModbusPDUWriteFileRecordRequestItem
+        ) = ModbusPDUWriteFileRecordRequestItem(
             reference_type, file_number, record_number, record_data
         )
         return _modbus_pdu_write_file_record_request_item

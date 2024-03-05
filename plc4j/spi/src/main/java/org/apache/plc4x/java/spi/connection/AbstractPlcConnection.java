@@ -93,22 +93,22 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     }
 
     @Override
-    public boolean canRead() {
+    public boolean isReadSupported() {
         return canRead;
     }
 
     @Override
-    public boolean canWrite() {
+    public boolean isWriteSupported() {
         return canWrite;
     }
 
     @Override
-    public boolean canSubscribe() {
+    public boolean isSubscribeSupported() {
         return canSubscribe;
     }
 
     @Override
-    public boolean canBrowse() {
+    public boolean isBrowseSupported() {
         return canBrowse;
     }
 
@@ -126,7 +126,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public PlcReadRequest.Builder readRequestBuilder() {
-        if (!canRead()) {
+        if (!isReadSupported()) {
             throw new PlcUnsupportedOperationException("The connection does not support reading");
         }
         return new DefaultPlcReadRequest.Builder(this, getPlcTagHandler());
@@ -134,7 +134,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public PlcWriteRequest.Builder writeRequestBuilder() {
-        if (!canWrite()) {
+        if (!isWriteSupported()) {
             throw new PlcUnsupportedOperationException("The connection does not support writing");
         }
         return new DefaultPlcWriteRequest.Builder(this, getPlcTagHandler(), getPlcValueHandler());
@@ -142,7 +142,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
-        if (!canSubscribe()) {
+        if (!isSubscribeSupported()) {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
         return new DefaultPlcSubscriptionRequest.Builder(this, getPlcTagHandler());

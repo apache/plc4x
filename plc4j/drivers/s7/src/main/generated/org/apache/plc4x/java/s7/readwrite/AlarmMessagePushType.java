@@ -38,25 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class AlarmMessagePushType implements Message {
 
   // Properties.
-  protected final DateAndTime TimeStamp;
+  protected final DateAndTime timeStamp;
   protected final short functionId;
   protected final short numberOfObjects;
   protected final List<AlarmMessageObjectPushType> messageObjects;
 
   public AlarmMessagePushType(
-      DateAndTime TimeStamp,
+      DateAndTime timeStamp,
       short functionId,
       short numberOfObjects,
       List<AlarmMessageObjectPushType> messageObjects) {
     super();
-    this.TimeStamp = TimeStamp;
+    this.timeStamp = timeStamp;
     this.functionId = functionId;
     this.numberOfObjects = numberOfObjects;
     this.messageObjects = messageObjects;
   }
 
   public DateAndTime getTimeStamp() {
-    return TimeStamp;
+    return timeStamp;
   }
 
   public short getFunctionId() {
@@ -76,8 +76,8 @@ public class AlarmMessagePushType implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("AlarmMessagePushType");
 
-    // Simple Field (TimeStamp)
-    writeSimpleField("TimeStamp", TimeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    // Simple Field (timeStamp)
+    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (functionId)
     writeSimpleField("functionId", functionId, writeUnsignedShort(writeBuffer, 8));
@@ -102,8 +102,8 @@ public class AlarmMessagePushType implements Message {
     AlarmMessagePushType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (TimeStamp)
-    lengthInBits += TimeStamp.getLengthInBits();
+    // Simple field (timeStamp)
+    lengthInBits += timeStamp.getLengthInBits();
 
     // Simple field (functionId)
     lengthInBits += 8;
@@ -134,9 +134,9 @@ public class AlarmMessagePushType implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    DateAndTime TimeStamp =
+    DateAndTime timeStamp =
         readSimpleField(
-            "TimeStamp",
+            "timeStamp",
             new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
@@ -154,7 +154,7 @@ public class AlarmMessagePushType implements Message {
     // Create the instance
     AlarmMessagePushType _alarmMessagePushType;
     _alarmMessagePushType =
-        new AlarmMessagePushType(TimeStamp, functionId, numberOfObjects, messageObjects);
+        new AlarmMessagePushType(timeStamp, functionId, numberOfObjects, messageObjects);
     return _alarmMessagePushType;
   }
 

@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.s7.readwrite.context;
 
 import org.apache.plc4x.java.s7.readwrite.COTPTpduSize;
+import org.apache.plc4x.java.s7.readwrite.ControllerType;
 import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
-import org.apache.plc4x.java.s7.readwrite.types.S7ControllerType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7TsapIdEncoder;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
@@ -35,7 +35,7 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
     private int pduSize;
     private int maxAmqCaller;
     private int maxAmqCallee;
-    private S7ControllerType controllerType;
+    private ControllerType controllerType;
 
 
     private int calledTsapId2;
@@ -61,14 +61,14 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
         if (configuration.remoteTsap > 0) {
             this.calledTsapId = configuration.remoteTsap;
         }
-        this.controllerType = configuration.controllerType == null ? S7ControllerType.ANY : S7ControllerType.valueOf(configuration.controllerType);
+        this.controllerType = configuration.controllerType == null ? ControllerType.ANY : ControllerType.valueOf(configuration.controllerType);
 
         // Initialize the parameters with initial version (Will be updated during the login process)
         this.cotpTpduSize = getNearestMatchingTpduSize((short) configuration.getPduSize());
 
         // The Siemens LOGO device seems to only work with very limited settings,
         // so we're overriding some of the defaults.
-        if (this.controllerType == S7ControllerType.LOGO && configuration.pduSize == 1024) {
+        if (this.controllerType == ControllerType.LOGO && configuration.pduSize == 1024) {
             configuration.pduSize = 480;
             this.pduSize = 480;
         } else {
@@ -152,11 +152,11 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
         this.maxAmqCallee = maxAmqCallee;
     }
 
-    public S7ControllerType getControllerType() {
+    public ControllerType getControllerType() {
         return controllerType;
     }
 
-    public void setControllerType(S7ControllerType controllerType) {
+    public void setControllerType(ControllerType controllerType) {
         this.controllerType = controllerType;
     }
 

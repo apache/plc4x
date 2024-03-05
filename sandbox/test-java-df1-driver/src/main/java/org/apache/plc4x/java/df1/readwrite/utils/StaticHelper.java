@@ -35,7 +35,7 @@ public class StaticHelper {
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
-        df1crc = crc.update(df1crc, writeBuffer.getData());
+        df1crc = crc.update(df1crc, writeBuffer.getBytes());
         df1crc = crc.update(df1crc, new byte[]{0x03});
         return crc.finalCRC16(df1crc) & 0xFFFF;
     }

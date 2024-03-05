@@ -100,8 +100,9 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvProfibusSubType subType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "subType",
+            "TlvProfibusSubType",
             new DataReaderEnumDefault<>(
                 TlvProfibusSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 

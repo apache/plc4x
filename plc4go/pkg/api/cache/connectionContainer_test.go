@@ -181,7 +181,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 				queue:            tt.fields.queue,
 				listeners:        tt.fields.listeners,
 			}
-			c.connect()
+			c.connect(testutils.TestContext(t))
 		})
 	}
 }
@@ -334,7 +334,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 				queue:            tt.fields.queue,
 				listeners:        tt.fields.listeners,
 			}
-			tt.wantErr(t1, c.returnConnection(tt.args.state), fmt.Sprintf("returnConnection(%v)", tt.args.state))
+			tt.wantErr(t1, c.returnConnection(testutils.TestContext(t), tt.args.state), fmt.Sprintf("returnConnection(%v)", tt.args.state))
 		})
 	}
 }

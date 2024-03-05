@@ -38,7 +38,6 @@ class ModbusADU(ABC, PlcMessage):
 
     # Abstract accessors for discriminator values.
     @property
-    @abstractmethod
     def driver_type(self) -> DriverType:
         pass
 
@@ -67,20 +66,21 @@ class ModbusADU(ABC, PlcMessage):
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
+
         if kwargs is None:
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 2, but got None"
             )
 
         driver_type: DriverType = 0
-        if isinstance(kwargs.get("driverType"), DriverType):
-            driver_type = DriverType(kwargs.get("driverType"))
-        elif isinstance(kwargs.get("driverType"), str):
-            driver_type = DriverType(str(kwargs.get("driverType")))
+        if isinstance(kwargs.get("driver_type"), DriverType):
+            driver_type = DriverType(kwargs.get("driver_type"))
+        elif isinstance(kwargs.get("driver_type"), str):
+            driver_type = DriverType(str(kwargs.get("driver_type")))
         else:
             raise PlcRuntimeException(
                 "Argument 0 expected to be of type DriverType or a string which is parseable but was "
-                + kwargs.get("driverType").getClass().getName()
+                + kwargs.get("driver_type").getClass().getName()
             )
 
         response: bool = False
@@ -107,18 +107,21 @@ class ModbusADU(ABC, PlcMessage):
         from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
 
         if driver_type == DriverType.MODBUS_TCP:
+
             builder = ModbusTcpADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusRtuADU import ModbusRtuADU
 
         if driver_type == DriverType.MODBUS_RTU:
+
             builder = ModbusRtuADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusAsciiADU import ModbusAsciiADU
 
         if driver_type == DriverType.MODBUS_ASCII:
+
             builder = ModbusAsciiADU.static_parse_builder(
                 read_buffer, driver_type, response
             )
@@ -160,6 +163,7 @@ class ModbusADU(ABC, PlcMessage):
         # return "\n" + str(write_buffer_box_based.get_box()) + "\n"
 
 
+@dataclass
 class ModbusADUBuilder:
     def build(self, response: bool) -> ModbusADU:
         pass

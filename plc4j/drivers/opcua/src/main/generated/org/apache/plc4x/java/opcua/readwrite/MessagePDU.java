@@ -42,8 +42,16 @@ public abstract class MessagePDU implements Message {
 
   public abstract Boolean getResponse();
 
-  public MessagePDU() {
+  // Properties.
+  protected final ChunkType chunk;
+
+  public MessagePDU(ChunkType chunk) {
     super();
+    this.chunk = chunk;
+  }
+
+  public ChunkType getChunk() {
+    return chunk;
   }
 
   protected abstract void serializeMessagePDUChild(WriteBuffer writeBuffer)
@@ -56,6 +64,19 @@ public abstract class MessagePDU implements Message {
 
     // Discriminator Field (messageType) (Used as input to a switch field)
     writeDiscriminatorField("messageType", getMessageType(), writeString(writeBuffer, 24));
+
+    // Simple Field (chunk)
+    writeSimpleEnumField(
+        "chunk",
+        "ChunkType",
+        chunk,
+        new DataWriterEnumDefault<>(
+            ChunkType::getValue, ChunkType::name, writeString(writeBuffer, 8)));
+
+    // Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    long totalLength = (long) (getLengthInBytes());
+    writeImplicitField("totalLength", totalLength, writeUnsignedLong(writeBuffer, 32));
 
     // Switch field (Serialize the sub-type)
     serializeMessagePDUChild(writeBuffer);
@@ -76,6 +97,12 @@ public abstract class MessagePDU implements Message {
 
     // Discriminator Field (messageType)
     lengthInBits += 24;
+
+    // Simple field (chunk)
+    lengthInBits += 8;
+
+    // Implicit Field (totalLength)
+    lengthInBits += 32;
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -110,6 +137,14 @@ public abstract class MessagePDU implements Message {
 
     String messageType = readDiscriminatorField("messageType", readString(readBuffer, 24));
 
+    ChunkType chunk =
+        readEnumField(
+            "chunk",
+            "ChunkType",
+            new DataReaderEnumDefault<>(ChunkType::enumForValue, readString(readBuffer, 8)));
+
+    long totalLength = readImplicitField("totalLength", readUnsignedLong(readBuffer, 32));
+
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     MessagePDUBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (String) "HEL")
@@ -120,19 +155,20 @@ public abstract class MessagePDU implements Message {
       builder = OpcuaAcknowledgeResponse.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "OPN")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaOpenRequest.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaOpenRequest.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
     } else if (EvaluationHelper.equals(messageType, (String) "OPN")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaOpenResponse.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaOpenResponse.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
     } else if (EvaluationHelper.equals(messageType, (String) "CLO")
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = OpcuaCloseRequest.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "MSG")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaMessageRequest.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaMessageRequest.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
     } else if (EvaluationHelper.equals(messageType, (String) "MSG")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaMessageResponse.staticParseMessagePDUBuilder(readBuffer, response);
+      builder =
+          OpcuaMessageResponse.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
     } else if (EvaluationHelper.equals(messageType, (String) "ERR")
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder = OpcuaMessageError.staticParseMessagePDUBuilder(readBuffer, response);
@@ -151,12 +187,12 @@ public abstract class MessagePDU implements Message {
 
     readBuffer.closeContext("MessagePDU");
     // Create the instance
-    MessagePDU _messagePDU = builder.build();
+    MessagePDU _messagePDU = builder.build(chunk);
     return _messagePDU;
   }
 
   public interface MessagePDUBuilder {
-    MessagePDU build();
+    MessagePDU build(ChunkType chunk);
   }
 
   @Override
@@ -168,12 +204,12 @@ public abstract class MessagePDU implements Message {
       return false;
     }
     MessagePDU that = (MessagePDU) o;
-    return true;
+    return (getChunk() == that.getChunk()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash();
+    return Objects.hash(getChunk());
   }
 
   @Override

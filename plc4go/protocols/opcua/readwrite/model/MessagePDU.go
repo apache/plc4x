@@ -38,6 +38,8 @@ type MessagePDU interface {
 	GetMessageType() string
 	// GetResponse returns Response (discriminator field)
 	GetResponse() bool
+	// GetChunk returns Chunk (property field)
+	GetChunk() ChunkType
 }
 
 // MessagePDUExactly can be used when we want exactly this type and not a type which fulfills MessagePDU.
@@ -50,6 +52,7 @@ type MessagePDUExactly interface {
 // _MessagePDU is the data-structure of this message
 type _MessagePDU struct {
 	_MessagePDUChildRequirements
+	Chunk ChunkType
 }
 
 type _MessagePDUChildRequirements interface {
@@ -66,16 +69,30 @@ type MessagePDUParent interface {
 
 type MessagePDUChild interface {
 	utils.Serializable
-	InitializeParent(parent MessagePDU)
+	InitializeParent(parent MessagePDU, chunk ChunkType)
 	GetParent() *MessagePDU
 
 	GetTypeName() string
 	MessagePDU
 }
 
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Accessors for property fields.
+///////////////////////
+
+func (m *_MessagePDU) GetChunk() ChunkType {
+	return m.Chunk
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 // NewMessagePDU factory function for _MessagePDU
-func NewMessagePDU() *_MessagePDU {
-	return &_MessagePDU{}
+func NewMessagePDU(chunk ChunkType) *_MessagePDU {
+	return &_MessagePDU{Chunk: chunk}
 }
 
 // Deprecated: use the interface for direct cast
@@ -97,6 +114,12 @@ func (m *_MessagePDU) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (messageType)
 	lengthInBits += 24
+
+	// Simple field (chunk)
+	lengthInBits += 8
+
+	// Implicit Field (totalLength)
+	lengthInBits += 32
 
 	return lengthInBits
 }
@@ -126,10 +149,30 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of MessagePDU")
 	}
 
+	// Simple Field (chunk)
+	if pullErr := readBuffer.PullContext("chunk"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for chunk")
+	}
+	_chunk, _chunkErr := ChunkTypeParseWithBuffer(ctx, readBuffer)
+	if _chunkErr != nil {
+		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of MessagePDU")
+	}
+	chunk := _chunk
+	if closeErr := readBuffer.CloseContext("chunk"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for chunk")
+	}
+
+	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	totalLength, _totalLengthErr := readBuffer.ReadUint32("totalLength", 32)
+	_ = totalLength
+	if _totalLengthErr != nil {
+		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of MessagePDU")
+	}
+
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MessagePDUChildSerializeRequirement interface {
 		MessagePDU
-		InitializeParent(MessagePDU)
+		InitializeParent(MessagePDU, ChunkType)
 		GetParent() MessagePDU
 	}
 	var _childTemp any
@@ -141,15 +184,15 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	case messageType == "ACK" && response == bool(true): // OpcuaAcknowledgeResponse
 		_childTemp, typeSwitchError = OpcuaAcknowledgeResponseParseWithBuffer(ctx, readBuffer, response)
 	case messageType == "OPN" && response == bool(false): // OpcuaOpenRequest
-		_childTemp, typeSwitchError = OpcuaOpenRequestParseWithBuffer(ctx, readBuffer, response)
+		_childTemp, typeSwitchError = OpcuaOpenRequestParseWithBuffer(ctx, readBuffer, totalLength, response)
 	case messageType == "OPN" && response == bool(true): // OpcuaOpenResponse
-		_childTemp, typeSwitchError = OpcuaOpenResponseParseWithBuffer(ctx, readBuffer, response)
+		_childTemp, typeSwitchError = OpcuaOpenResponseParseWithBuffer(ctx, readBuffer, totalLength, response)
 	case messageType == "CLO" && response == bool(false): // OpcuaCloseRequest
 		_childTemp, typeSwitchError = OpcuaCloseRequestParseWithBuffer(ctx, readBuffer, response)
 	case messageType == "MSG" && response == bool(false): // OpcuaMessageRequest
-		_childTemp, typeSwitchError = OpcuaMessageRequestParseWithBuffer(ctx, readBuffer, response)
+		_childTemp, typeSwitchError = OpcuaMessageRequestParseWithBuffer(ctx, readBuffer, totalLength, response)
 	case messageType == "MSG" && response == bool(true): // OpcuaMessageResponse
-		_childTemp, typeSwitchError = OpcuaMessageResponseParseWithBuffer(ctx, readBuffer, response)
+		_childTemp, typeSwitchError = OpcuaMessageResponseParseWithBuffer(ctx, readBuffer, totalLength, response)
 	case messageType == "ERR" && response == bool(true): // OpcuaMessageError
 		_childTemp, typeSwitchError = OpcuaMessageErrorParseWithBuffer(ctx, readBuffer, response)
 	default:
@@ -165,7 +208,7 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 
 	// Finish initializing
-	_child.InitializeParent(_child)
+	_child.InitializeParent(_child, chunk)
 	return _child, nil
 }
 
@@ -187,6 +230,25 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
+	}
+
+	// Simple Field (chunk)
+	if pushErr := writeBuffer.PushContext("chunk"); pushErr != nil {
+		return errors.Wrap(pushErr, "Error pushing for chunk")
+	}
+	_chunkErr := writeBuffer.WriteSerializable(ctx, m.GetChunk())
+	if popErr := writeBuffer.PopContext("chunk"); popErr != nil {
+		return errors.Wrap(popErr, "Error popping for chunk")
+	}
+	if _chunkErr != nil {
+		return errors.Wrap(_chunkErr, "Error serializing 'chunk' field")
+	}
+
+	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	totalLength := uint32(uint32(m.GetLengthInBytes(ctx)))
+	_totalLengthErr := writeBuffer.WriteUint32("totalLength", 32, uint32((totalLength)))
+	if _totalLengthErr != nil {
+		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

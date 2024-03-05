@@ -20,12 +20,16 @@
 package org.apache.plc4x.java.transport.udp;
 
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
 public abstract class DefaultUdpTransportConfiguration implements UdpTransportConfiguration {
 
     @ConfigurationParameter("local-port")
     @IntDefaultValue(-1)
+    @Description("Some connections require a UDP listener to listen on a fixed port.\n" +
+        "Use this configuration option in order to define the port number of the local port."
+    )
     private int localPort;
 
     @Override

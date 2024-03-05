@@ -81,7 +81,7 @@ public abstract class SerialChannelHandler {
         public boolean open() {
             if (comPort.openPort()) {
                 comPort.setComPortParameters(config.getBaudRate(), config.getDataBits(),
-                    config.getStopBits(), config.getParityBits());
+                    config.getStopBits(), config.getParity().value);
                 return true;
             }
             return false;

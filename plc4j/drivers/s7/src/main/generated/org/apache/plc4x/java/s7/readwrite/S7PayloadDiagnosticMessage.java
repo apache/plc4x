@@ -51,61 +51,61 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
   }
 
   // Properties.
-  protected final int EventId;
-  protected final short PriorityClass;
-  protected final short ObNumber;
-  protected final int DatId;
-  protected final int Info1;
-  protected final long Info2;
-  protected final DateAndTime TimeStamp;
+  protected final int eventId;
+  protected final short priorityClass;
+  protected final short obNumber;
+  protected final int datId;
+  protected final int info1;
+  protected final long info2;
+  protected final DateAndTime timeStamp;
 
   public S7PayloadDiagnosticMessage(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
       int dataLength,
-      int EventId,
-      short PriorityClass,
-      short ObNumber,
-      int DatId,
-      int Info1,
-      long Info2,
-      DateAndTime TimeStamp) {
+      int eventId,
+      short priorityClass,
+      short obNumber,
+      int datId,
+      int info1,
+      long info2,
+      DateAndTime timeStamp) {
     super(returnCode, transportSize, dataLength);
-    this.EventId = EventId;
-    this.PriorityClass = PriorityClass;
-    this.ObNumber = ObNumber;
-    this.DatId = DatId;
-    this.Info1 = Info1;
-    this.Info2 = Info2;
-    this.TimeStamp = TimeStamp;
+    this.eventId = eventId;
+    this.priorityClass = priorityClass;
+    this.obNumber = obNumber;
+    this.datId = datId;
+    this.info1 = info1;
+    this.info2 = info2;
+    this.timeStamp = timeStamp;
   }
 
   public int getEventId() {
-    return EventId;
+    return eventId;
   }
 
   public short getPriorityClass() {
-    return PriorityClass;
+    return priorityClass;
   }
 
   public short getObNumber() {
-    return ObNumber;
+    return obNumber;
   }
 
   public int getDatId() {
-    return DatId;
+    return datId;
   }
 
   public int getInfo1() {
-    return Info1;
+    return info1;
   }
 
   public long getInfo2() {
-    return Info2;
+    return info2;
   }
 
   public DateAndTime getTimeStamp() {
-    return TimeStamp;
+    return timeStamp;
   }
 
   @Override
@@ -115,26 +115,26 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("S7PayloadDiagnosticMessage");
 
-    // Simple Field (EventId)
-    writeSimpleField("EventId", EventId, writeUnsignedInt(writeBuffer, 16));
+    // Simple Field (eventId)
+    writeSimpleField("eventId", eventId, writeUnsignedInt(writeBuffer, 16));
 
-    // Simple Field (PriorityClass)
-    writeSimpleField("PriorityClass", PriorityClass, writeUnsignedShort(writeBuffer, 8));
+    // Simple Field (priorityClass)
+    writeSimpleField("priorityClass", priorityClass, writeUnsignedShort(writeBuffer, 8));
 
-    // Simple Field (ObNumber)
-    writeSimpleField("ObNumber", ObNumber, writeUnsignedShort(writeBuffer, 8));
+    // Simple Field (obNumber)
+    writeSimpleField("obNumber", obNumber, writeUnsignedShort(writeBuffer, 8));
 
-    // Simple Field (DatId)
-    writeSimpleField("DatId", DatId, writeUnsignedInt(writeBuffer, 16));
+    // Simple Field (datId)
+    writeSimpleField("datId", datId, writeUnsignedInt(writeBuffer, 16));
 
-    // Simple Field (Info1)
-    writeSimpleField("Info1", Info1, writeUnsignedInt(writeBuffer, 16));
+    // Simple Field (info1)
+    writeSimpleField("info1", info1, writeUnsignedInt(writeBuffer, 16));
 
-    // Simple Field (Info2)
-    writeSimpleField("Info2", Info2, writeUnsignedLong(writeBuffer, 32));
+    // Simple Field (info2)
+    writeSimpleField("info2", info2, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (TimeStamp)
-    writeSimpleField("TimeStamp", TimeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    // Simple Field (timeStamp)
+    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("S7PayloadDiagnosticMessage");
   }
@@ -150,26 +150,26 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     S7PayloadDiagnosticMessage _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (EventId)
+    // Simple field (eventId)
     lengthInBits += 16;
 
-    // Simple field (PriorityClass)
+    // Simple field (priorityClass)
     lengthInBits += 8;
 
-    // Simple field (ObNumber)
+    // Simple field (obNumber)
     lengthInBits += 8;
 
-    // Simple field (DatId)
+    // Simple field (datId)
     lengthInBits += 16;
 
-    // Simple field (Info1)
+    // Simple field (info1)
     lengthInBits += 16;
 
-    // Simple field (Info2)
+    // Simple field (info2)
     lengthInBits += 32;
 
-    // Simple field (TimeStamp)
-    lengthInBits += TimeStamp.getLengthInBits();
+    // Simple field (timeStamp)
+    lengthInBits += timeStamp.getLengthInBits();
 
     return lengthInBits;
   }
@@ -181,54 +181,54 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int EventId = readSimpleField("EventId", readUnsignedInt(readBuffer, 16));
+    int eventId = readSimpleField("eventId", readUnsignedInt(readBuffer, 16));
 
-    short PriorityClass = readSimpleField("PriorityClass", readUnsignedShort(readBuffer, 8));
+    short priorityClass = readSimpleField("priorityClass", readUnsignedShort(readBuffer, 8));
 
-    short ObNumber = readSimpleField("ObNumber", readUnsignedShort(readBuffer, 8));
+    short obNumber = readSimpleField("obNumber", readUnsignedShort(readBuffer, 8));
 
-    int DatId = readSimpleField("DatId", readUnsignedInt(readBuffer, 16));
+    int datId = readSimpleField("datId", readUnsignedInt(readBuffer, 16));
 
-    int Info1 = readSimpleField("Info1", readUnsignedInt(readBuffer, 16));
+    int info1 = readSimpleField("info1", readUnsignedInt(readBuffer, 16));
 
-    long Info2 = readSimpleField("Info2", readUnsignedLong(readBuffer, 32));
+    long info2 = readSimpleField("info2", readUnsignedLong(readBuffer, 32));
 
-    DateAndTime TimeStamp =
+    DateAndTime timeStamp =
         readSimpleField(
-            "TimeStamp",
+            "timeStamp",
             new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadDiagnosticMessage");
     // Create the instance
     return new S7PayloadDiagnosticMessageBuilderImpl(
-        EventId, PriorityClass, ObNumber, DatId, Info1, Info2, TimeStamp);
+        eventId, priorityClass, obNumber, datId, info1, info2, timeStamp);
   }
 
   public static class S7PayloadDiagnosticMessageBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
-    private final int EventId;
-    private final short PriorityClass;
-    private final short ObNumber;
-    private final int DatId;
-    private final int Info1;
-    private final long Info2;
-    private final DateAndTime TimeStamp;
+    private final int eventId;
+    private final short priorityClass;
+    private final short obNumber;
+    private final int datId;
+    private final int info1;
+    private final long info2;
+    private final DateAndTime timeStamp;
 
     public S7PayloadDiagnosticMessageBuilderImpl(
-        int EventId,
-        short PriorityClass,
-        short ObNumber,
-        int DatId,
-        int Info1,
-        long Info2,
-        DateAndTime TimeStamp) {
-      this.EventId = EventId;
-      this.PriorityClass = PriorityClass;
-      this.ObNumber = ObNumber;
-      this.DatId = DatId;
-      this.Info1 = Info1;
-      this.Info2 = Info2;
-      this.TimeStamp = TimeStamp;
+        int eventId,
+        short priorityClass,
+        short obNumber,
+        int datId,
+        int info1,
+        long info2,
+        DateAndTime timeStamp) {
+      this.eventId = eventId;
+      this.priorityClass = priorityClass;
+      this.obNumber = obNumber;
+      this.datId = datId;
+      this.info1 = info1;
+      this.info2 = info2;
+      this.timeStamp = timeStamp;
     }
 
     public S7PayloadDiagnosticMessage build(
@@ -238,13 +238,13 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
               returnCode,
               transportSize,
               dataLength,
-              EventId,
-              PriorityClass,
-              ObNumber,
-              DatId,
-              Info1,
-              Info2,
-              TimeStamp);
+              eventId,
+              priorityClass,
+              obNumber,
+              datId,
+              info1,
+              info2,
+              timeStamp);
       return s7PayloadDiagnosticMessage;
     }
   }

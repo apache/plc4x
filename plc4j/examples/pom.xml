@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.apache.plc4x.examples</groupId>
@@ -35,7 +35,7 @@
   <description>Parent of all java based application example modules.</description>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <app.main.class>override-this-property-in-application-pom</app.main.class>
   </properties>
 
@@ -47,7 +47,7 @@
     <module>hello-connectivity-mqtt</module>
     <module>hello-influx-data-collection</module>
     <module>hello-integration-iotdb</module>
-    <!--module>hello-nats</module-->
+    <module>hello-nats</module>
     <module>hello-opm</module>
     <module>hello-webservice</module>
     <module>hello-world-kotlin</module>
@@ -133,7 +133,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-all</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>pom</type>
       <scope>runtime</scope>
     </dependency>

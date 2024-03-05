@@ -159,7 +159,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     // If the device didn't support this, we'll have to handle the
                     // module index and submodule indexes when trying to use them.
                     if (throwable1 != null) {
-                        if(profinetDriverContext.getDap() != null) {
+                        if (profinetDriverContext.getDap() != null) {
                             context.fireConnected();
                         } else {
                             logger.error("Unable to auto-configure connection, please be sure to provide the 'dap-id' connection parameter");
@@ -200,7 +200,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                         }
                         long moduleIdentNumber = Long.parseLong(moduleIdentNumberStr, 16);
                         if (moduleIdentNumber == dapModuleIdentificationNumber) {
-                            if((profinetDriverContext.getDap() != null) &&
+                            if ((profinetDriverContext.getDap() != null) &&
                                 !profinetDriverContext.getDap().getId().equals(curDap.getId())) {
                                 logger.warn("DAP configured in connection string differs from device-configuration.");
                             }
@@ -254,17 +254,21 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                                             submoduleIndex.get(curSlot).put(curSubslot, curSubmodule);
 
                                             // Replace the text-ids with readable values
-                                            for (ProfinetIoDataInput profinetIoDataInput : curSubmodule.getIoData().getInput()) {
-                                                for (ProfinetDataItem profinetDataItem : profinetIoDataInput.getDataItemList()) {
-                                                    if (textMapping.containsKey(profinetDataItem.getTextId())) {
-                                                        profinetDataItem.setTextId(textMapping.get(profinetDataItem.getTextId()));
+                                            if (curSubmodule.getIoData().getInput() != null) {
+                                                for (ProfinetIoDataInput profinetIoDataInput : curSubmodule.getIoData().getInput()) {
+                                                    for (ProfinetDataItem profinetDataItem : profinetIoDataInput.getDataItemList()) {
+                                                        if (textMapping.containsKey(profinetDataItem.getTextId())) {
+                                                            profinetDataItem.setTextId(textMapping.get(profinetDataItem.getTextId()));
+                                                        }
                                                     }
                                                 }
                                             }
-                                            for (ProfinetIoDataOutput profinetIoDataOutput : curSubmodule.getIoData().getOutput()) {
-                                                for (ProfinetDataItem profinetDataItem : profinetIoDataOutput.getDataItemList()) {
-                                                    if (textMapping.containsKey(profinetDataItem.getTextId())) {
-                                                        profinetDataItem.setTextId(textMapping.get(profinetDataItem.getTextId()));
+                                            if (curSubmodule.getIoData().getOutput() != null) {
+                                                for (ProfinetIoDataOutput profinetIoDataOutput : curSubmodule.getIoData().getOutput()) {
+                                                    for (ProfinetDataItem profinetDataItem : profinetIoDataOutput.getDataItemList()) {
+                                                        if (textMapping.containsKey(profinetDataItem.getTextId())) {
+                                                            profinetDataItem.setTextId(textMapping.get(profinetDataItem.getTextId()));
+                                                        }
                                                     }
                                                 }
                                             }
@@ -341,34 +345,38 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
                     ProfinetVirtualSubmoduleItem subslotModule = subslotEntry.getValue();
 
                     // Add all the input tags.
-                    for (ProfinetIoDataInput profinetIoDataInput : subslotModule.getIoData().getInput()) {
-                        for (int i = 0; i < profinetIoDataInput.getDataItemList().size(); i++) {
-                            ProfinetDataItem profinetDataItem = profinetIoDataInput.getDataItemList().get(i);
-                            ProfinetDataTypeMapper.DataTypeInformation dataTypeInformation =
-                                ProfinetDataTypeMapper.getPlcValueType(profinetDataItem);
-                            // The ids have been replaced by real textual values in the connection phase.
-                            String name = profinetDataItem.getTextId();
-                            items.add(new DefaultPlcBrowseItem(new ProfinetTag(
-                                slot, subslot, ProfinetTag.Direction.INPUT,
-                                i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
-                                name, false, true, true,
-                                Collections.emptyMap(), Collections.emptyMap()));
+                    if (subslotModule.getIoData().getInput() != null) {
+                        for (ProfinetIoDataInput profinetIoDataInput : subslotModule.getIoData().getInput()) {
+                            for (int i = 0; i < profinetIoDataInput.getDataItemList().size(); i++) {
+                                ProfinetDataItem profinetDataItem = profinetIoDataInput.getDataItemList().get(i);
+                                ProfinetDataTypeMapper.DataTypeInformation dataTypeInformation =
+                                    ProfinetDataTypeMapper.getPlcValueType(profinetDataItem);
+                                // The ids have been replaced by real textual values in the connection phase.
+                                String name = profinetDataItem.getTextId();
+                                items.add(new DefaultPlcBrowseItem(new ProfinetTag(
+                                    slot, subslot, ProfinetTag.Direction.INPUT,
+                                    i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
+                                    name, false, true, true,
+                                    Collections.emptyMap(), Collections.emptyMap()));
+                            }
                         }
                     }
 
                     // Add all the output tags.
-                    for (ProfinetIoDataOutput profinetIoDataOutput : subslotModule.getIoData().getOutput()) {
-                        for (int i = 0; i < profinetIoDataOutput.getDataItemList().size(); i++) {
-                            ProfinetDataItem profinetDataItem = profinetIoDataOutput.getDataItemList().get(i);
-                            ProfinetDataTypeMapper.DataTypeInformation dataTypeInformation =
-                                ProfinetDataTypeMapper.getPlcValueType(profinetDataItem);
-                            // The ids have been replaced by real textual values in the connection phase.
-                            String name = profinetDataItem.getTextId();
-                            items.add(new DefaultPlcBrowseItem(new ProfinetTag(
-                                slot, subslot, ProfinetTag.Direction.OUTPUT,
-                                i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
-                                name, false, true, true,
-                                Collections.emptyMap(), Collections.emptyMap()));
+                    if (subslotModule.getIoData().getOutput() != null) {
+                        for (ProfinetIoDataOutput profinetIoDataOutput : subslotModule.getIoData().getOutput()) {
+                            for (int i = 0; i < profinetIoDataOutput.getDataItemList().size(); i++) {
+                                ProfinetDataItem profinetDataItem = profinetIoDataOutput.getDataItemList().get(i);
+                                ProfinetDataTypeMapper.DataTypeInformation dataTypeInformation =
+                                    ProfinetDataTypeMapper.getPlcValueType(profinetDataItem);
+                                // The ids have been replaced by real textual values in the connection phase.
+                                String name = profinetDataItem.getTextId();
+                                items.add(new DefaultPlcBrowseItem(new ProfinetTag(
+                                    slot, subslot, ProfinetTag.Direction.OUTPUT,
+                                    i, dataTypeInformation.getPlcValueType(), dataTypeInformation.getNumElements()),
+                                    name, false, true, true,
+                                    Collections.emptyMap(), Collections.emptyMap()));
+                            }
                         }
                     }
                 }
@@ -696,10 +704,11 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             .expectResponse(Ethernet_Frame.class, Duration.ofMillis(1000))
             .onTimeout(future::completeExceptionally)
             .onError((responseEthernetFrame, throwable) -> future.completeExceptionally(throwable))
-            .check(responseEthernetFrame -> responseEthernetFrame.getPayload() instanceof Ethernet_FramePayload_IPv4)
-            .unwrap(responseEthernetFrame -> ((Ethernet_FramePayload_IPv4) responseEthernetFrame.getPayload()).getPayload())
+            .unwrap(Ethernet_Frame::getPayload)
+            .only(Ethernet_FramePayload_IPv4.class)
+            .unwrap(Ethernet_FramePayload_IPv4::getPayload)
             .handle(dceRpcPacket -> {
-                if(dceRpcPacket.getPacketType() != DceRpc_PacketType.RESPONSE) {
+                if (dceRpcPacket.getPacketType() != DceRpc_PacketType.RESPONSE) {
                     future.completeExceptionally(new PlcException("Expected a response"));
                     return;
                 }
@@ -783,15 +792,15 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             } else {
                 System.out.println(dcpPacket);
             }
-        } else if(msg.getPayload() instanceof Ethernet_FramePayload_IPv4) {
+        } else if (msg.getPayload() instanceof Ethernet_FramePayload_IPv4) {
             Ethernet_FramePayload_IPv4 payloadIPv4 = (Ethernet_FramePayload_IPv4) msg.getPayload();
-            if(payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Ping) {
+            if (payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_Ping) {
                 DceRpc_Packet pingPacket = payloadIPv4.getPayload();
                 // Send back a ping response
                 PnDcpPacketFactory.sendPingResponse(context, pnChannel, profinetDriverContext, payloadIPv4);
             }
             // The remote device terminated the connection.
-            else if(payloadIPv4.getPayload().getPayload() instanceof  PnIoCm_Packet_ConnectionlessCancel) {
+            else if (payloadIPv4.getPayload().getPayload() instanceof PnIoCm_Packet_ConnectionlessCancel) {
                 context.getChannel().close();
             } else {
                 System.out.println(msg);

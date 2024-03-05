@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
+import org.apache.plc4x.test.dom4j.LocationAwareElement;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -119,13 +120,16 @@ public class MessageValidatorAndMigrator {
                             "Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n" +
                             // Diff
                             "%4$s\n" +
+                            // Location
+                            "%6$s\n" +
                             // Double Border
                             "%1$s\n%1$s\n",
                         border,
                         centeredDiffDetectedMessage,
                         xmlString,
                         diff,
-                        centeredTestCaseName));
+                        centeredTestCaseName,
+                        ((LocationAwareElement) referenceXml).getLocation().toString()));
                     throw new MigrationException(xmlString);
                 }
                 return false;
@@ -163,6 +167,9 @@ public class MessageValidatorAndMigrator {
                     }
                     LOGGER.info("Done migrating {}", path);
                     return true;
+                } else if(e instanceof MigrationException) {
+                    MigrationException me = (MigrationException) e;
+                    throw new RuntimeException("Output doesn't match.\nGot:\n" + me.newXml + "\nSet to auto migrate to fix", e);
                 } else {
                     throw new RuntimeException("Output doesn't match. Set to auto migrate to fix", e);
                 }

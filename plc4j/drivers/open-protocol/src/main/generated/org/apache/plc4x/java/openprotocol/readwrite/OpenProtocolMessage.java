@@ -266,8 +266,9 @@ public abstract class OpenProtocolMessage implements Message {
             "length", readUnsignedLong(readBuffer, 32), WithOption.WithEncoding("ASCII"));
 
     Mid mid =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "mid",
+            "Mid",
             new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 

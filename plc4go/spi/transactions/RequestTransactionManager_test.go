@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -536,7 +535,6 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 		workLog                             list.List
 		executor                            pool.Executor
 		traceTransactionManagerTransactions bool
-		log                                 zerolog.Logger
 	}
 	type args struct {
 		timeout time.Duration
@@ -599,7 +597,7 @@ func Test_requestTransactionManager_CloseGraceful(t *testing.T) {
 				workLog:                             tt.fields.workLog,
 				executor:                            tt.fields.executor,
 				traceTransactionManagerTransactions: tt.fields.traceTransactionManagerTransactions,
-				log:                                 tt.fields.log,
+				log:                                 produceTestingLogger(t),
 			}
 			tt.wantErr(t, r.CloseGraceful(tt.args.timeout), fmt.Sprintf("CloseGraceful(%v)", tt.args.timeout))
 		})

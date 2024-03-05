@@ -23,14 +23,15 @@ PLC4X has a _Mock Driver_ which was initially implemented to be used for Unit Te
 But this driver is also very suitable to play around a bit with the PLC4X API if no _Hardware_ PLC is available.
 The driver can be found in the Maven module
 
-```
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-transport-test</artifactId>
-  <version>${current.version}</version>
-  <scope>test</scope>
-</dependency>
-```
+[subs=attributes+]
+----
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-transport-test</artifactId>
+      <version>{current-last-released-version}</version>
+      <scope>test</scope>
+   </dependency>
+----
 
 The connection string Syntax for the mock driver is `mock:{name-of-the-connection}`. So you can use multiple Mock Devices at the same time.
 

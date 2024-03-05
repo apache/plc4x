@@ -23,9 +23,9 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
 import math
 
 
@@ -34,18 +34,20 @@ class ModbusPDUDiagnosticRequest(ModbusPDU):
     sub_function: int
     data: int
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x08
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x08
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUDiagnosticRequest")
 
         # Simple Field (subFunction)
-        write_buffer.write_unsigned_short(self.sub_function, logical_name="subFunction")
+        write_buffer.write_unsigned_short(
+            self.sub_function, bit_length=16, logical_name="subFunction"
+        )
 
         # Simple Field (data)
-        write_buffer.write_unsigned_short(self.data, logical_name="data")
+        write_buffer.write_unsigned_short(self.data, bit_length=16, logical_name="data")
 
         write_buffer.pop_context("ModbusPDUDiagnosticRequest")
 
@@ -110,7 +112,7 @@ class ModbusPDUDiagnosticRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUDiagnosticRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUDiagnosticRequestBuilder:
     sub_function: int
     data: int
 

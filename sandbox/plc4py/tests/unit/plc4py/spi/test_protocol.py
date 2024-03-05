@@ -41,6 +41,7 @@ def tcp_server():
         yield tcp_server
 
 
+@pytest.mark.asyncio
 async def test_tcp_protocol(mocker, tcp_server) -> None:
     """
     Unit test for a not implemented protocol

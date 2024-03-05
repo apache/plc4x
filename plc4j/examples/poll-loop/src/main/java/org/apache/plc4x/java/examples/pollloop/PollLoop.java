@@ -175,7 +175,7 @@ public class PollLoop {
                 plcConnection = null;
             }
             // Check if this connection support reading of data.
-            if (plcConnection != null && !plcConnection.getMetadata().canRead()) {
+            if (plcConnection != null && !plcConnection.getMetadata().isReadSupported()) {
                 logger.log(Level.SEVERE, "This connection doesn't support reading.");
                 plcConnection = null;
             }

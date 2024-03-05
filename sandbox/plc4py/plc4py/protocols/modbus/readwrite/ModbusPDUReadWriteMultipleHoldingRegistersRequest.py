@@ -23,10 +23,10 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
+from typing import ClassVar
 from typing import List
 import math
 
@@ -39,31 +39,35 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(ModbusPDU):
     write_quantity: int
     value: List[int]
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x17
-    response: bool = False
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x17
+    response: ClassVar[bool] = False
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
         # Simple Field (readStartingAddress)
         write_buffer.write_unsigned_short(
-            self.read_starting_address, logical_name="readStartingAddress"
+            self.read_starting_address,
+            bit_length=16,
+            logical_name="readStartingAddress",
         )
 
         # Simple Field (readQuantity)
         write_buffer.write_unsigned_short(
-            self.read_quantity, logical_name="readQuantity"
+            self.read_quantity, bit_length=16, logical_name="readQuantity"
         )
 
         # Simple Field (writeStartingAddress)
         write_buffer.write_unsigned_short(
-            self.write_starting_address, logical_name="writeStartingAddress"
+            self.write_starting_address,
+            bit_length=16,
+            logical_name="writeStartingAddress",
         )
 
         # Simple Field (writeQuantity)
         write_buffer.write_unsigned_short(
-            self.write_quantity, logical_name="writeQuantity"
+            self.write_quantity, bit_length=16, logical_name="writeQuantity"
         )
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
@@ -179,7 +183,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUBuilder):
+class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder:
     read_starting_address: int
     read_quantity: int
     write_starting_address: int
@@ -189,7 +193,9 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(ModbusPDUBuilder)
     def build(
         self,
     ) -> ModbusPDUReadWriteMultipleHoldingRegistersRequest:
-        modbus_pdu_read_write_multiple_holding_registers_request: ModbusPDUReadWriteMultipleHoldingRegistersRequest = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
+        modbus_pdu_read_write_multiple_holding_registers_request: (
+            ModbusPDUReadWriteMultipleHoldingRegistersRequest
+        ) = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
             self.read_starting_address,
             self.read_quantity,
             self.write_starting_address,

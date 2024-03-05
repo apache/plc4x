@@ -34,7 +34,6 @@ import org.apache.plc4x.java.iec608705104.readwrite.tag.Iec608705104Tag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
-import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcBrowser;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
@@ -43,8 +42,9 @@ import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
-import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -71,16 +71,20 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
     }
 
     @Override
+    public void close(ConversationContext<APDU> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<APDU> context) {
         // First we exchange a test-frame
         APDUUFormatTestFrameActivation testFrameActivation = new APDUUFormatTestFrameActivation(0x43);
         RequestTransactionManager.RequestTransaction testFrameTx = tm.startRequest();
         testFrameTx.submit(() -> context.sendRequest(testFrameActivation)
-            .expectResponse(APDU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .expectResponse(APDU.class, Duration.ofMillis(configuration.getRequestTimeout()))
             .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
             .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
-            .check(apdu -> apdu instanceof APDUUFormatTestFrameConfirmation)
-            .unwrap(apdu -> (APDUUFormatTestFrameConfirmation) apdu)
+            .only(APDUUFormatTestFrameConfirmation.class)
             .handle(testFrameResponse -> {
                 testFrameTx.endRequest();
 
@@ -88,23 +92,16 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
                 APDUUFormatStartDataTransferActivation startDataTransferActivation = new APDUUFormatStartDataTransferActivation(0x07);
                 RequestTransactionManager.RequestTransaction startDataTransferTx = tm.startRequest();
                 startDataTransferTx.submit(() -> context.sendRequest(startDataTransferActivation)
-                    .expectResponse(APDU.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+                    .expectResponse(APDU.class, Duration.ofMillis(configuration.getRequestTimeout()))
                     .onTimeout(e -> context.getChannel().pipeline().fireExceptionCaught(e))
                     .onError((p, e) -> context.getChannel().pipeline().fireExceptionCaught(e))
-                    .check(apdu -> apdu instanceof APDUUFormatStartDataTransferConfirmation)
-                    .unwrap(apdu -> (APDUUFormatStartDataTransferConfirmation) apdu)
+                    .only(APDUUFormatStartDataTransferConfirmation.class)
                     .handle(startDataTransferResponse -> {
                         startDataTransferTx.endRequest();
                         context.fireConnected();
                     }));
             }));
     }
-
-    @Override
-    public void close(ConversationContext<APDU> context) {
-
-    }
-
 
     @Override
     protected void decode(ConversationContext<APDU> context, APDU msg) throws Exception {
@@ -114,12 +111,12 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
             context.sendToWire(testFrameConfirmation);
         }
         // When receiving incoming data, process that.
-        else if (msg instanceof APDUIFormat){
+        else if (msg instanceof APDUIFormat) {
             APDUIFormat apduiFormat = (APDUIFormat) msg;
 
             // Make sure we send an acknowledgement packet every few packets.
             unconfirmedPackets++;
-            if(unconfirmedPackets >= 8) {
+            if (unconfirmedPackets >= 8) {
                 // Confirm the reception of the packet.
                 APDUSFormat confirmPacket = new APDUSFormat(0x01, apduiFormat.getReceiveSequenceNo() + 1);
                 context.sendToWire(confirmPacket);
@@ -175,7 +172,7 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
                 InformationObjectWithTreeByteTime informationObjectWithTreeByteTime = (InformationObjectWithTreeByteTime) informationObject;
                 ThreeOctetBinaryTime time = informationObjectWithTreeByteTime.getCp24Time2a();
                 eventTime = convertCp24Time2aToCalendar(time);
-            } else if (informationObject instanceof  InformationObjectWithSevenByteTime) {
+            } else if (informationObject instanceof InformationObjectWithSevenByteTime) {
                 InformationObjectWithSevenByteTime informationObjectWithSevenByteTime = (InformationObjectWithSevenByteTime) informationObject;
                 SevenOctetBinaryTime time = informationObjectWithSevenByteTime.getCp56Time2a();
                 eventTime = convertCp56Time2aToCalendar(time);
@@ -197,11 +194,11 @@ public class Iec608705104Protocol extends Plc4xProtocolBase<APDU> implements Has
         // It seems that the time is sent in UTC, so we need to convert that into our local timezone.
         TimeZone localTimeZone = TimeZone.getDefault();
         Duration localTimeZoneOffsetFromUTC = Duration.ofMillis(localTimeZone.getRawOffset());
-        if(cp56Time2.getDaylightSaving()) {
+        if (cp56Time2.getDaylightSaving()) {
             Duration daylightSavingOffset = Duration.ofMillis(localTimeZone.getDSTSavings());
             localTimeZoneOffsetFromUTC = localTimeZoneOffsetFromUTC.plus(daylightSavingOffset);
         }
-        return LocalDateTime.of(2000 + cp56Time2.getYear(), cp56Time2.getMonth(), cp56Time2.getDay(), cp56Time2.getHour() , cp56Time2.getMinutes(), cp56Time2.getMilliseconds() / 1000, (cp56Time2.getMilliseconds() % 1000) * 1000000)
+        return LocalDateTime.of(2000 + cp56Time2.getYear(), cp56Time2.getMonth(), cp56Time2.getDay(), cp56Time2.getHour(), cp56Time2.getMinutes(), cp56Time2.getMilliseconds() / 1000, (cp56Time2.getMilliseconds() % 1000) * 1000000)
             .minus(localTimeZoneOffsetFromUTC);
     }
 

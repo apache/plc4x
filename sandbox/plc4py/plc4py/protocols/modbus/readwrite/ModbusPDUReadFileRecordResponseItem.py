@@ -43,7 +43,7 @@ class ModbusPDUReadFileRecordResponseItem:
 
         # Simple Field (referenceType)
         write_buffer.write_unsigned_byte(
-            self.reference_type, logical_name="referenceType"
+            self.reference_type, bit_length=8, logical_name="referenceType"
         )
 
         # Array Field (data)
@@ -92,9 +92,9 @@ class ModbusPDUReadFileRecordResponseItem:
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
         # Create the instance
-        _modbus_pdu_read_file_record_response_item: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(
-            reference_type, data
-        )
+        _modbus_pdu_read_file_record_response_item: (
+            ModbusPDUReadFileRecordResponseItem
+        ) = ModbusPDUReadFileRecordResponseItem(reference_type, data)
         return _modbus_pdu_read_file_record_response_item
 
     def equals(self, o: object) -> bool:

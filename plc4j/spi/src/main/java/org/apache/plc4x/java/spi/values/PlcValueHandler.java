@@ -150,6 +150,12 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcBYTE(((Long) value).shortValue());
                     } else if(value instanceof BigInteger) {
                         return new PlcBYTE(((BigInteger) value).shortValue());
+                    } else if(value instanceof String) {
+                        try {
+                            return new PlcBYTE(Short.valueOf((String) value));
+                        } catch (NumberFormatException e) {
+                            throw new PlcRuntimeException("Value of " + value + " not parseable as Byte");
+                        }
                     }
                     throw new PlcRuntimeException("BYTE requires short");
                 case SINT:
@@ -169,6 +175,12 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcWORD(((Long) value).intValue());
                     } else if(value instanceof BigInteger) {
                         return new PlcWORD(((BigInteger) value).intValue());
+                    } else if(value instanceof String) {
+                        try {
+                            return new PlcWORD(Integer.valueOf((String) value));
+                        } catch (NumberFormatException e) {
+                            throw new PlcRuntimeException("Value of " + value + " not parseable as Integer");
+                        }
                     }
                     throw new PlcRuntimeException("WORD requires int");
                 case DINT:
@@ -184,6 +196,12 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcDWORD((long) value);
                     } else if(value instanceof BigInteger) {
                         return new PlcDWORD(((BigInteger) value).longValue());
+                    } else if(value instanceof String) {
+                        try {
+                            return new PlcDWORD(Long.valueOf((String) value));
+                        } catch (NumberFormatException e) {
+                            throw new PlcRuntimeException("Value of " + value + " not parseable as Long");
+                        }
                     }
                     throw new PlcRuntimeException("DWORD requires long");
                 case LINT:
@@ -199,6 +217,12 @@ public class PlcValueHandler implements org.apache.plc4x.java.api.value.PlcValue
                         return new PlcLWORD(BigInteger.valueOf((long) value));
                     } else if(value instanceof BigInteger) {
                         return new PlcLWORD((BigInteger) value);
+                    } else if(value instanceof String) {
+                        try {
+                            return new PlcLWORD(new BigInteger((String) value));
+                        } catch (NumberFormatException e) {
+                            throw new PlcRuntimeException("Value of " + value + " not parseable as BigInteger");
+                        }
                     }
                     throw new PlcRuntimeException("LWORD requires BigInteger");
                 case REAL:

@@ -42,7 +42,9 @@ def test_read_buffer_get_pos(mocker) -> None:
 
 def test_read_buffer_read_bit_little_endian(mocker) -> None:
     bb: bytearray = bytearray(b"\x01")
-    rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.LITTLE_ENDIAN)
+    rb: ReadBufferByteBased = ReadBufferByteBased(
+        bb, byte_order=ByteOrder.LITTLE_ENDIAN
+    )
     assert False == rb.read_bit("Bit")
 
 
@@ -94,7 +96,7 @@ def test_read_buffer_read_unsigned_byte_get_pos(mocker) -> None:
 def test_read_buffer_read_unsigned_byte_little_endian(mocker) -> None:
     bb: bytearray = bytearray(b"\x03")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.LITTLE_ENDIAN)
-    assert rb.read_unsigned_byte(logical_name="Byte") == 192
+    assert rb.read_unsigned_byte(logical_name="Byte") == 3
 
 
 def test_read_buffer_read_unsigned_byte_big_endian(mocker) -> None:
@@ -106,7 +108,7 @@ def test_read_buffer_read_unsigned_byte_big_endian(mocker) -> None:
 def test_read_buffer_read_unsigned_byte_little_endian_niblet(mocker) -> None:
     bb: bytearray = bytearray(b"\x84")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.LITTLE_ENDIAN)
-    assert rb.read_unsigned_byte(bit_length=4, logical_name="Byte") == 1
+    assert rb.read_unsigned_byte(bit_length=4, logical_name="Byte") == 8
 
 
 def test_read_buffer_read_unsigned_byte_big_endian_niblet(mocker) -> None:
@@ -116,13 +118,13 @@ def test_read_buffer_read_unsigned_byte_big_endian_niblet(mocker) -> None:
 
 
 def test_read_buffer_read_unsigned_short_little_endian(mocker) -> None:
-    bb: bytearray = bytearray(b"\x03")
+    bb: bytearray = bytearray(b"\x00\x03")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.LITTLE_ENDIAN)
-    assert rb.read_unsigned_short(logical_name="Byte") == 192
+    assert rb.read_unsigned_short(logical_name="Byte") == 768
 
 
 def test_read_buffer_read_unsigned_short_big_endian(mocker) -> None:
-    bb: bytearray = bytearray(b"\x03")
+    bb: bytearray = bytearray(b"\x00\x03")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.BIG_ENDIAN)
     assert rb.read_unsigned_short(logical_name="Byte") == 3
 
@@ -130,7 +132,7 @@ def test_read_buffer_read_unsigned_short_big_endian(mocker) -> None:
 def test_read_buffer_read_unsigned_int_little_endian(mocker) -> None:
     bb: bitarray = bitarray("0000 0000 0000 0000 0000 0000 0000 0011")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.LITTLE_ENDIAN)
-    assert rb.read_unsigned_int(logical_name="Byte") == 3221225472
+    assert rb.read_unsigned_int(logical_name="Byte") == 50331648
 
 
 def test_read_buffer_read_unsigned_int_big_endian(mocker) -> None:
@@ -142,7 +144,7 @@ def test_read_buffer_read_unsigned_int_big_endian(mocker) -> None:
 def test_read_buffer_read_float_little_endian(mocker) -> None:
     bb: bitarray = bitarray("0000 0000 0000 0000 0000 0000 0000 0011")
     rb: ReadBufferByteBased = ReadBufferByteBased(bb, ByteOrder.LITTLE_ENDIAN)
-    assert rb.read_float(logical_name="Byte") == -2.0
+    assert rb.read_float(logical_name="Byte") == 3.76158192263132e-37
 
 
 def test_read_buffer_read_float_big_endian(mocker) -> None:

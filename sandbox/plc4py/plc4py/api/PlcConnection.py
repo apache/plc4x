@@ -18,12 +18,19 @@
 #
 import asyncio
 from abc import abstractmethod
-from typing import Awaitable
+from typing import Awaitable, Dict, Union
 
-from plc4py.api.messages.PlcResponse import PlcResponse, PlcReadResponse
+from plc4py.api.messages.PlcResponse import (
+    PlcResponse,
+    PlcTagResponse,
+    PlcReadResponse,
+    PlcWriteResponse,
+    PlcBrowseResponse,
+)
 from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
-from plc4py.api.value.PlcValue import PlcResponseCode
+from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.utils.GenericTypes import GenericGenerator
 
 
@@ -65,7 +72,7 @@ class PlcConnection(GenericGenerator):
 
     def _default_failed_request(
         self, code: PlcResponseCode
-    ) -> Awaitable[PlcReadResponse]:
+    ) -> Awaitable[Union[PlcReadResponse, PlcWriteResponse, PlcBrowseResponse]]:
         """
         Returns a default PlcResponse, mainly used in case of a failed request
         :param code: The response code to return
@@ -75,3 +82,38 @@ class PlcConnection(GenericGenerator):
         future = loop.create_future()
         future.set_result(PlcResponse(code))
         return future
+
+
+class PlcConnectionMetaData:
+
+    @abstractmethod
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def is_subscribe_supported(self) -> bool:
+        """
+        Indicates if the connection supports subscription requests.
+        :return: True if connection supports subscriptions, False otherwise
+        """
+        pass
+
+    @abstractmethod
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        pass

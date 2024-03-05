@@ -99,7 +99,7 @@ public class PlcLogger {
         // Get a plc connection.
 
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
-            if(!plcConnection.getMetadata().canRead()) {
+            if(!plcConnection.getMetadata().isReadSupported()) {
                 throw new UnsupportedOperationException("Driver doesn't support reading");
             }
             PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress("tag", options.getTagAddress()).build();

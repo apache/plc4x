@@ -18,8 +18,8 @@
  */
 package org.apache.plc4x.java.firmata.readwrite.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 
-public class FirmataConfiguration implements Configuration {
+public class FirmataConfiguration implements PlcConnectionConfiguration {
 
 }

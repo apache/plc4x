@@ -110,8 +110,9 @@ public abstract class LldpUnit implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TlvType tlvId =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "tlvId",
+            "TlvType",
             new DataReaderEnumDefault<>(TlvType::enumForValue, readUnsignedByte(readBuffer, 7)));
 
     short tlvIdLength = readSimpleField("tlvIdLength", readUnsignedShort(readBuffer, 9));

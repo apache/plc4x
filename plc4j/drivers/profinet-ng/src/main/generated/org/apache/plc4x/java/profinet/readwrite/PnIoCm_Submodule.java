@@ -256,8 +256,9 @@ public abstract class PnIoCm_Submodule implements Message {
             "sharedInput", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_SubmoduleType submoduleType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "submoduleType",
+            "PnIoCm_SubmoduleType",
             new DataReaderEnumDefault<>(
                 PnIoCm_SubmoduleType::enumForValue, readUnsignedByte(readBuffer, 2)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

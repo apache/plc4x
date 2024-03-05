@@ -1,6 +1,6 @@
 /*-
  * #%L
- * plc4j-tools-ui-frontend
+ * PLC4J: Tools: Frontend
  * %%
  * Copyright (C) 2017 - 2024 The Apache Software Foundation
  * %%
@@ -19,7 +19,6 @@
  */
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-01-21 10:53:45.
 
 export interface Device {
     id: number;
@@ -34,9 +33,7 @@ export interface Device {
 export interface Driver {
     code: string;
     name: string;
-    supportsDiscovery: boolean;
-    configurationOptions: { [index: string]: ConfigurationOption };
-    transports: { [index: string]: Transport };
+    metadata: PlcDriverMetadata;
 }
 
 export interface UiApplicationEvent<T> extends ApplicationEvent {
@@ -48,25 +45,32 @@ export interface DeviceEvent extends UiApplicationEvent<Device> {
     source: Device;
 }
 
-export interface ConfigurationOption {
-    name: string;
-    typeName: string;
-    required: boolean;
-    defaultValue: any;
-}
-
-export interface Transport {
-    code: string;
-    name: string;
-    options: { [index: string]: any };
+export interface PlcDriverMetadata {
+    protocolConfigurationOptionMetadata?: OptionMetadata;
+    discoverySupported: boolean;
+    defaultTransportCode?: string;
+    supportedTransportCodes: string[];
 }
 
 export interface ApplicationEvent extends EventObject {
     timestamp: number;
 }
 
+export interface OptionMetadata {
+    options: Option[];
+    requiredOptions: Option[];
+}
+
 export interface EventObject extends Serializable {
     source: any;
+}
+
+export interface Option {
+    key: string;
+    type: OptionType;
+    defaultValue?: any;
+    description: string;
+    required: boolean;
 }
 
 export interface Serializable {
@@ -134,6 +138,8 @@ export class RestApplicationClient<O> {
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
 
 export type EventType = "CREATED" | "UPDATED" | "DELETED";
+
+export type OptionType = "BOOLEAN" | "INT" | "LONG" | "FLOAT" | "DOUBLE" | "STRING" | "STRUCT";
 
 function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): string {
     let result = "";

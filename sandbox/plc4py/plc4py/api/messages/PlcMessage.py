@@ -16,7 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from plc4py.spi.values.Common import Serializable
 
 
-class PlcMessage:
+class PlcMessage(Serializable):
     pass

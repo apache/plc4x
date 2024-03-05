@@ -19,22 +19,22 @@
 package org.apache.plc4x.java.abeth.protocol;
 
 import org.apache.plc4x.java.abeth.configuration.AbEthConfiguration;
-import org.apache.plc4x.java.abeth.tag.AbEthTag;
 import org.apache.plc4x.java.abeth.readwrite.*;
+import org.apache.plc4x.java.abeth.tag.AbEthTag;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcINT;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +51,8 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     private static final Logger logger = LoggerFactory.getLogger(AbEthProtocolLogic.class);
     public static final Duration REQUEST_TIMEOUT = Duration.ofMillis(10000);
 
-    private static final List<Short> emptySenderContext = Arrays.asList((short) 0x00 ,(short) 0x00 ,(short) 0x00,
-        (short) 0x00,(short) 0x00,(short) 0x00, (short) 0x00,(short) 0x00);
+    private static final List<Short> emptySenderContext = Arrays.asList((short) 0x00, (short) 0x00, (short) 0x00,
+        (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00, (short) 0x00);
 
     private AbEthConfiguration configuration;
 
@@ -68,14 +68,18 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     }
 
     @Override
+    public void close(ConversationContext<CIPEncapsulationPacket> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<CIPEncapsulationPacket> context) {
         logger.debug("Sending COTP Connection Request");
         CIPEncapsulationConnectionRequest connectionRequest =
             new CIPEncapsulationConnectionRequest(0L, 0L, emptySenderContext, 0L);
         context.sendRequest(connectionRequest)
             .expectResponse(CIPEncapsulationPacket.class, REQUEST_TIMEOUT)
-            .check(p -> p instanceof CIPEncapsulationConnectionResponse)
-            .unwrap(p -> (CIPEncapsulationConnectionResponse) p)
+            .only(CIPEncapsulationConnectionResponse.class)
             .handle(cipEncapsulationConnectionResponse -> {
                 sessionHandle = cipEncapsulationConnectionResponse.getSessionHandle();
                 // Send an event that connection setup is complete.
@@ -99,7 +103,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
 
             final int transactionCounter = transactionCounterGenerator.incrementAndGet();
             // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
-            if(transactionCounterGenerator.get() == 0xFFFF) {
+            if (transactionCounterGenerator.get() == 0xFFFF) {
                 transactionCounterGenerator.set(1);
             }
 // origin/sender: constant = 5
@@ -115,8 +119,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                 .expectResponse(CIPEncapsulationPacket.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
-                .check(p -> p instanceof CIPEncapsulationReadResponse)
-                .unwrap(p -> (CIPEncapsulationReadResponse) p)
+                .only(CIPEncapsulationReadResponse.class)
                 .check(p -> p.getResponse().getTransactionCounter() == transactionCounter)
                 .handle(p -> {
                     PlcResponse response = decodeReadResponse(p, readRequest);
@@ -136,11 +139,6 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
         return null;
     }
 
-    @Override
-    public void close(ConversationContext<CIPEncapsulationPacket> context) {
-
-    }
-
     private PlcResponse decodeReadResponse(
         CIPEncapsulationReadResponse plcReadResponse, PlcReadRequest plcReadRequest) {
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
@@ -153,10 +151,10 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                 try {
                     switch (tag.getFileType()) {
                         case INTEGER: // output as single bytes
-                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                            if (plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
-                                if(data.size() == 1) {
+                                if (data.size() == 1) {
                                     plcValue = new PlcINT(data.get(0));
                                 } else {
                                     plcValue = PlcValueHandler.of(data);
@@ -164,35 +162,35 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                             }
                             break;
                         case WORD:
-                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                            if (plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
-                                if (((data.get(1)>> 7) & 1) == 0)  {
+                                if (((data.get(1) >> 7) & 1) == 0) {
                                     plcValue = PlcValueHandler.of((data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = PlcValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
+                                    plcValue = PlcValueHandler.of((((~data.get(1) & 0b01111111) << 8) + (-data.get(0) & 0b11111111)) * -1);  // negative number
                                 }
                             }
                             break;
                         case DWORD:
-                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                            if (plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
-                                if (((data.get(3)>> 7) & 1) == 0)  {
+                                if (((data.get(3) >> 7) & 1) == 0) {
                                     plcValue = PlcValueHandler.of((data.get(3) << 24) + (data.get(2) << 16) + (data.get(1) << 8) + data.get(0));  // positive number
                                 } else {
-                                    plcValue = PlcValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((-data.get(2) & 0b11111111) << 16)+ ((-data.get(1) & 0b11111111) << 8) + (-data.get(0) & 0b11111111))  * -1);  // negative number
+                                    plcValue = PlcValueHandler.of((((~data.get(3) & 0b01111111) << 24) + ((-data.get(2) & 0b11111111) << 16) + ((-data.get(1) & 0b11111111) << 8) + (-data.get(0) & 0b11111111)) * -1);  // negative number
                                 }
                             }
                             break;
                         case SINGLEBIT:
-                            if(plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
+                            if (plcReadResponse.getResponse() instanceof DF1CommandResponseMessageProtectedTypedLogicalRead) {
                                 DF1CommandResponseMessageProtectedTypedLogicalRead df1PTLR = (DF1CommandResponseMessageProtectedTypedLogicalRead) plcReadResponse.getResponse();
                                 List<Short> data = df1PTLR.getData();
                                 if (tag.getBitNumber() < 8) {
-                                    plcValue = PlcValueHandler.of((data.get(0) & (1 <<  tag.getBitNumber())) != 0);         // read from first byte
+                                    plcValue = PlcValueHandler.of((data.get(0) & (1 << tag.getBitNumber())) != 0);         // read from first byte
                                 } else {
-                                    plcValue = PlcValueHandler.of((data.get(1) & (1 << (tag.getBitNumber() - 8) )) != 0);   // read from second byte
+                                    plcValue = PlcValueHandler.of((data.get(1) & (1 << (tag.getBitNumber() - 8))) != 0);   // read from second byte
                                 }
                             }
                             break;
@@ -200,9 +198,8 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
                             logger.warn("Problem during decoding of tag {}: Decoding of file type not implemented; " +
                                 "TagInformation: {}", tagName, tag);
                     }
-                }
-                catch (Exception e) {
-                    logger.warn("Some other error occurred casting tag {}, TagInformation: {}",tagName, tag,e);
+                } catch (Exception e) {
+                    logger.warn("Some other error occurred casting tag {}, TagInformation: {}", tagName, tag, e);
                 }
             }
             ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
@@ -214,7 +211,7 @@ public class AbEthProtocolLogic extends Plc4xProtocolBase<CIPEncapsulationPacket
     }
 
     private PlcResponseCode decodeResponseCode(short status) {
-        if(status == 0) {
+        if (status == 0) {
             return PlcResponseCode.OK;
         }
         return PlcResponseCode.NOT_FOUND;

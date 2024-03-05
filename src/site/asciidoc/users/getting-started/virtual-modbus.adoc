@@ -213,7 +213,7 @@ Therefore, we use metadata to check programmatically, if a given feature is avai
 
 ----
 // Check if this connection support reading of data.
-if (!plcConnection.getMetadata().canRead()) {
+if (!plcConnection.getMetadata().isReadSupported()) {
   logger.error("This connection doesn't support reading.");
   return;
 }
@@ -348,7 +348,7 @@ So again, we first check if this driver supports writing (Some drivers such as p
 
 ----
 // Check if this connection support reading of data.
-if (!plcConnection.getMetadata().canWrite()) {
+if (!plcConnection.getMetadata().isWriteSupported()) {
   logger.error("This connection doesn't support writing.");
   return;
 }

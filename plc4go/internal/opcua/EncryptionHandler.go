@@ -131,9 +131,9 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 		var message []byte
 		switch pduMessage := pdu.GetMessage().(type) {
 		case readWriteModel.OpcuaOpenResponseExactly:
-			message = pduMessage.GetMessage()
+			message = pduMessage.(readWriteModel.BinaryPayloadExactly).GetPayload()
 		case readWriteModel.OpcuaMessageResponseExactly:
-			message = pduMessage.GetMessage()
+			message = pduMessage.(readWriteModel.BinaryPayloadExactly).GetPayload()
 		default:
 			h.log.Trace().Type("pdu", pdu).Msg("unhandled type")
 			return pdu, nil

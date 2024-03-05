@@ -38,7 +38,9 @@ class ModbusDeviceInformationObject:
         write_buffer.push_context("ModbusDeviceInformationObject")
 
         # Simple Field (objectId)
-        write_buffer.write_unsigned_byte(self.object_id, logical_name="objectId")
+        write_buffer.write_unsigned_byte(
+            self.object_id, bit_length=8, logical_name="objectId"
+        )
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         object_length: int = int(len(self.data))

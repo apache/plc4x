@@ -704,8 +704,14 @@ const (
 	KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH                             KnxManufacturer = 658
 	KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED                    KnxManufacturer = 659
 	KnxManufacturer_M_3R                                                 KnxManufacturer = 660
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 661
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 662
+	KnxManufacturer_M_ARKLYFE                                            KnxManufacturer = 661
+	KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_          KnxManufacturer = 662
+	KnxManufacturer_M_KNXES_COMPANY_LIMITED                              KnxManufacturer = 663
+	KnxManufacturer_M_THE_AKUVOX_COMPANY                                 KnxManufacturer = 664
+	KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_    KnxManufacturer = 665
+	KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD          KnxManufacturer = 666
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 667
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 668
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1374,6 +1380,12 @@ func init() {
 		KnxManufacturer_M_CONSOLINNO_ENERGY_GMBH,
 		KnxManufacturer_M_SCHIDERON_ELECTRIC_ASIA_LIMITED,
 		KnxManufacturer_M_3R,
+		KnxManufacturer_M_ARKLYFE,
+		KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_,
+		KnxManufacturer_M_KNXES_COMPANY_LIMITED,
+		KnxManufacturer_M_THE_AKUVOX_COMPANY,
+		KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_,
+		KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3883,10 +3895,34 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 661:
 		{ /* '661' */
-			return 43954
+			return 719
 		}
 	case 662:
 		{ /* '662' */
+			return 720
+		}
+	case 663:
+		{ /* '663' */
+			return 721
+		}
+	case 664:
+		{ /* '664' */
+			return 722
+		}
+	case 665:
+		{ /* '665' */
+			return 723
+		}
+	case 666:
+		{ /* '666' */
+			return 724
+		}
+	case 667:
+		{ /* '667' */
+			return 43954
+		}
+	case 668:
+		{ /* '668' */
 			return 43959
 		}
 	case 67:
@@ -6553,10 +6589,34 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 661:
 		{ /* '661' */
-			return "ABB - reserved"
+			return "Arklyfe"
 		}
 	case 662:
 		{ /* '662' */
+			return "Foshan Haydn Technology Lighting Co.,Ltd."
+		}
+	case 663:
+		{ /* '663' */
+			return "KNXES COMPANY LIMITED"
+		}
+	case 664:
+		{ /* '664' */
+			return "The Akuvox Company"
+		}
+	case 665:
+		{ /* '665' */
+			return "NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."
+		}
+	case 666:
+		{ /* '666' */
+			return "Shenzhen Haizhichuang Technology Co., Ltd"
+		}
+	case 667:
+		{ /* '667' */
+			return "ABB - reserved"
+		}
+	case 668:
+		{ /* '668' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 67:
@@ -7971,8 +8031,20 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 660:
 		return KnxManufacturer_M_3R, true
 	case 661:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_ARKLYFE, true
 	case 662:
+		return KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_, true
+	case 663:
+		return KnxManufacturer_M_KNXES_COMPANY_LIMITED, true
+	case 664:
+		return KnxManufacturer_M_THE_AKUVOX_COMPANY, true
+	case 665:
+		return KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_, true
+	case 666:
+		return KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD, true
+	case 667:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 668:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 67:
 		return KnxManufacturer_M_EIBMARKT_GMBH, true
@@ -9302,6 +9374,18 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_RTS_AUTOMATION, true
 	case "M_3R":
 		return KnxManufacturer_M_3R, true
+	case "M_ARKLYFE":
+		return KnxManufacturer_M_ARKLYFE, true
+	case "M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_":
+		return KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_, true
+	case "M_KNXES_COMPANY_LIMITED":
+		return KnxManufacturer_M_KNXES_COMPANY_LIMITED, true
+	case "M_THE_AKUVOX_COMPANY":
+		return KnxManufacturer_M_THE_AKUVOX_COMPANY, true
+	case "M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_":
+		return KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_, true
+	case "M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD":
+		return KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10695,6 +10779,18 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_RTS_AUTOMATION"
 	case KnxManufacturer_M_3R:
 		return "M_3R"
+	case KnxManufacturer_M_ARKLYFE:
+		return "M_ARKLYFE"
+	case KnxManufacturer_M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_:
+		return "M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_"
+	case KnxManufacturer_M_KNXES_COMPANY_LIMITED:
+		return "M_KNXES_COMPANY_LIMITED"
+	case KnxManufacturer_M_THE_AKUVOX_COMPANY:
+		return "M_THE_AKUVOX_COMPANY"
+	case KnxManufacturer_M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_:
+		return "M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_"
+	case KnxManufacturer_M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD:
+		return "M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

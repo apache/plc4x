@@ -18,19 +18,22 @@
  */
 package org.apache.plc4x.java.ads.readwrite;
 
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import java.math.BigInteger;
 import java.time.*;
+import java.time.temporal.ChronoField;
 import java.util.*;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.EvaluationHelper;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.codegen.*;
+import org.apache.plc4x.java.spi.codegen.fields.*;
+import org.apache.plc4x.java.spi.codegen.io.*;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,218 +48,220 @@ public class DataItem {
       ReadBuffer readBuffer, PlcValueType plcValueType, Integer stringLength)
       throws ParseException {
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 7);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Boolean value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.BYTE)) { // BYTE
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcBYTE(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WORD)) { // WORD
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcWORD(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DWORD)) { // DWORD
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 32);
-
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcDWORD(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LWORD)) { // LWORD
-
-      // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger value = readSimpleField("value", readUnsignedBigInteger(readBuffer, 64));
       return new PlcLWORD(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.SINT)) { // SINT
-
-      // Simple Field (value)
-      Byte value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readSignedByte("", 8);
-
+      byte value = readSimpleField("value", readSignedByte(readBuffer, 8));
       return new PlcSINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.USINT)) { // USINT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.INT)) { // INT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readShort("", 16);
-
+      short value = readSimpleField("value", readSignedShort(readBuffer, 16));
       return new PlcINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UINT)) { // UINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcUINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DINT)) { // DINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readInt("", 32);
-
+      int value = readSimpleField("value", readSignedInt(readBuffer, 32));
       return new PlcDINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UDINT)) { // UDINT
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 32);
-
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LINT)) { // LINT
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readLong("", 64);
-
+      long value = readSimpleField("value", readSignedLong(readBuffer, 64));
       return new PlcLINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.ULINT)) { // ULINT
-
-      // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger value = readSimpleField("value", readUnsignedBigInteger(readBuffer, 64));
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.REAL)) { // REAL
-
-      // Simple Field (value)
-      Float value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 32);
-
+      float value = readSimpleField("value", readFloat(readBuffer, 32));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LREAL)) { // LREAL
-
-      // Simple Field (value)
-      Double value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readDouble("", 64);
-
+      double value = readSimpleField("value", readDouble(readBuffer, 64));
       return new PlcLREAL(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.CHAR)) { // CHAR
-
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, WithOption.WithEncoding("Windows-1252"));
-
+      String value =
+          readSimpleField(
+              "value", readString(readBuffer, 8), WithOption.WithEncoding("Windows-1252"));
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
-
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16LE"));
-
+      String value =
+          readSimpleField("value", readString(readBuffer, 16), WithOption.WithEncoding("UTF-16LE"));
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
+      String value =
+          readSimpleField(
+              "value",
+              readString(readBuffer, (stringLength) * (8)),
+              WithOption.WithEncoding("Windows-1252"));
 
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", (stringLength) * (8), WithOption.WithEncoding("Windows-1252"));
-
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 8);
-        if (reserved != (short) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
       return new PlcSTRING(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
+      String value =
+          readSimpleField(
+              "value",
+              readString(readBuffer, ((stringLength) * (8)) * (2)),
+              WithOption.WithEncoding("UTF-16LE"));
 
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString(
-              "", ((stringLength) * (8)) * (2), WithOption.WithEncoding("UTF-16LE"));
-
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        int reserved = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-        if (reserved != (int) 0x0000) {
-          LOGGER.info(
-              "Expected constant value "
-                  + 0x0000
-                  + " but got "
-                  + reserved
-                  + " for reserved field.");
-        }
-      }
-
+      Integer reservedField0 =
+          readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
       return new PlcWSTRING(value);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
-
-      // Simple Field (milliseconds)
-      Long milliseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
-
+      long milliseconds = readSimpleField("milliseconds", readUnsignedLong(readBuffer, 32));
       return PlcTIME.ofMilliseconds(milliseconds);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME)) { // LTIME
-
-      // Simple Field (nanoseconds)
-      BigInteger nanoseconds = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger nanoseconds =
+          readSimpleField("nanoseconds", readUnsignedBigInteger(readBuffer, 64));
       return PlcLTIME.ofNanoseconds(nanoseconds);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE)) { // DATE
-
-      // Simple Field (secondsSinceEpoch)
-      Long secondsSinceEpoch = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
-
+      long secondsSinceEpoch =
+          readSimpleField("secondsSinceEpoch", readUnsignedLong(readBuffer, 32));
       return PlcDATE.ofSecondsSinceEpoch(secondsSinceEpoch);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LDATE)) { // LDATE
-
-      // Simple Field (nanosecondsSinceEpoch)
-      BigInteger nanosecondsSinceEpoch = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger nanosecondsSinceEpoch =
+          readSimpleField("nanosecondsSinceEpoch", readUnsignedBigInteger(readBuffer, 64));
       return PlcLDATE.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME_OF_DAY)) { // TIME_OF_DAY
-
-      // Simple Field (millisecondsSinceMidnight)
-      Long millisecondsSinceMidnight = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
-
+      long millisecondsSinceMidnight =
+          readSimpleField("millisecondsSinceMidnight", readUnsignedLong(readBuffer, 32));
       return PlcTIME_OF_DAY.ofMillisecondsSinceMidnight(millisecondsSinceMidnight);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME_OF_DAY)) { // LTIME_OF_DAY
-
-      // Simple Field (nanosecondsSinceMidnight)
-      BigInteger nanosecondsSinceMidnight = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger nanosecondsSinceMidnight =
+          readSimpleField("nanosecondsSinceMidnight", readUnsignedBigInteger(readBuffer, 64));
       return PlcLTIME_OF_DAY.ofNanosecondsSinceMidnight(nanosecondsSinceMidnight);
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE_AND_TIME)) { // DATE_AND_TIME
-
-      // Simple Field (secondsSinceEpoch)
-      Long secondsSinceEpoch = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedLong("", 32);
-
+      long secondsSinceEpoch =
+          readSimpleField("secondsSinceEpoch", readUnsignedLong(readBuffer, 32));
       return PlcDATE_AND_TIME.ofSecondsSinceEpoch(secondsSinceEpoch);
     } else if (EvaluationHelper.equals(
         plcValueType, PlcValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
-
-      // Simple Field (nanosecondsSinceEpoch)
-      BigInteger nanosecondsSinceEpoch = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger nanosecondsSinceEpoch =
+          readSimpleField("nanosecondsSinceEpoch", readUnsignedBigInteger(readBuffer, 64));
       return PlcLDATE_AND_TIME.ofNanosecondsSinceEpoch(nanosecondsSinceEpoch);
     }
     return null;
+  }
+
+  public static int getLengthInBytes(
+      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
+    return (int) Math.ceil((float) getLengthInBits(_value, plcValueType, stringLength) / 8.0);
+  }
+
+  public static int getLengthInBits(
+      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
+    int lengthInBits = 0;
+    if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
+      // Reserved Field (reserved)
+      lengthInBits += 7;
+
+      // Simple field (value)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.BYTE)) { // BYTE
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WORD)) { // WORD
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DWORD)) { // DWORD
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LWORD)) { // LWORD
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.SINT)) { // SINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.USINT)) { // USINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.INT)) { // INT
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UINT)) { // UINT
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DINT)) { // DINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UDINT)) { // UDINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LINT)) { // LINT
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.ULINT)) { // ULINT
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.REAL)) { // REAL
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LREAL)) { // LREAL
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.CHAR)) { // CHAR
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
+      // Simple field (value)
+      lengthInBits += (stringLength) * (8);
+
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
+      // Simple field (value)
+      lengthInBits += ((stringLength) * (8)) * (2);
+
+      // Reserved Field (reserved)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
+      // Simple field (milliseconds)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME)) { // LTIME
+      // Simple field (nanoseconds)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE)) { // DATE
+      // Simple field (secondsSinceEpoch)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LDATE)) { // LDATE
+      // Simple field (nanosecondsSinceEpoch)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME_OF_DAY)) { // TIME_OF_DAY
+      // Simple field (millisecondsSinceMidnight)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME_OF_DAY)) { // LTIME_OF_DAY
+      // Simple field (nanosecondsSinceMidnight)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE_AND_TIME)) { // DATE_AND_TIME
+      // Simple field (secondsSinceEpoch)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(
+        plcValueType, PlcValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
+      // Simple field (nanosecondsSinceEpoch)
+      lengthInBits += 64;
+    }
+
+    return lengthInBits;
   }
 
   public static void staticSerialize(
@@ -273,262 +278,144 @@ public class DataItem {
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
+
       // Simple Field (value)
-      boolean value = (boolean) _value.getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.BYTE)) { // BYTE
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WORD)) { // WORD
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DWORD)) { // DWORD
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LWORD)) { // LWORD
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
+      writeSimpleField(
+          "value", (BigInteger) _value.getBigInteger(), writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.SINT)) { // SINT
       // Simple Field (value)
-      byte value = (byte) _value.getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeSignedByte("", 8, ((Number) (value)).byteValue());
+      writeSimpleField("value", (byte) _value.getByte(), writeSignedByte(writeBuffer, 8));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.USINT)) { // USINT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.INT)) { // INT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeShort("", 16, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeSignedShort(writeBuffer, 16));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UINT)) { // UINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DINT)) { // DINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeInt("", 32, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeSignedInt(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UDINT)) { // UDINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LINT)) { // LINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeLong("", 64, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeSignedLong(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.ULINT)) { // ULINT
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
+      writeSimpleField(
+          "value", (BigInteger) _value.getBigInteger(), writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.REAL)) { // REAL
       // Simple Field (value)
-      float value = (float) _value.getFloat();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeFloat("", 32, (value));
+      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LREAL)) { // LREAL
       // Simple Field (value)
-      double value = (double) _value.getDouble();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeDouble("", 64, (value));
+      writeSimpleField("value", (double) _value.getDouble(), writeDouble(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.CHAR)) { // CHAR
       // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 8, (String) (value), WithOption.WithEncoding("Windows-1252"));
+      writeSimpleField(
+          "value",
+          (String) _value.getString(),
+          writeString(writeBuffer, 8),
+          WithOption.WithEncoding("Windows-1252"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
       // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 16, (String) (value), WithOption.WithEncoding("UTF-16LE"));
+      writeSimpleField(
+          "value",
+          (String) _value.getString(),
+          writeString(writeBuffer, 16),
+          WithOption.WithEncoding("UTF-16LE"));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
       // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", (stringLength) * (8), (String) (value), WithOption.WithEncoding("Windows-1252"));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (short) 0x00).shortValue());
+      writeSimpleField(
+          "value",
+          (String) _value.getString(),
+          writeString(writeBuffer, (stringLength) * (8)),
+          WithOption.WithEncoding("Windows-1252"));
+
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
       // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", ((stringLength) * (8)) * (2), (String) (value), WithOption.WithEncoding("UTF-16LE"));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (int) 0x0000).intValue());
+      writeSimpleField(
+          "value",
+          (String) _value.getString(),
+          writeString(writeBuffer, ((stringLength) * (8)) * (2)),
+          WithOption.WithEncoding("UTF-16LE"));
+
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
       // Simple Field (milliseconds)
-      long milliseconds = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (milliseconds)).longValue());
+      writeSimpleField(
+          "milliseconds",
+          (long) _value.getDuration().toMillis(),
+          writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME)) { // LTIME
       // Simple Field (nanoseconds)
-      BigInteger nanoseconds = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (nanoseconds));
+      writeSimpleField(
+          "nanoseconds",
+          (BigInteger) BigInteger.valueOf(_value.getDuration().toNanos()),
+          writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE)) { // DATE
       // Simple Field (secondsSinceEpoch)
-      long secondsSinceEpoch = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (secondsSinceEpoch)).longValue());
+      writeSimpleField(
+          "secondsSinceEpoch",
+          (long) _value.getDateTime().toEpochSecond(ZoneOffset.UTC),
+          writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LDATE)) { // LDATE
       // Simple Field (nanosecondsSinceEpoch)
-      BigInteger nanosecondsSinceEpoch = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
-          "", 64, (BigInteger) (nanosecondsSinceEpoch));
+      writeSimpleField(
+          "nanosecondsSinceEpoch",
+          (BigInteger)
+              BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC))
+                  .multiply(BigInteger.valueOf(1000000000))
+                  .add(BigInteger.valueOf(_value.getDateTime().getNano())),
+          writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME_OF_DAY)) { // TIME_OF_DAY
       // Simple Field (millisecondsSinceMidnight)
-      long millisecondsSinceMidnight = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (millisecondsSinceMidnight)).longValue());
+      writeSimpleField(
+          "millisecondsSinceMidnight",
+          (long) _value.getTime().getLong(ChronoField.MILLI_OF_DAY),
+          writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME_OF_DAY)) { // LTIME_OF_DAY
       // Simple Field (nanosecondsSinceMidnight)
-      BigInteger nanosecondsSinceMidnight = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
-          "", 64, (BigInteger) (nanosecondsSinceMidnight));
+      writeSimpleField(
+          "nanosecondsSinceMidnight",
+          (BigInteger) BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_DAY)),
+          writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE_AND_TIME)) { // DATE_AND_TIME
       // Simple Field (secondsSinceEpoch)
-      long secondsSinceEpoch = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong(
-          "", 32, ((Number) (secondsSinceEpoch)).longValue());
+      writeSimpleField(
+          "secondsSinceEpoch",
+          (long) _value.getDateTime().toEpochSecond(ZoneOffset.UTC),
+          writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(
         plcValueType, PlcValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
       // Simple Field (nanosecondsSinceEpoch)
-      BigInteger nanosecondsSinceEpoch = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger(
-          "", 64, (BigInteger) (nanosecondsSinceEpoch));
+      writeSimpleField(
+          "nanosecondsSinceEpoch",
+          (BigInteger)
+              BigInteger.valueOf(_value.getDateTime().toEpochSecond(ZoneOffset.UTC))
+                  .multiply(BigInteger.valueOf(1000000000))
+                  .add(BigInteger.valueOf(_value.getDateTime().getNano())),
+          writeUnsignedBigInteger(writeBuffer, 64));
     }
-  }
-
-  public static int getLengthInBytes(
-      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
-    return (int) Math.ceil((float) getLengthInBits(_value, plcValueType, stringLength) / 8.0);
-  }
-
-  public static int getLengthInBits(
-      PlcValue _value, PlcValueType plcValueType, Integer stringLength) {
-    int sizeInBits = 0;
-    if (EvaluationHelper.equals(plcValueType, PlcValueType.BOOL)) { // BOOL
-      // Reserved Field
-      sizeInBits += 7;
-      // Simple Field (value)
-      sizeInBits += 1;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.BYTE)) { // BYTE
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WORD)) { // WORD
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DWORD)) { // DWORD
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LWORD)) { // LWORD
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.SINT)) { // SINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.USINT)) { // USINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.INT)) { // INT
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UINT)) { // UINT
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DINT)) { // DINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.UDINT)) { // UDINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LINT)) { // LINT
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.ULINT)) { // ULINT
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.REAL)) { // REAL
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LREAL)) { // LREAL
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.CHAR)) { // CHAR
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WCHAR)) { // WCHAR
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.STRING)) { // STRING
-      // Simple Field (value)
-      sizeInBits += -1;
-      // Reserved Field
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.WSTRING)) { // WSTRING
-      // Simple Field (value)
-      sizeInBits += -1;
-      // Reserved Field
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME)) { // TIME
-      // Simple Field (milliseconds)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME)) { // LTIME
-      // Simple Field (nanoseconds)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE)) { // DATE
-      // Simple Field (secondsSinceEpoch)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LDATE)) { // LDATE
-      // Simple Field (nanosecondsSinceEpoch)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.TIME_OF_DAY)) { // TIME_OF_DAY
-      // Simple Field (millisecondsSinceMidnight)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.LTIME_OF_DAY)) { // LTIME_OF_DAY
-      // Simple Field (nanosecondsSinceMidnight)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(plcValueType, PlcValueType.DATE_AND_TIME)) { // DATE_AND_TIME
-      // Simple Field (secondsSinceEpoch)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(
-        plcValueType, PlcValueType.LDATE_AND_TIME)) { // LDATE_AND_TIME
-      // Simple Field (nanosecondsSinceEpoch)
-      sizeInBits += 64;
-    }
-    return sizeInBits;
   }
 }

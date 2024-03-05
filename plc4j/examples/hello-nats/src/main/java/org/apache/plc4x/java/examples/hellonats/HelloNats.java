@@ -24,6 +24,7 @@ import io.nats.client.api.StreamConfiguration;
 import io.nats.client.api.StreamInfo;
 import io.nats.client.support.JsonUtils;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -33,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class HelloNats {
 
@@ -67,10 +67,10 @@ public class HelloNats {
                 final List<String> tags = msg.getHeaders().get("tags");
 
                 // Establish a connection to the plc using the url provided as first argument
-                try (PlcConnection plcConnection = new PlcDriverManager().getConnection(connectionUrl)) {
+                try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(connectionUrl)) {
 
                     // Check if this connection support reading of data.
-                    if (!plcConnection.getMetadata().canRead()) {
+                    if (!plcConnection.getMetadata().isReadSupported()) {
                         logger.error("This connection doesn't support reading.");
                         return;
                     }
@@ -79,7 +79,7 @@ public class HelloNats {
                     // - Give the single item requested the alias name "value"
                     PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
                     for (int i = 0; i < tags.size(); i++) {
-                        builder.addItem("value-" + i, tags.get(i));
+                        builder.addTagAddress("value-" + i, tags.get(i));
                     }
                     PlcReadRequest readRequest = builder.build();
 
@@ -95,8 +95,8 @@ public class HelloNats {
                             logger.error("Error[{}]: {}", tagName, response.getResponseCode(tagName).name());
                         }
                     }
-                } catch (ExecutionException e) {
-                    logger.error("Error[{}]: {}", tagName, response.getResponseCode(tagName).name());
+                } catch (Exception e) {
+                    logger.error("Error", e);
                 }
             }, false);
             natsConnection.flush(Duration.ofSeconds(1));

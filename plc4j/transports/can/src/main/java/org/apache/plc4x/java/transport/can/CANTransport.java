@@ -23,7 +23,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.transport.Transport;

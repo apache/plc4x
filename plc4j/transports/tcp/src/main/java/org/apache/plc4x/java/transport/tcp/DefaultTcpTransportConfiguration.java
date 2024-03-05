@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.transport.tcp;
 
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
@@ -27,14 +28,17 @@ public class DefaultTcpTransportConfiguration implements TcpTransportConfigurati
 
     @ConfigurationParameter("keep-alive")
     @BooleanDefaultValue(false)
+    @Description("Should keep-alive packets be sent?")
     private boolean keepAlive;
 
     @ConfigurationParameter("no-delay")
     @BooleanDefaultValue(true)
+    @Description("Should packets be sent instantly or should we give the OS some time to aggregate data.")
     private boolean noDelay;
 
     @ConfigurationParameter("default-timeout")
     @IntDefaultValue(1000)
+    @Description("Timeout after which a connection will be treated as disconnected.")
     private int connectTimeout;
 
     @Override

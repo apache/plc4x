@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Getting Started
+== Getting Started with Go
 
 === Initializing a dummy project
 

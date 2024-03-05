@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         # 8 not anymore supported for building
-        java: [ 11, 17, 18 ]
+        java: [ 11, 17, 21 ]
         os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -132,7 +132,7 @@ jobs:
       # Note: due to github has no concept of recovering from a fail even if we have our fallback below we append a second un-parallel run behind this to be sure that it works with all checks. Only if that fails too we are ok with a "red" (which should be yellow) cross indicating a problem
       - name: Run mvnw
         run: |
-          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'enable-all-checks,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
+          ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-java,enable-all-checks,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report (first failure)
         uses: actions/upload-artifact@v4
@@ -145,7 +145,7 @@ jobs:
 
       - name: Run mvnv without BacNet regression tests
         if: ${{ failure() }}
-        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'skip-bacnet-regression-test,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
+        run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-java,skip-bacnet-regression-test,update-generated-code' ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4

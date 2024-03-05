@@ -18,9 +18,16 @@
 #
 import time
 
+import pytest
+
 from plc4py.PlcDriverManager import PlcDriverManager
+from plc4py.api.value.PlcValue import PlcResponseCode
+import logging
+
+logger = logging.getLogger("testing")
 
 
+@pytest.mark.asyncio
 async def manual_test_plc_driver_modbus_connect():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("modbus://127.0.0.1:5555") as connection:
@@ -28,9 +35,10 @@ async def manual_test_plc_driver_modbus_connect():
     assert not connection.is_connected()
 
 
+@pytest.mark.asyncio
 async def manual_test_plc_driver_modbus_read():
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("modbus://127.0.0.1:5555") as connection:
+    async with driver_manager.connection("modbus://192.168.1.177:502") as connection:
         with connection.read_request_builder() as builder:
             builder.add_item("Random Tag", "4x00001[10]")
             request = builder.build()
@@ -38,4 +46,25 @@ async def manual_test_plc_driver_modbus_read():
         future = connection.execute(request)
         await future
         response = future.result()
+
+        for tag_name in response.tag_names:
+            if response.tags[tag_name].response_code == PlcResponseCode.OK:
+                num_values: int = len(response.tags[tag_name].value)
+                # If it's just one element, output just one single line.
+                if num_values == 1:
+                    logger.info(
+                        "Value[" + tag_name + "]: " + response.tags[tag_name].value
+                    )
+
+                # If it's more than one element, output each in a single row.
+                else:
+                    logger.info("Value[" + tag_name + "]:")
+                    for i in response.tags[tag_name].value.get_list():
+                        logger.info(" - " + str(i))
+
+            # Something went wrong, to output an error message instead.
+            else:
+                logger.error(
+                    "Error[" + tag_name + "]: " + response.tags[tag_name].name()
+                )
     pass

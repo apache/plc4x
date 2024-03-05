@@ -23,10 +23,10 @@ from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
-from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDUBuilder
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from typing import Any
+from typing import ClassVar
 from typing import List
 import math
 
@@ -35,9 +35,9 @@ import math
 class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
     value: List[int]
     # Accessors for discriminator values.
-    error_flag: bool = False
-    function_flag: int = 0x17
-    response: bool = True
+    error_flag: ClassVar[bool] = False
+    function_flag: ClassVar[int] = 0x17
+    response: ClassVar[bool] = True
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersResponse")
@@ -113,13 +113,13 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
 
 
 @dataclass
-class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder(ModbusPDUBuilder):
+class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder:
     value: List[int]
 
     def build(
         self,
     ) -> ModbusPDUReadWriteMultipleHoldingRegistersResponse:
-        modbus_pdu_read_write_multiple_holding_registers_response: ModbusPDUReadWriteMultipleHoldingRegistersResponse = ModbusPDUReadWriteMultipleHoldingRegistersResponse(
-            self.value
-        )
+        modbus_pdu_read_write_multiple_holding_registers_response: (
+            ModbusPDUReadWriteMultipleHoldingRegistersResponse
+        ) = ModbusPDUReadWriteMultipleHoldingRegistersResponse(self.value)
         return modbus_pdu_read_write_multiple_holding_registers_response

@@ -206,12 +206,12 @@ struct plc4c_s7_read_write_s7_payload_user_data_item {
       plc4c_list* s7_payload_user_data_item_cpu_function_alarm_query_response_items;
     };
     struct { /* S7PayloadUserDataItemClkResponse */
-      uint8_t s7_payload_user_data_item_clk_response_reserved;
+      uint8_t s7_payload_user_data_item_clk_response_res;
       uint8_t s7_payload_user_data_item_clk_response_year1;
       plc4c_s7_read_write_date_and_time* s7_payload_user_data_item_clk_response_time_stamp;
     };
     struct { /* S7PayloadUserDataItemClkFResponse */
-      uint8_t s7_payload_user_data_item_clk_f_response_reserved;
+      uint8_t s7_payload_user_data_item_clk_f_response_res;
       uint8_t s7_payload_user_data_item_clk_f_response_year1;
       plc4c_s7_read_write_date_and_time* s7_payload_user_data_item_clk_f_response_time_stamp;
     };

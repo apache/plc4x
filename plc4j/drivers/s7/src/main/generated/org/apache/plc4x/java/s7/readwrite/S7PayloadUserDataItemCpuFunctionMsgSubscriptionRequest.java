@@ -52,28 +52,28 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
   }
 
   // Properties.
-  protected final short Subscription;
+  protected final short subscription;
   protected final String magicKey;
-  protected final AlarmStateType Alarmtype;
-  protected final Short Reserve;
+  protected final AlarmStateType alarmtype;
+  protected final Short reserve;
 
   public S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
       int dataLength,
-      short Subscription,
+      short subscription,
       String magicKey,
-      AlarmStateType Alarmtype,
-      Short Reserve) {
+      AlarmStateType alarmtype,
+      Short reserve) {
     super(returnCode, transportSize, dataLength);
-    this.Subscription = Subscription;
+    this.subscription = subscription;
     this.magicKey = magicKey;
-    this.Alarmtype = Alarmtype;
-    this.Reserve = Reserve;
+    this.alarmtype = alarmtype;
+    this.reserve = reserve;
   }
 
   public short getSubscription() {
-    return Subscription;
+    return subscription;
   }
 
   public String getMagicKey() {
@@ -81,11 +81,11 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
   }
 
   public AlarmStateType getAlarmtype() {
-    return Alarmtype;
+    return alarmtype;
   }
 
   public Short getReserve() {
-    return Reserve;
+    return reserve;
   }
 
   @Override
@@ -95,8 +95,8 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest");
 
-    // Simple Field (Subscription)
-    writeSimpleField("Subscription", Subscription, writeUnsignedShort(writeBuffer, 8));
+    // Simple Field (subscription)
+    writeSimpleField("subscription", subscription, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
@@ -104,17 +104,17 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
     // Simple Field (magicKey)
     writeSimpleField("magicKey", magicKey, writeString(writeBuffer, 64));
 
-    // Optional Field (Alarmtype) (Can be skipped, if the value is null)
+    // Optional Field (alarmtype) (Can be skipped, if the value is null)
     writeOptionalEnumField(
-        "Alarmtype",
+        "alarmtype",
         "AlarmStateType",
-        Alarmtype,
+        alarmtype,
         new DataWriterEnumDefault<>(
             AlarmStateType::getValue, AlarmStateType::name, writeUnsignedShort(writeBuffer, 8)),
         (getSubscription()) >= (128));
 
-    // Optional Field (Reserve) (Can be skipped, if the value is null)
-    writeOptionalField("Reserve", Reserve, writeUnsignedShort(writeBuffer, 8));
+    // Optional Field (reserve) (Can be skipped, if the value is null)
+    writeOptionalField("reserve", reserve, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest");
   }
@@ -130,7 +130,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
     S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (Subscription)
+    // Simple field (subscription)
     lengthInBits += 8;
 
     // Reserved Field (reserved)
@@ -139,13 +139,13 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
     // Simple field (magicKey)
     lengthInBits += 64;
 
-    // Optional Field (Alarmtype)
-    if (Alarmtype != null) {
+    // Optional Field (alarmtype)
+    if (alarmtype != null) {
       lengthInBits += 8;
     }
 
-    // Optional Field (Reserve)
-    if (Reserve != null) {
+    // Optional Field (reserve)
+    if (reserve != null) {
       lengthInBits += 8;
     }
 
@@ -159,42 +159,42 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short Subscription = readSimpleField("Subscription", readUnsignedShort(readBuffer, 8));
+    short subscription = readSimpleField("subscription", readUnsignedShort(readBuffer, 8));
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
     String magicKey = readSimpleField("magicKey", readString(readBuffer, 64));
 
-    AlarmStateType Alarmtype =
+    AlarmStateType alarmtype =
         readOptionalField(
-            "Alarmtype",
+            "alarmtype",
             new DataReaderEnumDefault<>(
                 AlarmStateType::enumForValue, readUnsignedShort(readBuffer, 8)),
-            (Subscription) >= (128));
+            (subscription) >= (128));
 
-    Short Reserve =
-        readOptionalField("Reserve", readUnsignedShort(readBuffer, 8), (Subscription) >= (128));
+    Short reserve =
+        readOptionalField("reserve", readUnsignedShort(readBuffer, 8), (subscription) >= (128));
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest");
     // Create the instance
     return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilderImpl(
-        Subscription, magicKey, Alarmtype, Reserve);
+        subscription, magicKey, alarmtype, reserve);
   }
 
   public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
-    private final short Subscription;
+    private final short subscription;
     private final String magicKey;
-    private final AlarmStateType Alarmtype;
-    private final Short Reserve;
+    private final AlarmStateType alarmtype;
+    private final Short reserve;
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilderImpl(
-        short Subscription, String magicKey, AlarmStateType Alarmtype, Short Reserve) {
-      this.Subscription = Subscription;
+        short subscription, String magicKey, AlarmStateType alarmtype, Short reserve) {
+      this.subscription = subscription;
       this.magicKey = magicKey;
-      this.Alarmtype = Alarmtype;
-      this.Reserve = Reserve;
+      this.alarmtype = alarmtype;
+      this.reserve = reserve;
     }
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest build(
@@ -205,10 +205,10 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
                   returnCode,
                   transportSize,
                   dataLength,
-                  Subscription,
+                  subscription,
                   magicKey,
-                  Alarmtype,
-                  Reserve);
+                  alarmtype,
+                  reserve);
       return s7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest;
     }
   }

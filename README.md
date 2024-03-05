@@ -83,12 +83,12 @@ It also provides (Java) tools for usage inside an application:
 ## Getting started
 
 Depending on the programming language, the usage will differ, therefore please go to the
-[Getting Started](https://plc4x.apache.org/users/gettingstarted.html) on the PLC4X website to look up
+[Getting Started](https://plc4x.apache.org/users/getting-started/plc4j.html) on the PLC4X website to look up
 the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11 (Currently with Java 21 the Apache Kafka integration module is excluded from the build as the plugins it requires are incompatible with this version)
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 19 (We have tested all versions up to Java 21), however it's only the Java Tool UI, that requires this right now. All other modules need at least Java 11. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -184,6 +184,12 @@ The `Go` drivers can be built by enabling the `with-go` profile:
 ./mvnw -P with-go install 
 ```
 
+The `Java` drivers can be built by enabling the `with-java` profile:
+
+```
+./mvnw -P with-java install 
+```
+
 The `C# / .Net` implementation is currently in a `work in progress` state.
 In order to be able to build the `C# / .Net` module, you currently need to activate the:
 `with-dotnet` profiles.
@@ -203,7 +209,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks install
+./mvnw -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks,update-generated-code install
 ```
 
 ## Community

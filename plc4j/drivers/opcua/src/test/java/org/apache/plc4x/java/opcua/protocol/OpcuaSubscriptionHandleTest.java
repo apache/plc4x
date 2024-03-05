@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.Stream;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
@@ -28,6 +30,9 @@ import org.apache.plc4x.test.DisableInDockerFlag;
 import org.apache.plc4x.test.DisableOnParallelsVmFlag;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +42,10 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 // ! For some odd reason does this test not work on VMs running in Parallels.
 // cdutz: I have done way more than my fair share on tracking down this issue and am simply giving up on it.
@@ -110,398 +119,6 @@ public class OpcuaSubscriptionHandleTest {
 
     // ! If this test fails, see comment at the top of the class before investigating.
     @Test
-    public void subscribeBool() throws Exception {
-        String tag = "Bool";
-        String identifier = BOOL_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeByte() throws Exception {
-        String tag = "Byte";
-        String identifier = BYTE_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeDouble() throws Exception {
-        String tag = "Double";
-        String identifier = DOUBLE_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeFloat() throws Exception {
-        String tag = "Float";
-        String identifier = FLOAT_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeInt16() throws Exception {
-        String tag = "Int16";
-        String identifier = INT16_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeInt32() throws Exception {
-        String tag = "Int32";
-        String identifier = INT32_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeInt64() throws Exception {
-        String tag = "Int64";
-        String identifier = INT64_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeInteger() throws Exception {
-        String tag = "Integer";
-        String identifier = INTEGER_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeSByte() throws Exception {
-        String tag = "SByte";
-        String identifier = SBYTE_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeString() throws Exception {
-        String tag = "String";
-        String identifier = STRING_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeUInt16() throws Exception {
-        String tag = "Uint16";
-        String identifier = UINT16_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeUInt32() throws Exception {
-        String tag = "UInt32";
-        String identifier = UINT32_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeUInt64() throws Exception {
-        String tag = "UInt64";
-        String identifier = UINT64_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
-    public void subscribeUInteger() throws Exception {
-        String tag = "UInteger";
-        String identifier = UINTEGER_IDENTIFIER_READ_WRITE;
-        LOGGER.info("Starting subscription {} test", tag);
-
-        // Create Subscription
-        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
-        builder.addChangeOfStateTagAddress(tag, identifier);
-        PlcSubscriptionRequest request = builder.build();
-
-        // Get result of creating subscription
-        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
-        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
-
-        // Create handler for returned value
-        subscriptionHandle.register(plcSubscriptionEvent -> {
-            assert plcSubscriptionEvent.getResponseCode(tag).equals(PlcResponseCode.OK);
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
-        });
-
-        //Wait for value to be returned from server
-        Thread.sleep(1200);
-
-        subscriptionHandle.stopSubscriber();
-    }
-
-    // ! If this test fails, see comment at the top of the class before investigating.
-    @Test
     public void subscribeDoesNotExists() throws Exception {
         String tag = "DoesNotExists";
         String identifier = DOES_NOT_EXIST_IDENTIFIER_READ_WRITE;
@@ -519,8 +136,7 @@ public class OpcuaSubscriptionHandleTest {
         // Create handler for returned value
         subscriptionHandle.register(plcSubscriptionEvent -> {
             //This should never be called,
-            assert false;
-            LOGGER.info("Received a response from {} test {}", tag, plcSubscriptionEvent.getPlcValue(tag).toString());
+            fail("Received subscription response whereas error was expected");
         });
 
         //Wait for value to be returned from server
@@ -558,6 +174,85 @@ public class OpcuaSubscriptionHandleTest {
         Thread.sleep(1200);
 
         subscriptionHandle.stopSubscriber();
+    }
+
+    // ! If this test fails, see comment at the top of the class before investigating.
+    @Test
+    public void subscribeMultipleWithOneMissing() throws Exception {
+        String tag1 = "UInteger";
+        String identifier1 = UINTEGER_IDENTIFIER_READ_WRITE;
+        String tag2 = "Integer";
+        String identifier2 = UINTEGER_IDENTIFIER_READ_WRITE + "_MISSING_GONE";
+        LOGGER.info("Starting subscription {}  and {} test", tag1, tag2);
+
+        // Create Subscription
+        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
+        builder.addChangeOfStateTagAddress(tag1, identifier1);
+        builder.addChangeOfStateTagAddress(tag2, identifier2);
+        PlcSubscriptionRequest request = builder.build();
+
+        // Get result of creating subscription
+        PlcSubscriptionResponse response = request.execute().get(10000, TimeUnit.MILLISECONDS);
+        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag1);
+
+        // Create handler for returned value
+        subscriptionHandle.register(plcSubscriptionEvent -> {
+            assert plcSubscriptionEvent.getResponseCode(tag1).equals(PlcResponseCode.OK);
+            assert plcSubscriptionEvent.getResponseCode(tag2).equals(PlcResponseCode.NOT_FOUND);
+        });
+
+        //Wait for value to be returned from server
+        Thread.sleep(1200);
+
+        subscriptionHandle.stopSubscriber();
+    }
+
+    @ParameterizedTest
+    @MethodSource("getTags")
+    public void subscribeTest(String tag, Class<?> type) throws Exception {
+        LOGGER.info("Starting subscription {} test", tag);
+
+        // Create Subscription
+        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
+        builder.addChangeOfStateTagAddress(tag, tag);
+        PlcSubscriptionRequest request = builder.build();
+
+        // Get result of creating subscription
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
+        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle(tag);
+
+        CountDownLatch latch = new CountDownLatch(1);
+        // Create handler for returned value
+        subscriptionHandle.register(plcSubscriptionEvent -> {
+            Object value = plcSubscriptionEvent.getObject(tag);
+            LOGGER.info("Received a response from {} test {} ({})", tag, plcSubscriptionEvent.getPlcValue(tag).toString(), value.getClass());
+            assertEquals(PlcResponseCode.OK, plcSubscriptionEvent.getResponseCode(tag));
+            assertNotNull(value);
+            assertTrue(type.isInstance(value));
+            latch.countDown();
+        });
+
+        assertTrue(latch.await(1200, TimeUnit.MILLISECONDS));
+        subscriptionHandle.stopSubscriber();
+    }
+
+    private static Stream<Arguments> getTags() {
+        return Stream.of(
+            Arguments.of(BOOL_IDENTIFIER_READ_WRITE, Boolean.class),
+            Arguments.of(BYTE_IDENTIFIER_READ_WRITE, Short.class),
+            Arguments.of(DOUBLE_IDENTIFIER_READ_WRITE, Double.class),
+            Arguments.of(FLOAT_IDENTIFIER_READ_WRITE, Float.class),
+            Arguments.of(INT16_IDENTIFIER_READ_WRITE, Short.class),
+            Arguments.of(INT32_IDENTIFIER_READ_WRITE, Integer.class),
+            Arguments.of(INT64_IDENTIFIER_READ_WRITE, Long.class),
+            Arguments.of(INTEGER_IDENTIFIER_READ_WRITE, Integer.class),
+            Arguments.of(SBYTE_IDENTIFIER_READ_WRITE, byte[].class),
+            Arguments.of(STRING_IDENTIFIER_READ_WRITE, String.class),
+            Arguments.of(UINT16_IDENTIFIER_READ_WRITE, Integer.class),
+            Arguments.of(UINT32_IDENTIFIER_READ_WRITE, Long.class),
+            Arguments.of(UINT64_IDENTIFIER_READ_WRITE, Long.class),
+            Arguments.of(UINTEGER_IDENTIFIER_READ_WRITE, Long.class)
+        );
     }
 
 }

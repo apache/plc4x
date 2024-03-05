@@ -63,7 +63,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
     
         try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString(context, incomingFlowFile))) {
 
-            if (!connection.getMetadata().canRead()) {
+            if (!connection.getMetadata().isReadSupported()) {
                 throw new ProcessException("Reading not supported by connection");
             }
 

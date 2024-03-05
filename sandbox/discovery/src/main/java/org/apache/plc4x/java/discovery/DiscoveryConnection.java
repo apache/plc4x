@@ -95,22 +95,22 @@ public class DiscoveryConnection implements PlcConnection, PlcSubscriber, PlcBro
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
-            public boolean canRead() {
+            public boolean isReadSupported() {
                 return false;
             }
 
             @Override
-            public boolean canWrite() {
+            public boolean isWriteSupported() {
                 return false;
             }
 
             @Override
-            public boolean canSubscribe() {
+            public boolean isSubscribeSupported() {
                 return true;
             }
 
             @Override
-            public boolean canBrowse() {
+            public boolean isBrowseSupported() {
                 return true;
             }
         };

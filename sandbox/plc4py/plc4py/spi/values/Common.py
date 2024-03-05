@@ -16,10 +16,15 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
-from plc4py.spi.generation import WriteBuffer
+from abc import abstractmethod
 
 
 class Serializable:
-    def serialize(self, write_buffer: WriteBuffer):
+
+    @abstractmethod
+    def serialize(self, write_buffer):
+        """Serialize an object to the WriteBuffer provided.
+
+        :param write_buffer: The WriteBuffer to serialize to
+        """
         pass

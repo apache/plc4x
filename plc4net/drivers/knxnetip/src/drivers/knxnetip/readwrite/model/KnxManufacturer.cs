@@ -685,8 +685,14 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_CONSOLINNO_ENERGY_GMBH = 658,
         M_SCHIDERON_ELECTRIC_ASIA_LIMITED = 659,
         M_3R = 660,
-        M_ABB___RESERVED = 661,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 662,
+        M_ARKLYFE = 661,
+        M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_ = 662,
+        M_KNXES_COMPANY_LIMITED = 663,
+        M_THE_AKUVOX_COMPANY = 664,
+        M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_ = 665,
+        M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD = 666,
+        M_ABB___RESERVED = 667,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 668,
     }
 
     public static class KnxManufacturerInfo
@@ -2571,10 +2577,28 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_3R: { /* '660' */
                     return 718;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '661' */
+                case KnxManufacturer.M_ARKLYFE: { /* '661' */
+                    return 719;
+                }
+                case KnxManufacturer.M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_: { /* '662' */
+                    return 720;
+                }
+                case KnxManufacturer.M_KNXES_COMPANY_LIMITED: { /* '663' */
+                    return 721;
+                }
+                case KnxManufacturer.M_THE_AKUVOX_COMPANY: { /* '664' */
+                    return 722;
+                }
+                case KnxManufacturer.M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_: { /* '665' */
+                    return 723;
+                }
+                case KnxManufacturer.M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD: { /* '666' */
+                    return 724;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '667' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '662' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '668' */
                     return 43959;
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
@@ -4570,10 +4594,28 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_3R: { /* '660' */
                     return "3R";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '661' */
+                case KnxManufacturer.M_ARKLYFE: { /* '661' */
+                    return "Arklyfe";
+                }
+                case KnxManufacturer.M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_: { /* '662' */
+                    return "Foshan Haydn Technology Lighting Co.,Ltd.";
+                }
+                case KnxManufacturer.M_KNXES_COMPANY_LIMITED: { /* '663' */
+                    return "KNXES COMPANY LIMITED";
+                }
+                case KnxManufacturer.M_THE_AKUVOX_COMPANY: { /* '664' */
+                    return "The Akuvox Company";
+                }
+                case KnxManufacturer.M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_: { /* '665' */
+                    return "NingBo Yinzhou ShengRuiJie Electronics Co. Ltd.";
+                }
+                case KnxManufacturer.M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD: { /* '666' */
+                    return "Shenzhen Haizhichuang Technology Co., Ltd";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '667' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '662' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '668' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */

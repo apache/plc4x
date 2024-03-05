@@ -18,14 +18,38 @@
  */
 package org.apache.plc4x.java.api.metadata;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Information about driver capabilities.
  */
 public interface PlcDriverMetadata {
 
     /**
-     * Indicates that the driver supports discovery.
+     * @return The transport code of the default transport, if the driver supports this.
      */
-    boolean canDiscover();
+    Optional<String> getDefaultTransportCode();
+
+    /**
+     * @return A list of all actively supported transports.
+     */
+    List<String> getSupportedTransportCodes();
+
+    /**
+     * @return Get the configuration options for the current driver.
+     */
+    Optional<OptionMetadata> getProtocolConfigurationOptionMetadata();
+
+    /**
+     * @param transportCode transport code for the transport we want to get the transport options for.
+     * @return Get the transport options for the current driver and the given transport type.
+     */
+    Optional<OptionMetadata> getTransportConfigurationOptionMetadata(String transportCode);
+
+    /**
+     * @return true, if the current driver supports discovery.
+     */
+    boolean isDiscoverySupported();
 
 }

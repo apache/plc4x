@@ -26,14 +26,13 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
-import org.apache.plc4x.java.api.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.connection.DefaultNettyPlcConnection;
@@ -125,7 +124,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             // define a future we can use to signal back that the s7 session is
             // finished initializing.
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-            CompletableFuture<Configuration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
+            CompletableFuture<PlcConnectionConfiguration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
 
             if (channelFactory == null) {
                 throw new PlcConnectionException("No primary channel factory provided");

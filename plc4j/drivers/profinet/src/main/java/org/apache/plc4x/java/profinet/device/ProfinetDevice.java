@@ -41,14 +41,13 @@ import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -124,6 +123,15 @@ public class ProfinetDevice implements PlcSubscriber {
         }
     }
 
+    private void send(ProfinetCallable<DceRpc_Packet> callable, int sourcePort, int destPort) {
+        this.messageWrapper.sendUdpMessage(
+            callable,
+            deviceContext,
+            sourcePort,
+            destPort
+        );
+    }
+
     private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable, int sourcePort, int destPort) {
         deviceContext.addToQueue(callable.getId(), callable);
         this.messageWrapper.sendUdpMessage(
@@ -184,68 +192,74 @@ public class ProfinetDevice implements PlcSubscriber {
      */
     public void start() {
         final long timeout = (long) deviceContext.getConfiguration().getReductionRatio() * deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getWatchdogFactor() * MIN_CYCLE_NANO_SEC;
-        final int cycleTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC / 1000000.0));
+        final int cycleTime = (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * MIN_CYCLE_NANO_SEC) / 1000000;
         Function<Object, Boolean> subscription =
             message -> {
                 long startTime = System.nanoTime();
-                TimerTask task = new TimerTask() {
-                    public void run() {
-                        try {
-                            switch (deviceContext.getState()) {
-                                // If an ipAddress is specified in the device config, we use PN DCP to set the IP
-                                // address of the PN device identified by the name to that given IP address.
-                                case SET_IP:
-                                    ProfinetMessageDcpIp setIpMessage = new ProfinetMessageDcpIp();
-                                    messageWrapper.sendPnioMessage(setIpMessage, deviceContext);
-                                    deviceContext.setState(ProfinetDeviceState.IDLE);
-                                    break;
-                                // Set up a PN-IO connection, subscribing to the stuff passed in with the connection
-                                // string and also tell the device about the data we'll be publishing.
-                                case IDLE:
-                                    CreateConnection createConnection = new CreateConnection();
-                                    // Send the packet and process the response ...
-                                    recordIdAndSend(createConnection, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
-                                    // Wait for it to be finished processing ...
-                                    createConnection.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
-                                    break;
-                                // TODO: It seems this state is never used?
-                                // It seems that in this step we would be setting parameters in the PN device (hereby configuring it)
-                                // This should probably be done using the PLC4X Write API anyway.
-                                case STARTUP:
-                                    WriteParameters writeParameters = new WriteParameters();
-                                    recordIdAndSend(writeParameters, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
-                                    writeParameters.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
-                                    break;
-                                // Send a CONTROL packet telling the device we're done configuring the connection.
-                                case PREMED:
-                                    WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
-                                    recordIdAndSend(writeParametersEnd, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
-                                    writeParametersEnd.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
-                                    break;
-                                case WAITAPPLRDY:
-                                    //Thread.sleep(cycleTime);
-                                    break;
-                                case APPLRDY:
-                                    ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
-                                    recordIdAndSend(applicationReadyResponse, ProfinetDeviceContext.DEFAULT_UDP_PORT, deviceContext.getApplicationResponseDestinationPort());
-                                    // TODO: Not quite sure why we should wait for two cycles.
-                                    Thread.sleep(cycleTime);
-                                    deviceContext.getContext().fireConnected();
-                                    deviceContext.setState(ProfinetDeviceState.CYCLICDATA);
-                                    break;
-                                case CYCLICDATA:
-                                    CyclicData cyclicData = new CyclicData(startTime);
-                                    messageWrapper.sendPnioMessage(cyclicData, deviceContext);
-                                    //Thread.sleep(cycleTime);
-                                    break;
-                            }
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                            deviceContext.setState(ProfinetDeviceState.ABORT);
+                ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+                ses.scheduleAtFixedRate(() -> {
+                    try {
+//                        System.out.println("State: " + deviceContext.getState().name() + " queue length: " + deviceContext.getQueue().size());
+                        switch (deviceContext.getState()) {
+                            // If an ipAddress is specified in the device config, we use PN DCP to set the IP
+                            // address of the PN device identified by the name to that given IP address.
+                            case SET_IP:
+                                ProfinetMessageDcpIp setIpMessage = new ProfinetMessageDcpIp();
+                                messageWrapper.sendPnioMessage(setIpMessage, deviceContext);
+                                deviceContext.setState(ProfinetDeviceState.IDLE);
+                                break;
+                            // Set up a PN-IO connection, subscribing to the stuff passed in with the connection
+                            // string and also tell the device about the data we'll be publishing.
+                            case IDLE:
+                                CreateConnection createConnection = new CreateConnection();
+                                // Send the packet and process the response ...
+                                recordIdAndSend(createConnection, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
+
+                                // For some reason the first response quite often came in too late,
+                                // so we're extending the wait time here.
+                                createConnection.getResponseHandled().get(8 * timeout, TimeUnit.NANOSECONDS);
+                                break;
+                            // TODO: It seems this state is never used?
+                            // It seems that in this step we would be setting parameters in the PN device (hereby configuring it)
+                            // This should probably be done using the PLC4X Write API anyway.
+                            case STARTUP:
+                                WriteParameters writeParameters = new WriteParameters();
+                                recordIdAndSend(writeParameters, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
+                                writeParameters.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
+                                break;
+                            // Send a CONTROL packet telling the device we're done configuring the connection.
+                            case PREMED:
+                                WriteParametersEnd writeParametersEnd = new WriteParametersEnd();
+                                recordIdAndSend(writeParametersEnd, deviceContext.getSourcePort(), deviceContext.getDestinationPort());
+                                writeParametersEnd.getResponseHandled().get(timeout, TimeUnit.NANOSECONDS);
+                                break;
+                            // Here we're waiting for an incoming application-ready request from the device.
+                            case WAITAPPLRDY:
+                                break;
+                            // Here we've received the application-ready request from the device and simply acknowledge
+                            // it, which finishes the connection setup.
+                            case APPLRDY:
+                                ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
+                                send(applicationReadyResponse, ProfinetDeviceContext.DEFAULT_UDP_PORT, deviceContext.getApplicationResponseDestinationPort());
+                                deviceContext.getContext().fireConnected();
+                                deviceContext.setState(ProfinetDeviceState.CYCLICDATA);
+                                break;
+                            // In this state we're receiving data from the remote device and in this part of the
+                            // code, we're sending back our data in every cycle.
+                            // TODO: Possibly check if, depending on the reduction ratio, we only have to send back data every few cycles.
+                            case CYCLICDATA:
+                                CyclicData cyclicData = new CyclicData(startTime);
+                                messageWrapper.sendPnioMessage(cyclicData, deviceContext);
+                                // TODO: Check if we're getting data every cycle ... if not, react.
+                                break;
+                            case ABORT:
+                                // TODO: Handle this
                         }
+                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                        deviceContext.setState(ProfinetDeviceState.ABORT);
+                        logger.warn("Got exception", e);
                     }
-                };
-                Timer timer = new Timer("Timer");
-                timer.scheduleAtFixedRate(task, 0, cycleTime);
+                }, 0, cycleTime, TimeUnit.MILLISECONDS);
                 return null;
             };
 
@@ -309,7 +323,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public void handleResponse(Ethernet_FramePayload_IPv4 packet) {
         logger.debug("Received packet for {}", packet.getPayload().getObjectUuid());
         long objectId = packet.getPayload().getSequenceNumber();
-        if (deviceContext.hasSequenecNumberInQueue(objectId)) {
+        if (deviceContext.hasSequenceNumberInQueue(objectId)) {
             deviceContext.popFromQueue(objectId).handle(packet.getPayload());
         } else {
             PnIoCm_Packet payloadPacket = packet.getPayload().getPayload();
@@ -448,6 +462,15 @@ public class ProfinetDevice implements PlcSubscriber {
 
     public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
         logger.error("Received Alarm Low packet, attempting to re-connect");
+        if (alarmPdu.getVarPart()[3] == 0x18) {
+            // Error from the device after not sending anything back ...
+            logger.error("- AR RPC-Control Error");
+        } else if (alarmPdu.getVarPart()[3] == 0x06) {
+            // Switches to the non-working connection here ...
+            logger.error("- AR CMI TIMEOUT ...");
+        } else {
+            logger.error("- Undefined alarm");
+        }
         deviceContext.setState(ProfinetDeviceState.IDLE);
     }
 

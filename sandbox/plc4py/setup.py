@@ -54,12 +54,14 @@ setup(
             "mock>=4.0.2",
             "mypy>=0.942",
             "flake8>=4.0.1",
+            "pytest-asyncio",
         ]
     },
     entry_points={
         "plc4py.drivers": [
             "mock = plc4py.drivers.mock.MockConnection:MockDriverLoader",
             "modbus = plc4py.drivers.modbus.ModbusConnection:ModbusDriverLoader",
+            "umas = plc4py.drivers.umas.UmasConnection:UmasDriverLoader",
         ]
     },
 )
