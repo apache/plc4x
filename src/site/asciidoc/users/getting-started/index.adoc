@@ -21,8 +21,8 @@ Depending on the programming language, the usage will differ, therefore please g
 
 === Go/Golang
 
-For guides on how to write PLC4X applications with Go, please go to the link:getting-started/plc4go.html[Go Getting Started]
+For guides on how to write PLC4X applications with Go, please go to the link:plc4go.html[Go Getting Started]
 
 === Java
 
-For guides on how to write PLC4X applications with Java, please go to the link:getting-started/plc4j.html[Java Getting Started]
+For guides on how to write PLC4X applications with Java, please go to the link:plc4j.html[Java Getting Started]

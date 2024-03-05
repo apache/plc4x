@@ -76,7 +76,7 @@
                                <div class="carousel-item active">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://calcite.apache.org';" style="cursor:pointer;">
+                                            onclick="window.open('https://calcite.apache.org','_blank');" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_calcite_logo.svg" alt="Card image cap">
                                            </div>
@@ -89,7 +89,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://camel.apache.org';" style="cursor:pointer;">
+                                            onclick="window.open('https://camel.apache.org','_blank');" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_camel_logo.png" alt="Card image cap">
                                            </div>
@@ -102,7 +102,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://iotdb.apache.org';" style="cursor:pointer;">
+                                            onclick="window.open('https://iotdb.apache.org','_blank');" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_iotdb_logo.png" alt="Card image cap">
                                            </div>
@@ -115,7 +115,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://kafka.apache.org';" style="cursor:pointer;">
+                                            onclick="window.open('https://kafka.apache.org','_blank');" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_kafka_logo.png" alt="Card image cap">
                                            </div>
@@ -128,7 +128,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://nifi.apache.org';" style="cursor:pointer;">
+                                            onclick="window.open('https://nifi.apache.org','_blank');" style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_nifi_logo.svg" alt="Card image cap">
                                            </div>
@@ -141,7 +141,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://streampipes.apache.org';"
+                                            onclick="window.open('https://streampipes.apache.org','_blank');"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_streampipes_logo.png" alt="Card image cap">
@@ -155,7 +155,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://hop.apache.org';"
+                                            onclick="window.open('https://hop.apache.org','_blank');"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/apache_hop_logo.png" alt="Card image cap">
@@ -169,7 +169,7 @@
                                <div class="carousel-item">
                                    <div class="col-md-12 col-lg-4">
                                        <div class="card h-100 p-5 justify-content-center"
-                                            onclick="location.href='https://www.eclipse.org/ditto/';"
+                                            onclick="window.open('https://www.eclipse.org/ditto/','_blank');"
                                             style="cursor:pointer;">
                                            <div class="d-flex align-items-center justify-content-center h-100">
                                                <img src="images/integrations/eclipse_ditto_logo.png" alt="Card image cap">
