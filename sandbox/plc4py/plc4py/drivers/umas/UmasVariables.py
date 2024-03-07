@@ -22,8 +22,8 @@ from typing import Dict, List, Pattern, AnyStr, Union
 
 from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
 
-from plc4py.protocols.umas.readwrite.VariableRequestReference import (
-    VariableRequestReference,
+from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
+    VariableReadRequestReference,
 )
 
 from plc4py.api.exceptions.exceptions import PlcDataTypeNotFoundException
@@ -42,7 +42,7 @@ class UmasVariable:
     block_no: int
     offset: int
 
-    def get_variable_reference(self, address: str) -> VariableRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         raise NotImplementedError(
             f"UmasVariable subclass not implemented for variable {self.variable_name}"
         )
@@ -55,9 +55,9 @@ class UmasVariable:
 
 @dataclass
 class UmasElementryVariable(UmasVariable):
-    def get_variable_reference(self, address: str) -> VariableRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         if self.data_type == UmasDataType.STRING.value:
-            return VariableRequestReference(
+            return VariableReadRequestReference(
                 is_array=1,
                 data_size_index=UmasDataType(self.data_type).request_size,
                 block=self.block_no,
@@ -66,7 +66,7 @@ class UmasElementryVariable(UmasVariable):
                 array_length=16,
             )
         else:
-            return VariableRequestReference(
+            return VariableReadRequestReference(
                 is_array=0,
                 data_size_index=UmasDataType(self.data_type).request_size,
                 block=self.block_no,
@@ -83,7 +83,7 @@ class UmasElementryVariable(UmasVariable):
 class UmasCustomVariable(UmasVariable):
     children: Dict[str, UmasVariable]
 
-    def get_variable_reference(self, address: str) -> VariableRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         split_tag_address: List[str] = address.split(".")
         child_index = None
         if len(split_tag_address) > 1:
@@ -106,14 +106,14 @@ class UmasArrayVariable(UmasVariable):
     start_index: int
     end_index: int
 
-    def get_variable_reference(self, address: str) -> VariableRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         split_tag_address: List[str] = address.split(".")
         address_index = None
         if len(split_tag_address) > 1:
             address_index = int(split_tag_address[1])
         data_type_enum = UmasDataType(self.data_type)
         if address_index:
-            return VariableRequestReference(
+            return VariableReadRequestReference(
                 is_array=0,
                 data_size_index=data_type_enum.request_size,
                 block=self.block_no,
@@ -123,7 +123,7 @@ class UmasArrayVariable(UmasVariable):
                 array_length=None,
             )
         else:
-            return VariableRequestReference(
+            return VariableReadRequestReference(
                 is_array=1,
                 data_size_index=data_type_enum.request_size,
                 block=self.block_no,
