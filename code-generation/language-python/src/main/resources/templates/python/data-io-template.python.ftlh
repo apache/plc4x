@@ -78,7 +78,7 @@ class ${type.name}:
                         <#else>
                         ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments))}
                         </#if>
-                        <#sep> & </#sep>
+                        <#sep> and </#sep>
                     </#list>
                     :</@compress>  # ${case.name}
                 <#else>
@@ -467,7 +467,7 @@ class ${type.name}:
                     <#else>
                     ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                     </#if>
-            <#sep> & </#sep>
+            <#sep> and </#sep>
             </#list>
         </@compress>: # ${case.name}
         <#else>

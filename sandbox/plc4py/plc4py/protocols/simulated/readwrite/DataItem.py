@@ -48,7 +48,7 @@ import math
 class DataItem:
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, data_type: str, number_of_values: int):
-        if data_type == "_bool" & number_of_values == int(1):  # BOOL
+        if data_type == "_bool" and number_of_values == int(1):  # BOOL
 
             # Simple Field (value)
             value: bool = read_buffer.read_bit("")
@@ -63,7 +63,7 @@ class DataItem:
                 value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
 
             return PlcList(value)
-        if data_type == "_byte" & number_of_values == int(1):  # BYTE
+        if data_type == "_byte" and number_of_values == int(1):  # BYTE
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
@@ -80,7 +80,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_word" & number_of_values == int(1):  # WORD
+        if data_type == "_word" and number_of_values == int(1):  # WORD
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
@@ -97,7 +97,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_dword" & number_of_values == int(1):  # DWORD
+        if data_type == "_dword" and number_of_values == int(1):  # DWORD
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
@@ -114,7 +114,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_lword" & number_of_values == int(1):  # LWORD
+        if data_type == "_lword" and number_of_values == int(1):  # LWORD
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
@@ -131,7 +131,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_sint" & number_of_values == int(1):  # SINT
+        if data_type == "_sint" and number_of_values == int(1):  # SINT
 
             # Simple Field (value)
             value: int = read_buffer.read_signed_byte(8, logical_name="")
@@ -148,7 +148,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_int" & number_of_values == int(1):  # INT
+        if data_type == "_int" and number_of_values == int(1):  # INT
 
             # Simple Field (value)
             value: int = read_buffer.read_short(16, logical_name="")
@@ -163,7 +163,7 @@ class DataItem:
                 value.append(PlcINT(int(read_buffer.read_short(16, logical_name=""))))
 
             return PlcList(value)
-        if data_type == "_dint" & number_of_values == int(1):  # DINT
+        if data_type == "_dint" and number_of_values == int(1):  # DINT
 
             # Simple Field (value)
             value: int = read_buffer.read_int(32, logical_name="")
@@ -178,7 +178,7 @@ class DataItem:
                 value.append(PlcDINT(int(read_buffer.read_int(32, logical_name=""))))
 
             return PlcList(value)
-        if data_type == "_lint" & number_of_values == int(1):  # LINT
+        if data_type == "_lint" and number_of_values == int(1):  # LINT
 
             # Simple Field (value)
             value: int = read_buffer.read_long(64, logical_name="")
@@ -193,7 +193,7 @@ class DataItem:
                 value.append(PlcLINT(int(read_buffer.read_long(64, logical_name=""))))
 
             return PlcList(value)
-        if data_type == "_usint" & number_of_values == int(1):  # USINT
+        if data_type == "_usint" and number_of_values == int(1):  # USINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
@@ -210,7 +210,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_uint" & number_of_values == int(1):  # UINT
+        if data_type == "_uint" and number_of_values == int(1):  # UINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
@@ -227,7 +227,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_udint" & number_of_values == int(1):  # UDINT
+        if data_type == "_udint" and number_of_values == int(1):  # UDINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
@@ -244,7 +244,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_ulint" & number_of_values == int(1):  # ULINT
+        if data_type == "_ulint" and number_of_values == int(1):  # ULINT
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
@@ -261,7 +261,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_real" & number_of_values == int(1):  # REAL
+        if data_type == "_real" and number_of_values == int(1):  # REAL
 
             # Simple Field (value)
             value: float = read_buffer.read_float(32, logical_name="")
@@ -278,7 +278,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_lreal" & number_of_values == int(1):  # LREAL
+        if data_type == "_lreal" and number_of_values == int(1):  # LREAL
 
             # Simple Field (value)
             value: float = read_buffer.read_double(64, logical_name="")
@@ -295,7 +295,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_char" & number_of_values == int(1):  # CHAR
+        if data_type == "_char" and number_of_values == int(1):  # CHAR
 
             # Simple Field (value)
             value: str = read_buffer.read_str(8, logical_name="", encoding="")
@@ -314,7 +314,7 @@ class DataItem:
                 )
 
             return PlcList(value)
-        if data_type == "_wchar" & number_of_values == int(1):  # WCHAR
+        if data_type == "_wchar" and number_of_values == int(1):  # WCHAR
 
             # Simple Field (value)
             value: str = read_buffer.read_str(16, logical_name="", encoding="")
@@ -568,103 +568,103 @@ class DataItem:
         _value: PlcValue, data_type: str, number_of_values: int
     ) -> int:
         size_in_bits: int = 0
-        if data_type == "BOOL" & number_of_values == int(1):  # BOOL
+        if data_type == "BOOL" and number_of_values == int(1):  # BOOL
             # Simple Field (value)
             size_in_bits += 1
         elif data_type == "BOOL":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 1
-        elif data_type == "BYTE" & number_of_values == int(1):  # BYTE
+        elif data_type == "BYTE" and number_of_values == int(1):  # BYTE
             # Simple Field (value)
             size_in_bits += 8
         elif data_type == "BYTE":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 8
-        elif data_type == "WORD" & number_of_values == int(1):  # WORD
+        elif data_type == "WORD" and number_of_values == int(1):  # WORD
             # Simple Field (value)
             size_in_bits += 16
         elif data_type == "WORD":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 16
-        elif data_type == "DWORD" & number_of_values == int(1):  # DWORD
+        elif data_type == "DWORD" and number_of_values == int(1):  # DWORD
             # Simple Field (value)
             size_in_bits += 32
         elif data_type == "DWORD":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 32
-        elif data_type == "LWORD" & number_of_values == int(1):  # LWORD
+        elif data_type == "LWORD" and number_of_values == int(1):  # LWORD
             # Simple Field (value)
             size_in_bits += 64
         elif data_type == "LWORD":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 64
-        elif data_type == "SINT" & number_of_values == int(1):  # SINT
+        elif data_type == "SINT" and number_of_values == int(1):  # SINT
             # Simple Field (value)
             size_in_bits += 8
         elif data_type == "SINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 8
-        elif data_type == "INT" & number_of_values == int(1):  # INT
+        elif data_type == "INT" and number_of_values == int(1):  # INT
             # Simple Field (value)
             size_in_bits += 16
         elif data_type == "INT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 16
-        elif data_type == "DINT" & number_of_values == int(1):  # DINT
+        elif data_type == "DINT" and number_of_values == int(1):  # DINT
             # Simple Field (value)
             size_in_bits += 32
         elif data_type == "DINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 32
-        elif data_type == "LINT" & number_of_values == int(1):  # LINT
+        elif data_type == "LINT" and number_of_values == int(1):  # LINT
             # Simple Field (value)
             size_in_bits += 64
         elif data_type == "LINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 64
-        elif data_type == "USINT" & number_of_values == int(1):  # USINT
+        elif data_type == "USINT" and number_of_values == int(1):  # USINT
             # Simple Field (value)
             size_in_bits += 8
         elif data_type == "USINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 8
-        elif data_type == "UINT" & number_of_values == int(1):  # UINT
+        elif data_type == "UINT" and number_of_values == int(1):  # UINT
             # Simple Field (value)
             size_in_bits += 16
         elif data_type == "UINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 16
-        elif data_type == "UDINT" & number_of_values == int(1):  # UDINT
+        elif data_type == "UDINT" and number_of_values == int(1):  # UDINT
             # Simple Field (value)
             size_in_bits += 32
         elif data_type == "UDINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 32
-        elif data_type == "ULINT" & number_of_values == int(1):  # ULINT
+        elif data_type == "ULINT" and number_of_values == int(1):  # ULINT
             # Simple Field (value)
             size_in_bits += 64
         elif data_type == "ULINT":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 64
-        elif data_type == "REAL" & number_of_values == int(1):  # REAL
+        elif data_type == "REAL" and number_of_values == int(1):  # REAL
             # Simple Field (value)
             size_in_bits += 32
         elif data_type == "REAL":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 32
-        elif data_type == "LREAL" & number_of_values == int(1):  # LREAL
+        elif data_type == "LREAL" and number_of_values == int(1):  # LREAL
             # Simple Field (value)
             size_in_bits += 64
         elif data_type == "LREAL":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 64
-        elif data_type == "CHAR" & number_of_values == int(1):  # CHAR
+        elif data_type == "CHAR" and number_of_values == int(1):  # CHAR
             # Simple Field (value)
             size_in_bits += 8
         elif data_type == "CHAR":  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 8
-        elif data_type == "WCHAR" & number_of_values == int(1):  # WCHAR
+        elif data_type == "WCHAR" and number_of_values == int(1):  # WCHAR
             # Simple Field (value)
             size_in_bits += 16
         elif data_type == "WCHAR":  # List

@@ -46,7 +46,7 @@ async def manual_test_plc_driver_umas_read():
         future = connection.execute(request)
         await future
         response = future.result()
-        value = response.tags["Random Tag 1"][0].value
+        value = response.tags["Random Tag 1"].value
         log.error(f"Read tag test_REAL - {value}")
         await asyncio.sleep(1)
     pass

@@ -436,8 +436,8 @@ class UmasDevice:
             response_chunk = await self._send_read_variable_request(
                 transport, loop, request, sorted_tags
             )
-            response.code = response_chunk.code
-            response.values = {**response.values, **response_chunk.values}
+            response.code = response_chunk.response_code
+            response.tags = {**response.tags, **response_chunk.tags}
         return response
 
     async def write(
