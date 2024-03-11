@@ -45,7 +45,8 @@ public enum GenericCANDataType {
   INTEGER56((long) 16L, (String) "RAW_BYTE_ARRAY", (short) 56),
   INTEGER64((long) 17L, (String) "LINT", (short) 64),
   REAL32((long) 18L, (String) "REAL", (short) 32),
-  REAL64((long) 19L, (String) "LREAL", (short) 64);
+  REAL64((long) 19L, (String) "LREAL", (short) 64),
+  RAW((long) 20L, (String) "RAW_BYTE_ARRAY", (short) 8);
   private static final Map<Long, GenericCANDataType> map;
 
   static {

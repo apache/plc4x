@@ -339,15 +339,6 @@ public class CANOpenProtocolLogic extends Plc4xCANProtocolBase<CANOpenFrame>
                 logger.debug("Decoded CANOpen {} from {}, message {}", service, nodeId, payload);
             }
         }
-
-//        int identifier = msg.getIdentifier();
-//        CANOpenService service = CANOpenService.valueOf((byte) (identifier >> 7));
-//        if (service != null) {
-//            ReadBuffer buffer = new ReadBuffer(msg.getData());
-//            CANOpenPayload payload = CANOpenPayloadIO.staticParse(buffer, service);
-//
-//
-//        }
     }
 
     private void publishEvent(CANOpenService service, int nodeId, CANOpenPayload payload) {
