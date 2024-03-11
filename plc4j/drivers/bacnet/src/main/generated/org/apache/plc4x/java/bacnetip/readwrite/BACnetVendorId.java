@@ -707,7 +707,7 @@ public enum BACnetVendorId {
   HOME_SYSTEMS_CONSULTING_SPA((int) 590, (int) 590, (String) "Home Systems Consulting SpA"),
   SOCOMEC((int) 591, (int) 591, (String) "Socomec"),
   EVEREX_COMMUNICATIONS_INC((int) 592, (int) 592, (String) "Everex Communications, Inc."),
-  CEIEC_ELECTRIC_TECHNOLOGY((int) 593, (int) 593, (String) "Ceiec Electric Technology"),
+  CET_ELECTRIC_TECHNOLOGY_INC((int) 593, (int) 593, (String) "CET Electric Technology, Inc."),
   ATRILA_GMBH((int) 594, (int) 594, (String) "Atrila GmbH"),
   WING_TECHS((int) 595, (int) 595, (String) "WingTechs"),
   SHENZHEN_MEK_INTELLISYS_PTE_LTD(
@@ -1676,6 +1676,12 @@ public enum BACnetVendorId {
   DELTA_FIRE_LTDA((int) 1460, (int) 1460, (String) "Delta Fire Ltda."),
   BOCK_WATER_HEATERS_INC((int) 1461, (int) 1461, (String) "Bock Water Heaters, Inc."),
   CLEAVER_BROOKS((int) 1462, (int) 1462, (String) "Cleaver-Brooks"),
+  SCANALYTICS_INC((int) 1463, (int) 1463, (String) "Scanalytics, Inc."),
+  WILABS((int) 1464, (int) 1464, (String) "WI6LABS"),
+  ACT_SYSTEM_CO_LTD((int) 1465, (int) 1465, (String) "AC&T System Co., Ltd"),
+  VERGE_SENSE((int) 1466, (int) 1466, (String) "VergeSense"),
+  SYSTEMAIR_MFG_INC((int) 1467, (int) 1467, (String) "Systemair Mfg. Inc."),
+  SEELEY_INTERNATIONAL((int) 1468, (int) 1468, (String) "Seeley International"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
