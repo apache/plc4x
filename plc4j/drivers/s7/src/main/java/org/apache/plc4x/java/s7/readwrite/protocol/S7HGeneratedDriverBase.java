@@ -138,8 +138,9 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         initializePipeline(channelFactory);
 
         // Give drivers the option to customize the channel.
-        if (hmatcher.matches())
+        if (hmatcher.matches()) {
             initializePipeline(secondaryChannelFactory);
+        }
 
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
