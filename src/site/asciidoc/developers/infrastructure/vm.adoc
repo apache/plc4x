@@ -86,7 +86,7 @@ When hitting enter or clicking on `Compute` the tool should automatically genera
 Now all you need to do is copy & paste that as password into your SSH client session.
 
 TIP: As with the latest version of Mac Catalina the existing clients no longer work and using a public web service is a bad idea, Apache has its own service to calculate it:
-https://selfserve.apache.org/otp-md5.html
+https://selfserve.apache.org/otp-calculator.html
 
 === Required software
 
