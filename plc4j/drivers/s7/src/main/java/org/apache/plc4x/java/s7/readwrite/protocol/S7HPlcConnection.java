@@ -260,7 +260,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
     public boolean isSubscribeSupported() {
         Plc4xProtocolBase<?> protocol = getProtocol();
         S7DriverContext s7driverContext = (S7DriverContext) protocol.getDriverContext();
-        return s7driverContext.getControllerType() == ControllerType.S7_300;
+        return (s7driverContext.getControllerType() == ControllerType.S7_300) || (s7driverContext.getControllerType() == ControllerType.S7_400);
     }
 
     public void doPrimaryTcpConnections() {
