@@ -26,6 +26,9 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.s7.readwrite.ControllerType;
+import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
@@ -223,7 +226,6 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     primaryChannel.pipeline().remove(MULTIPLEXER);
                     primaryChannel.pipeline().fireUserEventTriggered(new CloseConnectionEvent());
                     primaryChannel.eventLoop().shutdownGracefully();
-
                 } catch (Exception ex) {
                     logger.info(ex.toString());
                 }
@@ -249,6 +251,17 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         return channel.attr(S7HMuxImpl.IS_CONNECTED).get();
     }
 
+    /**
+     * Subscriptions are only supported in a small subset of the S7 devices.
+     *
+     * @return true, if the device supports subscriptions.
+     */
+    @Override
+    public boolean isSubscribeSupported() {
+        Plc4xProtocolBase<?> protocol = getProtocol();
+        S7DriverContext s7driverContext = (S7DriverContext) protocol.getDriverContext();
+        return s7driverContext.getControllerType() == ControllerType.S7_300;
+    }
 
     public void doPrimaryTcpConnections() {
         try {
