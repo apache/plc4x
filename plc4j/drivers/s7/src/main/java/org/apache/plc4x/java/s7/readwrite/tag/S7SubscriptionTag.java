@@ -55,10 +55,16 @@ public class S7SubscriptionTag implements PlcTag {
     //blockNumber usually has its max hat around 64000 --> 5digits
     private static final Pattern DATA_BLOCK_ADDRESS_PATTERN =
         Pattern.compile("%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[XBWD]?)(?<byteDBOffset>\\d{1,7})(.(?<bitDBOffset>[0-7]))?:(?<dataDBType>[a-zA-Z_]+)(\\[(?<numDBElements>\\d+)])?");
+    
+    private static final Pattern DATA_BLOCK_SHORT_PATTERN =
+        Pattern.compile("^%DB(?<blockNumber>\\d{1,5}):(?<byteOffset>\\d{1,7})(.(?<bitOffset>[0-7]))?:(?<dataType>(S5)?[a-zA-Z_]+)(\\[(?<numElements>\\d+)])?");    
 
     //All fields index 9
     private static final Pattern EVENT_SUBSCRIPTION_S7ANY_QUERY_PATTERN =
-        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})((" + ADDRESS_PATTERN + ")|(" + DATA_BLOCK_ADDRESS_PATTERN + ")))+)");
+        Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})((" + 
+                ADDRESS_PATTERN + ")|(" + 
+                DATA_BLOCK_ADDRESS_PATTERN + ")|(" + 
+                DATA_BLOCK_SHORT_PATTERN + ")))+)");
 
     private static final Pattern EVENT_SUBSCRIPTION_DB_QUERY_PATTERN =
         Pattern.compile("(^CYC(\\((?<timeBase>((B01SEC)|(B1SEC)|(B10SEC))):(?<multiplier>[1-99])\\)):)(((?:,{0,1})(%DB(?<blockNumber>\\d{1,5}).DB(?<transferDBSizeCode>[B]?)(?<byteDBOffset>\\d{1,7})(\\[(?<numDBElements>\\d+)]))?)+)");
