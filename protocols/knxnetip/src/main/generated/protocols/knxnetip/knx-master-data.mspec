@@ -1417,8 +1417,9 @@
     ['666' M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD ['724', '"Shenzhen Haizhichuang Technology Co., Ltd"']]
     ['667' M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD ['725', '"Shenzhen easydetek technology Co.Ltd"']]
     ['668' M_MUTLUSAN_ELECTRIC ['726', '"Mutlusan Electric"']]
-    ['669' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['670' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['669' M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_ ['727', '"Hangzhou BroadLink Technology Co.,Ltd."']]
+    ['670' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['671' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
