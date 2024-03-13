@@ -68,7 +68,7 @@ function renameArtifacts() {
   pwd
 }
 
-# Package the remaiing files into one tgz archive
+# Package the remaining files into one tgz archive
 function packageDirectory() {
   echo "Packaging ..."
   tar -cvf reproducible-build-candidate.tgz local-snapshots-dir/
