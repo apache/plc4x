@@ -691,8 +691,10 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_THE_AKUVOX_COMPANY = 664,
         M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_ = 665,
         M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD = 666,
-        M_ABB___RESERVED = 667,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 668,
+        M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD = 667,
+        M_MUTLUSAN_ELECTRIC = 668,
+        M_ABB___RESERVED = 669,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 670,
     }
 
     public static class KnxManufacturerInfo
@@ -2595,14 +2597,20 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD: { /* '666' */
                     return 724;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '667' */
-                    return 43954;
+                case KnxManufacturer.M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD: { /* '667' */
+                    return 725;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '668' */
-                    return 43959;
+                case KnxManufacturer.M_MUTLUSAN_ELECTRIC: { /* '668' */
+                    return 726;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '669' */
+                    return 43954;
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
                     return 106;
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '670' */
+                    return 43959;
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
                     return 107;
@@ -4612,14 +4620,20 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD: { /* '666' */
                     return "Shenzhen Haizhichuang Technology Co., Ltd";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '667' */
-                    return "ABB - reserved";
+                case KnxManufacturer.M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD: { /* '667' */
+                    return "Shenzhen easydetek technology Co.Ltd";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '668' */
-                    return "Busch-Jaeger Elektro - reserved";
+                case KnxManufacturer.M_MUTLUSAN_ELECTRIC: { /* '668' */
+                    return "Mutlusan Electric";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '669' */
+                    return "ABB - reserved";
                 }
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
                     return "EIBMARKT GmbH";
+                }
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '670' */
+                    return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
                     return "WAREMA Renkhoff SE";
