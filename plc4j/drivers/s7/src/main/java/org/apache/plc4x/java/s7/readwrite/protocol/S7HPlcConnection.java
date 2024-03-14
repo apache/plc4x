@@ -46,6 +46,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.*;
+import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionRequest;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 
 /**
  * This object generates the main connection and includes the management
@@ -416,5 +420,13 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         }
         return null;
     }
+
+    @Override
+    public PlcSubscriptionRequest.Builder subscriptionRequestBuilder() {
+        if (!isSubscribeSupported()) {
+            throw new PlcUnsupportedOperationException("The connection does not support subscription");
+        }
+        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());        
+    }        
 
 }
