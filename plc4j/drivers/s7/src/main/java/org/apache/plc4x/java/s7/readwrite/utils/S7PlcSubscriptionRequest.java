@@ -41,6 +41,7 @@ import static org.apache.plc4x.java.s7.readwrite.TimeBase.B01SEC;
 import org.apache.plc4x.java.s7.readwrite.tag.S7SubscriptionTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
+import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionRequest;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 
 public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
@@ -123,6 +124,27 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             this.preRegisteredConsumers = new LinkedHashMap<>();
         }
 
+        /*
+        * This method receives a String that describes an S7Tag and the 
+        * interval required for its sampling.
+        * The value of the "pollingInterval" parameter is adapted to the 
+        * cyclical subscription requirements of an S7-300/S7-400, 
+        * for which multiples of the time base given by TimeBase 
+        * must be handled. To say:
+        *
+        * . B01SEC -> 100, 200, 300, 400, 500, 600, 700, 800, 900 msec
+        * . B1SEC  ->   1,   2,   3,   4,   5,   6,   7,   8,   9 sec
+        * . B10SEC ->  10,  20,  30,  40,  50,  60,  70,  80,  90 sec
+        *
+        * As you can see there are no intermediate values, for example 513 msec,
+        * it will actually be 500 msec, or its nearest rounding.
+        * 
+        * @param name Name of the subscription Tag.
+        * @param tagAddress String representing an S7Tag
+        * @param pollingInterval Required sampling rate based on the "TimeBase"  
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor        
+        * 
+        */
         @Override
         public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
             if (tags.containsKey(name)) {
@@ -136,6 +158,16 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             return this;
         }
 
+        /*
+        * This method receives an S7Tag built by the user, he is responsible 
+        * for the construction of the object, so no additional verification 
+        * is included.
+        *
+        * @param name Name of the subscription Tag.
+        * @param tag    Tag of S7SubscriptionTag type.
+        * @param pollingInterval Required sampling rate based on the "TimeBase"
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        */
         @Override
         public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval) {
             if (tags.containsKey(name)) {
@@ -148,16 +180,63 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             return this;
         }
 
+        /*
+        *
+        */
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
-            throw new PlcRuntimeException("Feature currently not supported.");
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            S7Tag[] s7tags = new S7Tag[]{S7Tag.of(tagAddress)};   
+            S7SubscriptionTag tag = new S7SubscriptionTag(S7SubscriptionType.CYCLIC_SUBSCRIPTION, s7tags, TimeBase.B01SEC, (short) 1);            
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
         }
 
+        /*
+        *
+        */        
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag) {
-            throw new PlcRuntimeException("Feature currently not supported.");
+            if (tags.containsKey(name)) {
+                throw new PlcRuntimeException("Duplicate tag definition '" + name + "'");
+            }
+            if ((tag instanceof S7SubscriptionTag) == false){
+                throw new PlcRuntimeException("Tag is not of type S7SubcriptionTag");                
+            }              
+            tags.put(name, new BuilderItem(() -> tag, PlcSubscriptionType.CHANGE_OF_STATE));
+            return this;
         }
 
+        /*
+        * This method is responsible for the subscription to Events associated 
+        * with the PLC as well as the preliminary version of cyclical 
+        * subscription of values.
+        *
+        * The type of function performed by the tag is given by the definition 
+        * of the "tagAddress", for example:
+        *
+        * "ACK:16#12345678"
+        *
+        * Represents an acknowledgment of an alarm whose ID is 16#12345678.
+        * The following functions are defined:
+        *
+        * . MODE
+        * . SYS
+        * . USR
+        * . ALM
+        * . ACK
+        * . QUERY
+        * . CYC
+        * . CANCEL
+        * 
+        * Go to the driver manual for a complete description.
+        * 
+        * @param name Name of the subscription Tag.
+        * @param tag    Tag of S7SubscriptionTag type.        
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        */
         @Override
         public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
             if (tags.containsKey(name)) {
@@ -171,6 +250,15 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             return this;
         }
 
+        /*
+        * This method receives an S7Tag built by the user, he is responsible 
+        * for the construction of the object, so no additional verification 
+        * is included.
+        *
+        * @param name Name of the subscription Tag.
+        * @param tag    Tag of S7SubscriptionTag type.
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor        
+        */
         @Override
         public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag) {
             if (tags.containsKey(name)) {
@@ -228,15 +316,15 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
                 throw new PlcRuntimeException("Subscription time cannot be zero.");                
             }
             long millis = duration.toMillis();
-            if (millis <= 25500) {
+            if (millis < 1000) {
                 return TimeBase.B01SEC;
-            }  if (millis <= 255000) {
+            }  if (millis < 10000) {
                 return TimeBase.B1SEC;                
-            }   if (millis <= 2550000) {
+            }   if (millis < 100000) {
                 return TimeBase.B10SEC;  
             }
             
-            throw new PlcRuntimeException("The maximum subscription time of 2550 sec.");             
+            throw new PlcRuntimeException("The maximum subscription time is 90 sec.");             
         }
         
         //TODO: Chek multiplier is 1-99 in BCD??

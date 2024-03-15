@@ -114,6 +114,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
         mapConsumers.remove(registration);
     }
 
+    
+    //TODO: Replace with disruptor
     private class ObjectProcessor implements Runnable {
 
         private final BlockingQueue<S7Event> eventQueue;
@@ -154,6 +156,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
         }
     }
 
+    //TODO: Replace with disruptor    
     private class EventDispatcher implements Runnable {
         private final BlockingQueue<S7Event> dispatchQueue;
         private boolean shutdown = false;
@@ -173,6 +176,10 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
             while (!shutdown) {
                 try {
                     S7Event s7Event = dispatchQueue.poll(DEFAULT_DELAY, TimeUnit.MILLISECONDS);
+                    if ((s7Event == null) && (cycDelayedObject != null)) {
+                        s7Event = cycDelayedObject;
+                        cycDelayedObject = null;
+                    }
                     if (s7Event != null) {
                         if (s7Event instanceof S7ModeEvent) {
                             S7ModeEvent modeEvent = (S7ModeEvent) s7Event;
@@ -202,10 +209,13 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                             S7CyclicEvent cyclicEvent = (S7CyclicEvent) s7Event;
                             if (mapIndex.containsKey(EventType.CYC)) {
                                 Map<PlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> mapConsumers = mapIndex.get(EventType.CYC);
+
                                 if (cycDelayedObject != null) {
                                     mapConsumers.forEach((x, y) -> y.accept(cycDelayedObject));
                                     cycDelayedObject = null;
                                 }
+                                if (mapConsumers.isEmpty()) cycDelayedObject = s7Event;
+                                
                                 mapConsumers.forEach((x, y) -> {
                                     S7PlcSubscriptionHandle sh = (S7PlcSubscriptionHandle) x.getSubscriptionHandles().get(0);
                                     Short id = Short.parseShort(sh.getEventId());

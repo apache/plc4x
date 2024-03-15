@@ -106,34 +106,10 @@ public class S7CyclicEvent implements S7Event {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-                       
-//            event.getItems().get(i).getData().forEach(s -> {
-//                buffer[j] = s.byteValue();
-//                j++;
-//            });
             map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
-            n[0]++;
-            
-
-            
-            
+            n[0]++;                                    
         });
 
-
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            //map.put(Fields.RETURNCODE_.name()+i, event.getItems()[i].getReturnCode().getValue());
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer);  
-//        }
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenPush event) {
@@ -145,30 +121,15 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
         int[] n = new int[1];
+        
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
         });
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer);  
-//        }
+        
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesSubscribeResponse event) {
@@ -180,30 +141,14 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
         int[] n = new int[1];
+
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
-        });
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer); 
-//        }            
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
+        });       
     }
 
     public S7CyclicEvent(PlcSubscriptionRequest request, short jobid, S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse event) {
@@ -215,30 +160,14 @@ public class S7CyclicEvent implements S7Event {
         map.put(Fields.JOBID.name(), jobid);
         map.put(Fields.ITEMSCOUNT.name(), event.getItemsCount());
         int[] n = new int[1];
+        
         request.getTagNames().forEach(tagname -> {
             int i = n[0];
             map.put(Fields.RETURNCODE_.name() + i, event.getItems().get(i).getReturnCode().getValue());
             map.put(Fields.TRANSPORTSIZE_.name() + i, event.getItems().get(i).getTransportSize().getValue());
-            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-            j = 0;
-            event.getItems().get(i).getData().forEach(s -> {
-                buffer[j] = s.byteValue();
-                j++;
-            });
-            map.put(tagname, buffer);
-            n[0]++;
-        });
-//        for (int i=0; i<event.getItemsCount(); i++){
-//            map.put(Fields.RETURNCODE_.name()+i, event.getItems().get(i).getReturnCode().getValue());
-//            map.put(Fields.TRANSPORTSIZE_.name()+i, event.getItems().get(i).getTransportSize().getValue());
-//            byte[] buffer = new byte[event.getItems().get(i).getData().size()];
-//            j = 0;
-//            event.getItems().get(i).getData().forEach(s->{
-//                    buffer[j] = s.byteValue();
-//                    j ++;                
-//                });
-//            map.put(Fields.DATA_.name()+i, buffer); 
-//        }            
+            map.put(tagname, DataToPlcValue(tagname, request, event.getItems().get(i).getData()));
+            n[0]++;                                    
+        });       
     }
 
     @Override
@@ -263,7 +192,12 @@ public class S7CyclicEvent implements S7Event {
 
     @Override
     public PlcValue getPlcValue(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (request.getTagNames().contains(name)) {
+            PlcValue plcvalue = (PlcValue) map.get(name);
+            plcvalue.getRaw();
+            return plcvalue;
+        }
+        return null;
     }
 
     @Override
@@ -813,7 +747,32 @@ public class S7CyclicEvent implements S7Event {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final S7CyclicEvent other = (S7CyclicEvent) obj;
+        
+        for (String tag:request.getTagNames()) {
+            final PlcValue othervalue = other.getPlcValue(tag);
+            if (othervalue == null) return false;
+            final PlcValue localvalue = (PlcValue) getPlcValue(tag);
+            if (Arrays.equals(localvalue.getRaw(), othervalue.getRaw()) == false){
+                return false;
+            }
+        };
+        
+        return true;
+    }
     
+        
     private static PlcValue DataToPlcValue(String tagname, PlcSubscriptionRequest request, List<Short> data){
         
         int[] i = new int[1];
@@ -930,6 +889,8 @@ public class S7CyclicEvent implements S7Event {
         return plcValue;
         
     };
+
+
     
     
 }
