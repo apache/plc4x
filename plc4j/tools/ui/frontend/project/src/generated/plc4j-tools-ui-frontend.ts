@@ -69,8 +69,8 @@ export interface Option {
     key: string;
     type: OptionType;
     defaultValue?: any;
-    description: string;
     required: boolean;
+    description: string;
 }
 
 export interface Serializable {

@@ -43,8 +43,8 @@ public class PlcRawByteArray extends PlcIECValue<byte[]> {
     }
 
     @Override
-    public String toString() {
-        return Hex.encodeHexString(value);
+    public byte[] getRaw() {
+        return value;
     }
     
     @Override
@@ -52,8 +52,9 @@ public class PlcRawByteArray extends PlcIECValue<byte[]> {
         return getBytes();
     }    
 
-    public byte[] getBytes() {
-        return value;
+    @Override
+    public String toString() {
+        return Hex.encodeHexString(value);
     }
 
     @Override

@@ -80,6 +80,10 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         this.protocol = protocol;
     }
 
+    public Plc4xProtocolBase<?> getProtocol() {
+        return protocol;
+    }
+
     @Override
     public PlcConnectionMetadata getMetadata() {
         return this;
