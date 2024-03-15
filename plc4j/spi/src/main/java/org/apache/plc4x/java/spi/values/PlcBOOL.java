@@ -253,6 +253,11 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         return toString();
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }
+        
     public byte[] getBytes() {
         return ((value != null) && value) ? new byte[]{0x01} : new byte[]{0x00};
     }

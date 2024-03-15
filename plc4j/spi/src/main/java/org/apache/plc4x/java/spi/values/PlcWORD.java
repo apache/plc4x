@@ -262,6 +262,11 @@ public class PlcWORD extends PlcIECValue<Integer> {
     public String toString() {
         return Integer.toString(value);
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     public byte[] getBytes() {
         return new byte[]{
