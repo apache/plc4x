@@ -1419,8 +1419,7 @@
     ['668' M_MUTLUSAN_ELECTRIC ['726', '"Mutlusan Electric"']]
     ['669' M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_ ['727', '"Hangzhou BroadLink Technology Co.,Ltd."']]
     ['670' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['671' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
-    
+    ['671' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]   
 ]
 
 [dataIo KnxDatapoint(KnxDatapointType datapointType)

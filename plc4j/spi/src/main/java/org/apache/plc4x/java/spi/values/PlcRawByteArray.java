@@ -46,6 +46,11 @@ public class PlcRawByteArray extends PlcIECValue<byte[]> {
     public byte[] getRaw() {
         return value;
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     @Override
     public String toString() {

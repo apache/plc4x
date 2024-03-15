@@ -776,6 +776,7 @@ public enum KnxManufacturer {
   M_ABB___RESERVED((int) 670, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
       (int) 671, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

@@ -211,6 +211,11 @@ public class PlcBREAL extends PlcIECValue<BigDecimal> {
         return value.toString();
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         // TODO: Not sure if this is correct ...
         byte[] tmp = value.unscaledValue().toByteArray();
