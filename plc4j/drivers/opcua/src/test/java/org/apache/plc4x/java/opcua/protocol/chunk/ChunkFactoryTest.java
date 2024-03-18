@@ -30,12 +30,12 @@ import org.apache.plc4x.java.opcua.TestCertificateGenerator;
 import org.apache.plc4x.java.opcua.readwrite.MessageSecurityMode;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaProtocolLimits;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
+import org.apache.plc4x.test.DisableOnJenkinsFlag;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-@Disabled("Disabled as it seem this test only randomly succeeds on Jenkins")
+@DisableOnJenkinsFlag
 class ChunkFactoryTest {
 
     public static final Map<Integer, Entry<PrivateKey, X509Certificate>> CERTIFICATES = new HashMap<>();

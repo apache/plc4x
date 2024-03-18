@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.opcua.OpcuaPlcDriverTest;
 import org.apache.plc4x.test.DisableInDockerFlag;
+import org.apache.plc4x.test.DisableOnJenkinsFlag;
 import org.apache.plc4x.test.DisableOnParallelsVmFlag;
 import org.eclipse.milo.examples.server.ExampleServer;
 import org.junit.jupiter.api.*;
@@ -53,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 // It's not a big issue as the GitHub runners and the Apache Jenkins still run the test.
 @DisableOnParallelsVmFlag
 @DisableInDockerFlag
-@Disabled("Disabled as it seem this test only randomly succeeds on Jenkins")
+@DisableOnJenkinsFlag
 public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
