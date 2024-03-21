@@ -32,7 +32,7 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("unit-identifier")
     @IntDefaultValue(1)
-    @Description("Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
+    @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
     private int unitIdentifier;
 
     public int getRequestTimeout() {
