@@ -171,11 +171,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
         TPKTPacket packet = new TPKTPacket(createCOTPConnectionRequest(
             s7DriverContext.getCalledTsapId(), s7DriverContext.getCallingTsapId(), s7DriverContext.getCotpTpduSize()));
 
-        context.getChannel().pipeline().names().forEach(s -> {
-            logger.debug("Nombre tuberias: " + s);
-        });
-
-
         context.sendRequest(packet)
             .onTimeout(e -> {
                 logger.info("Timeout during Connection establishing, closing channel...");
