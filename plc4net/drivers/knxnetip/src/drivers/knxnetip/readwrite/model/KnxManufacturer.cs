@@ -694,8 +694,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD = 667,
         M_MUTLUSAN_ELECTRIC = 668,
         M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_ = 669,
-        M_ABB___RESERVED = 670,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 671,
+        M_MARLEY_DEUTSCHLAND_GMBH = 670,
+        M_ABB___RESERVED = 671,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 672,
     }
 
     public static class KnxManufacturerInfo
@@ -2610,10 +2611,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
                     return 106;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '670' */
+                case KnxManufacturer.M_MARLEY_DEUTSCHLAND_GMBH: { /* '670' */
+                    return 728;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '671' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '671' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '672' */
                     return 43959;
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
@@ -4636,10 +4640,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_EIBMARKT_GMBH: { /* '67' */
                     return "EIBMARKT GmbH";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '670' */
+                case KnxManufacturer.M_MARLEY_DEUTSCHLAND_GMBH: { /* '670' */
+                    return "Marley Deutschland GmbH";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '671' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '671' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '672' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
