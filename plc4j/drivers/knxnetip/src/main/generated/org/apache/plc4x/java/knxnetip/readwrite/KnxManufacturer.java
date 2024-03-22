@@ -773,10 +773,10 @@ public enum KnxManufacturer {
   M_MUTLUSAN_ELECTRIC((int) 668, (int) 726, (String) "Mutlusan Electric"),
   M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_(
       (int) 669, (int) 727, (String) "Hangzhou BroadLink Technology Co.,Ltd."),
-  M_ABB___RESERVED((int) 670, (int) 43954, (String) "ABB - reserved"),
+  M_MARLEY_DEUTSCHLAND_GMBH((int) 670, (int) 728, (String) "Marley Deutschland GmbH"),
+  M_ABB___RESERVED((int) 671, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 671, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
-
+      (int) 672, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
