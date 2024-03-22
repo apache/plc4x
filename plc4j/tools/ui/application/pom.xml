@@ -76,7 +76,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.2.3</version>
+        <version>3.2.4</version>
         <configuration>
           <mainClass>org.apache.plc4x.java.tools.ui.Plc4xUiBackendApplication</mainClass>
           <profiles>
