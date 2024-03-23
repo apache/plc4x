@@ -22,7 +22,7 @@
 Currently, you need to install PLC4Py from the GitHub repository instead of pypi.
 Once we have decided that PLC4Py is in a position to release we will publish to pypi.
 
-Navigate to the sandbox/plc4py directory and run. This will install plc4py in your global repository.
+Navigate to the plc4py directory and run. This will install plc4py in your global repository.
 
 [subs=attributes+]
 ----

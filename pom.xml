@@ -1630,14 +1630,6 @@
       </modules>
     </profile>
 
-    <!-- Build PLC4X including the Sandbox modules -->
-    <profile>
-      <id>with-sandbox</id>
-      <modules>
-        <module>sandbox</module>
-      </modules>
-    </profile>
-
     <!-- Profile for linux amd64 (Self-Enabling) -->
     <profile>
       <id>.os-linux-amd64</id>
