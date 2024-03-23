@@ -45,6 +45,7 @@ setup(
         "pip",
         "aenum",
         "bitarray",
+        "typing_extensions",
     ],
     extras_require={
         "dev": [
