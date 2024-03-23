@@ -28,7 +28,7 @@ import math
 
 
 @dataclass
-class VariableRequestReference:
+class VariableReadRequestReference:
     is_array: int
     data_size_index: int
     block: int
@@ -38,7 +38,7 @@ class VariableRequestReference:
     UNKNOWN1: int = 0x01
 
     def serialize(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("VariableRequestReference")
+        write_buffer.push_context("VariableReadRequestReference")
 
         # Simple Field (isArray)
         write_buffer.write_unsigned_byte(
@@ -74,14 +74,14 @@ class VariableRequestReference:
                 self.array_length, logical_name="arrayLength"
             )
 
-        write_buffer.pop_context("VariableRequestReference")
+        write_buffer.pop_context("VariableReadRequestReference")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = 0
-        _value: VariableRequestReference = self
+        _value: VariableReadRequestReference = self
 
         # Simple field (isArray)
         length_in_bits += 4
@@ -109,11 +109,11 @@ class VariableRequestReference:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return VariableRequestReference.static_parse_context(read_buffer)
+        return VariableReadRequestReference.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
-        read_buffer.push_context("VariableRequestReference")
+        read_buffer.push_context("VariableReadRequestReference")
 
         is_array: int = read_buffer.read_unsigned_byte(
             logical_name="isArray", bit_length=4
@@ -141,23 +141,23 @@ class VariableRequestReference:
         if is_array:
             array_length = read_buffer.read_unsigned_short(logical_name="arrayLength")
 
-        read_buffer.pop_context("VariableRequestReference")
+        read_buffer.pop_context("VariableReadRequestReference")
         # Create the instance
-        _variable_request_reference: VariableRequestReference = (
-            VariableRequestReference(
+        _variable_read_request_reference: VariableReadRequestReference = (
+            VariableReadRequestReference(
                 is_array, data_size_index, block, base_offset, offset, array_length
             )
         )
-        return _variable_request_reference
+        return _variable_read_request_reference
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, VariableRequestReference):
+        if not isinstance(o, VariableReadRequestReference):
             return False
 
-        that: VariableRequestReference = VariableRequestReference(o)
+        that: VariableReadRequestReference = VariableReadRequestReference(o)
         return (
             (self.is_array == that.is_array)
             and (self.data_size_index == that.data_size_index)

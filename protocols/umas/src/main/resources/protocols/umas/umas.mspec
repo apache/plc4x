@@ -84,7 +84,12 @@
         ['0x22'      UmasPDUReadVariableRequest
             [simple     uint 32        crc]
             [simple     uint 8        variableCount]
-            [array      VariableRequestReference variables count 'variableCount']
+            [array      VariableReadRequestReference variables count 'variableCount']
+        ]
+        ['0x23'      UmasPDUWriteVariableRequest
+            [simple     uint 32        crc]
+            [simple     uint 8        variableCount]
+            [array      VariableWriteRequestReference variables count 'variableCount']
         ]
         ['0x26'     UmasPDUReadUnlocatedVariableNamesRequest
             [simple     uint 16         recordType]
@@ -131,6 +136,9 @@
         ['0xFE', '0x22'     UmasPDUReadVariableResponse
             [array      uint 8          block count 'byteLength - 2']
         ]
+        ['0xFE', '0x23'     UmasPDUWriteVariableResponse
+            [array      uint 8          block count 'byteLength - 2']
+        ]
         ['0xFE', '0x26'     UmasPDUReadUnlocatedVariableResponse
             [array      uint 8          block count 'byteLength - 2']
         ]
@@ -171,7 +179,7 @@
     [array      UmasDatatypeReference         records count 'noOfRecords']
 ]
 
-[type VariableRequestReference
+[type VariableReadRequestReference
     [simple     uint 4           isArray]
     [simple     uint 4           dataSizeIndex]
     [simple     uint 16          block]
@@ -179,6 +187,17 @@
     [simple     uint 16          baseOffset]
     [simple     uint 8           offset]
     [optional   uint 16          arrayLength 'isArray']
+]
+
+[type VariableWriteRequestReference
+    [simple     uint 4           isArray]
+    [simple     uint 4           dataSizeIndex]
+    [simple     uint 16          block]
+    [const      uint 8           unknown1 0x01]
+    [simple     uint 16          baseOffset]
+    [simple     uint 8           offset]
+    [optional   uint 16          arrayLength 'isArray']
+    [array      byte       recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
 ]
 
 [type UmasUnlocatedVariableReference
