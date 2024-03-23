@@ -59,10 +59,6 @@ https://vimeo.com/167857327
 
 === Building PLC4X with Maven
 
-In general all modules which are not considered production-ready are located in the `sandbox` section of the project.
-
-They are not built per default and are enabled by enabling the `with-sandbox` Maven profile.
-
 As especially building the C++, and C# drivers requires building of some third party artifacts and increases build-time dramatically and requires setting up some additional third party tools, we have excluded these parts form the default Maven build.
 
 The following profiles are available (*They have to be enabled additionally to the `with-sandbox` profile*):
@@ -71,8 +67,7 @@ The following profiles are available (*They have to be enabled additionally to t
 - `with-dotnet`: Builds all C# and .Net related modules, integrations and examples
 - `with-go`: Builds all Go related modules, integrations and examples
 - `with-java`: Builds all Java related modules, integrations and examples
-- `with-python`: Builds all Python related modules, integrations and examples (Also requires `with-sandbox`)
-- `with-sandbox`: Builds the modules which are not yet considered stable enough to become part of the main distribution
+- `with-python`: Builds all Python related modules, integrations and examples
 
 WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing/index.html[Preparing your Computer] guide for a detailed description on this.
 
@@ -90,13 +85,13 @@ If you want to skip the running of tests (even if this is not encouraged) you ca
 
 All Apache PLC4X modules are built by executing the following command:
 
-    mvn -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox install
+    mvn -P with-c,with-dotnet,with-go,with-java,with-python install
 
 This not only builds the artifacts and creates the jar files, but also runs all unit- and integration-tests.
 
 If you want to skip the running of tests (even if this is not encouraged) you can skip them all together.
 
-    mvn -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox install -DskipTests
+    mvn -P with-c,with-dotnet,with-go,with-java,with-python install -DskipTests
 
 This will not skip the compilation of tests, however.
 

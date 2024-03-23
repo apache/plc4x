@@ -29,14 +29,14 @@ IMPORTANT: Please be sure to execute the release with a Java version 11 or the K
 * [ ] Create release branch:
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks -DbranchName=rel/{current-short-version}
 ----
 [%interactive]
 * [ ] Add a new section to the `RELEASE_NOTES` on `develop`
 * [ ] Prepare the release:
 [subs="verbatim,attributes"]
 ----
-   mvn release:prepare -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks
+   mvn release:prepare -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks
 ----
 [%interactive]
 * [ ] Perform the release:
@@ -157,14 +157,14 @@ This is the version the `develop` branch will be changed to.
 In contrast to normal builds, it is important to enable all profiles when creating the branch as only this way will all modules versions be updated.
 Otherwise, the non-default modules on develop will reference the old version which will cause problems when building.
 
-   mvn release:branch -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks -DbranchName=rel/{minor-version}
+   mvn release:branch -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks -DbranchName=rel/{minor-version}
 
 Per default the plugin suggests the next bugfix version as working version, however we want it to use the next minor version.
 So in case of preparing the release branch for `{current-full-version}-SNAPSHOT` the command would be the following:
 
 [subs="verbatim,attributes"]
 ----
-   mvn release:branch -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks -DbranchName=rel/{current-short-version}
+   mvn release:branch -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks -DbranchName=rel/{current-short-version}
 ----
 
 The plugin will then aks for the version:
@@ -229,9 +229,9 @@ In order to prepare a release-candidate, the first step is switching to the corr
 
 After that, the following command will to all preparation steps for the release:
 
-   mvn release:prepare -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks
+   mvn release:prepare -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks
 
-(The `-P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
+(The `-P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks` tells maven to activate the all profiles that partition the build and makes sure the versions of all modules are updated as part of the release)
 In general the plugin will now ask you 3 questions:
 
 1. The version we want to release as (It will suggest the version you get by omitting the `-SNAPSHOT` suffix)
@@ -279,7 +279,7 @@ NOTE: If the commit history doesn't look like this, something went wrong.
 
 If something goes wrong, you can always execute:
 
-   mvn release:rollback -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks
+   mvn release:rollback -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks
 
 It will change the versions back and commit and push things.
 
@@ -304,7 +304,7 @@ Here it automatically executes a maven build (You don't have to do this, it's ju
 
 As the `apache-release` profile is also activated, this builds and tests the project as well as creates the JavaDocs, Source packages and signs each of these with your PGP key.
 
-We are intentionally not adding the other profiles, as these either produce binary artifacts that usually only work on the system they were compiled on (C++, .Net) or we haven't found a good way to distribute them via Maven yet (Python) or deployment is disabled anyway (sandbox).
+We are intentionally not adding the other profiles, as these either produce binary artifacts that usually only work on the system they were compiled on (C++, .Net) or we haven't found a good way to distribute them via Maven yet (Python).
 
 As this time the build is building with release versions, Maven will automatically choose the release url for deploying artifacts.
 
@@ -464,7 +464,7 @@ If however for some reason it is needed to prepare a new RC for the release. Ple
 
 - Set the versions of the release branch to the previous version by using the `versions:set` plugin:
 
-    mvn versions:set -DprocessAllModules=true -P with-c,with-dotnet,with-go,with-java,with-python,with-sandbox,enable-all-checks
+    mvn versions:set -DprocessAllModules=true -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks
 
 - Delete the tag locally:
 

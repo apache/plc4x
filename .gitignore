@@ -175,14 +175,10 @@ build-iPhoneSimulator/
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
 
-# When running the cpp module in clion, it adds another ".idea" directory.
-/sandbox/plc4cpp/.idea/
-
 # Exclude VSCode project settings.
 .vscode/
 
 # Temp stuff ...
-/sandbox/plc4go/temp/
 /plc4go/.idea/
 plc4j/examples/hello-storage-elasticsearch/.factorypath
 
