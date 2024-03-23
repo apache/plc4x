@@ -61,8 +61,6 @@
   </build>
 
   <modules>
-    <module>discovery</module>
-    <module>test-java-df1-driver</module>
   </modules>
 
   <profiles>
