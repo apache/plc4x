@@ -64,13 +64,7 @@
   </modules>
 
   <profiles>
-    <!-- Build PLC4X including the Python modules -->
-    <profile>
-      <id>with-python</id>
-      <modules>
-        <module>plc4py</module>
-      </modules>
-    </profile>
+
   </profiles>
 
 </project>
