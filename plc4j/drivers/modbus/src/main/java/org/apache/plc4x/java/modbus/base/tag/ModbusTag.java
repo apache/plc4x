@@ -30,9 +30,7 @@ import org.apache.plc4x.java.spi.model.DefaultArrayInfo;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public abstract class ModbusTag implements PlcTag, Serializable {
@@ -47,6 +45,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
     private final int quantity;
 
     private final ModbusDataType dataType;
+    private final Short unitId;
 
     public static ModbusTag of(String addressString) {
         if (ModbusTagCoil.matches(addressString)) {
@@ -88,6 +87,10 @@ public abstract class ModbusTag implements PlcTag, Serializable {
      * @param dataType The type for the interpretation of the registers.
      */
     protected ModbusTag(int address, Integer quantity, ModbusDataType dataType) {
+        this(address, quantity, dataType, new HashMap<>());
+    }
+
+    protected ModbusTag(int address, Integer quantity, ModbusDataType dataType, Map<String, String> config) {
         this.address = address;
         if (getLogicalAddress() <= 0) {
             throw new IllegalArgumentException("address must be greater than zero. Was " + getLogicalAddress());
@@ -97,6 +100,9 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             throw new IllegalArgumentException("quantity must be greater than zero. Was " + this.quantity);
         }
         this.dataType = dataType != null ? dataType : ModbusDataType.INT;
+        this.unitId = Optional.ofNullable(config.get("unit-id"))
+            .map(Short::parseShort)
+            .orElse(null);
     }
 
     /**
@@ -105,6 +111,10 @@ public abstract class ModbusTag implements PlcTag, Serializable {
      */
     public int getAddress() {
         return address;
+    }
+
+    public Short getUnitId() {
+        return unitId;
     }
 
     /**
@@ -154,12 +164,13 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         return address == that.address &&
             quantity == that.quantity &&
             dataType == that.dataType &&
+            unitId == that.unitId &&
             getClass() == that.getClass(); // MUST be identical
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getClass(), address, quantity, dataType);
+        return Objects.hash(this.getClass(), address, quantity, dataType, unitId);
     }
 
     @Override
@@ -168,6 +179,7 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             "address=" + address +
             ", quantity=" + quantity +
             ", dataType=" + dataType +
+            ", unitId=" + unitId +
             " }";
     }
 
@@ -182,6 +194,9 @@ public abstract class ModbusTag implements PlcTag, Serializable {
             dataType.getBytes(StandardCharsets.UTF_8).length * 8,
             dataType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
+        if (unitId != null) {
+            writeBuffer.writeUnsignedInt("unitId", 8, unitId);
+        }
         writeBuffer.popContext(getClass().getSimpleName());
     }
 
