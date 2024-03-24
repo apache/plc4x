@@ -21,6 +21,7 @@ package org.apache.plc4x.java.opcua.protocol;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +66,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     private final AtomicLong clientHandles = new AtomicLong(1L);
     private final RequestTransactionManager tm;
+
+    private final List<SubscriptionAcknowledgement> outstandingAcknowledgements = new CopyOnWriteArrayList();
     private ScheduledFuture<?> publishTask;
 
     public OpcuaSubscriptionHandle(OpcuaProtocolLogic plcSubscriber, RequestTransactionManager tm,
@@ -166,7 +169,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * @return
      */
     private void sendPublishRequest() {
-        List<ExtensionObjectDefinition> outstandingAcknowledgements = new LinkedList<>();
         List<Long> outstandingRequests = new LinkedList<>();
 
         //If we are waiting on a response and haven't received one, just wait until we do. A keep alive will be sent out eventually
@@ -184,6 +186,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             // we work in external thread - we need to coordinate access to conversation pipeline
             RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> {
+                LOGGER.trace("Sent publish request with {} acks", ackLength);
                 //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
                 conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
                     outstandingRequests.remove(((ResponseHeader) responseMessage.getResponseHeader()).getRequestHandle());
