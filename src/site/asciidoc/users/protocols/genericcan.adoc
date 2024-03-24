@@ -18,6 +18,7 @@
 :icons: font
 
 == Generic CAN
+
 === CAN Bus semantics
 
 This driver is a generic purpose driver.
@@ -25,31 +26,13 @@ It allows implementing a basic CAN bus listening or writing scenarios.
 
 CAN bus open is a specific protocol built on top of CAN bus.
 
+=== Connection String Options
+
+include::../../../plc4j/drivers/all/src/site/generated/genericcan.adoc[]
+
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`genericcan`
-
-|Name
-2+|Generic CAN
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-can</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+|`socketcan`
-
-|Compatible Transports:
-2+|Any `can` transport, see link:../transports/can.html[CAN transport]
 
 3+|Supported Operations
 
@@ -60,10 +43,6 @@ CAN bus open is a specific protocol built on top of CAN bus.
 | receive
 | `subscribe`
 | This operation allows listening for incoming data or requests.
-
-3+|Options
-
-3+^|none
 
 |===
 

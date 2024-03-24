@@ -65,12 +65,9 @@ func (d *DefaultPlcSubscriptionEventItem) SerializeWithWriteBuffer(ctx context.C
 			}
 		}
 	}
-	{
-		_value := fmt.Sprintf("%v", d.subscriptionType)
 
-		if err := writeBuffer.WriteString("subscriptionType", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("subscriptionType", uint32(len(d.subscriptionType.String())*8), "UTF-8", d.subscriptionType.String()); err != nil {
+		return err
 	}
 
 	if err := writeBuffer.WriteString("interval", uint32(len(d.interval.String())*8), "UTF-8", d.interval.String()); err != nil {

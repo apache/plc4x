@@ -22,31 +22,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
- *  |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1|
- *  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
- *  \__________/\__________/\____________________/
- *   Event class     IDs         Event number
- * 
- *   Event Class:
- *      1   Standard OB Events
- *      2   Synchronous errors
- *      3   Asynchronous errors
- *      4   Mode transition
- *      5   Run-time events
- *      6   Communications events
- *      7   Events for fail-safe and fault tolerant systems
- *      8   Standardized diagnostic data on modules
- *      9   Predefined user events
- *    A,B   Freely definable events
- *  C,D,E   Reserved
- *      F   Events for modules other than CPUs (for example, CPs, FMs)
- * 
- *  IDs (Bit)
- *      8   0:Event leaving state, 1:Event entering state
- *      9   1:Entry in diagnostic buffer
- *     10   1:Internal error
- *     11   1:External error
+ * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ * |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1|
+ * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+ * \__________/\__________/\____________________/
+ * Event class     IDs         Event number
+ * <p>
+ * Event Class:
+ * 1   Standard OB Events
+ * 2   Synchronous errors
+ * 3   Asynchronous errors
+ * 4   Mode transition
+ * 5   Run-time events
+ * 6   Communications events
+ * 7   Events for fail-safe and fault tolerant systems
+ * 8   Standardized diagnostic data on modules
+ * 9   Predefined user events
+ * A,B   Freely definable events
+ * C,D,E   Reserved
+ * F   Events for modules other than CPUs (for example, CPs, FMs)
+ * <p>
+ * IDs (Bit)
+ * 8   0:Event leaving state, 1:Event entering state
+ * 9   1:Entry in diagnostic buffer
+ * 10   1:Internal error
+ * 11   1:External error
  */
 public enum S7DiagnosticEventId {
 
@@ -59,7 +59,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x115A((short) 0x115A, "Manufacturer interrupt for PROFINET IO"),
     EVENTID_0x115B((short) 0x115B, "IO: Profile-specific interrupt"),
     EVENTID_0x116A((short) 0x116A, "Technology synchronization interrupt"),
-    
+
     //Event Class 1 - Standard OB Events
     EVENTID_0x1381((short) 0x1381, "Request for manual warm restart"),
     EVENTID_0x1382((short) 0x1382, "Request for automatic warm restart"),
@@ -73,7 +73,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x138B((short) 0x138B, "Master CPU: request for automatic warm restart"),
     EVENTID_0x138C((short) 0x138C, "Standby CPU: request for manual hot restart"),
     EVENTID_0x138D((short) 0x138D, "Standby CPU: request for automatic hot restart"),
-    
+
     //Event Class 2 - Synchronous Errors
     EVENTID_0x2521((short) 0x2521, "BCD conversion error"),
     EVENTID_0x2522((short) 0x2522, "Area length error when reading"),
@@ -98,7 +98,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x2942((short) 0x2942, "I/O access error, reading"),
     EVENTID_0x2943((short) 0x2943, "I/O access error, writing"),
 
-    
+
     //Event Class 3 - Asynchronous Errors
     EVENTID_0x3501((short) 0x3501, "Cycle time exceeded"),
     EVENTID_0x3502((short) 0x3502, "User interface (OB or FRB) request error"),
@@ -201,7 +201,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x39CE((short) 0x39CE, "PROFINET IO station operational again, but error(s) in module parameter assignment"),
     EVENTID_0x42F3((short) 0x42F3, "Checksum error detected and corrected by the operating system"),
 
-    
+
     //Event Class 4 - Stop Events and Other Mode Changes
     EVENTID_0x4300((short) 0x4300, "Backed-up power on"),
     EVENTID_0x4301((short) 0x4301, "Mode transition from STOP to STARTUP"),
@@ -324,10 +324,10 @@ public enum S7DiagnosticEventId {
     EVENTID_0x49D4((short) 0x49D4, "STOP on a master, since partner CPU is also a master (link-up error)"),
     EVENTID_0x49D7((short) 0x49D7, "LINK-UP rejected due to change in user program or in configuration"),
     EVENTID_0x42F4((short) 0x42F4, "Standby CPU: connection/update via SFC90 is locked in the master CPU"),
-            
+
     //Event Class 5 - Mode Run-time Events
     EVENTID_0x530D((short) 0x530D, "New startup information in the STOP mode"),
-    EVENTID_0x510F((short) 0x510F, "A problem as occurred with WinLC. This problem has caused the CPU to go into STOP mode or has caused a fault in the CPU"),    
+    EVENTID_0x510F((short) 0x510F, "A problem as occurred with WinLC. This problem has caused the CPU to go into STOP mode or has caused a fault in the CPU"),
     EVENTID_0x5311((short) 0x5311, "Startup despite Not Ready message from module(s)"),
     EVENTID_0x5371((short) 0x5371, "Distributed I/Os: end of the synchronization with a DP master"),
     EVENTID_0x5380((short) 0x5380, "Diagnostic buffer entries of interrupt and asynchronous errors disabled"),
@@ -362,9 +362,8 @@ public enum S7DiagnosticEventId {
     EVENTID_0x59A1((short) 0x59A1, "Configuration error in the integrated technology"),
     EVENTID_0x59A3((short) 0x59A3, "Error when downloading the integrated technology"),
     EVENTID_0x53FF((short) 0x53FF, "Reset to factory setting"),
-    
 
-    
+
     //Event Class 6 - Communication Events
     EVENTID_0x6316((short) 0x6316, "Interface error when starting programmable controller"),
     EVENTID_0x6353((short) 0x6353, "Firmware update: Start of firmware download over the network"),
@@ -404,13 +403,13 @@ public enum S7DiagnosticEventId {
     EVENTID_0x6549((short) 0x6549, "Structure error in block"),
     EVENTID_0x6550((short) 0x6550, "A block has an error in the CRC"),
     EVENTID_0x6551((short) 0x6551, "A block has no CRC"),
-    EVENTID_0x6253((short) 0x6253, "Firmware update: End of firmware download over the network"),    
+    EVENTID_0x6253((short) 0x6253, "Firmware update: End of firmware download over the network"),
     EVENTID_0x6560((short) 0x6560, "SCAN overflow"),
     EVENTID_0x6805((short) 0x6805, "Resource problem on configured connections, eliminated"),
     EVENTID_0x6881((short) 0x6881, "Interface error leaving state"),
     EVENTID_0x6905((short) 0x6905, "Resource problem on configured connections"),
     EVENTID_0x6981((short) 0x6981, "Interface error entering state"),
-    
+
     //Event Class 7 - H/F Events
     EVENTID_0x72A2((short) 0x72A2, "Failure of a DP master or a DP master system"),
     EVENTID_0x72A3((short) 0x72A3, "Redundancy restored on the DP slave"),
@@ -487,7 +486,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x79E7((short) 0x79E7, "Simulation block (F system block) loaded"),
     EVENTID_0x73E8((short) 0x73E8, "Consistency of the safety program verified by testing"),
     EVENTID_0x73E9((short) 0x73E9, "Consistency of the safety program cannot be checked"),
-    
+
     //Event Class 8 - Diagnostic Events for Modules
     EVENTID_0x8x00((short) 0x8000, "Module fault/OK"),
     EVENTID_0x8x01((short) 0x8001, "Internal error"),
@@ -496,7 +495,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x8x04((short) 0x8004, "External error"),
     EVENTID_0x8x05((short) 0x8005, "No front connector"),
     EVENTID_0x8x06((short) 0x8006, "No parameter assignment"),
-    EVENTID_0x8x07((short) 0x8007, "Incorrect parameters in module"),  
+    EVENTID_0x8x07((short) 0x8007, "Incorrect parameters in module"),
     EVENTID_0x8x30((short) 0x8030, "User submodule incorrect/not found"),
     EVENTID_0x8x31((short) 0x8031, "Communication problem"),
     EVENTID_0x8x32((short) 0x8032, "Operating mode: RUN/STOP (STOP: entering state, RUN: leaving state)"),
@@ -510,9 +509,9 @@ public enum S7DiagnosticEventId {
     EVENTID_0x8x43((short) 0x8043, "RAM error"),
     EVENTID_0x8x44((short) 0x8044, "ADC/DAC error"),
     EVENTID_0x8x45((short) 0x8045, "Fuse blown"),
-    EVENTID_0x8x46((short) 0x8046, "Hardware interrupt lost"),    
-    EVENTID_0x8x50((short) 0x8050, "Configuration/parameter assignment error. Analog input"), 
-    EVENTID_0x8x51((short) 0x8051, "Common mode error"), 
+    EVENTID_0x8x46((short) 0x8046, "Hardware interrupt lost"),
+    EVENTID_0x8x50((short) 0x8050, "Configuration/parameter assignment error. Analog input"),
+    EVENTID_0x8x51((short) 0x8051, "Common mode error"),
     EVENTID_0x8x52((short) 0x8052, "Short circuit to phase"),
     EVENTID_0x8x53((short) 0x8053, "Short circuit to ground"),
     EVENTID_0x8x54((short) 0x8054, "Wire break"),
@@ -545,7 +544,7 @@ public enum S7DiagnosticEventId {
     EVENTID_0x8xB3((short) 0x80B3, "Counter module, incorrect value passed between the channels"),
     EVENTID_0x8xB4((short) 0x80B4, "Counter module, 5.2 V sensor supply faulty"),
     EVENTID_0x8xB5((short) 0x80B5, "Counter module, 24 V sensor supply faulty"),
-    
+
     //Event Class 9 - Standard User Events
     EVENTID_0x9001((short) 0x9001, "Automatic mode"),
     EVENTID_0x9101((short) 0x9101, "Manual mode"),
@@ -618,63 +617,63 @@ public enum S7DiagnosticEventId {
     EVENTID_0x91F1((short) 0x91F1, "Underflow"),
     EVENTID_0x91F2((short) 0x91F2, "Division by 0"),
     EVENTID_0x91F3((short) 0x91F3, "Illegal calculation operation"),
-    
+
     //Event Classes A and B - Free User Events
-    
-    
+
+
     //Event Classes C,D & E - Reserved Event Classes
-    
+
     //Event Classes F -  Reserved for modules not in central 
     //                   rack (for example, CPs or FMs)
-    
+
     EVENTID_0x0000((short) 0x0000, "NULL: Check for user information.");
 
-    
-    
+
     private static final Map<Integer, S7DiagnosticEventId> map;
-    
+
     private static final Map<Integer, String> idstr;
-    
+
     static {
         map = new HashMap<>();
         idstr = new HashMap<>();
-        for (S7DiagnosticEventId  event : S7DiagnosticEventId.values()) {
+        for (S7DiagnosticEventId event : S7DiagnosticEventId.values()) {
             map.put(Short.toUnsignedInt(event.code), event);
         }
-       
+
         idstr.put(0x0000, "Event leaving state. ");
         idstr.put(0x0100, "Event entering state. ");
         idstr.put(0x0200, "Entry in diagnostic buffer. ");
         idstr.put(0x0400, "Internal error. ");
         idstr.put(0x0800, "External error. ");
-    }    
-    
+    }
+
     private final String description;
     private final short code;
-    
-    S7DiagnosticEventId(final short code, final String description){
-        this.code = code;        
+
+    S7DiagnosticEventId(final short code, final String description) {
+        this.code = code;
         this.description = description;
     }
-    
-    public String getDescription(){
+
+    public String getDescription() {
         //short id = (short) (code & 0x0F00);
         return description;
-    }    
-    
+    }
+
     public short getCode() {
         return code;
-    }    
+    }
 
-    public static S7DiagnosticEventId  valueOf(short code) {
-        int intcode = Short.toUnsignedInt(code);
+    public static S7DiagnosticEventId valueOf(short code) {
+
+        Integer intcode = Short.toUnsignedInt(code);
         int a = code & 0xA000;
         int b = code & 0xB000;
         if ((a != 0) || (b != 0)) intcode = 0x0000;
-        
-       S7DiagnosticEventId eventid =  (map.get(intcode) == null)?
-                                        map.get(0x0000):
-                                        map.get(intcode);        
+
+        S7DiagnosticEventId eventid = (map.get(intcode) == null) ?
+            map.get(0x0000) :
+            map.get(intcode);
         return eventid;
-    }    
+    }
 }

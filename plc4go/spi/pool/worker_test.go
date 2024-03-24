@@ -70,7 +70,6 @@ func Test_worker_start(t *testing.T) {
 		}
 		lastReceived atomic.Value
 		interrupter  chan struct{}
-		log          zerolog.Logger
 	}
 	tests := []struct {
 		name        string
@@ -126,7 +125,7 @@ func Test_worker_start(t *testing.T) {
 				executor:     tt.fields.executor,
 				lastReceived: tt.fields.lastReceived,
 				interrupter:  tt.fields.interrupter,
-				log:          tt.fields.log,
+				log:          produceTestingLogger(t),
 			}
 			if tt.manipulator != nil {
 				tt.manipulator(t, w)

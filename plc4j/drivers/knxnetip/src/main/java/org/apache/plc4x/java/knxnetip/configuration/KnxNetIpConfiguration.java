@@ -18,44 +18,43 @@
  */
 package org.apache.plc4x.java.knxnetip.configuration;
 
-import org.apache.plc4x.java.knxnetip.KnxNetIpDriver;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxLayer;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.FloatDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.configuration.exceptions.ConfigurationException;
-import org.apache.plc4x.java.transport.pcapreplay.PcapReplayTransportConfiguration;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.transport.udp.UdpTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.config.PcapChannelConfig;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
-public class KnxNetIpConfiguration implements Configuration, UdpTransportConfiguration, PcapReplayTransportConfiguration, RawSocketTransportConfiguration {
+public class KnxNetIpConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("knxproj-file-path")
+    @Description("Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages.")
     public String knxprojFilePath;
 
     @ConfigurationParameter("knxproj-password")
+    @Description("Optional password needed to read the knxproj file.")
     public String knxprojPassword;
 
     @ConfigurationParameter("group-address-num-levels")
     @IntDefaultValue(3)
+    @Description("KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:\n" +
+        "\n" +
+        "- 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)}\n" +
+        "- 2 Levels: {main-group (5 bit)}/{sub-group (11 bit)}\n" +
+        "- 1 Level: {sub-group (16 bit)}\n" +
+        "\n" +
+        "The default is 3 levels. If the `knxproj-file-path` this information is provided by the file.")
     public int groupAddressNumLevels = 3;
 
     @ConfigurationParameter("connection-type")
     @StringDefaultValue("LINK_LAYER")
+    @Description("Type of connection used to communicate. Possible values are:\n" +
+        "\n" +
+        "- 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address.\n" +
+        "- 'RAW': The client gets unmanaged access to the bus (be careful with this)\n" +
+        "- 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.")
     public String connectionType = "LINK_LAYER";
-
-    @ConfigurationParameter("replay-speed-factor")
-    @FloatDefaultValue(1.0f)
-    public float replaySpeedFactor = 1.0f;
-
-    @ConfigurationParameter("loop")
-    @BooleanDefaultValue(false)
-    public boolean loop = false;
 
     public String getKnxprojFilePath() {
         return knxprojFilePath;
@@ -94,39 +93,6 @@ public class KnxNetIpConfiguration implements Configuration, UdpTransportConfigu
             throw new ConfigurationException("Value provided for connection-type invalid.");
         }
         this.connectionType = connectionType.toUpperCase();
-    }
-
-    @Override
-    public float getReplaySpeedFactor() {
-        return replaySpeedFactor;
-    }
-
-    public void setReplaySpeedFactor(float replaySpeedFactor) {
-        this.replaySpeedFactor = replaySpeedFactor;
-    }
-
-    @Override
-    public boolean isLoop() {
-        return loop;
-    }
-
-    public void setLoop(boolean loop) {
-        this.loop = loop;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return KnxNetIpDriver.KNXNET_IP_PORT;
-    }
-
-    @Override
-    public Integer getProtocolId() {
-        return PcapChannelConfig.ALL_PROTOCOLS;
-    }
-
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return packet -> packet.getPayload().getPayload().getPayload().getRawData();
     }
 
     @Override

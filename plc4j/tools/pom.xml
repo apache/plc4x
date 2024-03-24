@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-tools</artifactId>
@@ -33,14 +33,35 @@
   <name>PLC4J: Tools</name>
   <description>A collection of tools that provide additional services to users.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>capture-replay</module>
     <module>connection-cache</module>
+    <module>opcua-server</module>
     <module>opm</module>
     <module>plc4x-server</module>
     <module>scraper</module>
     <module>scraper-ng</module>
-    <module>ui</module>
   </modules>
+
+  <!--
+    As the UI is a standalone application, that is not meant for being integrated in anything
+    we don't want to limit us to old java versions and therefore be stuck with old Spring versions.
+    Therefore, at least Java 19 is needed in order to build this module.
+  -->
+  <profiles>
+    <profile>
+      <id>.above-or-equal-java-19</id>
+      <activation>
+        <jdk>[19,)</jdk>
+      </activation>
+      <modules>
+        <module>ui</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

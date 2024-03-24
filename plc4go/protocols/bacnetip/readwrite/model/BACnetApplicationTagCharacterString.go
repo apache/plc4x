@@ -93,7 +93,7 @@ func (m *_BACnetApplicationTagCharacterString) GetPayload() BACnetTagPayloadChar
 func (m *_BACnetApplicationTagCharacterString) GetValue() string {
 	ctx := context.Background()
 	_ = ctx
-	return string(m.GetPayload().GetValue())
+	return fmt.Sprintf("%v", m.GetPayload().GetValue())
 }
 
 ///////////////////////
@@ -171,7 +171,7 @@ func BACnetApplicationTagCharacterStringParseWithBuffer(ctx context.Context, rea
 
 	// Virtual field
 	_value := payload.GetValue()
-	value := string(_value)
+	value := fmt.Sprintf("%v", _value)
 	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagCharacterString"); closeErr != nil {
@@ -217,6 +217,8 @@ func (m *_BACnetApplicationTagCharacterString) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
+		value := m.GetValue()
+		_ = value
 		if _valueErr := writeBuffer.WriteVirtual(ctx, "value", m.GetValue()); _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

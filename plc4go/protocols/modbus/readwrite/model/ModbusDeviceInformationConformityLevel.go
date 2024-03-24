@@ -120,7 +120,7 @@ func ModbusDeviceInformationConformityLevelParseWithBuffer(ctx context.Context, 
 		return 0, errors.Wrap(err, "error reading ModbusDeviceInformationConformityLevel")
 	}
 	if enum, ok := ModbusDeviceInformationConformityLevelByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ModbusDeviceInformationConformityLevel")
 		return ModbusDeviceInformationConformityLevel(val), nil
 	} else {
 		return enum, nil
@@ -138,7 +138,7 @@ func (e ModbusDeviceInformationConformityLevel) Serialize() ([]byte, error) {
 func (e ModbusDeviceInformationConformityLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("ModbusDeviceInformationConformityLevel", 7, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("ModbusDeviceInformationConformityLevel", 7, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -151,7 +151,7 @@ func (e ModbusDeviceInformationConformityLevel) PLC4XEnumName() string {
 	case ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY:
 		return "EXTENDED_STREAM_ONLY"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ModbusDeviceInformationConformityLevel) String() string {

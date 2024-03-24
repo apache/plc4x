@@ -1614,7 +1614,7 @@ func BACnetEngineeringUnitsParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading BACnetEngineeringUnits")
 	}
 	if enum, ok := BACnetEngineeringUnitsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetEngineeringUnits")
 		return BACnetEngineeringUnits(val), nil
 	} else {
 		return enum, nil
@@ -1632,7 +1632,7 @@ func (e BACnetEngineeringUnits) Serialize() ([]byte, error) {
 func (e BACnetEngineeringUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("BACnetEngineeringUnits", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint32("BACnetEngineeringUnits", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -2143,7 +2143,7 @@ func (e BACnetEngineeringUnits) PLC4XEnumName() string {
 	case BACnetEngineeringUnits_PERCENT_PER_SECOND:
 		return "PERCENT_PER_SECOND"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BACnetEngineeringUnits) String() string {

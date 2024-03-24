@@ -330,30 +330,44 @@ func (m *_BACnetDaysOfWeekTagged) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
+	monday := m.GetMonday()
+	_ = monday
 	if _mondayErr := writeBuffer.WriteVirtual(ctx, "monday", m.GetMonday()); _mondayErr != nil {
 		return errors.Wrap(_mondayErr, "Error serializing 'monday' field")
 	}
 	// Virtual field
+	tuesday := m.GetTuesday()
+	_ = tuesday
 	if _tuesdayErr := writeBuffer.WriteVirtual(ctx, "tuesday", m.GetTuesday()); _tuesdayErr != nil {
 		return errors.Wrap(_tuesdayErr, "Error serializing 'tuesday' field")
 	}
 	// Virtual field
+	wednesday := m.GetWednesday()
+	_ = wednesday
 	if _wednesdayErr := writeBuffer.WriteVirtual(ctx, "wednesday", m.GetWednesday()); _wednesdayErr != nil {
 		return errors.Wrap(_wednesdayErr, "Error serializing 'wednesday' field")
 	}
 	// Virtual field
+	thursday := m.GetThursday()
+	_ = thursday
 	if _thursdayErr := writeBuffer.WriteVirtual(ctx, "thursday", m.GetThursday()); _thursdayErr != nil {
 		return errors.Wrap(_thursdayErr, "Error serializing 'thursday' field")
 	}
 	// Virtual field
+	friday := m.GetFriday()
+	_ = friday
 	if _fridayErr := writeBuffer.WriteVirtual(ctx, "friday", m.GetFriday()); _fridayErr != nil {
 		return errors.Wrap(_fridayErr, "Error serializing 'friday' field")
 	}
 	// Virtual field
+	saturday := m.GetSaturday()
+	_ = saturday
 	if _saturdayErr := writeBuffer.WriteVirtual(ctx, "saturday", m.GetSaturday()); _saturdayErr != nil {
 		return errors.Wrap(_saturdayErr, "Error serializing 'saturday' field")
 	}
 	// Virtual field
+	sunday := m.GetSunday()
+	_ = sunday
 	if _sundayErr := writeBuffer.WriteVirtual(ctx, "sunday", m.GetSunday()); _sundayErr != nil {
 		return errors.Wrap(_sundayErr, "Error serializing 'sunday' field")
 	}

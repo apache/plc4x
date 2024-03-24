@@ -834,7 +834,7 @@ func ReturnCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return 0, errors.Wrap(err, "error reading ReturnCode")
 	}
 	if enum, ok := ReturnCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ReturnCode")
 		return ReturnCode(val), nil
 	} else {
 		return enum, nil
@@ -852,7 +852,7 @@ func (e ReturnCode) Serialize() ([]byte, error) {
 func (e ReturnCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("ReturnCode", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint32("ReturnCode", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -1103,7 +1103,7 @@ func (e ReturnCode) PLC4XEnumName() string {
 	case ReturnCode_ADSERR_CLIENT_SYNCRESINVALID:
 		return "ADSERR_CLIENT_SYNCRESINVALID"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ReturnCode) String() string {

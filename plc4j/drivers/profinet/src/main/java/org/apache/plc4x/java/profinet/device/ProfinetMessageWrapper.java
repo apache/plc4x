@@ -32,7 +32,7 @@ public class ProfinetMessageWrapper implements MessageWrapper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfinetMessageWrapper.class);
 
-    public void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context) throws RuntimeException {
+    public void sendUdpMessage(ProfinetCallable<DceRpc_Packet> callable, ProfinetDeviceContext context, int sourcePort, int destPort) throws RuntimeException {
         try {
             DceRpc_Packet packet = callable.create();
             Random rand = new Random();
@@ -44,8 +44,8 @@ public class ProfinetMessageWrapper implements MessageWrapper {
                 (short) 64,
                 new IpAddress(context.getNetworkInterface().getIpAddressAsByteArray()),
                 new IpAddress(InetAddress.getByName(context.getIpAddress()).getAddress()),
-                context.getSourcePort(),
-                context.getDestinationPort(),
+                sourcePort,
+                destPort,
                 packet
             );
             MacAddress srcAddress = context.getLocalMacAddress();

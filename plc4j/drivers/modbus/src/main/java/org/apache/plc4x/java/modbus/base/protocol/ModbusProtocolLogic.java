@@ -19,6 +19,9 @@
 package org.apache.plc4x.java.modbus.base.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.messages.PlcPingRequest;
+import org.apache.plc4x.java.api.messages.PlcPingResponse;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -37,6 +40,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProtocolBase<T> {
@@ -44,6 +48,8 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected final DriverType driverType;
     protected Duration requestTimeout;
     protected short unitIdentifier;
+    protected PlcTag pingAddress;
+
     protected RequestTransactionManager tm;
     protected final AtomicInteger transactionIdentifierGenerator = new AtomicInteger(1);
     protected final static int FC_EXTENDED_REGISTERS_GROUP_HEADER_LENGTH = 2;
@@ -272,14 +278,44 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
     protected byte[] fromPlcValue(PlcTag tag, PlcValue plcValue) {
         ModbusDataType tagDataType = ((ModbusTag) tag).getDataType();
         try {
-            if (tag instanceof ModbusTagCoil && plcValue instanceof PlcBOOL) {
-                byte byteValue = (byte) (plcValue.getBoolean() ? 1 : 0);
-                return new byte[]{byteValue};
+            if (tag instanceof ModbusTagCoil) {
+                // If it's a single value, just cast that to a number.
+                if(plcValue instanceof PlcBOOL) {
+                    byte byteValue = (byte) (plcValue.getBoolean() ? 1 : 0);
+                    return new byte[]{byteValue};
+                }
+                // If it's a List, convert the booleans in the list into an array of bytes.
+                else if(plcValue instanceof PlcList) {
+                    PlcList valueList = (PlcList) plcValue;
+                    WriteBufferByteBased wb = new WriteBufferByteBased(((plcValue.getLength() - 1) / 8) + 1);
+                    int paddingBits = 8 - (plcValue.getLength() % 8);
+                    if(paddingBits < 8) {
+                        for(int i = 0; i < paddingBits; i++) {
+                            wb.writeBit(false);
+                        }
+                    }
+                    for(int i = 0; i < plcValue.getLength(); i++) {
+                        // We need to serialize the bits in reverse order for them to end in the right coils.
+                        PlcValue value = valueList.getIndex((plcValue.getLength() - 1) - i);
+                        if(!(value instanceof PlcBOOL)) {
+                            throw new PlcRuntimeException("Expecting only BOOL values when writing coils.");
+                        }
+                        PlcBOOL boolValue = (PlcBOOL) value;
+                        wb.writeBit(boolValue.getBoolean());
+                    }
+                    // Reverse the bytes to have the "unfinished bytes" at the end.
+                    byte[] bytes = wb.getBytes();
+                    ArrayUtils.reverse(bytes);
+                    return bytes;
+                }
+                else {
+                    throw new PlcRuntimeException("Expecting only BOOL or List values when writing coils.");
+               }
             }
             else if (plcValue instanceof PlcList) {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                byte[] data = writeBuffer.getData();
+                byte[] data = writeBuffer.getBytes();
                 if (((ModbusTag) tag).getDataType() == ModbusDataType.BOOL) {
                     //Reverse Bits in each byte as
                     //they should be ordered like this: 8 7 6 5 4 3 2 1 | 0 0 0 0 0 0 0 9
@@ -293,7 +329,7 @@ public abstract class ModbusProtocolLogic<T extends ModbusADU> extends Plc4xProt
             } else {
                 WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(plcValue, tagDataType, plcValue.getLength()));
                 DataItem.staticSerialize(writeBuffer, plcValue, tagDataType, plcValue.getLength(), ByteOrder.BIG_ENDIAN);
-                return writeBuffer.getData();
+                return writeBuffer.getBytes();
             }
         } catch (SerializationException e) {
             throw new PlcRuntimeException("Unable to parse PlcValue :- " + e);

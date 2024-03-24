@@ -131,7 +131,7 @@ func (t *plcConnectionLease) Close() <-chan plc4go.PlcConnectionCloseResult {
 		}
 
 		// Return the connection to the connection container and don't actually close it.
-		err := t.connectionContainer.returnConnection(newState)
+		err := t.connectionContainer.returnConnection(context.Background(), newState)
 
 		// Detach the connection from this lease, so it can no longer be used by the client.
 		t.connection = nil

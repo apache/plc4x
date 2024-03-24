@@ -24,15 +24,16 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-poll-loop</artifactId>
-  <version>0.11.0-SNAPSHOT</version>
+  <version>0.13.0-SNAPSHOT</version>
   <name>PLC4J: Examples: Poll Loop Example</name>
   <description>Fetches data in a continuous loop</description>
 
   <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.examples.helloplc4x.HelloPlc4x</app.main.class>
   </properties>
 
@@ -40,7 +41,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

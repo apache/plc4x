@@ -190,7 +190,7 @@ func (m *_AdsDeleteDeviceNotificationRequest) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.GetNotificationHandle())
-		_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, (notificationHandle))
+		_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
 		if _notificationHandleErr != nil {
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}

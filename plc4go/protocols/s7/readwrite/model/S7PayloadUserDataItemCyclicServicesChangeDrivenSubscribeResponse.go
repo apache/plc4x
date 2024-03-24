@@ -181,13 +181,13 @@ func S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseParseWithBu
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]AssociatedQueryValueType, itemsCount)
+	items := make([]AssociatedQueryValueType, utils.Max(itemsCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(itemsCount)
+		_numItems := uint16(utils.Max(itemsCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -237,7 +237,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) Seri
 
 		// Simple Field (itemsCount)
 		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, (itemsCount))
+		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
 		if _itemsCountErr != nil {
 			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
 		}

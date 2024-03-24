@@ -282,26 +282,38 @@ func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_armModeErr, "Error serializing 'armMode' field")
 		}
 		// Virtual field
+		isReserved := m.GetIsReserved()
+		_ = isReserved
 		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 		// Virtual field
+		isArmToAwayMode := m.GetIsArmToAwayMode()
+		_ = isArmToAwayMode
 		if _isArmToAwayModeErr := writeBuffer.WriteVirtual(ctx, "isArmToAwayMode", m.GetIsArmToAwayMode()); _isArmToAwayModeErr != nil {
 			return errors.Wrap(_isArmToAwayModeErr, "Error serializing 'isArmToAwayMode' field")
 		}
 		// Virtual field
+		isArmToNightMode := m.GetIsArmToNightMode()
+		_ = isArmToNightMode
 		if _isArmToNightModeErr := writeBuffer.WriteVirtual(ctx, "isArmToNightMode", m.GetIsArmToNightMode()); _isArmToNightModeErr != nil {
 			return errors.Wrap(_isArmToNightModeErr, "Error serializing 'isArmToNightMode' field")
 		}
 		// Virtual field
+		isArmToDayMode := m.GetIsArmToDayMode()
+		_ = isArmToDayMode
 		if _isArmToDayModeErr := writeBuffer.WriteVirtual(ctx, "isArmToDayMode", m.GetIsArmToDayMode()); _isArmToDayModeErr != nil {
 			return errors.Wrap(_isArmToDayModeErr, "Error serializing 'isArmToDayMode' field")
 		}
 		// Virtual field
+		isArmToVacationMode := m.GetIsArmToVacationMode()
+		_ = isArmToVacationMode
 		if _isArmToVacationModeErr := writeBuffer.WriteVirtual(ctx, "isArmToVacationMode", m.GetIsArmToVacationMode()); _isArmToVacationModeErr != nil {
 			return errors.Wrap(_isArmToVacationModeErr, "Error serializing 'isArmToVacationMode' field")
 		}
 		// Virtual field
+		isArmToHighestLevelOfProtection := m.GetIsArmToHighestLevelOfProtection()
+		_ = isArmToHighestLevelOfProtection
 		if _isArmToHighestLevelOfProtectionErr := writeBuffer.WriteVirtual(ctx, "isArmToHighestLevelOfProtection", m.GetIsArmToHighestLevelOfProtection()); _isArmToHighestLevelOfProtectionErr != nil {
 			return errors.Wrap(_isArmToHighestLevelOfProtectionErr, "Error serializing 'isArmToHighestLevelOfProtection' field")
 		}

@@ -312,34 +312,50 @@ func (m *_MediaTransportControlDataFastForward) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
+		isCeaseFastForward := m.GetIsCeaseFastForward()
+		_ = isCeaseFastForward
 		if _isCeaseFastForwardErr := writeBuffer.WriteVirtual(ctx, "isCeaseFastForward", m.GetIsCeaseFastForward()); _isCeaseFastForwardErr != nil {
 			return errors.Wrap(_isCeaseFastForwardErr, "Error serializing 'isCeaseFastForward' field")
 		}
 		// Virtual field
+		is2x := m.GetIs2x()
+		_ = is2x
 		if _is2xErr := writeBuffer.WriteVirtual(ctx, "is2x", m.GetIs2x()); _is2xErr != nil {
 			return errors.Wrap(_is2xErr, "Error serializing 'is2x' field")
 		}
 		// Virtual field
+		is4x := m.GetIs4x()
+		_ = is4x
 		if _is4xErr := writeBuffer.WriteVirtual(ctx, "is4x", m.GetIs4x()); _is4xErr != nil {
 			return errors.Wrap(_is4xErr, "Error serializing 'is4x' field")
 		}
 		// Virtual field
+		is8x := m.GetIs8x()
+		_ = is8x
 		if _is8xErr := writeBuffer.WriteVirtual(ctx, "is8x", m.GetIs8x()); _is8xErr != nil {
 			return errors.Wrap(_is8xErr, "Error serializing 'is8x' field")
 		}
 		// Virtual field
+		is16x := m.GetIs16x()
+		_ = is16x
 		if _is16xErr := writeBuffer.WriteVirtual(ctx, "is16x", m.GetIs16x()); _is16xErr != nil {
 			return errors.Wrap(_is16xErr, "Error serializing 'is16x' field")
 		}
 		// Virtual field
+		is32x := m.GetIs32x()
+		_ = is32x
 		if _is32xErr := writeBuffer.WriteVirtual(ctx, "is32x", m.GetIs32x()); _is32xErr != nil {
 			return errors.Wrap(_is32xErr, "Error serializing 'is32x' field")
 		}
 		// Virtual field
+		is64x := m.GetIs64x()
+		_ = is64x
 		if _is64xErr := writeBuffer.WriteVirtual(ctx, "is64x", m.GetIs64x()); _is64xErr != nil {
 			return errors.Wrap(_is64xErr, "Error serializing 'is64x' field")
 		}
 		// Virtual field
+		isReserved := m.GetIsReserved()
+		_ = isReserved
 		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}

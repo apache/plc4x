@@ -699,7 +699,7 @@ func AdsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return 0, errors.Wrap(err, "error reading AdsDataType")
 	}
 	if enum, ok := AdsDataTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AdsDataType")
 		return AdsDataType(val), nil
 	} else {
 		return enum, nil
@@ -717,7 +717,7 @@ func (e AdsDataType) Serialize() ([]byte, error) {
 func (e AdsDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteInt8("AdsDataType", 8, int8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteInt8("AdsDataType", 8, int8(int8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -804,7 +804,7 @@ func (e AdsDataType) PLC4XEnumName() string {
 	case AdsDataType_DT:
 		return "DT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", int8(e))
 }
 
 func (e AdsDataType) String() string {

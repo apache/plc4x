@@ -17,15 +17,14 @@
   specific language governing permissions and limitations
   under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4go</artifactId>
@@ -35,6 +34,7 @@
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
   <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>.</sonar.sources>
     <sonar.inclusions>**</sonar.inclusions>
@@ -54,11 +54,38 @@
     <!--maven.deploy.skip>true</maven.deploy.skip-->
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
+
+    <go.stringer.version>v0.11.1</go.stringer.version>
+    <go.junit-report.version>v2.0.1</go.junit-report.version>
+    <go.gotestsum.version>v1.10.1</go.gotestsum.version>
+    <go.mockery.version>v2.32.4</go.mockery.version>
   </properties>
 
   <build>
     <sourceDirectory>pkg</sourceDirectory>
     <plugins>
+      <!--
+        Create surefire folder for report, as this is required to exist.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="target${file.separator}surefire-reports" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!--
         Copy the test-resources in here
       -->
@@ -157,6 +184,15 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.plc4x</groupId>
+                  <artifactId>plc4x-protocols-opcua</artifactId>
+                  <classifier>tests</classifier>
+                  <type>test-jar</type>
+                  <outputDirectory>${project.basedir}/assets/testing</outputDirectory>
+                  <includes>**/*.xml</includes>
+                  <excludes>META-INF/**,org/**</excludes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.apache.plc4x</groupId>
                   <artifactId>plc4x-protocols-s7</artifactId>
                   <classifier>tests</classifier>
                   <type>test-jar</type>
@@ -179,172 +215,6 @@
         </executions>
       </plugin>
 
-      <!--
-        Generate the driver code.
-      -->
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-driver-ab-eth</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>ab-eth</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-ads</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>ads</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-ads-discovery</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>ads.discovery</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-bacnetip</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>bacnetip</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-c-bus</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>c-bus</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-df1</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>df1</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-eip</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>eip</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-firmata</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>firmata</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-knxnetip</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>knxnetip</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-modbus</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>modbus</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-s7</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>s7</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-          <execution>
-            <id>generate-driver-simulated</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>simulated</protocolName>
-              <languageName>go</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>${project.basedir}/protocols</outputDir>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>mvn-golang-wrapper</artifactId>
@@ -360,7 +230,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>golang.org/x/tools/cmd/stringer@latest</package>
+                <package>golang.org/x/tools/cmd/stringer@${go.stringer.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -373,7 +243,7 @@
             <configuration>
               <packages>
                 <!-- use fork till https://github.com/jstemmer/go-junit-report/pull/162 is merged-->
-                <package>github.com/sruehl/go-junit-report/v2@latest</package>
+                <package>github.com/sruehl/go-junit-report/v2@${go.junit-report.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -385,7 +255,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>gotest.tools/gotestsum@latest</package>
+                <package>gotest.tools/gotestsum@${go.gotestsum.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -397,7 +267,7 @@
             </goals>
             <configuration>
               <packages>
-                <package>github.com/vektra/mockery/v2@latest</package>
+                <package>github.com/vektra/mockery/v2@${go.mockery.version}</package>
               </packages>
             </configuration>
           </execution>
@@ -434,6 +304,10 @@
           </execution>
 
           <!-- Processes code that uses old APIs and rewrites them use newer ones -->
+          <!--
+            REMARK: The default lifecycle defines this is run in the "validate" phase,
+            we redefine it to run in the process-sources so it also processes generated code.
+          -->
           <execution>
             <id>default-fix</id>
             <phase>process-sources</phase>
@@ -474,68 +348,35 @@
             </configuration>
           </execution>
 
-          <!-- Check all tests with producing report file in Golang format -->
+          <!-- Disabling the default binding, because we're running a custom version after this -->
           <execution>
             <id>default-test</id>
             <phase>test</phase>
-            <!-- TODO: Which goal?!? -->
-            <configuration>
-              <buildFlags>
-                <flag>-v</flag>
-                <!-- TODO: race detection temporary disabled till root cause for the issue is found https://github.com/golang/go/issues/40343 -->
-                <!--flag>-race</flag-->
-                <flag>${go.cover.flag}</flag>
-              </buildFlags>
-              <outLogFile>test-out-verbose.log</outLogFile>
-              <ignoreErrorExitCode>true</ignoreErrorExitCode>
-              <packages>
-                <package>./...</package>
-              </packages>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>readable-test</id>
-            <!-- TODO: Possibly move to test or prepare-package -->
-            <phase>test</phase>
             <goals>
-              <goal>custom</goal>
+              <goal>test</goal>
             </goals>
             <configuration>
-              <exec>gotestsum</exec>
-              <customCommand>-f</customCommand>
-              <buildFlags>
-                <flag>short</flag>
-              </buildFlags>
-              <packages>
-                <package>./...</package>
-              </packages>
+              <skip>true</skip>
             </configuration>
           </execution>
 
-          <!-- Convert generated test report into go-junit-report format and save as file -->
           <execution>
-            <id>makeJUnitReport</id>
+            <id>test</id>
             <phase>test</phase>
             <goals>
               <goal>custom</goal>
             </goals>
             <configuration>
               <skip>${skipTests}</skip>
-              <exec>go-junit-report</exec>
-              <customCommand>-set-exit-code</customCommand>
+              <exec>gotestsum</exec>
+              <customCommand>--junitfile</customCommand>
               <buildFlags>
-                <flag>-in</flag>
-                <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
-                <flag>-out</flag>
+                <flag>target/surefire-reports/go-junit-report.xml</flag>
+                <flag>--</flag>
+                <flag>${go.cover.flag}</flag>
               </buildFlags>
-              <echo>
-                <info>JUnit report saved as
-                  target${file.separator}surefire-reports${file.separator}go-junit-report.xml
-                </info>
-              </echo>
               <packages>
-                <package>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</package>
+                <package>./...</package>
               </packages>
             </configuration>
           </execution>
@@ -554,31 +395,8 @@
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
-          <goVersion>1.20.5</goVersion>
+          <goVersion>1.20.7</goVersion>
         </configuration>
-      </plugin>
-
-      <!--
-        Create surefire folder for report
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>generate-sources</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <mkdir dir="target${file.separator}surefire-reports"/>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- Ensure we don't deploy anything -->
@@ -592,90 +410,100 @@
     </plugins>
   </build>
 
-  <!-- This dependency is just to ensure thrift is built first -->
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-go</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-c-bus</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-eip</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-firmata</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
+      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-opcua</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
     </dependency>
@@ -683,7 +511,7 @@
 
   <profiles>
     <profile>
-      <id>os-windows</id>
+      <id>.os-windows</id>
       <activation>
         <os>
           <family>windows</family>
@@ -697,6 +525,286 @@
         <go.cover.flag>-v</go.cover.flag>
       </properties>
     </profile>
-  </profiles>
 
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <!--
+            Generate the driver code.
+          -->
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver-ab-eth</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>ab-eth</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-ads</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>ads</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-ads-discovery</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>ads.discovery</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-bacnetip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>bacnetip</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-c-bus</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>c-bus</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-df1</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>df1</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-eip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>eip</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-firmata</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>firmata</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-knxnetip</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>knxnetip</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-modbus</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>modbus</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-opcua</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>opcua</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-s7</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>s7</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+              <execution>
+                <id>generate-driver-simulated</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>simulated</protocolName>
+                  <languageName>go</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>${project.basedir}/protocols</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-go</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-ab-eth</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-ads</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-bacnetip</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-c-bus</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-df1</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-eip</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-firmata</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-knxnetip</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-modbus</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-opcua</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-s7</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-simulated</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 </project>

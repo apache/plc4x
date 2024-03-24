@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -32,7 +33,7 @@ func TestNewSubscriptionHandle(t *testing.T) {
 		subscriber       *Subscriber
 		tagName          string
 		tag              any
-		subscriptionType spiModel.SubscriptionType
+		subscriptionType apiModel.PlcSubscriptionType
 		interval         time.Duration
 	}
 	tests := []struct {

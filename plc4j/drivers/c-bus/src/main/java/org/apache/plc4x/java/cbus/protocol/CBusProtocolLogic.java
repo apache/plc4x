@@ -49,6 +49,11 @@ public class CBusProtocolLogic extends Plc4xProtocolBase<CBusCommand> {
     }
 
     @Override
+    public void close(ConversationContext<CBusCommand> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<CBusCommand> context) {
 
     }
@@ -65,10 +70,6 @@ public class CBusProtocolLogic extends Plc4xProtocolBase<CBusCommand> {
      */
     @Override
     protected void decode(ConversationContext<CBusCommand> context, CBusCommand msg) throws Exception {
-    }
-
-    @Override
-    public void close(ConversationContext<CBusCommand> context) {
     }
 
 }

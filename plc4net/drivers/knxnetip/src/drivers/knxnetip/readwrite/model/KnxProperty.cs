@@ -261,14 +261,14 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                     }
                 }
 
-                // Simple Field (dayofmonth)
-                var dayofmonth = readBuffer.ReadByte("", 5);
+                // Simple Field (dayOfMonth)
+                var dayOfMonth = readBuffer.ReadByte("", 5);
 
-                // Simple Field (dayofweek)
-                var dayofweek = readBuffer.ReadByte("", 3);
+                // Simple Field (dayOfWeek)
+                var dayOfWeek = readBuffer.ReadByte("", 3);
 
-                // Simple Field (hourofday)
-                var hourofday = readBuffer.ReadByte("", 5);
+                // Simple Field (hour)
+                var hour = readBuffer.ReadByte("", 5);
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -672,32 +672,18 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = readBuffer.ReadBit("");
 
                 return new PlcBOOL(value);
-            } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // List
-                // Array field (value)
-                // Count array
-                List<IPlcValue> value;
-                {
-                    var itemCount = 8;
-                    value = new List<IPlcValue>();
-                    for (var curItem = 0; curItem < itemCount; curItem++) {
-                        value.Add(new PlcBOOL(readBuffer.ReadBit("")));
-                    }
-                }
+            } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // BYTE
 
-                return new PlcList(value);
-            } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // List
-                // Array field (value)
-                // Count array
-                List<IPlcValue> value;
-                {
-                    var itemCount = 16;
-                    value = new List<IPlcValue>();
-                    for (var curItem = 0; curItem < itemCount; curItem++) {
-                        value.Add(new PlcBOOL(readBuffer.ReadBit("")));
-                    }
-                }
+                // Simple Field (value)
+                var value = readBuffer.ReadByte("", 8);
 
-                return new PlcList(value);
+                return new PlcBYTE(value);
+            } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // WORD
+
+                // Simple Field (value)
+                var value = readBuffer.ReadUshort("", 16);
+
+                return new PlcWORD(value);
             } else if( propertyType == KnxPropertyDataType.PDT_ENUM8 ) { // USINT
 
                 // Simple Field (value)
@@ -905,15 +891,15 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 writeBuffer.WriteByte("", 4, (byte) (month));
                 // Reserved Field
                 writeBuffer.WriteByte("", 3, (byte) 0x00);
-                // Simple Field (dayofmonth)
-                var dayofmonth = (byte) _value.GetStruct()["dayofmonth"].GetByte();
-                writeBuffer.WriteByte("", 5, (byte) (dayofmonth));
-                // Simple Field (dayofweek)
-                var dayofweek = (byte) _value.GetStruct()["dayofweek"].GetByte();
-                writeBuffer.WriteByte("", 3, (byte) (dayofweek));
-                // Simple Field (hourofday)
-                var hourofday = (byte) _value.GetStruct()["hourofday"].GetByte();
-                writeBuffer.WriteByte("", 5, (byte) (hourofday));
+                // Simple Field (dayOfMonth)
+                var dayOfMonth = (byte) _value.GetStruct()["dayOfMonth"].GetByte();
+                writeBuffer.WriteByte("", 5, (byte) (dayOfMonth));
+                // Simple Field (dayOfWeek)
+                var dayOfWeek = (byte) _value.GetStruct()["dayOfWeek"].GetByte();
+                writeBuffer.WriteByte("", 3, (byte) (dayOfWeek));
+                // Simple Field (hour)
+                var hour = (byte) _value.GetStruct()["hour"].GetByte();
+                writeBuffer.WriteByte("", 5, (byte) (hour));
                 // Reserved Field
                 writeBuffer.WriteByte("", 2, (byte) 0x00);
                 // Simple Field (minutes)
@@ -1237,27 +1223,19 @@ if( propertyType == KnxPropertyDataType.PDT_CONTROL ) { // BOOL
                 var value = (bool) _value.GetBool();
                 writeBuffer.WriteBit("", (value));
             return writeBuffer;
-        } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // List
+        } else if( propertyType == KnxPropertyDataType.PDT_BITSET8 ) { // BYTE
                 var writeBuffer = new WriteBuffer();
 
-                PlcList values = (PlcList) _value;
-
-                foreach (IPlcValue val in values.GetList()) {
-                    bool value = val.GetBool();
-                    writeBuffer.WriteBit("", (value));
-                }
-
+                // Simple Field (value)
+                var value = (byte) _value.GetByte();
+                writeBuffer.WriteByte("", 8, (byte) (value));
             return writeBuffer;
-        } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // List
+        } else if( propertyType == KnxPropertyDataType.PDT_BITSET16 ) { // WORD
                 var writeBuffer = new WriteBuffer();
 
-                PlcList values = (PlcList) _value;
-
-                foreach (IPlcValue val in values.GetList()) {
-                    bool value = val.GetBool();
-                    writeBuffer.WriteBit("", (value));
-                }
-
+                // Simple Field (value)
+                var value = (ushort) _value.GetUshort();
+                writeBuffer.WriteUshort("", 16, (ushort) (value));
             return writeBuffer;
         } else if( propertyType == KnxPropertyDataType.PDT_ENUM8 ) { // USINT
                 var writeBuffer = new WriteBuffer();

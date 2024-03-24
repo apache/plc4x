@@ -50,6 +50,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
 	case dataType == ModbusDataType_BOOL: // List
@@ -62,6 +63,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_BYTE && numberOfValues == uint16(1): // BYTE
@@ -75,6 +77,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBYTE(value), nil
 	case dataType == ModbusDataType_BYTE: // List
@@ -87,6 +90,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_WORD: // WORD
@@ -95,6 +99,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWORD(value), nil
 	case dataType == ModbusDataType_DWORD: // DWORD
@@ -103,6 +108,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDWORD(value), nil
 	case dataType == ModbusDataType_LWORD: // LWORD
@@ -111,6 +117,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLWORD(value), nil
 	case dataType == ModbusDataType_SINT && numberOfValues == uint16(1): // SINT
@@ -124,6 +131,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSINT(value), nil
 	case dataType == ModbusDataType_SINT: // List
@@ -136,6 +144,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcSINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_INT && numberOfValues == uint16(1): // INT
@@ -144,6 +153,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcINT(value), nil
 	case dataType == ModbusDataType_INT: // List
@@ -156,6 +166,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_DINT && numberOfValues == uint16(1): // DINT
@@ -164,6 +175,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDINT(value), nil
 	case dataType == ModbusDataType_DINT: // List
@@ -176,6 +188,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcDINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_LINT && numberOfValues == uint16(1): // LINT
@@ -184,6 +197,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLINT(value), nil
 	case dataType == ModbusDataType_LINT: // List
@@ -196,6 +210,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcLINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_USINT && numberOfValues == uint16(1): // USINT
@@ -209,6 +224,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUSINT(value), nil
 	case dataType == ModbusDataType_USINT: // List
@@ -221,6 +237,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUSINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_UINT && numberOfValues == uint16(1): // UINT
@@ -229,6 +246,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUINT(value), nil
 	case dataType == ModbusDataType_UINT: // List
@@ -241,6 +259,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_UDINT && numberOfValues == uint16(1): // UDINT
@@ -249,6 +268,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUDINT(value), nil
 	case dataType == ModbusDataType_UDINT: // List
@@ -261,6 +281,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUDINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_ULINT && numberOfValues == uint16(1): // ULINT
@@ -269,6 +290,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcULINT(value), nil
 	case dataType == ModbusDataType_ULINT: // List
@@ -281,6 +303,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcULINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_REAL && numberOfValues == uint16(1): // REAL
@@ -289,6 +312,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcREAL(value), nil
 	case dataType == ModbusDataType_REAL: // List
@@ -301,6 +325,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcREAL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_LREAL && numberOfValues == uint16(1): // LREAL
@@ -309,6 +334,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataType == ModbusDataType_LREAL: // List
@@ -321,6 +347,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcLREAL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_CHAR && numberOfValues == uint16(1): // CHAR
@@ -329,6 +356,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataType == ModbusDataType_CHAR: // List
@@ -341,6 +369,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcSTRING(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == ModbusDataType_WCHAR && numberOfValues == uint16(1): // WCHAR
@@ -349,6 +378,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWCHAR(value), nil
 	case dataType == ModbusDataType_WCHAR: // List
@@ -361,6 +391,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcSTRING(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	}
@@ -391,7 +422,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	switch {
 	case dataType == ModbusDataType_BOOL && numberOfValues == uint16(1): // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint16("reserved", 15, uint16(0x0000)); _err != nil {
+		if _err := writeBuffer.WriteUint16("reserved", 15, uint16(uint16(0x0000))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -409,12 +440,12 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataType == ModbusDataType_BYTE && numberOfValues == uint16(1): // BYTE
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_BYTE: // List
@@ -427,129 +458,129 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataType == ModbusDataType_WORD: // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_DWORD: // DWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_LWORD: // LWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_SINT && numberOfValues == uint16(1): // SINT
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
+		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_SINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt8("", 8, value.GetIndex(i).GetInt8())
+			_itemErr := writeBuffer.WriteInt8("", 8, int8(value.GetIndex(i).GetInt8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_INT && numberOfValues == uint16(1): // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
+		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_INT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt16("", 16, value.GetIndex(i).GetInt16())
+			_itemErr := writeBuffer.WriteInt16("", 16, int16(value.GetIndex(i).GetInt16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_DINT && numberOfValues == uint16(1): // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
+		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_DINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt32("", 32, value.GetIndex(i).GetInt32())
+			_itemErr := writeBuffer.WriteInt32("", 32, int32(value.GetIndex(i).GetInt32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_LINT && numberOfValues == uint16(1): // LINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
+		if _err := writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_LINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt64("", 64, value.GetIndex(i).GetInt64())
+			_itemErr := writeBuffer.WriteInt64("", 64, int64(value.GetIndex(i).GetInt64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_USINT && numberOfValues == uint16(1): // USINT
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_USINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_UINT && numberOfValues == uint16(1): // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_UINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
+			_itemErr := writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_UDINT && numberOfValues == uint16(1): // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_UDINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint32("", 32, value.GetIndex(i).GetUint32())
+			_itemErr := writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == ModbusDataType_ULINT && numberOfValues == uint16(1): // ULINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == ModbusDataType_ULINT: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint64("", 64, value.GetIndex(i).GetUint64())
+			_itemErr := writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}

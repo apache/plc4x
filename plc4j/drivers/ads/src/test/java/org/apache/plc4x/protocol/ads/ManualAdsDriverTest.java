@@ -76,12 +76,12 @@ public class ManualAdsDriverTest extends ManualTest {
 
     public static void main(String[] args) throws Exception {
         String spsIp = "192.168.23.20";
-        String clientIp = "192.168.23.200";
+        String clientIp = "192.168.23.220";
         String sourceAmsNetId = clientIp + ".1.1";
         int sourceAmsPort = 65534;
         String targetAmsNetId = spsIp + ".1.1";
         int targetAmsPort = 851;
-        String connectionString = String.format("ads:tcp://%s?sourceAmsNetId=%s&sourceAmsPort=%d&targetAmsNetId=%s&targetAmsPort=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
+        String connectionString = String.format("ads:tcp://%s?source-ams-net-id=%s&source-ams-port=%d&target-ams-net-id=%s&target-ams-port=%d", spsIp, sourceAmsNetId, sourceAmsPort, targetAmsNetId, targetAmsPort);
         ManualAdsDriverTest test = new ManualAdsDriverTest(connectionString);
         test.addTestCase("MAIN.hurz_BOOL", new PlcBOOL(true));
         test.addTestCase("MAIN.hurz_BYTE", new PlcBYTE(42));
@@ -100,6 +100,8 @@ public class ManualAdsDriverTest extends ManualTest {
         test.addTestCase("MAIN.hurz_LREAL", new PlcLREAL(2.71828182846D));
         test.addTestCase("MAIN.hurz_STRING", new PlcSTRING("hurz"));
         test.addTestCase("MAIN.hurz_WSTRING", new PlcWSTRING("wolf"));
+        test.addTestCase("MAIN.hurz_Special_STRING", new PlcSTRING("€"));
+        test.addTestCase("MAIN.hurz_Special_WSTRING", new PlcWSTRING("€"));
         test.addTestCase("MAIN.hurz_TIME", new PlcTIME(Duration.parse("PT1.234S")));
         test.addTestCase("MAIN.hurz_LTIME", new PlcLTIME(Duration.parse("PT24015H23M12.034002044S")));
         test.addTestCase("MAIN.hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));

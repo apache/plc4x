@@ -17,4 +17,8 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Apache StreamPipes (incubating)
+== Apache StreamPipes
+
+https://streampipes.apache.org/docs/pe/org.apache.streampipes.connect.iiot.adapters.plc4x.s7[PLC4X S7 Adapter,opts=nofollow]
+
+https://streampipes.apache.org/docs/pe/org.apache.streampipes.connect.iiot.adapters.plc4x.modbus[PLC4X MODBUS Adapter,opts=nofollow]

@@ -133,7 +133,7 @@ type requestTransactionManager struct {
 ///////////////////////////////////////
 
 func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcurrentRequests int) {
-	r.log.Info().Msgf("Setting new number of concurrent requests %d", numberOfConcurrentRequests)
+	r.log.Info().Int("numberOfConcurrentRequests", numberOfConcurrentRequests).Msg("Setting new number of concurrent requests")
 	// If we reduced the number of concurrent requests and more requests are in-flight
 	// than should be, at least log a warning.
 	r.runningRequestMutex.Lock()
@@ -164,11 +164,17 @@ func (r *requestTransactionManager) processWorklog() {
 	defer r.workLogMutex.RUnlock()
 	r.runningRequestMutex.Lock()
 	defer r.runningRequestMutex.Unlock()
-	r.log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
+	r.log.Debug().
+		Int("workLogLen", r.workLog.Len()).
+		Int("numberOfConcurrentRequests", r.numberOfConcurrentRequests).
+		Msg("Processing work log with size of workLogLen (numberOfConcurrentRequests concurrent requests allowed)")
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
 		next := front.Value.(*requestTransaction)
-		r.log.Debug().Msgf("Handling next\n%v\n. (Adding to running requests (length: %d))", next, len(r.runningRequests))
+		r.log.Debug().
+			Stringer("next", next).
+			Int("nRunningRequests", len(r.runningRequests)).
+			Msg("Handling next. (Adding to running requests (length: nRunningRequests))")
 		r.runningRequests = append(r.runningRequests, next)
 		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
 		next.setCompletionFuture(completionFuture)
@@ -236,7 +242,7 @@ func (r *requestTransactionManager) Close() error {
 }
 
 func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
-	r.log.Debug().Msgf("closing with a timeout of %s", timeout)
+	r.log.Debug().Dur("timeout", timeout).Msg("closing with a timeout")
 	r.shutdown.Store(true)
 	if timeout > 0 {
 		timer := time.NewTimer(timeout)
@@ -251,7 +257,7 @@ func (r *requestTransactionManager) CloseGraceful(timeout time.Duration) error {
 			}
 			select {
 			case <-timer.C:
-				r.log.Warn().Msgf("timeout after %d", timeout)
+				r.log.Warn().Dur("timeout", timeout).Msg("timeout after")
 				break gracefulLoop
 			default:
 				time.Sleep(10 * time.Millisecond)

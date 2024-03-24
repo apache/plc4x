@@ -126,7 +126,7 @@ func CEMIPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return 0, errors.Wrap(err, "error reading CEMIPriority")
 	}
 	if enum, ok := CEMIPriorityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for CEMIPriority")
 		return CEMIPriority(val), nil
 	} else {
 		return enum, nil
@@ -144,7 +144,7 @@ func (e CEMIPriority) Serialize() ([]byte, error) {
 func (e CEMIPriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("CEMIPriority", 2, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -159,7 +159,7 @@ func (e CEMIPriority) PLC4XEnumName() string {
 	case CEMIPriority_LOW:
 		return "LOW"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e CEMIPriority) String() string {

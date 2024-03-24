@@ -34,10 +34,12 @@ import (
 	"github.com/rs/zerolog"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=MessageCodec
 type MessageCodec struct {
 	_default.DefaultCodec
+	none bool // TODO: just a empty field to satisfy generator (needs fixing because in this case here we have the delegate)
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewMessageCodec(transportInstance transports.TransportInstance, _options ...options.WithOption) *MessageCodec {
@@ -100,7 +102,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := transportInstance.GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 6) {
-		m.log.Debug().Msgf("we got %d readable bytes", num)
+		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
 		data, err := transportInstance.PeekReadableBytes(6)
 		if err != nil {
 			m.log.Warn().Err(err).Msg("error peeking")

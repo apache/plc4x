@@ -19,54 +19,51 @@
 package org.apache.plc4x.java.ads.configuration;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.plc4x.java.ads.readwrite.AdsConstants;
 import org.apache.plc4x.java.ads.readwrite.AmsNetId;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class AdsConfiguration implements Configuration, TcpTransportConfiguration, SerialTransportConfiguration {
+public class AdsConfiguration implements PlcConnectionConfiguration {
 
     public static final Pattern AMS_NET_ID_PATTERN =
         Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
 
     @Required
-    @ConfigurationParameter
+    @ConfigurationParameter("target-ams-net-id")
     @ParameterConverter(AmsNetIdConverter.class)
+    @Description("AMS-Net-Id of the target. An AMS-Net-Id has the regular format of an IPv4 IP-Address, however with 6 segments instead of 4.")
     protected AmsNetId targetAmsNetId;
 
     @Required
-    @ConfigurationParameter
+    @ConfigurationParameter("target-ams-port")
+    @Description("AMS port of the target.")
     protected int targetAmsPort;
 
     @Required
-    @ConfigurationParameter
+    @ConfigurationParameter("source-ams-net-id")
     @ParameterConverter(AmsNetIdConverter.class)
+    @Description("AMS-Net-Id of the source. An AMS-Net-Id has the regular format of an IPv4 IP-Address, however with 6 segments instead of 4.")
     protected AmsNetId sourceAmsNetId;
 
     @Required
-    @ConfigurationParameter
+    @ConfigurationParameter("source-ams-port")
+    @Description("AMS port of the source.")
     protected int sourceAmsPort;
-
-    @ConfigurationParameter("timeout-symbolic-address-resolution")
-    @IntDefaultValue(2000)
-    protected int timeoutSymbolicAddressResolution;
 
     @ConfigurationParameter("timeout-request")
     @IntDefaultValue(4000)
+    @Description("Default timeout for all types of requests.")
     protected int timeoutRequest;
 
     @ConfigurationParameter("load-symbol-and-data-type-tables")
     @BooleanDefaultValue(true)
+    @Description("Configures, if when connecting the data-type- and symbol-table should be read. This is an optimization that can help in cases, where the PLC program is pretty large and downloading the full tables is causing problems. When disabled, symbolic addresses will manually be resolved as soon as an address is used.")
     protected boolean loadSymbolAndDataTypeTables;
 
     public AmsNetId getTargetAmsNetId() {
@@ -101,14 +98,6 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
         this.sourceAmsPort = sourceAmsPort;
     }
 
-    public int getTimeoutSymbolicAddressResolution() {
-        return timeoutSymbolicAddressResolution;
-    }
-
-    public void setTimeoutSymbolicAddressResolution(int timeoutSymbolicAddressResolution) {
-        this.timeoutSymbolicAddressResolution = timeoutSymbolicAddressResolution;
-    }
-
     public int getTimeoutRequest() {
         return timeoutRequest;
     }
@@ -123,16 +112,6 @@ public class AdsConfiguration implements Configuration, TcpTransportConfiguratio
 
     public void setLoadSymbolAndDataTypeTables(boolean loadSymbolAndDataTypeTables) {
         this.loadSymbolAndDataTypeTables = loadSymbolAndDataTypeTables;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return AdsConstants.ADSTCPDEFAULTPORT;
-    }
-
-    @Override
-    public int getBaudRate() {
-        return 57600;
     }
 
     public static class AmsNetIdConverter implements ConfigurationParameterConverter<AmsNetId> {

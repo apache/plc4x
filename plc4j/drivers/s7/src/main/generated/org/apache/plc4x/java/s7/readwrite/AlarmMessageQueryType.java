@@ -116,8 +116,8 @@ public class AlarmMessageQueryType implements Message {
             DataTransportSize::name,
             writeUnsignedShort(writeBuffer, 8)));
 
-    // Const Field (DataLength)
-    writeConstField("DataLength", DATALENGTH, writeUnsignedInt(writeBuffer, 16));
+    // Const Field (dataLength)
+    writeConstField("dataLength", DATALENGTH, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (messageObjects)
     writeComplexTypeArrayField("messageObjects", messageObjects, writeBuffer);
@@ -148,7 +148,7 @@ public class AlarmMessageQueryType implements Message {
     // Simple field (transportSize)
     lengthInBits += 8;
 
-    // Const Field (DataLength)
+    // Const Field (dataLength)
     lengthInBits += 16;
 
     // Array field
@@ -192,9 +192,9 @@ public class AlarmMessageQueryType implements Message {
             new DataReaderEnumDefault<>(
                 DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
 
-    int DataLength =
+    int dataLength =
         readConstField(
-            "DataLength", readUnsignedInt(readBuffer, 16), AlarmMessageQueryType.DATALENGTH);
+            "dataLength", readUnsignedInt(readBuffer, 16), AlarmMessageQueryType.DATALENGTH);
 
     List<AlarmMessageObjectQueryType> messageObjects =
         readCountArrayField(

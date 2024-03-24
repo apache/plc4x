@@ -276,7 +276,7 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -284,14 +284,14 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (status)
 		status := uint8(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint8("status", 8, (status))
+		_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (additionalStatusWords)
 		additionalStatusWords := uint8(m.GetAdditionalStatusWords())
-		_additionalStatusWordsErr := writeBuffer.WriteUint8("additionalStatusWords", 8, (additionalStatusWords))
+		_additionalStatusWordsErr := writeBuffer.WriteUint8("additionalStatusWords", 8, uint8((additionalStatusWords)))
 		if _additionalStatusWordsErr != nil {
 			return errors.Wrap(_additionalStatusWordsErr, "Error serializing 'additionalStatusWords' field")
 		}

@@ -158,13 +158,13 @@ func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(pullErr, "Error pulling for ip")
 	}
 	// Count array
-	ip := make([]uint8, uint16(4))
+	ip := make([]uint8, utils.Max(uint16(4), 0))
 	// This happens when the size is set conditional to 0
 	if len(ip) == 0 {
 		ip = nil
 	}
 	{
-		_numItems := uint16(uint16(4))
+		_numItems := uint16(utils.Max(uint16(4), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -225,7 +225,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 		}
 		for _curItem, _element := range m.GetIp() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, _element)
+			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 			}
@@ -236,7 +236,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (port)
 		port := uint16(m.GetPort())
-		_portErr := writeBuffer.WriteUint16("port", 16, (port))
+		_portErr := writeBuffer.WriteUint16("port", 16, uint16((port)))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}

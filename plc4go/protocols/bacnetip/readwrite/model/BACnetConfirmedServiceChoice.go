@@ -294,7 +294,7 @@ func BACnetConfirmedServiceChoiceParseWithBuffer(ctx context.Context, readBuffer
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceChoice")
 	}
 	if enum, ok := BACnetConfirmedServiceChoiceByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetConfirmedServiceChoice")
 		return BACnetConfirmedServiceChoice(val), nil
 	} else {
 		return enum, nil
@@ -312,7 +312,7 @@ func (e BACnetConfirmedServiceChoice) Serialize() ([]byte, error) {
 func (e BACnetConfirmedServiceChoice) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceChoice", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceChoice", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -383,7 +383,7 @@ func (e BACnetConfirmedServiceChoice) PLC4XEnumName() string {
 	case BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE:
 		return "CONFIRMED_COV_NOTIFICATION_MULTIPLE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceChoice) String() string {

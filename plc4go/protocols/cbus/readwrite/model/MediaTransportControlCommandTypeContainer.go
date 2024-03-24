@@ -1735,7 +1735,7 @@ func MediaTransportControlCommandTypeContainerParseWithBuffer(ctx context.Contex
 		return 0, errors.Wrap(err, "error reading MediaTransportControlCommandTypeContainer")
 	}
 	if enum, ok := MediaTransportControlCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for MediaTransportControlCommandTypeContainer")
 		return MediaTransportControlCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -1753,7 +1753,7 @@ func (e MediaTransportControlCommandTypeContainer) Serialize() ([]byte, error) {
 func (e MediaTransportControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("MediaTransportControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("MediaTransportControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -1988,7 +1988,7 @@ func (e MediaTransportControlCommandTypeContainer) PLC4XEnumName() string {
 	case MediaTransportControlCommandTypeContainer_MediaTransportControlCommandCategoryName_31Bytes:
 		return "MediaTransportControlCommandCategoryName_31Bytes"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e MediaTransportControlCommandTypeContainer) String() string {

@@ -20,7 +20,6 @@
 package tests
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/ads"
@@ -30,12 +29,12 @@ import (
 
 func TestDf1Driver(t *testing.T) {
 	t.Skip("No test yet")
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(
 		t,
-		ads.NewDriver(withCustomLogger),
+		ads.NewDriver(optionsForTesting...),
 		"assets/testing/protocols/df1/DriverTestsuite.xml",
 		df1IO.Df1XmlParserHelper{},
-		withCustomLogger,
+		optionsForTesting...,
 	)
 }

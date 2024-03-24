@@ -18,15 +18,15 @@
  */
 package org.apache.plc4x.java.examples.integration.iotdb;
 
-import org.apache.edgent.function.Supplier;
-import org.apache.edgent.providers.direct.DirectProvider;
-import org.apache.edgent.topology.TStream;
-import org.apache.edgent.topology.Topology;
-import org.apache.plc4x.edgent.PlcConnectionAdapter;
-import org.apache.plc4x.edgent.PlcFunctions;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -59,6 +59,11 @@ public class PlcLogger {
     static boolean useJDBC;
 
     public static void main(String[] args) throws Exception {
+        CompletableFuture<Void> shutdown = new CompletableFuture<>();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            shutdown.complete(null);
+        }));
+
         CliOptions options = CliOptions.fromArgs(args);
         if (options == null) {
             CliOptions.printHelp();
@@ -92,25 +97,27 @@ public class PlcLogger {
         //ioTDBWriter.createTimeseries(timeSeries, dataType);
 
         // Get a plc connection.
-        try (PlcConnectionAdapter plcAdapter = new PlcConnectionAdapter(options.getConnectionString())) {
-            // Initialize the Edgent core.
-            DirectProvider dp = new DirectProvider();
-            Topology top = dp.newTopology();
 
-            // Define the event stream.
-            // 1) PLC4X source generating a stream of bytes.
-            Supplier<Integer> plcSupplier = PlcFunctions.integerSupplier(plcAdapter,
-                options.getTagAddress());
-            // 2) Use polling to get an item from the byte-stream in regular intervals.
-            TStream<Integer> source = top.poll(plcSupplier, options.getPollingInterval(),
-                TimeUnit.MILLISECONDS);
-            // 3) Output the events in the stream to IoTDB.
-            source.peek(value -> ioTDBWriter.writeData(deviceId, sensor, System.currentTimeMillis(), value));
-            // Submit the topology and hereby start the event streams.
-            dp.submit(top);
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
+            if(!plcConnection.getMetadata().isReadSupported()) {
+                throw new UnsupportedOperationException("Driver doesn't support reading");
+            }
+            PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress("tag", options.getTagAddress()).build();
+            while (!shutdown.isDone()) {
+                PlcReadResponse plcReadResponse = readRequest.execute().get(1000, TimeUnit.MILLISECONDS);
+
+                PlcValue tagValue = plcReadResponse.getPlcValue("tag");
+
+                // This is not quite correct, as it assumes the tag is an integer.
+                ioTDBWriter.writeData(deviceId, sensor, System.currentTimeMillis(), tagValue.getInt());
+
+                // This also not 100% correct, as it doesn't take into account the execution time ...
+                // but this is just for demo purposes anyway.
+                Thread.sleep(options.getPollingInterval());
+            }
+        } finally {
+            ioTDBWriter.close();
         }
-        //close IoTDB client.
-        Runtime.getRuntime().addShutdownHook(new Thread(ioTDBWriter::close));
     }
 
 

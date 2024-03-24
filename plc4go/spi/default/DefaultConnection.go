@@ -138,7 +138,7 @@ func buildDefaultConnection(requirements DefaultConnectionRequirements, _options
 }
 
 func (d *defaultConnection) SetConnected(connected bool) {
-	d.log.Trace().Msgf("set connected %t", connected)
+	d.log.Trace().Bool("connected", connected).Msg("set connected")
 	d.connected.Store(connected)
 }
 
@@ -183,7 +183,7 @@ func (d *defaultConnection) BlockingClose() {
 func (d *defaultConnection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	d.log.Trace().Msg("close connection")
 	if messageCodec := d.GetMessageCodec(); messageCodec != nil {
-		d.log.Trace().Msgf("disconnecting message codec")
+		d.log.Trace().Msg("disconnecting message codec")
 		if err := messageCodec.Disconnect(); err != nil {
 			d.log.Warn().Err(err).Msg("Error disconnecting message code")
 		} else {
@@ -232,7 +232,7 @@ func (d *defaultConnection) GetTtl() time.Duration {
 }
 
 func (d *defaultConnection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return DefaultConnectionMetadata{
+	return &DefaultConnectionMetadata{
 		ConnectionAttributes: nil,
 		ProvidesReading:      false,
 		ProvidesWriting:      false,

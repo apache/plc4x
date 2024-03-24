@@ -76,15 +76,15 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_parse(plc4x_spi_c
   }
   (*_message)->transport_size = transportSize;
 
-  // Const Field (DataLength)
-  uint16_t DataLength = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &DataLength);
+  // Const Field (dataLength)
+  uint16_t dataLength = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &dataLength);
   if(_res != OK) {
     return _res;
   }
-  if(DataLength != PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH()) {
+  if(dataLength != PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH()) {
     return PARSE_ERROR;
-    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH + " but got " + DataLength);
+    // throw new ParseException("Expected constant value " + PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH + " but got " + dataLength);
   }
 
   // Array field (messageObjects)
@@ -137,7 +137,7 @@ plc4c_return_code plc4c_s7_read_write_alarm_message_query_type_serialize(plc4x_s
     return _res;
   }
 
-  // Const Field (DataLength)
+  // Const Field (dataLength)
   plc4c_spi_write_unsigned_short(writeBuffer, 16, PLC4C_S7_READ_WRITE_ALARM_MESSAGE_QUERY_TYPE_DATA_LENGTH());
 
   // Array field (messageObjects)
@@ -174,7 +174,7 @@ uint16_t plc4c_s7_read_write_alarm_message_query_type_length_in_bits(plc4x_spi_c
   // Simple field (transportSize)
   lengthInBits += plc4c_s7_read_write_data_transport_size_length_in_bits(ctx, &_message->transport_size);
 
-  // Const Field (DataLength)
+  // Const Field (dataLength)
   lengthInBits += 16;
 
   // Array field

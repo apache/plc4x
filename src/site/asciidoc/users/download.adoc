@@ -21,14 +21,63 @@ Be sure to verify your downloads by these https://www.apache.org/info/verificati
 
 === Current Releases
 
-==== 0.10.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.asc[ASC] ]
+==== 0.12.0 Official https://www.apache.org/dyn/closer.lua/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.12.0/apache-plc4x-0.12.0-source-release.zip.asc[ASC] ]
 
-A lot of the work in this version went into refactoring and
-cleaning up our code generation. The code generation itself is
-now a lot cleaner and simpler as well as the code generated
-for Java. We also added a number of new field-types to allow
-implementing more sophisticated protocols. PLC4C now should
-also support all of the constructs mspec has to offer.
+This release was mainly a release containing many bugfixes. We literally halved the number of open issues. A second major topic would have been another API streamlining in preparation to aiming for the big 1.0.0 release. The API was extended by additional features, that now allow tools to automatically provide support for tool assist when connecting to devices. Now additional information such as:
+- Which transports does a given driver support?
+- Which is the default transport for a given driver?
+- Which configuration-options does a driver have?
+- What types are these configuration options?
+- What are the default-values these configuration options have?
+- Which of these configuration options are required?
+- The same set of information is also available for the transports a driver is using.
+
+===== New Features
+
+- API: Made several bits of information available via the API
+allowing tools to provide more content assist when dealing
+with PLC4X connections.
+- S7: The S7 driver now supports reading of STRING and
+WSTRING data-types without providing a maximum length.
+- Build: Worked on making PLC4X provide reproducible builds.
+- Added "Ping" functionality to: ADS, EIP, KNX, Mock, Modbus
+and Simulated drivers.
+- The OPC-UA Java driver now support certificate-based
+authentication and encryption.
+
+===== Incompatible changes
+
+- Java 8 is no longer officially supported and Java 11 is the
+new base-line.
+- Renamed the PlcDriverManager method `listDrivers` to
+`getProtocolCodes`
+- Renamed the PlcDriverMetadata method `canDiscover` to
+`isDiscoverySupported`
+- Renamed the PlcConnectionMetadata methods `canRead`, `canWrite`
+`canSubscribe` and `canBrowse` to `isReadSupported`,
+`isWriteSupported`, `isSubscribeSupported` and `isBrowseSupported`
+- The configuration syntax for configuring transport-related
+config options in the connection-string was updated to be
+now prefixed with the transport name the option belongs to.
+
+===== Bug Fixes
+
+- S7: Several bugs and issues regarding supporting various
+duration, date and time data-types.
+- S7: Implemented the missing 64bit (L-) types.
+- KNX: Fixed an issue with decoding 16 bit floating point
+numbers.
+- NiFi-Integration: The NiFi integration module was greatly
+improved.
+- Core: Fixed several leaks of open threads.
+
+=== Previous Releases
+
+==== 0.11.0 Official https://archive.apache.org/dist/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.11.0/apache-plc4x-0.11.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.11.0/apache-plc4x-0.10.0-source-release.zip.asc[ASC] ]
+
+The APIs have been streamlined in a preparation for a hopefully soon 1.0.0 release.
+Many drivers have been re-implemented with much more features.
+Integration modules have been improved.
 
 ===== New Features
 
@@ -57,11 +106,14 @@ and LWORD which generally match their unsigned integer
 counterparts. So we are no longer returning lists of boolean
 values for any of these types.
 
-=== Previous Releases
+==== 0.10.0 Official https://archive.apache.org/dist/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.10.0/apache-plc4x-0.10.0-source-release.zip.asc[ASC] ]
 
-- Fixed a big bug in the KNX Datapoint decoding, which caused
-byte-aligned data types to parse with an offset of 8 bit.
-(This bug affected both the Java and the Go driver)
+A lot of the work in this version went into refactoring and
+cleaning up our code generation. The code generation itself is
+now a lot cleaner and simpler as well as the code generated
+for Java. We also added a number of new field-types to allow
+implementing more sophisticated protocols. PLC4C now should
+also support all of the constructs mspec has to offer.
 
 ==== 0.9.1 Official https://archive.apache.org/dist/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip[source release] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.sha512[SHA512] ] [ https://downloads.apache.org/plc4x/0.9.1/apache-plc4x-0.9.1-source-release.zip.asc[ASC] ]
 
@@ -72,8 +124,6 @@ Please note that CVE-2021-43083 only affects the PLC4C part of PLC4X.
 ===== Bug Fixes
 
 CVE-2021-43083 Apache PLC4X 0.9.0 Buffer overflow in PLC4C via crafted server response
-
-=== Previous Releases
 
 [#release-0_9_0]
 ==== 0.9.0 Official https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip[source release] [ https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.sha512[SHA512] ] [ https://archive.apache.org/dist/plc4x/0.9.0/apache-plc4x-0.9.0-source-release.zip.asc[ASC] ]

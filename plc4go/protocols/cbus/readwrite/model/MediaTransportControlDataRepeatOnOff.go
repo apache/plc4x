@@ -237,14 +237,20 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_repeatTypeErr, "Error serializing 'repeatType' field")
 		}
 		// Virtual field
+		isOff := m.GetIsOff()
+		_ = isOff
 		if _isOffErr := writeBuffer.WriteVirtual(ctx, "isOff", m.GetIsOff()); _isOffErr != nil {
 			return errors.Wrap(_isOffErr, "Error serializing 'isOff' field")
 		}
 		// Virtual field
+		isRepeatCurrent := m.GetIsRepeatCurrent()
+		_ = isRepeatCurrent
 		if _isRepeatCurrentErr := writeBuffer.WriteVirtual(ctx, "isRepeatCurrent", m.GetIsRepeatCurrent()); _isRepeatCurrentErr != nil {
 			return errors.Wrap(_isRepeatCurrentErr, "Error serializing 'isRepeatCurrent' field")
 		}
 		// Virtual field
+		isRepeatTracks := m.GetIsRepeatTracks()
+		_ = isRepeatTracks
 		if _isRepeatTracksErr := writeBuffer.WriteVirtual(ctx, "isRepeatTracks", m.GetIsRepeatTracks()); _isRepeatTracksErr != nil {
 			return errors.Wrap(_isRepeatTracksErr, "Error serializing 'isRepeatTracks' field")
 		}

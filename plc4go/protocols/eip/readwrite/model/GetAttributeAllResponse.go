@@ -276,7 +276,7 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -284,14 +284,14 @@ func (m *_GetAttributeAllResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (status)
 		status := uint8(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint8("status", 8, (status))
+		_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (extStatus)
 		extStatus := uint8(m.GetExtStatus())
-		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, (extStatus))
+		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
 		if _extStatusErr != nil {
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}

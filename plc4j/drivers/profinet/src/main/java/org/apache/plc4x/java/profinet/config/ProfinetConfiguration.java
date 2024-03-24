@@ -19,16 +19,12 @@
 package org.apache.plc4x.java.profinet.config;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.profinet.device.GsdFileMap;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
-import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.*;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.rawsocket.RawSocketTransportConfiguration;
-import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -40,52 +36,53 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetConfiguration implements Configuration, RawSocketTransportConfiguration {
-
-    @Override
-    public boolean getSupportVlans() {
-        return RawSocketTransportConfiguration.super.getSupportVlans();
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return 34964;
-    }
-
-    @Override
-    public Integer getProtocolId() {
-        return RawSocketTransportConfiguration.super.getProtocolId();
-    }
-
-    @Override
-    public PacketHandler getPcapPacketHandler() {
-        return null;
-    }
+public class ProfinetConfiguration implements PlcConnectionConfiguration {
 
     @Required
     @ConfigurationParameter
     @ParameterConverter(ProfinetDeviceConvertor.class)
+    @Description("Allows you to specify the devices you would like to communicate to, their device access\n" +
+        "module (Taken from the GSD file) as well as a list of submodules.\n" +
+        "\n" +
+        "This parameter has the format\n" +
+        "\n" +
+        "----\n" +
+        "[[{device-1},{device-access},({submodule-1},{submodule-2})],[{device-2},{device-access},({submodule-1},{submodule-2})],....]\n" +
+        "----\n" +
+        "\n" +
+        "For each available slot specified in the GSD file a submodule needs to be in the connection string, however it can be left blank e.g.\n" +
+        "\n" +
+        "----\n" +
+        "[[{device},{device-access},({submodule-1},)]]\n" +
+        "----\n" +
+        "\n" +
+        "If there is no submodule configured.")
     protected ProfinetDevices devices;
 
     @Required
     @ConfigurationParameter("gsddirectory")
     @ParameterConverter(ProfinetGsdFileConvertor.class)
+    @Description("The directory that is used to store any GSD files. This is used to look up the GSD for device found.")
     protected static GsdFileMap gsdFiles;
 
     @ConfigurationParameter("sendclockfactor")
     @IntDefaultValue(32)
+    @Description("This is used to scale the frequency in which cyclic packets are sent. Increasing this slows down communication.")
     private int sendClockFactor;
 
     @ConfigurationParameter("reductionratio")
     @IntDefaultValue(4)
+    @Description("Is also used to scale the frequency. The formula to calculate the overall cycle time is Cycle Time = SendClockFactor * Reduction Ratio * 31.23us")
     private int reductionRatio;
 
     @ConfigurationParameter("watchdogfactor")
     @IntDefaultValue(50)
+    @Description("Used to specify the maximum number of cycles that is allowed to be missed by a device. An alarm is generated if this is exceeded")
     private int watchdogFactor;
 
     @ConfigurationParameter("dataholdfactor")
     @IntDefaultValue(50)
+    @Description("Specifies the number of cycles a device will keep its outputs in a non-safe state when it hasn't received a cyclic packet. This must be equal to or be greater than the watchdog factor")
     private int dataHoldFactor;
 
     public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {

@@ -2850,7 +2850,7 @@ func BACnetPropertyIdentifierParseWithBuffer(ctx context.Context, readBuffer uti
 		return 0, errors.Wrap(err, "error reading BACnetPropertyIdentifier")
 	}
 	if enum, ok := BACnetPropertyIdentifierByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetPropertyIdentifier")
 		return BACnetPropertyIdentifier(val), nil
 	} else {
 		return enum, nil
@@ -2868,7 +2868,7 @@ func (e BACnetPropertyIdentifier) Serialize() ([]byte, error) {
 func (e BACnetPropertyIdentifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("BACnetPropertyIdentifier", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint32("BACnetPropertyIdentifier", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -3791,7 +3791,7 @@ func (e BACnetPropertyIdentifier) PLC4XEnumName() string {
 	case BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE:
 		return "VENDOR_PROPRIETARY_VALUE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e BACnetPropertyIdentifier) String() string {

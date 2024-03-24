@@ -27,32 +27,11 @@ This driver is built to be compatible with the `StandardFirmata Arduino Sketch` 
 
 === Connection String Options
 
+include::../../../plc4j/drivers/all/src/site/generated/firmata.adoc[]
+
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`firmata`
-
-|Name
-2+|Firmata Protocol
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-firmata</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `serial`
-
-|Compatible Transports:
-2+| - `serial`
-
 3+|Supported Operations
 
 |
@@ -63,11 +42,9 @@ This driver is built to be compatible with the `StandardFirmata Arduino Sketch` 
 | `subscribe`
 | Reading is supported for both digital and analog addresses. See `note` after this table however.
 
-3+|Options
-
 |===
 
-NOTE: When subscribing to pins, these are configured to become read pins. When writing to digital pins, these are configured to become output pins. However writing to pins for which a subscription exists, an exception will be thrown. In order to write to previously subscribed pins, all subscriptions for this have to be cancelled first.
+NOTE: When subscribing to pins, these are configured to become read pins. When writing to digital pins, these are configured to become output pins. However, writing to pins for which a subscription exists, an exception will be thrown. In order to write to previously subscribed pins, all subscriptions for this have to be cancelled first.
 
 === Individual Resource Address Format
 

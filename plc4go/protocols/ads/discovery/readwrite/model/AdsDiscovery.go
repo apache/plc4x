@@ -249,13 +249,13 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for blocks")
 	}
 	// Count array
-	blocks := make([]AdsDiscoveryBlock, numBlocks)
+	blocks := make([]AdsDiscoveryBlock, utils.Max(numBlocks, 0))
 	// This happens when the size is set conditional to 0
 	if len(blocks) == 0 {
 		blocks = nil
 	}
 	{
-		_numItems := uint16(numBlocks)
+		_numItems := uint16(utils.Max(numBlocks, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -303,14 +303,14 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 
 	// Const Field (header)
-	_headerErr := writeBuffer.WriteUint32("header", 32, 0x71146603)
+	_headerErr := writeBuffer.WriteUint32("header", 32, uint32(0x71146603))
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
 	// Simple Field (requestId)
 	requestId := uint32(m.GetRequestId())
-	_requestIdErr := writeBuffer.WriteUint32("requestId", 32, (requestId))
+	_requestIdErr := writeBuffer.WriteUint32("requestId", 32, uint32((requestId)))
 	if _requestIdErr != nil {
 		return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
 	}
@@ -353,7 +353,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Implicit Field (numBlocks) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBlocks := uint32(uint32(len(m.GetBlocks())))
-	_numBlocksErr := writeBuffer.WriteUint32("numBlocks", 32, (numBlocks))
+	_numBlocksErr := writeBuffer.WriteUint32("numBlocks", 32, uint32((numBlocks)))
 	if _numBlocksErr != nil {
 		return errors.Wrap(_numBlocksErr, "Error serializing 'numBlocks' field")
 	}

@@ -149,13 +149,13 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for ip")
 	}
 	// Count array
-	ip := make([]uint8, uint16(4))
+	ip := make([]uint8, utils.Max(uint16(4), 0))
 	// This happens when the size is set conditional to 0
 	if len(ip) == 0 {
 		ip = nil
 	}
 	{
-		_numItems := uint16(uint16(4))
+		_numItems := uint16(utils.Max(uint16(4), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -228,7 +228,7 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 	}
 	for _curItem, _element := range m.GetIp() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
+		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 		}
@@ -239,21 +239,21 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (port)
 	port := uint16(m.GetPort())
-	_portErr := writeBuffer.WriteUint16("port", 16, (port))
+	_portErr := writeBuffer.WriteUint16("port", 16, uint16((port)))
 	if _portErr != nil {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
 	// Simple Field (ttl)
 	ttl := uint16(m.GetTtl())
-	_ttlErr := writeBuffer.WriteUint16("ttl", 16, (ttl))
+	_ttlErr := writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
 	if _ttlErr != nil {
 		return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
 	}
 
 	// Simple Field (secondRemainingBeforePurge)
 	secondRemainingBeforePurge := uint16(m.GetSecondRemainingBeforePurge())
-	_secondRemainingBeforePurgeErr := writeBuffer.WriteUint16("secondRemainingBeforePurge", 16, (secondRemainingBeforePurge))
+	_secondRemainingBeforePurgeErr := writeBuffer.WriteUint16("secondRemainingBeforePurge", 16, uint16((secondRemainingBeforePurge)))
 	if _secondRemainingBeforePurgeErr != nil {
 		return errors.Wrap(_secondRemainingBeforePurgeErr, "Error serializing 'secondRemainingBeforePurge' field")
 	}

@@ -138,7 +138,7 @@ func DataTransportErrorCodeParseWithBuffer(ctx context.Context, readBuffer utils
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
 	}
 	if enum, ok := DataTransportErrorCodeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DataTransportErrorCode")
 		return DataTransportErrorCode(val), nil
 	} else {
 		return enum, nil
@@ -156,7 +156,7 @@ func (e DataTransportErrorCode) Serialize() ([]byte, error) {
 func (e DataTransportErrorCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -175,7 +175,7 @@ func (e DataTransportErrorCode) PLC4XEnumName() string {
 	case DataTransportErrorCode_OK:
 		return "OK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e DataTransportErrorCode) String() string {

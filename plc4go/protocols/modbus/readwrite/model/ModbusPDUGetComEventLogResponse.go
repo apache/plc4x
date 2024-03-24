@@ -255,28 +255,28 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.GetEvents()))) + uint8(uint8(6)))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
+		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Simple Field (status)
 		status := uint16(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint16("status", 16, (status))
+		_statusErr := writeBuffer.WriteUint16("status", 16, uint16((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.GetEventCount())
-		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, (eventCount))
+		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
 		if _eventCountErr != nil {
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
 		// Simple Field (messageCount)
 		messageCount := uint16(m.GetMessageCount())
-		_messageCountErr := writeBuffer.WriteUint16("messageCount", 16, (messageCount))
+		_messageCountErr := writeBuffer.WriteUint16("messageCount", 16, uint16((messageCount)))
 		if _messageCountErr != nil {
 			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
 		}

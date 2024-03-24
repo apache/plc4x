@@ -58,16 +58,8 @@ elseif (BUILD_PHASE STREQUAL test-compile)
     # Initialize the test subsystem as well as the Unity library sources
     include(CTest)
 
-    # Make the Unity sources available to the build as "Unity" library
-    # TODO: We should make this optional and enabled by some variable passed in from maven. If we comment it out it won't build on systems that don't have unity installed.
+    # Add the Unity sources to the build
     add_subdirectory(target/dependency/Unity-${UNITY_VERSION})
-
-    #add_library(Unity STATIC
-    #  target/dependency/Unity-${UNITY_VERSION}/src/unity.c
-    #)
-    #target_include_directories(Unity PUBLIC
-    #  target/dependency/Unity-${UNITY_VERSION}/src
-    #)
 else ()
     # Output an error
     message(FATAL_ERROR "Given BUILD_PHASE unknown. Known values are 'compile' and 'test-compile'")

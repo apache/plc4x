@@ -21,17 +21,20 @@ package model
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 type PlcWriteRequestBuilder interface {
+	fmt.Stringer
 	AddTagAddress(tagName string, tagAddress string, value any) PlcWriteRequestBuilder
 	AddTag(tagName string, tag PlcTag, value any) PlcWriteRequestBuilder
 	Build() (PlcWriteRequest, error)
 }
 
 type PlcWriteRequestResult interface {
+	fmt.Stringer
 	GetRequest() PlcWriteRequest
 	GetResponse() PlcWriteResponse
 	GetErr() error

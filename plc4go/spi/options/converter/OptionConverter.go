@@ -32,3 +32,12 @@ func WithOptionToInternal(_options ...config.WithOption) []options.WithOption {
 	}
 	return withOptions
 }
+
+// WithOptionToExternal transform SPI options to API options
+func WithOptionToExternal(_options ...options.WithOption) []config.WithOption {
+	withOptions := make([]config.WithOption, len(_options))
+	for i, option := range _options {
+		withOptions[i] = option
+	}
+	return withOptions
+}

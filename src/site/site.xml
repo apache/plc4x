@@ -17,7 +17,9 @@
  limitations under the License.
 
  -->
-<project name="PLC4X">
+<project xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd"
+         name="PLC4X">
 
   <skin>
     <groupId>org.apache.plc4x.plugins</groupId>
@@ -25,7 +27,7 @@
     <version>1.1.0</version>
   </skin>
 
-  <!-- Hide the publish date as this will cause changes on every generated page every day -->
+  <!-- Hide the publish-date as this will cause changes on every generated page every day -->
   <publishDate position="none"/>
   <!-- Hide the version as we are usually deploying the develop version -->
   <version position="none" />
@@ -50,11 +52,14 @@
       <item name="Section Home" href="users/index.html"/>
       <item name="Download" href="users/download.html"/>
       <item name="Adopters" href="users/adopters.html"/>
-      <item name="Bug &amp; Issue Tracker" href="developers/infrastructure/issues.html"/>
+      <item name="Bug &amp; Issue Tracker" href="users/issues.html"/>
       <item name="Commercial support" href="users/commercial-support.html"/>
-      <item name="Getting Started" href="users/gettingstarted.html">
+      <item name="Getting Started" href="users/getting-started/index.html">
+        <item name="C" href="users/getting-started/plc4c.html"/>
+        <item name="C#" href="users/getting-started/plc4cs.html"/>
         <item name="Go" href="users/getting-started/plc4go.html"/>
         <item name="Java" href="users/getting-started/plc4j.html"/>
+        <item name="Python" href="users/getting-started/plc4py.html"/>
         <item name="Using SNAPSHOTS" href="users/getting-started/using-snapshots.html"/>
         <item name="General Concepts" href="users/getting-started/general-concepts.html"/>
         <item name="Virtual Modbus" href="users/getting-started/virtual-modbus.html"/>
@@ -63,16 +68,21 @@
       <item name="Protocols" href="users/protocols/index.html">
         <item name="AB-ETH" href="users/protocols/ab-eth.html"/>
         <item name="ADS/AMS" href="users/protocols/ads.html"/>
-        <item name="BACnet/IP" href="users/protocols/bacnetip.html"/>
+        <item name="BACnet/IP" href="users/protocols/bacnet.html"/>
+        <item name="C-Bus" href="users/protocols/c-bus.html"/>
         <item name="CANopen" href="users/protocols/canopen.html"/>
+        <item name="CtrlX" href="users/protocols/ctrlx.html"/>
         <item name="DeltaV" href="users/protocols/deltav.html"/>
         <item name="DF1" href="users/protocols/df1.html"/>
-        <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
+        <item name="EtherNet/IP" href="users/protocols/eip.html"/>
         <item name="Firmata" href="users/protocols/firmata.html"/>
+        <item name="Generic CAN" href="users/protocols/genericcan.html"/>
+        <item name="IEC-60870" href="users/protocols/iec-60870.html"/>
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
         <item name="Logix" href="users/protocols/logix.html"/>
-        <item name="Modbus" href="users/protocols/modbus.html"/>
-        <item name="OPC UA" href="users/protocols/opc-ua.html"/>
+        <item name="Modbus (TCP/RTU/ASCII)" href="users/protocols/modbus.html"/>
+        <item name="OPC UA" href="users/protocols/opcua.html"/>
+        <item name="Open-Protocol (Torque-Tools)" href="users/protocols/open-protocol.html"/>
         <item name="PLC4X (Proxy)" href="users/protocols/plc4x.html"/>
         <item name="PROFINET" href="users/protocols/profinet.html"/>
         <item name="S7 (Step7)" href="users/protocols/s7.html"/>
@@ -89,7 +99,6 @@
       <item name="Integrations" href="users/integrations/index.html">
         <item name="Apache Calcite" href="users/integrations/apache-calcite.html"/>
         <item name="Apache Camel" href="users/integrations/apache-camel.html"/>
-        <item name="Apache Edgent" href="users/integrations/apache-edgent.html"/>
         <item name="Apache IoTDB" href="users/integrations/apache-iotdb.html"/>
         <item name="Apache Kafka" href="users/integrations/apache-kafka.html"/>
         <item name="Apache NiFi" href="users/integrations/apache-nifi.html"/>
@@ -99,7 +108,7 @@
       </item>
       <item name="Tools" href="users/tools/index.html">
         <item name="Capture Replay" href="users/tools/capture-replay.html"/>
-        <item name="Connection Pool" href="users/tools/connection-pool.html"/>
+        <!--item name="Connection Pool" href="users/tools/connection-pool.html"/-->
         <item name="Connection Cache" href="users/tools/connection-cache.html"/>
         <item name="Object PLC Mapping (OPM)" href="users/tools/opm.html"/>
         <item name="Scraper" href="users/tools/scraper.html"/>
@@ -136,7 +145,6 @@
         <item name="Wiki" href="developers/infrastructure/wiki.html"/>
         <item name="Build VM" href="developers/infrastructure/vm.html"/>
         <item name="Website" href="developers/infrastructure/website.html"/>
-        <item name="IoT VPN" href="developers/infrastructure/vpn.html"/>
       </item>
       <item name="Releasing" href="developers/release/index.html">
         <item name="Releasing" href="developers/release/release.html"/>
@@ -152,7 +160,8 @@
       <item name="Apache Software Foundation" href="https://www.apache.org/"/>
       <item name="How Apache Works" href="https://www.apache.org/foundation/how-it-works.html"/>
       <item name="License" href="https://www.apache.org/licenses/"/>
-      <item name="Sponsoring Apache" href="https://www.apache.org/foundation/sponsorship.html"/>
+      <item name="Privacy Policy" href="https://www.apache.org/foundation/marks/pmcs.html#navigation"/>
+      <item name="Sponsor Apache" href="https://www.apache.org/foundation/sponsorship.html"/>
       <item name="Thanks" href="https://www.apache.org/foundation/thanks.html"/>
     </menu>
   </body>

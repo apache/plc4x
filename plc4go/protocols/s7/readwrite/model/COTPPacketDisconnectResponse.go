@@ -203,14 +203,14 @@ func (m *_COTPPacketDisconnectResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := writeBuffer.WriteUint16("destinationReference", 16, (destinationReference))
+		_destinationReferenceErr := writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
 		if _destinationReferenceErr != nil {
 			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.GetSourceReference())
-		_sourceReferenceErr := writeBuffer.WriteUint16("sourceReference", 16, (sourceReference))
+		_sourceReferenceErr := writeBuffer.WriteUint16("sourceReference", 16, uint16((sourceReference)))
 		if _sourceReferenceErr != nil {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}

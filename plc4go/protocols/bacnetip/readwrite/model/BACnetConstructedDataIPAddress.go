@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataIPAddress) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_ipAddressErr, "Error serializing 'ipAddress' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

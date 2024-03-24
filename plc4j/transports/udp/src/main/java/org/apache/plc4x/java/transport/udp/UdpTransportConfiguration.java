@@ -18,9 +18,9 @@
  */
 package org.apache.plc4x.java.transport.udp;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
-public interface UdpTransportConfiguration extends TransportConfiguration {
+public interface UdpTransportConfiguration extends PlcTransportConfiguration {
 
     int NO_DEFAULT_PORT = -1;
 

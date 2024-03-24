@@ -23,33 +23,19 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-knxnetip</artifactId>
+
   <name>PLC4J: Driver: KNXNet/IP</name>
+
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-driver</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>knxnetip</protocolName>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>src/main/generated</outputDir>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
@@ -96,16 +82,6 @@
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-knxnetip</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -113,28 +89,28 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-udp</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-raw-socket</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-pcap-replay</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -160,7 +136,7 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcprov-jdk18on</artifactId>
     </dependency>
 
     <dependency>
@@ -170,39 +146,71 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-driver</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>knxnetip</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-knxnetip</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

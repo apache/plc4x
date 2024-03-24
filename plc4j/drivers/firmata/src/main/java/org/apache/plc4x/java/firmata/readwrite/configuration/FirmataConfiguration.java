@@ -18,18 +18,8 @@
  */
 package org.apache.plc4x.java.firmata.readwrite.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.transport.serial.SerialTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 
-public class FirmataConfiguration implements Configuration, SerialTransportConfiguration {
-
-    /**
-     * The StandardFirmata sketch uses 57600 baud per default.
-     * @return 57600 as this is what the Arduino uses.
-     */
-    @Override
-    public int getBaudRate() {
-        return 57600;
-    }
+public class FirmataConfiguration implements PlcConnectionConfiguration {
 
 }

@@ -18,28 +18,28 @@
  */
 package org.apache.plc4x.java.spi.parser;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.Required;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConnectionParserTest {
 
     @Test
     void parse() throws PlcConnectionException {
         PropertiesDescriptor properties = new ConfigurationFactory().createConfiguration(
-            PropertiesDescriptor.class, "rackId=2");
+            PropertiesDescriptor.class, "", "", "", "rackId=2");
 
         assertEquals(2, properties.getRackId());
         assertEquals(1, properties.getSlotId());
     }
 
-    public static class PropertiesDescriptor implements Configuration {
+    public static class PropertiesDescriptor implements PlcConnectionConfiguration {
 
         @ConfigurationParameter("rackId")
         @IntDefaultValue(1)

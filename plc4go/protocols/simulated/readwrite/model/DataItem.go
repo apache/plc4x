@@ -45,6 +45,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
 	case dataType == "BOOL": // List
@@ -57,6 +58,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcBOOL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "BYTE" && numberOfValues == uint16(1): // BYTE
@@ -65,6 +67,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBYTE(value), nil
 	case dataType == "BYTE": // List
@@ -77,6 +80,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUSINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "WORD" && numberOfValues == uint16(1): // WORD
@@ -85,6 +89,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWORD(value), nil
 	case dataType == "WORD": // List
@@ -97,6 +102,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "DWORD" && numberOfValues == uint16(1): // DWORD
@@ -105,6 +111,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDWORD(value), nil
 	case dataType == "DWORD": // List
@@ -117,6 +124,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUDINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "LWORD" && numberOfValues == uint16(1): // LWORD
@@ -125,6 +133,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLWORD(value), nil
 	case dataType == "LWORD": // List
@@ -137,6 +146,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcULINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "SINT" && numberOfValues == uint16(1): // SINT
@@ -145,6 +155,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSINT(value), nil
 	case dataType == "SINT": // List
@@ -157,6 +168,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcSINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "INT" && numberOfValues == uint16(1): // INT
@@ -165,6 +177,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcINT(value), nil
 	case dataType == "INT": // List
@@ -177,6 +190,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "DINT" && numberOfValues == uint16(1): // DINT
@@ -185,6 +199,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDINT(value), nil
 	case dataType == "DINT": // List
@@ -197,6 +212,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcDINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "LINT" && numberOfValues == uint16(1): // LINT
@@ -205,6 +221,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLINT(value), nil
 	case dataType == "LINT": // List
@@ -217,6 +234,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcLINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "USINT" && numberOfValues == uint16(1): // USINT
@@ -225,6 +243,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUSINT(value), nil
 	case dataType == "USINT": // List
@@ -237,6 +256,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUSINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "UINT" && numberOfValues == uint16(1): // UINT
@@ -245,6 +265,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUINT(value), nil
 	case dataType == "UINT": // List
@@ -257,6 +278,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "UDINT" && numberOfValues == uint16(1): // UDINT
@@ -265,6 +287,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUDINT(value), nil
 	case dataType == "UDINT": // List
@@ -277,6 +300,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcUDINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "ULINT" && numberOfValues == uint16(1): // ULINT
@@ -285,6 +309,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcULINT(value), nil
 	case dataType == "ULINT": // List
@@ -297,6 +322,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcULINT(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "REAL" && numberOfValues == uint16(1): // REAL
@@ -305,6 +331,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcREAL(value), nil
 	case dataType == "REAL": // List
@@ -317,6 +344,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcREAL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "LREAL" && numberOfValues == uint16(1): // LREAL
@@ -325,6 +353,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case dataType == "LREAL": // List
@@ -337,6 +366,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcLREAL(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
@@ -345,6 +375,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case dataType == "CHAR": // List
@@ -357,6 +388,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcSTRING(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
@@ -365,6 +397,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWCHAR(value), nil
 	case dataType == "WCHAR": // List
@@ -377,6 +410,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 			}
 			value = append(value, values.NewPlcSTRING(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcList(value), nil
 	case dataType == "STRING": // STRING
@@ -385,6 +419,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case dataType == "WSTRING": // STRING
@@ -393,6 +428,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	}
@@ -436,156 +472,156 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataType == "BYTE" && numberOfValues == uint16(1): // BYTE
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "BYTE": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "WORD" && numberOfValues == uint16(1): // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WORD": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
+			_itemErr := writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "DWORD" && numberOfValues == uint16(1): // DWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "DWORD": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint32("", 32, value.GetIndex(i).GetUint32())
+			_itemErr := writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "LWORD" && numberOfValues == uint16(1): // LWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LWORD": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint64("", 64, value.GetIndex(i).GetUint64())
+			_itemErr := writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "SINT" && numberOfValues == uint16(1): // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
+		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "SINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt8("", 8, value.GetIndex(i).GetInt8())
+			_itemErr := writeBuffer.WriteInt8("", 8, int8(value.GetIndex(i).GetInt8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "INT" && numberOfValues == uint16(1): // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
+		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "INT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt16("", 16, value.GetIndex(i).GetInt16())
+			_itemErr := writeBuffer.WriteInt16("", 16, int16(value.GetIndex(i).GetInt16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "DINT" && numberOfValues == uint16(1): // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
+		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "DINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt32("", 32, value.GetIndex(i).GetInt32())
+			_itemErr := writeBuffer.WriteInt32("", 32, int32(value.GetIndex(i).GetInt32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "LINT" && numberOfValues == uint16(1): // LINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
+		if _err := writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "LINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteInt64("", 64, value.GetIndex(i).GetInt64())
+			_itemErr := writeBuffer.WriteInt64("", 64, int64(value.GetIndex(i).GetInt64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "USINT" && numberOfValues == uint16(1): // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "USINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint8("", 8, value.GetIndex(i).GetUint8())
+			_itemErr := writeBuffer.WriteUint8("", 8, uint8(value.GetIndex(i).GetUint8()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "UINT" && numberOfValues == uint16(1): // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "UINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint16("", 16, value.GetIndex(i).GetUint16())
+			_itemErr := writeBuffer.WriteUint16("", 16, uint16(value.GetIndex(i).GetUint16()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "UDINT" && numberOfValues == uint16(1): // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "UDINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint32("", 32, value.GetIndex(i).GetUint32())
+			_itemErr := writeBuffer.WriteUint32("", 32, uint32(value.GetIndex(i).GetUint32()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "ULINT" && numberOfValues == uint16(1): // ULINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "ULINT": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteUint64("", 64, value.GetIndex(i).GetUint64())
+			_itemErr := writeBuffer.WriteUint64("", 64, uint64(value.GetIndex(i).GetUint64()))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}

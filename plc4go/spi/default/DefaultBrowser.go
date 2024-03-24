@@ -76,7 +76,10 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		responseCodes := map[string]apiModel.PlcResponseCode{}

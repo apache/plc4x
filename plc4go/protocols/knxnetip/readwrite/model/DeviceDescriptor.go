@@ -545,7 +545,7 @@ func DeviceDescriptorParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
 	}
 	if enum, ok := DeviceDescriptorByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DeviceDescriptor")
 		return DeviceDescriptor(val), nil
 	} else {
 		return enum, nil
@@ -563,7 +563,7 @@ func (e DeviceDescriptor) Serialize() ([]byte, error) {
 func (e DeviceDescriptor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -628,7 +628,7 @@ func (e DeviceDescriptor) PLC4XEnumName() string {
 	case DeviceDescriptor_KNX_IP_SYSTEM7:
 		return "KNX_IP_SYSTEM7"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e DeviceDescriptor) String() string {

@@ -56,7 +56,8 @@ func (d *DefaultPlcBrowseRequestBuilder) SerializeWithWriteBuffer(ctx context.Co
 	if err := writeBuffer.PushContext("queryStrings", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.queryStrings {
+	for _name, elem := range d.queryStrings {
+		name := _name
 
 		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), "UTF-8", elem); err != nil {
 			return err

@@ -29,15 +29,24 @@ import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 
 public class ResolvedSendRequestContextWrapper<T> implements SendRequestContext<T> {
 
+    private String name;
+
     private final SendRequestContext<T> delegate;
     private final DeferredErrorHandler<?, ?> errorHandler;
     private final DeferredTimeoutHandler<?> timeoutHandler;
 
-    public ResolvedSendRequestContextWrapper(SendRequestContext<T> delegate, DeferredErrorHandler<?, ?> errorHandler,
+    public ResolvedSendRequestContextWrapper(String name, SendRequestContext<T> delegate, DeferredErrorHandler<?, ?> errorHandler,
         DeferredTimeoutHandler<?> timeoutHandler) {
+        this.name = name;
         this.delegate = delegate;
         this.errorHandler = errorHandler;
         this.timeoutHandler = timeoutHandler;
+    }
+
+    @Override
+    public SendRequestContext<T> name(String name) {
+        this.name = name;
+        return this;
     }
 
     @Override
@@ -70,11 +79,11 @@ public class ResolvedSendRequestContextWrapper<T> implements SendRequestContext<
 
     @Override
     public <R> SendRequestContext<R> unwrap(Function<T, R> unwrapper) {
-        return new ResolvedSendRequestContextWrapper<>(delegate.unwrap(unwrapper), errorHandler, timeoutHandler);
+        return new ResolvedSendRequestContextWrapper<>(name, delegate.unwrap(unwrapper), errorHandler, timeoutHandler);
     }
 
     @Override
     public <R> SendRequestContext<R> only(Class<R> clazz) {
-        return new ResolvedSendRequestContextWrapper<>(delegate.only(clazz), errorHandler, timeoutHandler);
+        return new ResolvedSendRequestContextWrapper<>(name, delegate.only(clazz), errorHandler, timeoutHandler);
     }
 }

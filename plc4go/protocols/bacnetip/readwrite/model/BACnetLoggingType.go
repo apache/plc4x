@@ -126,7 +126,7 @@ func BACnetLoggingTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetLoggingType")
 	}
 	if enum, ok := BACnetLoggingTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLoggingType")
 		return BACnetLoggingType(val), nil
 	} else {
 		return enum, nil
@@ -144,7 +144,7 @@ func (e BACnetLoggingType) Serialize() ([]byte, error) {
 func (e BACnetLoggingType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetLoggingType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetLoggingType", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -159,7 +159,7 @@ func (e BACnetLoggingType) PLC4XEnumName() string {
 	case BACnetLoggingType_TRIGGERED:
 		return "TRIGGERED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLoggingType) String() string {

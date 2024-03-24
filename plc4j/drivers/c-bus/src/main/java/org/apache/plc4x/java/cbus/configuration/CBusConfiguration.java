@@ -18,15 +18,16 @@
  */
 package org.apache.plc4x.java.cbus.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class CBusConfiguration implements Configuration, TcpTransportConfiguration {
+public class CBusConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("srchk")
     @BooleanDefaultValue(false)
+    @Description("Source check.")
     public boolean srchk = false;
 
     public boolean isSrchk() {
@@ -35,11 +36,6 @@ public class CBusConfiguration implements Configuration, TcpTransportConfigurati
 
     public void setSrchk(boolean srchk) {
         this.srchk = srchk;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return 123;//CBusDriver.C_BUS_TCP_PORT;
     }
 
     @Override

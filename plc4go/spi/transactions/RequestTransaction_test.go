@@ -102,11 +102,10 @@ func Test_requestTransaction_EndRequest(t1 *testing.T) {
 
 func Test_requestTransaction_FailRequest(t1 *testing.T) {
 	type fields struct {
-		parent         *requestTransactionManager
-		transactionId  int32
-		operation      pool.Runnable
-		transactionLog zerolog.Logger
-		completed      bool
+		parent        *requestTransactionManager
+		transactionId int32
+		operation     pool.Runnable
+		completed     bool
 	}
 	type args struct {
 		err error
@@ -154,7 +153,7 @@ func Test_requestTransaction_FailRequest(t1 *testing.T) {
 				parent:        tt.fields.parent,
 				transactionId: tt.fields.transactionId,
 				operation:     tt.fields.operation,
-				log:           tt.fields.transactionLog,
+				log:           produceTestingLogger(t),
 				completed:     tt.fields.completed,
 			}
 			if tt.manipulator != nil {

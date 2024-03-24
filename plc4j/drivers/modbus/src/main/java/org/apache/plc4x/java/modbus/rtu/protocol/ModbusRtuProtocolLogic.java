@@ -19,10 +19,7 @@
 package org.apache.plc4x.java.modbus.rtu.protocol;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
-import org.apache.plc4x.java.api.messages.PlcWriteRequest;
-import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -30,12 +27,10 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
+import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcReadResponse;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
-import org.apache.plc4x.java.spi.messages.DefaultPlcWriteResponse;
+import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 
@@ -54,6 +49,35 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
         this.unitIdentifier = (short) configuration.getUnitIdentifier();
         this.tm = new RequestTransactionManager(1);
+    }
+
+    @Override
+    public void close(ConversationContext<ModbusRtuADU> context) {
+        tm.shutdown();
+    }
+
+    @Override
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
+
+        // As it seems that even, if Modbus defines a DeviceIdentificationRequest, no device actually implements this.
+        // So we fall back to a request, that most certainly is implemented by any device. Even if the device doesn't
+        // have any holding-register:1, it should still gracefully respond.
+        ModbusPDU readRequestPdu = getReadRequestPdu(pingAddress);
+        ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitIdentifier, readRequestPdu);
+
+        RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
+        transaction.submit(() -> context.sendRequest(modbusRtuADU)
+            .expectResponse(ModbusRtuADU.class, requestTimeout)
+            .onTimeout(future::completeExceptionally)
+            .onError((p, e) -> future.completeExceptionally(e))
+            .unwrap(ModbusRtuADU::getPdu)
+            .handle(responsePdu -> {
+                transaction.endRequest();
+                // We really don't care about what we got back. As long as it's a Modbus PDU, we're ok.
+                future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
+            }));
+        return future;
     }
 
     @Override
@@ -176,6 +200,11 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             future.completeExceptionally(new PlcRuntimeException("Modbus only supports single filed requests"));
         }
         return future;
+    }
+
+    @Override
+    protected void decode(ConversationContext<ModbusRtuADU> context, ModbusRtuADU msg) throws Exception {
+        System.out.println(msg);
     }
 
 }

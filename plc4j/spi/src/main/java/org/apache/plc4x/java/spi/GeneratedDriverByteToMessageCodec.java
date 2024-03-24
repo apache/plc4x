@@ -56,9 +56,9 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 buffer = new WriteBufferByteBased(packet.getLengthInBytes(), byteOrder);
                 packet.serialize(buffer);
             }
-            byteBuf.writeBytes(buffer.getData());
+            byteBuf.writeBytes(buffer.getBytes());
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getData()));
+                LOGGER.debug("Sending bytes to PLC for message {} as data {}", packet, Hex.encodeHexString(buffer.getBytes()));
             }
         } catch (Exception e) {
             LOGGER.warn("Error encoding package [{}]: {}", packet, e.getMessage(), e);

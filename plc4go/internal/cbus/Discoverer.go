@@ -74,8 +74,8 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	}
 	if d.log.Debug().Enabled() {
 		for _, provider := range interfaces {
-			d.log.Debug().Msgf("Discover on %s", provider)
-			d.log.Trace().Msgf("Discover on %#v", provider.containedInterface())
+			d.log.Debug().Stringer("provider", provider).Msg("Discover on provider")
+			d.log.Trace().Interface("containedInterface", provider.containedInterface()).Msg("Discover on %containedInterface")
 		}
 	}
 
@@ -84,6 +84,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	tcpTransport := tcp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		interfaceLog := d.log.With().Stringer("interface", netInterface).Logger()
 		interfaceLog.Debug().Msg("Scanning")
 		addrs, err := netInterface.Addrs()
@@ -94,7 +97,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		go func(netInterface addressProvider, interfaceLog zerolog.Logger) {
 			defer func() {
 				if err := recover(); err != nil {
-					interfaceLog.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+					interfaceLog.Error().
+						Str("stack", string(debug.Stack())).
+						Interface("err", err).
+						Msg("panic-ed")
 				}
 			}()
 			defer func() { wg.Done() }()
@@ -102,6 +108,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			for _, addr := range addrs {
 				addressLogger := interfaceLog.With().Stringer("address", addr).Logger()
 				addressLogger.Debug().Msg("looking into")
+				if err := ctx.Err(); err != nil {
+					addressLogger.Debug().Err(err).Msg("ending")
+					return
+				}
 				var ipv4Addr net.IP
 				switch addr.(type) {
 				// If the device is configured to communicate with a subnet
@@ -121,19 +131,28 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				}
 				addresses, err := utils.GetIPAddresses(d.log, ctx, netInterface.containedInterface(), false)
 				if err != nil {
-					addressLogger.Warn().Err(err).Msgf("Can't get addresses for %v", netInterface)
+					addressLogger.Warn().Err(err).
+						Interface("containedInterface", netInterface.containedInterface()).
+						Msg("Can't get addresses for containedInterface")
 					continue
 				}
 				wg.Add(1)
 				go func(addressLogger zerolog.Logger) {
 					defer func() {
 						if err := recover(); err != nil {
-							addressLogger.Error().Msgf("panic-ed %v. Stack: %s; ", err, debug.Stack())
+							addressLogger.Error().
+								Str("stack", string(debug.Stack())).
+								Interface("err", err).
+								Msg("panic-ed")
 						}
 					}()
 					defer func() { wg.Done() }()
 					for ip := range addresses {
-						addressLogger.Trace().Msgf("Handling found ip %v", ip)
+						if err := ctx.Err(); err != nil {
+							addressLogger.Debug().Err(err).Msg("ending")
+							return
+						}
+						addressLogger.Trace().IPAddr("ip", ip).Msg("Handling found ip")
 						d.transportInstanceCreationQueue.Submit(
 							ctx,
 							d.transportInstanceCreationWorkItemId.Add(1),
@@ -161,17 +180,24 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				d.log.Error().Msgf("panic-ed %v. Stack: %s; ", err, debug.Stack())
+				d.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		deviceScanWg := sync.WaitGroup{}
 		for transportInstance := range transportInstances {
+			if err := ctx.Err(); err != nil {
+				d.log.Debug().Err(err).Msg("ending")
+				return
+			}
 			d.log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
 			completionFuture := d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
 			deviceScanWg.Add(1)
 			go func() {
 				defer deviceScanWg.Done()
-				if err := completionFuture.AwaitCompletion(context.TODO()); err != nil {
+				if err := completionFuture.AwaitCompletion(ctx); err != nil {
 					d.log.Debug().Err(err).Msg("error waiting for completion")
 				}
 			}()
@@ -194,7 +220,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 		{
 			connectionUrlParsed, err := url.Parse(fmt.Sprintf("tcp://%s:%d", ip, cBusPort))
 			if err != nil {
-				addressLogger.Error().Err(err).Msgf("Error parsing url for lookup")
+				addressLogger.Error().Err(err).Msg("Error parsing url for lookup")
 				return
 			}
 			connectionUrl = *connectionUrlParsed
@@ -202,19 +228,19 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 
 		transportInstance, err := tcpTransport.CreateTransportInstance(connectionUrl, nil)
 		if err != nil {
-			addressLogger.Error().Err(err).Msgf("Error creating transport instance")
+			addressLogger.Error().Err(err).Msg("Error creating transport instance")
 			return
 		}
-		addressLogger.Trace().Msgf("trying %v", connectionUrl)
+		addressLogger.Trace().Stringer("connectionUrl", &connectionUrl).Msg("trying connectionUrl")
 		err = transportInstance.ConnectWithContext(ctx)
 		if err != nil {
 			secondErr := transportInstance.ConnectWithContext(ctx)
 			if secondErr != nil {
-				addressLogger.Trace().Err(err).Msgf("Error connecting transport instance")
+				addressLogger.Trace().Err(err).Msg("Error connecting transport instance")
 				return
 			}
 		}
-		addressLogger.Debug().Msgf("Adding transport instance to scan %v", transportInstance)
+		addressLogger.Debug().Stringer("transportInstance", transportInstance).Msg("Adding transport instance to scan")
 		transportInstances <- transportInstance
 	}
 }
@@ -222,7 +248,7 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) pool.Runnable {
 	return func() {
 		transportInstanceLogger := d.log.With().Stringer("transportInstance", tcpTransportInstance).Logger()
-		transportInstanceLogger.Debug().Msgf("Scanning %v", tcpTransportInstance)
+		transportInstanceLogger.Debug().Stringer("tcpTransportInstance", tcpTransportInstance).Msg("Scanning")
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(
 			tcpTransportInstance,
@@ -251,7 +277,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		cBusMessageToServer := readWriteModel.NewCBusMessageToServer(request, requestContext, cBusOptions)
 		// Send the search request.
 		if err := codec.Send(cBusMessageToServer); err != nil {
-			transportInstanceLogger.Debug().Err(err).Msgf("Error sending message:\n%s", cBusMessageToServer)
+			transportInstanceLogger.Debug().Err(err).Stringer("cBusMessageToServer", cBusMessageToServer).Msg("Error sending message")
 			return
 		}
 		// Keep on reading responses till the timeout is done.
@@ -377,7 +403,7 @@ var allInterfaceRetriever = func(localLog zerolog.Logger) ([]addressProvider, er
 	if err != nil {
 		return nil, errors.Wrap(err, "could not retrieve all interfaces")
 	}
-	localLog.Debug().Msgf("Mapping %d interfaces", len(interfaces))
+	localLog.Debug().Int("nInterfaces", len(interfaces)).Msg("Mapping nInterfaces interfaces")
 	addressProviders := make([]addressProvider, len(interfaces))
 	for i, networkInterface := range interfaces {
 		var copyInterface = networkInterface
@@ -397,7 +423,7 @@ var addressProviderRetriever = func(localLog zerolog.Logger, deviceNames []strin
 	// However if a discovery option is present to select a device by name, only
 	// add those devices matching any of the given names.
 	if len(deviceNames) <= 0 {
-		localLog.Info().Msgf("no devices selected, use all devices (%d)", len(allInterfaces))
+		localLog.Info().Int("nAllInterfaces", len(allInterfaces)).Msg("no devices selected, use all devices (nAllInterfaces)")
 		return allInterfaces, nil
 	}
 

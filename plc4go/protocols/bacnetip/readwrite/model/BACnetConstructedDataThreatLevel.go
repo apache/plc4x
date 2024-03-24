@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataThreatLevel) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(_threatLevelErr, "Error serializing 'threatLevel' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

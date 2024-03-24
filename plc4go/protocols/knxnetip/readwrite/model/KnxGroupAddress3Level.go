@@ -217,21 +217,21 @@ func (m *_KnxGroupAddress3Level) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.GetMainGroup())
-		_mainGroupErr := writeBuffer.WriteUint8("mainGroup", 5, (mainGroup))
+		_mainGroupErr := writeBuffer.WriteUint8("mainGroup", 5, uint8((mainGroup)))
 		if _mainGroupErr != nil {
 			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 		}
 
 		// Simple Field (middleGroup)
 		middleGroup := uint8(m.GetMiddleGroup())
-		_middleGroupErr := writeBuffer.WriteUint8("middleGroup", 3, (middleGroup))
+		_middleGroupErr := writeBuffer.WriteUint8("middleGroup", 3, uint8((middleGroup)))
 		if _middleGroupErr != nil {
 			return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint8(m.GetSubGroup())
-		_subGroupErr := writeBuffer.WriteUint8("subGroup", 8, (subGroup))
+		_subGroupErr := writeBuffer.WriteUint8("subGroup", 8, uint8((subGroup)))
 		if _subGroupErr != nil {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}

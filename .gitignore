@@ -55,7 +55,7 @@ buildNumber.properties
 *.tmp
 *.bak
 *.swp
-*~.nib
+#*~.nib
 local.properties
 .settings/
 .loadpath
@@ -75,7 +75,7 @@ local.properties
 .worksheet
 
 # Emacs backup files
-*~
+#*~
 .scannerwork
 
 spock-reports
@@ -119,7 +119,7 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-exclude ruby specifics:
+#exclude ruby specifics:
 
 *.gem
 *.rbc
@@ -175,14 +175,10 @@ build-iPhoneSimulator/
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
 
-# When running the cpp module in clion, it adds another ".idea" directory.
-/sandbox/plc4cpp/.idea/
-
 # Exclude VSCode project settings.
 .vscode/
 
 # Temp stuff ...
-/sandbox/plc4go/temp/
 /plc4go/.idea/
 plc4j/examples/hello-storage-elasticsearch/.factorypath
 
@@ -199,3 +195,22 @@ DartConfiguration.tcl
 /.idea/libraries/
 /.idea/inspectionProfiles/
 /out/
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/.name
+
+# Develocity
+.mvn/.gradle-enterprise/
+
+# UI
+/plc4j/tools/ui/frontend/project/node/
+/plc4j/tools/ui/frontend/project/node_modules/
+/plc4j/tools/ui/frontend/project/dist/
+/plc4j/tools/ui/frontend/project/.vite/**
+/plc4j/tools/ui/frontend/frontend/.idea/vcs.xml
+/plc4j/tools/ui/frontend/frontend/.idea/workspace.xml
+/storage/**
+/derby.log
+/plc4c/.idea/codeStyles/codeStyleConfig.xml
+/plc4c/.idea/codeStyles/Project.xml
+/plc4c/.idea/.name

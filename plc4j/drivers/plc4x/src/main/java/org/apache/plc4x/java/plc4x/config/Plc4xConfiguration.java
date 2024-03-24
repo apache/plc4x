@@ -18,19 +18,20 @@
  */
 package org.apache.plc4x.java.plc4x.config;
 
-import org.apache.plc4x.java.plc4x.readwrite.Plc4xConstants;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class Plc4xConfiguration implements Configuration, TcpTransportConfiguration {
+public class Plc4xConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("remote-connection-string")
+    @Description("URL-Encoded connection string to use on the proxy side to reach the given PLC.")
     private String remoteConnectionString;
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
+    @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
     public String getRemoteConnectionString() {
@@ -47,11 +48,6 @@ public class Plc4xConfiguration implements Configuration, TcpTransportConfigurat
 
     public void setRequestTimeout(int requestTimeout) {
         this.requestTimeout = requestTimeout;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return Plc4xConstants.PLC4XTCPDEFAULTPORT;
     }
 
 }

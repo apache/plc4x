@@ -144,7 +144,7 @@ func BACnetDeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading BACnetDeviceStatus")
 	}
 	if enum, ok := BACnetDeviceStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDeviceStatus")
 		return BACnetDeviceStatus(val), nil
 	} else {
 		return enum, nil
@@ -162,7 +162,7 @@ func (e BACnetDeviceStatus) Serialize() ([]byte, error) {
 func (e BACnetDeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetDeviceStatus", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetDeviceStatus", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -183,7 +183,7 @@ func (e BACnetDeviceStatus) PLC4XEnumName() string {
 	case BACnetDeviceStatus_BACKUP_IN_PROGRESS:
 		return "BACKUP_IN_PROGRESS"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetDeviceStatus) String() string {

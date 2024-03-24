@@ -20,6 +20,7 @@
 package cache
 
 import (
+	"context"
 	"fmt"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -60,15 +61,20 @@ func newConnectionContainer(log zerolog.Logger, driverManager plc4go.PlcDriverMa
 	}
 }
 
-func (c *connectionContainer) connect() {
+func (c *connectionContainer) connect(ctx context.Context) {
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Connecting new cached connection ...")
 	// Initialize the new connection.
 	connectionResultChan := c.driverManager.GetConnection(c.connectionString)
 
 	// Allow us to finish this function and return the lock quickly
 	// Wait for the connection to be established.
-	// TODO: Add some timeout handling.
-	connectionResult := <-connectionResultChan
+	var connectionResult plc4go.PlcConnectionConnectResult
+	select {
+	case connectionResult = <-connectionResultChan:
+	case <-ctx.Done():
+		c.log.Err(ctx.Err()).Msg("context canceled")
+		return
+	}
 
 	// Get the lock.
 	c.lock.Lock()
@@ -104,7 +110,7 @@ func (c *connectionContainer) connect() {
 	c.log.Debug().Str("connectionString", c.connectionString).Msg("Successfully connected new cached connection.")
 	// Inject the real connection into the container.
 	if connection, ok := connectionResult.GetConnection().(tracedPlcConnection); !ok {
-		panic("Return connection doesn'c implement the cache.tracedPlcConnection interface")
+		panic("Return connection doesn't implement the cache.tracedPlcConnection interface")
 	} else {
 		c.connection = connection
 	}
@@ -167,7 +173,7 @@ func (c *connectionContainer) lease() <-chan plc4go.PlcConnectionConnectResult {
 	return ch
 }
 
-func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState) error {
+func (c *connectionContainer) returnConnection(ctx context.Context, newState cachedPlcConnectionState) error {
 	// Intentionally not locking anything, as there are two cases, where the connection is returned:
 	// 1) The connection failed to get established (No connection has a lock anyway)
 	// 2) The connection is returned, then the one returning it already has a lock on it.
@@ -175,9 +181,11 @@ func (c *connectionContainer) returnConnection(newState cachedPlcConnectionState
 	switch newState {
 	case StateInitialized, StateInvalid:
 		// TODO: Perhaps do a maximum number of retries and then call failConnection()
-		c.log.Debug().Str("connectionString", c.connectionString).
-			Msgf("Client returned a %s connection, reconnecting.", newState)
-		c.connect()
+		c.log.Debug().
+			Str("connectionString", c.connectionString).
+			Stringer("newState", newState).
+			Msg("Client returned a connection, reconnecting.")
+		c.connect(ctx)
 	default:
 		c.log.Debug().Str("connectionString", c.connectionString).Msg("Client returned valid connection.")
 	}

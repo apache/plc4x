@@ -23,6 +23,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -31,22 +32,14 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+//go:generate stringer -type StatusRequestType
+//go:generate go run ../../tools/plc4xlicenser/gen.go -type=StatusRequestType
 type StatusRequestType uint8
 
 const (
 	StatusRequestTypeBinaryState StatusRequestType = iota
 	StatusRequestTypeLevel
 )
-
-func (s StatusRequestType) String() string {
-	switch s {
-	case StatusRequestTypeBinaryState:
-		return "StatusRequestTypeBinaryState"
-	case StatusRequestTypeLevel:
-		return "StatusRequestTypeLevel"
-	}
-	return ""
-}
 
 type Tag interface {
 	apiModel.PlcTag
@@ -154,9 +147,14 @@ func NewSALTag(bridgeAddresses []readWriteModel.BridgeAddress, application readW
 	}
 }
 
+type SubscriptionTag interface {
+	Tag
+	apiModel.PlcSubscriptionTag
+}
+
 // SALMonitorTag can be used to monitor sal tags
 type SALMonitorTag interface {
-	Tag
+	SubscriptionTag
 
 	GetUnitAddress() readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
@@ -173,7 +171,7 @@ func NewSALMonitorTag(unitAddress readWriteModel.UnitAddress, application *readW
 
 // MMIMonitorTag can be used to monitor mmi tags
 type MMIMonitorTag interface {
-	Tag
+	SubscriptionTag
 
 	GetUnitAddress() readWriteModel.UnitAddress
 	GetApplication() *readWriteModel.ApplicationIdContainer
@@ -246,11 +244,27 @@ type salMonitorTag struct {
 	numElements uint16
 }
 
+func (s salMonitorTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+func (s salMonitorTag) GetDuration() time.Duration {
+	return 0
+}
+
 type mmiMonitorTag struct {
 	tagType     TagType
 	unitAddress readWriteModel.UnitAddress
 	application *readWriteModel.ApplicationIdContainer
 	numElements uint16
+}
+
+func (m mmiMonitorTag) GetPlcSubscriptionType() apiModel.PlcSubscriptionType {
+	return apiModel.SubscriptionEvent
+}
+
+func (m mmiMonitorTag) GetDuration() time.Duration {
+	return 0
 }
 
 //

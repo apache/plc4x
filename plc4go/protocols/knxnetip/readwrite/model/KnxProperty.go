@@ -50,6 +50,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcBOOL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
@@ -58,6 +59,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcSINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
@@ -66,6 +68,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcUSINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_INT: // INT
@@ -74,6 +77,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
@@ -82,6 +86,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcUDINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
@@ -90,6 +95,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcUINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
@@ -98,6 +104,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcREAL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
@@ -115,6 +122,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(dayOfMonth)
+		_ = dayOfMonth // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
@@ -127,6 +135,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(month)
+		_ = month // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 1); _err != nil {
@@ -139,6 +148,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(year)
+		_ = year // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
@@ -151,6 +161,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(day)
+		_ = day // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (hour)
 		hour, _hourErr := readBuffer.ReadUint8("hour", 5)
@@ -158,6 +169,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(hour)
+		_ = hour // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
@@ -170,6 +182,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(minutes)
+		_ = minutes // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
@@ -182,6 +195,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(seconds)
+		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
@@ -190,6 +204,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcDINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
@@ -198,6 +213,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcUDINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
@@ -206,6 +222,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcREAL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
@@ -214,6 +231,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcLREAL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_CHAR_BLOCK: // List
@@ -226,6 +244,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS: // Struct
@@ -241,6 +260,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			groupAddress = append(groupAddress, values.NewPlcBYTE(_item))
 		}
+		_ = groupAddress // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (disable)
 		disable, _disableErr := readBuffer.ReadBit("disable")
@@ -248,6 +268,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(disable)
+		_ = disable // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
@@ -260,6 +281,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_pollingSoftNrErr, "Error parsing 'pollingSoftNr' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(pollingSoftNr)
+		_ = pollingSoftNr // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
@@ -272,6 +294,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
@@ -284,6 +307,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(year)
+		_ = year // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
@@ -296,32 +320,36 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(month)
+		_ = month // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
-		// Simple Field (dayofmonth)
-		dayofmonth, _dayofmonthErr := readBuffer.ReadUint8("dayofmonth", 5)
-		if _dayofmonthErr != nil {
-			return nil, errors.Wrap(_dayofmonthErr, "Error parsing 'dayofmonth' field")
+		// Simple Field (dayOfMonth)
+		dayOfMonth, _dayOfMonthErr := readBuffer.ReadUint8("dayOfMonth", 5)
+		if _dayOfMonthErr != nil {
+			return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
 		}
-		_map["Struct"] = values.NewPlcUSINT(dayofmonth)
+		_map["Struct"] = values.NewPlcUSINT(dayOfMonth)
+		_ = dayOfMonth // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (dayofweek)
-		dayofweek, _dayofweekErr := readBuffer.ReadUint8("dayofweek", 3)
-		if _dayofweekErr != nil {
-			return nil, errors.Wrap(_dayofweekErr, "Error parsing 'dayofweek' field")
+		// Simple Field (dayOfWeek)
+		dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 3)
+		if _dayOfWeekErr != nil {
+			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
-		_map["Struct"] = values.NewPlcUSINT(dayofweek)
+		_map["Struct"] = values.NewPlcUSINT(dayOfWeek)
+		_ = dayOfWeek // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
-		// Simple Field (hourofday)
-		hourofday, _hourofdayErr := readBuffer.ReadUint8("hourofday", 5)
-		if _hourofdayErr != nil {
-			return nil, errors.Wrap(_hourofdayErr, "Error parsing 'hourofday' field")
+		// Simple Field (hour)
+		hour, _hourErr := readBuffer.ReadUint8("hour", 5)
+		if _hourErr != nil {
+			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
-		_map["Struct"] = values.NewPlcUSINT(hourofday)
+		_map["Struct"] = values.NewPlcUSINT(hour)
+		_ = hour // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
@@ -334,6 +362,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(minutes)
+		_ = minutes // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
@@ -346,6 +375,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(seconds)
+		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (fault)
 		fault, _faultErr := readBuffer.ReadBit("fault")
@@ -353,6 +383,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_faultErr, "Error parsing 'fault' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(fault)
+		_ = fault // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (workingDay)
 		workingDay, _workingDayErr := readBuffer.ReadBit("workingDay")
@@ -360,6 +391,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_workingDayErr, "Error parsing 'workingDay' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(workingDay)
+		_ = workingDay // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noWd)
 		noWd, _noWdErr := readBuffer.ReadBit("noWd")
@@ -367,6 +399,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_noWdErr, "Error parsing 'noWd' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(noWd)
+		_ = noWd // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noYear)
 		noYear, _noYearErr := readBuffer.ReadBit("noYear")
@@ -374,6 +407,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_noYearErr, "Error parsing 'noYear' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(noYear)
+		_ = noYear // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noDate)
 		noDate, _noDateErr := readBuffer.ReadBit("noDate")
@@ -381,6 +415,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_noDateErr, "Error parsing 'noDate' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(noDate)
+		_ = noDate // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noDayOfWeek)
 		noDayOfWeek, _noDayOfWeekErr := readBuffer.ReadBit("noDayOfWeek")
@@ -388,6 +423,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_noDayOfWeekErr, "Error parsing 'noDayOfWeek' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(noDayOfWeek)
+		_ = noDayOfWeek // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noTime)
 		noTime, _noTimeErr := readBuffer.ReadBit("noTime")
@@ -395,6 +431,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_noTimeErr, "Error parsing 'noTime' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(noTime)
+		_ = noTime // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (standardSummerTime)
 		standardSummerTime, _standardSummerTimeErr := readBuffer.ReadBit("standardSummerTime")
@@ -402,6 +439,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_standardSummerTimeErr, "Error parsing 'standardSummerTime' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(standardSummerTime)
+		_ = standardSummerTime // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (qualityOfClock)
 		qualityOfClock, _qualityOfClockErr := readBuffer.ReadBit("qualityOfClock")
@@ -409,6 +447,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_qualityOfClockErr, "Error parsing 'qualityOfClock' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(qualityOfClock)
+		_ = qualityOfClock // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
@@ -426,6 +465,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_02: // List
@@ -438,6 +478,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_03: // List
@@ -450,6 +491,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_04: // List
@@ -462,6 +504,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_05: // List
@@ -474,6 +517,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_06: // List
@@ -486,6 +530,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_07: // List
@@ -498,6 +543,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_08: // List
@@ -510,6 +556,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_09: // List
@@ -522,6 +569,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_10: // List
@@ -534,6 +582,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_11: // List
@@ -546,6 +595,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_12: // List
@@ -558,6 +608,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_13: // List
@@ -570,6 +621,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_14: // List
@@ -582,6 +634,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_15: // List
@@ -594,6 +647,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_16: // List
@@ -606,6 +660,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_17: // List
@@ -618,6 +673,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_18: // List
@@ -630,6 +686,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_19: // List
@@ -642,6 +699,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_20: // List
@@ -654,6 +712,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
@@ -666,6 +725,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_magicNumberErr, "Error parsing 'magicNumber' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(magicNumber)
+		_ = magicNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (versionNumber)
 		versionNumber, _versionNumberErr := readBuffer.ReadUint8("versionNumber", 5)
@@ -673,6 +733,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_versionNumberErr, "Error parsing 'versionNumber' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(versionNumber)
+		_ = versionNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (revisionNumber)
 		revisionNumber, _revisionNumberErr := readBuffer.ReadUint8("revisionNumber", 6)
@@ -680,6 +741,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_revisionNumberErr, "Error parsing 'revisionNumber' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(revisionNumber)
+		_ = revisionNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
@@ -692,6 +754,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_logNumberErr, "Error parsing 'logNumber' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(logNumber)
+		_ = logNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (alarmPriority)
 		alarmPriority, _alarmPriorityErr := readBuffer.ReadUint8("alarmPriority", 8)
@@ -699,6 +762,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_alarmPriorityErr, "Error parsing 'alarmPriority' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(alarmPriority)
+		_ = alarmPriority // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (applicationArea)
 		applicationArea, _applicationAreaErr := readBuffer.ReadUint8("applicationArea", 8)
@@ -706,6 +770,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_applicationAreaErr, "Error parsing 'applicationArea' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(applicationArea)
+		_ = applicationArea // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (errorClass)
 		errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
@@ -713,6 +778,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(errorClass)
+		_ = errorClass // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
@@ -725,6 +791,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_errorcodeSupErr, "Error parsing 'errorcodeSup' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(errorcodeSup)
+		_ = errorcodeSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (alarmtextSup)
 		alarmtextSup, _alarmtextSupErr := readBuffer.ReadBit("alarmtextSup")
@@ -732,6 +799,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_alarmtextSupErr, "Error parsing 'alarmtextSup' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(alarmtextSup)
+		_ = alarmtextSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (timestampSup)
 		timestampSup, _timestampSupErr := readBuffer.ReadBit("timestampSup")
@@ -739,6 +807,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_timestampSupErr, "Error parsing 'timestampSup' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(timestampSup)
+		_ = timestampSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (ackSup)
 		ackSup, _ackSupErr := readBuffer.ReadBit("ackSup")
@@ -746,6 +815,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_ackSupErr, "Error parsing 'ackSup' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(ackSup)
+		_ = ackSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
@@ -758,6 +828,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_lockedErr, "Error parsing 'locked' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(locked)
+		_ = locked // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (alarmunack)
 		alarmunack, _alarmunackErr := readBuffer.ReadBit("alarmunack")
@@ -765,6 +836,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_alarmunackErr, "Error parsing 'alarmunack' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(alarmunack)
+		_ = alarmunack // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (inalarm)
 		inalarm, _inalarmErr := readBuffer.ReadBit("inalarm")
@@ -772,6 +844,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			return nil, errors.Wrap(_inalarmErr, "Error parsing 'inalarm' field")
 		}
 		_map["Struct"] = values.NewPlcBOOL(inalarm)
+		_ = inalarm // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
@@ -785,38 +858,34 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcBOOL(value), nil
-	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((8)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // BYTE
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
-	case propertyType == KnxPropertyDataType_PDT_BITSET16: // List
-		// Array Field (value)
-		var value []api.PlcValue
-		for i := 0; i < int((16)); i++ {
-			_item, _itemErr := readBuffer.ReadBit("value")
-			if _itemErr != nil {
-				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
-			}
-			value = append(value, values.NewPlcBOOL(_item))
+		return values.NewPlcBYTE(value), nil
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // WORD
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
-		return values.NewPlcList(value), nil
+		return values.NewPlcWORD(value), nil
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)
 		value, _valueErr := readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcUSINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
@@ -825,6 +894,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcUSINT(value), nil
 	default: // List
@@ -837,6 +907,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			}
 			value = append(value, values.NewPlcBYTE(_item))
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxProperty")
 		return values.NewPlcList(value), nil
 	}
@@ -867,7 +938,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	switch {
 	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -877,27 +948,27 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
+		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_INT: // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
+		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
@@ -907,72 +978,72 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		if _err := writeBuffer.WriteUint8("dayOfMonth", 5, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 4, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("month", 4, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 1, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 1, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint8("year", 7, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("year", 7, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
 		// Simple Field (day)
-		if _err := writeBuffer.WriteUint8("day", 3, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("day", 3, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (hour)
-		if _err := writeBuffer.WriteUint8("hour", 5, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 6, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("minutes", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 6, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("seconds", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
+		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
@@ -1009,12 +1080,12 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(0x0)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x0))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (pollingSoftNr)
-		if _err := writeBuffer.WriteUint8("pollingSoftNr", 4, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("pollingSoftNr", 4, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'pollingSoftNr' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
@@ -1027,57 +1098,57 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint8("year", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("year", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 4, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("month", 4, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
-		// Simple Field (dayofmonth)
-		if _err := writeBuffer.WriteUint8("dayofmonth", 5, value.GetUint8()); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayofmonth' field")
+		// Simple Field (dayOfMonth)
+		if _err := writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
-		// Simple Field (dayofweek)
-		if _err := writeBuffer.WriteUint8("dayofweek", 3, value.GetUint8()); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'dayofweek' field")
+		// Simple Field (dayOfWeek)
+		if _err := writeBuffer.WriteUint8("dayOfWeek", 3, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
-		// Simple Field (hourofday)
-		if _err := writeBuffer.WriteUint8("hourofday", 5, value.GetUint8()); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'hourofday' field")
+		// Simple Field (hour)
+		if _err := writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 6, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("minutes", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 6, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("seconds", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
@@ -1127,7 +1198,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_01: // List
@@ -1292,42 +1363,42 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
 		// Simple Field (magicNumber)
-		if _err := writeBuffer.WriteUint8("magicNumber", 5, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("magicNumber", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'magicNumber' field")
 		}
 
 		// Simple Field (versionNumber)
-		if _err := writeBuffer.WriteUint8("versionNumber", 5, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("versionNumber", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'versionNumber' field")
 		}
 
 		// Simple Field (revisionNumber)
-		if _err := writeBuffer.WriteUint8("revisionNumber", 6, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("revisionNumber", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'revisionNumber' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
 		// Simple Field (logNumber)
-		if _err := writeBuffer.WriteUint8("logNumber", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("logNumber", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'logNumber' field")
 		}
 
 		// Simple Field (alarmPriority)
-		if _err := writeBuffer.WriteUint8("alarmPriority", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("alarmPriority", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmPriority' field")
 		}
 
 		// Simple Field (applicationArea)
-		if _err := writeBuffer.WriteUint8("applicationArea", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("applicationArea", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'applicationArea' field")
 		}
 
 		// Simple Field (errorClass)
-		if _err := writeBuffer.WriteUint8("errorClass", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("errorClass", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorClass' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -1352,7 +1423,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -1372,7 +1443,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -1380,30 +1451,24 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_BITSET8: // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case propertyType == KnxPropertyDataType_PDT_BITSET8: // BYTE
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
-	case propertyType == KnxPropertyDataType_PDT_BITSET16: // List
-		// Array Field (value)
-		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := writeBuffer.WriteBit("", value.GetIndex(i).GetBool())
-			if _itemErr != nil {
-				return errors.Wrap(_itemErr, "Error serializing 'value' field")
-			}
+	case propertyType == KnxPropertyDataType_PDT_BITSET16: // WORD
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default: // List

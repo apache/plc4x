@@ -166,7 +166,7 @@ func (pm *_S7ParameterUserDataItem) SerializeParent(ctx context.Context, writeBu
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.GetItemType())
-	_itemTypeErr := writeBuffer.WriteUint8("itemType", 8, (itemType))
+	_itemTypeErr := writeBuffer.WriteUint8("itemType", 8, uint8((itemType)))
 
 	if _itemTypeErr != nil {
 		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")

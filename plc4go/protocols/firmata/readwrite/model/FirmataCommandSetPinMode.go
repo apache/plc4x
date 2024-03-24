@@ -206,7 +206,7 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, (pin))
+		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}

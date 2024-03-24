@@ -18,9 +18,17 @@
  */
 package org.apache.plc4x.java.opcua.context;
 
+import io.vavr.control.Try;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import org.bouncycastle.asn1.x509.GeneralName;
+
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public class CertificateKeyPair {
 
@@ -28,16 +36,36 @@ public class CertificateKeyPair {
     private final X509Certificate certificate;
     private final byte[] thumbprint;
 
-    public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) throws Exception{
+    public CertificateKeyPair(KeyPair keyPair, X509Certificate certificate) throws GeneralSecurityException {
         this.keyPair = keyPair;
         this.certificate = certificate;
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
         this.thumbprint = messageDigest.digest(this.certificate.getEncoded());
     }
 
-    public KeyPair getKeyPair() { return keyPair; }
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
 
-    public X509Certificate getCertificate() { return certificate; }
+    public X509Certificate getCertificate() {
+        return certificate;
+    }
 
-    public byte[] getThumbPrint() { return thumbprint; }
+    public PrivateKey getPrivateKey() {
+        return keyPair.getPrivate();
+    }
+
+    public byte[] getThumbPrint() {
+        return thumbprint;
+    }
+
+    public Optional<String> getApplicationUri() {
+        Try<Collection<List<?>>> lists = Try.of(certificate::getSubjectAlternativeNames);
+        return lists.toJavaStream()
+            .flatMap(Collection::stream)
+            .filter(l -> l.size() == 2)
+            .filter(name -> name.get(0).equals(GeneralName.uniformResourceIdentifier))
+            .map(t -> (String) t.get(1))
+            .findAny();
+    }
 }

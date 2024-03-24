@@ -50,6 +50,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
 	case plcValueType == PlcValueType_BYTE: // BYTE
@@ -58,6 +59,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBYTE(value), nil
 	case plcValueType == PlcValueType_WORD: // WORD
@@ -66,6 +68,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWORD(value), nil
 	case plcValueType == PlcValueType_DWORD: // DWORD
@@ -74,6 +77,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDWORD(value), nil
 	case plcValueType == PlcValueType_LWORD: // LWORD
@@ -82,6 +86,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLWORD(value), nil
 	case plcValueType == PlcValueType_SINT: // SINT
@@ -90,6 +95,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSINT(value), nil
 	case plcValueType == PlcValueType_USINT: // USINT
@@ -98,6 +104,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUSINT(value), nil
 	case plcValueType == PlcValueType_INT: // INT
@@ -106,6 +113,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcINT(value), nil
 	case plcValueType == PlcValueType_UINT: // UINT
@@ -114,6 +122,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUINT(value), nil
 	case plcValueType == PlcValueType_DINT: // DINT
@@ -122,6 +131,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDINT(value), nil
 	case plcValueType == PlcValueType_UDINT: // UDINT
@@ -130,6 +140,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUDINT(value), nil
 	case plcValueType == PlcValueType_LINT: // LINT
@@ -138,6 +149,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLINT(value), nil
 	case plcValueType == PlcValueType_ULINT: // ULINT
@@ -146,6 +158,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcULINT(value), nil
 	case plcValueType == PlcValueType_REAL: // REAL
@@ -154,6 +167,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcREAL(value), nil
 	case plcValueType == PlcValueType_LREAL: // LREAL
@@ -162,14 +176,16 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case plcValueType == PlcValueType_CHAR: // CHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), "Windows-1252")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
@@ -178,14 +194,16 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWCHAR(value), nil
 	case plcValueType == PlcValueType_STRING: // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((stringLength)*(8)), "UTF-8")
+		value, _valueErr := readBuffer.ReadString("value", uint32((stringLength)*(8)), "Windows-1252")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
@@ -199,6 +217,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint16("reserved", 16); _err != nil {
@@ -212,14 +231,16 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _millisecondsErr != nil {
 			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
 		}
+		_ = milliseconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
-		return values.NewPlcTIMEFromMilliseconds(milliseconds), nil
+		return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
 	case plcValueType == PlcValueType_LTIME: // LTIME
 		// Simple Field (nanoseconds)
 		nanoseconds, _nanosecondsErr := readBuffer.ReadUint64("nanoseconds", 64)
 		if _nanosecondsErr != nil {
 			return nil, errors.Wrap(_nanosecondsErr, "Error parsing 'nanoseconds' field")
 		}
+		_ = nanoseconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIMEFromNanoseconds(nanoseconds), nil
 	case plcValueType == PlcValueType_DATE: // DATE
@@ -228,6 +249,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
+		_ = secondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDATEFromSecondsSinceEpoch(uint32(secondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_LDATE: // LDATE
@@ -236,6 +258,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
+		_ = nanosecondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLDATEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_TIME_OF_DAY: // TIME_OF_DAY
@@ -244,6 +267,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _millisecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_millisecondsSinceMidnightErr, "Error parsing 'millisecondsSinceMidnight' field")
 		}
+		_ = millisecondsSinceMidnight // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(millisecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
@@ -252,6 +276,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceMidnightErr, "Error parsing 'nanosecondsSinceMidnight' field")
 		}
+		_ = nanosecondsSinceMidnight // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_DATE_AND_TIME: // DATE_AND_TIME
@@ -260,6 +285,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
+		_ = secondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
@@ -268,6 +294,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
+		_ = nanosecondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLDATE_AND_TIMEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
 	}
@@ -298,7 +325,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 	switch {
 	case plcValueType == PlcValueType_BOOL: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -308,62 +335,62 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == PlcValueType_BYTE: // BYTE
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_WORD: // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_DWORD: // DWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_LWORD: // LWORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_SINT: // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, value.GetInt8()); _err != nil {
+		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_USINT: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, value.GetUint8()); _err != nil {
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_INT: // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, value.GetInt16()); _err != nil {
+		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_UINT: // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, value.GetUint16()); _err != nil {
+		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_DINT: // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, value.GetInt32()); _err != nil {
+		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_UDINT: // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, value.GetUint32()); _err != nil {
+		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_LINT: // LINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt64("value", 64, value.GetInt64()); _err != nil {
+		if _err := writeBuffer.WriteInt64("value", 64, int64(value.GetInt64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_ULINT: // ULINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint64("value", 64, value.GetUint64()); _err != nil {
+		if _err := writeBuffer.WriteUint64("value", 64, uint64(value.GetUint64())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_REAL: // REAL
@@ -378,7 +405,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == PlcValueType_CHAR: // CHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), "Windows-1252", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
@@ -388,12 +415,12 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == PlcValueType_STRING: // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32((stringLength)*(8)), "UTF-8", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32((stringLength)*(8)), "Windows-1252", value.GetString()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case plcValueType == PlcValueType_WSTRING: // WSTRING
@@ -403,47 +430,47 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint16("reserved", 16, uint16(0x0000)); _err != nil {
+		if _err := writeBuffer.WriteUint16("reserved", 16, uint16(uint16(0x0000))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case plcValueType == PlcValueType_TIME: // TIME
 		// Simple Field (milliseconds)
-		if _err := writeBuffer.WriteUint32("milliseconds", 32, value.(values.PlcTIME).GetMilliseconds()); _err != nil {
+		if _err := writeBuffer.WriteUint32("milliseconds", 32, uint32(value.(values.PlcTIME).GetMilliseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'milliseconds' field")
 		}
 	case plcValueType == PlcValueType_LTIME: // LTIME
 		// Simple Field (nanoseconds)
-		if _err := writeBuffer.WriteUint64("nanoseconds", 64, value.(values.PlcLTIME).GetNanoseconds()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanoseconds", 64, uint64(value.(values.PlcLTIME).GetNanoseconds())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanoseconds' field")
 		}
 	case plcValueType == PlcValueType_DATE: // DATE
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.(values.PlcDATE).GetSecondsSinceEpoch()); _err != nil {
+		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, uint32(value.(values.PlcDATE).GetSecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_LDATE: // LDATE
 		// Simple Field (nanosecondsSinceEpoch)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, value.(values.PlcLDATE).GetNanosecondsSinceEpoch()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.(values.PlcLDATE).GetNanosecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_TIME_OF_DAY: // TIME_OF_DAY
 		// Simple Field (millisecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight()); _err != nil {
+		if _err := writeBuffer.WriteUint32("millisecondsSinceMidnight", 32, uint32(value.(values.PlcTIME_OF_DAY).GetMillisecondsSinceMidnight())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'millisecondsSinceMidnight' field")
 		}
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
 		// Simple Field (nanosecondsSinceMidnight)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceMidnight", 64, uint64(value.(values.PlcLTIME_OF_DAY).GetNanosecondsSinceMidnight())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceMidnight' field")
 		}
 	case plcValueType == PlcValueType_DATE_AND_TIME: // DATE_AND_TIME
 		// Simple Field (secondsSinceEpoch)
-		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, value.(values.PlcDATE_AND_TIME).GetSecondsSinceEpoch()); _err != nil {
+		if _err := writeBuffer.WriteUint32("secondsSinceEpoch", 32, uint32(value.(values.PlcDATE_AND_TIME).GetSecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'secondsSinceEpoch' field")
 		}
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
 		// Simple Field (nanosecondsSinceEpoch)
-		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, value.(values.PlcLDATE_AND_TIME).GetNanosecondsSinceEpoch()); _err != nil {
+		if _err := writeBuffer.WriteUint64("nanosecondsSinceEpoch", 64, uint64(value.(values.PlcLDATE_AND_TIME).GetNanosecondsSinceEpoch())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'nanosecondsSinceEpoch' field")
 		}
 	default:

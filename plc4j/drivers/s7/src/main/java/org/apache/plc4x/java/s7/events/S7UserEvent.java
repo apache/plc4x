@@ -21,7 +21,7 @@ package org.apache.plc4x.java.s7.events;
 import org.apache.plc4x.java.s7.readwrite.S7PayloadDiagnosticMessage;
 
 public class S7UserEvent extends S7SysEvent {
-  
+
     public S7UserEvent(S7PayloadDiagnosticMessage payload) {
         super(payload);
         map.put(Fields.TYPE.name(), "USER");

@@ -120,7 +120,7 @@ func BACnetLogStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading BACnetLogStatus")
 	}
 	if enum, ok := BACnetLogStatusByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLogStatus")
 		return BACnetLogStatus(val), nil
 	} else {
 		return enum, nil
@@ -138,7 +138,7 @@ func (e BACnetLogStatus) Serialize() ([]byte, error) {
 func (e BACnetLogStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetLogStatus", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -151,7 +151,7 @@ func (e BACnetLogStatus) PLC4XEnumName() string {
 	case BACnetLogStatus_LOG_INTERRUPTED:
 		return "LOG_INTERRUPTED"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLogStatus) String() string {

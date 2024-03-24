@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-code-generation</artifactId>
@@ -33,9 +33,12 @@
   <name>Code-Generation</name>
   <description>Home of the PLC4X code-generation framework.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>language-base-freemarker</module>
-    <module>language-java</module>
     <module>protocol-base-mspec</module>
     <module>protocol-test</module>
   </modules>
@@ -63,37 +66,18 @@
     </profile>
 
     <profile>
+      <id>with-java</id>
+      <modules>
+        <module>language-java</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>with-python</id>
       <modules>
         <module>language-python</module>
       </modules>
     </profile>
-
-    <profile>
-      <id>enable-all-checks</id>
-      <modules>
-        <module>tests</module>
-      </modules>
-    </profile>
   </profiles>
-
-  <dependencies>
-    <!-- JUnit 5 Support -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
 </project>

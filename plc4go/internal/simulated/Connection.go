@@ -238,7 +238,7 @@ func (c *Connection) Ping() <-chan plc4go.PlcConnectionPingResult {
 }
 
 func (c *Connection) GetMetadata() apiModel.PlcConnectionMetadata {
-	return _default.DefaultConnectionMetadata{
+	return &_default.DefaultConnectionMetadata{
 		ConnectionAttributes: map[string]string{
 			"connectionDelay": "Delay applied when connecting",
 			"closingDelay":    "Delay applied when closing the connection",

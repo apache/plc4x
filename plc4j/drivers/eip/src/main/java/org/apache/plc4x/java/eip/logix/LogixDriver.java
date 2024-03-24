@@ -19,15 +19,20 @@
 package org.apache.plc4x.java.eip.logix;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
+import org.apache.plc4x.java.eip.logix.configuration.LogixTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.*;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -44,8 +49,27 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return LogixConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(LogixTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -61,11 +85,6 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected boolean awaitDisconnectComplete() {
         return true;
-    }
-
-    @Override
-    protected String getDefaultTransport() {
-        return "tcp";
     }
 
     @Override
@@ -95,8 +114,7 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 //Second word for the size and then add the header size 24
-                int size = byteBuf.getUnsignedShortLE(byteBuf.readerIndex()+2)+24;
-                return size;
+                return byteBuf.getUnsignedShortLE(byteBuf.readerIndex()+2)+24;
             }
             return -1;
         }

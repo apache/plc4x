@@ -18,21 +18,24 @@
  */
 package org.apache.plc4x.java.canopen.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.can.CANTransportConfiguration;
 
-public class CANOpenConfiguration implements Configuration, CANTransportConfiguration {
+public class CANOpenConfiguration implements PlcConnectionConfiguration {
 
-    @ConfigurationParameter
+    @ConfigurationParameter("node-id")
+    @Description("CAN node identifier. Depending on used CAN version it might be 11 or 29 bit unsigned int.")
     private int nodeId;
 
     @ConfigurationParameter
+    @Description("Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.")
     private boolean heartbeat;
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(1000)
+    @Description("Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.")
     private int requestTimeout;
 
     public int getNodeId() {

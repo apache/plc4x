@@ -198,7 +198,7 @@ func (m *_ModbusPDUReadWriteMultipleHoldingRegistersResponse) SerializeWithWrite
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.GetValue())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, (byteCount))
+		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}

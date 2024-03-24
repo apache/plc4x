@@ -314,7 +314,7 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
 		// Enum field (transportSize)
-		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, m.TransportSize.Code(), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
+		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, uint8(m.TransportSize.Code()), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
@@ -324,14 +324,14 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.GetNumberOfElements())
-		_numberOfElementsErr := writeBuffer.WriteUint16("numberOfElements", 16, (numberOfElements))
+		_numberOfElementsErr := writeBuffer.WriteUint16("numberOfElements", 16, uint16((numberOfElements)))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.GetDbNumber())
-		_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, (dbNumber))
+		_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
 		if _dbNumberErr != nil {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
@@ -358,7 +358,7 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 5, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 5, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -366,14 +366,14 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (byteAddress)
 		byteAddress := uint16(m.GetByteAddress())
-		_byteAddressErr := writeBuffer.WriteUint16("byteAddress", 16, (byteAddress))
+		_byteAddressErr := writeBuffer.WriteUint16("byteAddress", 16, uint16((byteAddress)))
 		if _byteAddressErr != nil {
 			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
 		}
 
 		// Simple Field (bitAddress)
 		bitAddress := uint8(m.GetBitAddress())
-		_bitAddressErr := writeBuffer.WriteUint8("bitAddress", 3, (bitAddress))
+		_bitAddressErr := writeBuffer.WriteUint8("bitAddress", 3, uint8((bitAddress)))
 		if _bitAddressErr != nil {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}

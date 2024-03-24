@@ -164,8 +164,9 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_ServiceId serviceId =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "serviceId",
+            "PnDcp_ServiceId",
             new DataReaderEnumDefault<>(
                 PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

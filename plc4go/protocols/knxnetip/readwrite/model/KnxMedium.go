@@ -138,7 +138,7 @@ func KnxMediumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading KnxMedium")
 	}
 	if enum, ok := KnxMediumByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for KnxMedium")
 		return KnxMedium(val), nil
 	} else {
 		return enum, nil
@@ -156,7 +156,7 @@ func (e KnxMedium) Serialize() ([]byte, error) {
 func (e KnxMedium) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("KnxMedium", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -175,7 +175,7 @@ func (e KnxMedium) PLC4XEnumName() string {
 	case KnxMedium_MEDIUM_KNX_IP:
 		return "MEDIUM_KNX_IP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e KnxMedium) String() string {

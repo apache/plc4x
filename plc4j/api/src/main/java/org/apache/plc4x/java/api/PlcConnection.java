@@ -71,7 +71,7 @@ public interface PlcConnection extends AutoCloseable {
      *
      * @return CompletableFuture that is completed successfully (Void) or unsuccessfully with an PlcException.
      */
-    CompletableFuture<Void> ping();
+    CompletableFuture<? extends PlcPingResponse> ping();
 
     /**
      * @return read request builder.

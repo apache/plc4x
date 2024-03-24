@@ -50,9 +50,10 @@ public class IncomingPlcMessageHandler {
         embeddedChannel.writeInbound(Unpooled.wrappedBuffer(data));
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({"rawtypes"})
     public byte[] getBytesFromXml(Element referenceXml, ByteOrder byteOrder) throws DriverTestsuiteException {
-        final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024, byteOrder);
+        // TODO: Find some smart way to find out how big the buffer should be.
+        final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024 * 100, byteOrder);
         MessageInput messageInput = MessageResolver.getMessageInput(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
         // Get Message and Validate
         Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageInput, referenceXml, parserArguments);
@@ -61,7 +62,7 @@ public class IncomingPlcMessageHandler {
         try {
             message.serialize(writeBuffer);
             final byte[] data = new byte[message.getLengthInBytes()];
-            System.arraycopy(writeBuffer.getData(), 0, data, 0, writeBuffer.getPos());
+            System.arraycopy(writeBuffer.getBytes(), 0, data, 0, writeBuffer.getPos());
             return data;
         } catch (SerializationException e) {
             throw new DriverTestsuiteException("Error serializing message", e);

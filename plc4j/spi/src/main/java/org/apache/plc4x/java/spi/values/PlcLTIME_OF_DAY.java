@@ -62,7 +62,7 @@ public class PlcLTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
 
     @Override
     public PlcValueType getPlcValueType() {
-        return PlcValueType.TIME_OF_DAY;
+        return PlcValueType.LTIME_OF_DAY;
     }
 
     public BigInteger getNanosecondsSinceMidnight() {

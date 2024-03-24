@@ -223,13 +223,13 @@ func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx cont
 		return nil, errors.Wrap(pullErr, "Error pulling for item")
 	}
 	// Count array
-	item := make([]CycServiceItemType, itemsCount)
+	item := make([]CycServiceItemType, utils.Max(itemsCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(item) == 0 {
 		item = nil
 	}
 	{
-		_numItems := uint16(itemsCount)
+		_numItems := uint16(utils.Max(itemsCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -281,7 +281,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) SerializeWithWrit
 
 		// Simple Field (itemsCount)
 		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, (itemsCount))
+		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
 		if _itemsCountErr != nil {
 			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
 		}
@@ -300,7 +300,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) SerializeWithWrit
 
 		// Simple Field (timeFactor)
 		timeFactor := uint8(m.GetTimeFactor())
-		_timeFactorErr := writeBuffer.WriteUint8("timeFactor", 8, (timeFactor))
+		_timeFactorErr := writeBuffer.WriteUint8("timeFactor", 8, uint8((timeFactor)))
 		if _timeFactorErr != nil {
 			return errors.Wrap(_timeFactorErr, "Error serializing 'timeFactor' field")
 		}

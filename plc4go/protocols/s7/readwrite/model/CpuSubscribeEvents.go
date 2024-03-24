@@ -126,7 +126,7 @@ func CpuSubscribeEventsParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading CpuSubscribeEvents")
 	}
 	if enum, ok := CpuSubscribeEventsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for CpuSubscribeEvents")
 		return CpuSubscribeEvents(val), nil
 	} else {
 		return enum, nil
@@ -144,7 +144,7 @@ func (e CpuSubscribeEvents) Serialize() ([]byte, error) {
 func (e CpuSubscribeEvents) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("CpuSubscribeEvents", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("CpuSubscribeEvents", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -159,7 +159,7 @@ func (e CpuSubscribeEvents) PLC4XEnumName() string {
 	case CpuSubscribeEvents_CP:
 		return "CP"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e CpuSubscribeEvents) String() string {

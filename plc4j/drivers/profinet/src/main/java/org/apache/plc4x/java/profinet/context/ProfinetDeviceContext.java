@@ -106,6 +106,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private long sequenceNumber;
     private  DceRpc_ActivityUuid activityUuid;
     private NetworkInterface networkInterface;
+    private long maxArrayCount;
+    private int applicationResponseDestinationPort;
 
     public ProfinetDeviceContext() {
         // Generate a new Activity Id, which will be used throughout the connection.
@@ -319,6 +321,22 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return outputIoCsApiBlocks;
     }
 
+    public long getMaxArrayCount() {
+        return maxArrayCount;
+    }
+
+    public void setMaxArrayCount(long maxArrayCount) {
+        this.maxArrayCount = maxArrayCount;
+    }
+
+    public int getApplicationResponseDestinationPort() {
+        return applicationResponseDestinationPort;
+    }
+
+    public void setApplicationResponseDestinationPort(int applicationResponseDestinationPort) {
+        this.applicationResponseDestinationPort = applicationResponseDestinationPort;
+    }
+
     public List<PnIoCm_Submodule> getExpectedSubModuleApiBlocks(ProfinetModule module) {
         return module.getExpectedSubModuleApiBlocks();
     }
@@ -490,7 +508,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return r;
     }
 
-    public boolean hasSequenecNumberInQueue(long sequenceNumber) {
+    public boolean hasSequenceNumberInQueue(long sequenceNumber) {
         return queue.containsKey(sequenceNumber);
     }
 

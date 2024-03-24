@@ -169,13 +169,13 @@ func NLMInitalizeRoutingTableAckParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for portMappings")
 	}
 	// Count array
-	portMappings := make([]NLMInitalizeRoutingTablePortMapping, numberOfPorts)
+	portMappings := make([]NLMInitalizeRoutingTablePortMapping, utils.Max(numberOfPorts, 0))
 	// This happens when the size is set conditional to 0
 	if len(portMappings) == 0 {
 		portMappings = nil
 	}
 	{
-		_numItems := uint16(numberOfPorts)
+		_numItems := uint16(utils.Max(numberOfPorts, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -227,7 +227,7 @@ func (m *_NLMInitalizeRoutingTableAck) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (numberOfPorts)
 		numberOfPorts := uint8(m.GetNumberOfPorts())
-		_numberOfPortsErr := writeBuffer.WriteUint8("numberOfPorts", 8, (numberOfPorts))
+		_numberOfPortsErr := writeBuffer.WriteUint8("numberOfPorts", 8, uint8((numberOfPorts)))
 		if _numberOfPortsErr != nil {
 			return errors.Wrap(_numberOfPortsErr, "Error serializing 'numberOfPorts' field")
 		}

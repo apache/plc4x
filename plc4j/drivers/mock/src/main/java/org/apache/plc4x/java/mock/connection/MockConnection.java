@@ -69,10 +69,9 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
     }
 
     @Override
-    public CompletableFuture<Void> ping() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        future.completeExceptionally(new UnsupportedOperationException());
-        return future;
+    public CompletableFuture<? extends PlcPingResponse> ping() {
+        return CompletableFuture.completedFuture(
+            new DefaultPlcPingResponse(new DefaultPlcPingRequest(null), PlcResponseCode.OK));
     }
 
     @Override
@@ -89,22 +88,22 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
-            public boolean canRead() {
+            public boolean isReadSupported() {
                 return true;
             }
 
             @Override
-            public boolean canWrite() {
+            public boolean isWriteSupported() {
                 return true;
             }
 
             @Override
-            public boolean canSubscribe() {
+            public boolean isSubscribeSupported() {
                 return true;
             }
 
             @Override
-            public boolean canBrowse() {
+            public boolean isBrowseSupported() {
                 return true;
             }
         };

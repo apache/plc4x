@@ -237,7 +237,7 @@ func (m *_BACnetContextTagBoolean) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (value)
 		value := uint8(m.GetValue())
-		_valueErr := writeBuffer.WriteUint8("value", 8, (value))
+		_valueErr := writeBuffer.WriteUint8("value", 8, uint8((value)))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
@@ -254,6 +254,8 @@ func (m *_BACnetContextTagBoolean) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

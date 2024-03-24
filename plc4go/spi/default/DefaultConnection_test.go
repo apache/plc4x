@@ -691,7 +691,7 @@ func Test_defaultConnection_GetMetadata(t *testing.T) {
 	}{
 		{
 			name: "get it",
-			want: DefaultConnectionMetadata{},
+			want: &DefaultConnectionMetadata{},
 		},
 	}
 	for _, tt := range tests {

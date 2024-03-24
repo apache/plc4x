@@ -215,7 +215,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	}
 
 	// Const Field (protocolId)
-	_protocolIdErr := writeBuffer.WriteUint8("protocolId", 8, 0x03)
+	_protocolIdErr := writeBuffer.WriteUint8("protocolId", 8, uint8(0x03))
 	if _protocolIdErr != nil {
 		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
 	}
@@ -230,7 +230,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -238,7 +238,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.GetPayload().GetLengthInBytes(ctx)) + uint16(uint16(4)))
-	_lenErr := writeBuffer.WriteUint16("len", 16, (len))
+	_lenErr := writeBuffer.WriteUint16("len", 16, uint16((len)))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
 	}

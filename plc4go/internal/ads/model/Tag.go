@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"encoding/xml"
 	"fmt"
@@ -36,7 +37,7 @@ import (
 const NONE = int32(-1)
 
 type PlcTag struct {
-	apiModel.PlcTag
+	apiModel.PlcSubscriptionTag
 
 	ArrayInfo []apiModel.ArrayInfo
 }
@@ -104,13 +105,13 @@ func (m DirectPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
 
 func (m DirectPlcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m DirectPlcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("DirectPlcTag"); err != nil {
 		return err
 	}
@@ -156,6 +157,14 @@ func (m DirectPlcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 		return err
 	}
 	return nil
+}
+
+func (m DirectPlcTag) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }
 
 func (m DirectPlcTag) MarshalXMLAttr(name xml.Name) (xml.Attr, error) {

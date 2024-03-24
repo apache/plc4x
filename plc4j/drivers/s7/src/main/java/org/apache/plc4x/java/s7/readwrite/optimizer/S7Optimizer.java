@@ -19,22 +19,27 @@
 package org.apache.plc4x.java.s7.readwrite.optimizer;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
+import org.apache.plc4x.java.s7.readwrite.tag.S7ClkTag;
+import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
 import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
-import org.apache.plc4x.java.s7.readwrite.MemoryArea;
-import org.apache.plc4x.java.s7.readwrite.TransportSize;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 
-import java.util.*;
-import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.plc4x.java.s7.readwrite.tag.S7StringVarLengthTag;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -60,13 +65,25 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_READ_RESPONSE_SIZE;
 
         // List of all items in the current request.
+
         LinkedHashMap<String, PlcTag> curTags = new LinkedHashMap<>();
 
         for (String tagName : readRequest.getTagNames()) {
-            if (readRequest.getTag(tagName) instanceof S7SzlTag){
+           
+            //TODO: Individual processing of these types of tags. like S7StringTag
+            if ((readRequest.getTag(tagName) instanceof S7SzlTag) ||
+                (readRequest.getTag(tagName) instanceof S7ClkTag)) {
                 curTags.put(tagName, readRequest.getTag(tagName));
                 continue;
             }
+            
+            if ((readRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
+                LinkedHashMap<String, PlcTag> strTags = new LinkedHashMap<>();
+                strTags.put(tagName, readRequest.getTag(tagName));
+                processedRequests.add(new DefaultPlcReadRequest(
+                ((DefaultPlcReadRequest) readRequest).getReader(), strTags));
+                continue;
+            }            
             
             S7Tag tag = (S7Tag) readRequest.getTag(tagName);
 
@@ -115,8 +132,16 @@ public class S7Optimizer extends BaseOptimizer {
         return processedRequests;
     }
 
+
     @Override
     protected List<PlcWriteRequest> processWriteRequest(PlcWriteRequest writeRequest, DriverContext driverContext) {
+
+        for (String tagName : writeRequest.getTagNames()) {
+            if (writeRequest.getTag(tagName) instanceof S7ClkTag) {
+                return Collections.singletonList(writeRequest);
+            }
+        }
+
         S7DriverContext s7DriverContext = (S7DriverContext) driverContext;
         List<PlcWriteRequest> processedRequests = new LinkedList<>();
 
@@ -129,12 +154,23 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, TagValueItem> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
+            
+            if ((writeRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
+                LinkedHashMap<String, TagValueItem> strTags = new LinkedHashMap<>();
+                strTags.put(tagName, 
+                        new TagValueItem(writeRequest.getTag(tagName), 
+                                writeRequest.getPlcValue(tagName)));  
+                processedRequests.add(new DefaultPlcWriteRequest(
+                ((DefaultPlcWriteRequest) writeRequest).getWriter(), strTags));
+                continue;                
+            }
+                                    
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
             PlcValue value = writeRequest.getPlcValue(tagName);
 
             int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + 4/* Size of Payload item header*/;
             if (tag.getDataType() == TransportSize.BOOL) {
-                writeRequestItemSize += Math.ceil((double) tag.getNumberOfElements() / 8);
+                writeRequestItemSize += (int) Math.ceil((double) tag.getNumberOfElements() / 8);
             } else {
                 writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes());
             }

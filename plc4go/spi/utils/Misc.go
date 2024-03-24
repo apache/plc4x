@@ -25,7 +25,7 @@ import (
 )
 
 // InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a func() any, b func() any) any {
+func InlineIf[T any](test bool, a func() T, b func() T) T {
 	if test {
 		return a()
 	} else {
@@ -50,6 +50,14 @@ func CleanupTimer(timer *time.Timer) {
 
 func Min[T constraints.Ordered](left, right T) T {
 	if left < right {
+		return left
+	} else {
+		return right
+	}
+}
+
+func Max[T constraints.Ordered](left, right T) T {
+	if left > right {
 		return left
 	} else {
 		return right

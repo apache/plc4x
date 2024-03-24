@@ -22,12 +22,14 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.annotations.*;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ParameterConverter;
+import org.apache.plc4x.java.spi.configuration.annotations.Required;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -52,13 +54,37 @@ public class ConfigurationFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-    // TODO Respect Path Params
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String configurationString) {
+    public <T extends PlcConnectionConfiguration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+                                                                        String transportConfig, String paramString) {
+
+        // Get a map of all parameters in the connection string.
+        Map<String, List<String>> paramStringValues = splitQuery(paramString);
+        return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, paramStringValues);
+    }
+
+    public <T extends PlcTransportConfiguration> T createTransportConfiguration(Class<T> pClazz, String protocolCode,
+                                                                                String transportCode, String transportConfig,
+                                                                                String paramString) {
+        // Get a map of all parameters in the connection string.
+        Map<String, List<String>> paramStringValues = splitQuery(paramString);
+        // Filter out the properties, that don't have the current transport code as prefix.
+        String prefix = transportCode + ".";
+        Map<String, List<String>> filteredParamStringValues = new HashMap<>();
+        for (String paramName : paramStringValues.keySet()) {
+            if(paramName.startsWith(prefix)) {
+                filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
+            }
+        }
+        return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+    }
+
+    public <T> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+                                                           String transportConfig, Map<String, List<String>> paramStringValues) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
         Map<String, Field> fields = Arrays.stream(FieldUtils.getAllFields(pClazz))
             // - Filter out only the ones annotated with the ConfigurationParameter annotation.
-            .filter(field -> field.getAnnotation(ConfigurationParameter.class) != null)
+            .filter(field -> (field.getAnnotation(ConfigurationParameter.class) != null) || (field.getAnnotation(ComplexConfigurationParameter.class) != null))
             // - Create a map with the field-name as key and the field itself as value.
             .collect(Collectors.toMap(
                 ConfigurationFactory::getConfigurationName,
@@ -66,6 +92,7 @@ public class ConfigurationFactory {
             ));
 
         // Get a list of all required configuration parameters.
+        // TODO: Check for the complex-fields with required annotations.
         List<String> missingFieldNames = fields.values().stream()
             .filter(field -> field.getAnnotation(Required.class) != null)
             .map(ConfigurationFactory::getConfigurationName)
@@ -76,21 +103,49 @@ public class ConfigurationFactory {
         try {
             instance = pClazz.getDeclaredConstructor().newInstance();
         } catch (InvocationTargetException | InstantiationException |
-            IllegalAccessException | NoSuchMethodException e) {
+                 IllegalAccessException | NoSuchMethodException e) {
             throw new IllegalArgumentException("Unable to Instantiate Configuration Class", e);
         }
 
         // Process the parameters passed in with the connection string.
         try {
-            // Get a map of all parameters in the connection string.
-            Map<String, List<String>> paramStringValues = splitQuery(configurationString);
+            // Add the other codes to the param strings, so we can make them accessible from Configurations.
+            // Like this:
+            //    @ConfigurationParameter("protocolCode")
+            //    private String protocolCode;
+            paramStringValues = new HashMap<>(paramStringValues);
+            List<String> previousValue;
+            previousValue = paramStringValues.put("protocol-code", List.of(protocolCode));
+            if (previousValue != null) {
+                LOGGER.warn("protocolCode with value {} overridden by", protocolCode);
+            }
+            previousValue = paramStringValues.put("transport-code", List.of(transportCode));
+            if (previousValue != null) {
+                LOGGER.warn("transportCode with value {} overridden by", transportCode);
+            }
+            previousValue = paramStringValues.put("transport-config", List.of(transportConfig));
+            if (previousValue != null) {
+                LOGGER.warn("transportConfig with value {} overridden by", transportConfig);
+            }
 
             // Iterate over all fields and set the values to either the values specified
             // in the param string or to defaults configured by annotations.
             for (Map.Entry<String, Field> entry : fields.entrySet()) {
                 final String configName = entry.getKey();
                 final Field field = fields.get(configName);
-                if (paramStringValues.containsKey(configName)) {
+                if (field.getAnnotation(ComplexConfigurationParameter.class) != null) {
+                    // Filter out only the parameters with the given prefix.
+                    String prefix = field.getAnnotation(ComplexConfigurationParameter.class).prefix() + ".";
+                    Map<String, List<String>> filteredParamStringValues = new HashMap<>();
+                    for (String paramName : paramStringValues.keySet()) {
+                        if(paramName.startsWith(prefix)) {
+                            filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
+                        }
+                    }
+                    Class<PlcConfiguration> configType = (Class<PlcConfiguration>) field.getType();
+                    PlcConfiguration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+                    FieldUtils.writeField(instance, field.getName(), configValue, true);
+                } else if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
                     // As the arguments might be URL encoded, be sure it's decoded.
                     stringValue = URLDecoder.decode(stringValue, StandardCharsets.UTF_8);
@@ -116,7 +171,7 @@ public class ConfigurationFactory {
         return instance;
     }
 
-    public static <T> T configure(Configuration configuration, T obj) {
+    public static <T> T configure(PlcConfiguration configuration, T obj) {
         // Check if in this object is configurable at all.
         if (ClassUtils.isAssignable(obj.getClass(), HasConfiguration.class)) {
             // Check if the type declared by the HasConfiguration interface is
@@ -135,7 +190,7 @@ public class ConfigurationFactory {
                     if (configClass.isAssignableFrom(configuration.getClass())) {
                         try {
                             ((HasConfiguration) obj).setConfiguration(configuration);
-                        } catch(Throwable t) {
+                        } catch (Throwable t) {
                             LOGGER.error("Error setting the configuration", t);
                             throw new PlcRuntimeException("Error setting the configuration", t);
                         }
@@ -154,8 +209,10 @@ public class ConfigurationFactory {
      * @param field name of the field.
      * @return name of the configuration (either from the annotation or from the field itself)
      */
-    private static String getConfigurationName(Field field) {
-        if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
+    public static String getConfigurationName(Field field) {
+        if (field.getAnnotation(ComplexConfigurationParameter.class) != null) {
+            return field.getAnnotation(ComplexConfigurationParameter.class).prefix();
+        } else if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
             return field.getName();
         } else {
             return field.getAnnotation(ConfigurationParameter.class).value();
@@ -182,7 +239,8 @@ public class ConfigurationFactory {
                 if (converter.getType().isAssignableFrom(field.getType())) {
                     return converter.convert(valueString);
                 }
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException e) {
                 throw new IllegalArgumentException("Could not initialize parameter converter", e);
             }
             throw new IllegalArgumentException("Unsupported field type " + field.getType() + " for converter " + converterClass);
@@ -212,13 +270,20 @@ public class ConfigurationFactory {
         if ((field.getType() == double.class) || (field.getType() == Double.class)) {
             return Double.parseDouble(valueString);
         }
+        if (field.getType().isEnum()) {
+            return parseEnumValue(field, valueString);
+        }
         throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
     }
 
-    private static Object getDefaultValueFromAnnotation(Field field) {
+    public static Object getDefaultValueFromAnnotation(Field field) {
         IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
         if (intDefaultValue != null) {
             return intDefaultValue.value();
+        }
+        LongDefaultValue longDefaultValue = field.getAnnotation(LongDefaultValue.class);
+        if(longDefaultValue != null) {
+            return longDefaultValue.value();
         }
         BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
         if (booleanDefaultValue != null) {
@@ -234,9 +299,16 @@ public class ConfigurationFactory {
         }
         StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
         if (stringDefaultValue != null) {
+            if (field.getType().isEnum()) {
+                return parseEnumValue(field, stringDefaultValue.value());
+            }
             return stringDefaultValue.value();
         }
         return null;
+    }
+
+    private static Enum<?> parseEnumValue(Field field, String valueString) {
+        return Enum.valueOf((Class<Enum>) field.getType(), valueString);
     }
 
     /**

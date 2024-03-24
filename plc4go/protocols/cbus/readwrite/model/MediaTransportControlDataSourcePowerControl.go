@@ -222,10 +222,14 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 			return errors.Wrap(_stateErr, "Error serializing 'state' field")
 		}
 		// Virtual field
+		isShouldPowerOn := m.GetIsShouldPowerOn()
+		_ = isShouldPowerOn
 		if _isShouldPowerOnErr := writeBuffer.WriteVirtual(ctx, "isShouldPowerOn", m.GetIsShouldPowerOn()); _isShouldPowerOnErr != nil {
 			return errors.Wrap(_isShouldPowerOnErr, "Error serializing 'isShouldPowerOn' field")
 		}
 		// Virtual field
+		isShouldPowerOff := m.GetIsShouldPowerOff()
+		_ = isShouldPowerOff
 		if _isShouldPowerOffErr := writeBuffer.WriteVirtual(ctx, "isShouldPowerOff", m.GetIsShouldPowerOff()); _isShouldPowerOffErr != nil {
 			return errors.Wrap(_isShouldPowerOffErr, "Error serializing 'isShouldPowerOff' field")
 		}

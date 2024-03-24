@@ -138,7 +138,7 @@ func BACnetProgramErrorParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return 0, errors.Wrap(err, "error reading BACnetProgramError")
 	}
 	if enum, ok := BACnetProgramErrorByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetProgramError")
 		return BACnetProgramError(val), nil
 	} else {
 		return enum, nil
@@ -156,7 +156,7 @@ func (e BACnetProgramError) Serialize() ([]byte, error) {
 func (e BACnetProgramError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetProgramError", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -175,7 +175,7 @@ func (e BACnetProgramError) PLC4XEnumName() string {
 	case BACnetProgramError_OTHER:
 		return "OTHER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetProgramError) String() string {

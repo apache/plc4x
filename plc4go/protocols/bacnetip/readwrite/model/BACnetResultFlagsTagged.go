@@ -270,14 +270,20 @@ func (m *_BACnetResultFlagsTagged) SerializeWithWriteBuffer(ctx context.Context,
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
+	firstItem := m.GetFirstItem()
+	_ = firstItem
 	if _firstItemErr := writeBuffer.WriteVirtual(ctx, "firstItem", m.GetFirstItem()); _firstItemErr != nil {
 		return errors.Wrap(_firstItemErr, "Error serializing 'firstItem' field")
 	}
 	// Virtual field
+	lastItem := m.GetLastItem()
+	_ = lastItem
 	if _lastItemErr := writeBuffer.WriteVirtual(ctx, "lastItem", m.GetLastItem()); _lastItemErr != nil {
 		return errors.Wrap(_lastItemErr, "Error serializing 'lastItem' field")
 	}
 	// Virtual field
+	moreItems := m.GetMoreItems()
+	_ = moreItems
 	if _moreItemsErr := writeBuffer.WriteVirtual(ctx, "moreItems", m.GetMoreItems()); _moreItemsErr != nil {
 		return errors.Wrap(_moreItemsErr, "Error serializing 'moreItems' field")
 	}

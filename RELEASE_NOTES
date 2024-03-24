@@ -1,5 +1,5 @@
 ==============================================================
-(Unreleased) Apache PLC4X 0.11.0-SNAPSHOT
+(Unreleased) Apache PLC4X 0.13.0-SNAPSHOT
 ==============================================================
 
 New Features
@@ -10,6 +10,104 @@ Incompatible changes
 
 Bug Fixes
 ---------
+
+==============================================================
+Apache PLC4X 0.12.0
+==============================================================
+
+New Features
+------------
+
+- API: Made several bits of information available via the API
+  allowing tools to provide more content assist when dealing
+  with PLC4X connections.
+- S7: The S7 driver now supports reading of STRING and
+  WSTRING data-types without providing a maximum length.
+- Build: Worked on making PLC4X provide reproducible builds.
+- Added "Ping" functionality to: ADS, EIP, KNX, Mock, Modbus
+  and Simulated drivers.
+- The OPC-UA Java driver now support certificate-based
+  authentication and encryption.
+
+Incompatible changes
+--------------------
+
+- Java 8 is no longer officially supported and Java 11 is the
+  new base-line.
+- Renamed the PlcDriverManager method `listDrivers` to
+  `getProtocolCodes`
+- Renamed the PlcDriverMetadata method `canDiscover` to
+  `isDiscoverySupported`
+- Renamed the PlcConnectionMetadata methods `canRead`, `canWrite`
+  `canSubscribe` and `canBrowse` to `isReadSupported`,
+  `isWriteSupported`, `isSubscribeSupported` and `isBrowseSupported`
+- The configuration syntax for configuring transport-related
+  config options in the connection-string was updated to be
+  now prefixed with the transport name the option belongs to.
+
+Bug Fixes
+---------
+
+- S7: Several bugs and issues regarding supporting various
+  duration, date and time data-types.
+- S7: Implemented the missing 64bit (L-) types.
+- KNX: Fixed an issue with decoding 16 bit floating point
+  numbers.
+- NiFi-Integration: The NiFi integration module was greatly
+  improved.
+- Core: Fixed several leaks of open threads.
+
+==============================================================
+Apache PLC4X 0.11.0
+==============================================================
+
+New Features
+------------
+
+- IEC-60870-5-104 driver
+- Completely rewritten EIP driver that should now support
+  Allen-Bradley controllers
+- Completely rewritten the ADS driver that now supports
+  Auto-Discovery, Browse, UDOs and auto-configuration of
+  remote AMS routes
+- Support for S7 200 subscriptions
+- Added a docker-compose setup in a preparation for reproducible
+  builds
+- Added SBOM generation
+- Improved Apache NiFi support
+- Added support for the latest ETS version in KNX
+- Started implementing the ping() method for some drivers
+- Greatly updated Apache NiFi integration
+
+Incompatible changes
+--------------------
+
+- Java 1.8 is no longer supported and Java 11 is now the new
+  baseline version we support.
+- We've updated the APIs of both PLC4J and PLC4Go to be more in
+  sync. We also refined some of the terminology.
+- We've also re-written the `connection-cache`, which now replaces
+  both the old `connection-pool` and the old `connection-cache`.
+- The UI module has been removed as it relied on JavaFX, which is
+  no longer bundled with the JDK and therefore the LGPL license
+  renders is dad for Apache projects.
+- The Apache Camel integration was moved over to the Apache Camel
+  project.
+- The prototype-driver for PROFINET was completely updated
+- Due to the extreme refactoring of S7, ADS and EIP, the Go versions
+  of these drivers are currently not going to work as well as before
+  (We're going to address these issues in the next phase after the
+  release)
+- Changed the return type of the PLC4J Ping method to return more
+  information on if the ping was successful
+
+Bug Fixes
+---------
+
+Fixed issues with memory leaks in the ConnectionManager
+
+Fixed multiple issues reported for the handling of data-types in
+S7, Modbus and ADS protocols when reading and writing.
 
 ==============================================================
 Apache PLC4X 0.10.0

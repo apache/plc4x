@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataMultiStateInputInterfaceValue) SerializeWithWrite
 			return errors.Wrap(_interfaceValueErr, "Error serializing 'interfaceValue' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

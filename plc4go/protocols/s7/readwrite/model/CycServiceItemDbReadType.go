@@ -168,13 +168,13 @@ func CycServiceItemDbReadTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]SubItem, numberOfAreas)
+	items := make([]SubItem, utils.Max(numberOfAreas, 0))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(numberOfAreas)
+		_numItems := uint16(utils.Max(numberOfAreas, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -224,7 +224,7 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (numberOfAreas)
 		numberOfAreas := uint8(m.GetNumberOfAreas())
-		_numberOfAreasErr := writeBuffer.WriteUint8("numberOfAreas", 8, (numberOfAreas))
+		_numberOfAreasErr := writeBuffer.WriteUint8("numberOfAreas", 8, uint8((numberOfAreas)))
 		if _numberOfAreasErr != nil {
 			return errors.Wrap(_numberOfAreasErr, "Error serializing 'numberOfAreas' field")
 		}

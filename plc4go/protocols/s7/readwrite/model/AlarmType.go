@@ -120,7 +120,7 @@ func AlarmTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return 0, errors.Wrap(err, "error reading AlarmType")
 	}
 	if enum, ok := AlarmTypeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AlarmType")
 		return AlarmType(val), nil
 	} else {
 		return enum, nil
@@ -138,7 +138,7 @@ func (e AlarmType) Serialize() ([]byte, error) {
 func (e AlarmType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("AlarmType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("AlarmType", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -151,7 +151,7 @@ func (e AlarmType) PLC4XEnumName() string {
 	case AlarmType_ALARM_S:
 		return "ALARM_S"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AlarmType) String() string {

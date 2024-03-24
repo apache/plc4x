@@ -197,7 +197,7 @@ func (pm *_SysexCommand) SerializeParent(ctx context.Context, writeBuffer utils.
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType := uint8(child.GetCommandType())
-	_commandTypeErr := writeBuffer.WriteUint8("commandType", 8, (commandType))
+	_commandTypeErr := writeBuffer.WriteUint8("commandType", 8, uint8((commandType)))
 
 	if _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")

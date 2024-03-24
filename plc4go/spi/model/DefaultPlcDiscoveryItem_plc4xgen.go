@@ -53,7 +53,8 @@ func (d *DefaultPlcDiscoveryItem) SerializeWithWriteBuffer(ctx context.Context, 
 	if err := writeBuffer.PushContext("options", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.Options {
+	for _name, elem := range d.Options {
+		name := _name
 		_value := fmt.Sprintf("%v", elem)
 
 		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
@@ -70,7 +71,8 @@ func (d *DefaultPlcDiscoveryItem) SerializeWithWriteBuffer(ctx context.Context, 
 	if err := writeBuffer.PushContext("attributes", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.Attributes {
+	for _name, elem := range d.Attributes {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

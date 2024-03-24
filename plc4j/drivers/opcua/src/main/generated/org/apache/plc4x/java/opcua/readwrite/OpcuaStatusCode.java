@@ -79,6 +79,8 @@ public enum OpcuaStatusCode {
   BadLicenseExpired((long) 0x810E0000L),
   BadLicenseLimitsExceeded((long) 0x810F0000L),
   BadLicenseNotAvailable((long) 0x81100000L),
+  BadServerTooBusy((long) 0x80EE0000L),
+  GoodPasswordChangeRequired((long) 0x00EF0000L),
   GoodSubscriptionTransferred((long) 0x002D0000L),
   GoodCompletesAsynchronously((long) 0x002E0000L),
   GoodOverload((long) 0x002F0000L),
@@ -90,6 +92,7 @@ public enum OpcuaStatusCode {
   BadAttributeIdInvalid((long) 0x80350000L),
   BadIndexRangeInvalid((long) 0x80360000L),
   BadIndexRangeNoData((long) 0x80370000L),
+  BadIndexRangeDataMismatch((long) 0x80EA0000L),
   BadDataEncodingInvalid((long) 0x80380000L),
   BadDataEncodingUnsupported((long) 0x80390000L),
   BadNotReadable((long) 0x803A0000L),
@@ -119,6 +122,8 @@ public enum OpcuaStatusCode {
   BadBrowseDirectionInvalid((long) 0x804D0000L),
   BadNodeNotInView((long) 0x804E0000L),
   BadNumericOverflow((long) 0x81120000L),
+  BadLocaleNotSupported((long) 0x80ED0000L),
+  BadNoValue((long) 0x80F00000L),
   BadServerUriInvalid((long) 0x804F0000L),
   BadServerNameMissing((long) 0x80500000L),
   BadDiscoveryUrlMissing((long) 0x80510000L),
@@ -206,6 +211,7 @@ public enum OpcuaStatusCode {
   UncertainEngineeringUnitsExceeded((long) 0x40940000L),
   UncertainSubNormal((long) 0x40950000L),
   GoodLocalOverride((long) 0x00960000L),
+  GoodSubNormal((long) 0x00EB0000L),
   BadRefreshInProgress((long) 0x80970000L),
   BadConditionAlreadyDisabled((long) 0x80980000L),
   BadConditionAlreadyEnabled((long) 0x80CC0000L),
@@ -239,8 +245,11 @@ public enum OpcuaStatusCode {
   GoodDataIgnored((long) 0x00D90000L),
   BadRequestNotAllowed((long) 0x80E40000L),
   BadRequestNotComplete((long) 0x81130000L),
+  BadTransactionPending((long) 0x80E80000L),
   BadTicketRequired((long) 0x811F0000L),
   BadTicketInvalid((long) 0x81200000L),
+  BadLocked((long) 0x80E90000L),
+  BadRequiresLock((long) 0x80EC0000L),
   GoodEdited((long) 0x00DC0000L),
   GoodPostActionFailed((long) 0x00DD0000L),
   UncertainDominantValueChanged((long) 0x40DE0000L),
@@ -284,7 +293,8 @@ public enum OpcuaStatusCode {
   GoodCascadeNotSelected((long) 0x04040000L),
   GoodFaultStateActive((long) 0x04070000L),
   GoodInitiateFaultState((long) 0x04080000L),
-  GoodCascade((long) 0x04090000L);
+  GoodCascade((long) 0x04090000L),
+  BadDataSetIdInvalid((long) 0x80E70000L);
   private static final Map<Long, OpcuaStatusCode> map;
 
   static {

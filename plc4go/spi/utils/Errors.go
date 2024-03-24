@@ -21,6 +21,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"strings"
 	"time"
 )
@@ -57,6 +58,18 @@ func (m MultiError) Error() string {
 		childErrorText = "No errors"
 	}
 	return mainErrorText + childErrorText
+}
+
+func (m MultiError) Is(target error) bool {
+	if _, ok := target.(MultiError); ok {
+		return true
+	}
+	for _, childError := range m.Errors {
+		if errors.Is(childError, target) {
+			return true
+		}
+	}
+	return false
 }
 
 type ParseAssertError struct {

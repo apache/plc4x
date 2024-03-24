@@ -156,7 +156,46 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 					<#assign simpleField = field.asSimpleField().orElseThrow()>
 
 			// Simple Field (${simpleField.name})
-			<#if (case.name == "Struct") || ((case.name == "TIME") && (simpleField.name == "milliseconds")) || ((case.name == "LTIME") && (simpleField.name == "nanoseconds")) || ((case.name == "DATE") && ((simpleField.name == "secondsSinceEpoch") || (simpleField.name == "daysSinceSiemensEpoch"))) || ((case.name == "LDATE") && (simpleField.name == "nanosecondsSinceEpoch")) || ((case.name == "TIME_OF_DAY") && (simpleField.name == "millisecondsSinceMidnight")) || ((case.name == "LTIME_OF_DAY") && (simpleField.name == "nanosecondsSinceMidnight")) || ((case.name == "DATE_AND_TIME") && (simpleField.name == "secondsSinceEpoch")) || ((case.name == "LDATE_AND_TIME") && (simpleField.name == "nanosecondsSinceEpoch")) || ((case.name == "DATE_AND_TIME") && ((simpleField.name == "year") || (simpleField.name == "month") || (simpleField.name == "day") || (simpleField.name == "hour") || (simpleField.name == "minutes") || (simpleField.name == "seconds") || (simpleField.name == "nanoseconds"))) || (simpleField.name == "value")>${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
+			<#if
+			(case.name == "Struct")
+			|| ((case.name == "TIME") && (simpleField.name == "milliseconds"))
+			|| ((case.name == "LTIME") && (simpleField.name == "nanoseconds"))
+			|| (
+			  (case.name == "DATE") && ((simpleField.name == "secondsSinceEpoch")
+			  || (simpleField.name == "daysSinceSiemensEpoch"))
+			)
+			|| ((case.name == "LDATE") && (simpleField.name == "nanosecondsSinceEpoch"))
+			|| ((case.name == "TIME_OF_DAY") && (simpleField.name == "millisecondsSinceMidnight"))
+			|| ((case.name == "LTIME_OF_DAY") && (simpleField.name == "nanosecondsSinceMidnight"))
+			|| ((case.name == "DATE_AND_TIME") && (simpleField.name == "secondsSinceEpoch"))
+			|| ((case.name == "DATE_AND_LTIME") && (
+				(simpleField.name == "year")
+			  	|| (simpleField.name == "month")
+			  	|| (simpleField.name == "day")
+				|| (simpleField.name == "hour")
+				|| (simpleField.name == "minutes")
+				|| (simpleField.name == "seconds")
+				|| (simpleField.name == "nanoseconds")
+				|| (simpleField.name == "nannosecondsOfSecond")
+				|| (simpleField.name == "nanosecondsSinceEpoch")
+				|| (simpleField.name == "dayOfWeek")
+				)
+			)
+			|| ((case.name == "LDATE_AND_TIME") && (simpleField.name == "nanosecondsSinceEpoch"))
+			|| (
+			  (case.name == "DATE_AND_TIME") && (
+			  	(simpleField.name == "year")
+			  	|| (simpleField.name == "month")
+			  	|| (simpleField.name == "day")
+				|| (simpleField.name == "hour")
+				|| (simpleField.name == "minutes")
+				|| (simpleField.name == "seconds")
+				|| (simpleField.name == "nanoseconds")
+				|| (simpleField.name == "millisecondsOfSecond")
+				|| (simpleField.name == "dayOfWeek")
+			  )
+			)
+			|| (simpleField.name == "value")>${simpleField.name}<#else>_</#if>, _${simpleField.name}Err := <#if simpleField.type.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(simpleField.name, simpleField.type.asSimpleTypeReference().orElseThrow(), simpleField)}<#else>${simpleField.type.asComplexTypeReference().orElseThrow().name}Parse(io<#if simpleField.type.asComplexTypeReference().orElseThrow().params.isPresent()>, <#list simpleField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(simpleField.type, parserArgument?index))}) (${helper.toParseExpression(simpleField, helper.getArgumentType(simpleField.type, parserArgument?index), parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>
 			if _${simpleField.name}Err != nil {
 				return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field")<@emitImport import="github.com/pkg/errors" />
 			}
@@ -166,12 +205,16 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 					<#assign valueDefined=true>
 					<#break>
 			</#switch>
+			<#if field.isNamedField()>
+				<#assign namedField=field.asNamedField().orElseThrow()/>
+				_ = ${namedField.name} // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+			</#if>
 		</#list>
         <#switch case.name>
             <#case "TIME">
 			readBuffer.CloseContext("${type.name}")
                 <#if helper.hasFieldsWithNames(case.fields, "milliseconds")>
-			return values.NewPlcTIMEFromMilliseconds(milliseconds), nil
+			return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
                 </#if>
                 <#break>
             <#case "LTIME">
@@ -214,6 +257,14 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return values.NewPlcDATA_AND_TIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
                 <#elseif helper.hasFieldsWithNames(case.fields, "secondsSinceEpoch")>
 			return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
+                </#if>
+                <#break>
+            <#case "DATE_AND_LTIME">
+			readBuffer.CloseContext("${type.name}")
+                <#if helper.hasFieldsWithNames(case.fields, "year", "month", "day", "hour", "minutes", "seconds", "nanoseconds")>
+			return values.NewPlcDATA_AND_LTIMEFromSegments(uint32(year), uint32(month), uint32(day), uint32(hour), uint32(minutes), uint32(seconds), uint32(nanoseconds)), nil
+                <#elseif helper.hasFieldsWithNames(case.fields, "nanosecondsSinceEpoch")>
+			return values.NewPlcDATA_AND_LTIMEFromNanosecondsSinceEpoch(nanosecondsSinceEpoch), nil
                 </#if>
                 <#break>
             <#case "LDATE_AND_TIME">

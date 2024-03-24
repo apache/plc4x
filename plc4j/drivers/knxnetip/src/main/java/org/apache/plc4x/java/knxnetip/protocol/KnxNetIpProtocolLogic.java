@@ -25,20 +25,15 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.value.*;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.ets.model.EtsModel;
 import org.apache.plc4x.java.knxnetip.ets.model.GroupAddress;
-import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.knxnetip.model.KnxNetIpSubscriptionHandle;
-import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress;
-import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress2Level;
-import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddress3Level;
-import org.apache.plc4x.java.knxnetip.readwrite.KnxGroupAddressFreeLevel;
-import org.apache.plc4x.java.knxnetip.readwrite.KnxDatapoint;
+import org.apache.plc4x.java.knxnetip.readwrite.*;
+import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.knxnetip.readwrite.*;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
@@ -86,6 +81,11 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
     }
 
     @Override
+    public void close(ConversationContext<KnxNetIpMessage> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void onConnect(ConversationContext<KnxNetIpMessage> context) {
         // Only the UDP transport supports login.
         if (!context.isPassive()) {
@@ -107,8 +107,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                     knxNetIpDriverContext.getLocalIPAddress(), knxNetIpDriverContext.getLocalPort()));
             context.sendRequest(searchRequest)
                 .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
-                .check(p -> p instanceof SearchResponse)
-                .unwrap(p -> (SearchResponse) p)
+                .only(SearchResponse.class)
                 .handle(searchResponse -> {
                     LOGGER.info("Got KNXnet/IP Search Response.");
                     // Check if this device supports tunneling services.
@@ -137,8 +136,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                         LOGGER.info("Sending KNXnet/IP Connection Request.");
                         context.sendRequest(connectionRequest)
                             .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
-                            .check(p -> p instanceof ConnectionResponse)
-                            .unwrap(p -> (ConnectionResponse) p)
+                            .only(ConnectionResponse.class)
                             .handle(connectionResponse -> {
                                 // Remember the communication channel id.
                                 knxNetIpDriverContext.setCommunicationChannelId(
@@ -181,8 +179,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                                                         knxNetIpDriverContext.getLocalPort()));
                                             context.sendRequest(connectionStateRequest)
                                                 .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
-                                                .check(p -> p instanceof ConnectionStateResponse)
-                                                .unwrap(p -> (ConnectionStateResponse) p)
+                                                .only(ConnectionStateResponse.class)
                                                 .handle(connectionStateResponse -> {
                                                     if (connectionStateResponse.getStatus() != Status.NO_ERROR) {
                                                         if (connectionStateResponse.getStatus() != null) {
@@ -235,10 +232,9 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 knxNetIpDriverContext.getLocalIPAddress(), knxNetIpDriverContext.getLocalPort()));
         context.sendRequest(disconnectRequest)
             .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
-            .check(p -> p instanceof DisconnectResponse)
-            .unwrap(p -> (DisconnectResponse) p)
+            .only(DisconnectResponse.class)
             .handle(disconnectResponse -> {
-                // In general we should probably check if the disconnect was successful, but in
+                // In general, we should probably check if the disconnect was successful, but in
                 // the end we couldn't do much if the disconnect would fail.
                 final String gatewayName = knxNetIpDriverContext.getGatewayName();
                 final KnxAddress gatewayAddress = knxNetIpDriverContext.getGatewayAddress();
@@ -249,6 +245,32 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 context.fireDisconnected();
                 LOGGER.debug("Disconnected event fired from KNX protocol");
             });
+    }
+
+    @Override
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        CompletableFuture<PlcPingResponse> future = new CompletableFuture<>();
+
+        // We're using the connection-state-request as Ping operation as that's
+        // what the protocol generally uses anyway.
+        ConnectionStateRequest connectionStateRequest =
+            new ConnectionStateRequest(
+                knxNetIpDriverContext.getCommunicationChannelId(),
+                new HPAIControlEndpoint(HostProtocolCode.IPV4_UDP,
+                    knxNetIpDriverContext.getLocalIPAddress(),
+                    knxNetIpDriverContext.getLocalPort()));
+        context.sendRequest(connectionStateRequest)
+            .expectResponse(KnxNetIpMessage.class, Duration.ofMillis(1000))
+            .only(ConnectionStateResponse.class)
+            .handle(connectionStateResponse -> {
+                if (connectionStateResponse.getStatus() == Status.NO_ERROR) {
+                    future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.OK));
+                } else {
+                    future.complete(new DefaultPlcPingResponse(pingRequest, PlcResponseCode.REMOTE_ERROR));
+                }
+            });
+
+        return future;
     }
 
     @Override
@@ -286,7 +308,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 try {
                     final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(KnxDatapoint.getLengthInBytes(value, groupAddress.getType()));
                     KnxDatapoint.staticSerialize(writeBuffer, value, groupAddress.getType());
-                    final byte[] serialized = writeBuffer.getData();
+                    final byte[] serialized = writeBuffer.getBytes();
                     dataFirstByte = serialized[0];
                     data = new byte[serialized.length - 1];
                     System.arraycopy(serialized, 1, data, 0, serialized.length - 1);
@@ -357,8 +379,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 .expectResponse(KnxNetIpMessage.class, REQUEST_TIMEOUT)
                 .onTimeout(future::completeExceptionally)
                 .onError((tr, e) -> future.completeExceptionally(e))
-                .check(tr -> tr instanceof TunnelingResponse)
-                .unwrap(tr -> ((TunnelingResponse) tr))
+                .only(TunnelingResponse.class)
                 .check(tr -> tr.getTunnelingResponseDataBlock().getCommunicationChannelId() == knxRequest.getTunnelingRequestDataBlock().getCommunicationChannelId())
                 .check(tr -> tr.getTunnelingResponseDataBlock().getSequenceCounter() == knxRequest.getTunnelingRequestDataBlock().getSequenceCounter())
                 .handle(tr -> {
@@ -476,6 +497,8 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 ReadBuffer rawDataReader = new ReadBufferByteBased(payload);
                 final PlcValue value = KnxDatapoint.staticParse(rawDataReader,
                     groupAddress.getType());
+                LOGGER.trace("Incoming message {} with payload {} decoded to {}",
+                    groupAddress, Hex.encodeHexString(payload), (value != null) ? value.toString() : "");
 
                 // Assemble the plc4x return data-structure.
                 Map<String, PlcValue> dataPointMap = new HashMap<>();
@@ -514,11 +537,6 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
                 Hex.encodeHexString(payload))
             );
         }
-    }
-
-    @Override
-    public void close(ConversationContext<KnxNetIpMessage> context) {
-        // TODO Implement Closing on Protocol Level
     }
 
     @Override
@@ -594,7 +612,7 @@ public class KnxNetIpProtocolLogic extends Plc4xProtocolBase<KnxNetIpMessage> im
         } catch (Exception e) {
             throw new PlcRuntimeException("Error converting tag into knx address data.", e);
         }
-        return address.getData();
+        return address.getBytes();
     }
 
     protected static String toString(KnxAddress knxAddress) {

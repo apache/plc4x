@@ -26,11 +26,11 @@ import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
 
 /**
  * This Example shows how to use OPM from plc4j via the @{@link PlcEntityManager}.
- * A @{@link CachedPlcConnectionManager} is used to optimize the acces and to allow for automatic reconnection.
+ * A @{@link CachedPlcConnectionManager} is used to optimize the access and to allow for automatic reconnection.
  *
  * The {@link PlcEntityManager} is similar to JPAs EntityManager.
  * The "connected" Entity (shootCounter) can be kept and passed around and stays connected in the sense that all calls
- * to a getter are forwared to the PLC.
+ * to a getter are forwarded to the PLC.
  * Finally, one can disconnect the Entity.
  *
  * This MT works against Tims S7 in Nürtingen.
@@ -38,8 +38,8 @@ import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
  */
 public class HelloOpm {
 
-    private static final String ADDRESS = "s7://192.168.167.210/0/0";
-    private static final String PLC_TAG_ADDRESS = "%DB225.DBW0:INT";
+    private static final String PLC_ADDRESS = "s7://192.168.23.30";
+    private static final String PLC_TAG_ADDRESS = "%DB4:16:SINT";
     private final PlcEntityManager entityManager;
 
     public static void main(String[] args) throws OPMException {
@@ -67,10 +67,12 @@ public class HelloOpm {
      */
     public void readValueFromPlcUsingConnectedEntity() throws OPMException {
         // Fetch connected Entity
-        DistanceSensor distanceSensor = entityManager.connect(DistanceSensor.class, ADDRESS);
+        DistanceSensor distanceSensor = entityManager.connect(DistanceSensor.class, PLC_ADDRESS);
         // Read shoot values a hundred times
         long distance = distanceSensor.getDistance();
         System.out.println("Current distance: " + distance);
+        // Write the values back ...
+        //entityManager.write(DistanceSensor.class, PLC_ADDRESS, distanceSensor);
         // Disconnect the Entity (not necessary)
         entityManager.disconnect(distanceSensor);
     }
@@ -84,7 +86,7 @@ public class HelloOpm {
      */
     public void readValueFromPlcUsingRead() throws OPMException {
         // Read Entity from PLC
-        DistanceSensor distanceSensor = entityManager.read(DistanceSensor.class, ADDRESS);
+        DistanceSensor distanceSensor = entityManager.read(DistanceSensor.class, PLC_ADDRESS);
         System.out.println("Current distance: " + distanceSensor.getDistance());
     }
 
@@ -93,6 +95,40 @@ public class HelloOpm {
      */
     @PlcEntity
     public static class DistanceSensor {
+
+        @PlcTag("%DB4:0.0:BOOL")
+        private boolean bitValue;
+
+        @PlcTag("%DB4:1:BYTE")
+        private short byteValue;
+
+        @PlcTag("%DB4:2:WORD")
+        private int wordValue;
+
+        @PlcTag("%DB4:4:DWORD")
+        private long dwordValue;
+
+        @PlcTag("%DB4:16:SINT")
+        private byte sintValue;
+
+        @PlcTag("%DB4:17:USINT")
+        private short usintValue;
+
+        @PlcTag("%DB4:18:INT")
+        private short intValue;
+
+        @PlcTag("%DB4:20:UINT")
+        private int uintValue;
+
+        @PlcTag("%DB4:22:DINT")
+        private int dintValue;
+
+        @PlcTag("%DB4:26:UDINT")
+        private long udintValue;
+
+        // TODO: For some reason it doesn't work with the simple type "float"
+        @PlcTag("%DB4:46:REAL")
+        private Float realValue;
 
         @PlcTag(PLC_TAG_ADDRESS)
         private long distance;

@@ -202,28 +202,28 @@ func (m *_ClassSegment) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (pathSegmentType)
 	pathSegmentType := uint8(m.GetPathSegmentType())
-	_pathSegmentTypeErr := writeBuffer.WriteUint8("pathSegmentType", 3, (pathSegmentType))
+	_pathSegmentTypeErr := writeBuffer.WriteUint8("pathSegmentType", 3, uint8((pathSegmentType)))
 	if _pathSegmentTypeErr != nil {
 		return errors.Wrap(_pathSegmentTypeErr, "Error serializing 'pathSegmentType' field")
 	}
 
 	// Simple Field (logicalSegmentType)
 	logicalSegmentType := uint8(m.GetLogicalSegmentType())
-	_logicalSegmentTypeErr := writeBuffer.WriteUint8("logicalSegmentType", 3, (logicalSegmentType))
+	_logicalSegmentTypeErr := writeBuffer.WriteUint8("logicalSegmentType", 3, uint8((logicalSegmentType)))
 	if _logicalSegmentTypeErr != nil {
 		return errors.Wrap(_logicalSegmentTypeErr, "Error serializing 'logicalSegmentType' field")
 	}
 
 	// Simple Field (logicalSegmentFormat)
 	logicalSegmentFormat := uint8(m.GetLogicalSegmentFormat())
-	_logicalSegmentFormatErr := writeBuffer.WriteUint8("logicalSegmentFormat", 2, (logicalSegmentFormat))
+	_logicalSegmentFormatErr := writeBuffer.WriteUint8("logicalSegmentFormat", 2, uint8((logicalSegmentFormat)))
 	if _logicalSegmentFormatErr != nil {
 		return errors.Wrap(_logicalSegmentFormatErr, "Error serializing 'logicalSegmentFormat' field")
 	}
 
 	// Simple Field (classSegment)
 	classSegment := uint8(m.GetClassSegment())
-	_classSegmentErr := writeBuffer.WriteUint8("classSegment", 8, (classSegment))
+	_classSegmentErr := writeBuffer.WriteUint8("classSegment", 8, uint8((classSegment)))
 	if _classSegmentErr != nil {
 		return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
 	}

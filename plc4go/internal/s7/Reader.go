@@ -204,11 +204,13 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 			m.log.Trace().Msg("Returning the response")
 			return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 		} else {
-			m.log.Warn().Msgf("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. "+
-				"We probably need to implement explicit handling for this, so please file a bug-report "+
-				"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "+
-				"containing a capture of the communication.",
-				errorClass, errorCode)
+			m.log.Warn().
+				Uint8("errorClass", errorClass).
+				Uint8("errorCode", errorCode).
+				Msg("Got an unknown error response from the PLC. Error Class: %d, Error Code %d. " +
+					"We probably need to implement explicit handling for this, so please file a bug-report " +
+					"on https://github.com/apache/plc4x/issues and ideally attach a WireShark dump " +
+					"containing a capture of the communication.")
 			for _, tagName := range readRequest.GetTagNames() {
 				responseCodes[tagName] = apiModel.PlcResponseCode_INTERNAL_ERROR
 				plcValues[tagName] = spiValues.NewPlcNULL()
@@ -238,7 +240,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		responseCodes[tagName] = responseCode
 		if responseCode == apiModel.PlcResponseCode_OK {
 			ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-			plcValue, err := readWriteModel.DataItemParse(ctxForModel, payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
+			plcValue, err := parsePlcValue(ctxForModel, tag, payloadItem.GetData())
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}
@@ -291,6 +293,11 @@ func encodeS7Address(tag apiModel.PlcTag) (readWriteModel.S7Address, error) {
 		s7Tag.GetByteOffset(),
 		s7Tag.GetBitOffset(),
 	), nil
+}
+
+func parsePlcValue(ctx context.Context, tag PlcTag, data []byte) (apiValues.PlcValue, error) {
+	// TODO: port over
+	panic("not implemented yet")
 }
 
 // Helper to convert the return codes returned from the S7 into one of our standard

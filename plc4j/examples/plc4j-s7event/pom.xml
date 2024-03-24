@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-s7event</artifactId>
@@ -34,26 +34,21 @@
     S7Event capture, MODE, SYS, USR &amp; ALARM events from S7-300 &amp; S7-400
   </description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <!-- TODO: This is only needed, because the example accesses direct types of the S7 driver we should refactor this to something that is a pure PLC4X API type of thing -->
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="override">
-            <usedDependency>org.apache.plc4x:plc4j-driver-ab-eth</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-ads</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-canopen</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-firmata</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-knxnetip</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-modbus</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-opcua</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-profinet</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4j-driver-simulated</usedDependency>
-          </usedDependencies>
-        </configuration>
+           <configuration>
+                <usedDependencies>
+                    <dependency>org.slf4j:slf4j-simple</dependency>
+                </usedDependencies>
+            </configuration>        
       </plugin>
     </plugins>
   </build>
@@ -62,14 +57,14 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <!-- TODO: Only needed because we directly rely on types of the driver -->
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -94,6 +89,16 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>${commons-lang3.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${netty.version}</version>
     </dependency>
   </dependencies>
 </project>

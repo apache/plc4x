@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -24,8 +24,8 @@ import io.netty.channel.ChannelHandlerContext;
 import java.time.Duration;
 import java.util.function.Consumer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.ConversationContext;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.ConnectedEvent;
 import org.apache.plc4x.java.spi.events.DisconnectedEvent;
 import org.apache.plc4x.java.spi.events.DiscoveredEvent;
@@ -67,7 +67,7 @@ public class DefaultConversationContext<T1> implements ConversationContext<T1> {
     @Override
     public void sendToWire(T1 msg) {
         logger.trace("Sending to wire {}", msg);
-        channelHandlerContext.channel().writeAndFlush(msg);
+        channelHandlerContext.channel().writeAndFlush(msg).syncUninterruptibly();
     }
 
     @Override
@@ -83,14 +83,14 @@ public class DefaultConversationContext<T1> implements ConversationContext<T1> {
     }
 
     @Override
-    public void fireDiscovered(Configuration c) {
+    public void fireDiscovered(PlcConnectionConfiguration c) {
         logger.trace("Firing Discovered!");
         channelHandlerContext.pipeline().fireUserEventTriggered(new DiscoveredEvent(c));
     }
 
     @Override
     public SendRequestContext<T1> sendRequest(T1 packet) {
-        return new DefaultSendRequestContext<>(handler -> {
+        return new DefaultSendRequestContext<>(null, handler -> {
             logger.trace("Adding Response Handler ...");
             handlerRegistrar.accept(handler);
         }, packet, this);
@@ -98,7 +98,7 @@ public class DefaultConversationContext<T1> implements ConversationContext<T1> {
 
     @Override
     public ExpectRequestContext<T1> expectRequest(Class<T1> clazz, Duration timeout) {
-        return new DefaultExpectRequestContext<>(handler -> {
+        return new DefaultExpectRequestContext<>(null, handler -> {
             logger.trace("Adding Request Handler ...");
             handlerRegistrar.accept(handler);
         }, clazz, timeout, this);

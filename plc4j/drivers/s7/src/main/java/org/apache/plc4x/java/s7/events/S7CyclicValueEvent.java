@@ -19,5 +19,5 @@
 package org.apache.plc4x.java.s7.events;
 
 public class S7CyclicValueEvent {
-    
+
 }

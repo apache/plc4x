@@ -122,12 +122,12 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetReserve() *
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(Subscription uint8, magicKey string, Alarmtype *AlarmStateType, Reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
 	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
-		Subscription:           Subscription,
+		Subscription:           subscription,
 		MagicKey:               magicKey,
-		Alarmtype:              Alarmtype,
-		Reserve:                Reserve,
+		Alarmtype:              alarmtype,
+		Reserve:                reserve,
 		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
@@ -152,7 +152,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetTypeName() 
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (Subscription)
+	// Simple field (subscription)
 	lengthInBits += 8
 
 	// Reserved Field (reserved)
@@ -161,12 +161,12 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetLengthInBit
 	// Simple field (magicKey)
 	lengthInBits += 64
 
-	// Optional Field (Alarmtype)
+	// Optional Field (alarmtype)
 	if m.Alarmtype != nil {
 		lengthInBits += 8
 	}
 
-	// Optional Field (Reserve)
+	// Optional Field (reserve)
 	if m.Reserve != nil {
 		lengthInBits += 8
 	}
@@ -193,12 +193,12 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (Subscription)
-	_Subscription, _SubscriptionErr := readBuffer.ReadUint8("Subscription", 8)
-	if _SubscriptionErr != nil {
-		return nil, errors.Wrap(_SubscriptionErr, "Error parsing 'Subscription' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+	// Simple Field (subscription)
+	_subscription, _subscriptionErr := readBuffer.ReadUint8("subscription", 8)
+	if _subscriptionErr != nil {
+		return nil, errors.Wrap(_subscriptionErr, "Error parsing 'subscription' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 	}
-	Subscription := _Subscription
+	subscription := _subscription
 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -224,30 +224,30 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	}
 	magicKey := _magicKey
 
-	// Optional Field (Alarmtype) (Can be skipped, if a given expression evaluates to false)
-	var Alarmtype *AlarmStateType = nil
-	if bool((Subscription) >= (128)) {
-		if pullErr := readBuffer.PullContext("Alarmtype"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for Alarmtype")
+	// Optional Field (alarmtype) (Can be skipped, if a given expression evaluates to false)
+	var alarmtype *AlarmStateType = nil
+	if bool((subscription) >= (128)) {
+		if pullErr := readBuffer.PullContext("alarmtype"); pullErr != nil {
+			return nil, errors.Wrap(pullErr, "Error pulling for alarmtype")
 		}
 		_val, _err := AlarmStateTypeParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'Alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+			return nil, errors.Wrap(_err, "Error parsing 'alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
-		Alarmtype = &_val
-		if closeErr := readBuffer.CloseContext("Alarmtype"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for Alarmtype")
+		alarmtype = &_val
+		if closeErr := readBuffer.CloseContext("alarmtype"); closeErr != nil {
+			return nil, errors.Wrap(closeErr, "Error closing for alarmtype")
 		}
 	}
 
-	// Optional Field (Reserve) (Can be skipped, if a given expression evaluates to false)
-	var Reserve *uint8 = nil
-	if bool((Subscription) >= (128)) {
-		_val, _err := readBuffer.ReadUint8("Reserve", 8)
+	// Optional Field (reserve) (Can be skipped, if a given expression evaluates to false)
+	var reserve *uint8 = nil
+	if bool((subscription) >= (128)) {
+		_val, _err := readBuffer.ReadUint8("reserve", 8)
 		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'Reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+			return nil, errors.Wrap(_err, "Error parsing 'reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
-		Reserve = &_val
+		reserve = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); closeErr != nil {
@@ -257,10 +257,10 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
 		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		Subscription:           Subscription,
+		Subscription:           subscription,
 		MagicKey:               magicKey,
-		Alarmtype:              Alarmtype,
-		Reserve:                Reserve,
+		Alarmtype:              alarmtype,
+		Reserve:                reserve,
 		reservedField0:         reservedField0,
 	}
 	_child._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _child
@@ -285,11 +285,11 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
 
-		// Simple Field (Subscription)
-		Subscription := uint8(m.GetSubscription())
-		_SubscriptionErr := writeBuffer.WriteUint8("Subscription", 8, (Subscription))
-		if _SubscriptionErr != nil {
-			return errors.Wrap(_SubscriptionErr, "Error serializing 'Subscription' field")
+		// Simple Field (subscription)
+		subscription := uint8(m.GetSubscription())
+		_subscriptionErr := writeBuffer.WriteUint8("subscription", 8, uint8((subscription)))
+		if _subscriptionErr != nil {
+			return errors.Wrap(_subscriptionErr, "Error serializing 'subscription' field")
 		}
 
 		// Reserved Field (reserved)
@@ -302,7 +302,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -315,29 +315,29 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
 		}
 
-		// Optional Field (Alarmtype) (Can be skipped, if the value is null)
-		var Alarmtype *AlarmStateType = nil
+		// Optional Field (alarmtype) (Can be skipped, if the value is null)
+		var alarmtype *AlarmStateType = nil
 		if m.GetAlarmtype() != nil {
-			if pushErr := writeBuffer.PushContext("Alarmtype"); pushErr != nil {
-				return errors.Wrap(pushErr, "Error pushing for Alarmtype")
+			if pushErr := writeBuffer.PushContext("alarmtype"); pushErr != nil {
+				return errors.Wrap(pushErr, "Error pushing for alarmtype")
 			}
-			Alarmtype = m.GetAlarmtype()
-			_AlarmtypeErr := writeBuffer.WriteSerializable(ctx, Alarmtype)
-			if popErr := writeBuffer.PopContext("Alarmtype"); popErr != nil {
-				return errors.Wrap(popErr, "Error popping for Alarmtype")
+			alarmtype = m.GetAlarmtype()
+			_alarmtypeErr := writeBuffer.WriteSerializable(ctx, alarmtype)
+			if popErr := writeBuffer.PopContext("alarmtype"); popErr != nil {
+				return errors.Wrap(popErr, "Error popping for alarmtype")
 			}
-			if _AlarmtypeErr != nil {
-				return errors.Wrap(_AlarmtypeErr, "Error serializing 'Alarmtype' field")
+			if _alarmtypeErr != nil {
+				return errors.Wrap(_alarmtypeErr, "Error serializing 'alarmtype' field")
 			}
 		}
 
-		// Optional Field (Reserve) (Can be skipped, if the value is null)
-		var Reserve *uint8 = nil
+		// Optional Field (reserve) (Can be skipped, if the value is null)
+		var reserve *uint8 = nil
 		if m.GetReserve() != nil {
-			Reserve = m.GetReserve()
-			_ReserveErr := writeBuffer.WriteUint8("Reserve", 8, *(Reserve))
-			if _ReserveErr != nil {
-				return errors.Wrap(_ReserveErr, "Error serializing 'Reserve' field")
+			reserve = m.GetReserve()
+			_reserveErr := writeBuffer.WriteUint8("reserve", 8, uint8(*(reserve)))
+			if _reserveErr != nil {
+				return errors.Wrap(_reserveErr, "Error serializing 'reserve' field")
 			}
 		}
 

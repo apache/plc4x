@@ -23,13 +23,17 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-osgi</artifactId>
 
   <name>PLC4J: OSGi</name>
   <description>OSGi Module for PLC4X</description>
+
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -39,12 +43,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

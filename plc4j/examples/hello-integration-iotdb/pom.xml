@@ -24,15 +24,16 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-hello-integration-iotdb</artifactId>
   <name>PLC4J: Examples: IoTDB</name>
-  <description>Application using Edgent to output PLC data to the IoTDB.</description>
+  <description>Application outputting PLC data into IoTDB.</description>
 
   <properties>
-    <iotdb.version>0.13.0</iotdb.version>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+    <iotdb.version>1.2.2</iotdb.version>
 
     <app.main.class>org.apache.plc4x.java.examples.integration.iotdb.PlcLogger</app.main.class>
   </properties>
@@ -54,24 +55,8 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-apache-edgent</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.edgent</groupId>
-      <artifactId>edgent-api-function</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.edgent</groupId>
-      <artifactId>edgent-api-topology</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.edgent</groupId>
-      <artifactId>edgent-providers-direct</artifactId>
-      <version>1.2.0</version>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>

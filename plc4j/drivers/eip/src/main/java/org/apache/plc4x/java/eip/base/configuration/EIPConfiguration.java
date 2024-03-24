@@ -18,29 +18,31 @@
  */
 package org.apache.plc4x.java.eip.base.configuration;
 
-import org.apache.plc4x.java.eip.base.EIPDriver;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
-public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
+public class EIPConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter
+    @Description("Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.")
     private int backplane = 1;
 
     @ConfigurationParameter
+    @Description("The slot within the backplane the CPU is located.")
     private int slot = 0;
 
     @ConfigurationParameter
+    @Description("Configure if the connection should be set to transport data in Big-Endian format, or not.")
     private boolean bigEndian = true;
 
     public int getBackplane() {
         return backplane;
     }
 
-    public void setBackplane(int backpane) {
-        this.backplane = backpane;
+    public void setBackplane(int backplane) {
+        this.backplane = backplane;
     }
 
     public int getSlot() {
@@ -58,8 +60,5 @@ public class EIPConfiguration implements Configuration, TcpTransportConfiguratio
     public void setByteOrder(ByteOrder byteOrder) {
         this.bigEndian = byteOrder == ByteOrder.BIG_ENDIAN;
     }
-
-    @Override
-    public int getDefaultPort(){return EIPDriver.PORT;}
 
 }

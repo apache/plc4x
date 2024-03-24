@@ -233,7 +233,7 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (rc)
 	rc := uint8(m.GetRc())
-	_rcErr := writeBuffer.WriteUint8("rc", 2, (rc))
+	_rcErr := writeBuffer.WriteUint8("rc", 2, uint8((rc)))
 	if _rcErr != nil {
 		return errors.Wrap(_rcErr, "Error serializing 'rc' field")
 	}

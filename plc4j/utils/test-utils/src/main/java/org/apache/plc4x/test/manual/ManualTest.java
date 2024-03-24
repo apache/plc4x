@@ -41,18 +41,25 @@ public abstract class ManualTest {
     private final boolean testWrite;
     private final List<TestCase> testCases;
 
+    private final int numRandomReads;
+
     public ManualTest(String connectionString) {
-        this(connectionString, false);
+        this(connectionString, true);
     }
 
     public ManualTest(String connectionString, boolean testWrite) {
+        this(connectionString, testWrite, 100);
+    }
+    public ManualTest(String connectionString, boolean testWrite, int numRandomReads) {
         this.connectionString = connectionString;
         this.testWrite = testWrite;
+        this.numRandomReads = numRandomReads;
         testCases = new ArrayList<>();
     }
 
-    public void addTestCase(String address, Object expectedReadValue) {
+    public ManualTest addTestCase(String address, Object expectedReadValue) {
         testCases.add(new TestCase(address, expectedReadValue, null));
+        return this;
     }
 
     public void run() throws Exception {
@@ -61,6 +68,8 @@ public abstract class ManualTest {
             // Run all entries separately:
             for (TestCase testCase : testCases) {
                 String tagName = testCase.address;
+
+                System.out.println(" - Reading: " + tagName);
                 // Prepare the read-request
                 final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(tagName, testCase.address).build();
 
@@ -72,13 +81,13 @@ public abstract class ManualTest {
                 Assertions.assertEquals(tagName, readResponse.getTagNames().iterator().next(), tagName);
                 Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName), tagName);
                 Assertions.assertNotNull(readResponse.getPlcValue(tagName), tagName);
-                if(readResponse.getPlcValue(tagName) instanceof PlcList) {
+                if (readResponse.getPlcValue(tagName) instanceof PlcList) {
                     PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
                     List expectedValues;
                     if (testCase.expectedReadValue instanceof PlcList) {
                         PlcList expectedPlcList = (PlcList) testCase.expectedReadValue;
                         expectedValues = expectedPlcList.getList();
-                    } else if(testCase.expectedReadValue instanceof List) {
+                    } else if (testCase.expectedReadValue instanceof List) {
                         expectedValues = (List) testCase.expectedReadValue;
                     } else {
                         Assertions.fail("Got a list of values, but only expected one.");
@@ -104,9 +113,10 @@ public abstract class ManualTest {
                 }
 
                 // Try writing the same value back to the PLC.
-                if(testWrite) {
+                if (testWrite) {
+                    System.out.println(" - Writing: " + tagName);
                     PlcValue plcValue;
-                    if(testCase.expectedReadValue instanceof PlcValue) {
+                    if (testCase.expectedReadValue instanceof PlcValue) {
                         plcValue = ((PlcValue) testCase.expectedReadValue);
                     } else {
                         plcValue = PlcValues.of(testCase.expectedReadValue);
@@ -119,7 +129,7 @@ public abstract class ManualTest {
                     PlcWriteResponse writeResponse = writeRequest.execute().get();
 
                     // Check the result
-                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName));
+                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
                 }
             }
             System.out.println("Success");
@@ -128,8 +138,8 @@ public abstract class ManualTest {
             // Read all items in one big request.
             // Shuffle the list of test cases and run the test 10 times.
             System.out.println("Reading all items together in random order");
-            for (int i = 0; i < 100; i++) {
-                System.out.println(" - run number " + i + " of " + 100);
+            for (int i = 0; i < numRandomReads; i++) {
+                System.out.println(" - run number " + i + " of " + numRandomReads);
                 final List<TestCase> shuffledTestcases = new ArrayList<>(testCases);
                 Collections.shuffle(shuffledTestcases);
 

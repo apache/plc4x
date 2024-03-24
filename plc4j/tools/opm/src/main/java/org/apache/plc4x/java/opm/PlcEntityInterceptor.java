@@ -42,6 +42,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -415,9 +416,13 @@ public class PlcEntityInterceptor {
         try (PlcConnection connection = connectionManager.getConnection(address)) {
             // Catch the exception, if no reader present (see below)
 
-            PlcWriteRequest request = connection.writeRequestBuilder()
-                .addTagAddress(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), object)
-                .build();
+            PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
+            if (object instanceof Collection) {
+                builder.addTagAddress(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), ((Collection<?>) object).toArray());
+            } else {
+                builder.addTagAddress(fqn, OpmUtils.getOrResolveAddress(registry, annotation.value()), object);
+            }
+            PlcWriteRequest request = builder.build();
 
             PlcWriteResponse response = getPlcWriteResponse(request);
 

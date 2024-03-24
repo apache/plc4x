@@ -166,14 +166,14 @@ func (m *_ChannelInformation) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Simple Field (numChannels)
 	numChannels := uint8(m.GetNumChannels())
-	_numChannelsErr := writeBuffer.WriteUint8("numChannels", 3, (numChannels))
+	_numChannelsErr := writeBuffer.WriteUint8("numChannels", 3, uint8((numChannels)))
 	if _numChannelsErr != nil {
 		return errors.Wrap(_numChannelsErr, "Error serializing 'numChannels' field")
 	}
 
 	// Simple Field (channelCode)
 	channelCode := uint16(m.GetChannelCode())
-	_channelCodeErr := writeBuffer.WriteUint16("channelCode", 13, (channelCode))
+	_channelCodeErr := writeBuffer.WriteUint16("channelCode", 13, uint16((channelCode)))
 	if _channelCodeErr != nil {
 		return errors.Wrap(_channelCodeErr, "Error serializing 'channelCode' field")
 	}

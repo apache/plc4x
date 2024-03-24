@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataLocalDate) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_localDateErr, "Error serializing 'localDate' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

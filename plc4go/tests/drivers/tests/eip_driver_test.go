@@ -24,17 +24,16 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/eip"
 	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
-	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestEIPDriver(t *testing.T) {
-	withCustomLogger := options.WithCustomLogger(testutils.ProduceTestingLogger(t))
+	optionsForTesting := testutils.EnrichOptionsWithOptionsForTesting(t)
 	testutils.RunDriverTestsuite(
 		t,
-		eip.NewDriver(withCustomLogger),
+		eip.NewDriver(optionsForTesting...),
 		"assets/testing/protocols/eip/DriverTestsuite.xml",
 		eipIO.EipXmlParserHelper{},
-		withCustomLogger,
+		optionsForTesting...,
 	)
 }

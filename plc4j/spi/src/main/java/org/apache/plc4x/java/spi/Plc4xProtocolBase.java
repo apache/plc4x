@@ -66,6 +66,10 @@ public abstract class Plc4xProtocolBase<T> {
     protected void decode(ConversationContext<T> context, T msg) throws Exception {
     }
 
+    public CompletableFuture<PlcPingResponse> ping(PlcPingRequest pingRequest) {
+        throw new NotImplementedException("");
+    }
+
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
         throw new NotImplementedException("");
     }

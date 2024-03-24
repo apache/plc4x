@@ -222,10 +222,14 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_startStopErr, "Error serializing 'startStop' field")
 		}
 		// Virtual field
+		chargeStopped := m.GetChargeStopped()
+		_ = chargeStopped
 		if _chargeStoppedErr := writeBuffer.WriteVirtual(ctx, "chargeStopped", m.GetChargeStopped()); _chargeStoppedErr != nil {
 			return errors.Wrap(_chargeStoppedErr, "Error serializing 'chargeStopped' field")
 		}
 		// Virtual field
+		chargeStarted := m.GetChargeStarted()
+		_ = chargeStarted
 		if _chargeStartedErr := writeBuffer.WriteVirtual(ctx, "chargeStarted", m.GetChargeStarted()); _chargeStartedErr != nil {
 			return errors.Wrap(_chargeStartedErr, "Error serializing 'chargeStarted' field")
 		}

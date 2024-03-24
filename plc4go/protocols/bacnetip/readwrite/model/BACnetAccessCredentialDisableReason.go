@@ -168,7 +168,7 @@ func BACnetAccessCredentialDisableReasonParseWithBuffer(ctx context.Context, rea
 		return 0, errors.Wrap(err, "error reading BACnetAccessCredentialDisableReason")
 	}
 	if enum, ok := BACnetAccessCredentialDisableReasonByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetAccessCredentialDisableReason")
 		return BACnetAccessCredentialDisableReason(val), nil
 	} else {
 		return enum, nil
@@ -186,7 +186,7 @@ func (e BACnetAccessCredentialDisableReason) Serialize() ([]byte, error) {
 func (e BACnetAccessCredentialDisableReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetAccessCredentialDisableReason", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetAccessCredentialDisableReason", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -215,7 +215,7 @@ func (e BACnetAccessCredentialDisableReason) PLC4XEnumName() string {
 	case BACnetAccessCredentialDisableReason_DISABLED_MANUAL:
 		return "DISABLED_MANUAL"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetAccessCredentialDisableReason) String() string {

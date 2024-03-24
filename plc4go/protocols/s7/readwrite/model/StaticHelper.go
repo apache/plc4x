@@ -23,6 +23,7 @@ import (
 	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"time"
 )
 
@@ -84,14 +85,14 @@ func SerializeTiaTimeOfDay(ctx context.Context, io utils.WriteBuffer, value valu
 	return nil
 }
 
-func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
+func ParseTiaDate(ctx context.Context, io utils.ReadBuffer) (uint16, error) {
 	/*try {
 	      int daysSince1990 = io.readUnsignedInt(16);
 	      return LocalDate.now().withYear(1990).withDayOfMonth(1).withMonth(1).plus(daysSince1990, ChronoUnit.DAYS);
 	  } catch (ParseException e) {
 	      return null;
 	  }*/
-	return time.Time{}, nil
+	return 0, nil
 }
 
 func SerializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
@@ -120,6 +121,14 @@ func ParseTiaDateTime(ctx context.Context, io utils.ReadBuffer) (time.Time, erro
 
 func SerializeTiaDateTime(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	//throw new NotImplementedException("Serializing DATE_AND_TIME not implemented");
+	return nil
+}
+
+func parseTiaDate(ctx context.Context, io utils.ReadBuffer) (time.Time, error) {
+	return time.Time{}, nil
+}
+
+func serializeTiaDate(ctx context.Context, io utils.WriteBuffer, value values.PlcValue) error {
 	return nil
 }
 
@@ -179,4 +188,25 @@ func S7msecToInt(ctx context.Context, readBuffer utils.ReadBuffer) (any, error) 
 
 func IntToS7msec(ctx context.Context, writeBuffer utils.WriteBuffer, value uint16) error {
 	return nil
+}
+
+func ParseSiemensYear(_ context.Context, readBuffer utils.ReadBuffer) (uint16, error) {
+	year, err := readBuffer.ReadUint16("year", 8, utils.WithEncoding("BCD"))
+	if err != nil {
+		return 0, errors.Wrap(err, "Error parsing year")
+	}
+	if year < 90 {
+		return 2000 + year, nil
+	} else {
+		return 1900 + year, nil
+	}
+}
+
+func SerializeSiemensYear(ctx context.Context, writeBuffer utils.WriteBuffer, dateTime values.PlcValue) error {
+	year := dateTime.GetDateTime().Year()
+	if year > 2000 {
+		return writeBuffer.WriteUint16("year", 8, uint16(year-2000), utils.WithEncoding("BCD"))
+	} else {
+		return writeBuffer.WriteUint16("year", 8, uint16(year-1900), utils.WithEncoding("BCD"))
+	}
 }

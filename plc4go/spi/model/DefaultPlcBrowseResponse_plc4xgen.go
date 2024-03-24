@@ -68,7 +68,8 @@ func (d *DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context,
 	if err := writeBuffer.PushContext("results", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.results {
+	for _name, elem := range d.results {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

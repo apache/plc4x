@@ -228,7 +228,7 @@ func (m *_ConnectionStateRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.GetCommunicationChannelId())
-		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, (communicationChannelId))
+		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
@@ -243,7 +243,7 @@ func (m *_ConnectionStateRequest) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

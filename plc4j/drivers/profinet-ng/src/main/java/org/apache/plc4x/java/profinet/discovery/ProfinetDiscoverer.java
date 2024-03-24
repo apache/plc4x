@@ -189,25 +189,33 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
                     role += ",DEVICE";
                 }
                 // Cut off the first comma
-                if (role.length() > 0) {
+                if (!role.isEmpty()) {
                     role = role.substring(1);
                 } else {
                     role = "unknown";
                 }
             }
 
-            String remoteIpAddress = "unknown";
+            String remoteAddress = "unknown";
             String remoteSubnetMask = "unknown";
             if (blocks.containsKey(IP_OPTION_IP)) {
                 PnDcp_Block_IpParameter block = (PnDcp_Block_IpParameter) blocks.get(IP_OPTION_IP);
                 try {
                     InetAddress addr = InetAddress.getByAddress(block.getIpAddress());
-                    remoteIpAddress = addr.getHostAddress();
+                    remoteAddress = addr.getHostAddress();
                     InetAddress netMask = InetAddress.getByAddress(block.getSubnetMask());
                     remoteSubnetMask = netMask.getHostAddress();
                 } catch (UnknownHostException e) {
-                    remoteIpAddress = "invalid";
+                    remoteAddress = "invalid";
                 }
+            }
+
+            // Some devices need to get an IP address assigned by the Profinet Master.
+            // In this case we'll use the MAC address as connection address.
+            Map<String, String> options = Collections.emptyMap();
+            if("0.0.0.0".equals(remoteAddress)) {
+                remoteAddress = srcAddr.toString();
+                options = Collections.singletonMap("ip-address", "{some-ip-address}");
             }
 
             // Get the Vendor-Id and the Device-Id
@@ -220,7 +228,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
             }
 
             Map<String, PlcValue> attributes = new HashMap<>();
-            attributes.put("ipAddress", PlcValues.of(remoteIpAddress));
+            attributes.put("ipAddress", PlcValues.of(remoteAddress));
             attributes.put("subnetMask", PlcValues.of(remoteSubnetMask));
             attributes.put("macAddress", PlcValues.of(srcAddr.toString()));
             attributes.put("localMacAddress", PlcValues.of(dstAddr.toString()));
@@ -235,7 +243,7 @@ public class ProfinetDiscoverer implements PlcDiscoverer {
 
             PlcDiscoveryItem value = new DefaultPlcDiscoveryItem(
                 ProfinetDriver.DRIVER_CODE, RawSocketTransport.TRANSPORT_CODE,
-                remoteIpAddress, Collections.emptyMap(), name, attributes);
+                remoteAddress, options, name, attributes);
             values.add(value);
 
             // If we have a discovery handler, pass it to the handler callback

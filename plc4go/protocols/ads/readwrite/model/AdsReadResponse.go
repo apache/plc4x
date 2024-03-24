@@ -238,7 +238,7 @@ func (m *_AdsReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint32(uint32(len(m.GetData())))
-		_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
+		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}

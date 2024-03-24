@@ -304,7 +304,7 @@ func (m *_GroupObjectDescriptorRealisationType2) SerializeWithWriteBuffer(ctx co
 
 	// Simple Field (dataPointer)
 	dataPointer := uint8(m.GetDataPointer())
-	_dataPointerErr := writeBuffer.WriteUint8("dataPointer", 8, (dataPointer))
+	_dataPointerErr := writeBuffer.WriteUint8("dataPointer", 8, uint8((dataPointer)))
 	if _dataPointerErr != nil {
 		return errors.Wrap(_dataPointerErr, "Error serializing 'dataPointer' field")
 	}

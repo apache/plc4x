@@ -56,7 +56,8 @@ func (d *DefaultPlcReadRequestBuilder) SerializeWithWriteBuffer(ctx context.Cont
 	if err := writeBuffer.PushContext("tagAddresses", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.tagAddresses {
+	for _name, elem := range d.tagAddresses {
+		name := _name
 
 		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), "UTF-8", elem); err != nil {
 			return err
@@ -68,7 +69,8 @@ func (d *DefaultPlcReadRequestBuilder) SerializeWithWriteBuffer(ctx context.Cont
 	if err := writeBuffer.PushContext("tags", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	for name, elem := range d.tags {
+	for _name, elem := range d.tags {
+		name := _name
 
 		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {

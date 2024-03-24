@@ -113,8 +113,9 @@ public abstract class APDU implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApduType apduType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "apduType",
+            "ApduType",
             new DataReaderEnumDefault<>(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

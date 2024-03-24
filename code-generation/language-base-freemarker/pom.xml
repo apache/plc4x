@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-code-generation</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4x-code-generation-language-base-freemarker</artifactId>
@@ -32,7 +32,17 @@
   <name>Code-Generation: Language Base: Freemarker</name>
   <description>Base code for building language outputs based on Freemarker</description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.plc4x.plugins</groupId>
       <artifactId>plc4x-code-generation-language-base</artifactId>
@@ -59,12 +69,22 @@
       <groupId>net.objecthunter</groupId>
       <artifactId>exp4j</artifactId>
     </dependency>
-      <dependency>
-          <groupId>org.apache.plc4x</groupId>
-          <artifactId>plc4x-code-generation-protocol-base-mspec</artifactId>
-          <version>0.11.0-SNAPSHOT</version>
-          <scope>compile</scope>
-      </dependency>
+    <!-- JUnit 5 Support -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

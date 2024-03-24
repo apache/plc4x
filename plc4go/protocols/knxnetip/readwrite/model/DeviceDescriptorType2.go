@@ -334,21 +334,21 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (manufacturerId)
 	manufacturerId := uint16(m.GetManufacturerId())
-	_manufacturerIdErr := writeBuffer.WriteUint16("manufacturerId", 16, (manufacturerId))
+	_manufacturerIdErr := writeBuffer.WriteUint16("manufacturerId", 16, uint16((manufacturerId)))
 	if _manufacturerIdErr != nil {
 		return errors.Wrap(_manufacturerIdErr, "Error serializing 'manufacturerId' field")
 	}
 
 	// Simple Field (deviceType)
 	deviceType := uint16(m.GetDeviceType())
-	_deviceTypeErr := writeBuffer.WriteUint16("deviceType", 16, (deviceType))
+	_deviceTypeErr := writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
 	if _deviceTypeErr != nil {
 		return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
 	}
 
 	// Simple Field (version)
 	version := uint8(m.GetVersion())
-	_versionErr := writeBuffer.WriteUint8("version", 8, (version))
+	_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
 	if _versionErr != nil {
 		return errors.Wrap(_versionErr, "Error serializing 'version' field")
 	}
@@ -369,7 +369,7 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (logicalTagBase)
 	logicalTagBase := uint8(m.GetLogicalTagBase())
-	_logicalTagBaseErr := writeBuffer.WriteUint8("logicalTagBase", 6, (logicalTagBase))
+	_logicalTagBaseErr := writeBuffer.WriteUint8("logicalTagBase", 6, uint8((logicalTagBase)))
 	if _logicalTagBaseErr != nil {
 		return errors.Wrap(_logicalTagBaseErr, "Error serializing 'logicalTagBase' field")
 	}

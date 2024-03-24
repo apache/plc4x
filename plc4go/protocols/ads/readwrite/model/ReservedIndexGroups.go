@@ -324,7 +324,7 @@ func ReservedIndexGroupsParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
 	}
 	if enum, ok := ReservedIndexGroupsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ReservedIndexGroups")
 		return ReservedIndexGroups(val), nil
 	} else {
 		return enum, nil
@@ -342,7 +342,7 @@ func (e ReservedIndexGroups) Serialize() ([]byte, error) {
 func (e ReservedIndexGroups) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint32("ReservedIndexGroups", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -423,7 +423,7 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 	case ReservedIndexGroups_ADS_OVER_ETHERCAT:
 		return "ADS_OVER_ETHERCAT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint32(e))
 }
 
 func (e ReservedIndexGroups) String() string {

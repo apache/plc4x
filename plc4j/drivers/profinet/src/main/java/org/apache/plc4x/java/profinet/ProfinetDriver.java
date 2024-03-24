@@ -19,9 +19,11 @@
 package org.apache.plc4x.java.profinet;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
+import org.apache.plc4x.java.profinet.config.ProfinetRawSocketTransportConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetChannel;
 import org.apache.plc4x.java.profinet.discovery.ProfinetPlcDiscoverer;
@@ -29,7 +31,6 @@ import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.Ethernet_Frame;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
@@ -38,7 +39,10 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.pcap4j.core.*;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
@@ -56,11 +60,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
-    }
-
-    @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         try {
             ProfinetChannel channel = new ProfinetChannel(Pcaps.findAllDevs(), new HashMap<>());
@@ -73,13 +72,27 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ProfinetConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "raw";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "raw":
+                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("raw");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("raw");
     }
 
     @Override

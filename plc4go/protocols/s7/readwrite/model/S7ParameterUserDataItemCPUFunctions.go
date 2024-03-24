@@ -337,42 +337,42 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
-		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, (itemLength))
+		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (method)
 		method := uint8(m.GetMethod())
-		_methodErr := writeBuffer.WriteUint8("method", 8, (method))
+		_methodErr := writeBuffer.WriteUint8("method", 8, uint8((method)))
 		if _methodErr != nil {
 			return errors.Wrap(_methodErr, "Error serializing 'method' field")
 		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.GetCpuFunctionType())
-		_cpuFunctionTypeErr := writeBuffer.WriteUint8("cpuFunctionType", 4, (cpuFunctionType))
+		_cpuFunctionTypeErr := writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
 		if _cpuFunctionTypeErr != nil {
 			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
 		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.GetCpuFunctionGroup())
-		_cpuFunctionGroupErr := writeBuffer.WriteUint8("cpuFunctionGroup", 4, (cpuFunctionGroup))
+		_cpuFunctionGroupErr := writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
 		if _cpuFunctionGroupErr != nil {
 			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
 		}
 
 		// Simple Field (cpuSubfunction)
 		cpuSubfunction := uint8(m.GetCpuSubfunction())
-		_cpuSubfunctionErr := writeBuffer.WriteUint8("cpuSubfunction", 8, (cpuSubfunction))
+		_cpuSubfunctionErr := writeBuffer.WriteUint8("cpuSubfunction", 8, uint8((cpuSubfunction)))
 		if _cpuSubfunctionErr != nil {
 			return errors.Wrap(_cpuSubfunctionErr, "Error serializing 'cpuSubfunction' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, (sequenceNumber))
+		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
@@ -381,7 +381,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 		var dataUnitReferenceNumber *uint8 = nil
 		if m.GetDataUnitReferenceNumber() != nil {
 			dataUnitReferenceNumber = m.GetDataUnitReferenceNumber()
-			_dataUnitReferenceNumberErr := writeBuffer.WriteUint8("dataUnitReferenceNumber", 8, *(dataUnitReferenceNumber))
+			_dataUnitReferenceNumberErr := writeBuffer.WriteUint8("dataUnitReferenceNumber", 8, uint8(*(dataUnitReferenceNumber)))
 			if _dataUnitReferenceNumberErr != nil {
 				return errors.Wrap(_dataUnitReferenceNumberErr, "Error serializing 'dataUnitReferenceNumber' field")
 			}
@@ -391,7 +391,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 		var lastDataUnit *uint8 = nil
 		if m.GetLastDataUnit() != nil {
 			lastDataUnit = m.GetLastDataUnit()
-			_lastDataUnitErr := writeBuffer.WriteUint8("lastDataUnit", 8, *(lastDataUnit))
+			_lastDataUnitErr := writeBuffer.WriteUint8("lastDataUnit", 8, uint8(*(lastDataUnit)))
 			if _lastDataUnitErr != nil {
 				return errors.Wrap(_lastDataUnitErr, "Error serializing 'lastDataUnit' field")
 			}
@@ -401,7 +401,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 		var errorCode *uint16 = nil
 		if m.GetErrorCode() != nil {
 			errorCode = m.GetErrorCode()
-			_errorCodeErr := writeBuffer.WriteUint16("errorCode", 16, *(errorCode))
+			_errorCodeErr := writeBuffer.WriteUint16("errorCode", 16, uint16(*(errorCode)))
 			if _errorCodeErr != nil {
 				return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 			}

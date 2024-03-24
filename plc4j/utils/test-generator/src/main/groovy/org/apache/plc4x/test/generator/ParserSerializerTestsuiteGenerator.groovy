@@ -135,29 +135,31 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
             mkp.yield "\n"
 
             testMap.each { testEntry ->
-                testcase {
-                    name testEntry.key
-                    raw testEntry.value.encodeHex()
-                    "root-type" Class.forName(rootMessageTypeClass).simpleName
-                    delegate.xml {
-                        mkp.yield "\n"
-                        mkp.yieldUnescaped(() -> {
-                            try {
-                                def clazz = Class.forName(rootMessageTypeClass)
-                                def message = clazz."staticParse"(new ReadBufferByteBased(testEntry.value, littleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN))
-                                def xmlWriter = new WriteBufferXmlBased()
-                                message.serialize(xmlWriter)
-                                def messageString = xmlWriter.getXmlString()
-                                // TODO ugyWorkaround
-                                messageString = messageString.split("\n").collect { "      $it" }.join("\n") + "\n    "
-                                return messageString
-                            } catch (e) {
-                                return e.toString()
-                            }
-                        }())
+                if (testEntry.value.length > 0) {
+                    testcase {
+                        name testEntry.key
+                        raw testEntry.value.encodeHex()
+                        "root-type" Class.forName(rootMessageTypeClass).simpleName
+                        delegate.xml {
+                            mkp.yield "\n"
+                            mkp.yieldUnescaped(() -> {
+                                try {
+                                    def clazz = Class.forName(rootMessageTypeClass)
+                                    def message = clazz."staticParse"(new ReadBufferByteBased(testEntry.value, littleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN))
+                                    def xmlWriter = new WriteBufferXmlBased()
+                                    message.serialize(xmlWriter)
+                                    def messageString = xmlWriter.getXmlString()
+                                    // TODO ugyWorkaround
+                                    messageString = messageString.split("\n").collect { "      $it" }.join("\n") + "\n    "
+                                    return messageString
+                                } catch (e) {
+                                    return e.toString()
+                                }
+                            }())
+                        }
                     }
+                    mkp.yield "\n"
                 }
-                mkp.yield "\n"
             }
         }
     }
@@ -174,7 +176,12 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
                 } else {
                     def tcpPacket = packet.get(TcpPacket.class)
                     if (tcpPacket != null) {
-                        values << tcpPacket.payload.rawData
+                        // Skip empty packets.
+                        if (tcpPacket.payload != null) {
+                            values << tcpPacket.payload.rawData
+                        } else {
+                            values << new byte[0]
+                        }
                     } else {
                         def ethernetPacket = packet.get(EthernetPacket.class)
                         if (ethernetPacket != null) {

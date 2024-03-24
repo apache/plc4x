@@ -252,7 +252,7 @@ func BACnetReliabilityParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return 0, errors.Wrap(err, "error reading BACnetReliability")
 	}
 	if enum, ok := BACnetReliabilityByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetReliability")
 		return BACnetReliability(val), nil
 	} else {
 		return enum, nil
@@ -270,7 +270,7 @@ func (e BACnetReliability) Serialize() ([]byte, error) {
 func (e BACnetReliability) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetReliability", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -327,7 +327,7 @@ func (e BACnetReliability) PLC4XEnumName() string {
 	case BACnetReliability_MULTI_STATE_FAULT:
 		return "MULTI_STATE_FAULT"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetReliability) String() string {

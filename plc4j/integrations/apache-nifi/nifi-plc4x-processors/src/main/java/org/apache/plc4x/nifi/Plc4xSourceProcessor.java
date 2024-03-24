@@ -18,10 +18,9 @@
  */
 package org.apache.plc4x.nifi;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
@@ -46,70 +45,74 @@ import org.apache.plc4x.java.api.model.PlcTag;
 @WritesAttributes({@WritesAttribute(attribute="value", description="some value")})
 public class Plc4xSourceProcessor extends BasePlc4xProcessor {
 
+	public static final String EXCEPTION = "plc4x.read.exception";
+
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
+        
+        FlowFile incomingFlowFile = null;
+        if (context.hasIncomingConnection()) {
+            incomingFlowFile = session.get();
+            if (incomingFlowFile == null && context.hasNonLoopConnection()) {
+                return;
+            }
+        }
 
         final ComponentLog logger = getLogger();
-        // Get an instance of a component able to read from a PLC.
-        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
+        final FlowFile flowFile = session.create();
+    
+        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString(context, incomingFlowFile))) {
 
-            // Prepare the request.
-            if (!connection.getMetadata().canRead()) {
-                throw new ProcessException("Writing not supported by connection");
+            if (!connection.getMetadata().isReadSupported()) {
+                throw new ProcessException("Reading not supported by connection");
             }
 
-            FlowFile flowFile = session.create();
+            final Map<String,String> addressMap = getPlcAddressMap(context, incomingFlowFile);
+            final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+
+            PlcReadRequest readRequest = getReadRequest(logger, addressMap, tags, connection);
+
             try {
-                PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
-                final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
-
-                if (tags != null){
-                    for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-                        builder.addTag(tag.getKey(), tag.getValue());
-                    }
-                } else {
-                    if (debugEnabled)
-                        logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap);
-                    for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                        builder.addTagAddress(entry.getKey(), entry.getValue());
-                    }
-                }
-
-                PlcReadRequest readRequest = builder.build();
-                PlcReadResponse response = readRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
-                Map<String, String> attributes = new HashMap<>();
-                for (String tagName : response.getTagNames()) {
-                    for (int i = 0; i < response.getNumberOfValues(tagName); i++) {
-                        Object value = response.getObject(tagName, i);
-                        attributes.put(tagName, String.valueOf(value));
-                    }
-                }
-                flowFile = session.putAllAttributes(flowFile, attributes); 
+                final PlcReadResponse response = readRequest.execute().get(getTimeout(context, incomingFlowFile), TimeUnit.MILLISECONDS);
                 
-                if (tags == null){
-                    if (debugEnabled)
-                        logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
-                    getSchemaCache().addSchema(
-                        addressMap, 
-                        readRequest.getTagNames(),
-                        readRequest.getTags(),
-                        null
-                    );
-                }
+                evaluateReadResponse(session, flowFile, response);
+                
+            } catch (TimeoutException e) {
+                logger.error("Timeout reading the data from PLC", e);
+                getConnectionManager().removeCachedConnection(getConnectionString(context, incomingFlowFile));
+                throw new ProcessException(e);
+            } catch (Exception e) {
+                logger.error("Exception reading the data from PLC", e);
+                throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
+            }
 
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new ProcessException(e);
-            } catch (ExecutionException e) {
-                throw new ProcessException(e);
+            
+            if (incomingFlowFile != null) {
+                session.remove(incomingFlowFile);
             }
             session.transfer(flowFile, REL_SUCCESS);
-        } catch (ProcessException e) {
-            throw e;
+                
+            if (tags == null){
+                if (debugEnabled)
+                    logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap);
+                getSchemaCache().addSchema(
+                    addressMap, 
+                    readRequest.getTagNames(),
+                    readRequest.getTags(),
+                    null
+                );
+            }
+            
         } catch (Exception e) {
-            throw new ProcessException("Got an error while trying to get a connection", e);
+            session.remove(flowFile);
+            if (incomingFlowFile != null){
+                incomingFlowFile = session.putAttribute(incomingFlowFile, EXCEPTION, e.getLocalizedMessage());
+                session.transfer(incomingFlowFile, REL_FAILURE);
+            }
+            session.commitAsync();
+            throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
         }
     }
-
+    
 }

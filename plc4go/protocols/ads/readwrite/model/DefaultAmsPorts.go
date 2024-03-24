@@ -432,7 +432,7 @@ func DefaultAmsPortsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading DefaultAmsPorts")
 	}
 	if enum, ok := DefaultAmsPortsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for DefaultAmsPorts")
 		return DefaultAmsPorts(val), nil
 	} else {
 		return enum, nil
@@ -450,7 +450,7 @@ func (e DefaultAmsPorts) Serialize() ([]byte, error) {
 func (e DefaultAmsPorts) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("DefaultAmsPorts", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("DefaultAmsPorts", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -567,7 +567,7 @@ func (e DefaultAmsPorts) PLC4XEnumName() string {
 	case DefaultAmsPorts_CAM_CONTROLLER:
 		return "CAM_CONTROLLER"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e DefaultAmsPorts) String() string {

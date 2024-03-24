@@ -132,7 +132,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithB
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 	}
 	if enum, ok := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
 		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(val), nil
 	} else {
 		return enum, nil
@@ -150,7 +150,7 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Seria
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -167,7 +167,7 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) PLC4X
 	case BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE:
 		return "ACTIVE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) String() string {

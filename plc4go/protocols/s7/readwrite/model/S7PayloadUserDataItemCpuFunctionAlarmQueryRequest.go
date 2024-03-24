@@ -370,25 +370,25 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 		}
 
 		// Const Field (functionId)
-		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, 0x00)
+		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
 		if _functionIdErr != nil {
 			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 		}
 
 		// Const Field (numberMessageObj)
-		_numberMessageObjErr := writeBuffer.WriteUint8("numberMessageObj", 8, 0x01)
+		_numberMessageObjErr := writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
 		if _numberMessageObjErr != nil {
 			return errors.Wrap(_numberMessageObjErr, "Error serializing 'numberMessageObj' field")
 		}
 
 		// Const Field (variableSpec)
-		_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, 0x12)
+		_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 		if _variableSpecErr != nil {
 			return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 		}
 
 		// Const Field (length)
-		_lengthErr := writeBuffer.WriteUint8("length", 8, 0x08)
+		_lengthErr := writeBuffer.WriteUint8("length", 8, uint8(0x08))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
@@ -415,7 +415,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -443,7 +443,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

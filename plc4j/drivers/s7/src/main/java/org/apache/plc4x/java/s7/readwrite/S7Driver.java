@@ -19,18 +19,22 @@
 package org.apache.plc4x.java.s7.readwrite;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.s7.readwrite.optimizer.S7Optimizer;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7HGeneratedDriverBase;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7HSingleProtocolStackConfigurer;
 import org.apache.plc4x.java.s7.readwrite.protocol.S7ProtocolLogic;
 import org.apache.plc4x.java.s7.readwrite.tag.S7PlcTagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -49,13 +53,18 @@ public class S7Driver extends S7HGeneratedDriverBase {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return S7Configuration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -73,7 +82,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
     protected boolean canSubscribe() {
         return true;
     }
-    
+
     @Override
     protected BaseOptimizer getOptimizer() {
         return new S7Optimizer();
@@ -91,6 +100,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
 
     /**
      * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
+     *
      * @return false
      */
     @Override
@@ -100,7 +110,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
 
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacket::staticParse)
+        return S7HSingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacket::staticParse)
             .withProtocol(S7ProtocolLogic.class)
             .withDriverContext(S7DriverContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
@@ -108,7 +118,9 @@ public class S7Driver extends S7HGeneratedDriverBase {
             .build();
     }
 
-    /** Estimate the Length of a Packet */
+    /**
+     * Estimate the Length of a Packet
+     */
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
@@ -119,7 +131,9 @@ public class S7Driver extends S7HGeneratedDriverBase {
         }
     }
 
-    /** Consumes all Bytes till another Magic Byte is found */
+    /**
+     * Consumes all Bytes till another Magic Byte is found
+     */
     public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
         @Override
         public void accept(ByteBuf byteBuf) {
@@ -131,7 +145,7 @@ public class S7Driver extends S7HGeneratedDriverBase {
     }
 
     @Override
-    public S7Tag prepareTag(String tagAddress){
+    public S7Tag prepareTag(String tagAddress) {
         return S7Tag.of(tagAddress);
     }
 

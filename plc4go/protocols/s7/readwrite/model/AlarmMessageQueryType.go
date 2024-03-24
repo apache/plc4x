@@ -143,7 +143,7 @@ func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (transportSize)
 	lengthInBits += 8
 
-	// Const Field (DataLength)
+	// Const Field (dataLength)
 	lengthInBits += 16
 
 	// Array field
@@ -218,13 +218,13 @@ func AlarmMessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
-	// Const Field (DataLength)
-	DataLength, _DataLengthErr := readBuffer.ReadUint16("DataLength", 16)
-	if _DataLengthErr != nil {
-		return nil, errors.Wrap(_DataLengthErr, "Error parsing 'DataLength' field of AlarmMessageQueryType")
+	// Const Field (dataLength)
+	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
+	if _dataLengthErr != nil {
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of AlarmMessageQueryType")
 	}
-	if DataLength != AlarmMessageQueryType_DATALENGTH {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageQueryType_DATALENGTH) + " but got " + fmt.Sprintf("%d", DataLength))
+	if dataLength != AlarmMessageQueryType_DATALENGTH {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageQueryType_DATALENGTH) + " but got " + fmt.Sprintf("%d", dataLength))
 	}
 
 	// Array field (messageObjects)
@@ -232,13 +232,13 @@ func AlarmMessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
 	}
 	// Count array
-	messageObjects := make([]AlarmMessageObjectQueryType, numberOfObjects)
+	messageObjects := make([]AlarmMessageObjectQueryType, utils.Max(numberOfObjects, 0))
 	// This happens when the size is set conditional to 0
 	if len(messageObjects) == 0 {
 		messageObjects = nil
 	}
 	{
-		_numItems := uint16(numberOfObjects)
+		_numItems := uint16(utils.Max(numberOfObjects, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -287,14 +287,14 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (functionId)
 	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, (functionId))
+	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (numberOfObjects)
 	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, (numberOfObjects))
+	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 	if _numberOfObjectsErr != nil {
 		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 	}
@@ -323,10 +323,10 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 
-	// Const Field (DataLength)
-	_DataLengthErr := writeBuffer.WriteUint16("DataLength", 16, 0xFFFF)
-	if _DataLengthErr != nil {
-		return errors.Wrap(_DataLengthErr, "Error serializing 'DataLength' field")
+	// Const Field (dataLength)
+	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16(0xFFFF))
+	if _dataLengthErr != nil {
+		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Array Field (messageObjects)

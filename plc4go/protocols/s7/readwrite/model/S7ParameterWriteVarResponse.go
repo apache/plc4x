@@ -183,7 +183,7 @@ func (m *_S7ParameterWriteVarResponse) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (numItems)
 		numItems := uint8(m.GetNumItems())
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, (numItems))
+		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}

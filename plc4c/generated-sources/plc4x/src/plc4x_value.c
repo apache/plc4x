@@ -323,7 +323,6 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_parse(plc4x_spi_context ctx
 
                 *data_item = plc4c_data_create_ldate_and_time_data(nanosecondsSinceEpoch);
 
-    } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_Struct) { /* Struct */
     }
 
   return OK;
@@ -508,7 +507,6 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4x_spi_context
                     if(_res != OK) {
                         return _res;
                     }
-        } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_Struct) { /* Struct */
         }
   return OK;
 }
@@ -622,7 +620,6 @@ uint16_t plc4c_plc4x_read_write_plc4x_value_length_in_bits(plc4x_spi_context ctx
 
         // Simple field (nanosecondsSinceEpoch)
         lengthInBits += 64;
-    } else     if(valueType == plc4c_plc4x_read_write_plc4x_value_type_Struct) { /* Struct */
     }
   return lengthInBits;
 }

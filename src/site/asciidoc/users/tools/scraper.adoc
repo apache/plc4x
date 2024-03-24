@@ -30,14 +30,16 @@ As we have encountered exactly the same problem for about every integration modu
 This tool automatically handles all of the tasks mentioned above.
 
 === Getting started with the `Scraper`
-The Scraper can be found in the Maven module
-```
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-scraper</artifactId>
-  <version>${current.version}</version>
-</dependency>
-```
+The Scraper can be found in the Maven module:
+
+[subs=attributes+]
+----
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-scraper</artifactId>
+      <version>{current-last-released-version}</version>
+    </dependency>
+----
 
 In general, you need 3 parts to work with the `Scraper`:
 

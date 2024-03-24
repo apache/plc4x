@@ -126,7 +126,7 @@ func BACnetDoorValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return 0, errors.Wrap(err, "error reading BACnetDoorValue")
 	}
 	if enum, ok := BACnetDoorValueByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetDoorValue")
 		return BACnetDoorValue(val), nil
 	} else {
 		return enum, nil
@@ -144,7 +144,7 @@ func (e BACnetDoorValue) Serialize() ([]byte, error) {
 func (e BACnetDoorValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetDoorValue", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetDoorValue", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -159,7 +159,7 @@ func (e BACnetDoorValue) PLC4XEnumName() string {
 	case BACnetDoorValue_EXTENDED_PULSE_UNLOCK:
 		return "EXTENDED_PULSE_UNLOCK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetDoorValue) String() string {

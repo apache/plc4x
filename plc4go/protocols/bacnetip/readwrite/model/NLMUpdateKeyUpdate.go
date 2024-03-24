@@ -337,13 +337,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for set1Keys")
 	}
 	// Count array
-	set1Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
+	set1Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.Max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(set1Keys) == 0 {
 		set1Keys = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.Max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -404,13 +404,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for set2Keys")
 	}
 	// Count array
-	set2Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
+	set2Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.Max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(set2Keys) == 0 {
 		set2Keys = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.Max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -495,7 +495,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1ActivationTime *uint32 = nil
 		if m.GetSet1ActivationTime() != nil {
 			set1ActivationTime = m.GetSet1ActivationTime()
-			_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, *(set1ActivationTime))
+			_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, uint32(*(set1ActivationTime)))
 			if _set1ActivationTimeErr != nil {
 				return errors.Wrap(_set1ActivationTimeErr, "Error serializing 'set1ActivationTime' field")
 			}
@@ -505,7 +505,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1ExpirationTime *uint32 = nil
 		if m.GetSet1ExpirationTime() != nil {
 			set1ExpirationTime = m.GetSet1ExpirationTime()
-			_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, *(set1ExpirationTime))
+			_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32(*(set1ExpirationTime)))
 			if _set1ExpirationTimeErr != nil {
 				return errors.Wrap(_set1ExpirationTimeErr, "Error serializing 'set1ExpirationTime' field")
 			}
@@ -515,7 +515,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1KeyCount *uint8 = nil
 		if m.GetSet1KeyCount() != nil {
 			set1KeyCount = m.GetSet1KeyCount()
-			_set1KeyCountErr := writeBuffer.WriteUint8("set1KeyCount", 8, *(set1KeyCount))
+			_set1KeyCountErr := writeBuffer.WriteUint8("set1KeyCount", 8, uint8(*(set1KeyCount)))
 			if _set1KeyCountErr != nil {
 				return errors.Wrap(_set1KeyCountErr, "Error serializing 'set1KeyCount' field")
 			}
@@ -552,7 +552,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2ActivationTime *uint32 = nil
 		if m.GetSet2ActivationTime() != nil {
 			set2ActivationTime = m.GetSet2ActivationTime()
-			_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, *(set2ActivationTime))
+			_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, uint32(*(set2ActivationTime)))
 			if _set2ActivationTimeErr != nil {
 				return errors.Wrap(_set2ActivationTimeErr, "Error serializing 'set2ActivationTime' field")
 			}
@@ -562,7 +562,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2ExpirationTime *uint32 = nil
 		if m.GetSet2ExpirationTime() != nil {
 			set2ExpirationTime = m.GetSet2ExpirationTime()
-			_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, *(set2ExpirationTime))
+			_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32(*(set2ExpirationTime)))
 			if _set2ExpirationTimeErr != nil {
 				return errors.Wrap(_set2ExpirationTimeErr, "Error serializing 'set2ExpirationTime' field")
 			}
@@ -572,7 +572,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2KeyCount *uint8 = nil
 		if m.GetSet2KeyCount() != nil {
 			set2KeyCount = m.GetSet2KeyCount()
-			_set2KeyCountErr := writeBuffer.WriteUint8("set2KeyCount", 8, *(set2KeyCount))
+			_set2KeyCountErr := writeBuffer.WriteUint8("set2KeyCount", 8, uint8(*(set2KeyCount)))
 			if _set2KeyCountErr != nil {
 				return errors.Wrap(_set2KeyCountErr, "Error serializing 'set2KeyCount' field")
 			}

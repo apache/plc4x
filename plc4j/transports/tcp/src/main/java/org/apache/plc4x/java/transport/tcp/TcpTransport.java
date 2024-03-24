@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.transport.tcp;
 
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
 public class TcpTransport implements Transport, HasConfiguration<TcpTransportConfiguration> {
 
     private static final Pattern TRANSPORT_TCP_PATTERN = Pattern.compile(
-        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?");
+        "^((?<ip>[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3})|(?<hostname>[a-zA-Z0-9.\\-]+))(:(?<port>[0-9]{1,5}))?.*");
 
     private TcpTransportConfiguration configuration;
 
@@ -53,8 +54,8 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
     @Override
     public ChannelFactory createChannelFactory(String transportConfig) {
         final Matcher matcher = TRANSPORT_TCP_PATTERN.matcher(transportConfig);
-        if(!matcher.matches()) {
-            throw new PlcRuntimeException("Invalid url for TCP transport");
+        if (!matcher.matches()) {
+            throw new PlcRuntimeException("Invalid url for TCP transport: " + transportConfig);
         }
         String ip = matcher.group("ip");
         String hostname = matcher.group("hostname");
@@ -62,7 +63,7 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
 
         // If the port wasn't specified, try to get a default port from the configuration.
         int port;
-        if(portString != null) {
+        if (portString != null) {
             port = Integer.parseInt(portString);
         } else if ((configuration != null) &&
             (configuration.getDefaultPort() != TcpTransportConfiguration.NO_DEFAULT_PORT)) {
@@ -75,7 +76,16 @@ public class TcpTransport implements Transport, HasConfiguration<TcpTransportCon
         SocketAddress address = new InetSocketAddress((ip == null) ? hostname : ip, port);
 
         // Initialize the channel factory with the default socket address we want to connect to.
-        return new TcpChannelFactory(address);
+        TcpChannelFactory tcpChannelFactory = new TcpChannelFactory(address);
+        if(configuration != null) {
+            tcpChannelFactory.setConfiguration(configuration);
+        }
+        return tcpChannelFactory;
+    }
+
+    @Override
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
+        return DefaultTcpTransportConfiguration.class;
     }
 
 }

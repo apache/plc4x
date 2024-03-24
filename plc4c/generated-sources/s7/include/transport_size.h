@@ -50,13 +50,19 @@ enum plc4c_s7_read_write_transport_size {
   plc4c_s7_read_write_transport_size_WCHAR = 0x11,
   plc4c_s7_read_write_transport_size_STRING = 0x12,
   plc4c_s7_read_write_transport_size_WSTRING = 0x13,
-  plc4c_s7_read_write_transport_size_TIME = 0x14,
+  plc4c_s7_read_write_transport_size_S5TIME = 0x14,
+  plc4c_s7_read_write_transport_size_TIME = 0x15,
   plc4c_s7_read_write_transport_size_LTIME = 0x16,
   plc4c_s7_read_write_transport_size_DATE = 0x17,
   plc4c_s7_read_write_transport_size_TIME_OF_DAY = 0x18,
   plc4c_s7_read_write_transport_size_TOD = 0x19,
-  plc4c_s7_read_write_transport_size_DATE_AND_TIME = 0x1A,
-  plc4c_s7_read_write_transport_size_DT = 0x1B
+  plc4c_s7_read_write_transport_size_LTIME_OF_DAY = 0x1A,
+  plc4c_s7_read_write_transport_size_LTOD = 0x1B,
+  plc4c_s7_read_write_transport_size_DATE_AND_TIME = 0x1C,
+  plc4c_s7_read_write_transport_size_DT = 0x1D,
+  plc4c_s7_read_write_transport_size_DATE_AND_LTIME = 0x1E,
+  plc4c_s7_read_write_transport_size_LDT = 0x1F,
+  plc4c_s7_read_write_transport_size_DTL = 0x21
 };
 typedef enum plc4c_s7_read_write_transport_size plc4c_s7_read_write_transport_size;
 

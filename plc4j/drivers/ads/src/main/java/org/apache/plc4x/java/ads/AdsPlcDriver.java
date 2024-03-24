@@ -20,19 +20,23 @@ package org.apache.plc4x.java.ads;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.ads.configuration.AdsConfiguration;
+import org.apache.plc4x.java.ads.configuration.AdsTcpTransportConfiguration;
 import org.apache.plc4x.java.ads.discovery.AdsPlcDiscoverer;
 import org.apache.plc4x.java.ads.tag.AdsTagHandler;
 import org.apache.plc4x.java.ads.protocol.AdsProtocolLogic;
 import org.apache.plc4x.java.ads.readwrite.AmsTCPPacket;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 /**
@@ -59,6 +63,11 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected boolean canPing() {
+        return true;
+    }
+
+    @Override
     protected boolean canRead() {
         return true;
     }
@@ -79,13 +88,27 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return AdsConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(AdsTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -96,11 +119,6 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     @Override
     protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
         return new PlcValueHandler();
-    }
-
-    @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
     }
 
     /**

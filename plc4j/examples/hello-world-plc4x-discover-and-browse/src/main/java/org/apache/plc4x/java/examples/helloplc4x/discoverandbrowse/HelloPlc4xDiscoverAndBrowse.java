@@ -37,9 +37,9 @@ public class HelloPlc4xDiscoverAndBrowse {
         // Iterate over all installed drivers and execute their browse functionality (If they support it)
         PlcDriverManager driverManager = PlcDriverManager.getDefault();
         PlcConnectionManager connectionManager = driverManager.getConnectionManager();
-        for (String protocolCode : driverManager.listDrivers()) {
+        for (String protocolCode : driverManager.getProtocolCodes()) {
             PlcDriver driver = driverManager.getDriver(protocolCode);
-            if (driver.getMetadata().canDiscover()) {
+            if (driver.getMetadata().isDiscoverySupported()) {
                 logger.info("Performing discovery for {} protocol", driver.getProtocolName());
 
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
@@ -47,7 +47,7 @@ public class HelloPlc4xDiscoverAndBrowse {
                 discoveryRequest.executeWithHandler(discoveryItem -> {
                     logger.info(" - Found device with connection-url {}", discoveryItem.getConnectionUrl());
                     try (PlcConnection connection = connectionManager.getConnection(discoveryItem.getConnectionUrl())) {
-                        if (connection.getMetadata().canBrowse()) {
+                        if (connection.getMetadata().isBrowseSupported()) {
                             PlcBrowseRequest browseRequest = connection.browseRequestBuilder().build();
                             browseRequest.execute().whenComplete((browseResponse, throwable) -> {
                                 if (throwable != null) {

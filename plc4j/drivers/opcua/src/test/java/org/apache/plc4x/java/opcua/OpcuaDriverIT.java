@@ -19,11 +19,12 @@
 package org.apache.plc4x.java.opcua;
 
 import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
+import org.junit.jupiter.api.Disabled;
 
 public class OpcuaDriverIT extends DriverTestsuiteRunner {
 
     public OpcuaDriverIT() {
-        super("/protocols/opcua/DriverTestsuite.xml", true);
+        super("/protocols/opcua/DriverTestsuite.xml", false);
     }
 
 }

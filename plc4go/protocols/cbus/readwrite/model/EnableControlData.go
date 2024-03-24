@@ -229,6 +229,8 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
+	commandType := m.GetCommandType()
+	_ = commandType
 	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}

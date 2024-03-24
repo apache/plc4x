@@ -19,17 +19,22 @@
 package org.apache.plc4x.java.cbus;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.cbus.configuration.CBusConfiguration;
+import org.apache.plc4x.java.cbus.configuration.CBusTcpTransportConfiguration;
 import org.apache.plc4x.java.cbus.context.CBusDriverContext;
 import org.apache.plc4x.java.cbus.protocol.CBusProtocolLogic;
 import org.apache.plc4x.java.cbus.readwrite.CBusCommand;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
@@ -45,10 +50,6 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
         return "Clipsal C-Bus";
     }
 
-    @Override
-    protected String getDefaultTransport() {
-        return "tcp";
-    }
 
     @Override
     protected boolean canRead() {
@@ -56,8 +57,27 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return CBusConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(CBusTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override

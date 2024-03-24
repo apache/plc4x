@@ -77,7 +77,7 @@ type I${type.name} interface {
 
 const(
 <#list type.enumValues as enumValue>
-	${type.name}_${enumValue.name} ${type.name} = <#if type.type.orElseThrow().isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>
+	${type.name}_${enumValue.name} ${type.name} = ${enumValue.value}
 </#list>
 )
 
@@ -105,7 +105,7 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 	switch e  {
 		<#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
 			<#assign constantValue=enumValue.getConstant(constantName).orElseThrow()>
-		case ${helper.escapeValue(type.type.orElseThrow(), enumValue.value)}: { /* '${enumValue.value}' */
+		case ${enumValue.value}: { /* '${enumValue.value}' */
 		    <#if constantType.isNonSimpleTypeReference()>
 		        <#if constantType.isEnumTypeReference()>
 			return <#if helper.escapeEnumValue(constantType, constantValue) = "0">${helper.escapeEnumValue(constantType, constantValue)}<#else>${helper.getLanguageTypeNameForTypeReference(constantType)}_${helper.escapeEnumValue(constantType, constantValue)}</#if>
@@ -129,14 +129,14 @@ func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLa
 			return sizeValue, nil
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ${constantName?cap_first} not found", value)
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#else>0</#if>, errors.Errorf("enum for %v describing ${constantName?cap_first} not found", value)
 }
 	</#list>
 </#if>
 func ${type.name}ByValue(value <#if type.type.isPresent()>${helper.getLanguageTypeNameForTypeReference(type.type.orElseThrow())}<#else>string</#if>) (enum ${type.name}, ok bool) {
 	switch value {
 <#list helper.getUniqueEnumValues(type.enumValues) as enumValue>
-		case <#if type.type.orElseThrow().isStringTypeReference()>"${enumValue.value}"<#else>${enumValue.value}</#if>:
+		case ${enumValue.value}:
 			return ${type.name}_${enumValue.name}, true
 </#list>
 	}
@@ -196,7 +196,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return <#if type.type.orElseThrow().isStringTypeReference() || type.type.orElseThrow().isVstringTypeReference()>""<#elseif baseType == "bool">false<#else>0</#if>, errors.Wrap(err, "error reading ${type.name}")
 	}
 	if enum, ok := ${type.name}ByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ${type.name}")
 		return ${type.name}(val), nil
 	} else {
 		return enum, nil
@@ -227,7 +227,7 @@ func (e ${type.name}) PLC4XEnumName() string {
 		return "${enumValue.name}"
 	</#list>
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", ${baseType}(e))
 }
 
 func (e ${type.name}) String() string {

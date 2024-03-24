@@ -187,13 +187,13 @@ func ComObjectTableRealisationType2ParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
 	}
 	// Count array
-	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType2, numEntries)
+	comObjectDescriptors := make([]GroupObjectDescriptorRealisationType2, utils.Max(numEntries, 0))
 	// This happens when the size is set conditional to 0
 	if len(comObjectDescriptors) == 0 {
 		comObjectDescriptors = nil
 	}
 	{
-		_numItems := uint16(numEntries)
+		_numItems := uint16(utils.Max(numEntries, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -244,14 +244,14 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.C
 
 		// Simple Field (numEntries)
 		numEntries := uint8(m.GetNumEntries())
-		_numEntriesErr := writeBuffer.WriteUint8("numEntries", 8, (numEntries))
+		_numEntriesErr := writeBuffer.WriteUint8("numEntries", 8, uint8((numEntries)))
 		if _numEntriesErr != nil {
 			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
 		}
 
 		// Simple Field (ramFlagsTablePointer)
 		ramFlagsTablePointer := uint8(m.GetRamFlagsTablePointer())
-		_ramFlagsTablePointerErr := writeBuffer.WriteUint8("ramFlagsTablePointer", 8, (ramFlagsTablePointer))
+		_ramFlagsTablePointerErr := writeBuffer.WriteUint8("ramFlagsTablePointer", 8, uint8((ramFlagsTablePointer)))
 		if _ramFlagsTablePointerErr != nil {
 			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
 		}

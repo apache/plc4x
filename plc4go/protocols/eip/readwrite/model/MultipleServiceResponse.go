@@ -243,13 +243,13 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
 	}
 	// Count array
-	offsets := make([]uint16, serviceNb)
+	offsets := make([]uint16, utils.Max(serviceNb, 0))
 	// This happens when the size is set conditional to 0
 	if len(offsets) == 0 {
 		offsets = nil
 	}
 	{
-		_numItems := uint16(serviceNb)
+		_numItems := uint16(utils.Max(serviceNb, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -319,7 +319,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -327,21 +327,21 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (status)
 		status := uint8(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint8("status", 8, (status))
+		_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (extStatus)
 		extStatus := uint8(m.GetExtStatus())
-		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, (extStatus))
+		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
 		if _extStatusErr != nil {
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}
 
 		// Simple Field (serviceNb)
 		serviceNb := uint16(m.GetServiceNb())
-		_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, (serviceNb))
+		_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
 		if _serviceNbErr != nil {
 			return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 		}
@@ -352,7 +352,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		for _curItem, _element := range m.GetOffsets() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, _element)
+			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
 			}

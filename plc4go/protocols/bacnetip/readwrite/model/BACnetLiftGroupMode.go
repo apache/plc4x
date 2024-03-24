@@ -144,7 +144,7 @@ func BACnetLiftGroupModeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading BACnetLiftGroupMode")
 	}
 	if enum, ok := BACnetLiftGroupModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLiftGroupMode")
 		return BACnetLiftGroupMode(val), nil
 	} else {
 		return enum, nil
@@ -162,7 +162,7 @@ func (e BACnetLiftGroupMode) Serialize() ([]byte, error) {
 func (e BACnetLiftGroupMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("BACnetLiftGroupMode", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -183,7 +183,7 @@ func (e BACnetLiftGroupMode) PLC4XEnumName() string {
 	case BACnetLiftGroupMode_UP_PEAK:
 		return "UP_PEAK"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e BACnetLiftGroupMode) String() string {

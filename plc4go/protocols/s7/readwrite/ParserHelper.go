@@ -84,11 +84,12 @@ func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.Read
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		stringLength, err := utils.StrToInt32(arguments[1])
+		controllerType, _ := model.ControllerTypeByName(arguments[1])
+		stringLength, err := utils.StrToInt32(arguments[2])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParseWithBuffer(context.Background(), io, dataProtocolId, stringLength)
+		return model.DataItemParseWithBuffer(context.Background(), io, dataProtocolId, controllerType, stringLength)
 	case "SubItem":
 		return model.SubItemParseWithBuffer(context.Background(), io)
 	case "CycServiceItemType":

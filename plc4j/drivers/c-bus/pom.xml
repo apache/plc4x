@@ -23,40 +23,21 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j-drivers</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-driver-c-bus</artifactId>
+
   <name>PLC4J: Driver: C-Bus</name>
   <description>Implementation of a PLC4X driver able to speak using the C-Bus Protocol.
   </description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-driver</goal>
-            </goals>
-            <configuration>
-              <protocolName>c-bus</protocolName>
-              <languageName>java</languageName>
-              <outputFlavor>read-write</outputFlavor>
-              <outputDir>src/main/generated</outputDir>
-              <options>
-                <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
-                <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
-                <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
-              </options>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.karaf.tooling</groupId>
         <artifactId>karaf-maven-plugin</artifactId>
@@ -104,16 +85,6 @@
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <configuration>
-          <usedDependencies combine.children="append">
-            <usedDependency>org.apache.plc4x:plc4x-code-generation-language-java</usedDependency>
-            <usedDependency>org.apache.plc4x:plc4x-protocols-c-bus</usedDependency>
-          </usedDependencies>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -121,18 +92,18 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-transport-tcp</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -143,41 +114,78 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-utils-test-utils</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-code-generation-language-java</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-c-bus</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <!-- Scope is 'provided' as this way it's not shipped with the driver -->
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4x-protocols-c-bus</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-utils-test-utils</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4x-protocols-c-bus</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.plc4x.plugins</groupId>
+            <artifactId>plc4x-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>test</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate-driver</goal>
+                </goals>
+                <configuration>
+                  <protocolName>c-bus</protocolName>
+                  <languageName>java</languageName>
+                  <outputFlavor>read-write</outputFlavor>
+                  <outputDir>src/main/generated</outputDir>
+                  <options>
+                    <generate-properties-for-parser-arguments>true</generate-properties-for-parser-arguments>
+                    <!-- We want properties that contain the values of reserved fields, if the value differs from the expected one -->
+                    <generate-properties-for-reserved-fields>true</generate-properties-for-reserved-fields>
+                  </options>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-code-generation-language-java</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.apache.plc4x</groupId>
+          <artifactId>plc4x-protocols-c-bus</artifactId>
+          <version>0.13.0-SNAPSHOT</version>
+          <!-- Scope is 'provided' as this way it's not shipped with the driver -->
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
 </project>

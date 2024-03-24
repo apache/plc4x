@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.transport.udp;
 
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
@@ -83,6 +84,11 @@ public class UdpTransport implements Transport, HasConfiguration<UdpTransportCon
 
         // Initialize the channel factory with the default socket address we want to connect to.
         return new UdpChannelFactory(remoteAddress);
+    }
+
+    @Override
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
+        return DefaultUdpTransportConfiguration.class;
     }
 
 }

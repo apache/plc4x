@@ -29,11 +29,12 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber
 type Subscriber struct {
 	connection *Connection
 	consumers  map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer
 
-	log      zerolog.Logger
+	log      zerolog.Logger       `ignore:"true"`
 	_options []options.WithOption // Used to pass them downstream
 }
 

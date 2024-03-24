@@ -42,8 +42,32 @@ func (d *DefaultPlcUnsubscriptionRequest) SerializeWithWriteBuffer(ctx context.C
 	if err := writeBuffer.PushContext("PlcUnsubscriptionRequest"); err != nil {
 		return err
 	}
+	if err := writeBuffer.PushContext("subscriptionHandles", utils.WithRenderAsList(true)); err != nil {
+		return err
+	}
+	for _, elem := range d.subscriptionHandles {
+		var elem any = elem
 
-	if err := writeBuffer.WriteString("implementMe", uint32(len(d.implementMe)*8), "UTF-8", d.implementMe); err != nil {
+		if elem != nil {
+			if serializableField, ok := elem.(utils.Serializable); ok {
+				if err := writeBuffer.PushContext("value"); err != nil {
+					return err
+				}
+				if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+					return err
+				}
+				if err := writeBuffer.PopContext("value"); err != nil {
+					return err
+				}
+			} else {
+				stringValue := fmt.Sprintf("%v", elem)
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("subscriptionHandles", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("PlcUnsubscriptionRequest"); err != nil {

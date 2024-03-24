@@ -137,7 +137,24 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("unsigned byte can only contain max 4 bits");
         }
         try {
-            return bi.readByte(true, bitLength);
+            String encoding = extractEncoding(readerArgs).orElse("default");
+            switch (encoding) {
+                case "default":
+                    return bi.readByte(true, bitLength);
+                // BCD = Binary Encoded Decimal (A decimal number is represented by a sequence of 4 bit hexadecimal values from 0-9.
+                // https://www.elektronik-kompendium.de/sites/dig/1010311.htm
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    byte digit = bi.readByte(true, 4);
+                    if((digit < 0) || (digit > 9)) {
+                        throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                    }
+                    return digit;
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
+            }
         } catch (IOException e) {
             throw new ParseException("Error reading unsigned byte", e);
         }
@@ -167,6 +184,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Short.parseShort(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    short value = 0;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (short) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     // No need to flip here as we're only reading one byte.
                     return bi.readShort(true, bitLength);
@@ -202,10 +234,25 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Integer.parseInt(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    int value = 0;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (int) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final int longValue = bi.readInt(true, bitLength);
-                        return Integer.reverseBytes(longValue) >>> 16;
+                        return Integer.reverseBytes(longValue) >>> (32 - bitLength);
                     }
                     return bi.readInt(true, bitLength);
                 default:
@@ -240,6 +287,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return Long.parseLong(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    long value = 0;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value += (long) (digit * Math.pow(10, i));
+                    }
+                    return value;
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         final long longValue = bi.readLong(true, bitLength);
@@ -279,6 +341,21 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     String stringValue = new String(stringBytes, StandardCharsets.US_ASCII);
                     stringValue = stringValue.trim();
                     return new BigInteger(stringValue);
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    BigInteger value = BigInteger.ZERO;
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        byte digit = bi.readByte(true, 4);
+                        if ((digit < 0) || (digit > 9)) {
+                            throw new ParseException("'BCD' encoded value is not a correctly encoded BCD value");
+                        }
+                        // Shift the current digit to the required position and add it to the rest.
+                        value = value.add(BigInteger.valueOf(digit).multiply(BigInteger.valueOf(10).pow(i)));
+                    }
+                    return value;
                 case "default":
                     // Read as signed value
                     long val = bi.readLong(false, bitLength);
@@ -375,9 +452,14 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
 
     @Override
     public float readFloat(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
+        String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         try {
             if (bitLength == 16) {
-                return readFloat16();
+                if("KNXFloat".equals(encoding)) {
+                    return readKnxFloat16();
+                } else {
+                    return readFloat16();
+                }
             } else if (bitLength == 32) {
                 return readFloat32(logicalName);
             } else {
@@ -388,37 +470,18 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         }
     }
 
-    private float readFloat16() throws IOException {
+    private float readKnxFloat16() throws IOException {
         // NOTE: KNX uses 4 bits as exponent and 11 as fraction
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 4);
         short fraction = bi.readShort(true, 11);
-        // This is a 12-bit 2's complement notation ... the first bit belongs to the last 11 bits.
-        // If the first bit is set, then we need to also set the upper 5 bits of the fraction part.
         if (sign) {
             fraction = (short) (fraction | 0xF800);
         }
-        if ((exponent >= 1) && (exponent < 15)) {
-            return (float) (0.01 * fraction * Math.pow(2, exponent));
-        }
-        if (exponent == 0) {
-            if (fraction == 0) {
-                return 0.0f;
-            } else {
-                return (2 ^ (-14)) * (fraction / 10f);
-            }
-        }
-        if (exponent == 15) {
-            if (fraction == 0) {
-                return sign ? Float.POSITIVE_INFINITY : Float.NEGATIVE_INFINITY;
-            } else {
-                return Float.NaN;
-            }
-        }
-        throw new NumberFormatException();
+        return (float) (0.01 * fraction * Math.pow(2, exponent));
     }
 
-    /*private float readFloat16() throws IOException {
+    private float readFloat16() throws IOException {
         // https://en.wikipedia.org/wiki/Half-precision_floating-point_format
         final boolean sign = bi.readBoolean();
         final byte exponent = bi.readByte(true, 5);
@@ -442,7 +505,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             }
         }
         throw new NumberFormatException();
-    }*/
+    }
 
     private float readFloat32(String logicalName) throws ParseException {
         int intValue = readInt(logicalName, 32);
@@ -476,6 +539,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         encoding = encoding.toUpperCase();
         switch (encoding) {
             case "ASCII":
+            case "WINDOWS1252":
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
@@ -497,6 +561,9 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 switch (encoding) {
                     case "UTF8":
                         charset = StandardCharsets.UTF_8;
+                        break;
+                    case "WINDOWS1252":
+                        charset = Charset.forName("windows-1252");
                         break;
                     default:
                         charset = StandardCharsets.US_ASCII;

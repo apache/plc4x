@@ -98,8 +98,9 @@ public abstract class PnIoCm_Block implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnIoCm_BlockType blockType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "blockType",
+            "PnIoCm_BlockType",
             new DataReaderEnumDefault<>(
                 PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
@@ -125,14 +126,17 @@ public abstract class PnIoCm_Block implements Message {
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_RES)) {
       builder = PnIoCm_Block_ArRes.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
-        blockType, PnIoCm_BlockType.IOD_BLOCK_REQ_CONNECTION_APPLICATION_READY)) {
-      builder = PnIoCm_Control_Request.staticParsePnIoCm_BlockBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOX_BLOCK_REQ_CONNECTION)) {
-      builder = PnIoCM_Block_Request.staticParsePnIoCm_BlockBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOX_BLOCK_RES_CONNECT)) {
-      builder = PnIoCM_Block_ResponseConnect.staticParsePnIoCm_BlockBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_CONTROL_RES_CONNECT)) {
-      builder = PnIoCm_Control_ResponseConnect.staticParsePnIoCm_BlockBuilder(readBuffer);
+        blockType, PnIoCm_BlockType.IOD_BLOCK_REQ_CONNECTION_PARAMETER_END)) {
+      builder = PnIoCm_Control_Request_ParameterEnd.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(
+        blockType, PnIoCm_BlockType.IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY)) {
+      builder = PnIoCm_Control_Request_ApplicationReady.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(
+        blockType, PnIoCm_BlockType.IOX_BLOCK_RES_CONNECTION_APPLICATION_READY)) {
+      builder = PnIoCm_Control_Response_ApplicationReady.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(
+        blockType, PnIoCm_BlockType.IOD_BLOCK_RES_CONNECTION_PARAMETER_END)) {
+      builder = PnIoCm_Control_Response_ParameterEnd.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_REQ)) {
       builder = PnIoCm_Block_IoCrReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_RES)) {
@@ -150,9 +154,9 @@ public abstract class PnIoCm_Block implements Message {
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.REAL_IDENTIFICATION_DATA)) {
       builder = PnIoCm_Block_RealIdentificationData.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
-        blockType, PnIoCm_BlockType.IOD_BLOCK_REQ_PLUGIN_ALARM_APPLICATION_READY)) {
+        blockType, PnIoCm_BlockType.IOX_BLOCK_REQ_CONNECTION_APPLICATION_READY_PLUG_ALARM)) {
       builder =
-          PnIoCm_Block_ReqPluginAlarmApplicationReady.staticParsePnIoCm_BlockBuilder(readBuffer);
+          PnIoCm_Block_ReqPlugAlarmApplicationReady.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.I_AND_M_0)) {
       builder = PnIoCm_Block_IAndM0.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.I_AND_M_1)) {

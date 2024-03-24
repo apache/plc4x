@@ -28,11 +28,11 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class PlcValueAdapter implements PlcValue, Serializable {
+
+    private Map<String, PlcValue> metaData = Collections.emptyMap();
 
     @Override
     public Object getObject() {
@@ -266,6 +266,28 @@ public abstract class PlcValueAdapter implements PlcValue, Serializable {
     @Override
     public Map<String, ? extends PlcValue> getStruct() {
         throw new PlcIncompatibleDatatypeException("");
+    }
+
+    public void addMetaData(String key, PlcValue value) {
+        if (metaData.isEmpty()) {
+            metaData = new HashMap<>();
+        }
+        metaData.put(key, value);
+    }
+
+    @Override
+    public Set<String> getMetaDataNames() {
+        return metaData.keySet();
+    }
+
+    @Override
+    public boolean hasMetaData(String key) {
+        return metaData.containsKey(key);
+    }
+
+    @Override
+    public PlcValue getMetaData(String key) {
+        return metaData.get(key);
     }
 
 }

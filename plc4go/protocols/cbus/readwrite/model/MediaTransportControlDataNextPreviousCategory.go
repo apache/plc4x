@@ -222,10 +222,14 @@ func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffe
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
+		isSetThePreviousCategory := m.GetIsSetThePreviousCategory()
+		_ = isSetThePreviousCategory
 		if _isSetThePreviousCategoryErr := writeBuffer.WriteVirtual(ctx, "isSetThePreviousCategory", m.GetIsSetThePreviousCategory()); _isSetThePreviousCategoryErr != nil {
 			return errors.Wrap(_isSetThePreviousCategoryErr, "Error serializing 'isSetThePreviousCategory' field")
 		}
 		// Virtual field
+		isSetTheNextCategory := m.GetIsSetTheNextCategory()
+		_ = isSetTheNextCategory
 		if _isSetTheNextCategoryErr := writeBuffer.WriteVirtual(ctx, "isSetTheNextCategory", m.GetIsSetTheNextCategory()); _isSetTheNextCategoryErr != nil {
 			return errors.Wrap(_isSetTheNextCategoryErr, "Error serializing 'isSetTheNextCategory' field")
 		}

@@ -20,10 +20,11 @@ package org.apache.plc4x.java.spi;
 
 import io.netty.channel.Channel;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 
 import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -44,30 +45,86 @@ public interface ConversationContext<T> {
 
     void fireDisconnected();
 
-    void fireDiscovered(Configuration c);
+    void fireDiscovered(PlcConnectionConfiguration c);
 
     SendRequestContext<T> sendRequest(T packet);
 
     interface SendRequestContext<T> {
 
+        /**
+         * names this conversation
+         *
+         * @param name the name of this conversation
+         * @return this
+         */
+        SendRequestContext<T> name(String name);
+
+        /**
+         * defines a response type to be expected with an additional timeout
+         *
+         * @param clazz   the type of the response
+         * @param timeout the timeout
+         * @return this
+         */
         SendRequestContext<T> expectResponse(Class<T> clazz, Duration timeout);
 
+        /**
+         * checks the message using the supplied {@code checker}
+         *
+         * @param checker function to check the message. Should return true if ok.
+         * @return this
+         */
         SendRequestContext<T> check(Predicate<T> checker);
 
+        /**
+         * final message handle
+         *
+         * @param packetConsumer consumer used to handle the message
+         * @return this
+         */
         ContextHandler handle(Consumer<T> packetConsumer);
 
+        /**
+         * allows to define a timeout handler which then calls {@code packetConsumer}
+         *
+         * @param packetConsumer the timeout handler
+         * @return this
+         */
         SendRequestContext<T> onTimeout(Consumer<TimeoutException> packetConsumer);
 
+        /**
+         * allows to define an error handler which then calls {@code packetConsumer}
+         *
+         * @param packetConsumer the error handler
+         * @param <E>            the error
+         * @return this
+         */
         <E extends Throwable> SendRequestContext<T> onError(BiConsumer<T, E> packetConsumer);
 
+        /**
+         * unwraps {@code T} and returns {@code R} transformed by {@code unwrapper}
+         *
+         * @param unwrapper the function used for the transformation
+         * @param <R>       the unwrapped type
+         * @return this
+         */
         <R> SendRequestContext<R> unwrap(Function<T, R> unwrapper);
 
+        /**
+         * combines {@link #check } with {@link #unwrap}
+         *
+         * @param clazz the {@link Class} to be checked
+         * @param <R>   type for the {@link Class}
+         * @return this
+         */
         <R> SendRequestContext<R> only(Class<R> clazz);
     }
 
     ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout);
 
     interface ExpectRequestContext<T> {
+
+        ExpectRequestContext<T> name(String name);
 
         ExpectRequestContext<T> check(Predicate<T> checker);
 
@@ -91,6 +148,8 @@ public interface ConversationContext<T> {
         boolean isDone();
 
         void cancel();
+
+        void awaitResponse() throws InterruptedException, ExecutionException;
 
     }
 

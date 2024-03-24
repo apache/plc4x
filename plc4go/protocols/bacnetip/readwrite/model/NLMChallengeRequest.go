@@ -226,14 +226,14 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (originalMessageId)
 		originalMessageId := uint32(m.GetOriginalMessageId())
-		_originalMessageIdErr := writeBuffer.WriteUint32("originalMessageId", 32, (originalMessageId))
+		_originalMessageIdErr := writeBuffer.WriteUint32("originalMessageId", 32, uint32((originalMessageId)))
 		if _originalMessageIdErr != nil {
 			return errors.Wrap(_originalMessageIdErr, "Error serializing 'originalMessageId' field")
 		}
 
 		// Simple Field (originalTimestamp)
 		originalTimestamp := uint32(m.GetOriginalTimestamp())
-		_originalTimestampErr := writeBuffer.WriteUint32("originalTimestamp", 32, (originalTimestamp))
+		_originalTimestampErr := writeBuffer.WriteUint32("originalTimestamp", 32, uint32((originalTimestamp)))
 		if _originalTimestampErr != nil {
 			return errors.Wrap(_originalTimestampErr, "Error serializing 'originalTimestamp' field")
 		}

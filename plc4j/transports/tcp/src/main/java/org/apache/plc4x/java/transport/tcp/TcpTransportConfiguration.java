@@ -18,14 +18,14 @@
  */
 package org.apache.plc4x.java.transport.tcp;
 
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 
 /**
  * boolean keepalive = Boolean.parseBoolean(getPropertyOrDefault(SO_KEEPALIVE, "true"));
  * boolean nodelay = Boolean.parseBoolean(getPropertyOrDefault(TCP_NODELAY, "true"));
  * int connectTimeout = Integer.parseInt(getPropertyOrDefault(CONNECT_TIMEOUT_MILLIS, "1000"));
  */
-public interface TcpTransportConfiguration extends TransportConfiguration {
+public interface TcpTransportConfiguration extends PlcTransportConfiguration {
 
     int NO_DEFAULT_PORT = -1;
 
@@ -33,16 +33,10 @@ public interface TcpTransportConfiguration extends TransportConfiguration {
         return NO_DEFAULT_PORT;
     }
 
-    default boolean isKeepAlive() {
-        return false;
-    }
+    boolean isKeepAlive();
 
-    default boolean isNoDelay() {
-        return true;
-    }
+    boolean isNoDelay();
 
-    default int getConnectTimeout() {
-        return 1000;
-    }
+    int getConnectTimeout();
 
 }

@@ -23,14 +23,16 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-hello-world-kotlin</artifactId>
   <name>PLC4J: Examples: Hello-World: Kotlin</name>
 
   <properties>
-    <kotlin.version>1.7.22</kotlin.version>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:32:21Z</project.build.outputTimestamp>
+    <kotlin.version>1.9.22</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <app.main.class>org.apache.plc4x.java.examples.hellokotlin.ReadModbusPalKt</app.main.class>
   </properties>
@@ -42,14 +44,9 @@
       <version>${kotlin.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jdk7</artifactId>
-      <version>${kotlin.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <!--dependency>
       <groupId>org.apache.plc4x</groupId>
@@ -62,7 +59,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.24.2</version>
+      <version>3.25.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>

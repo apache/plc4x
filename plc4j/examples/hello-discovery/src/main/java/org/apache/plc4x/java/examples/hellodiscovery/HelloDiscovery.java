@@ -21,7 +21,6 @@ package org.apache.plc4x.java.examples.hellodiscovery;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,26 +44,24 @@ public class HelloDiscovery {
         }
 
         PlcDriverManager plcDriverManager = PlcDriverManager.getDefault();
-        Set<String> driverCodes = plcDriverManager.listDrivers();
+        Set<String> driverCodes = plcDriverManager.getProtocolCodes();
         for (String driverCode : driverCodes) {
-            logger.info("Executing Discovery for Driver: {}", driverCode);
             PlcDriver driver = plcDriverManager.getDriver(driverCode);
 
             // Check if this driver supports discovery.
-            if(driver.getMetadata().canDiscover()) {
+            if(driver.getMetadata().isDiscoverySupported()) {
+                logger.info("Executing Discovery for Driver: {}", driverCode);
                 PlcDiscoveryRequest discoveryRequest = driver.discoveryRequestBuilder().build();
                 PlcDiscoveryResponse discoveryResponse = discoveryRequest.executeWithHandler(
                     discoveryItem -> logger.info("Intercepted discovery of device with name: {} with connection url: {}",
                         discoveryItem.getName(), discoveryItem.getConnectionUrl())).get();
-                if(discoveryResponse.getResponseCode() == PlcResponseCode.OK) {
+                /*if(discoveryResponse.getResponseCode() == PlcResponseCode.OK) {
                     logger.info("Discovery finished successfully:");
                     for (PlcDiscoveryItem discoveryItem : discoveryResponse.getValues()) {
                         logger.info("Found device with name: {} with connection url: {}",
                             discoveryItem.getName(), discoveryItem.getConnectionUrl());
                     }
-                }
-            } else {
-                logger.info("This driver doesn't support discovery");
+                }*/
             }
         }
     }

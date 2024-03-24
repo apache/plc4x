@@ -191,7 +191,7 @@ func (m Writer) ToPlc4xWriteResponse(requestAdu readWriteModel.ModbusTcpADU, res
 		case readWriteModel.ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND:
 			responseCodes[tagName] = apiModel.PlcResponseCode_REMOTE_ERROR
 		default:
-			m.log.Debug().Msgf("Unmapped exception code %x", resp.GetExceptionCode())
+			m.log.Debug().Stringer("exceptionCode", resp.GetExceptionCode()).Msg("Unmapped exception code")
 		}
 	default:
 		return nil, errors.Errorf("unsupported response type %T", resp)

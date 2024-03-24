@@ -166,7 +166,7 @@ func (pm *_DF1RequestCommand) SerializeParent(ctx context.Context, writeBuffer u
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
 	functionCode := uint8(child.GetFunctionCode())
-	_functionCodeErr := writeBuffer.WriteUint8("functionCode", 8, (functionCode))
+	_functionCodeErr := writeBuffer.WriteUint8("functionCode", 8, uint8((functionCode)))
 
 	if _functionCodeErr != nil {
 		return errors.Wrap(_functionCodeErr, "Error serializing 'functionCode' field")

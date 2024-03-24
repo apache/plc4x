@@ -243,7 +243,7 @@ func (m *_LDataInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.GetAdditionalInformationLength())
-		_additionalInformationLengthErr := writeBuffer.WriteUint8("additionalInformationLength", 8, (additionalInformationLength))
+		_additionalInformationLengthErr := writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
 		if _additionalInformationLengthErr != nil {
 			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}

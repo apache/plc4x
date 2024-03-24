@@ -82,13 +82,17 @@ func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdou
 		}
 	}
 	filterExpression := config.ExtractConfigInstance.Filter
-	log.Info().Msgf("Analyzing pcap file '%s' with protocolType '%s' and filter '%s' now", pcapFile, protocolType, filterExpression)
+	log.Info().
+		Str("pcapFile", pcapFile).
+		Str("protocolType", protocolType).
+		Str("filterExpression", filterExpression).
+		Msg("Analyzing pcap file pcapFile with protocolType protocolType and filter filterExpression now")
 
 	handle, numberOfPackage, timestampToIndexMap, err := pcaphandler.GetIndexedPcapHandle(pcapFile, filterExpression)
 	if err != nil {
 		return errors.Wrap(err, "Error getting handle")
 	}
-	log.Info().Msgf("Starting to analyze %d packages", numberOfPackage)
+	log.Info().Int("numberOfPackage", numberOfPackage).Msg("Starting to analyze numberOfPackage packages")
 	defer handle.Close()
 	log.Debug().Interface("handle", handle).Int("numberOfPackage", numberOfPackage).Msg("got handle")
 	source := pcaphandler.GetPacketSource(handle)
@@ -110,17 +114,24 @@ func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdou
 	serializeFails := 0
 	compareFails := 0
 	for packet := range source.Packets() {
-		if ctx.Err() == context.Canceled {
-			log.Info().Msgf("Aborted after %d packages", currentPackageNum)
+		if errors.Is(ctx.Err(), context.Canceled) {
+			log.Info().
+				Uint("currentPackageNum", currentPackageNum).
+				Msg("Aborted after currentPackageNum packages")
 			break
 		}
 		currentPackageNum++
 		if currentPackageNum < config.ExtractConfigInstance.StartPackageNumber {
-			log.Debug().Msgf("Skipping package number %d (till no. %d)", currentPackageNum, config.ExtractConfigInstance.StartPackageNumber)
+			log.Debug().
+				Uint("currentPackageNum", currentPackageNum).
+				Uint("startPackageNumber", config.ExtractConfigInstance.StartPackageNumber).
+				Msg("Skipping package number currentPackageNum (till no. startPackageNumber)")
 			continue
 		}
 		if currentPackageNum > config.ExtractConfigInstance.PackageNumberLimit {
-			log.Warn().Msgf("Aborting reading packages because we hit the limit of %d", config.ExtractConfigInstance.PackageNumberLimit)
+			log.Warn().
+				Uint("packageNumberLimit", config.ExtractConfigInstance.PackageNumberLimit).
+				Msg("Aborting reading packages because we hit the limit of packageNumberLimit")
 			break
 		}
 		if packet == nil {
@@ -146,18 +157,24 @@ func ExtractWithOutput(ctx context.Context, pcapFile, protocolType string, stdou
 		var payload []byte
 		applicationLayer := packet.ApplicationLayer()
 		if applicationLayer == nil {
-			log.Info().Stringer("packetInformation", packetInformation).Msgf("No.[%d] No application layer", realPacketNumber)
+			log.Info().Stringer("packetInformation", packetInformation).Int("realPacketNumber", realPacketNumber).Msg("No.[realPacketNumber] No application layer")
 		} else {
 			payload = applicationLayer.Payload()
 		}
 
-		log.Debug().Msgf("Got payload %x", payload)
+		log.Debug().Hex("payload", payload).Msg("Got payload")
 		if config.ExtractConfigInstance.Verbosity > 1 {
 			printPayload(packetInformation, payload)
 		}
 	}
 	_, _ = fmt.Fprintf(stdout, "\n")
 
-	log.Info().Msgf("Done evaluating %d of %d packages (%d failed to parse, %d failed to serialize and %d failed in byte comparison)", currentPackageNum, numberOfPackage, parseFails, serializeFails, compareFails)
+	log.Info().
+		Uint("currentPackageNum", currentPackageNum).
+		Int("numberOfPackage", numberOfPackage).
+		Int("parseFails", parseFails).
+		Int("serializeFails", serializeFails).
+		Int("compareFails", compareFails).
+		Msg("Done evaluating currentPackageNum of numberOfPackage packages (parseFails failed to parse, serializeFails failed to serialize and compareFails failed in byte comparison)")
 	return nil
 }

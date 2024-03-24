@@ -19,11 +19,15 @@
 package org.apache.plc4x.java.knxnetip;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpConfiguration;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpPcapReplayTransportConfiguration;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpRawSocketTransportConfiguration;
+import org.apache.plc4x.java.knxnetip.configuration.KnxNetIpUdpTransportConfiguration;
 import org.apache.plc4x.java.knxnetip.context.KnxNetIpDriverContext;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTag;
 import org.apache.plc4x.java.knxnetip.readwrite.KnxNetIpMessage;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.knxnetip.tag.KnxNetIpTagHandler;
 import org.apache.plc4x.java.knxnetip.protocol.KnxNetIpProtocolLogic;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
@@ -34,6 +38,9 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
@@ -51,8 +58,36 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "udp";
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return KnxNetIpConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "udp":
+                return Optional.of(KnxNetIpUdpTransportConfiguration.class);
+            case "pcap":
+                return Optional.of(KnxNetIpPcapReplayTransportConfiguration.class);
+            case "raw":
+                return Optional.of(KnxNetIpRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("udp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("udp", "pcap", "raw");
+    }
+
+    @Override
+    protected boolean canPing() {
+        return true;
     }
 
     @Override
@@ -68,11 +103,6 @@ public class KnxNetIpDriver extends GeneratedDriverBase<KnxNetIpMessage> {
     @Override
     protected boolean canSubscribe() {
         return true;
-    }
-
-    @Override
-    protected Class<? extends Configuration> getConfigurationType() {
-        return KnxNetIpConfiguration.class;
     }
 
     @Override

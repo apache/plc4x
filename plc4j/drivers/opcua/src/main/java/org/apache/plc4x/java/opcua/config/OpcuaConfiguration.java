@@ -18,74 +18,134 @@
  */
 package org.apache.plc4x.java.opcua.config;
 
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.opcua.context.CertificateGenerator;
-import org.apache.plc4x.java.opcua.context.CertificateKeyPair;
-import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
-import org.apache.plc4x.java.opcua.readwrite.PascalByteString;
-import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.*;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-public class OpcuaConfiguration implements Configuration, TcpTransportConfiguration {
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.opcua.context.SecureChannel;
+import org.apache.plc4x.java.opcua.security.MessageSecurity;
+import org.apache.plc4x.java.opcua.security.SecurityPolicy;
+import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.LongDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
-    static {
-        // Required for SecurityPolicy.Aes256_Sha256_RsaPss
-        Security.addProvider(new BouncyCastleProvider());
-    }
+public class OpcuaConfiguration implements PlcConnectionConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaConfiguration.class);
+    @ConfigurationParameter("protocol-code")
+    private String protocolCode;
 
-    private String code;
-    private String host;
-    private String port;
-    private String endpoint;
-    private String transportEndpoint;
-    private String params;
-    private Boolean isEncrypted = false;
-    private PascalByteString thumbprint;
-    private byte[] senderCertificate;
+    @ConfigurationParameter("transport-code")
+    private String transportCode;
+
+    @ConfigurationParameter("transport-config")
+    private String transportConfig;
 
     @ConfigurationParameter("discovery")
     @BooleanDefaultValue(true)
+    @Description("Controls the feature of the discovery endpoint of an OPC UA server which every server\n" +
+        "will propagate over an '<address>/discovery' endpoint. The most common issue here is that most servers are not correctly\n" +
+        "configured and propagate the wrong external IP or URL address. If that is the case you can disable the discovery by\n" +
+        "configuring it with a `false` value.\n" +
+        "\n" +
+        "The discovery phase is always conducted using `NONE` security policy.")
     private boolean discovery;
 
     @ConfigurationParameter("username")
+    @Description("A username to authenticate to the OPCUA server with.")
     private String username;
 
     @ConfigurationParameter("password")
+    @Description("A password to authenticate to the OPCUA server with.")
     private String password;
 
-    @ConfigurationParameter("securityPolicy")
-    @StringDefaultValue("None")
-    private String securityPolicy;
+    @ConfigurationParameter("security-policy")
+    @StringDefaultValue("NONE")
+    @Description("The security policy applied to communication channel between driver and OPC UA server.\n" +
+        "Default value assumes. Possible options are `NONE`, `Basic128Rsa15`, `Basic256`, `Basic256Sha256`, `Aes128_Sha256_RsaOaep`, `Aes256_Sha256_RsaPss`.")
+    private SecurityPolicy securityPolicy;
 
-    @ConfigurationParameter("keyStoreFile")
+    @ConfigurationParameter("message-security")
+    @StringDefaultValue("SIGN_ENCRYPT")
+    @Description("The security policy applied to messages exchanged after handshake phase.\n" +
+        "Possible options are `NONE`, `SIGN`, `SIGN_ENCRYPT`.\n" +
+        "This option is effective only when `securityPolicy` turns encryption (anything beyond `NONE`).")
+    private MessageSecurity messageSecurity;
+
+    @ConfigurationParameter("key-store-file")
+    @Description("The Keystore file used to lookup client certificate and its private key.")
     private String keyStoreFile;
 
-    @ConfigurationParameter("certDirectory")
-    private String certDirectory;
+    @ConfigurationParameter("key-store-type")
+    @StringDefaultValue("pkcs12")
+    @Description("Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).\n" +
+        "Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.")
+    private String keyStoreType;
 
-    @ConfigurationParameter("keyStorePassword")
+    @ConfigurationParameter("key-store-password")
+    @Description("Java keystore password used to access keystore and private key.")
     private String keyStorePassword;
 
-    private CertificateKeyPair ckp;
+    @ConfigurationParameter("server-certificate-file")
+    @Description("Filesystem location where server certificate is located, supported formats are `DER` and `PEM`.")
+    private String serverCertificateFile;
+
+    @ConfigurationParameter("trust-store-file")
+    @Description("The trust store file used to verify server certificates and its chain.")
+    private String trustStoreFile;
+
+    @ConfigurationParameter("trust-store-type")
+    @StringDefaultValue("pkcs12")
+    @Description("Keystore type used to access keystore and private key, defaults to PKCS (for Java 11+).\n" +
+        "Possible values are between others `jks`, `pkcs11`, `dks`, `jceks`.")
+    private String trustStoreType;
+
+    @ConfigurationParameter("trust-store-password")
+    @Description("Password used to open trust store.")
+    private String trustStorePassword;
+
+    // the discovered certificate when discovery is enabled
+    private X509Certificate serverCertificate;
+
+    @ConfigurationParameter("channel-lifetime")
+    @LongDefaultValue(3600000)
+    @Description("Time for which negotiated secure channel, its keys and session remains open. Value in milliseconds, by default 60 minutes.")
+    private long channelLifetime;
+
+    @ConfigurationParameter("session-timeout")
+    @LongDefaultValue(120000)
+    @Description("Expiry time for opened secure session, value in milliseconds. Defaults to 2 minutes.")
+    private long sessionTimeout;
+
+    @ConfigurationParameter("negotiation-timeout")
+    @LongDefaultValue(60000)
+    @Description("Timeout for all negotiation steps prior acceptance of application level operations - this timeout applies to open secure channel, create session and close calls. Defaults to 60 seconds.")
+    private long negotiationTimeout;
+
+    @ConfigurationParameter("request-timeout")
+    @LongDefaultValue(30000)
+    @Description("Timeout for read/write/subscribe calls. Value in milliseconds.")
+    private long requestTimeout;
+
+    @ComplexConfigurationParameter(prefix = "encoding", defaultOverrides = {}, requiredOverrides = {})
+    @Description("TCP encoding options")
+    private Limits limits;
+
+    public String getProtocolCode() {
+        return protocolCode;
+    }
+
+    public String getTransportCode() {
+        return transportCode;
+    }
+
+    public String getTransportConfig() {
+        return transportConfig;
+    }
 
     public boolean isDiscovery() {
         return discovery;
@@ -99,137 +159,86 @@ public class OpcuaConfiguration implements Configuration, TcpTransportConfigurat
         return password;
     }
 
-    public String getCertDirectory() {
-        return certDirectory;
+    public SecurityPolicy getSecurityPolicy() {
+        return securityPolicy;
     }
 
-    public String getSecurityPolicy() {
-        return securityPolicy;
+    public MessageSecurity getMessageSecurity() {
+        return messageSecurity;
     }
 
     public String getKeyStoreFile() {
         return keyStoreFile;
     }
 
-    public String getKeyStorePassword() {
-        return keyStorePassword;
+    public String getKeyStoreType() {
+        return keyStoreType;
     }
 
-    public PascalByteString getThumbprint() {
-        return thumbprint;
+    public char[] getKeyStorePassword() {
+        return keyStorePassword == null ? null : keyStorePassword.toCharArray();
     }
 
-    public CertificateKeyPair getCertificateKeyPair() {
-        return ckp;
+    public String getTrustStoreFile() {
+        return trustStoreFile;
     }
 
-    public boolean isEncrypted() { return isEncrypted; }
-
-    public void setDiscovery(boolean discovery) {
-        this.discovery = discovery;
+    public String getTrustStoreType() {
+        return trustStoreType;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public char[] getTrustStorePassword() {
+        return trustStorePassword == null ? null : trustStorePassword.toCharArray();
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Limits getEncodingLimits() {
+        return limits;
     }
 
-    public void setCertDirectory(String certDirectory) {
-        this.certDirectory = certDirectory;
-    }
-
-    public void setSecurityPolicy(String securityPolicy) {
-        this.securityPolicy = securityPolicy;
-    }
-
-    public void setKeyStoreFile(String keyStoreFile) {
-        this.keyStoreFile = keyStoreFile;
-    }
-
-    public void setKeyStorePassword(String keyStorePassword) {
-        this.keyStorePassword = keyStorePassword;
-    }
-
-    public void setThumbprint(PascalByteString thumbprint) { this.thumbprint = thumbprint; }
-
-    public String getTransportCode() {
-        return code;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public String getTransportEndpoint() {
-        return transportEndpoint;
-    }
-
-    public byte[] getSenderCertificate() {
-        return this.senderCertificate;
-    }
-
-    public void setTransportCode(String code) {
-        this.code = code;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    public void setTransportEndpoint(String transportEndpoint) { this.transportEndpoint = transportEndpoint; }
-
-    public void openKeyStore() throws Exception {
-        this.isEncrypted = true;
-        File securityTempDir = new File(certDirectory, "security");
-        if (!securityTempDir.exists() && !securityTempDir.mkdirs()) {
-            throw new PlcConnectionException("Unable to create directory please confirm folder permissions on "  + certDirectory);
+    public X509Certificate getServerCertificate() {
+        if (serverCertificate == null && serverCertificateFile != null) {
+            // initialize server certificate from configured file
+            try {
+                byte[] certificateBytes = Files.readAllBytes(Path.of(serverCertificateFile));
+                serverCertificate = SecureChannel.getX509Certificate(certificateBytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        File serverKeyStore = securityTempDir.toPath().resolve(keyStoreFile).toFile();
+        return serverCertificate;
+    }
 
-        File pkiDir = FileSystems.getDefault().getPath(certDirectory).resolve("pki").toFile();
-        if (!serverKeyStore.exists()) {
-            ckp = CertificateGenerator.generateCertificate();
-            LOGGER.info("Creating new KeyStore at {}", serverKeyStore);
-            keyStore.load(null, keyStorePassword.toCharArray());
-            keyStore.setKeyEntry("plc4x-certificate-alias", ckp.getKeyPair().getPrivate(), keyStorePassword.toCharArray(), new X509Certificate[] { ckp.getCertificate() });
-            keyStore.store(new FileOutputStream(serverKeyStore), keyStorePassword.toCharArray());
-        } else {
-            LOGGER.info("Loading KeyStore at {}", serverKeyStore);
-            keyStore.load(new FileInputStream(serverKeyStore), keyStorePassword.toCharArray());
-            String alias = keyStore.aliases().nextElement();
-            KeyPair kp = new KeyPair(keyStore.getCertificate(alias).getPublicKey(),
-                (PrivateKey) keyStore.getKey(alias, keyStorePassword.toCharArray()));
-            ckp = new CertificateKeyPair(kp,(X509Certificate) keyStore.getCertificate(alias));
-        }
+    public void setServerCertificate(X509Certificate serverCertificate) {
+        this.serverCertificate = serverCertificate;
+    }
+
+    public long getChannelLifetime() {
+        return channelLifetime;
+    }
+
+    public long getSessionTimeout() {
+        return sessionTimeout;
+    }
+
+    public long getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    public long getNegotiationTimeout() {
+        return negotiationTimeout;
     }
 
     @Override
     public String toString() {
-        return "Configuration{" +
+        return "OpcuaConfiguration{" +
+            "discovery=" + discovery +
+            ", username='" + username + '\'' +
+            ", password='" + (password != null ? "******" : null) + '\'' +
+            ", securityPolicy='" + securityPolicy + '\'' +
+            ", keyStoreFile='" + keyStoreFile + '\'' +
+            ", keyStorePassword='" + (keyStorePassword != null ? "******" : null) + '\'' +
+            ", limits=" + limits +
             '}';
     }
-
-    public void setSenderCertificate(byte[] certificate) { this.senderCertificate = certificate; }
-
 }
 

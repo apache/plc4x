@@ -144,7 +144,7 @@ func BACnetEscalatorModeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return 0, errors.Wrap(err, "error reading BACnetEscalatorMode")
 	}
 	if enum, ok := BACnetEscalatorModeByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetEscalatorMode")
 		return BACnetEscalatorMode(val), nil
 	} else {
 		return enum, nil
@@ -162,7 +162,7 @@ func (e BACnetEscalatorMode) Serialize() ([]byte, error) {
 func (e BACnetEscalatorMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetEscalatorMode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -183,7 +183,7 @@ func (e BACnetEscalatorMode) PLC4XEnumName() string {
 	case BACnetEscalatorMode_OUT_OF_SERVICE:
 		return "OUT_OF_SERVICE"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetEscalatorMode) String() string {

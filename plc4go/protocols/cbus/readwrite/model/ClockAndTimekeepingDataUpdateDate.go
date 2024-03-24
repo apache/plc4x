@@ -268,21 +268,21 @@ func (m *_ClockAndTimekeepingDataUpdateDate) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (month)
 		month := uint8(m.GetMonth())
-		_monthErr := writeBuffer.WriteUint8("month", 8, (month))
+		_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
 		if _monthErr != nil {
 			return errors.Wrap(_monthErr, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
 		day := uint8(m.GetDay())
-		_dayErr := writeBuffer.WriteUint8("day", 8, (day))
+		_dayErr := writeBuffer.WriteUint8("day", 8, uint8((day)))
 		if _dayErr != nil {
 			return errors.Wrap(_dayErr, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
 		dayOfWeek := uint8(m.GetDayOfWeek())
-		_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, (dayOfWeek))
+		_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
 		if _dayOfWeekErr != nil {
 			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 		}

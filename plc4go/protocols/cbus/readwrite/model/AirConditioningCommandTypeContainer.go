@@ -405,7 +405,7 @@ func AirConditioningCommandTypeContainerParseWithBuffer(ctx context.Context, rea
 		return 0, errors.Wrap(err, "error reading AirConditioningCommandTypeContainer")
 	}
 	if enum, ok := AirConditioningCommandTypeContainerByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for AirConditioningCommandTypeContainer")
 		return AirConditioningCommandTypeContainer(val), nil
 	} else {
 		return enum, nil
@@ -423,7 +423,7 @@ func (e AirConditioningCommandTypeContainer) Serialize() ([]byte, error) {
 func (e AirConditioningCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("AirConditioningCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("AirConditioningCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -468,7 +468,7 @@ func (e AirConditioningCommandTypeContainer) PLC4XEnumName() string {
 	case AirConditioningCommandTypeContainer_AirConditioningCommandHumidityScheduleEntry:
 		return "AirConditioningCommandHumidityScheduleEntry"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e AirConditioningCommandTypeContainer) String() string {

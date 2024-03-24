@@ -18,21 +18,28 @@
  */
 package org.apache.plc4x.java.modbus.tcp.config;
 
-import org.apache.plc4x.java.modbus.readwrite.ModbusConstants;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 
-public class ModbusTcpConfiguration implements Configuration, TcpTransportConfiguration {
+public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
+    @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
     @ConfigurationParameter("unit-identifier")
     @IntDefaultValue(1)
+    @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
     private int unitIdentifier;
+
+    @ConfigurationParameter("ping-address")
+    @StringDefaultValue("4x00001:BOOL")
+    @Description("Simple address, that the driver will use to check, if the connection to a given device is active (Defaults to reading holding-register 1).")
+    private String pingAddress;
 
     public int getRequestTimeout() {
         return requestTimeout;
@@ -50,9 +57,8 @@ public class ModbusTcpConfiguration implements Configuration, TcpTransportConfig
         this.unitIdentifier = unitIdentifier;
     }
 
-    @Override
-    public int getDefaultPort() {
-        return ModbusConstants.MODBUSTCPDEFAULTPORT;
+    public String getPingAddress() {
+        return pingAddress;
     }
 
     @Override
@@ -60,6 +66,7 @@ public class ModbusTcpConfiguration implements Configuration, TcpTransportConfig
         return "ModbusTcpConfiguration{" +
             "requestTimeout=" + requestTimeout +
             ", unitIdentifier=" + unitIdentifier +
+            ", pingAddress=" + pingAddress +
             '}';
     }
 

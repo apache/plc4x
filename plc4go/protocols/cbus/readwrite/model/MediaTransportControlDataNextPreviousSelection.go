@@ -222,10 +222,14 @@ func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuff
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
+		isSetThePreviousSelection := m.GetIsSetThePreviousSelection()
+		_ = isSetThePreviousSelection
 		if _isSetThePreviousSelectionErr := writeBuffer.WriteVirtual(ctx, "isSetThePreviousSelection", m.GetIsSetThePreviousSelection()); _isSetThePreviousSelectionErr != nil {
 			return errors.Wrap(_isSetThePreviousSelectionErr, "Error serializing 'isSetThePreviousSelection' field")
 		}
 		// Virtual field
+		isSetTheNextSelection := m.GetIsSetTheNextSelection()
+		_ = isSetTheNextSelection
 		if _isSetTheNextSelectionErr := writeBuffer.WriteVirtual(ctx, "isSetTheNextSelection", m.GetIsSetTheNextSelection()); _isSetTheNextSelectionErr != nil {
 			return errors.Wrap(_isSetTheNextSelectionErr, "Error serializing 'isSetTheNextSelection' field")
 		}

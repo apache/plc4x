@@ -20,8 +20,11 @@ package org.apache.plc4x.java.eip.base;
 
 import io.netty.buffer.ByteBuf;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
+import org.apache.plc4x.java.eip.base.configuration.EipTcpTransportConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
@@ -33,8 +36,10 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
@@ -61,8 +66,27 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return EIPConfiguration.class;
+    }
+
+    @Override
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(EipTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -82,11 +106,6 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     @Override
     protected boolean awaitDisconnectComplete() {
         return true;
-    }
-
-    @Override
-    protected String getDefaultTransport() {
-        return "tcp";
     }
 
     @Override
@@ -120,7 +139,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
         final String protocolCode = matcher.group("protocolCode");
         final String transportCode = (matcher.group("transportCode") != null) ?
-            matcher.group("transportCode") : getDefaultTransport();
+            matcher.group("transportCode") : getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
 
@@ -132,13 +151,13 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
 
         // Create the configuration object.
-        this.configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
-            getConfigurationType(), paramString);
+        configuration = (EIPConfiguration) new ConfigurationFactory().createConfiguration(
+            getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
         if (configuration == null) {
             throw new PlcConnectionException("Unsupported configuration");
         }
 
-        // Try to find a transport in order to create a communication channel.
+        // Try to find transport in order to create a communication channel.
         Transport transport = null;
         ServiceLoader<Transport> transportLoader = ServiceLoader.load(
             Transport.class, Thread.currentThread().getContextClassLoader());
@@ -165,6 +184,12 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
+        // Make the "fire discover event" overridable via system property.
+        boolean fireDiscoverEvent = fireDiscoverEvent();
+        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
+            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
+        }
+
         // Make the "await setup complete" overridable via system property.
         boolean awaitSetupComplete = awaitSetupComplete();
         if(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_SETUP_COMPLETE) != null) {
@@ -184,11 +209,12 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         }
 
         return new DefaultNettyPlcConnection(
-            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
             getTagHandler(),
             getValueHandler(),
             configuration,
             channelFactory,
+            fireDiscoverEvent,
             awaitSetupComplete,
             awaitDisconnectComplete,
             awaitDiscoverComplete,

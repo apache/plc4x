@@ -148,7 +148,7 @@ func (m *_RelativeTimestamp) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (timestamp)
 	timestamp := uint16(m.GetTimestamp())
-	_timestampErr := writeBuffer.WriteUint16("timestamp", 16, (timestamp))
+	_timestampErr := writeBuffer.WriteUint16("timestamp", 16, uint16((timestamp)))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}

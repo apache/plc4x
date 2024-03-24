@@ -18,14 +18,14 @@
  */
 package org.apache.plc4x.java.abeth.configuration;
 
-import org.apache.plc4x.java.abeth.AbEthDriver;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 
-public class AbEthConfiguration implements Configuration, TcpTransportConfiguration {
+public class AbEthConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter
+    @Description("Id of the station we want to connect to")
     private int station;
 
     public int getStation() {
@@ -34,11 +34,6 @@ public class AbEthConfiguration implements Configuration, TcpTransportConfigurat
 
     public void setStation(int station) {
         this.station = station;
-    }
-
-    @Override
-    public int getDefaultPort() {
-        return AbEthDriver.AB_ETH_PORT;
     }
 
 }

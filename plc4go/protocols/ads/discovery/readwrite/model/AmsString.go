@@ -181,7 +181,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	// Implicit Field (strLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	strLen := uint16(uint16(uint16(len(m.GetText()))) + uint16(uint16(1)))
-	_strLenErr := writeBuffer.WriteUint16("strLen", 16, (strLen))
+	_strLenErr := writeBuffer.WriteUint16("strLen", 16, uint16((strLen)))
 	if _strLenErr != nil {
 		return errors.Wrap(_strLenErr, "Error serializing 'strLen' field")
 	}
@@ -203,7 +203,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, reserved)
+		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

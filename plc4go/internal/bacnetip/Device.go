@@ -81,14 +81,14 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 	// Build a request
 	whoIs := model.NewBACnetUnconfirmedServiceRequestWhoIs(model.CreateBACnetContextTagUnsignedInteger(0, deviceInstanceRangeLowLimit), model.CreateBACnetContextTagUnsignedInteger(1, deviceInstanceRangeHighLimit), 0)
 
-	log.Debug().Msgf("WhoIs:\n%s", whoIs)
+	log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
 	return w.Request(NewPDU(whoIs, WithPDUDestination(address)))
 }
 
 // DoWhoIsRequest respond to a Who-Is request.
 func (w *WhoIsIAmServices) DoWhoIsRequest(apdu _PDU) error {
-	log.Debug().Msgf("DoWhoIsRequest %s", apdu)
+	log.Debug().Stringer("apdu", apdu).Msg("DoWhoIsRequest")
 
 	// ignore this if there's no local device
 	if w.localDevice == nil {
@@ -160,7 +160,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	if address == nil {
 		address = NewGlobalBroadcast(nil)
 	}
-	log.Debug().Msgf("IAm %v", iAm)
+	log.Debug().Stringer("iAm", iAm).Msg("IAm")
 
 	return w.Request(NewPDU(iAm, WithPDUDestination(address)))
 }

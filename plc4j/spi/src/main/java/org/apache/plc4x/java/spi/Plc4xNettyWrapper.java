@@ -21,13 +21,15 @@ package org.apache.plc4x.java.spi;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
+
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultConversationContext;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
@@ -56,7 +58,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private final PlcAuthentication authentication;
 
     private final Queue<HandlerRegistration> registeredHandlers;
-    private final ChannelPipeline pipeline;
     private final boolean passive;
     private final TimeoutManager timeoutManager;
 
@@ -68,7 +69,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     public Plc4xNettyWrapper(TimeoutManager timeoutManager, ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
                              PlcAuthentication authentication, Class<T> clazz) {
         super(clazz, Object.class);
-        this.pipeline = pipeline;
         this.passive = passive;
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
@@ -93,7 +93,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
 
             @Override
             public void sendToWire(T msg) {
-                pipeline.writeAndFlush(msg);
+                pipeline.writeAndFlush(msg).syncUninterruptibly();
             }
 
             @Override
@@ -107,36 +107,31 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
-            public void fireDiscovered(Configuration c) {
+            public void fireDiscovered(PlcConnectionConfiguration c) {
                 pipeline.fireUserEventTriggered(DiscoveredEvent.class);
             }
 
             @Override
-            @SuppressWarnings({"unchecked", "rawtypes"})
             public SendRequestContext<T> sendRequest(T packet) {
-                return new DefaultSendRequestContext<>(Plc4xNettyWrapper.this::registerHandler, packet, this);
+                return new DefaultSendRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, packet, this);
             }
 
             @Override
-            @SuppressWarnings({"unchecked", "rawtypes"})
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
-                return new DefaultExpectRequestContext<>(Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
+                return new DefaultExpectRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
             }
 
         });
     }
 
     @Override
+    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+        super.close(ctx, promise);
+        timeoutManager.stop();
+    }
+
+    @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, Object msg, List<Object> list) throws Exception {
-//        logger.trace("Encoding {}", plcRequestContainer);
-//        protocolBase.encode(new DefaultConversationContext<T>(channelHandlerContext) {
-//            @Override
-//            public void sendToWire(T msg) {
-//                logger.trace("Sending to wire {}", msg);
-//                list.add(msg);
-//            }
-//        }, plcRequestContainer);
-        // NOOP
         logger.debug("Forwarding request to plc {}", msg);
         list.add(msg);
     }
@@ -157,6 +152,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 continue;
             }
             // Timeout?
+            if (registration.isDone()) {
+                logger.debug("Removing {} as it's already done. Timed out?", registration);
+                iter.remove();
+                continue;
+            }
             logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
                 logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
@@ -231,11 +231,15 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         });
         // wrap handler, so we can catch packet consumer call and inform completion callback.
         HandlerRegistration registration = new HandlerRegistration(
+            handler.getName(),
             handler.getCommands(),
             handler.getExpectClazz(),
             completionCallback.andThen(handler.getPacketConsumer()),
             handler.getOnTimeoutConsumer(),
             handler.getErrorConsumer(),
+            handler::confirmHandled,
+            handler::confirmError,
+            handler::cancel,
             handler.getTimeout()
         );
         deferred.set(registration);
@@ -243,12 +247,11 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     }
 
     private Consumer<TimeoutException> onTimeout(AtomicReference<HandlerRegistration> reference, Consumer<TimeoutException> onTimeoutConsumer) {
-        return new Consumer<TimeoutException>() {
-            @Override
-            public void accept(TimeoutException e) {
-                registeredHandlers.remove(reference.get());
-                onTimeoutConsumer.accept(e);
-            }
+        return timeoutException -> {
+            final HandlerRegistration registration = reference.get();
+            registeredHandlers.remove(registration);
+            onTimeoutConsumer.accept(timeoutException);
+            registration.confirmError();
         };
     }
 

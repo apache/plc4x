@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataValueBeforeChange) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(_valuesBeforeChangeErr, "Error serializing 'valuesBeforeChange' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

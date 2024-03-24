@@ -158,13 +158,13 @@ func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for adsNotificationSamples")
 	}
 	// Count array
-	adsNotificationSamples := make([]AdsNotificationSample, samples)
+	adsNotificationSamples := make([]AdsNotificationSample, utils.Max(samples, 0))
 	// This happens when the size is set conditional to 0
 	if len(adsNotificationSamples) == 0 {
 		adsNotificationSamples = nil
 	}
 	{
-		_numItems := uint16(samples)
+		_numItems := uint16(utils.Max(samples, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -211,14 +211,14 @@ func (m *_AdsStampHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (timestamp)
 	timestamp := uint64(m.GetTimestamp())
-	_timestampErr := writeBuffer.WriteUint64("timestamp", 64, (timestamp))
+	_timestampErr := writeBuffer.WriteUint64("timestamp", 64, uint64((timestamp)))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
 	samples := uint32(m.GetSamples())
-	_samplesErr := writeBuffer.WriteUint32("samples", 32, (samples))
+	_samplesErr := writeBuffer.WriteUint32("samples", 32, uint32((samples)))
 	if _samplesErr != nil {
 		return errors.Wrap(_samplesErr, "Error serializing 'samples' field")
 	}

@@ -239,13 +239,13 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 
 		// Const Field (requestPathSize)
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, 0x02)
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8(0x02))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
 		// Const Field (requestPath)
-		_requestPathErr := writeBuffer.WriteUint32("requestPath", 32, 0x01240220)
+		_requestPathErr := writeBuffer.WriteUint32("requestPath", 32, uint32(0x01240220))
 		if _requestPathErr != nil {
 			return errors.Wrap(_requestPathErr, "Error serializing 'requestPath' field")
 		}

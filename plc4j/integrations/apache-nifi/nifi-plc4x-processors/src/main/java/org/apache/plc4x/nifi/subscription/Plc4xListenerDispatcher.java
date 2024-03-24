@@ -45,7 +45,6 @@ public class Plc4xListenerDispatcher implements Runnable {
     private ComponentLog logger;
     private boolean running = false;
     private BlockingQueue<PlcSubscriptionEvent> events;
-    private PlcSubscriptionResponse subscriptionResponse;
     private PlcConnection connection;
     private Long timeout;
     private BlockingQueue<PlcSubscriptionEvent> queuedEvents;
@@ -76,7 +75,7 @@ public class Plc4xListenerDispatcher implements Runnable {
     public void open(String plcConnectionString, Map<String, String> tags) throws PlcConnectionException, Exception {
         connection = connectionManager.getConnection(plcConnectionString);
 
-        if (!connection.getMetadata().canSubscribe()) {
+        if (!connection.getMetadata().isSubscribeSupported()) {
             throw new PlcProtocolException("This connection does not support subscription");
         }
 
@@ -95,7 +94,7 @@ public class Plc4xListenerDispatcher implements Runnable {
             }
         }
         PlcSubscriptionRequest subscriptionRequest = builder.build();
-
+        PlcSubscriptionResponse subscriptionResponse;
         try {
             subscriptionResponse = subscriptionRequest.execute().get(timeout, TimeUnit.MILLISECONDS);
             

@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-drivers</artifactId>
@@ -33,6 +33,10 @@
   <name>PLC4J: Drivers</name>
   <description>Wrapper project for all PLC4J driver implementations.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <modules>
     <module>ab-eth</module>
     <module>ads</module>
@@ -40,8 +44,10 @@
     <module>c-bus</module>
     <module>can</module>
     <module>canopen</module>
+    <module>ctrlx</module>
     <module>eip</module>
     <module>firmata</module>
+    <module>iec-60870</module>
     <module>knxnetip</module>
     <module>mock</module>
     <module>open-protocol</module>
@@ -52,6 +58,7 @@
     <module>profinet-ng</module>
     <module>s7</module>
     <module>simulated</module>
+    <module>all</module>
   </modules>
 
 </project>

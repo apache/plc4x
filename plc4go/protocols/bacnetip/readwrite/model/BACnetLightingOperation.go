@@ -174,7 +174,7 @@ func BACnetLightingOperationParseWithBuffer(ctx context.Context, readBuffer util
 		return 0, errors.Wrap(err, "error reading BACnetLightingOperation")
 	}
 	if enum, ok := BACnetLightingOperationByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for BACnetLightingOperation")
 		return BACnetLightingOperation(val), nil
 	} else {
 		return enum, nil
@@ -192,7 +192,7 @@ func (e BACnetLightingOperation) Serialize() ([]byte, error) {
 func (e BACnetLightingOperation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint16("BACnetLightingOperation", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -223,7 +223,7 @@ func (e BACnetLightingOperation) PLC4XEnumName() string {
 	case BACnetLightingOperation_WARN_RELINQUISH:
 		return "WARN_RELINQUISH"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint16(e))
 }
 
 func (e BACnetLightingOperation) String() string {

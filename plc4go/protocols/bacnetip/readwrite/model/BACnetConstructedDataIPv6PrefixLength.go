@@ -230,6 +230,8 @@ func (m *_BACnetConstructedDataIPv6PrefixLength) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(_ipv6PrefixLengthErr, "Error serializing 'ipv6PrefixLength' field")
 		}
 		// Virtual field
+		actualValue := m.GetActualValue()
+		_ = actualValue
 		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}

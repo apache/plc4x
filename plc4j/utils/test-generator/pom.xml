@@ -24,7 +24,7 @@
   <parent>
     <artifactId>plc4j-utils</artifactId>
     <groupId>org.apache.plc4x</groupId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-utils-test-generator</artifactId>
@@ -32,12 +32,16 @@
   <name>PLC4J: Utils: Test-Generator</name>
   <description>Generates tests.</description>
 
+  <properties>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.2</version>
         <executions>
           <execution>
             <goals>
@@ -74,6 +78,7 @@
           <usedDependencies combine.children="append">
             <usedDependency>org.apache.plc4x:plc4j-driver-s7</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-driver-eip</usedDependency>
+            <usedDependency>org.apache.plc4x:plc4j-driver-iec-60870</usedDependency>
             <usedDependency>org.apache.plc4x:plc4j-utils-pcap-shared</usedDependency>
           </usedDependencies>
         </configuration>
@@ -97,12 +102,12 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-spi</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-pcap-shared</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -129,17 +134,24 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <!-- Explicitly managing this back to "compile" -->
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-s7</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-driver-eip</artifactId>
-      <version>0.11.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-driver-iec-60870</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -150,6 +162,11 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

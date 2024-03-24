@@ -35,7 +35,9 @@ public enum AccessLevelExType {
   accessLevelExTypeNonatomicRead((long) 256L),
   accessLevelExTypeNonatomicWrite((long) 512L),
   accessLevelExTypeWriteFullArrayOnly((long) 1024L),
-  accessLevelExTypeNoSubDataTypes((long) 2048L);
+  accessLevelExTypeNoSubDataTypes((long) 2048L),
+  accessLevelExTypeNonVolatile((long) 4096L),
+  accessLevelExTypeConstant((long) 8192L);
   private static final Map<Long, AccessLevelExType> map;
 
   static {

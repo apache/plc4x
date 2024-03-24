@@ -164,8 +164,9 @@ public abstract class Plc4xMessage implements Message {
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Plc4xRequestType requestType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "requestType",
+            "Plc4xRequestType",
             new DataReaderEnumDefault<>(
                 Plc4xRequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

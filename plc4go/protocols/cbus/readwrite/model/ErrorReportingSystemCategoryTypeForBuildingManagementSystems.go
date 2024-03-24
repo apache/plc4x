@@ -198,7 +198,7 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsParseWithBuffer
 		return 0, errors.Wrap(err, "error reading ErrorReportingSystemCategoryTypeForBuildingManagementSystems")
 	}
 	if enum, ok := ErrorReportingSystemCategoryTypeForBuildingManagementSystemsByValue(val); !ok {
-		log.Debug().Msgf("no value %x found for RequestType", val)
+		log.Debug().Interface("val", val).Msg("no value val found for ErrorReportingSystemCategoryTypeForBuildingManagementSystems")
 		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems(val), nil
 	} else {
 		return enum, nil
@@ -216,7 +216,7 @@ func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) Serialize(
 func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return writeBuffer.WriteUint8("ErrorReportingSystemCategoryTypeForBuildingManagementSystems", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum
@@ -255,7 +255,7 @@ func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) PLC4XEnumN
 	case ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_15:
 		return "RESERVED_15"
 	}
-	return ""
+	return fmt.Sprintf("Unknown(%v)", uint8(e))
 }
 
 func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) String() string {

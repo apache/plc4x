@@ -77,8 +77,8 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 		subSubscriptionRequests[tagName] = spiModel.NewDefaultPlcSubscriptionRequest(
 			m,
 			[]string{tagName},
-			map[string]apiModel.PlcTag{tagName: directTag},
-			map[string]spiModel.SubscriptionType{tagName: subscriptionType},
+			map[string]apiModel.PlcSubscriptionTag{tagName: directTag},
+			map[string]apiModel.PlcSubscriptionType{tagName: subscriptionType},
 			map[string]time.Duration{tagName: interval},
 			map[string][]apiModel.PlcSubscriptionEventConsumer{tagName: preRegisteredConsumers},
 		)
@@ -102,7 +102,10 @@ func (m *Connection) Subscribe(ctx context.Context, subscriptionRequest apiModel
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				m.log.Error().Msgf("panic-ed %v. Stack: %s", err, debug.Stack())
+				m.log.Error().
+					Str("stack", string(debug.Stack())).
+					Interface("err", err).
+					Msg("panic-ed")
 			}
 		}()
 		// Iterate over all sub-results
@@ -186,7 +189,7 @@ func (m *Connection) processSubscriptionResponses(_ context.Context, subscriptio
 	var err error = nil
 	for _, subscriptionResult := range subscriptionResults {
 		if subscriptionResult.GetErr() != nil {
-			m.log.Debug().Err(subscriptionResult.GetErr()).Msgf("Error during subscription")
+			m.log.Debug().Err(subscriptionResult.GetErr()).Msg("Error during subscription")
 			if err == nil {
 				// Lazy initialization of multi error
 				err = utils.MultiError{MainError: errors.New("while aggregating results"), Errors: []error{subscriptionResult.GetErr()}}
