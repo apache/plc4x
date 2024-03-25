@@ -50,6 +50,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBOOL(value), nil
 	case plcValueType == PlcValueType_BYTE: // BYTE
@@ -58,6 +59,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcBYTE(value), nil
 	case plcValueType == PlcValueType_WORD: // WORD
@@ -66,6 +68,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWORD(value), nil
 	case plcValueType == PlcValueType_DWORD: // DWORD
@@ -74,6 +77,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDWORD(value), nil
 	case plcValueType == PlcValueType_LWORD: // LWORD
@@ -82,6 +86,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLWORD(value), nil
 	case plcValueType == PlcValueType_SINT: // SINT
@@ -90,6 +95,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSINT(value), nil
 	case plcValueType == PlcValueType_USINT: // USINT
@@ -98,6 +104,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUSINT(value), nil
 	case plcValueType == PlcValueType_INT: // INT
@@ -106,6 +113,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcINT(value), nil
 	case plcValueType == PlcValueType_UINT: // UINT
@@ -114,6 +122,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUINT(value), nil
 	case plcValueType == PlcValueType_DINT: // DINT
@@ -122,6 +131,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDINT(value), nil
 	case plcValueType == PlcValueType_UDINT: // UDINT
@@ -130,6 +140,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcUDINT(value), nil
 	case plcValueType == PlcValueType_LINT: // LINT
@@ -138,6 +149,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLINT(value), nil
 	case plcValueType == PlcValueType_ULINT: // ULINT
@@ -146,6 +158,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcULINT(value), nil
 	case plcValueType == PlcValueType_REAL: // REAL
@@ -154,6 +167,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcREAL(value), nil
 	case plcValueType == PlcValueType_LREAL: // LREAL
@@ -162,6 +176,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLREAL(value), nil
 	case plcValueType == PlcValueType_CHAR: // CHAR
@@ -170,6 +185,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcCHAR(value), nil
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
@@ -178,6 +194,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWCHAR(value), nil
 	case plcValueType == PlcValueType_STRING: // STRING
@@ -186,6 +203,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
@@ -199,6 +217,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint16("reserved", 16); _err != nil {
@@ -212,6 +231,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _millisecondsErr != nil {
 			return nil, errors.Wrap(_millisecondsErr, "Error parsing 'milliseconds' field")
 		}
+		_ = milliseconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcTIMEFromMilliseconds(int64(milliseconds)), nil
 	case plcValueType == PlcValueType_LTIME: // LTIME
@@ -220,6 +240,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsErr != nil {
 			return nil, errors.Wrap(_nanosecondsErr, "Error parsing 'nanoseconds' field")
 		}
+		_ = nanoseconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIMEFromNanoseconds(nanoseconds), nil
 	case plcValueType == PlcValueType_DATE: // DATE
@@ -228,6 +249,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
+		_ = secondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDATEFromSecondsSinceEpoch(uint32(secondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_LDATE: // LDATE
@@ -236,6 +258,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
+		_ = nanosecondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLDATEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
 	case plcValueType == PlcValueType_TIME_OF_DAY: // TIME_OF_DAY
@@ -244,6 +267,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _millisecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_millisecondsSinceMidnightErr, "Error parsing 'millisecondsSinceMidnight' field")
 		}
+		_ = millisecondsSinceMidnight // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcTIME_OF_DAYFromMillisecondsSinceMidnight(millisecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_LTIME_OF_DAY: // LTIME_OF_DAY
@@ -252,6 +276,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsSinceMidnightErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceMidnightErr, "Error parsing 'nanosecondsSinceMidnight' field")
 		}
+		_ = nanosecondsSinceMidnight // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLTIME_OF_DAYFromNanosecondsSinceMidnight(nanosecondsSinceMidnight), nil
 	case plcValueType == PlcValueType_DATE_AND_TIME: // DATE_AND_TIME
@@ -260,6 +285,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _secondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_secondsSinceEpochErr, "Error parsing 'secondsSinceEpoch' field")
 		}
+		_ = secondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcDATA_AND_TIMEFromSecondsSinceEpoch(secondsSinceEpoch), nil
 	case plcValueType == PlcValueType_LDATE_AND_TIME: // LDATE_AND_TIME
@@ -268,6 +294,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		if _nanosecondsSinceEpochErr != nil {
 			return nil, errors.Wrap(_nanosecondsSinceEpochErr, "Error parsing 'nanosecondsSinceEpoch' field")
 		}
+		_ = nanosecondsSinceEpoch // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcLDATE_AND_TIMEFromNanosecondsSinceEpoch(uint64(nanosecondsSinceEpoch)), nil
 	}

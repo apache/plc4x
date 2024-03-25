@@ -84,6 +84,9 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	tcpTransport := tcp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
+		if err := ctx.Err(); err != nil {
+			return err
+		}
 		interfaceLog := d.log.With().Stringer("interface", netInterface).Logger()
 		interfaceLog.Debug().Msg("Scanning")
 		addrs, err := netInterface.Addrs()
@@ -105,6 +108,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			for _, addr := range addrs {
 				addressLogger := interfaceLog.With().Stringer("address", addr).Logger()
 				addressLogger.Debug().Msg("looking into")
+				if err := ctx.Err(); err != nil {
+					addressLogger.Debug().Err(err).Msg("ending")
+					return
+				}
 				var ipv4Addr net.IP
 				switch addr.(type) {
 				// If the device is configured to communicate with a subnet
@@ -141,6 +148,10 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					}()
 					defer func() { wg.Done() }()
 					for ip := range addresses {
+						if err := ctx.Err(); err != nil {
+							addressLogger.Debug().Err(err).Msg("ending")
+							return
+						}
 						addressLogger.Trace().IPAddr("ip", ip).Msg("Handling found ip")
 						d.transportInstanceCreationQueue.Submit(
 							ctx,
@@ -177,12 +188,16 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		}()
 		deviceScanWg := sync.WaitGroup{}
 		for transportInstance := range transportInstances {
+			if err := ctx.Err(); err != nil {
+				d.log.Debug().Err(err).Msg("ending")
+				return
+			}
 			d.log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
 			completionFuture := d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
 			deviceScanWg.Add(1)
 			go func() {
 				defer deviceScanWg.Done()
-				if err := completionFuture.AwaitCompletion(context.TODO()); err != nil {
+				if err := completionFuture.AwaitCompletion(ctx); err != nil {
 					d.log.Debug().Err(err).Msg("error waiting for completion")
 				}
 			}()

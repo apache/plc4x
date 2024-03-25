@@ -25,7 +25,7 @@ package org.apache.plc4x.java.spi.configuration;
  *
  * @param <CONFIGURATION> Class of the Configuration
  */
-public interface HasConfiguration<CONFIGURATION extends Configuration> {
+public interface HasConfiguration<CONFIGURATION extends PlcConfiguration> {
 
     /**
      * Is called directly after instantiation before the class is used somewhere.

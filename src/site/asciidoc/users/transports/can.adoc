@@ -41,6 +41,7 @@ Note this API is available since Apache PLC4X 0.9.
 
 |Maven Dependency
 2+|
+[subs=attributes+]
 ----
 <dependency>
   <groupId>org.apache.plc4x</groupId>

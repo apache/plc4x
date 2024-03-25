@@ -20,7 +20,6 @@
 package pool
 
 import (
-	"github.com/rs/zerolog/log"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -77,7 +76,7 @@ func (w *worker) start() {
 	w.stateChange.Lock()
 	defer w.stateChange.Unlock()
 	if w.running.Load() {
-		log.Warn().Int("Worker id", w.id).Msg("Worker already started")
+		w.log.Warn().Int("Worker id", w.id).Msg("Worker already started")
 		return
 	}
 	if w.executor.isTraceWorkers() {

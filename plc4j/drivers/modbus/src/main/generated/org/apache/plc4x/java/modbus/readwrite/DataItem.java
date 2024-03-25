@@ -18,19 +18,22 @@
  */
 package org.apache.plc4x.java.modbus.readwrite;
 
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.EvaluationHelper;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.codegen.*;
+import org.apache.plc4x.java.spi.codegen.fields.*;
+import org.apache.plc4x.java.spi.codegen.io.*;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,487 +48,361 @@ public class DataItem {
       ReadBuffer readBuffer, ModbusDataType dataType, Integer numberOfValues)
       throws ParseException {
     if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // BOOL
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BOOL
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 15), (short) 0x0000);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 15);
-        if (reserved != (short) 0x0000) {
-          LOGGER.info(
-              "Expected constant value "
-                  + 0x0000
-                  + " but got "
-                  + reserved
-                  + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Boolean value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Boolean> _value = readCountArrayField("value", readBoolean(readBuffer), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (boolean _item : _value) {
+        value.add(new PlcBOOL(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcBOOL(
-                  (Boolean) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("")));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // BYTE
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 8);
-        if (reserved != (short) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcBYTE(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
-      // Array field (value)
-      // Count array
-      if ((numberOfValues) * (8) > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + ((numberOfValues) * (8))
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Boolean> _value =
+          readCountArrayField("value", readBoolean(readBuffer), (numberOfValues) * (8));
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (boolean _item : _value) {
+        value.add(new PlcBOOL(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) (numberOfValues) * (8);
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcBOOL(
-                  (Boolean) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("")));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) { // WORD
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcWORD(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.DWORD)) { // DWORD
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 32);
-
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcDWORD(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LWORD)) { // LWORD
-
-      // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+      BigInteger value = readSimpleField("value", readUnsignedBigInteger(readBuffer, 64));
       return new PlcLWORD(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // SINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // SINT
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 8);
-        if (reserved != (short) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Byte value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readSignedByte("", 8);
-
+      byte value = readSimpleField("value", readSignedByte(readBuffer, 8));
       return new PlcSINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Byte> _value =
+          readCountArrayField("value", readSignedByte(readBuffer, 8), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (byte _item : _value) {
+        value.add(new PlcSINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readSignedByte("", 8)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // INT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readShort("", 16);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // INT
+      short value = readSimpleField("value", readSignedShort(readBuffer, 16));
       return new PlcINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Short> _value =
+          readCountArrayField("value", readSignedShort(readBuffer, 16), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (short _item : _value) {
+        value.add(new PlcINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcINT(
-                  (Short) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readShort("", 16)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // DINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readInt("", 32);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // DINT
+      int value = readSimpleField("value", readSignedInt(readBuffer, 32));
       return new PlcDINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Integer> _value =
+          readCountArrayField("value", readSignedInt(readBuffer, 32), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (int _item : _value) {
+        value.add(new PlcDINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcDINT(
-                  (Integer) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readInt("", 32)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // LINT
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readLong("", 64);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // LINT
+      long value = readSimpleField("value", readSignedLong(readBuffer, 64));
       return new PlcLINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Long> _value =
+          readCountArrayField("value", readSignedLong(readBuffer, 64), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (long _item : _value) {
+        value.add(new PlcLINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcLINT(
-                  (Long) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readLong("", 64)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // USINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // USINT
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedShort("", 8);
-        if (reserved != (short) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Short> _value =
+          readCountArrayField("value", readUnsignedShort(readBuffer, 8), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (short _item : _value) {
+        value.add(new PlcUSINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcUSINT(
-                  (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readUnsignedShort("", 8)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // UINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // UINT
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcUINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Integer> _value =
+          readCountArrayField("value", readUnsignedInt(readBuffer, 16), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (int _item : _value) {
+        value.add(new PlcUINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcUINT(
-                  (Integer) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readUnsignedInt("", 16)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // UDINT
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 32);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // UDINT
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Long> _value =
+          readCountArrayField("value", readUnsignedLong(readBuffer, 32), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (long _item : _value) {
+        value.add(new PlcUDINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcUDINT(
-                  (Long) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readUnsignedLong("", 32)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // ULINT
-
-      // Simple Field (value)
-      BigInteger value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedBigInteger("", 64);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // ULINT
+      BigInteger value = readSimpleField("value", readUnsignedBigInteger(readBuffer, 64));
       return new PlcULINT(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<BigInteger> _value =
+          readCountArrayField("value", readUnsignedBigInteger(readBuffer, 64), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (BigInteger _item : _value) {
+        value.add(new PlcULINT(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcULINT(
-                  (BigInteger) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readUnsignedBigInteger("", 64)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // REAL
-
-      // Simple Field (value)
-      Float value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 32);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // REAL
+      float value = readSimpleField("value", readFloat(readBuffer, 32));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Float> _value = readCountArrayField("value", readFloat(readBuffer, 32), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (float _item : _value) {
+        value.add(new PlcREAL(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcREAL(
-                  (Float) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 32)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // LREAL
-
-      // Simple Field (value)
-      Double value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readDouble("", 64);
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // LREAL
+      double value = readSimpleField("value", readDouble(readBuffer, 64));
       return new PlcLREAL(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<Double> _value =
+          readCountArrayField("value", readDouble(readBuffer, 64), numberOfValues);
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (double _item : _value) {
+        value.add(new PlcLREAL(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcLREAL(
-                  (Double) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readDouble("", 64)));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
-
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // CHAR
+      String value =
+          readSimpleField("value", readString(readBuffer, 8), WithOption.WithEncoding("UTF-8"));
       return new PlcCHAR(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<String> _value =
+          readCountArrayField(
+              "value", readString(readBuffer, 8), numberOfValues, WithOption.WithEncoding("UTF-8"));
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (String _item : _value) {
+        value.add(new PlcSTRING(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSTRING(
-                  (String) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"))));
-        }
-      }
-
       return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // WCHAR
-
-      // Simple Field (value)
-      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"));
-
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // WCHAR
+      String value =
+          readSimpleField("value", readString(readBuffer, 16), WithOption.WithEncoding("UTF-16"));
       return new PlcWCHAR(value);
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) { // List
-      // Array field (value)
-      // Count array
-      if (numberOfValues > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (numberOfValues)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      List<String> _value =
+          readCountArrayField(
+              "value",
+              readString(readBuffer, 16),
+              numberOfValues,
+              WithOption.WithEncoding("UTF-16"));
+      List<PlcValue> value = new ArrayList<>(_value.size());
+      for (String _item : _value) {
+        value.add(new PlcSTRING(_item));
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) numberOfValues;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSTRING(
-                  (String) /*TODO: migrate me*/ /*TODO: migrate me*/
-                      readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"))));
-        }
-      }
-
       return new PlcList(value);
     }
     return null;
+  }
+
+  public static int getLengthInBytes(
+      PlcValue _value, ModbusDataType dataType, Integer numberOfValues) {
+    return (int) Math.ceil((float) getLengthInBits(_value, dataType, numberOfValues) / 8.0);
+  }
+
+  public static int getLengthInBits(
+      PlcValue _value, ModbusDataType dataType, Integer numberOfValues) {
+    int lengthInBits = 0;
+    if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BOOL
+      // Reserved Field (reserved)
+      lengthInBits += 15;
+
+      // Simple field (value)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 1 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 1 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) { // WORD
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DWORD)) { // DWORD
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LWORD)) { // LWORD
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // SINT
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // INT
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 16 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // DINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 32 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // LINT
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 64 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // USINT
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // UINT
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 16 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // UDINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 32 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // ULINT
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 64 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // REAL
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 32 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // LREAL
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 64 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // CHAR
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getList().size();
+      }
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // WCHAR
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 16 * _value.getList().size();
+      }
+    }
+
+    return lengthInBits;
   }
 
   public static void staticSerialize(
@@ -542,376 +419,178 @@ public class DataItem {
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // BOOL
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 15, ((Number) (short) 0x0000).shortValue());
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BOOL
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x0000, writeUnsignedShort(writeBuffer, 15));
+
       // Simple Field (value)
-      boolean value = (boolean) _value.getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Boolean value = (Boolean) val.getBoolean();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()),
+          writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // BYTE
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (short) 0x00).shortValue());
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // BYTE
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Boolean value = (Boolean) val.getBoolean();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getBoolean).collect(Collectors.toList()),
+          writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) { // WORD
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.DWORD)) { // DWORD
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LWORD)) { // LWORD
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
+      writeSimpleField(
+          "value", (BigInteger) _value.getBigInteger(), writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // SINT
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (short) 0x00).shortValue());
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // SINT
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
       // Simple Field (value)
-      byte value = (byte) _value.getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeSignedByte("", 8, ((Number) (value)).byteValue());
+      writeSimpleField("value", (byte) _value.getByte(), writeSignedByte(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Byte value = (Byte) val.getByte();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeSignedByte("", 8, ((Number) (value)).byteValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getByte).collect(Collectors.toList()),
+          writeSignedByte(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // INT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // INT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeShort("", 16, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeSignedShort(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Short value = (Short) val.getShort();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeShort("", 16, ((Number) (value)).shortValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()),
+          writeSignedShort(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // DINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // DINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeInt("", 32, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeSignedInt(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Integer value = (Integer) val.getInteger();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeInt("", 32, ((Number) (value)).intValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getInteger).collect(Collectors.toList()),
+          writeSignedInt(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // LINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // LINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeLong("", 64, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeSignedLong(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Long value = (Long) val.getLong();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeLong("", 64, ((Number) (value)).longValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()),
+          writeSignedLong(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // USINT
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (short) 0x00).shortValue());
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // USINT
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Short value = (Short) val.getShort();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getShort).collect(Collectors.toList()),
+          writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // UINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // UINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Integer value = (Integer) val.getInteger();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getInteger).collect(Collectors.toList()),
+          writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // UDINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // UDINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Long value = (Long) val.getLong();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getLong).collect(Collectors.toList()),
+          writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // ULINT
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // ULINT
       // Simple Field (value)
-      BigInteger value = (BigInteger) _value.getBigInteger();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
+      writeSimpleField(
+          "value", (BigInteger) _value.getBigInteger(), writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        BigInteger value = (BigInteger) val.getBigInteger();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeUnsignedBigInteger("", 64, (BigInteger) (value));
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getBigInteger).collect(Collectors.toList()),
+          writeUnsignedBigInteger(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // REAL
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // REAL
       // Simple Field (value)
-      float value = (float) _value.getFloat();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeFloat("", 32, (value));
+      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Float value = (Float) val.getFloat();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeFloat("", 32, (value));
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getFloat).collect(Collectors.toList()),
+          writeFloat(writeBuffer, 32));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // LREAL
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // LREAL
       // Simple Field (value)
-      double value = (double) _value.getDouble();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeDouble("", 64, (value));
+      writeSimpleField("value", (double) _value.getDouble(), writeDouble(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Double value = (Double) val.getDouble();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeDouble("", 64, (value));
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getDouble).collect(Collectors.toList()),
+          writeDouble(writeBuffer, 64));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // CHAR
       // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
+      writeSimpleField(
+          "value",
+          (String) _value.getString(),
+          writeString(writeBuffer, 8),
+          WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        String value = (String) val.getString();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeString(
-            "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
-      }
-
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()),
+          writeString(writeBuffer, 8),
+          WithOption.WithEncoding("UTF-8"));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // WCHAR
+        && EvaluationHelper.equals(numberOfValues, (int) 1)) { // WCHAR
       // Simple Field (value)
-      String value = (String) _value.getString();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeString(
-          "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
+      writeSimpleField(
+          "value",
+          (String) _value.getString(),
+          writeString(writeBuffer, 16),
+          WithOption.WithEncoding("UTF-16"));
     } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        String value = (String) val.getString();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeString(
-            "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
-      }
+      // Array Field (value)
+      writeSimpleTypeArrayField(
+          "value",
+          _value.getList().stream().map(PlcValue::getString).collect(Collectors.toList()),
+          writeString(writeBuffer, 16),
+          WithOption.WithEncoding("UTF-16"));
     }
-  }
-
-  public static int getLengthInBytes(
-      PlcValue _value, ModbusDataType dataType, Integer numberOfValues) {
-    return (int) Math.ceil((float) getLengthInBits(_value, dataType, numberOfValues) / 8.0);
-  }
-
-  public static int getLengthInBits(
-      PlcValue _value, ModbusDataType dataType, Integer numberOfValues) {
-    int sizeInBits = 0;
-    if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // BOOL
-      // Reserved Field
-      sizeInBits += 15;
-      // Simple Field (value)
-      sizeInBits += 1;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BOOL)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 1;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // BYTE
-      // Reserved Field
-      sizeInBits += 8;
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.BYTE)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 1;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WORD)) { // WORD
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DWORD)) { // DWORD
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LWORD)) { // LWORD
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // SINT
-      // Reserved Field
-      sizeInBits += 8;
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.SINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // INT
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.INT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // DINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.DINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // LINT
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // USINT
-      // Reserved Field
-      sizeInBits += 8;
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.USINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // UINT
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // UDINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.UDINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // ULINT
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.ULINT)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // REAL
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.REAL)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 32;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // LREAL
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.LREAL)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 64;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.CHAR)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)
-        && EvaluationHelper.equals(numberOfValues, 1)) { // WCHAR
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(dataType, ModbusDataType.WCHAR)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 16;
-    }
-    return sizeInBits;
   }
 }

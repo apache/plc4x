@@ -22,13 +22,13 @@ import io.netty.channel.*;
 import java.util.concurrent.RejectedExecutionException;
 import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcIoException;
 import org.apache.plc4x.java.api.listener.ConnectionStateListener;
 import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.messages.PlcPingResponse;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcPingRequest;
@@ -48,7 +48,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected final static long DEFAULT_DISCONNECT_WAIT_TIME = 10000L;
     private static final Logger logger = LoggerFactory.getLogger(DefaultNettyPlcConnection.class);
 
-    protected final Configuration configuration;
+    protected final PlcConnectionConfiguration configuration;
     protected final ChannelFactory channelFactory;
     protected final boolean fireDiscoverEvent;
     protected final boolean awaitSessionSetupComplete;
@@ -68,7 +68,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                                      boolean canBrowse,
                                      PlcTagHandler tagHandler,
                                      PlcValueHandler valueHandler,
-                                     Configuration configuration,
+                                     PlcConnectionConfiguration configuration,
                                      ChannelFactory channelFactory,
                                      boolean fireDiscoverEvent,
                                      boolean awaitSessionSetupComplete,
@@ -98,7 +98,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             // define a future we can use to signal back that the s7 session is
             // finished initializing.
             CompletableFuture<Void> sessionSetupCompleteFuture = new CompletableFuture<>();
-            CompletableFuture<Configuration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
+            CompletableFuture<PlcConnectionConfiguration> sessionDiscoveredCompleteFuture = new CompletableFuture<>();
 
             if (channelFactory == null) {
                 throw new PlcConnectionException("No channel factory provided");
@@ -215,7 +215,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         return channel;
     }
 
-    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture, CompletableFuture<Void> sessionDisconnectCompleteFuture, CompletableFuture<Configuration> sessionDiscoverCompleteFuture) {
+    public ChannelHandler getChannelHandler(CompletableFuture<Void> sessionSetupCompleteFuture, CompletableFuture<Void> sessionDisconnectCompleteFuture, CompletableFuture<PlcConnectionConfiguration> sessionDiscoverCompleteFuture) {
         if (stackConfigurer == null) {
             throw new IllegalStateException("No Protocol Stack Configurer is given!");
         }
@@ -243,15 +243,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                             // Fix for https://github.com/apache/plc4x/issues/801
                             if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
                                 if (awaitSessionSetupComplete) {
-                                    setProtocol(
-                                            stackConfigurer.configurePipeline(
-                                                    configuration,
-                                                    pipeline,
-                                                    getAuthentication(),
-                                                    channelFactory.isPassive(),
-                                                    listeners
-                                            )
-                                    );
+                                    setupProtocol(pipeline);
                                 }
                                 super.userEventTriggered(ctx, evt);
                             }
@@ -275,11 +267,15 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                 // Initialize Protocol Layer
                 // Fix for https://github.com/apache/plc4x/issues/801
                 if (!awaitSessionSetupComplete) {
-                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                            channelFactory.isPassive(), listeners));
+                    setupProtocol(pipeline);
                 }
             }
         };
+    }
+
+    private void setupProtocol(ChannelPipeline pipeline) {
+        setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
+            channelFactory.isPassive(), listeners));
     }
 
     protected void sendChannelCreatedEvent() {

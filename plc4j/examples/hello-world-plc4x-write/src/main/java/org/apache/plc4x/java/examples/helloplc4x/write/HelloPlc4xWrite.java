@@ -39,7 +39,7 @@ public class HelloPlc4xWrite {
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support subscriptions.
-            if (!plcConnection.getMetadata().canWrite()) {
+            if (!plcConnection.getMetadata().isWriteSupported()) {
                 LOGGER.error("This connection doesn't support writing.");
                 return;
             }

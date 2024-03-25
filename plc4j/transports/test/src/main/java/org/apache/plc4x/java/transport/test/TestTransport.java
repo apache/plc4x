@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.transport.test;
 
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.ChannelFactory;
 import org.apache.plc4x.java.spi.transport.Transport;
 
@@ -37,6 +38,11 @@ public class TestTransport implements Transport {
     public ChannelFactory createChannelFactory(String transportConfig) {
         TestSocketAddress address = new TestSocketAddress(transportConfig);
         return new TestChannelFactory(address);
+    }
+
+    @Override
+    public Class<? extends PlcTransportConfiguration> getTransportConfigType() {
+        return TestTransportConfiguration.class;
     }
 
 }

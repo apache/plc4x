@@ -229,6 +229,11 @@ public class PlcREAL extends PlcIECValue<Float> {
     public String toString() {
         return Float.toString(value);
     }
+    
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
 
     public byte[] getBytes() {
         int intBits = Float.floatToIntBits(value);

@@ -47,51 +47,21 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
   }
 
   // Properties.
-  protected final String chunk;
-  protected final int version;
-  protected final int receiveBufferSize;
-  protected final int sendBufferSize;
-  protected final int maxMessageSize;
-  protected final int maxChunkCount;
+  protected final long version;
+  protected final OpcuaProtocolLimits limits;
 
-  public OpcuaAcknowledgeResponse(
-      String chunk,
-      int version,
-      int receiveBufferSize,
-      int sendBufferSize,
-      int maxMessageSize,
-      int maxChunkCount) {
-    super();
-    this.chunk = chunk;
+  public OpcuaAcknowledgeResponse(ChunkType chunk, long version, OpcuaProtocolLimits limits) {
+    super(chunk);
     this.version = version;
-    this.receiveBufferSize = receiveBufferSize;
-    this.sendBufferSize = sendBufferSize;
-    this.maxMessageSize = maxMessageSize;
-    this.maxChunkCount = maxChunkCount;
+    this.limits = limits;
   }
 
-  public String getChunk() {
-    return chunk;
-  }
-
-  public int getVersion() {
+  public long getVersion() {
     return version;
   }
 
-  public int getReceiveBufferSize() {
-    return receiveBufferSize;
-  }
-
-  public int getSendBufferSize() {
-    return sendBufferSize;
-  }
-
-  public int getMaxMessageSize() {
-    return maxMessageSize;
-  }
-
-  public int getMaxChunkCount() {
-    return maxChunkCount;
+  public OpcuaProtocolLimits getLimits() {
+    return limits;
   }
 
   @Override
@@ -100,28 +70,11 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("OpcuaAcknowledgeResponse");
 
-    // Simple Field (chunk)
-    writeSimpleField("chunk", chunk, writeString(writeBuffer, 8));
-
-    // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int messageSize = (int) (getLengthInBytes());
-    writeImplicitField("messageSize", messageSize, writeSignedInt(writeBuffer, 32));
-
     // Simple Field (version)
-    writeSimpleField("version", version, writeSignedInt(writeBuffer, 32));
+    writeSimpleField("version", version, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (receiveBufferSize)
-    writeSimpleField("receiveBufferSize", receiveBufferSize, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (sendBufferSize)
-    writeSimpleField("sendBufferSize", sendBufferSize, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (maxMessageSize)
-    writeSimpleField("maxMessageSize", maxMessageSize, writeSignedInt(writeBuffer, 32));
-
-    // Simple Field (maxChunkCount)
-    writeSimpleField("maxChunkCount", maxChunkCount, writeSignedInt(writeBuffer, 32));
+    // Simple Field (limits)
+    writeSimpleField("limits", limits, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("OpcuaAcknowledgeResponse");
   }
@@ -137,26 +90,11 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     OpcuaAcknowledgeResponse _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (chunk)
-    lengthInBits += 8;
-
-    // Implicit Field (messageSize)
-    lengthInBits += 32;
-
     // Simple field (version)
     lengthInBits += 32;
 
-    // Simple field (receiveBufferSize)
-    lengthInBits += 32;
-
-    // Simple field (sendBufferSize)
-    lengthInBits += 32;
-
-    // Simple field (maxMessageSize)
-    lengthInBits += 32;
-
-    // Simple field (maxChunkCount)
-    lengthInBits += 32;
+    // Simple field (limits)
+    lengthInBits += limits.getLengthInBits();
 
     return lengthInBits;
   }
@@ -167,53 +105,31 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    String chunk = readSimpleField("chunk", readString(readBuffer, 8));
+    long version = readSimpleField("version", readUnsignedLong(readBuffer, 32));
 
-    int messageSize = readImplicitField("messageSize", readSignedInt(readBuffer, 32));
-
-    int version = readSimpleField("version", readSignedInt(readBuffer, 32));
-
-    int receiveBufferSize = readSimpleField("receiveBufferSize", readSignedInt(readBuffer, 32));
-
-    int sendBufferSize = readSimpleField("sendBufferSize", readSignedInt(readBuffer, 32));
-
-    int maxMessageSize = readSimpleField("maxMessageSize", readSignedInt(readBuffer, 32));
-
-    int maxChunkCount = readSimpleField("maxChunkCount", readSignedInt(readBuffer, 32));
+    OpcuaProtocolLimits limits =
+        readSimpleField(
+            "limits",
+            new DataReaderComplexDefault<>(
+                () -> OpcuaProtocolLimits.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpcuaAcknowledgeResponse");
     // Create the instance
-    return new OpcuaAcknowledgeResponseBuilderImpl(
-        chunk, version, receiveBufferSize, sendBufferSize, maxMessageSize, maxChunkCount);
+    return new OpcuaAcknowledgeResponseBuilderImpl(version, limits);
   }
 
   public static class OpcuaAcknowledgeResponseBuilderImpl implements MessagePDU.MessagePDUBuilder {
-    private final String chunk;
-    private final int version;
-    private final int receiveBufferSize;
-    private final int sendBufferSize;
-    private final int maxMessageSize;
-    private final int maxChunkCount;
+    private final long version;
+    private final OpcuaProtocolLimits limits;
 
-    public OpcuaAcknowledgeResponseBuilderImpl(
-        String chunk,
-        int version,
-        int receiveBufferSize,
-        int sendBufferSize,
-        int maxMessageSize,
-        int maxChunkCount) {
-      this.chunk = chunk;
+    public OpcuaAcknowledgeResponseBuilderImpl(long version, OpcuaProtocolLimits limits) {
       this.version = version;
-      this.receiveBufferSize = receiveBufferSize;
-      this.sendBufferSize = sendBufferSize;
-      this.maxMessageSize = maxMessageSize;
-      this.maxChunkCount = maxChunkCount;
+      this.limits = limits;
     }
 
-    public OpcuaAcknowledgeResponse build() {
+    public OpcuaAcknowledgeResponse build(ChunkType chunk) {
       OpcuaAcknowledgeResponse opcuaAcknowledgeResponse =
-          new OpcuaAcknowledgeResponse(
-              chunk, version, receiveBufferSize, sendBufferSize, maxMessageSize, maxChunkCount);
+          new OpcuaAcknowledgeResponse(chunk, version, limits);
       return opcuaAcknowledgeResponse;
     }
   }
@@ -227,26 +143,15 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
       return false;
     }
     OpcuaAcknowledgeResponse that = (OpcuaAcknowledgeResponse) o;
-    return (getChunk() == that.getChunk())
-        && (getVersion() == that.getVersion())
-        && (getReceiveBufferSize() == that.getReceiveBufferSize())
-        && (getSendBufferSize() == that.getSendBufferSize())
-        && (getMaxMessageSize() == that.getMaxMessageSize())
-        && (getMaxChunkCount() == that.getMaxChunkCount())
+    return (getVersion() == that.getVersion())
+        && (getLimits() == that.getLimits())
         && super.equals(that)
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getChunk(),
-        getVersion(),
-        getReceiveBufferSize(),
-        getSendBufferSize(),
-        getMaxMessageSize(),
-        getMaxChunkCount());
+    return Objects.hash(super.hashCode(), getVersion(), getLimits());
   }
 
   @Override

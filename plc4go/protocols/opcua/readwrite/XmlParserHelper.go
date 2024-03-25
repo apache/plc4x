@@ -50,6 +50,9 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return model.ImageGIFParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "EncodedTicket":
 		return model.EncodedTicketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "OpenChannelMessage":
+		response := parserArguments[0] == "true"
+		return model.OpenChannelMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "ImageJPG":
 		return model.ImageJPGParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PascalByteString":
@@ -77,6 +80,8 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return model.FourByteNodeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "AudioDataType":
 		return model.AudioDataTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SecurityHeader":
+		return model.SecurityHeaderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UserIdentityTokenDefinition":
 		// TODO: find a way to parse the sub types
 		var identifier string
@@ -85,12 +90,22 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return model.ContinuationPointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Variant":
 		return model.VariantParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "Payload":
+		extensible := parserArguments[0] == "true"
+		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		byteCount := uint32(parsedUint1)
+		return model.PayloadParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), extensible, byteCount)
 	case "ExtensionObjectEncodingMask":
 		return model.ExtensionObjectEncodingMaskParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DurationString":
 		return model.DurationStringParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "Structure":
 		return model.StructureParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "OpcuaConstants":
+		return model.OpcuaConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "ExtensionHeader":
 		return model.ExtensionHeaderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "UtcTime":
@@ -100,6 +115,8 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return model.MessagePDUParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "Counter":
 		return model.CounterParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "SequenceHeader":
+		return model.SequenceHeaderParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NodeId":
 		return model.NodeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "RsaEncryptedSecret":
@@ -141,6 +158,8 @@ func (m OpcuaXmlParserHelper) Parse(typeName string, xmlString string, parserArg
 		return model.ExtensionObjectDefinitionParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), identifier)
 	case "ExpandedNodeId":
 		return model.ExpandedNodeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "OpcuaProtocolLimits":
+		return model.OpcuaProtocolLimitsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NumericRange":
 		return model.NumericRangeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "SemanticVersionString":

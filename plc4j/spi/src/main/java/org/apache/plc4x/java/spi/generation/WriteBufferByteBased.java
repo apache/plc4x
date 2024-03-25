@@ -57,16 +57,12 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         bb.position(position);
     }
 
-    /**
-     * @deprecated use {@link WriteBufferByteBased#getBytes()}
-     */
-    @Deprecated
-    public byte[] getData() {
-        return getBytes();
-    }
-
     public byte[] getBytes() {
         return ArrayUtils.subarray(bb.array(), 0, getPos());
+    }
+
+    public byte[] getBytes(int start, int end) {
+        return ArrayUtils.subarray(bb.array(), start, end);
     }
 
     @Override
@@ -109,7 +105,23 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("unsigned byte can only contain max 8 bits");
         }
         try {
-            bo.writeByte(true, bitLength, value);
+            String encoding = extractEncoding(writerArgs).orElse("default");
+            switch (encoding) {
+                case "BCD":
+                    if(bitLength % 4 != 0) {
+                        throw new SerializationException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    if((value < 0) || (value > 9)) {
+                        throw new SerializationException("'BCD' encoded value must be only one hexadecimal digit long");
+                    }
+                    bo.writeByte(true, bitLength, value);
+                    break;
+                case "default":
+                    bo.writeByte(true, bitLength, value);
+                    break;
+                default:
+                    throw new ParseException("unsupported encoding '" + encoding + "'");
+            }
         } catch (Exception e) {
             throw new SerializationException("Error writing unsigned byte", e);
         }
@@ -126,13 +138,13 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         try {
             String encoding = extractEncoding(writerArgs).orElse("default");
             switch (encoding) {
-                case "ASCII":
+                case "ASCII": {
                     // AsciiUint can only decode values that have a multiple of 8 length.
                     if (bitLength % 8 != 0) {
                         throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
                     }
                     int charLen = bitLength / 8;
-                    int maxValue = (int) (Math.pow(10, charLen) - 1);
+                    short maxValue = (short) (Math.pow(10, charLen) - 1);
                     if (value > maxValue) {
                         throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
                     }
@@ -141,6 +153,24 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                         bo.writeByte(false, 8, curByte);
                     }
                     break;
+                }
+                case "BCD": {
+                    if (bitLength % 4 != 0) {
+                        throw new SerializationException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    short maxValue = (short) (Math.pow(10, numDigits) - 1);
+                    if (value > maxValue) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
+                    }
+                    // Write all but the last digit, by dividing the number
+                    // by powers of 10 and writing the last number.
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        short divisor = (short) Math.pow(10, i);
+                        bo.writeByte(false, 4, (byte) ((value / divisor) % 10));
+                    }
+                    break;
+                }
                 case "default":
                     bo.writeShort(true, bitLength, value);
                     break;
@@ -163,7 +193,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         try {
             String encoding = extractEncoding(writerArgs).orElse("default");
             switch (encoding) {
-                case "ASCII":
+                case "ASCII": {
                     // AsciiUint can only decode values that have a multiple of 8 length.
                     if (bitLength % 8 != 0) {
                         throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
@@ -178,6 +208,24 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                         bo.writeByte(false, 8, curByte);
                     }
                     break;
+                }
+                case "BCD": {
+                    if (bitLength % 4 != 0) {
+                        throw new SerializationException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    int maxValue = (int) (Math.pow(10, numDigits) - 1);
+                    if (value > maxValue) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
+                    }
+                    // Write all but the last digit, by dividing the number
+                    // by powers of 10 and writing the last number.
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        int divisor = (int) Math.pow(10, i);
+                        bo.writeByte(false, 4, (byte) ((value / divisor) % 10));
+                    }
+                    break;
+                }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Integer.reverseBytes(value) >> (32 - bitLength);
@@ -203,13 +251,13 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         try {
             String encoding = extractEncoding(writerArgs).orElse("default");
             switch (encoding) {
-                case "ASCII":
+                case "ASCII": {
                     // AsciiUint can only decode values that have a multiple of 8 length.
                     if (bitLength % 8 != 0) {
                         throw new SerializationException("'ASCII' encoded fields must have a length that is a multiple of 8 bits long");
                     }
                     int charLen = bitLength / 8;
-                    int maxValue = (int) (Math.pow(10, charLen) - 1);
+                    long maxValue = (long) (Math.pow(10, charLen) - 1);
                     if (value > maxValue) {
                         throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
                     }
@@ -218,6 +266,24 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                         bo.writeByte(false, 8, curByte);
                     }
                     break;
+                }
+                case "BCD": {
+                    if (bitLength % 4 != 0) {
+                        throw new ParseException("'BCD' encoded fields must have a length that is a multiple of 4 bits long");
+                    }
+                    int numDigits = bitLength / 4;
+                    long maxValue = (long) (Math.pow(10, numDigits) - 1);
+                    if (value > maxValue) {
+                        throw new SerializationException("Provided value of " + value + " exceeds the max value of " + maxValue);
+                    }
+                    // Write all but the last digit, by dividing the number
+                    // by powers of 10 and writing the last number.
+                    for(int i = numDigits - 1; i >= 0; i--) {
+                        long divisor = (long) Math.pow(10, i);
+                        bo.writeByte(false, 4, (byte) ((value / divisor) % 10));
+                    }
+                    break;
+                }
                 case "default":
                     if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                         value = Long.reverseBytes(value) >> 32;
@@ -235,6 +301,7 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
     @Override
     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
         try {
+            // TODO: Support encodings for serializing big-integers too.
             if (bitLength == 64) {
                 if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
                     if (value.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) >= 0) {
@@ -389,7 +456,6 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 break;
             }
             case "UTF16":
-            case "UTF16LE":
             case "UTF16BE": {
                 bytes = value.getBytes(StandardCharsets.UTF_16);
                 if(bytes.length > 2) {
@@ -399,6 +465,9 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                 }
                 break;
             }
+            case "UTF16LE":
+                bytes = value.getBytes(StandardCharsets.UTF_16LE);
+                break;
             default:
                 throw new SerializationException("Unsupported encoding: " + encoding);
         }

@@ -21,33 +21,23 @@
 
 === Connection String Options
 
+==== Modbus TCP
+
+include::../../../plc4j/drivers/all/src/site/generated/modbus-tcp.adoc[]
+
+==== Modbus RTU
+
+include::../../../plc4j/drivers/all/src/site/generated/modbus-rtu.adoc[]
+
+==== Modbus ASCII
+
+include::../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
+
+=== Supported Operations
+
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`modbus-tcp`, `modbus-adu`, `modbus-ascii`
-
-|Name
-2+|Modbus
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-modbus</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `tcp`
-
-|Compatible Transports:
-2+| - `tcp` (Default Port: 502)
-- `udp` (Default Port: 502)
-- `serial`
 
 3+|Supported Operations
 
@@ -56,17 +46,6 @@
 
 |
 2+| `write`
-
-3+|Options
-
-|
-| `request-timeout` (ms)
-| Timeout after which a request is terminated. Defaults to 1000ms.
-
-|
-| `unit-identifier` (1)
-| Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
-
 |===
 
 === Individual Resource Address Format

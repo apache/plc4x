@@ -673,7 +673,11 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
 
-                ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+                <#if typedField.type.isEnumTypeReference()>
+                    ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = readDiscriminatorEnumField("${namedField.name}", "${typedField.type.asEnumTypeReference().orElseThrow().typeDefinition.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+                <#else>
+                    ${helper.getLanguageTypeNameForField(field)} ${namedField.name} = read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+                </#if>
                 <#break>
             <#case "enum">
                 <#assign enumField = field.asEnumField().orElseThrow()>

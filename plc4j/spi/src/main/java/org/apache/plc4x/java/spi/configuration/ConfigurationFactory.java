@@ -54,22 +54,21 @@ public class ConfigurationFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationFactory.class);
 
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
-                                                           String transportConfig, String paramString) {
+    public <T extends PlcConnectionConfiguration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+                                                                        String transportConfig, String paramString) {
 
         // Get a map of all parameters in the connection string.
         Map<String, List<String>> paramStringValues = splitQuery(paramString);
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, paramStringValues);
     }
 
-    public <T extends Configuration> T createPrefixedConfiguration(Class<T> pClazz, String prefix, String protocolCode,
-                                                                   String transportCode, String transportConfig,
-                                                                   String paramString) {
-
+    public <T extends PlcTransportConfiguration> T createTransportConfiguration(Class<T> pClazz, String protocolCode,
+                                                                                String transportCode, String transportConfig,
+                                                                                String paramString) {
         // Get a map of all parameters in the connection string.
         Map<String, List<String>> paramStringValues = splitQuery(paramString);
-        // Filter out the properties, that don't have the current prefix
-        prefix = prefix + ".";
+        // Filter out the properties, that don't have the current transport code as prefix.
+        String prefix = transportCode + ".";
         Map<String, List<String>> filteredParamStringValues = new HashMap<>();
         for (String paramName : paramStringValues.keySet()) {
             if(paramName.startsWith(prefix)) {
@@ -79,7 +78,7 @@ public class ConfigurationFactory {
         return createConfiguration(pClazz, protocolCode, transportCode, transportConfig, filteredParamStringValues);
     }
 
-    public <T extends Configuration> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
+    public <T> T createConfiguration(Class<T> pClazz, String protocolCode, String transportCode,
                                                            String transportConfig, Map<String, List<String>> paramStringValues) {
         // Get a map of all configuration parameter fields.
         // - Get a list of all fields in the given class.
@@ -116,15 +115,15 @@ public class ConfigurationFactory {
             //    private String protocolCode;
             paramStringValues = new HashMap<>(paramStringValues);
             List<String> previousValue;
-            previousValue = paramStringValues.put("protocolCode", List.of(protocolCode));
+            previousValue = paramStringValues.put("protocol-code", List.of(protocolCode));
             if (previousValue != null) {
                 LOGGER.warn("protocolCode with value {} overridden by", protocolCode);
             }
-            previousValue = paramStringValues.put("transportCode", List.of(transportCode));
+            previousValue = paramStringValues.put("transport-code", List.of(transportCode));
             if (previousValue != null) {
                 LOGGER.warn("transportCode with value {} overridden by", transportCode);
             }
-            previousValue = paramStringValues.put("transportConfig", List.of(transportConfig));
+            previousValue = paramStringValues.put("transport-config", List.of(transportConfig));
             if (previousValue != null) {
                 LOGGER.warn("transportConfig with value {} overridden by", transportConfig);
             }
@@ -143,8 +142,8 @@ public class ConfigurationFactory {
                             filteredParamStringValues.put(paramName.substring(prefix.length()), paramStringValues.get(paramName));
                         }
                     }
-                    Class<Configuration> configType = (Class<Configuration>) field.getType();
-                    Configuration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
+                    Class<PlcConfiguration> configType = (Class<PlcConfiguration>) field.getType();
+                    PlcConfiguration configValue = createConfiguration(configType, protocolCode, transportCode, transportConfig, filteredParamStringValues);
                     FieldUtils.writeField(instance, field.getName(), configValue, true);
                 } else if (paramStringValues.containsKey(configName)) {
                     String stringValue = paramStringValues.get(configName).get(0);
@@ -172,7 +171,7 @@ public class ConfigurationFactory {
         return instance;
     }
 
-    public static <T> T configure(Configuration configuration, T obj) {
+    public static <T> T configure(PlcConfiguration configuration, T obj) {
         // Check if in this object is configurable at all.
         if (ClassUtils.isAssignable(obj.getClass(), HasConfiguration.class)) {
             // Check if the type declared by the HasConfiguration interface is
@@ -210,7 +209,7 @@ public class ConfigurationFactory {
      * @param field name of the field.
      * @return name of the configuration (either from the annotation or from the field itself)
      */
-    private static String getConfigurationName(Field field) {
+    public static String getConfigurationName(Field field) {
         if (field.getAnnotation(ComplexConfigurationParameter.class) != null) {
             return field.getAnnotation(ComplexConfigurationParameter.class).prefix();
         } else if (StringUtils.isBlank(field.getAnnotation(ConfigurationParameter.class).value())) {
@@ -271,13 +270,20 @@ public class ConfigurationFactory {
         if ((field.getType() == double.class) || (field.getType() == Double.class)) {
             return Double.parseDouble(valueString);
         }
+        if (field.getType().isEnum()) {
+            return parseEnumValue(field, valueString);
+        }
         throw new IllegalArgumentException("Unsupported property type " + field.getType().getName());
     }
 
-    private static Object getDefaultValueFromAnnotation(Field field) {
+    public static Object getDefaultValueFromAnnotation(Field field) {
         IntDefaultValue intDefaultValue = field.getAnnotation(IntDefaultValue.class);
         if (intDefaultValue != null) {
             return intDefaultValue.value();
+        }
+        LongDefaultValue longDefaultValue = field.getAnnotation(LongDefaultValue.class);
+        if(longDefaultValue != null) {
+            return longDefaultValue.value();
         }
         BooleanDefaultValue booleanDefaultValue = field.getAnnotation(BooleanDefaultValue.class);
         if (booleanDefaultValue != null) {
@@ -293,9 +299,16 @@ public class ConfigurationFactory {
         }
         StringDefaultValue stringDefaultValue = field.getAnnotation(StringDefaultValue.class);
         if (stringDefaultValue != null) {
+            if (field.getType().isEnum()) {
+                return parseEnumValue(field, stringDefaultValue.value());
+            }
             return stringDefaultValue.value();
         }
         return null;
+    }
+
+    private static Enum<?> parseEnumValue(Field field, String valueString) {
+        return Enum.valueOf((Class<Enum>) field.getType(), valueString);
     }
 
     /**

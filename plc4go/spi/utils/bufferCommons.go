@@ -89,6 +89,28 @@ func (b BufferCommons) ExtractAdditionalStringRepresentation(readerWriterArgs ..
 	return ""
 }
 
+func (b BufferCommons) ExtractEncoding(readerWriterArgs ...WithReaderWriterArgs) string {
+	for _, arg := range readerWriterArgs {
+		if !arg.isWriterArgs() && !arg.isReaderArgs() {
+			panic("not a reader or writer arg")
+		}
+		switch rwArg := arg.(type) {
+		case withEncoding:
+			return rwArg.encoding
+		case readerWriterArg:
+			switch rArg := rwArg.WithReaderArgs.(type) {
+			case withEncoding:
+				return rArg.encoding
+			}
+			switch wArg := rwArg.WithWriterArgs.(type) {
+			case withEncoding:
+				return wArg.encoding
+			}
+		}
+	}
+	return ""
+}
+
 type Stack struct {
 	list.List
 }

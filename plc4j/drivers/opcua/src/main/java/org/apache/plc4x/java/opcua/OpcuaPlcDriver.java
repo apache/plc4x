@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.opcua;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.optimizer.OpcuaOptimizer;
@@ -26,12 +27,14 @@ import org.apache.plc4x.java.opcua.protocol.OpcuaProtocolLogic;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
@@ -47,13 +50,18 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return OpcuaConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "tcp";
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("tcp");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -86,14 +94,12 @@ public class OpcuaPlcDriver extends GeneratedDriverBase<OpcuaAPU> {
         return new PlcValueHandler();
     }
 
+    @Override
     protected boolean fireDiscoverEvent() {
         return true;
     }
 
-    protected boolean awaitDisconnectComplete() {
-        return true;
-    }
-
+    @Override
     protected boolean awaitDiscoverComplete() {
         return true;
     }

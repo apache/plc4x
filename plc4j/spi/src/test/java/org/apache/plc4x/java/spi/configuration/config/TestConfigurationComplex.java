@@ -19,11 +19,10 @@
 
 package org.apache.plc4x.java.spi.configuration.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ComplexConfigurationParameter;
-import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 
-public class TestConfigurationComplex implements Configuration {
+public class TestConfigurationComplex implements PlcConnectionConfiguration {
 
     @ComplexConfigurationParameter(prefix = "simple", defaultOverrides = {}, requiredOverrides = {})
     private TestConfigurationSimple complexSimple;

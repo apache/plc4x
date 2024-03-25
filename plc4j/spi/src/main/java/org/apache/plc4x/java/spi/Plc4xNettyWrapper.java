@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -29,8 +28,8 @@ import io.vavr.control.Either;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultConversationContext;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
@@ -108,7 +107,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
-            public void fireDiscovered(Configuration c) {
+            public void fireDiscovered(PlcConnectionConfiguration c) {
                 pipeline.fireUserEventTriggered(DiscoveredEvent.class);
             }
 

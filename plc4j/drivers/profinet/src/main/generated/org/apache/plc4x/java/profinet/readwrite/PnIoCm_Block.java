@@ -98,8 +98,9 @@ public abstract class PnIoCm_Block implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnIoCm_BlockType blockType =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "blockType",
+            "PnIoCm_BlockType",
             new DataReaderEnumDefault<>(
                 PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

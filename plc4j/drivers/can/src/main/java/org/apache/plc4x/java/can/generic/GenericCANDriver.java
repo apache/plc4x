@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.can.generic;
 
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.can.adapter.CANDriverAdapter;
 import org.apache.plc4x.java.can.generic.configuration.GenericCANConfiguration;
@@ -25,7 +26,6 @@ import org.apache.plc4x.java.can.generic.context.GenericCANDriverContext;
 import org.apache.plc4x.java.can.generic.tag.GenericCANTagHandler;
 import org.apache.plc4x.java.can.generic.protocol.GenericCANProtocolLogic;
 import org.apache.plc4x.java.can.generic.transport.GenericCANFrameDataHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.CustomProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -35,6 +35,8 @@ import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.transport.can.CANTransport;
+
+import java.util.Optional;
 
 /**
  * A generic purpose CAN driver which is able to work with any compatible CAN transport.
@@ -54,7 +56,12 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("socketcan");
+    }
+
+    @Override
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return GenericCANConfiguration.class;
     }
 
@@ -71,11 +78,6 @@ public class GenericCANDriver extends GeneratedDriverBase<Message> {
     @Override
     protected boolean canWrite() {
         return true;
-    }
-
-    @Override
-    protected String getDefaultTransport() {
-        return "socketcan";
     }
 
     @Override

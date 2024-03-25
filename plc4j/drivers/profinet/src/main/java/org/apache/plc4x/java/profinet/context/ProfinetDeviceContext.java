@@ -508,7 +508,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         return r;
     }
 
-    public boolean hasSequenecNumberInQueue(long sequenceNumber) {
+    public boolean hasSequenceNumberInQueue(long sequenceNumber) {
         return queue.containsKey(sequenceNumber);
     }
 

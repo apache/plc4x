@@ -64,7 +64,6 @@ java -jar apache-rat-0.13.jar apache-plc4x-{current-full-version}-source-release
 ----
 find . -type f -name 'pom.xml' -exec grep -l "SNAPSHOT" {} \;
 ----
-NOTE: Especially in the `sandbox` there may be parts that are not formally released, `SNAPSHOT` versions in the `sandbox` therefore should not result in a `-1` vote ... in the other parts however they should.
 [%interactive]
 * [ ] Search for `Copyright` references, and if they are in headers, make sure these files containing them are mentioned in the LICENSE file.
 * [ ] Build the project according to the information in the README.md file.

@@ -1406,8 +1406,21 @@
     ['655' M_CAV_AUDIOGUANGZHOUCO__LTD ['713', '"CAV AUDIO(GUANGZHOU)CO.,LTD"']]
     ['656' M_HELKAMA_BICA_OY ['714', '"Helkama Bica Oy"']]
     ['657' M_MODULYTE ['715', '"ModuLyte"']]
-    ['658' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['659' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['658' M_CONSOLINNO_ENERGY_GMBH ['716', '"Consolinno Energy GmbH"']]
+    ['659' M_SCHIDERON_ELECTRIC_ASIA_LIMITED ['717', '"SCHIDERON ELECTRIC (ASIA) LIMITED"']]
+    ['660' M_3R ['718', '"3R"']]
+    ['661' M_ARKLYFE ['719', '"Arklyfe"']]
+    ['662' M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_ ['720', '"Foshan Haydn Technology Lighting Co.,Ltd."']]
+    ['663' M_KNXES_COMPANY_LIMITED ['721', '"KNXES COMPANY LIMITED"']]
+    ['664' M_THE_AKUVOX_COMPANY ['722', '"The Akuvox Company"']]
+    ['665' M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_ ['723', '"NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."']]
+    ['666' M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD ['724', '"Shenzhen Haizhichuang Technology Co., Ltd"']]
+    ['667' M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD ['725', '"Shenzhen easydetek technology Co.Ltd"']]
+    ['668' M_MUTLUSAN_ELECTRIC ['726', '"Mutlusan Electric"']]
+    ['669' M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_ ['727', '"Hangzhou BroadLink Technology Co.,Ltd."']]
+    ['670' M_MARLEY_DEUTSCHLAND_GMBH ['728', '"Marley Deutschland GmbH"']]
+    ['671' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['672' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
@@ -1682,9 +1695,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit on]
                 
         ]
@@ -1693,9 +1706,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit valueTrue]
                 
         ]
@@ -1704,9 +1717,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit enable]
                 
         ]
@@ -1715,9 +1728,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit ramp]
                 
         ]
@@ -1726,9 +1739,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit alarm]
                 
         ]
@@ -1737,9 +1750,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit high]
                 
         ]
@@ -1748,9 +1761,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit increase]
                 
         ]
@@ -1759,9 +1772,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit down]
                 
         ]
@@ -1770,9 +1783,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit close]
                 
         ]
@@ -1781,9 +1794,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit start]
                 
         ]
@@ -1792,9 +1805,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit active]
                 
         ]
@@ -1803,9 +1816,9 @@
            // Field Size 2
            [reserved uint 6 '0x00']
 
-                                        
+                    
                     [simple bit control]
-                                    
+                
                     [simple bit inverted]
                 
         ]
@@ -1814,9 +1827,9 @@
            // Field Size 4
            [reserved uint 4 '0x00']
 
-                                        
+                    
                     [simple bit increase]
-                                    
+                
                     [simple uint 3 stepcode]
                 
         ]
@@ -1825,9 +1838,9 @@
            // Field Size 4
            [reserved uint 4 '0x00']
 
-                                        
+                    
                     [simple bit down]
-                                    
+                
                     [simple uint 3 stepcode]
                 
         ]
@@ -1911,17 +1924,17 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit statusA]
-                                    
+                
                     [simple bit statusB]
-                                    
+                
                     [simple bit statusC]
-                                    
+                
                     [simple bit statusD]
-                                    
+                
                     [simple bit statusE]
-                                    
+                
                     [simple uint 3 mode]
                 
         ]
@@ -2083,161 +2096,161 @@
         ['DPT_Value_Temp' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Tempd' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Tempa' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Lux' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Wsp' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Pres' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Humidity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_AirQuality' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_AirFlow' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Time1' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Time2' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Volt' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Curr' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_PowerDensity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_KelvinPerPercent' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Power' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Volume_Flow' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Rain_Amount' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Temp_F' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Wsp_kmh' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Value_Absolute_Humidity' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Concentration_ygm3' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Coefficient' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
@@ -2245,17 +2258,17 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 3 day]
-                                    
+                
                     [simple uint 5 hour]
-                                    
+                
                     [reserved uint 2 '0x00']
-                                    
+                
                     [simple uint 6 minutes]
-                                    
+                
                     [reserved uint 2 '0x00']
-                                    
+                
                     [simple uint 6 seconds]
                 
         ]
@@ -2264,17 +2277,17 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 3 '0x00']
-                                    
+                
                     [simple uint 5 dayOfMonth]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple uint 4 month]
-                                    
+                
                     [reserved uint 1 '0x00']
-                                    
+                
                     [simple uint 7 year]
                 
         ]
@@ -2975,14 +2988,14 @@
         ['DPT_Volume_Flux_Meter' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
         ['DPT_Volume_Flux_ls' REAL
             [reserved uint 8 '0x00']
                 
-            [simple   float 16 value]
+            [simple   float 16 value encoding='"KNXFloat"']
                     
         ]
     
@@ -2990,27 +3003,27 @@
            // Field Size 32
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 4 hurz]
-                                    
+                
                     [simple uint 4 value1]
-                                    
+                
                     [simple uint 4 value2]
-                                    
+                
                     [simple uint 4 value3]
-                                    
+                
                     [simple uint 4 value4]
-                                    
+                
                     [simple uint 4 value5]
-                                    
+                
                     [simple bit detectionError]
-                                    
+                
                     [simple bit permission]
-                                    
+                
                     [simple bit readDirection]
-                                    
+                
                     [simple bit encryptionOfAccessInformation]
-                                    
+                
                     [simple uint 4 indexOfAccessIdentificationCode]
                 
         ]
@@ -3038,11 +3051,11 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit learnTheSceneCorrespondingToTheFieldSceneNumber]
-                                    
+                
                     [reserved uint 1 '0x00']
-                                    
+                
                     [simple uint 6 sceneNumber]
                 
         ]
@@ -3051,47 +3064,47 @@
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 8 year]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple uint 4 month]
-                                    
+                
                     [reserved uint 3 '0x00']
-                                    
+                
                     [simple uint 5 dayofmonth]
-                                    
+                
                     [simple uint 3 dayofweek]
-                                    
+                
                     [simple uint 5 hourofday]
-                                    
+                
                     [reserved uint 2 '0x00']
-                                    
+                
                     [simple uint 6 minutes]
-                                    
+                
                     [reserved uint 2 '0x00']
-                                    
+                
                     [simple uint 6 seconds]
-                                    
+                
                     [simple bit fault]
-                                    
+                
                     [simple bit workingDay]
-                                    
+                
                     [simple bit noWd]
-                                    
+                
                     [simple bit noYear]
-                                    
+                
                     [simple bit noDate]
-                                    
+                
                     [simple bit noDayOfWeek]
-                                    
+                
                     [simple bit noTime]
-                                    
+                
                     [simple bit standardSummerTime]
-                                    
+                
                     [simple bit qualityOfClock]
-                                    
+                
                     [reserved uint 7 '0x00']
                 
         ]
@@ -3492,17 +3505,17 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 3 '0x00']
-                                    
+                
                     [simple bit alarmStatusOfCorrespondingDatapointIsNotAcknowledged]
-                                    
+                
                     [simple bit correspondingDatapointIsInAlarm]
-                                    
+                
                     [simple bit correspondingDatapointMainValueIsOverridden]
-                                    
+                
                     [simple bit correspondingDatapointMainValueIsCorruptedDueToFailure]
-                                    
+                
                     [simple bit correspondingDatapointValueIsOutOfService]
                 
         ]
@@ -3511,13 +3524,13 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit verifyModeIsOn]
-                                    
+                
                     [simple bit aDatagramWithTheOwnIndividualAddressAsSourceAddressHasBeenReceived]
-                                    
+                
                     [simple bit theUserApplicationIsStopped]
                 
         ]
@@ -3526,21 +3539,21 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit roomhmax]
-                                    
+                
                     [simple bit roomhconf]
-                                    
+                
                     [simple bit dhwlegio]
-                                    
+                
                     [simple bit dhwnorm]
-                                    
+                
                     [simple bit overrun]
-                                    
+                
                     [simple bit oversupply]
-                                    
+                
                     [simple bit protection]
-                                    
+                
                     [simple bit forcerequest]
                 
         ]
@@ -3555,21 +3568,21 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit summermode]
-                                    
+                
                     [simple bit statusstopoptim]
-                                    
+                
                     [simple bit statusstartoptim]
-                                    
+                
                     [simple bit statusmorningboost]
-                                    
+                
                     [simple bit tempreturnlimit]
-                                    
+                
                     [simple bit tempflowlimit]
-                                    
+                
                     [simple bit satuseco]
-                                    
+                
                     [simple bit fault]
                 
         ]
@@ -3578,13 +3591,13 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit solarloadsufficient]
-                                    
+                
                     [simple bit sdhwloadactive]
-                                    
+                
                     [simple bit fault]
                 
         ]
@@ -3593,13 +3606,13 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit solidstate]
-                                    
+                
                     [simple bit gas]
-                                    
+                
                     [simple bit oil]
                 
         ]
@@ -3614,15 +3627,15 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cool]
-                                    
+                
                     [simple bit heat]
-                                    
+                
                     [simple bit fanactive]
-                                    
+                
                     [simple bit fault]
                 
         ]
@@ -3631,17 +3644,17 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 3 '0x00']
-                                    
+                
                     [simple bit statusOfHvacModeUser]
-                                    
+                
                     [simple bit statusOfComfortProlongationUser]
-                                    
+                
                     [simple bit effectiveValueOfTheComfortPushButton]
-                                    
+                
                     [simple bit effectiveValueOfThePresenceStatus]
-                                    
+                
                     [simple bit effectiveValueOfTheWindowStatus]
                 
         ]
@@ -3650,21 +3663,21 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 1 '0x00']
-                                    
+                
                     [simple bit overheat]
-                                    
+                
                     [simple bit lampfailure]
-                                    
+                
                     [simple bit defectiveload]
-                                    
+                
                     [simple bit underload]
-                                    
+                
                     [simple bit overcurrent]
-                                    
+                
                     [simple bit undervoltage]
-                                    
+                
                     [simple bit loaddetectionerror]
                 
         ]
@@ -3673,13 +3686,13 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit bibatSlave]
-                                    
+                
                     [simple bit bibatMaster]
-                                    
+                
                     [simple bit asynchronous]
                 
         ]
@@ -3688,13 +3701,13 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit doa]
-                                    
+                
                     [simple bit knxSn]
-                                    
+                
                     [simple bit doaAndKnxSn]
                 
         ]
@@ -3703,21 +3716,21 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit activationStateOfChannel1]
-                                    
+                
                     [simple bit activationStateOfChannel2]
-                                    
+                
                     [simple bit activationStateOfChannel3]
-                                    
+                
                     [simple bit activationStateOfChannel4]
-                                    
+                
                     [simple bit activationStateOfChannel5]
-                                    
+                
                     [simple bit activationStateOfChannel6]
-                                    
+                
                     [simple bit activationStateOfChannel7]
-                                    
+                
                     [simple bit activationStateOfChannel8]
                 
         ]
@@ -3726,23 +3739,23 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 8 '0x00']
-                                    
+                
                     [simple bit tempoptimshiftactive]
-                                    
+                
                     [simple bit solarenergysupport]
-                                    
+                
                     [simple bit solarenergyonly]
-                                    
+                
                     [simple bit otherenergysourceactive]
-                                    
+                
                     [simple bit dhwpushactive]
-                                    
+                
                     [simple bit legioprotactive]
-                                    
+                
                     [simple bit dhwloadactive]
-                                    
+                
                     [simple bit fault]
                 
         ]
@@ -3751,37 +3764,37 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 1 '0x00']
-                                    
+                
                     [simple bit overheatalarm]
-                                    
+                
                     [simple bit frostalarm]
-                                    
+                
                     [simple bit dewpointstatus]
-                                    
+                
                     [simple bit coolingdisabled]
-                                    
+                
                     [simple bit statusprecool]
-                                    
+                
                     [simple bit statusecoc]
-                                    
+                
                     [simple bit heatcoolmode]
-                                    
+                
                     [simple bit heatingdiabled]
-                                    
+                
                     [simple bit statusstopoptim]
-                                    
+                
                     [simple bit statusstartoptim]
-                                    
+                
                     [simple bit statusmorningboosth]
-                                    
+                
                     [simple bit tempflowreturnlimit]
-                                    
+                
                     [simple bit tempflowlimit]
-                                    
+                
                     [simple bit statusecoh]
-                                    
+                
                     [simple bit fault]
                 
         ]
@@ -3790,25 +3803,25 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 7 '0x00']
-                                    
+                
                     [simple bit calibrationMode]
-                                    
+                
                     [simple bit lockedPosition]
-                                    
+                
                     [simple bit forcedPosition]
-                                    
+                
                     [simple bit manuaOperationOverridden]
-                                    
+                
                     [simple bit serviceMode]
-                                    
+                
                     [simple bit valveKick]
-                                    
+                
                     [simple bit overload]
-                                    
+                
                     [simple bit shortCircuit]
-                                    
+                
                     [simple bit currentValvePosition]
                 
         ]
@@ -3817,25 +3830,25 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 7 '0x00']
-                                    
+                
                     [simple bit coolingModeEnabled]
-                                    
+                
                     [simple bit heatingModeEnabled]
-                                    
+                
                     [simple bit additionalHeatingCoolingStage2Stage]
-                                    
+                
                     [simple bit controllerInactive]
-                                    
+                
                     [simple bit overheatAlarm]
-                                    
+                
                     [simple bit frostAlarm]
-                                    
+                
                     [simple bit dewPointStatus]
-                                    
+                
                     [simple bit activeMode]
-                                    
+                
                     [simple bit generalFailureInformation]
                 
         ]
@@ -3844,19 +3857,19 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 10 '0x00']
-                                    
+                
                     [simple bit knxIp]
-                                    
+                
                     [simple bit rf]
-                                    
+                
                     [reserved uint 1 '0x00']
-                                    
+                
                     [simple bit pl110]
-                                    
+                
                     [simple bit tp1]
-                                    
+                
                     [reserved uint 1 '0x00']
                 
         ]
@@ -3865,37 +3878,37 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit activationStateOfChannel1]
-                                    
+                
                     [simple bit activationStateOfChannel2]
-                                    
+                
                     [simple bit activationStateOfChannel3]
-                                    
+                
                     [simple bit activationStateOfChannel4]
-                                    
+                
                     [simple bit activationStateOfChannel5]
-                                    
+                
                     [simple bit activationStateOfChannel6]
-                                    
+                
                     [simple bit activationStateOfChannel7]
-                                    
+                
                     [simple bit activationStateOfChannel8]
-                                    
+                
                     [simple bit activationStateOfChannel9]
-                                    
+                
                     [simple bit activationStateOfChannel10]
-                                    
+                
                     [simple bit activationStateOfChannel11]
-                                    
+                
                     [simple bit activationStateOfChannel12]
-                                    
+                
                     [simple bit activationStateOfChannel13]
-                                    
+                
                     [simple bit activationStateOfChannel14]
-                                    
+                
                     [simple bit activationStateOfChannel15]
-                                    
+                
                     [simple bit activationStateOfChannel16]
                 
         ]
@@ -3932,9 +3945,9 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 4 busy]
-                                    
+                
                     [simple uint 4 nak]
                 
         ]
@@ -3943,11 +3956,11 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 1 '0x00']
-                                    
+                
                     [simple bit sceneIsInactive]
-                                    
+                
                     [simple uint 6 scenenumber]
                 
         ]
@@ -3956,69 +3969,69 @@
            // Field Size 32
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit maskBitInfoOnOffOutput16]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput15]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput14]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput13]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput12]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput11]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput10]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput9]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput8]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput7]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput6]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput5]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput4]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput3]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput2]
-                                    
+                
                     [simple bit maskBitInfoOnOffOutput1]
-                                    
+                
                     [simple bit infoOnOffOutput16]
-                                    
+                
                     [simple bit infoOnOffOutput15]
-                                    
+                
                     [simple bit infoOnOffOutput14]
-                                    
+                
                     [simple bit infoOnOffOutput13]
-                                    
+                
                     [simple bit infoOnOffOutput12]
-                                    
+                
                     [simple bit infoOnOffOutput11]
-                                    
+                
                     [simple bit infoOnOffOutput10]
-                                    
+                
                     [simple bit infoOnOffOutput9]
-                                    
+                
                     [simple bit infoOnOffOutput8]
-                                    
+                
                     [simple bit infoOnOffOutput7]
-                                    
+                
                     [simple bit infoOnOffOutput6]
-                                    
+                
                     [simple bit infoOnOffOutput5]
-                                    
+                
                     [simple bit infoOnOffOutput4]
-                                    
+                
                     [simple bit infoOnOffOutput3]
-                                    
+                
                     [simple bit infoOnOffOutput2]
-                                    
+                
                     [simple bit infoOnOffOutput1]
                 
         ]
@@ -4048,53 +4061,53 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit activationStateOfChannel1]
-                                    
+                
                     [simple bit activationStateOfChannel2]
-                                    
+                
                     [simple bit activationStateOfChannel3]
-                                    
+                
                     [simple bit activationStateOfChannel4]
-                                    
+                
                     [simple bit activationStateOfChannel5]
-                                    
+                
                     [simple bit activationStateOfChannel6]
-                                    
+                
                     [simple bit activationStateOfChannel7]
-                                    
+                
                     [simple bit activationStateOfChannel8]
-                                    
+                
                     [simple bit activationStateOfChannel9]
-                                    
+                
                     [simple bit activationStateOfChannel10]
-                                    
+                
                     [simple bit activationStateOfChannel11]
-                                    
+                
                     [simple bit activationStateOfChannel12]
-                                    
+                
                     [simple bit activationStateOfChannel13]
-                                    
+                
                     [simple bit activationStateOfChannel14]
-                                    
+                
                     [simple bit activationStateOfChannel15]
-                                    
+                
                     [simple bit activationStateOfChannel16]
-                                    
+                
                     [simple bit activationStateOfChannel17]
-                                    
+                
                     [simple bit activationStateOfChannel18]
-                                    
+                
                     [simple bit activationStateOfChannel19]
-                                    
+                
                     [simple bit activationStateOfChannel20]
-                                    
+                
                     [simple bit activationStateOfChannel21]
-                                    
+                
                     [simple bit activationStateOfChannel22]
-                                    
+                
                     [simple bit activationStateOfChannel23]
-                                    
+                
                     [simple bit activationStateOfChannel24]
                 
         ]
@@ -4103,9 +4116,9 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 delayTimeMin]
-                                    
+                
                     [simple uint 8 hvacMode]
                 
         ]
@@ -4114,9 +4127,9 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 delayTimeMin]
-                                    
+                
                     [simple uint 8 dhwMode]
                 
         ]
@@ -4125,9 +4138,9 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 delayTimeMin]
-                                    
+                
                     [simple uint 8 occupancyMode]
                 
         ]
@@ -4136,9 +4149,9 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 delayTimeMin]
-                                    
+                
                     [simple uint 8 buildingMode]
                 
         ]
@@ -4147,23 +4160,23 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit validactualvalue]
-                                    
+                
                     [simple bit locked]
-                                    
+                
                     [simple bit forced]
-                                    
+                
                     [simple bit nightmodeactive]
-                                    
+                
                     [simple bit staircaselightingFunction]
-                                    
+                
                     [simple bit dimming]
-                                    
+                
                     [simple bit localoverride]
-                                    
+                
                     [simple bit failure]
-                                    
+                
                     [simple uint 8 actualvalue]
                 
         ]
@@ -4172,11 +4185,11 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 5 magicNumber]
-                                    
+                
                     [simple uint 5 versionNumber]
-                                    
+                
                     [simple uint 6 revisionNumber]
                 
         ]
@@ -4185,31 +4198,31 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 8 logNumber]
-                                    
+                
                     [simple uint 8 alarmPriority]
-                                    
+                
                     [simple uint 8 applicationArea]
-                                    
+                
                     [simple uint 8 errorClass]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit errorcodeSup]
-                                    
+                
                     [simple bit alarmtextSup]
-                                    
+                
                     [simple bit timestampSup]
-                                    
+                
                     [simple bit ackSup]
-                                    
+                
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit locked]
-                                    
+                
                     [simple bit alarmunack]
-                                    
+                
                     [simple bit inalarm]
                 
         ]
@@ -4218,12 +4231,12 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
-                    [simple float 16 tempsetpcomf]
-                                    
-                    [simple float 16 tempsetpstdby]
-                                    
-                    [simple float 16 tempsetpeco]
+                    
+                    [simple float 16 tempsetpcomf encoding='"KNXFloat"']
+                
+                    [simple float 16 tempsetpstdby encoding='"KNXFloat"']
+                
+                    [simple float 16 tempsetpeco encoding='"KNXFloat"']
                 
         ]
     
@@ -4231,12 +4244,12 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
-                    [simple float 16 tempsetpshiftcomf]
-                                    
-                    [simple float 16 tempsetpshiftstdby]
-                                    
-                    [simple float 16 tempsetpshifteco]
+                    
+                    [simple float 16 tempsetpshiftcomf encoding='"KNXFloat"']
+                
+                    [simple float 16 tempsetpshiftstdby encoding='"KNXFloat"']
+                
+                    [simple float 16 tempsetpshifteco encoding='"KNXFloat"']
                 
         ]
     
@@ -4244,9 +4257,9 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 timePeriod]
-                                    
+                
                     [simple uint 8 percent]
                 
         ]
@@ -4255,9 +4268,9 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 timePeriod]
-                                    
+                
                     [simple uint 8 percent]
                 
         ]
@@ -4266,21 +4279,21 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple int 32 countval]
-                                    
+                
                     [simple uint 8 valinffield]
-                                    
+                
                     [reserved uint 3 '0x00']
-                                    
+                
                     [simple bit alarmunack]
-                                    
+                
                     [simple bit inalarm]
-                                    
+                
                     [simple bit overridden]
-                                    
+                
                     [simple bit fault]
-                                    
+                
                     [simple bit outofservice]
                 
         ]
@@ -4289,13 +4302,13 @@
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 manufactid]
-                                    
+                
                     [simple uint 32 identnumber]
-                                    
+                
                     [simple uint 8 version]
-                                    
+                
                     [simple uint 8 medium]
                 
         ]
@@ -4304,11 +4317,11 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 8 r]
-                                    
+                
                     [simple uint 8 g]
-                                    
+                
                     [simple uint 8 b]
                 
         ]
@@ -4323,15 +4336,15 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple int 32 activeelectricalenergy]
-                                    
+                
                     [simple uint 8 tariff]
-                                    
+                
                     [reserved uint 6 '0x00']
-                                    
+                
                     [simple bit electricalengergyvalidity]
-                                    
+                
                     [simple bit tariffvalidity]
                 
         ]
@@ -4340,11 +4353,11 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit deactivationOfPriority]
-                                    
+                
                     [simple uint 3 priorityLevel]
-                                    
+                
                     [simple uint 4 modeLevel]
                 
         ]
@@ -4353,19 +4366,19 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit convertorError]
-                                    
+                
                     [simple bit ballastFailure]
-                                    
+                
                     [simple bit lampFailure]
-                                    
+                
                     [simple bit readOrResponse]
-                                    
+                
                     [simple bit addressIndicator]
-                                    
+                
                     [simple uint 6 daliDeviceAddressOrDaliGroupAddress]
                 
         ]
@@ -4374,11 +4387,11 @@
            // Field Size 8
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple bit ballastFailure]
-                                    
+                
                     [simple bit lampFailure]
-                                    
+                
                     [simple uint 6 deviceAddress]
                 
         ]
@@ -4387,15 +4400,15 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 8 heightPosition]
-                                    
+                
                     [simple uint 8 slatsPosition]
-                                    
+                
                     [reserved uint 6 '0x00']
-                                    
+                
                     [simple bit validitySlatsPosition]
-                                    
+                
                     [simple bit validityHeightPosition]
                 
         ]
@@ -4404,37 +4417,37 @@
            // Field Size 32
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 8 heightPosition]
-                                    
+                
                     [simple uint 8 slatsPosition]
-                                    
+                
                     [simple bit upperEndPosReached]
-                                    
+                
                     [simple bit lowerEndPosReached]
-                                    
+                
                     [simple bit lowerPredefPosReachedTypHeight100PercentSlatsAngle100Percent]
-                                    
+                
                     [simple bit targetPosDrive]
-                                    
+                
                     [simple bit restrictionOfTargetHeightPosPosCanNotBeReached]
-                                    
+                
                     [simple bit restrictionOfSlatsHeightPosPosCanNotBeReached]
-                                    
+                
                     [simple bit atLeastOneOfTheInputsWindRainFrostAlarmIsInAlarm]
-                                    
+                
                     [simple bit upDownPositionIsForcedByMoveupdownforcedInput]
-                                    
+                
                     [simple bit movementIsLockedEGByDevicelockedInput]
-                                    
+                
                     [simple bit actuatorSetvalueIsLocallyOverriddenEGViaALocalUserInterface]
-                                    
+                
                     [simple bit generalFailureOfTheActuatorOrTheDrive]
-                                    
+                
                     [reserved uint 3 '0x00']
-                                    
+                
                     [simple bit validityHeightPos]
-                                    
+                
                     [simple bit validitySlatsPos]
                 
         ]
@@ -4443,17 +4456,17 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 xAxis]
-                                    
+                
                     [simple uint 16 yAxis]
-                                    
+                
                     [simple uint 8 brightness]
-                                    
+                
                     [reserved uint 6 '0x00']
-                                    
+                
                     [simple bit validityXy]
-                                    
+                
                     [simple bit validityBrightness]
                 
         ]
@@ -4462,21 +4475,21 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 4 converterModeAccordingToTheDaliConverterStateMachine]
-                                    
+                
                     [reserved uint 2 '0x00']
-                                    
+                
                     [simple bit hardwiredSwitchIsActive]
-                                    
+                
                     [simple bit hardwiredInhibitIsActive]
-                                    
+                
                     [simple uint 2 functionTestPending]
-                                    
+                
                     [simple uint 2 durationTestPending]
-                                    
+                
                     [simple uint 2 partialDurationTestPending]
-                                    
+                
                     [simple uint 2 converterFailure]
                 
         ]
@@ -4485,25 +4498,25 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 4 ltrf]
-                                    
+                
                     [simple uint 4 ltrd]
-                                    
+                
                     [simple uint 4 ltrp]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple uint 2 sf]
-                                    
+                
                     [simple uint 2 sd]
-                                    
+                
                     [simple uint 2 sp]
-                                    
+                
                     [reserved uint 2 '0x00']
-                                    
+                
                     [simple uint 16 ldtr]
-                                    
+                
                     [simple uint 8 lpdtr]
                 
         ]
@@ -4512,15 +4525,15 @@
            // Field Size 16
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit batteryFailure]
-                                    
+                
                     [simple bit batteryDurationFailure]
-                                    
+                
                     [simple bit batteryFullyCharged]
-                                    
+                
                     [simple uint 8 batteryChargeLevel]
                 
         ]
@@ -4529,19 +4542,19 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 16 ms]
-                                    
+                
                     [simple uint 16 temperatureK]
-                                    
+                
                     [simple uint 8 percent]
-                                    
+                
                     [reserved uint 5 '0x00']
-                                    
+                
                     [simple bit validityOfTheTimePeriod]
-                                    
+                
                     [simple bit validityOfTheAbsoluteColourTemperature]
-                                    
+                
                     [simple bit validityOfTheAbsoluteBrightness]
                 
         ]
@@ -4550,23 +4563,23 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cct]
-                                    
+                
                     [simple uint 3 stepCodeColourTemperature]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cb]
-                                    
+                
                     [simple uint 3 stepCodeBrightness]
-                                    
+                
                     [reserved uint 6 '0x00']
-                                    
+                
                     [simple bit cctAndStepCodeColourValidity]
-                                    
+                
                     [simple bit cbAndStepCodeBrightnessValidity]
                 
         ]
@@ -4575,25 +4588,25 @@
            // Field Size 48
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple uint 8 colourLevelRed]
-                                    
+                
                     [simple uint 8 colourLevelGreen]
-                                    
+                
                     [simple uint 8 colourLevelBlue]
-                                    
+                
                     [simple uint 8 colourLevelWhite]
-                                    
+                
                     [reserved uint 8 '0x00']
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit mr]
-                                    
+                
                     [simple bit mg]
-                                    
+                
                     [simple bit mb]
-                                    
+                
                     [simple bit mw]
                 
         ]
@@ -4602,39 +4615,39 @@
            // Field Size 40
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit maskcw]
-                                    
+                
                     [simple bit maskcb]
-                                    
+                
                     [simple bit maskcg]
-                                    
+                
                     [simple bit maskcr]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cw]
-                                    
+                
                     [simple uint 3 stepCodeColourWhite]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cb]
-                                    
+                
                     [simple uint 3 stepCodeColourBlue]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cg]
-                                    
+                
                     [simple uint 3 stepCodeColourGreen]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cr]
-                                    
+                
                     [simple uint 3 stepCodeColourRed]
                 
         ]
@@ -4643,23 +4656,23 @@
            // Field Size 24
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cb]
-                                    
+                
                     [simple uint 3 stepCodeColourBlue]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cg]
-                                    
+                
                     [simple uint 3 stepCodeColourGreen]
-                                    
+                
                     [reserved uint 4 '0x00']
-                                    
+                
                     [simple bit cr]
-                                    
+                
                     [simple uint 3 stepCodeColourRed]
                 
         ]
@@ -4668,9 +4681,9 @@
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                                        
+                    
                     [simple float 32 longitude]
-                                    
+                
                     [simple float 32 latitude]
                 
         ]
@@ -4679,14 +4692,14 @@
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                                        
-                    [simple float 16 roomTemperatureSetpointComfort]
-                                    
-                    [simple float 16 roomTemperatureSetpointStandby]
-                                    
-                    [simple float 16 roomTemperatureSetpointEconomy]
-                                    
-                    [simple float 16 roomTemperatureSetpointBuildingProtection]
+                    
+                    [simple float 16 roomTemperatureSetpointComfort encoding='"KNXFloat"']
+                
+                    [simple float 16 roomTemperatureSetpointStandby encoding='"KNXFloat"']
+                
+                    [simple float 16 roomTemperatureSetpointEconomy encoding='"KNXFloat"']
+                
+                    [simple float 16 roomTemperatureSetpointBuildingProtection encoding='"KNXFloat"']
                 
         ]
     
@@ -4694,14 +4707,14 @@
            // Field Size 64
            [reserved uint 8 '0x00']
 
-                                        
-                    [simple float 16 roomTemperatureSetpointShiftComfort]
-                                    
-                    [simple float 16 roomTemperatureSetpointShiftStandby]
-                                    
-                    [simple float 16 roomTemperatureSetpointShiftEconomy]
-                                    
-                    [simple float 16 roomTemperatureSetpointShiftBuildingProtection]
+                    
+                    [simple float 16 roomTemperatureSetpointShiftComfort encoding='"KNXFloat"']
+                
+                    [simple float 16 roomTemperatureSetpointShiftStandby encoding='"KNXFloat"']
+                
+                    [simple float 16 roomTemperatureSetpointShiftEconomy encoding='"KNXFloat"']
+                
+                    [simple float 16 roomTemperatureSetpointShiftBuildingProtection encoding='"KNXFloat"']
                 
         ]
     

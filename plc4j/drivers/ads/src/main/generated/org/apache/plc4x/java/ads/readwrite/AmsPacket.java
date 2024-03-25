@@ -302,8 +302,9 @@ public abstract class AmsPacket implements Message {
     int sourceAmsPort = readSimpleField("sourceAmsPort", readUnsignedInt(readBuffer, 16));
 
     CommandId commandId =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "commandId",
+            "CommandId",
             new DataReaderEnumDefault<>(CommandId::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     boolean initCommand =

@@ -38,9 +38,10 @@
     [INTEGER64   ['64', '"LINT"'          ] ]
     [REAL32      ['32', '"REAL"'          ] ]
     [REAL64      ['64', '"LREAL"'         ] ]
+    [RAW         [ '8', '"RAW_BYTE_ARRAY"'] ]
 ]
 
-[dataIo DataItem(GenericCANDataType dataType) byteOrder='LITTLE_ENDIAN'
+[dataIo DataItem(GenericCANDataType dataType, int 32 size)
     [typeSwitch dataType
         ['BYTE' BYTE
             [simple byte value]
@@ -101,6 +102,9 @@
         ]
         ['REAL64' LREAL
             [simple float 64 value]
+        ]
+        ['RAW' List(int 32 size)
+            [array byte   value count 'size']
         ]
     ]
 ]

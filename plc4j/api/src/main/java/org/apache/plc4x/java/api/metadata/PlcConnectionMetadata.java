@@ -27,21 +27,21 @@ public interface PlcConnectionMetadata {
     /**
      * Indicates that the connection supports reading.
      */
-    boolean canRead();
+    boolean isReadSupported();
 
     /**
      * Indicates that the connection supports writing.
      */
-    boolean canWrite();
+    boolean isWriteSupported();
 
     /**
      * Indicates that the connection supports subscription.
      */
-    boolean canSubscribe();
+    boolean isSubscribeSupported();
 
     /**
      * Indicates that the connection supports browsing.
      */
-    boolean canBrowse();
+    boolean isBrowseSupported();
 
 }

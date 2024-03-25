@@ -18,17 +18,20 @@
  */
 package org.apache.plc4x.java.knxnetip.readwrite;
 
+import static org.apache.plc4x.java.spi.codegen.fields.FieldReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.fields.FieldWriterFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataReaderFactory.*;
+import static org.apache.plc4x.java.spi.codegen.io.DataWriterFactory.*;
 import static org.apache.plc4x.java.spi.generation.StaticHelper.*;
 
 import java.time.*;
 import java.util.*;
+import org.apache.plc4x.java.api.exceptions.*;
 import org.apache.plc4x.java.api.value.*;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
-import org.apache.plc4x.java.spi.generation.EvaluationHelper;
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
+import org.apache.plc4x.java.spi.codegen.*;
+import org.apache.plc4x.java.spi.codegen.fields.*;
+import org.apache.plc4x.java.spi.codegen.io.*;
+import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,367 +46,167 @@ public class KnxProperty {
       ReadBuffer readBuffer, KnxPropertyDataType propertyType, Short dataLengthInBytes)
       throws ParseException {
     if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CONTROL)) { // BOOL
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 7);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Boolean value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR)) { // SINT
-
-      // Simple Field (value)
-      Byte value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readSignedByte("", 8);
-
+      byte value = readSimpleField("value", readSignedByte(readBuffer, 8));
       return new PlcSINT(value);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_UNSIGNED_CHAR)) { // USINT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_INT)) { // INT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readShort("", 16);
-
+      short value = readSimpleField("value", readSignedShort(readBuffer, 16));
       return new PlcINT(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)
-        && EvaluationHelper.equals(dataLengthInBytes, 4)) { // UDINT
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 32);
-
+        && EvaluationHelper.equals(dataLengthInBytes, (short) 4)) { // UDINT
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)) { // UINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedInt("", 16);
-
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
       return new PlcUINT(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_KNX_FLOAT)) { // REAL
-
-      // Simple Field (value)
-      Float value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 16);
-
+      float value =
+          readSimpleField("value", readFloat(readBuffer, 16), WithOption.WithEncoding("KNXFloat"));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE)) { // Struct
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 3), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 3);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte dayOfMonth = readSimpleField("dayOfMonth", readUnsignedByte(readBuffer, 5));
 
-      // Simple Field (dayOfMonth)
-      Byte dayOfMonth = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedByte("", 5);
+      Byte reservedField1 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 4);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte month = readSimpleField("month", readUnsignedByte(readBuffer, 4));
 
-      // Simple Field (month)
-      Byte month = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 4);
+      Byte reservedField2 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 1);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (year)
-      Byte year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 7);
+      byte year = readSimpleField("year", readUnsignedByte(readBuffer, 7));
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("dayOfMonth", new PlcSINT(dayOfMonth));
-      _map.put("month", new PlcSINT(month));
-      _map.put("year", new PlcSINT(year));
-
+      _map.put("dayOfMonth", new PlcUSINT(dayOfMonth));
+      _map.put("month", new PlcUSINT(month));
+      _map.put("year", new PlcUSINT(year));
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_TIME)) { // Struct
+      byte day = readSimpleField("day", readUnsignedByte(readBuffer, 3));
 
-      // Simple Field (day)
-      Byte day = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 3);
+      byte hour = readSimpleField("hour", readUnsignedByte(readBuffer, 5));
 
-      // Simple Field (hour)
-      Byte hour = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 5);
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 2);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte minutes = readSimpleField("minutes", readUnsignedByte(readBuffer, 6));
 
-      // Simple Field (minutes)
-      Byte minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
+      Byte reservedField1 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 2);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (seconds)
-      Byte seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
+      byte seconds = readSimpleField("seconds", readUnsignedByte(readBuffer, 6));
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("day", new PlcSINT(day));
-      _map.put("hour", new PlcSINT(hour));
-      _map.put("minutes", new PlcSINT(minutes));
-      _map.put("seconds", new PlcSINT(seconds));
-
+      _map.put("day", new PlcUSINT(day));
+      _map.put("hour", new PlcUSINT(hour));
+      _map.put("minutes", new PlcUSINT(minutes));
+      _map.put("seconds", new PlcUSINT(seconds));
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_LONG)) { // DINT
-
-      // Simple Field (value)
-      Integer value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readInt("", 32);
-
+      int value = readSimpleField("value", readSignedInt(readBuffer, 32));
       return new PlcDINT(value);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_UNSIGNED_LONG)) { // UDINT
-
-      // Simple Field (value)
-      Long value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedLong("", 32);
-
+      long value = readSimpleField("value", readUnsignedLong(readBuffer, 32));
       return new PlcUDINT(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_FLOAT)) { // REAL
-
-      // Simple Field (value)
-      Float value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 32);
-
+      float value = readSimpleField("value", readFloat(readBuffer, 32));
       return new PlcREAL(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
-
-      // Simple Field (value)
-      Double value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readDouble("", 64);
-
+      double value = readSimpleField("value", readDouble(readBuffer, 64));
       return new PlcLREAL(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
-      // Array field (value)
-      // Count array
-      if (10 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (10)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 10;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(10));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_POLL_GROUP_SETTINGS)) { // Struct
-      // Array field (groupAddress)
-      // Count array
-      if (2 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (2) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> groupAddress;
-      {
-        int itemCount = (int) 2;
-        groupAddress = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          groupAddress.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
+      byte[] groupAddress = readBuffer.readByteArray("groupAddress", Math.toIntExact(2));
 
-      // Simple Field (disable)
-      Boolean disable = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean disable = readSimpleField("disable", readBoolean(readBuffer));
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 3);
-        if (reserved != (byte) 0x0) {
-          LOGGER.info(
-              "Expected constant value " + 0x0 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 3), (byte) 0x0);
 
-      // Simple Field (pollingSoftNr)
-      Byte pollingSoftNr = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedByte("", 4);
+      byte pollingSoftNr = readSimpleField("pollingSoftNr", readUnsignedByte(readBuffer, 4));
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("groupAddress", new PlcList(groupAddress));
+      _map.put("groupAddress", new PlcRawByteArray(groupAddress));
       _map.put("disable", new PlcBOOL(disable));
-      _map.put("pollingSoftNr", new PlcSINT(pollingSoftNr));
-
+      _map.put("pollingSoftNr", new PlcUSINT(pollingSoftNr));
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
-      // Array field (value)
-      // Count array
-      if (5 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (5) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 5;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(5));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE_TIME)) { // Struct
+      short year = readSimpleField("year", readUnsignedShort(readBuffer, 8));
 
-      // Simple Field (year)
-      Short year = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 4);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte month = readSimpleField("month", readUnsignedByte(readBuffer, 4));
 
-      // Simple Field (month)
-      Byte month = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 4);
+      Byte reservedField1 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 3), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 3);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte dayOfMonth = readSimpleField("dayOfMonth", readUnsignedByte(readBuffer, 5));
 
-      // Simple Field (dayofmonth)
-      Byte dayofmonth = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedByte("", 5);
+      byte dayOfWeek = readSimpleField("dayOfWeek", readUnsignedByte(readBuffer, 3));
 
-      // Simple Field (dayofweek)
-      Byte dayofweek = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 3);
+      byte hour = readSimpleField("hour", readUnsignedByte(readBuffer, 5));
 
-      // Simple Field (hourofday)
-      Byte hourofday = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 5);
+      Byte reservedField2 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 2);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte minutes = readSimpleField("minutes", readUnsignedByte(readBuffer, 6));
 
-      // Simple Field (minutes)
-      Byte minutes = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
+      Byte reservedField3 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 2);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      byte seconds = readSimpleField("seconds", readUnsignedByte(readBuffer, 6));
 
-      // Simple Field (seconds)
-      Byte seconds = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedByte("", 6);
+      boolean fault = readSimpleField("fault", readBoolean(readBuffer));
 
-      // Simple Field (fault)
-      Boolean fault = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean workingDay = readSimpleField("workingDay", readBoolean(readBuffer));
 
-      // Simple Field (workingDay)
-      Boolean workingDay = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean noWd = readSimpleField("noWd", readBoolean(readBuffer));
 
-      // Simple Field (noWd)
-      Boolean noWd = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean noYear = readSimpleField("noYear", readBoolean(readBuffer));
 
-      // Simple Field (noYear)
-      Boolean noYear = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean noDate = readSimpleField("noDate", readBoolean(readBuffer));
 
-      // Simple Field (noDate)
-      Boolean noDate = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean noDayOfWeek = readSimpleField("noDayOfWeek", readBoolean(readBuffer));
 
-      // Simple Field (noDayOfWeek)
-      Boolean noDayOfWeek = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean noTime = readSimpleField("noTime", readBoolean(readBuffer));
 
-      // Simple Field (noTime)
-      Boolean noTime = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean standardSummerTime = readSimpleField("standardSummerTime", readBoolean(readBuffer));
 
-      // Simple Field (standardSummerTime)
-      Boolean standardSummerTime = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean qualityOfClock = readSimpleField("qualityOfClock", readBoolean(readBuffer));
 
-      // Simple Field (qualityOfClock)
-      Boolean qualityOfClock = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 7);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      Byte reservedField4 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("year", new PlcINT(year));
-      _map.put("month", new PlcSINT(month));
-      _map.put("dayofmonth", new PlcSINT(dayofmonth));
-      _map.put("dayofweek", new PlcSINT(dayofweek));
-      _map.put("hourofday", new PlcSINT(hourofday));
-      _map.put("minutes", new PlcSINT(minutes));
-      _map.put("seconds", new PlcSINT(seconds));
+      _map.put("year", new PlcUSINT(year));
+      _map.put("month", new PlcUSINT(month));
+      _map.put("dayOfMonth", new PlcUSINT(dayOfMonth));
+      _map.put("dayOfWeek", new PlcUSINT(dayOfWeek));
+      _map.put("hour", new PlcUSINT(hour));
+      _map.put("minutes", new PlcUSINT(minutes));
+      _map.put("seconds", new PlcUSINT(seconds));
       _map.put("fault", new PlcBOOL(fault));
       _map.put("workingDay", new PlcBOOL(workingDay));
       _map.put("noWd", new PlcBOOL(noWd));
@@ -413,506 +216,114 @@ public class KnxProperty {
       _map.put("noTime", new PlcBOOL(noTime));
       _map.put("standardSummerTime", new PlcBOOL(standardSummerTime));
       _map.put("qualityOfClock", new PlcBOOL(qualityOfClock));
-
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
-      // Array field (value)
-      // Count array
-      if (1 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (1) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 1;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(1));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
-      // Array field (value)
-      // Count array
-      if (2 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (2) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 2;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(2));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
-      // Array field (value)
-      // Count array
-      if (3 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (3) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 3;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(3));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
-      // Array field (value)
-      // Count array
-      if (4 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (4) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 4;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(4));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
-      // Array field (value)
-      // Count array
-      if (5 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (5) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 5;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(5));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
-      // Array field (value)
-      // Count array
-      if (6 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (6) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 6;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(6));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
-      // Array field (value)
-      // Count array
-      if (7 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (7) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 7;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(7));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
-      // Array field (value)
-      // Count array
-      if (8 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (8) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 8;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(8));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
-      // Array field (value)
-      // Count array
-      if (9 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (9) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 9;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(9));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
-      // Array field (value)
-      // Count array
-      if (10 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (10)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 10;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(10));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
-      // Array field (value)
-      // Count array
-      if (11 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (11)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 11;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(11));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
-      // Array field (value)
-      // Count array
-      if (12 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (12)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 12;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(12));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
-      // Array field (value)
-      // Count array
-      if (13 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (13)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 13;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(13));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
-      // Array field (value)
-      // Count array
-      if (14 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (14)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 14;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(14));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
-      // Array field (value)
-      // Count array
-      if (15 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (15)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 15;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(15));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
-      // Array field (value)
-      // Count array
-      if (16 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (16)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 16;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(16));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
-      // Array field (value)
-      // Count array
-      if (17 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (17)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 17;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(17));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
-      // Array field (value)
-      // Count array
-      if (18 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (18)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 18;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(18));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
-      // Array field (value)
-      // Count array
-      if (19 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (19)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 19;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(19));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
-      // Array field (value)
-      // Count array
-      if (20 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (20)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 20;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
-      }
-
-      return new PlcList(value);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(20));
+      return new PlcRawByteArray(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
+      byte magicNumber = readSimpleField("magicNumber", readUnsignedByte(readBuffer, 5));
 
-      // Simple Field (magicNumber)
-      Byte magicNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedByte("", 5);
+      byte versionNumber = readSimpleField("versionNumber", readUnsignedByte(readBuffer, 5));
 
-      // Simple Field (versionNumber)
-      Byte versionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedByte("", 5);
-
-      // Simple Field (revisionNumber)
-      Byte revisionNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedByte("", 6);
+      byte revisionNumber = readSimpleField("revisionNumber", readUnsignedByte(readBuffer, 6));
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("magicNumber", new PlcSINT(magicNumber));
-      _map.put("versionNumber", new PlcSINT(versionNumber));
-      _map.put("revisionNumber", new PlcSINT(revisionNumber));
-
+      _map.put("magicNumber", new PlcUSINT(magicNumber));
+      _map.put("versionNumber", new PlcUSINT(versionNumber));
+      _map.put("revisionNumber", new PlcUSINT(revisionNumber));
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_ALARM_INFO)) { // Struct
+      short logNumber = readSimpleField("logNumber", readUnsignedShort(readBuffer, 8));
 
-      // Simple Field (logNumber)
-      Short logNumber = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
+      short alarmPriority = readSimpleField("alarmPriority", readUnsignedShort(readBuffer, 8));
 
-      // Simple Field (alarmPriority)
-      Short alarmPriority = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
+      short applicationArea = readSimpleField("applicationArea", readUnsignedShort(readBuffer, 8));
 
-      // Simple Field (applicationArea)
-      Short applicationArea = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
+      short errorClass = readSimpleField("errorClass", readUnsignedShort(readBuffer, 8));
 
-      // Simple Field (errorClass)
-      Short errorClass = /*TODO: migrate me*/ /*TODO: migrate me*/
-          readBuffer.readUnsignedShort("", 8);
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 4);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      boolean errorcodeSup = readSimpleField("errorcodeSup", readBoolean(readBuffer));
 
-      // Simple Field (errorcodeSup)
-      Boolean errorcodeSup = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean alarmtextSup = readSimpleField("alarmtextSup", readBoolean(readBuffer));
 
-      // Simple Field (alarmtextSup)
-      Boolean alarmtextSup = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean timestampSup = readSimpleField("timestampSup", readBoolean(readBuffer));
 
-      // Simple Field (timestampSup)
-      Boolean timestampSup = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean ackSup = readSimpleField("ackSup", readBoolean(readBuffer));
 
-      // Simple Field (ackSup)
-      Boolean ackSup = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      Byte reservedField1 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 5), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 5);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
+      boolean locked = readSimpleField("locked", readBoolean(readBuffer));
 
-      // Simple Field (locked)
-      Boolean locked = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean alarmunack = readSimpleField("alarmunack", readBoolean(readBuffer));
 
-      // Simple Field (alarmunack)
-      Boolean alarmunack = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
-      // Simple Field (inalarm)
-      Boolean inalarm = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
+      boolean inalarm = readSimpleField("inalarm", readBoolean(readBuffer));
 
       Map<String, PlcValue> _map = new HashMap<>();
-      _map.put("logNumber", new PlcINT(logNumber));
-      _map.put("alarmPriority", new PlcINT(alarmPriority));
-      _map.put("applicationArea", new PlcINT(applicationArea));
-      _map.put("errorClass", new PlcINT(errorClass));
+      _map.put("logNumber", new PlcUSINT(logNumber));
+      _map.put("alarmPriority", new PlcUSINT(alarmPriority));
+      _map.put("applicationArea", new PlcUSINT(applicationArea));
+      _map.put("errorClass", new PlcUSINT(errorClass));
       _map.put("errorcodeSup", new PlcBOOL(errorcodeSup));
       _map.put("alarmtextSup", new PlcBOOL(alarmtextSup));
       _map.put("timestampSup", new PlcBOOL(timestampSup));
@@ -920,101 +331,381 @@ public class KnxProperty {
       _map.put("locked", new PlcBOOL(locked));
       _map.put("alarmunack", new PlcBOOL(alarmunack));
       _map.put("inalarm", new PlcBOOL(inalarm));
-
       return new PlcStruct(_map);
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_BINARY_INFORMATION)) { // BOOL
+      Byte reservedField0 =
+          readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
 
-      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-      {
-        byte reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
-            readBuffer.readUnsignedByte("", 7);
-        if (reserved != (byte) 0x00) {
-          LOGGER.info(
-              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
-        }
-      }
-
-      // Simple Field (value)
-      Boolean value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("");
-
+      boolean value = readSimpleField("value", readBoolean(readBuffer));
       return new PlcBOOL(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // List
-      // Array field (value)
-      // Count array
-      if (8 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of " + (8) + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 8;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcBOOL(
-                  (Boolean) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("")));
-        }
-      }
-
-      return new PlcList(value);
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // List
-      // Array field (value)
-      // Count array
-      if (16 > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (16)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
-      }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) 16;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcBOOL(
-                  (Boolean) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readBit("")));
-        }
-      }
-
-      return new PlcList(value);
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // BYTE
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcBYTE(value);
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // WORD
+      int value = readSimpleField("value", readUnsignedInt(readBuffer, 16));
+      return new PlcWORD(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
-
-      // Simple Field (value)
-      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
-
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else { // List
-      // Array field (value)
-      // Count array
-      if (dataLengthInBytes > Integer.MAX_VALUE) {
-        throw new ParseException(
-            "Array count of "
-                + (dataLengthInBytes)
-                + " exceeds the maximum allowed count of "
-                + Integer.MAX_VALUE);
+      byte[] value = readBuffer.readByteArray("value", Math.toIntExact(dataLengthInBytes));
+      return new PlcRawByteArray(value);
+    }
+  }
+
+  public static int getLengthInBytes(
+      PlcValue _value, KnxPropertyDataType propertyType, Short dataLengthInBytes) {
+    return (int) Math.ceil((float) getLengthInBits(_value, propertyType, dataLengthInBytes) / 8.0);
+  }
+
+  public static int getLengthInBits(
+      PlcValue _value, KnxPropertyDataType propertyType, Short dataLengthInBytes) {
+    int lengthInBits = 0;
+    if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CONTROL)) { // BOOL
+      // Reserved Field (reserved)
+      lengthInBits += 7;
+
+      // Simple field (value)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR)) { // SINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_UNSIGNED_CHAR)) { // USINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_INT)) { // INT
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)
+        && EvaluationHelper.equals(dataLengthInBytes, (short) 4)) { // UDINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)) { // UINT
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_KNX_FLOAT)) { // REAL
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE)) { // Struct
+      // Reserved Field (reserved)
+      lengthInBits += 3;
+
+      // Simple field (dayOfMonth)
+      lengthInBits += 5;
+
+      // Reserved Field (reserved)
+      lengthInBits += 4;
+
+      // Simple field (month)
+      lengthInBits += 4;
+
+      // Reserved Field (reserved)
+      lengthInBits += 1;
+
+      // Simple field (year)
+      lengthInBits += 7;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_TIME)) { // Struct
+      // Simple field (day)
+      lengthInBits += 3;
+
+      // Simple field (hour)
+      lengthInBits += 5;
+
+      // Reserved Field (reserved)
+      lengthInBits += 2;
+
+      // Simple field (minutes)
+      lengthInBits += 6;
+
+      // Reserved Field (reserved)
+      lengthInBits += 2;
+
+      // Simple field (seconds)
+      lengthInBits += 6;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_LONG)) { // DINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_UNSIGNED_LONG)) { // UDINT
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_FLOAT)) { // REAL
+      // Simple field (value)
+      lengthInBits += 32;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
+      // Simple field (value)
+      lengthInBits += 64;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
       }
-      List<PlcValue> value;
-      {
-        int itemCount = (int) dataLengthInBytes;
-        value = new LinkedList<>();
-        for (int curItem = 0; curItem < itemCount; curItem++) {
-          value.add(
-              new PlcSINT(
-                  (Byte) /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readByte("")));
-        }
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_POLL_GROUP_SETTINGS)) { // Struct
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
       }
 
-      return new PlcList(value);
+      // Simple field (disable)
+      lengthInBits += 1;
+
+      // Reserved Field (reserved)
+      lengthInBits += 3;
+
+      // Simple field (pollingSoftNr)
+      lengthInBits += 4;
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE_TIME)) { // Struct
+      // Simple field (year)
+      lengthInBits += 8;
+
+      // Reserved Field (reserved)
+      lengthInBits += 4;
+
+      // Simple field (month)
+      lengthInBits += 4;
+
+      // Reserved Field (reserved)
+      lengthInBits += 3;
+
+      // Simple field (dayOfMonth)
+      lengthInBits += 5;
+
+      // Simple field (dayOfWeek)
+      lengthInBits += 3;
+
+      // Simple field (hour)
+      lengthInBits += 5;
+
+      // Reserved Field (reserved)
+      lengthInBits += 2;
+
+      // Simple field (minutes)
+      lengthInBits += 6;
+
+      // Reserved Field (reserved)
+      lengthInBits += 2;
+
+      // Simple field (seconds)
+      lengthInBits += 6;
+
+      // Simple field (fault)
+      lengthInBits += 1;
+
+      // Simple field (workingDay)
+      lengthInBits += 1;
+
+      // Simple field (noWd)
+      lengthInBits += 1;
+
+      // Simple field (noYear)
+      lengthInBits += 1;
+
+      // Simple field (noDate)
+      lengthInBits += 1;
+
+      // Simple field (noDayOfWeek)
+      lengthInBits += 1;
+
+      // Simple field (noTime)
+      lengthInBits += 1;
+
+      // Simple field (standardSummerTime)
+      lengthInBits += 1;
+
+      // Simple field (qualityOfClock)
+      lengthInBits += 1;
+
+      // Reserved Field (reserved)
+      lengthInBits += 7;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
+      // Simple field (magicNumber)
+      lengthInBits += 5;
+
+      // Simple field (versionNumber)
+      lengthInBits += 5;
+
+      // Simple field (revisionNumber)
+      lengthInBits += 6;
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_ALARM_INFO)) { // Struct
+      // Simple field (logNumber)
+      lengthInBits += 8;
+
+      // Simple field (alarmPriority)
+      lengthInBits += 8;
+
+      // Simple field (applicationArea)
+      lengthInBits += 8;
+
+      // Simple field (errorClass)
+      lengthInBits += 8;
+
+      // Reserved Field (reserved)
+      lengthInBits += 4;
+
+      // Simple field (errorcodeSup)
+      lengthInBits += 1;
+
+      // Simple field (alarmtextSup)
+      lengthInBits += 1;
+
+      // Simple field (timestampSup)
+      lengthInBits += 1;
+
+      // Simple field (ackSup)
+      lengthInBits += 1;
+
+      // Reserved Field (reserved)
+      lengthInBits += 5;
+
+      // Simple field (locked)
+      lengthInBits += 1;
+
+      // Simple field (alarmunack)
+      lengthInBits += 1;
+
+      // Simple field (inalarm)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(
+        propertyType, KnxPropertyDataType.PDT_BINARY_INFORMATION)) { // BOOL
+      // Reserved Field (reserved)
+      lengthInBits += 7;
+
+      // Simple field (value)
+      lengthInBits += 1;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // BYTE
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // WORD
+      // Simple field (value)
+      lengthInBits += 16;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
+      // Simple field (value)
+      lengthInBits += 8;
+    } else { // List
+      // Array field
+      if (_value != null) {
+        lengthInBits += 8 * _value.getRaw().length;
+      }
     }
+
+    return lengthInBits;
   }
 
   public static void staticSerialize(
@@ -1034,762 +725,157 @@ public class KnxProperty {
       ByteOrder byteOrder)
       throws SerializationException {
     if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CONTROL)) { // BOOL
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
+
       // Simple Field (value)
-      boolean value = (boolean) _value.getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR)) { // SINT
       // Simple Field (value)
-      byte value = (byte) _value.getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeSignedByte("", 8, ((Number) (value)).byteValue());
+      writeSimpleField("value", (byte) _value.getByte(), writeSignedByte(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_UNSIGNED_CHAR)) { // USINT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_INT)) { // INT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeShort("", 16, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeSignedShort(writeBuffer, 16));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)
-        && EvaluationHelper.equals(dataLengthInBytes, 4)) { // UDINT
+        && EvaluationHelper.equals(dataLengthInBytes, (short) 4)) { // UDINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)) { // UINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedInt("", 16, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_KNX_FLOAT)) { // REAL
       // Simple Field (value)
-      float value = (float) _value.getFloat();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeFloat("", 16, (value));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE)) { // Struct
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (dayOfMonth)
-      byte dayOfMonth = (byte) _value.getStruct().get("dayOfMonth").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
-          "", 5, ((Number) (dayOfMonth)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (month)
-      byte month = (byte) _value.getStruct().get("month").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (month)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 1, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (year)
-      byte year = (byte) _value.getStruct().get("year").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (year)).byteValue());
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_TIME)) { // Struct
-      // Simple Field (day)
-      byte day = (byte) _value.getStruct().get("day").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (day)).byteValue());
-      // Simple Field (hour)
-      byte hour = (byte) _value.getStruct().get("hour").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (hour)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (minutes)
-      byte minutes = (byte) _value.getStruct().get("minutes").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (minutes)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (seconds)
-      byte seconds = (byte) _value.getStruct().get("seconds").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (seconds)).byteValue());
+      writeSimpleField(
+          "value",
+          (float) _value.getFloat(),
+          writeFloat(writeBuffer, 16),
+          WithOption.WithEncoding("KNXFloat"));
+    } else if (EvaluationHelper.equals(
+        propertyType,
+        KnxPropertyDataType.PDT_DATE)) { // Struct                // Output something here ...
+    } else if (EvaluationHelper.equals(
+        propertyType,
+        KnxPropertyDataType.PDT_TIME)) { // Struct                // Output something here ...
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_LONG)) { // DINT
       // Simple Field (value)
-      int value = (int) _value.getInt();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeInt("", 32, ((Number) (value)).intValue());
+      writeSimpleField("value", (int) _value.getInteger(), writeSignedInt(writeBuffer, 32));
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_UNSIGNED_LONG)) { // UDINT
       // Simple Field (value)
-      long value = (long) _value.getLong();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedLong("", 32, ((Number) (value)).longValue());
+      writeSimpleField("value", (long) _value.getLong(), writeUnsignedLong(writeBuffer, 32));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_FLOAT)) { // REAL
       // Simple Field (value)
-      float value = (float) _value.getFloat();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeFloat("", 32, (value));
+      writeSimpleField("value", (float) _value.getFloat(), writeFloat(writeBuffer, 32));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
       // Simple Field (value)
-      double value = (double) _value.getDouble();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeDouble("", 64, (value));
+      writeSimpleField("value", (double) _value.getDouble(), writeDouble(writeBuffer, 64));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_POLL_GROUP_SETTINGS)) { // Struct
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getStruct().get("groupAddress").getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-      // Simple Field (disable)
-      boolean disable = (boolean) _value.getStruct().get("disable").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (disable));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x0).byteValue());
-      // Simple Field (pollingSoftNr)
-      byte pollingSoftNr = (byte) _value.getStruct().get("pollingSoftNr").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
-          "", 4, ((Number) (pollingSoftNr)).byteValue());
+        propertyType,
+        KnxPropertyDataType
+            .PDT_POLL_GROUP_SETTINGS)) { // Struct                // Output something here ...
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE_TIME)) { // Struct
-      // Simple Field (year)
-      short year = (short) _value.getStruct().get("year").getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (year)).shortValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (month)
-      byte month = (byte) _value.getStruct().get("month").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (month)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (dayofmonth)
-      byte dayofmonth = (byte) _value.getStruct().get("dayofmonth").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
-          "", 5, ((Number) (dayofmonth)).byteValue());
-      // Simple Field (dayofweek)
-      byte dayofweek = (byte) _value.getStruct().get("dayofweek").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 3, ((Number) (dayofweek)).byteValue());
-      // Simple Field (hourofday)
-      byte hourofday = (byte) _value.getStruct().get("hourofday").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (hourofday)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (minutes)
-      byte minutes = (byte) _value.getStruct().get("minutes").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (minutes)).byteValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 2, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (seconds)
-      byte seconds = (byte) _value.getStruct().get("seconds").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 6, ((Number) (seconds)).byteValue());
-      // Simple Field (fault)
-      boolean fault = (boolean) _value.getStruct().get("fault").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (fault));
-      // Simple Field (workingDay)
-      boolean workingDay = (boolean) _value.getStruct().get("workingDay").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (workingDay));
-      // Simple Field (noWd)
-      boolean noWd = (boolean) _value.getStruct().get("noWd").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (noWd));
-      // Simple Field (noYear)
-      boolean noYear = (boolean) _value.getStruct().get("noYear").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (noYear));
-      // Simple Field (noDate)
-      boolean noDate = (boolean) _value.getStruct().get("noDate").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (noDate));
-      // Simple Field (noDayOfWeek)
-      boolean noDayOfWeek = (boolean) _value.getStruct().get("noDayOfWeek").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (noDayOfWeek));
-      // Simple Field (noTime)
-      boolean noTime = (boolean) _value.getStruct().get("noTime").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (noTime));
-      // Simple Field (standardSummerTime)
-      boolean standardSummerTime =
-          (boolean) _value.getStruct().get("standardSummerTime").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (standardSummerTime));
-      // Simple Field (qualityOfClock)
-      boolean qualityOfClock = (boolean) _value.getStruct().get("qualityOfClock").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (qualityOfClock));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
-      // Simple Field (magicNumber)
-      byte magicNumber = (byte) _value.getStruct().get("magicNumber").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
-          "", 5, ((Number) (magicNumber)).byteValue());
-      // Simple Field (versionNumber)
-      byte versionNumber = (byte) _value.getStruct().get("versionNumber").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
-          "", 5, ((Number) (versionNumber)).byteValue());
-      // Simple Field (revisionNumber)
-      byte revisionNumber = (byte) _value.getStruct().get("revisionNumber").getByte();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte(
-          "", 6, ((Number) (revisionNumber)).byteValue());
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_ALARM_INFO)) { // Struct
-      // Simple Field (logNumber)
-      short logNumber = (short) _value.getStruct().get("logNumber").getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (logNumber)).shortValue());
-      // Simple Field (alarmPriority)
-      short alarmPriority = (short) _value.getStruct().get("alarmPriority").getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (alarmPriority)).shortValue());
-      // Simple Field (applicationArea)
-      short applicationArea = (short) _value.getStruct().get("applicationArea").getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (applicationArea)).shortValue());
-      // Simple Field (errorClass)
-      short errorClass = (short) _value.getStruct().get("errorClass").getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
-          "", 8, ((Number) (errorClass)).shortValue());
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 4, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (errorcodeSup)
-      boolean errorcodeSup = (boolean) _value.getStruct().get("errorcodeSup").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (errorcodeSup));
-      // Simple Field (alarmtextSup)
-      boolean alarmtextSup = (boolean) _value.getStruct().get("alarmtextSup").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (alarmtextSup));
-      // Simple Field (timestampSup)
-      boolean timestampSup = (boolean) _value.getStruct().get("timestampSup").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (timestampSup));
-      // Simple Field (ackSup)
-      boolean ackSup = (boolean) _value.getStruct().get("ackSup").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (ackSup));
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 5, ((Number) (byte) 0x00).byteValue());
-      // Simple Field (locked)
-      boolean locked = (boolean) _value.getStruct().get("locked").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (locked));
-      // Simple Field (alarmunack)
-      boolean alarmunack = (boolean) _value.getStruct().get("alarmunack").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (alarmunack));
-      // Simple Field (inalarm)
-      boolean inalarm = (boolean) _value.getStruct().get("inalarm").getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (inalarm));
+        propertyType,
+        KnxPropertyDataType.PDT_DATE_TIME)) { // Struct                // Output something here ...
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(
+        propertyType,
+        KnxPropertyDataType.PDT_VERSION)) { // Struct                // Output something here ...
+    } else if (EvaluationHelper.equals(
+        propertyType,
+        KnxPropertyDataType.PDT_ALARM_INFO)) { // Struct                // Output something here ...
     } else if (EvaluationHelper.equals(
         propertyType, KnxPropertyDataType.PDT_BINARY_INFORMATION)) { // BOOL
-      // Reserved Field
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedByte("", 7, ((Number) (byte) 0x00).byteValue());
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
+
       // Simple Field (value)
-      boolean value = (boolean) _value.getBoolean();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Boolean value = (Boolean) val.getBoolean();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
-      }
-
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        Boolean value = (Boolean) val.getBoolean();
-        /*TODO: migrate me*/
-        /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
-      }
-
+      writeSimpleField("value", (boolean) _value.getBoolean(), writeBoolean(writeBuffer));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // BYTE
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // WORD
+      // Simple Field (value)
+      writeSimpleField("value", (int) _value.getInteger(), writeUnsignedInt(writeBuffer, 16));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
       // Simple Field (value)
-      short value = (short) _value.getShort();
-      /*TODO: migrate me*/
-      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else { // List
-      PlcList values = (PlcList) _value;
-
-      for (PlcValue val : ((List<PlcValue>) values.getList())) {
-        byte[] value = (byte[]) val.getRaw();
-        writeBuffer.writeByteArray("", value);
-      }
+      // Array Field (value)
+      writeByteArrayField("value", _value.getRaw(), writeByteArray(writeBuffer, 8));
     }
-  }
-
-  public static int getLengthInBytes(
-      PlcValue _value, KnxPropertyDataType propertyType, Short dataLengthInBytes) {
-    return (int) Math.ceil((float) getLengthInBits(_value, propertyType, dataLengthInBytes) / 8.0);
-  }
-
-  public static int getLengthInBits(
-      PlcValue _value, KnxPropertyDataType propertyType, Short dataLengthInBytes) {
-    int sizeInBits = 0;
-    if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CONTROL)) { // BOOL
-      // Reserved Field
-      sizeInBits += 7;
-      // Simple Field (value)
-      sizeInBits += 1;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR)) { // SINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_UNSIGNED_CHAR)) { // USINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_INT)) { // INT
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)
-        && EvaluationHelper.equals(dataLengthInBytes, 4)) { // UDINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_UNSIGNED_INT)) { // UINT
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_KNX_FLOAT)) { // REAL
-      // Simple Field (value)
-      sizeInBits += 16;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE)) { // Struct
-      // Reserved Field
-      sizeInBits += 3;
-      // Simple Field (dayOfMonth)
-      sizeInBits += 5;
-      // Reserved Field
-      sizeInBits += 4;
-      // Simple Field (month)
-      sizeInBits += 4;
-      // Reserved Field
-      sizeInBits += 1;
-      // Simple Field (year)
-      sizeInBits += 7;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_TIME)) { // Struct
-      // Simple Field (day)
-      sizeInBits += 3;
-      // Simple Field (hour)
-      sizeInBits += 5;
-      // Reserved Field
-      sizeInBits += 2;
-      // Simple Field (minutes)
-      sizeInBits += 6;
-      // Reserved Field
-      sizeInBits += 2;
-      // Simple Field (seconds)
-      sizeInBits += 6;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_LONG)) { // DINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_UNSIGNED_LONG)) { // UDINT
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_FLOAT)) { // REAL
-      // Simple Field (value)
-      sizeInBits += 32;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DOUBLE)) { // LREAL
-      // Simple Field (value)
-      sizeInBits += 64;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_CHAR_BLOCK)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_POLL_GROUP_SETTINGS)) { // Struct
-      PlcList values = (PlcList) _value;
-      // TODO: Finish this!
-      // Simple Field (disable)
-      sizeInBits += 1;
-      // Reserved Field
-      sizeInBits += 3;
-      // Simple Field (pollingSoftNr)
-      sizeInBits += 4;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_SHORT_CHAR_BLOCK)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_DATE_TIME)) { // Struct
-      // Simple Field (year)
-      sizeInBits += 8;
-      // Reserved Field
-      sizeInBits += 4;
-      // Simple Field (month)
-      sizeInBits += 4;
-      // Reserved Field
-      sizeInBits += 3;
-      // Simple Field (dayofmonth)
-      sizeInBits += 5;
-      // Simple Field (dayofweek)
-      sizeInBits += 3;
-      // Simple Field (hourofday)
-      sizeInBits += 5;
-      // Reserved Field
-      sizeInBits += 2;
-      // Simple Field (minutes)
-      sizeInBits += 6;
-      // Reserved Field
-      sizeInBits += 2;
-      // Simple Field (seconds)
-      sizeInBits += 6;
-      // Simple Field (fault)
-      sizeInBits += 1;
-      // Simple Field (workingDay)
-      sizeInBits += 1;
-      // Simple Field (noWd)
-      sizeInBits += 1;
-      // Simple Field (noYear)
-      sizeInBits += 1;
-      // Simple Field (noDate)
-      sizeInBits += 1;
-      // Simple Field (noDayOfWeek)
-      sizeInBits += 1;
-      // Simple Field (noTime)
-      sizeInBits += 1;
-      // Simple Field (standardSummerTime)
-      sizeInBits += 1;
-      // Simple Field (qualityOfClock)
-      sizeInBits += 1;
-      // Reserved Field
-      sizeInBits += 7;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_01)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_02)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_03)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_04)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_05)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_06)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_07)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_08)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_09)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_10)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_11)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_12)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_13)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_14)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_15)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_16)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_17)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_18)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_19)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_GENERIC_20)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_VERSION)) { // Struct
-      // Simple Field (magicNumber)
-      sizeInBits += 5;
-      // Simple Field (versionNumber)
-      sizeInBits += 5;
-      // Simple Field (revisionNumber)
-      sizeInBits += 6;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_ALARM_INFO)) { // Struct
-      // Simple Field (logNumber)
-      sizeInBits += 8;
-      // Simple Field (alarmPriority)
-      sizeInBits += 8;
-      // Simple Field (applicationArea)
-      sizeInBits += 8;
-      // Simple Field (errorClass)
-      sizeInBits += 8;
-      // Reserved Field
-      sizeInBits += 4;
-      // Simple Field (errorcodeSup)
-      sizeInBits += 1;
-      // Simple Field (alarmtextSup)
-      sizeInBits += 1;
-      // Simple Field (timestampSup)
-      sizeInBits += 1;
-      // Simple Field (ackSup)
-      sizeInBits += 1;
-      // Reserved Field
-      sizeInBits += 5;
-      // Simple Field (locked)
-      sizeInBits += 1;
-      // Simple Field (alarmunack)
-      sizeInBits += 1;
-      // Simple Field (inalarm)
-      sizeInBits += 1;
-    } else if (EvaluationHelper.equals(
-        propertyType, KnxPropertyDataType.PDT_BINARY_INFORMATION)) { // BOOL
-      // Reserved Field
-      sizeInBits += 7;
-      // Simple Field (value)
-      sizeInBits += 1;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET8)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 1;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_BITSET16)) { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 1;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_ENUM8)) { // USINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else if (EvaluationHelper.equals(propertyType, KnxPropertyDataType.PDT_SCALING)) { // USINT
-      // Simple Field (value)
-      sizeInBits += 8;
-    } else { // List
-      PlcList values = (PlcList) _value;
-      sizeInBits += values.getList().size() * 8;
-    }
-    return sizeInBits;
   }
 }

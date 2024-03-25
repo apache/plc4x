@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x.examples</groupId>
     <artifactId>plc4j-examples</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-examples-hello-world-plc4x-subscribe</artifactId>
@@ -32,7 +32,7 @@
   <description>Hello world application for PLC4X using the subscription-API.</description>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <app.main.class>org.apache.plc4x.java.examples.helloplc4x.subscribe.HelloPlc4xSubscription</app.main.class>
   </properties>
 
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-api</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -58,6 +58,12 @@
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <!-- Overriding the default of "test" -->
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
@@ -69,6 +75,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
+            <usedDependency>ch.qos.logback:logback-core</usedDependency>
             <usedDependency>org.slf4j:log4j-over-slf4j</usedDependency>
           </usedDependencies>
         </configuration>

@@ -104,50 +104,36 @@ public class DateAndTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("DateAndTime");
 
-    // Manual Field (year)
-    writeManualField(
-        "year",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(writeBuffer, year),
-        writeBuffer);
+    // Simple Field (year)
+    writeSimpleField(
+        "year", year, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("BCD"));
 
-    // Manual Field (month)
-    writeManualField(
-        "month",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(writeBuffer, month),
-        writeBuffer);
+    // Simple Field (month)
+    writeSimpleField(
+        "month", month, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("BCD"));
 
-    // Manual Field (day)
-    writeManualField(
-        "day",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(writeBuffer, day),
-        writeBuffer);
+    // Simple Field (day)
+    writeSimpleField(
+        "day", day, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("BCD"));
 
-    // Manual Field (hour)
-    writeManualField(
-        "hour",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(writeBuffer, hour),
-        writeBuffer);
+    // Simple Field (hour)
+    writeSimpleField(
+        "hour", hour, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("BCD"));
 
-    // Manual Field (minutes)
-    writeManualField(
-        "minutes",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(writeBuffer, minutes),
-        writeBuffer);
+    // Simple Field (minutes)
+    writeSimpleField(
+        "minutes", minutes, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("BCD"));
 
-    // Manual Field (seconds)
-    writeManualField(
-        "seconds",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.ByteToBcd(writeBuffer, seconds),
-        writeBuffer);
+    // Simple Field (seconds)
+    writeSimpleField(
+        "seconds", seconds, writeUnsignedShort(writeBuffer, 8), WithOption.WithEncoding("BCD"));
 
-    // Manual Field (msec)
-    writeManualField(
-        "msec",
-        () -> org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.IntToS7msec(writeBuffer, msec),
-        writeBuffer);
+    // Simple Field (msec)
+    writeSimpleField(
+        "msec", msec, writeUnsignedShort(writeBuffer, 12), WithOption.WithEncoding("BCD"));
 
     // Simple Field (dow)
-    writeSimpleField("dow", dow, writeUnsignedByte(writeBuffer, 4));
+    writeSimpleField("dow", dow, writeUnsignedByte(writeBuffer, 4), WithOption.WithEncoding("BCD"));
 
     writeBuffer.popContext("DateAndTime");
   }
@@ -163,25 +149,25 @@ public class DateAndTime implements Message {
     DateAndTime _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Manual Field (year)
+    // Simple field (year)
     lengthInBits += 8;
 
-    // Manual Field (month)
+    // Simple field (month)
     lengthInBits += 8;
 
-    // Manual Field (day)
+    // Simple field (day)
     lengthInBits += 8;
 
-    // Manual Field (hour)
+    // Simple field (hour)
     lengthInBits += 8;
 
-    // Manual Field (minutes)
+    // Simple field (minutes)
     lengthInBits += 8;
 
-    // Manual Field (seconds)
+    // Simple field (seconds)
     lengthInBits += 8;
 
-    // Manual Field (msec)
+    // Simple field (msec)
     lengthInBits += 12;
 
     // Simple field (dow)
@@ -202,63 +188,30 @@ public class DateAndTime implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short year =
-        readManualField(
-            "year",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
+        readSimpleField("year", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
     short month =
-        readManualField(
-            "month",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
+        readSimpleField("month", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
     short day =
-        readManualField(
-            "day",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
+        readSimpleField("day", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
     short hour =
-        readManualField(
-            "hour",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
+        readSimpleField("hour", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
     short minutes =
-        readManualField(
-            "minutes",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
+        readSimpleField(
+            "minutes", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
     short seconds =
-        readManualField(
-            "seconds",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.BcdToInt(readBuffer)));
+        readSimpleField(
+            "seconds", readUnsignedShort(readBuffer, 8), WithOption.WithEncoding("BCD"));
 
     short msec =
-        readManualField(
-            "msec",
-            readBuffer,
-            () ->
-                (short)
-                    (org.apache.plc4x.java.s7.readwrite.utils.StaticHelper.S7msecToInt(
-                        readBuffer)));
+        readSimpleField("msec", readUnsignedShort(readBuffer, 12), WithOption.WithEncoding("BCD"));
 
-    byte dow = readSimpleField("dow", readUnsignedByte(readBuffer, 4));
+    byte dow =
+        readSimpleField("dow", readUnsignedByte(readBuffer, 4), WithOption.WithEncoding("BCD"));
 
     readBuffer.closeContext("DateAndTime");
     // Create the instance

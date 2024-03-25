@@ -227,6 +227,11 @@ public class PlcLREAL extends PlcIECValue<Double> {
         return Double.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         long longBits = Double.doubleToRawLongBits(value);
         return new byte[]{

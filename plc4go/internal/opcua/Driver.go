@@ -125,17 +125,17 @@ func (d *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	if err != nil {
 		return d.reportError(errors.Wrap(err, "can't parse options"))
 	}
-	configuration.host = transportHost
-	configuration.port = transportPort
-	configuration.transportEndpoint = transportEndpoint
+	configuration.Host = transportHost
+	configuration.Port = transportPort
+	configuration.TransportEndpoint = transportEndpoint
 	portAddition := ""
 	if transportPort != "" {
 		portAddition += ":" + transportPort
 	}
-	configuration.endpoint = "opc." + transportCode + "://" + transportHost + portAddition + "" + transportEndpoint
-	d.log.Debug().Stringer("configuration", &configuration).Msg("working with configurartion")
+	configuration.Endpoint = "opc." + transportCode + "://" + transportHost + portAddition + "" + transportEndpoint
+	d.log.Debug().Stringer("configuration", &configuration).Msg("working with configuration")
 
-	if securityPolicy := configuration.securityPolicy; securityPolicy != "" && securityPolicy != "None" {
+	if securityPolicy := configuration.SecurityPolicy; securityPolicy != "" && securityPolicy != "None" {
 		d.log.Trace().Str("securityPolicy", securityPolicy).Msg("working with security policy")
 		if err := configuration.openKeyStore(); err != nil {
 			return d.reportError(errors.Wrap(err, "error opening key store"))

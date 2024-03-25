@@ -360,7 +360,7 @@
                 <Plc4xValueType dataType="uint" bitLength="8" stringRepresentation="BOOL">1</Plc4xValueType>
               </valueType>
               <value>
-                <value dataType="uint" bitLength="7">0</value>
+                <reserved dataType="uint" bitLength="7">0</reserved>
                 <value dataType="bit" bitLength="1">false</value>
               </value>
             </Plc4xTagValueResponse>

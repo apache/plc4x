@@ -882,9 +882,9 @@
             [reserved uint 4 '0x00']
             [simple uint 4 month]
             [reserved uint 3 '0x00']
-            [simple uint 5 dayofmonth]
-            [simple uint 3 dayofweek]
-            [simple uint 5 hourofday]
+            [simple uint 5 dayOfMonth]
+            [simple uint 3 dayOfWeek]
+            [simple uint 5 hour]
             [reserved uint 2 '0x00']
             [simple uint 6 minutes]
             [reserved uint 2 '0x00']
@@ -987,11 +987,11 @@
             [reserved uint 7        '0x00']
             [simple   bit           value]
         ]
-        ['PDT_BITSET8' List
-            [array    bit           value count '8']
+        ['PDT_BITSET8' BYTE
+            [simple   uint 8        value]
         ]
-        ['PDT_BITSET16' List
-            [array    bit           value count '16']
+        ['PDT_BITSET16' WORD
+            [simple   uint 16        value]
         ]
         ['PDT_ENUM8' USINT
             [simple uint 8 value]

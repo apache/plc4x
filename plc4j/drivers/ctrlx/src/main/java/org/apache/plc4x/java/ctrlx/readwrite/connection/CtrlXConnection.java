@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -94,22 +94,22 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     public PlcConnectionMetadata getMetadata() {
         return new PlcConnectionMetadata() {
             @Override
-            public boolean canRead() {
+            public boolean isReadSupported() {
                 return true;
             }
 
             @Override
-            public boolean canWrite() {
+            public boolean isWriteSupported() {
                 return true;
             }
 
             @Override
-            public boolean canSubscribe() {
+            public boolean isSubscribeSupported() {
                 return true;
             }
 
             @Override
-            public boolean canBrowse() {
+            public boolean isBrowseSupported() {
                 return true;
             }
         };

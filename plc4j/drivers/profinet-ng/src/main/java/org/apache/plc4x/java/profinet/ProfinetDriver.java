@@ -22,9 +22,10 @@ import io.netty.buffer.ByteBuf;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryRequest;
-import org.apache.plc4x.java.api.metadata.PlcDriverMetadata;
 import org.apache.plc4x.java.profinet.channel.ProfinetChannel;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.config.ProfinetRawSocketTransportConfiguration;
@@ -34,7 +35,6 @@ import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
 import org.apache.plc4x.java.profinet.readwrite.*;
 import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.profinet.tag.ProfinetTagHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
@@ -46,8 +46,6 @@ import org.apache.plc4x.java.spi.generation.WriteBufferByteBased;
 import org.apache.plc4x.java.spi.messages.DefaultPlcDiscoveryRequest;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.EthernetPacket;
 import org.pcap4j.packet.IllegalRawDataException;
@@ -58,6 +56,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.*;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,7 @@ import java.util.function.ToIntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implements TransportConfigurationTypeProvider {
+public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetDriver.class);
 
@@ -86,11 +86,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     }
 
     @Override
-    public PlcDriverMetadata getMetadata() {
-        return () -> true;
-    }
-
-    @Override
     public PlcDiscoveryRequest.Builder discoveryRequestBuilder() {
         // TODO: This should actually happen in the execute method of the discoveryRequest and not here ...
         try {
@@ -103,13 +98,27 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ProfinetConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "raw";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "raw":
+                return Optional.of(ProfinetRawSocketTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("raw");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("raw");
     }
 
     @Override
@@ -190,15 +199,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
     }
 
     @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "raw":
-                return ProfinetRawSocketTransportConfiguration.class;
-        }
-        return null;
-    }
-
-    @Override
     public PlcConnection getConnection(String connectionString, PlcAuthentication authentication) throws PlcConnectionException {
         // Check if this is a connection string with a MAC address and "assign-ip" in the options.
         Matcher matcher = URI_PATTERN.matcher(connectionString);
@@ -208,7 +208,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
         }
         final String protocolCode = matcher.group("protocolCode");
         String transportCodeMatch = matcher.group("transportCode");
-        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransport();
+        final String transportCode = (transportCodeMatch != null) ? transportCodeMatch : getDefaultTransportCode().get();
         final String transportConfig = matcher.group("transportConfig");
         final String paramString = matcher.group("paramString");
         Matcher macMatcher = MAC_ADDRESS.matcher(transportConfig);
@@ -216,7 +216,7 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
             logger.info("Setting remote PROFINET device IP using DCP");
             ConfigurationFactory configurationFactory = new ConfigurationFactory();
             ProfinetConfiguration configuration = (ProfinetConfiguration) configurationFactory
-                .createConfiguration(getConfigurationType(), protocolCode, transportCode, transportConfig, paramString);
+                .createConfiguration(getConfigurationClass(), protocolCode, transportCode, transportConfig, paramString);
             if (configuration == null) {
                 throw new PlcConnectionException("Unsupported configuration");
             }
@@ -334,4 +334,5 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> implemen
 
         return super.getConnection(connectionString, authentication);
     }
+
 }

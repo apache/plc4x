@@ -22,7 +22,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.transport.Transport;
@@ -33,7 +34,7 @@ public interface CANTransport<F extends Message> extends Transport {
 
     Class<F> getMessageType();
 
-    MessageInput<F> getMessageInput(Configuration configuration);
+    MessageInput<F> getMessageInput(PlcConnectionConfiguration configuration);
 
     CANFrameBuilder<F> getTransportFrameBuilder();
 

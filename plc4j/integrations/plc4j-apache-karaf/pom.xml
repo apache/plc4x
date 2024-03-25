@@ -92,7 +92,6 @@ under the License.
     </properties>
                            
     <modules>
-        <module>org.apache.plc4x.merlot</module>
         <module>org.apache.plc4x.merlot.modbus.dev</module>
         <module>org.apache.plc4x.merlot.modbus.svr</module>
         <module>org.apache.plc4x.merlot.scheduler</module>
@@ -108,6 +107,7 @@ under the License.
         <module>org.apache.plc4x.merlot.drv.simulated</module>
         <module>org.apache.plc4x.merlot.das.ref</module>
         <module>org.apache.plc4x.merlot.das.base</module>
+	<module>org.apache.plc4x.merlot</module>
     </modules>
 
 </project>

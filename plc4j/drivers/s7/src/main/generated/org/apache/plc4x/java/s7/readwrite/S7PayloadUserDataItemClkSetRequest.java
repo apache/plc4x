@@ -51,19 +51,19 @@ public class S7PayloadUserDataItemClkSetRequest extends S7PayloadUserDataItem im
   }
 
   // Properties.
-  protected final DateAndTime TimeStamp;
+  protected final DateAndTime timeStamp;
 
   public S7PayloadUserDataItemClkSetRequest(
       DataTransportErrorCode returnCode,
       DataTransportSize transportSize,
       int dataLength,
-      DateAndTime TimeStamp) {
+      DateAndTime timeStamp) {
     super(returnCode, transportSize, dataLength);
-    this.TimeStamp = TimeStamp;
+    this.timeStamp = timeStamp;
   }
 
   public DateAndTime getTimeStamp() {
-    return TimeStamp;
+    return timeStamp;
   }
 
   @Override
@@ -79,8 +79,8 @@ public class S7PayloadUserDataItemClkSetRequest extends S7PayloadUserDataItem im
     // Reserved Field (reserved)
     writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
-    // Simple Field (TimeStamp)
-    writeSimpleField("TimeStamp", TimeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    // Simple Field (timeStamp)
+    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("S7PayloadUserDataItemClkSetRequest");
   }
@@ -102,8 +102,8 @@ public class S7PayloadUserDataItemClkSetRequest extends S7PayloadUserDataItem im
     // Reserved Field (reserved)
     lengthInBits += 8;
 
-    // Simple field (TimeStamp)
-    lengthInBits += TimeStamp.getLengthInBits();
+    // Simple field (timeStamp)
+    lengthInBits += timeStamp.getLengthInBits();
 
     return lengthInBits;
   }
@@ -121,28 +121,28 @@ public class S7PayloadUserDataItemClkSetRequest extends S7PayloadUserDataItem im
     Short reservedField1 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-    DateAndTime TimeStamp =
+    DateAndTime timeStamp =
         readSimpleField(
-            "TimeStamp",
+            "timeStamp",
             new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadUserDataItemClkSetRequest");
     // Create the instance
-    return new S7PayloadUserDataItemClkSetRequestBuilderImpl(TimeStamp);
+    return new S7PayloadUserDataItemClkSetRequestBuilderImpl(timeStamp);
   }
 
   public static class S7PayloadUserDataItemClkSetRequestBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
-    private final DateAndTime TimeStamp;
+    private final DateAndTime timeStamp;
 
-    public S7PayloadUserDataItemClkSetRequestBuilderImpl(DateAndTime TimeStamp) {
-      this.TimeStamp = TimeStamp;
+    public S7PayloadUserDataItemClkSetRequestBuilderImpl(DateAndTime timeStamp) {
+      this.timeStamp = timeStamp;
     }
 
     public S7PayloadUserDataItemClkSetRequest build(
         DataTransportErrorCode returnCode, DataTransportSize transportSize, int dataLength) {
       S7PayloadUserDataItemClkSetRequest s7PayloadUserDataItemClkSetRequest =
-          new S7PayloadUserDataItemClkSetRequest(returnCode, transportSize, dataLength, TimeStamp);
+          new S7PayloadUserDataItemClkSetRequest(returnCode, transportSize, dataLength, timeStamp);
       return s7PayloadUserDataItemClkSetRequest;
     }
   }

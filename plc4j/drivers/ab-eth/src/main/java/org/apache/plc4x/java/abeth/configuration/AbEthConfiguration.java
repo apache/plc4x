@@ -18,12 +18,14 @@
  */
 package org.apache.plc4x.java.abeth.configuration;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 
-public class AbEthConfiguration implements Configuration {
+public class AbEthConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter
+    @Description("Id of the station we want to connect to")
     private int station;
 
     public int getStation() {

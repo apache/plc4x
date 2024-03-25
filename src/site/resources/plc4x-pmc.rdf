@@ -42,12 +42,22 @@
 
         <asfext:member>
             <foaf:Person>
+                <foaf:name>Ben Hutcheson</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
                 <foaf:name>Björn Höper</foaf:name>
             </foaf:Person>
         </asfext:member>
         <asfext:member>
             <foaf:Person>
                 <foaf:name>Christofer Dutz</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>César García</foaf:name>
             </foaf:Person>
         </asfext:member>
         <asfext:member>
@@ -62,7 +72,22 @@
         </asfext:member>
         <asfext:member>
             <foaf:Person>
+                <foaf:name>Lukas Ott</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
                 <foaf:name>Markus Sommer</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Matthias Milan Strljic</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Otto Fowler</foaf:name>
             </foaf:Person>
         </asfext:member>
         <asfext:member>
@@ -73,6 +98,11 @@
         <asfext:member>
             <foaf:Person>
                 <foaf:name>Tim Mitsch</foaf:name>
+            </foaf:Person>
+        </asfext:member>
+        <asfext:member>
+            <foaf:Person>
+                <foaf:name>Łukasz Dywicki</foaf:name>
             </foaf:Person>
         </asfext:member>
     </asfext:pmc>
