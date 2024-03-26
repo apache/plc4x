@@ -22,6 +22,8 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.LinkedList;
@@ -30,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 class ConnectionContainer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionContainer.class);
     private final PlcConnectionManager connectionManager;
     private final String connectionUrl;
     private final Duration maxLeaseTime;
@@ -55,6 +58,7 @@ class ConnectionContainer {
             try {
                 connection = connectionManager.getConnection(connectionUrl);
             } catch (PlcConnectionException e) {
+                LOGGER.warn("Exception while getting connection for lease", e);
                 connectionFuture.completeExceptionally(e);
                 return connectionFuture;
             }
@@ -74,6 +78,8 @@ class ConnectionContainer {
 
     public synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection, boolean invalidateConnection) {
         if(returnedLeasedConnection != leasedConnection) {
+            LOGGER.error("Error trying to return lease from invalid connection: returned={} leased={}",
+                returnedLeasedConnection, leasedConnection);
             throw new PlcRuntimeException("Error trying to return lease from invalid connection");
         }
 
@@ -84,6 +90,8 @@ class ConnectionContainer {
                 connection.close();
             } catch (Exception e) {
                 // We're ignoring this as we have no idea, what state the connection is in.
+                // Nevertheless, it is polite to say something in logs about this situation.
+                LOGGER.warn("Exception while closing connection", e);
             }
 
             // Try to get a new connection.
@@ -91,7 +99,9 @@ class ConnectionContainer {
                 connection = connectionManager.getConnection(connectionUrl);
             } catch (PlcConnectionException e) {
                 // If something goes wrong, close all waiting futures exceptionally.
+                LOGGER.warn("Can't get connection for {} complete queue items exceptionally", connectionUrl, e);
                 queue.forEach(future -> future.completeExceptionally(e));
+                connection = null;
             }
         }
 

@@ -99,12 +99,13 @@ func (m S7XmlParserHelper) Parse(typeName string, xmlString string, parserArgume
 	case "DataItem":
 		// TODO: find a way to parse the sub types
 		var dataProtocolId string
-		parsedInt1, err := strconv.ParseInt(parserArguments[1], 10, 32)
+		controllerType, _ := model.ControllerTypeByName(parserArguments[1])
+		parsedInt2, err := strconv.ParseInt(parserArguments[2], 10, 32)
 		if err != nil {
 			return nil, err
 		}
-		stringLength := int32(parsedInt1)
-		return model.DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, stringLength)
+		stringLength := int32(parsedInt2)
+		return model.DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataProtocolId, controllerType, stringLength)
 	case "SubItem":
 		return model.SubItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CycServiceItemType":

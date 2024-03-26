@@ -50,44 +50,11 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubStatusType_State                                                                                                OpcuaNodeIdServicesVariablePub = 14644
 	OpcuaNodeIdServicesVariablePub_PubSubState_EnumStrings                                                                                               OpcuaNodeIdServicesVariablePub = 14648
 	OpcuaNodeIdServicesVariablePub_PubSubGroupType_Status_State                                                                                          OpcuaNodeIdServicesVariablePub = 15266
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventId                                                                                         OpcuaNodeIdServicesVariablePub = 15536
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventType                                                                                       OpcuaNodeIdServicesVariablePub = 15537
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceNode                                                                                      OpcuaNodeIdServicesVariablePub = 15538
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceName                                                                                      OpcuaNodeIdServicesVariablePub = 15539
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Time                                                                                            OpcuaNodeIdServicesVariablePub = 15540
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ReceiveTime                                                                                     OpcuaNodeIdServicesVariablePub = 15541
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_LocalTime                                                                                       OpcuaNodeIdServicesVariablePub = 15542
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Message                                                                                         OpcuaNodeIdServicesVariablePub = 15543
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Severity                                                                                        OpcuaNodeIdServicesVariablePub = 15544
 	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConnectionId                                                                                    OpcuaNodeIdServicesVariablePub = 15545
 	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_GroupId                                                                                         OpcuaNodeIdServicesVariablePub = 15546
 	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_State                                                                                           OpcuaNodeIdServicesVariablePub = 15547
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventId                                                                          OpcuaNodeIdServicesVariablePub = 15549
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventType                                                                        OpcuaNodeIdServicesVariablePub = 15550
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceNode                                                                       OpcuaNodeIdServicesVariablePub = 15551
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceName                                                                       OpcuaNodeIdServicesVariablePub = 15552
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Time                                                                             OpcuaNodeIdServicesVariablePub = 15553
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ReceiveTime                                                                      OpcuaNodeIdServicesVariablePub = 15554
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_LocalTime                                                                        OpcuaNodeIdServicesVariablePub = 15555
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Message                                                                          OpcuaNodeIdServicesVariablePub = 15556
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Severity                                                                         OpcuaNodeIdServicesVariablePub = 15557
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConnectionId                                                                     OpcuaNodeIdServicesVariablePub = 15558
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_GroupId                                                                          OpcuaNodeIdServicesVariablePub = 15559
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_State                                                                            OpcuaNodeIdServicesVariablePub = 15560
 	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Actual                                                                           OpcuaNodeIdServicesVariablePub = 15561
 	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Maximum                                                                          OpcuaNodeIdServicesVariablePub = 15562
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventId                                                                           OpcuaNodeIdServicesVariablePub = 15564
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventType                                                                         OpcuaNodeIdServicesVariablePub = 15565
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceNode                                                                        OpcuaNodeIdServicesVariablePub = 15566
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceName                                                                        OpcuaNodeIdServicesVariablePub = 15567
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Time                                                                              OpcuaNodeIdServicesVariablePub = 15568
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ReceiveTime                                                                       OpcuaNodeIdServicesVariablePub = 15569
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_LocalTime                                                                         OpcuaNodeIdServicesVariablePub = 15570
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Message                                                                           OpcuaNodeIdServicesVariablePub = 15571
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Severity                                                                          OpcuaNodeIdServicesVariablePub = 15572
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConnectionId                                                                      OpcuaNodeIdServicesVariablePub = 15573
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_GroupId                                                                           OpcuaNodeIdServicesVariablePub = 15574
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_State                                                                             OpcuaNodeIdServicesVariablePub = 15575
 	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Error                                                                             OpcuaNodeIdServicesVariablePub = 15576
 	OpcuaNodeIdServicesVariablePub_PubSubKeyServiceType_GetSecurityKeys_InputArguments                                                                   OpcuaNodeIdServicesVariablePub = 15908
 	OpcuaNodeIdServicesVariablePub_PubSubKeyServiceType_GetSecurityKeys_OutputArguments                                                                  OpcuaNodeIdServicesVariablePub = 15909
@@ -361,48 +328,6 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterType_DiagnosticsLevel                                                                         OpcuaNodeIdServicesVariablePub = 19728
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterType_TimeFirstChange                                                                          OpcuaNodeIdServicesVariablePub = 19729
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterClassification_EnumStrings                                                                    OpcuaNodeIdServicesVariablePub = 19731
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_DiagnosticsLevel                                                                            OpcuaNodeIdServicesVariablePub = 19733
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation                                                                            OpcuaNodeIdServicesVariablePub = 19734
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Active                                                                     OpcuaNodeIdServicesVariablePub = 19735
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Classification                                                             OpcuaNodeIdServicesVariablePub = 19736
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel                                                           OpcuaNodeIdServicesVariablePub = 19737
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange                                                            OpcuaNodeIdServicesVariablePub = 19738
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError                                                                                  OpcuaNodeIdServicesVariablePub = 19739
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Active                                                                           OpcuaNodeIdServicesVariablePub = 19740
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Classification                                                                   OpcuaNodeIdServicesVariablePub = 19741
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel                                                                 OpcuaNodeIdServicesVariablePub = 19742
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_TimeFirstChange                                                                  OpcuaNodeIdServicesVariablePub = 19743
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_SubError                                                                                    OpcuaNodeIdServicesVariablePub = 19745
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError                                                                         OpcuaNodeIdServicesVariablePub = 19747
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Active                                                                  OpcuaNodeIdServicesVariablePub = 19748
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Classification                                                          OpcuaNodeIdServicesVariablePub = 19749
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel                                                        OpcuaNodeIdServicesVariablePub = 19750
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange                                                         OpcuaNodeIdServicesVariablePub = 19751
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod                                                           OpcuaNodeIdServicesVariablePub = 19752
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active                                                    OpcuaNodeIdServicesVariablePub = 19753
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification                                            OpcuaNodeIdServicesVariablePub = 19754
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel                                          OpcuaNodeIdServicesVariablePub = 19755
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange                                           OpcuaNodeIdServicesVariablePub = 19756
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent                                                           OpcuaNodeIdServicesVariablePub = 19757
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active                                                    OpcuaNodeIdServicesVariablePub = 19758
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification                                            OpcuaNodeIdServicesVariablePub = 19759
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel                                          OpcuaNodeIdServicesVariablePub = 19760
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange                                           OpcuaNodeIdServicesVariablePub = 19761
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError                                                          OpcuaNodeIdServicesVariablePub = 19762
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active                                                   OpcuaNodeIdServicesVariablePub = 19763
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification                                           OpcuaNodeIdServicesVariablePub = 19764
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel                                         OpcuaNodeIdServicesVariablePub = 19765
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange                                          OpcuaNodeIdServicesVariablePub = 19766
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent                                                                OpcuaNodeIdServicesVariablePub = 19767
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active                                                         OpcuaNodeIdServicesVariablePub = 19768
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification                                                 OpcuaNodeIdServicesVariablePub = 19769
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel                                               OpcuaNodeIdServicesVariablePub = 19770
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange                                                OpcuaNodeIdServicesVariablePub = 19771
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod                                                              OpcuaNodeIdServicesVariablePub = 19772
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active                                                       OpcuaNodeIdServicesVariablePub = 19773
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification                                               OpcuaNodeIdServicesVariablePub = 19774
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel                                             OpcuaNodeIdServicesVariablePub = 19775
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange                                              OpcuaNodeIdServicesVariablePub = 19776
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters                                                         OpcuaNodeIdServicesVariablePub = 19778
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel                                        OpcuaNodeIdServicesVariablePub = 19779
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetReaders                                                         OpcuaNodeIdServicesVariablePub = 19780
@@ -411,62 +336,8 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetWriters_DiagnosticsLevel                                       OpcuaNodeIdServicesVariablePub = 19783
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders                                                        OpcuaNodeIdServicesVariablePub = 19784
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel                                       OpcuaNodeIdServicesVariablePub = 19785
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_DiagnosticsLevel                                                                      OpcuaNodeIdServicesVariablePub = 19787
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation                                                                      OpcuaNodeIdServicesVariablePub = 19788
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Active                                                               OpcuaNodeIdServicesVariablePub = 19789
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Classification                                                       OpcuaNodeIdServicesVariablePub = 19790
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel                                                     OpcuaNodeIdServicesVariablePub = 19791
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange                                                      OpcuaNodeIdServicesVariablePub = 19792
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError                                                                            OpcuaNodeIdServicesVariablePub = 19793
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Active                                                                     OpcuaNodeIdServicesVariablePub = 19794
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Classification                                                             OpcuaNodeIdServicesVariablePub = 19795
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel                                                           OpcuaNodeIdServicesVariablePub = 19796
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange                                                            OpcuaNodeIdServicesVariablePub = 19797
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_SubError                                                                              OpcuaNodeIdServicesVariablePub = 19799
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError                                                                   OpcuaNodeIdServicesVariablePub = 19801
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Active                                                            OpcuaNodeIdServicesVariablePub = 19802
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Classification                                                    OpcuaNodeIdServicesVariablePub = 19803
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel                                                  OpcuaNodeIdServicesVariablePub = 19804
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange                                                   OpcuaNodeIdServicesVariablePub = 19805
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod                                                     OpcuaNodeIdServicesVariablePub = 19806
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active                                              OpcuaNodeIdServicesVariablePub = 19807
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification                                      OpcuaNodeIdServicesVariablePub = 19808
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel                                    OpcuaNodeIdServicesVariablePub = 19809
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange                                     OpcuaNodeIdServicesVariablePub = 19810
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent                                                     OpcuaNodeIdServicesVariablePub = 19811
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active                                              OpcuaNodeIdServicesVariablePub = 19812
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification                                      OpcuaNodeIdServicesVariablePub = 19813
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel                                    OpcuaNodeIdServicesVariablePub = 19814
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange                                     OpcuaNodeIdServicesVariablePub = 19815
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError                                                    OpcuaNodeIdServicesVariablePub = 19816
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active                                             OpcuaNodeIdServicesVariablePub = 19817
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification                                     OpcuaNodeIdServicesVariablePub = 19818
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel                                   OpcuaNodeIdServicesVariablePub = 19819
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange                                    OpcuaNodeIdServicesVariablePub = 19820
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent                                                          OpcuaNodeIdServicesVariablePub = 19821
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active                                                   OpcuaNodeIdServicesVariablePub = 19822
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification                                           OpcuaNodeIdServicesVariablePub = 19823
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel                                         OpcuaNodeIdServicesVariablePub = 19824
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange                                          OpcuaNodeIdServicesVariablePub = 19825
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod                                                        OpcuaNodeIdServicesVariablePub = 19826
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active                                                 OpcuaNodeIdServicesVariablePub = 19827
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification                                         OpcuaNodeIdServicesVariablePub = 19828
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel                                       OpcuaNodeIdServicesVariablePub = 19829
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange                                        OpcuaNodeIdServicesVariablePub = 19830
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress                                                            OpcuaNodeIdServicesVariablePub = 19832
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel                                           OpcuaNodeIdServicesVariablePub = 19833
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_DiagnosticsLevel                                                                     OpcuaNodeIdServicesVariablePub = 19835
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation                                                                     OpcuaNodeIdServicesVariablePub = 19836
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Active                                                              OpcuaNodeIdServicesVariablePub = 19837
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Classification                                                      OpcuaNodeIdServicesVariablePub = 19838
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel                                                    OpcuaNodeIdServicesVariablePub = 19839
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange                                                     OpcuaNodeIdServicesVariablePub = 19840
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError                                                                           OpcuaNodeIdServicesVariablePub = 19841
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Active                                                                    OpcuaNodeIdServicesVariablePub = 19842
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Classification                                                            OpcuaNodeIdServicesVariablePub = 19843
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel                                                          OpcuaNodeIdServicesVariablePub = 19844
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange                                                           OpcuaNodeIdServicesVariablePub = 19845
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_SubError                                                                             OpcuaNodeIdServicesVariablePub = 19847
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError                                                                  OpcuaNodeIdServicesVariablePub = 19849
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError_Active                                                           OpcuaNodeIdServicesVariablePub = 19850
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError_Classification                                                   OpcuaNodeIdServicesVariablePub = 19851
@@ -520,18 +391,6 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_SecurityTokenID_DiagnosticsLevel                                          OpcuaNodeIdServicesVariablePub = 19900
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID                                                         OpcuaNodeIdServicesVariablePub = 19901
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel                                        OpcuaNodeIdServicesVariablePub = 19902
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_DiagnosticsLevel                                                                     OpcuaNodeIdServicesVariablePub = 19904
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation                                                                     OpcuaNodeIdServicesVariablePub = 19905
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Active                                                              OpcuaNodeIdServicesVariablePub = 19906
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Classification                                                      OpcuaNodeIdServicesVariablePub = 19907
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel                                                    OpcuaNodeIdServicesVariablePub = 19908
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange                                                     OpcuaNodeIdServicesVariablePub = 19909
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError                                                                           OpcuaNodeIdServicesVariablePub = 19910
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Active                                                                    OpcuaNodeIdServicesVariablePub = 19911
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Classification                                                            OpcuaNodeIdServicesVariablePub = 19912
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel                                                          OpcuaNodeIdServicesVariablePub = 19913
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange                                                           OpcuaNodeIdServicesVariablePub = 19914
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_SubError                                                                             OpcuaNodeIdServicesVariablePub = 19916
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError                                                                  OpcuaNodeIdServicesVariablePub = 19918
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError_Active                                                           OpcuaNodeIdServicesVariablePub = 19919
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError_Classification                                                   OpcuaNodeIdServicesVariablePub = 19920
@@ -581,18 +440,6 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel                                 OpcuaNodeIdServicesVariablePub = 19965
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders                                                 OpcuaNodeIdServicesVariablePub = 19966
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel                                OpcuaNodeIdServicesVariablePub = 19967
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel                                                                   OpcuaNodeIdServicesVariablePub = 19969
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation                                                                   OpcuaNodeIdServicesVariablePub = 19970
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Active                                                            OpcuaNodeIdServicesVariablePub = 19971
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification                                                    OpcuaNodeIdServicesVariablePub = 19972
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel                                                  OpcuaNodeIdServicesVariablePub = 19973
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange                                                   OpcuaNodeIdServicesVariablePub = 19974
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError                                                                         OpcuaNodeIdServicesVariablePub = 19975
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Active                                                                  OpcuaNodeIdServicesVariablePub = 19976
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Classification                                                          OpcuaNodeIdServicesVariablePub = 19977
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel                                                        OpcuaNodeIdServicesVariablePub = 19978
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange                                                         OpcuaNodeIdServicesVariablePub = 19979
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_SubError                                                                           OpcuaNodeIdServicesVariablePub = 19981
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError                                                                OpcuaNodeIdServicesVariablePub = 19983
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError_Active                                                         OpcuaNodeIdServicesVariablePub = 19984
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError_Classification                                                 OpcuaNodeIdServicesVariablePub = 19985
@@ -636,18 +483,6 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MajorVersion_DiagnosticsLevel                                           OpcuaNodeIdServicesVariablePub = 20024
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion                                                            OpcuaNodeIdServicesVariablePub = 20025
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel                                           OpcuaNodeIdServicesVariablePub = 20026
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel                                                                   OpcuaNodeIdServicesVariablePub = 20028
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation                                                                   OpcuaNodeIdServicesVariablePub = 20029
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Active                                                            OpcuaNodeIdServicesVariablePub = 20030
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification                                                    OpcuaNodeIdServicesVariablePub = 20031
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel                                                  OpcuaNodeIdServicesVariablePub = 20032
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange                                                   OpcuaNodeIdServicesVariablePub = 20033
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError                                                                         OpcuaNodeIdServicesVariablePub = 20034
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Active                                                                  OpcuaNodeIdServicesVariablePub = 20035
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Classification                                                          OpcuaNodeIdServicesVariablePub = 20036
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel                                                        OpcuaNodeIdServicesVariablePub = 20037
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange                                                         OpcuaNodeIdServicesVariablePub = 20038
-	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_SubError                                                                           OpcuaNodeIdServicesVariablePub = 20040
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError                                                                OpcuaNodeIdServicesVariablePub = 20042
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError_Active                                                         OpcuaNodeIdServicesVariablePub = 20043
 	OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError_Classification                                                 OpcuaNodeIdServicesVariablePub = 20044
@@ -732,22 +567,6 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_AddPushTargetFolder_InputArguments                                                      OpcuaNodeIdServicesVariablePub = 25372
 	OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_AddPushTargetFolder_OutputArguments                                                     OpcuaNodeIdServicesVariablePub = 25373
 	OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments                                                   OpcuaNodeIdServicesVariablePub = 25375
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Size                                                                                          OpcuaNodeIdServicesVariablePub = 25483
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Writable                                                                                      OpcuaNodeIdServicesVariablePub = 25484
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_UserWritable                                                                                  OpcuaNodeIdServicesVariablePub = 25485
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_OpenCount                                                                                     OpcuaNodeIdServicesVariablePub = 25486
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MimeType                                                                                      OpcuaNodeIdServicesVariablePub = 25487
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MaxByteStringLength                                                                           OpcuaNodeIdServicesVariablePub = 25488
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_LastModifiedTime                                                                              OpcuaNodeIdServicesVariablePub = 25489
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_InputArguments                                                                           OpcuaNodeIdServicesVariablePub = 25491
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_OutputArguments                                                                          OpcuaNodeIdServicesVariablePub = 25492
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Close_InputArguments                                                                          OpcuaNodeIdServicesVariablePub = 25494
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_InputArguments                                                                           OpcuaNodeIdServicesVariablePub = 25496
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_OutputArguments                                                                          OpcuaNodeIdServicesVariablePub = 25497
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Write_InputArguments                                                                          OpcuaNodeIdServicesVariablePub = 25499
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_InputArguments                                                                    OpcuaNodeIdServicesVariablePub = 25501
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_OutputArguments                                                                   OpcuaNodeIdServicesVariablePub = 25502
-	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_SetPosition_InputArguments                                                                    OpcuaNodeIdServicesVariablePub = 25504
 	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_InputArguments                                                                     OpcuaNodeIdServicesVariablePub = 25506
 	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_OutputArguments                                                                    OpcuaNodeIdServicesVariablePub = 25507
 	OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_CloseAndUpdate_InputArguments                                                                 OpcuaNodeIdServicesVariablePub = 25509
@@ -784,23 +603,16 @@ const (
 	OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_ConnectSecurityGroups_OutputArguments                        OpcuaNodeIdServicesVariablePub = 25657
 	OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_InputArguments                      OpcuaNodeIdServicesVariablePub = 25659
 	OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments                     OpcuaNodeIdServicesVariablePub = 25660
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassId                                                                                OpcuaNodeIdServicesVariablePub = 32047
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassName                                                                              OpcuaNodeIdServicesVariablePub = 32048
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassId                                                                             OpcuaNodeIdServicesVariablePub = 32049
-	OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassName                                                                           OpcuaNodeIdServicesVariablePub = 32050
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassId                                                                 OpcuaNodeIdServicesVariablePub = 32051
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassName                                                               OpcuaNodeIdServicesVariablePub = 32052
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassId                                                              OpcuaNodeIdServicesVariablePub = 32053
-	OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassName                                                            OpcuaNodeIdServicesVariablePub = 32054
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassId                                                                  OpcuaNodeIdServicesVariablePub = 32055
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassName                                                                OpcuaNodeIdServicesVariablePub = 32056
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassId                                                               OpcuaNodeIdServicesVariablePub = 32057
-	OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassName                                                             OpcuaNodeIdServicesVariablePub = 32058
 	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxDataSetWritersPerGroup                                                                      OpcuaNodeIdServicesVariablePub = 32651
 	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxNetworkMessageSizeDatagram                                                                  OpcuaNodeIdServicesVariablePub = 32652
 	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxNetworkMessageSizeBroker                                                                    OpcuaNodeIdServicesVariablePub = 32653
 	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPull                                                                         OpcuaNodeIdServicesVariablePub = 32654
 	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPush                                                                         OpcuaNodeIdServicesVariablePub = 32655
+	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxSecurityGroups                                                                              OpcuaNodeIdServicesVariablePub = 32844
+	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPushTargets                                                                                 OpcuaNodeIdServicesVariablePub = 32845
+	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPublishedDataSets                                                                           OpcuaNodeIdServicesVariablePub = 32846
+	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets                                                                OpcuaNodeIdServicesVariablePub = 32847
+	OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyServer                                                                       OpcuaNodeIdServicesVariablePub = 32848
 )
 
 var OpcuaNodeIdServicesVariablePubValues []OpcuaNodeIdServicesVariablePub
@@ -817,44 +629,11 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubStatusType_State,
 		OpcuaNodeIdServicesVariablePub_PubSubState_EnumStrings,
 		OpcuaNodeIdServicesVariablePub_PubSubGroupType_Status_State,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventId,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventType,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceNode,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceName,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Time,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_LocalTime,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Message,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Severity,
 		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConnectionId,
 		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_GroupId,
 		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_State,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventId,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventType,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceNode,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceName,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Time,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_LocalTime,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Message,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Severity,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConnectionId,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_GroupId,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_State,
 		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Actual,
 		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Maximum,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventId,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventType,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceNode,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceName,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Time,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_LocalTime,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Message,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Severity,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConnectionId,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_GroupId,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_State,
 		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Error,
 		OpcuaNodeIdServicesVariablePub_PubSubKeyServiceType_GetSecurityKeys_InputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubKeyServiceType_GetSecurityKeys_OutputArguments,
@@ -1128,48 +907,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterType_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterType_TimeFirstChange,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterClassification_EnumStrings,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_SubError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetReaders,
@@ -1178,62 +915,8 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetWriters_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_SubError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_SubError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError_Active,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError_Classification,
@@ -1287,18 +970,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_SecurityTokenID_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_SubError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError_Active,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError_Classification,
@@ -1348,18 +1019,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_ConfiguredDataSetReaders_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_SubError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError_Active,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError_Classification,
@@ -1403,18 +1062,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MajorVersion_DiagnosticsLevel,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Active,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Classification,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange,
-		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_SubError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError_Active,
 		OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError_Classification,
@@ -1499,22 +1146,6 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_AddPushTargetFolder_InputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_AddPushTargetFolder_OutputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Size,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Writable,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_UserWritable,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_OpenCount,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MimeType,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MaxByteStringLength,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_LastModifiedTime,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_InputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_OutputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Close_InputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_InputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_OutputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Write_InputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_InputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_OutputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_SetPosition_InputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_InputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_OutputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_CloseAndUpdate_InputArguments,
@@ -1551,23 +1182,16 @@ func init() {
 		OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_ConnectSecurityGroups_OutputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_InputArguments,
 		OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassName,
 		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxDataSetWritersPerGroup,
 		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxNetworkMessageSizeDatagram,
 		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxNetworkMessageSizeBroker,
 		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPull,
 		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPush,
+		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxSecurityGroups,
+		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPushTargets,
+		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPublishedDataSets,
+		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets,
+		OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyServer,
 	}
 }
 
@@ -1591,82 +1215,16 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubState_EnumStrings, true
 	case 15266:
 		return OpcuaNodeIdServicesVariablePub_PubSubGroupType_Status_State, true
-	case 15536:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventId, true
-	case 15537:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventType, true
-	case 15538:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceNode, true
-	case 15539:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceName, true
-	case 15540:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Time, true
-	case 15541:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ReceiveTime, true
-	case 15542:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_LocalTime, true
-	case 15543:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Message, true
-	case 15544:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Severity, true
 	case 15545:
 		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConnectionId, true
 	case 15546:
 		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_GroupId, true
 	case 15547:
 		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_State, true
-	case 15549:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventId, true
-	case 15550:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventType, true
-	case 15551:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceNode, true
-	case 15552:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceName, true
-	case 15553:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Time, true
-	case 15554:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ReceiveTime, true
-	case 15555:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_LocalTime, true
-	case 15556:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Message, true
-	case 15557:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Severity, true
-	case 15558:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConnectionId, true
-	case 15559:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_GroupId, true
-	case 15560:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_State, true
 	case 15561:
 		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Actual, true
 	case 15562:
 		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Maximum, true
-	case 15564:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventId, true
-	case 15565:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventType, true
-	case 15566:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceNode, true
-	case 15567:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceName, true
-	case 15568:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Time, true
-	case 15569:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ReceiveTime, true
-	case 15570:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_LocalTime, true
-	case 15571:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Message, true
-	case 15572:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Severity, true
-	case 15573:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConnectionId, true
-	case 15574:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_GroupId, true
-	case 15575:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_State, true
 	case 15576:
 		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Error, true
 	case 15908:
@@ -2213,90 +1771,6 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterType_TimeFirstChange, true
 	case 19731:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterClassification_EnumStrings, true
-	case 19733:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_DiagnosticsLevel, true
-	case 19734:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation, true
-	case 19735:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Active, true
-	case 19736:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Classification, true
-	case 19737:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel, true
-	case 19738:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange, true
-	case 19739:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError, true
-	case 19740:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Active, true
-	case 19741:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Classification, true
-	case 19742:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel, true
-	case 19743:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_TimeFirstChange, true
-	case 19745:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_SubError, true
-	case 19747:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError, true
-	case 19748:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Active, true
-	case 19749:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Classification, true
-	case 19750:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel, true
-	case 19751:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange, true
-	case 19752:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod, true
-	case 19753:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active, true
-	case 19754:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification, true
-	case 19755:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case 19756:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case 19757:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent, true
-	case 19758:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active, true
-	case 19759:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification, true
-	case 19760:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case 19761:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange, true
-	case 19762:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError, true
-	case 19763:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active, true
-	case 19764:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification, true
-	case 19765:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case 19766:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange, true
-	case 19767:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent, true
-	case 19768:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active, true
-	case 19769:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification, true
-	case 19770:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case 19771:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange, true
-	case 19772:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod, true
-	case 19773:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active, true
-	case 19774:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification, true
-	case 19775:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case 19776:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange, true
 	case 19778:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters, true
 	case 19779:
@@ -2313,118 +1787,10 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders, true
 	case 19785:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel, true
-	case 19787:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_DiagnosticsLevel, true
-	case 19788:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation, true
-	case 19789:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Active, true
-	case 19790:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Classification, true
-	case 19791:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel, true
-	case 19792:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange, true
-	case 19793:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError, true
-	case 19794:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Active, true
-	case 19795:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Classification, true
-	case 19796:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel, true
-	case 19797:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange, true
-	case 19799:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_SubError, true
-	case 19801:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError, true
-	case 19802:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Active, true
-	case 19803:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Classification, true
-	case 19804:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel, true
-	case 19805:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange, true
-	case 19806:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod, true
-	case 19807:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active, true
-	case 19808:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification, true
-	case 19809:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case 19810:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case 19811:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent, true
-	case 19812:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active, true
-	case 19813:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification, true
-	case 19814:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case 19815:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange, true
-	case 19816:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError, true
-	case 19817:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active, true
-	case 19818:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification, true
-	case 19819:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case 19820:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange, true
-	case 19821:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent, true
-	case 19822:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active, true
-	case 19823:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification, true
-	case 19824:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case 19825:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange, true
-	case 19826:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod, true
-	case 19827:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active, true
-	case 19828:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification, true
-	case 19829:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case 19830:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange, true
 	case 19832:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress, true
 	case 19833:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel, true
-	case 19835:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_DiagnosticsLevel, true
-	case 19836:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation, true
-	case 19837:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Active, true
-	case 19838:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Classification, true
-	case 19839:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel, true
-	case 19840:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange, true
-	case 19841:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError, true
-	case 19842:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Active, true
-	case 19843:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Classification, true
-	case 19844:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel, true
-	case 19845:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange, true
-	case 19847:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_SubError, true
 	case 19849:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError, true
 	case 19850:
@@ -2531,30 +1897,6 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID, true
 	case 19902:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel, true
-	case 19904:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_DiagnosticsLevel, true
-	case 19905:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation, true
-	case 19906:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Active, true
-	case 19907:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Classification, true
-	case 19908:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel, true
-	case 19909:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange, true
-	case 19910:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError, true
-	case 19911:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Active, true
-	case 19912:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Classification, true
-	case 19913:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel, true
-	case 19914:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange, true
-	case 19916:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_SubError, true
 	case 19918:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError, true
 	case 19919:
@@ -2653,30 +1995,6 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders, true
 	case 19967:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel, true
-	case 19969:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel, true
-	case 19970:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation, true
-	case 19971:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Active, true
-	case 19972:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification, true
-	case 19973:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel, true
-	case 19974:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange, true
-	case 19975:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError, true
-	case 19976:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Active, true
-	case 19977:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Classification, true
-	case 19978:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel, true
-	case 19979:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange, true
-	case 19981:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_SubError, true
 	case 19983:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError, true
 	case 19984:
@@ -2763,30 +2081,6 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion, true
 	case 20026:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel, true
-	case 20028:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel, true
-	case 20029:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation, true
-	case 20030:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Active, true
-	case 20031:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification, true
-	case 20032:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel, true
-	case 20033:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange, true
-	case 20034:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError, true
-	case 20035:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Active, true
-	case 20036:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Classification, true
-	case 20037:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel, true
-	case 20038:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange, true
-	case 20040:
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_SubError, true
 	case 20042:
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError, true
 	case 20043:
@@ -2955,38 +2249,6 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_AddPushTargetFolder_OutputArguments, true
 	case 25375:
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments, true
-	case 25483:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Size, true
-	case 25484:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Writable, true
-	case 25485:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_UserWritable, true
-	case 25486:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_OpenCount, true
-	case 25487:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MimeType, true
-	case 25488:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MaxByteStringLength, true
-	case 25489:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_LastModifiedTime, true
-	case 25491:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_InputArguments, true
-	case 25492:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_OutputArguments, true
-	case 25494:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Close_InputArguments, true
-	case 25496:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_InputArguments, true
-	case 25497:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_OutputArguments, true
-	case 25499:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Write_InputArguments, true
-	case 25501:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_InputArguments, true
-	case 25502:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_OutputArguments, true
-	case 25504:
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_SetPosition_InputArguments, true
 	case 25506:
 		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_InputArguments, true
 	case 25507:
@@ -3059,30 +2321,6 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_InputArguments, true
 	case 25660:
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments, true
-	case 32047:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassId, true
-	case 32048:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassName, true
-	case 32049:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassId, true
-	case 32050:
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassName, true
-	case 32051:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassId, true
-	case 32052:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassName, true
-	case 32053:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassId, true
-	case 32054:
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassName, true
-	case 32055:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassId, true
-	case 32056:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassName, true
-	case 32057:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassId, true
-	case 32058:
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassName, true
 	case 32651:
 		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxDataSetWritersPerGroup, true
 	case 32652:
@@ -3093,6 +2331,16 @@ func OpcuaNodeIdServicesVariablePubByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPull, true
 	case 32655:
 		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPush, true
+	case 32844:
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxSecurityGroups, true
+	case 32845:
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPushTargets, true
+	case 32846:
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPublishedDataSets, true
+	case 32847:
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets, true
+	case 32848:
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyServer, true
 	}
 	return 0, false
 }
@@ -3117,82 +2365,16 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubState_EnumStrings, true
 	case "PubSubGroupType_Status_State":
 		return OpcuaNodeIdServicesVariablePub_PubSubGroupType_Status_State, true
-	case "PubSubStatusEventType_EventId":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventId, true
-	case "PubSubStatusEventType_EventType":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventType, true
-	case "PubSubStatusEventType_SourceNode":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceNode, true
-	case "PubSubStatusEventType_SourceName":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceName, true
-	case "PubSubStatusEventType_Time":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Time, true
-	case "PubSubStatusEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ReceiveTime, true
-	case "PubSubStatusEventType_LocalTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_LocalTime, true
-	case "PubSubStatusEventType_Message":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Message, true
-	case "PubSubStatusEventType_Severity":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Severity, true
 	case "PubSubStatusEventType_ConnectionId":
 		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConnectionId, true
 	case "PubSubStatusEventType_GroupId":
 		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_GroupId, true
 	case "PubSubStatusEventType_State":
 		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_State, true
-	case "PubSubTransportLimitsExceedEventType_EventId":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventId, true
-	case "PubSubTransportLimitsExceedEventType_EventType":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventType, true
-	case "PubSubTransportLimitsExceedEventType_SourceNode":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceNode, true
-	case "PubSubTransportLimitsExceedEventType_SourceName":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceName, true
-	case "PubSubTransportLimitsExceedEventType_Time":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Time, true
-	case "PubSubTransportLimitsExceedEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ReceiveTime, true
-	case "PubSubTransportLimitsExceedEventType_LocalTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_LocalTime, true
-	case "PubSubTransportLimitsExceedEventType_Message":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Message, true
-	case "PubSubTransportLimitsExceedEventType_Severity":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Severity, true
-	case "PubSubTransportLimitsExceedEventType_ConnectionId":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConnectionId, true
-	case "PubSubTransportLimitsExceedEventType_GroupId":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_GroupId, true
-	case "PubSubTransportLimitsExceedEventType_State":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_State, true
 	case "PubSubTransportLimitsExceedEventType_Actual":
 		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Actual, true
 	case "PubSubTransportLimitsExceedEventType_Maximum":
 		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Maximum, true
-	case "PubSubCommunicationFailureEventType_EventId":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventId, true
-	case "PubSubCommunicationFailureEventType_EventType":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventType, true
-	case "PubSubCommunicationFailureEventType_SourceNode":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceNode, true
-	case "PubSubCommunicationFailureEventType_SourceName":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceName, true
-	case "PubSubCommunicationFailureEventType_Time":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Time, true
-	case "PubSubCommunicationFailureEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ReceiveTime, true
-	case "PubSubCommunicationFailureEventType_LocalTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_LocalTime, true
-	case "PubSubCommunicationFailureEventType_Message":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Message, true
-	case "PubSubCommunicationFailureEventType_Severity":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Severity, true
-	case "PubSubCommunicationFailureEventType_ConnectionId":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConnectionId, true
-	case "PubSubCommunicationFailureEventType_GroupId":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_GroupId, true
-	case "PubSubCommunicationFailureEventType_State":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_State, true
 	case "PubSubCommunicationFailureEventType_Error":
 		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Error, true
 	case "PubSubKeyServiceType_GetSecurityKeys_InputArguments":
@@ -3739,90 +2921,6 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterType_TimeFirstChange, true
 	case "PubSubDiagnosticsCounterClassification_EnumStrings":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterClassification_EnumStrings, true
-	case "PubSubDiagnosticsRootType_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_TotalInformation":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation, true
-	case "PubSubDiagnosticsRootType_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Active, true
-	case "PubSubDiagnosticsRootType_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Classification, true
-	case "PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_TotalError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError, true
-	case "PubSubDiagnosticsRootType_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Active, true
-	case "PubSubDiagnosticsRootType_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Classification, true
-	case "PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_SubError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_SubError, true
-	case "PubSubDiagnosticsRootType_Counters_StateError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError, true
-	case "PubSubDiagnosticsRootType_Counters_StateError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Active, true
-	case "PubSubDiagnosticsRootType_Counters_StateError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Classification, true
-	case "PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByParent":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalFromError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_Counters_StatePausedByParent":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent, true
-	case "PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active, true
-	case "PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification, true
-	case "PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange, true
-	case "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod, true
-	case "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active, true
-	case "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification, true
-	case "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange, true
 	case "PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters, true
 	case "PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel":
@@ -3839,118 +2937,10 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders, true
 	case "PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_TotalInformation":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation, true
-	case "PubSubDiagnosticsConnectionType_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Active, true
-	case "PubSubDiagnosticsConnectionType_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Classification, true
-	case "PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_TotalError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError, true
-	case "PubSubDiagnosticsConnectionType_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Active, true
-	case "PubSubDiagnosticsConnectionType_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Classification, true
-	case "PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_SubError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_SubError, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Active, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Classification, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent, true
-	case "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active, true
-	case "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification, true
-	case "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel, true
-	case "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange, true
 	case "PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress, true
 	case "PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel, true
-	case "PubSubDiagnosticsWriterGroupType_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_DiagnosticsLevel, true
-	case "PubSubDiagnosticsWriterGroupType_TotalInformation":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation, true
-	case "PubSubDiagnosticsWriterGroupType_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Active, true
-	case "PubSubDiagnosticsWriterGroupType_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Classification, true
-	case "PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel, true
-	case "PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange, true
-	case "PubSubDiagnosticsWriterGroupType_TotalError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError, true
-	case "PubSubDiagnosticsWriterGroupType_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Active, true
-	case "PubSubDiagnosticsWriterGroupType_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Classification, true
-	case "PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange, true
-	case "PubSubDiagnosticsWriterGroupType_SubError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_SubError, true
 	case "PubSubDiagnosticsWriterGroupType_Counters_StateError":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError, true
 	case "PubSubDiagnosticsWriterGroupType_Counters_StateError_Active":
@@ -4057,30 +3047,6 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID, true
 	case "PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel, true
-	case "PubSubDiagnosticsReaderGroupType_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_DiagnosticsLevel, true
-	case "PubSubDiagnosticsReaderGroupType_TotalInformation":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation, true
-	case "PubSubDiagnosticsReaderGroupType_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Active, true
-	case "PubSubDiagnosticsReaderGroupType_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Classification, true
-	case "PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel, true
-	case "PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange, true
-	case "PubSubDiagnosticsReaderGroupType_TotalError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError, true
-	case "PubSubDiagnosticsReaderGroupType_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Active, true
-	case "PubSubDiagnosticsReaderGroupType_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Classification, true
-	case "PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange, true
-	case "PubSubDiagnosticsReaderGroupType_SubError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_SubError, true
 	case "PubSubDiagnosticsReaderGroupType_Counters_StateError":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError, true
 	case "PubSubDiagnosticsReaderGroupType_Counters_StateError_Active":
@@ -4179,30 +3145,6 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders, true
 	case "PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalInformation":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Active, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Active, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Classification, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange, true
-	case "PubSubDiagnosticsDataSetWriterType_SubError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_SubError, true
 	case "PubSubDiagnosticsDataSetWriterType_Counters_StateError":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError, true
 	case "PubSubDiagnosticsDataSetWriterType_Counters_StateError_Active":
@@ -4289,30 +3231,6 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion, true
 	case "PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalInformation":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalInformation_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Active, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalError_Active":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Active, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalError_Classification":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Classification, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel, true
-	case "PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange, true
-	case "PubSubDiagnosticsDataSetReaderType_SubError":
-		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_SubError, true
 	case "PubSubDiagnosticsDataSetReaderType_Counters_StateError":
 		return OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError, true
 	case "PubSubDiagnosticsDataSetReaderType_Counters_StateError_Active":
@@ -4481,38 +3399,6 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_AddPushTargetFolder_OutputArguments, true
 	case "PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments":
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments, true
-	case "PubSubConfigurationType_Size":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Size, true
-	case "PubSubConfigurationType_Writable":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Writable, true
-	case "PubSubConfigurationType_UserWritable":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_UserWritable, true
-	case "PubSubConfigurationType_OpenCount":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_OpenCount, true
-	case "PubSubConfigurationType_MimeType":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MimeType, true
-	case "PubSubConfigurationType_MaxByteStringLength":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MaxByteStringLength, true
-	case "PubSubConfigurationType_LastModifiedTime":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_LastModifiedTime, true
-	case "PubSubConfigurationType_Open_InputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_InputArguments, true
-	case "PubSubConfigurationType_Open_OutputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_OutputArguments, true
-	case "PubSubConfigurationType_Close_InputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Close_InputArguments, true
-	case "PubSubConfigurationType_Read_InputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_InputArguments, true
-	case "PubSubConfigurationType_Read_OutputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_OutputArguments, true
-	case "PubSubConfigurationType_Write_InputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Write_InputArguments, true
-	case "PubSubConfigurationType_GetPosition_InputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_InputArguments, true
-	case "PubSubConfigurationType_GetPosition_OutputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_OutputArguments, true
-	case "PubSubConfigurationType_SetPosition_InputArguments":
-		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_SetPosition_InputArguments, true
 	case "PubSubConfigurationType_ReserveIds_InputArguments":
 		return OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_InputArguments, true
 	case "PubSubConfigurationType_ReserveIds_OutputArguments":
@@ -4585,30 +3471,6 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_InputArguments, true
 	case "PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments":
 		return OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments, true
-	case "PubSubStatusEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassId, true
-	case "PubSubStatusEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassName, true
-	case "PubSubStatusEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassId, true
-	case "PubSubStatusEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassName, true
-	case "PubSubTransportLimitsExceedEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassId, true
-	case "PubSubTransportLimitsExceedEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassName, true
-	case "PubSubTransportLimitsExceedEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassId, true
-	case "PubSubTransportLimitsExceedEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassName, true
-	case "PubSubCommunicationFailureEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassId, true
-	case "PubSubCommunicationFailureEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassName, true
-	case "PubSubCommunicationFailureEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassId, true
-	case "PubSubCommunicationFailureEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassName, true
 	case "PubSubCapabilitiesType_MaxDataSetWritersPerGroup":
 		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxDataSetWritersPerGroup, true
 	case "PubSubCapabilitiesType_MaxNetworkMessageSizeDatagram":
@@ -4619,6 +3481,16 @@ func OpcuaNodeIdServicesVariablePubByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPull, true
 	case "PubSubCapabilitiesType_SupportSecurityKeyPush":
 		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPush, true
+	case "PubSubCapabilitiesType_MaxSecurityGroups":
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxSecurityGroups, true
+	case "PubSubCapabilitiesType_MaxPushTargets":
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPushTargets, true
+	case "PubSubCapabilitiesType_MaxPublishedDataSets":
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPublishedDataSets, true
+	case "PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets":
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets, true
+	case "PubSubCapabilitiesType_SupportSecurityKeyServer":
+		return OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyServer, true
 	}
 	return 0, false
 }
@@ -4704,82 +3576,16 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubState_EnumStrings"
 	case OpcuaNodeIdServicesVariablePub_PubSubGroupType_Status_State:
 		return "PubSubGroupType_Status_State"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventId:
-		return "PubSubStatusEventType_EventId"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_EventType:
-		return "PubSubStatusEventType_EventType"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceNode:
-		return "PubSubStatusEventType_SourceNode"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_SourceName:
-		return "PubSubStatusEventType_SourceName"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Time:
-		return "PubSubStatusEventType_Time"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ReceiveTime:
-		return "PubSubStatusEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_LocalTime:
-		return "PubSubStatusEventType_LocalTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Message:
-		return "PubSubStatusEventType_Message"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_Severity:
-		return "PubSubStatusEventType_Severity"
 	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConnectionId:
 		return "PubSubStatusEventType_ConnectionId"
 	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_GroupId:
 		return "PubSubStatusEventType_GroupId"
 	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_State:
 		return "PubSubStatusEventType_State"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventId:
-		return "PubSubTransportLimitsExceedEventType_EventId"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_EventType:
-		return "PubSubTransportLimitsExceedEventType_EventType"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceNode:
-		return "PubSubTransportLimitsExceedEventType_SourceNode"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_SourceName:
-		return "PubSubTransportLimitsExceedEventType_SourceName"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Time:
-		return "PubSubTransportLimitsExceedEventType_Time"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ReceiveTime:
-		return "PubSubTransportLimitsExceedEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_LocalTime:
-		return "PubSubTransportLimitsExceedEventType_LocalTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Message:
-		return "PubSubTransportLimitsExceedEventType_Message"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Severity:
-		return "PubSubTransportLimitsExceedEventType_Severity"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConnectionId:
-		return "PubSubTransportLimitsExceedEventType_ConnectionId"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_GroupId:
-		return "PubSubTransportLimitsExceedEventType_GroupId"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_State:
-		return "PubSubTransportLimitsExceedEventType_State"
 	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Actual:
 		return "PubSubTransportLimitsExceedEventType_Actual"
 	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_Maximum:
 		return "PubSubTransportLimitsExceedEventType_Maximum"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventId:
-		return "PubSubCommunicationFailureEventType_EventId"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_EventType:
-		return "PubSubCommunicationFailureEventType_EventType"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceNode:
-		return "PubSubCommunicationFailureEventType_SourceNode"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_SourceName:
-		return "PubSubCommunicationFailureEventType_SourceName"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Time:
-		return "PubSubCommunicationFailureEventType_Time"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ReceiveTime:
-		return "PubSubCommunicationFailureEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_LocalTime:
-		return "PubSubCommunicationFailureEventType_LocalTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Message:
-		return "PubSubCommunicationFailureEventType_Message"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Severity:
-		return "PubSubCommunicationFailureEventType_Severity"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConnectionId:
-		return "PubSubCommunicationFailureEventType_ConnectionId"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_GroupId:
-		return "PubSubCommunicationFailureEventType_GroupId"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_State:
-		return "PubSubCommunicationFailureEventType_State"
 	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_Error:
 		return "PubSubCommunicationFailureEventType_Error"
 	case OpcuaNodeIdServicesVariablePub_PubSubKeyServiceType_GetSecurityKeys_InputArguments:
@@ -5326,90 +4132,6 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubDiagnosticsCounterType_TimeFirstChange"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsCounterClassification_EnumStrings:
 		return "PubSubDiagnosticsCounterClassification_EnumStrings"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation:
-		return "PubSubDiagnosticsRootType_TotalInformation"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Active:
-		return "PubSubDiagnosticsRootType_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_Classification:
-		return "PubSubDiagnosticsRootType_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError:
-		return "PubSubDiagnosticsRootType_TotalError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Active:
-		return "PubSubDiagnosticsRootType_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_Classification:
-		return "PubSubDiagnosticsRootType_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_TotalError_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_SubError:
-		return "PubSubDiagnosticsRootType_SubError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError:
-		return "PubSubDiagnosticsRootType_Counters_StateError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Active:
-		return "PubSubDiagnosticsRootType_Counters_StateError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_Classification:
-		return "PubSubDiagnosticsRootType_Counters_StateError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_Counters_StateError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_Counters_StateError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByParent"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalFromError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_Counters_StateOperationalFromError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent:
-		return "PubSubDiagnosticsRootType_Counters_StatePausedByParent"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active:
-		return "PubSubDiagnosticsRootType_Counters_StatePausedByParent_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification:
-		return "PubSubDiagnosticsRootType_Counters_StatePausedByParent_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_Counters_StatePausedByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_Counters_StatePausedByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod:
-		return "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active:
-		return "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification:
-		return "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel:
-		return "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange:
-		return "PubSubDiagnosticsRootType_Counters_StateDisabledByMethod_TimeFirstChange"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters:
 		return "PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_ConfiguredDataSetWriters_DiagnosticsLevel:
@@ -5426,118 +4148,10 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel:
 		return "PubSubDiagnosticsRootType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation:
-		return "PubSubDiagnosticsConnectionType_TotalInformation"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Active:
-		return "PubSubDiagnosticsConnectionType_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_Classification:
-		return "PubSubDiagnosticsConnectionType_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError:
-		return "PubSubDiagnosticsConnectionType_TotalError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Active:
-		return "PubSubDiagnosticsConnectionType_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_Classification:
-		return "PubSubDiagnosticsConnectionType_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_SubError:
-		return "PubSubDiagnosticsConnectionType_SubError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError:
-		return "PubSubDiagnosticsConnectionType_Counters_StateError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Active:
-		return "PubSubDiagnosticsConnectionType_Counters_StateError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_Classification:
-		return "PubSubDiagnosticsConnectionType_Counters_StateError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_Counters_StateError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_Counters_StateError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByMethod_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_Counters_StateOperationalFromError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent:
-		return "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active:
-		return "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification:
-		return "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_Counters_StatePausedByParent_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod:
-		return "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active:
-		return "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification:
-		return "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel:
-		return "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange:
-		return "PubSubDiagnosticsConnectionType_Counters_StateDisabledByMethod_TimeFirstChange"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress:
 		return "PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel:
 		return "PubSubDiagnosticsConnectionType_LiveValues_ResolvedAddress_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_DiagnosticsLevel:
-		return "PubSubDiagnosticsWriterGroupType_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation:
-		return "PubSubDiagnosticsWriterGroupType_TotalInformation"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Active:
-		return "PubSubDiagnosticsWriterGroupType_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_Classification:
-		return "PubSubDiagnosticsWriterGroupType_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel:
-		return "PubSubDiagnosticsWriterGroupType_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange:
-		return "PubSubDiagnosticsWriterGroupType_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError:
-		return "PubSubDiagnosticsWriterGroupType_TotalError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Active:
-		return "PubSubDiagnosticsWriterGroupType_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_Classification:
-		return "PubSubDiagnosticsWriterGroupType_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel:
-		return "PubSubDiagnosticsWriterGroupType_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange:
-		return "PubSubDiagnosticsWriterGroupType_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_SubError:
-		return "PubSubDiagnosticsWriterGroupType_SubError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError:
 		return "PubSubDiagnosticsWriterGroupType_Counters_StateError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_Counters_StateError_Active:
@@ -5644,30 +4258,6 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel:
 		return "PubSubDiagnosticsWriterGroupType_LiveValues_TimeToNextTokenID_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_DiagnosticsLevel:
-		return "PubSubDiagnosticsReaderGroupType_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation:
-		return "PubSubDiagnosticsReaderGroupType_TotalInformation"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Active:
-		return "PubSubDiagnosticsReaderGroupType_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_Classification:
-		return "PubSubDiagnosticsReaderGroupType_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel:
-		return "PubSubDiagnosticsReaderGroupType_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange:
-		return "PubSubDiagnosticsReaderGroupType_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError:
-		return "PubSubDiagnosticsReaderGroupType_TotalError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Active:
-		return "PubSubDiagnosticsReaderGroupType_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_Classification:
-		return "PubSubDiagnosticsReaderGroupType_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel:
-		return "PubSubDiagnosticsReaderGroupType_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange:
-		return "PubSubDiagnosticsReaderGroupType_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_SubError:
-		return "PubSubDiagnosticsReaderGroupType_SubError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError:
 		return "PubSubDiagnosticsReaderGroupType_Counters_StateError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_Counters_StateError_Active:
@@ -5766,30 +4356,6 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel:
 		return "PubSubDiagnosticsReaderGroupType_LiveValues_OperationalDataSetReaders_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel:
-		return "PubSubDiagnosticsDataSetWriterType_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation:
-		return "PubSubDiagnosticsDataSetWriterType_TotalInformation"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Active:
-		return "PubSubDiagnosticsDataSetWriterType_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification:
-		return "PubSubDiagnosticsDataSetWriterType_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel:
-		return "PubSubDiagnosticsDataSetWriterType_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange:
-		return "PubSubDiagnosticsDataSetWriterType_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError:
-		return "PubSubDiagnosticsDataSetWriterType_TotalError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Active:
-		return "PubSubDiagnosticsDataSetWriterType_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_Classification:
-		return "PubSubDiagnosticsDataSetWriterType_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel:
-		return "PubSubDiagnosticsDataSetWriterType_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange:
-		return "PubSubDiagnosticsDataSetWriterType_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_SubError:
-		return "PubSubDiagnosticsDataSetWriterType_SubError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError:
 		return "PubSubDiagnosticsDataSetWriterType_Counters_StateError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_Counters_StateError_Active:
@@ -5876,30 +4442,6 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel:
 		return "PubSubDiagnosticsDataSetWriterType_LiveValues_MinorVersion_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel:
-		return "PubSubDiagnosticsDataSetReaderType_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation:
-		return "PubSubDiagnosticsDataSetReaderType_TotalInformation"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Active:
-		return "PubSubDiagnosticsDataSetReaderType_TotalInformation_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification:
-		return "PubSubDiagnosticsDataSetReaderType_TotalInformation_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel:
-		return "PubSubDiagnosticsDataSetReaderType_TotalInformation_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange:
-		return "PubSubDiagnosticsDataSetReaderType_TotalInformation_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError:
-		return "PubSubDiagnosticsDataSetReaderType_TotalError"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Active:
-		return "PubSubDiagnosticsDataSetReaderType_TotalError_Active"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_Classification:
-		return "PubSubDiagnosticsDataSetReaderType_TotalError_Classification"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel:
-		return "PubSubDiagnosticsDataSetReaderType_TotalError_DiagnosticsLevel"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange:
-		return "PubSubDiagnosticsDataSetReaderType_TotalError_TimeFirstChange"
-	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_SubError:
-		return "PubSubDiagnosticsDataSetReaderType_SubError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError:
 		return "PubSubDiagnosticsDataSetReaderType_Counters_StateError"
 	case OpcuaNodeIdServicesVariablePub_PubSubDiagnosticsDataSetReaderType_Counters_StateError_Active:
@@ -6068,38 +4610,6 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubKeyPushTargetFolderType_AddPushTargetFolder_OutputArguments"
 	case OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments:
 		return "PubSubKeyPushTargetFolderType_RemovePushTargetFolder_InputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Size:
-		return "PubSubConfigurationType_Size"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Writable:
-		return "PubSubConfigurationType_Writable"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_UserWritable:
-		return "PubSubConfigurationType_UserWritable"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_OpenCount:
-		return "PubSubConfigurationType_OpenCount"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MimeType:
-		return "PubSubConfigurationType_MimeType"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_MaxByteStringLength:
-		return "PubSubConfigurationType_MaxByteStringLength"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_LastModifiedTime:
-		return "PubSubConfigurationType_LastModifiedTime"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_InputArguments:
-		return "PubSubConfigurationType_Open_InputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Open_OutputArguments:
-		return "PubSubConfigurationType_Open_OutputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Close_InputArguments:
-		return "PubSubConfigurationType_Close_InputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_InputArguments:
-		return "PubSubConfigurationType_Read_InputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Read_OutputArguments:
-		return "PubSubConfigurationType_Read_OutputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_Write_InputArguments:
-		return "PubSubConfigurationType_Write_InputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_InputArguments:
-		return "PubSubConfigurationType_GetPosition_InputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_GetPosition_OutputArguments:
-		return "PubSubConfigurationType_GetPosition_OutputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_SetPosition_InputArguments:
-		return "PubSubConfigurationType_SetPosition_InputArguments"
 	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_InputArguments:
 		return "PubSubConfigurationType_ReserveIds_InputArguments"
 	case OpcuaNodeIdServicesVariablePub_PubSubConfigurationType_ReserveIds_OutputArguments:
@@ -6172,30 +4682,6 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_InputArguments"
 	case OpcuaNodeIdServicesVariablePub_PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments:
 		return "PubSubKeyPushTargetFolderType_PushTargetName_Placeholder_DisconnectSecurityGroups_OutputArguments"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassId:
-		return "PubSubStatusEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionClassName:
-		return "PubSubStatusEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassId:
-		return "PubSubStatusEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariablePub_PubSubStatusEventType_ConditionSubClassName:
-		return "PubSubStatusEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassId:
-		return "PubSubTransportLimitsExceedEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionClassName:
-		return "PubSubTransportLimitsExceedEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassId:
-		return "PubSubTransportLimitsExceedEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariablePub_PubSubTransportLimitsExceedEventType_ConditionSubClassName:
-		return "PubSubTransportLimitsExceedEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassId:
-		return "PubSubCommunicationFailureEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionClassName:
-		return "PubSubCommunicationFailureEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassId:
-		return "PubSubCommunicationFailureEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariablePub_PubSubCommunicationFailureEventType_ConditionSubClassName:
-		return "PubSubCommunicationFailureEventType_ConditionSubClassName"
 	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxDataSetWritersPerGroup:
 		return "PubSubCapabilitiesType_MaxDataSetWritersPerGroup"
 	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxNetworkMessageSizeDatagram:
@@ -6206,6 +4692,16 @@ func (e OpcuaNodeIdServicesVariablePub) PLC4XEnumName() string {
 		return "PubSubCapabilitiesType_SupportSecurityKeyPull"
 	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyPush:
 		return "PubSubCapabilitiesType_SupportSecurityKeyPush"
+	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxSecurityGroups:
+		return "PubSubCapabilitiesType_MaxSecurityGroups"
+	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPushTargets:
+		return "PubSubCapabilitiesType_MaxPushTargets"
+	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxPublishedDataSets:
+		return "PubSubCapabilitiesType_MaxPublishedDataSets"
+	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets:
+		return "PubSubCapabilitiesType_MaxStandaloneSubscribedDataSets"
+	case OpcuaNodeIdServicesVariablePub_PubSubCapabilitiesType_SupportSecurityKeyServer:
+		return "PubSubCapabilitiesType_SupportSecurityKeyServer"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

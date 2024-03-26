@@ -62,14 +62,15 @@ public class ProfinetDriverContext implements DriverContext {
     private int vendorId;
     private int deviceId;
 
-    private boolean nonLegacyStartupMode;
-    private int sessionKey;
-    private int sendClockFactor;
-    private int reductionRatio;
-    private int watchdogFactor;
-    private int dataHoldFactor;
+    private boolean advancedStartupMode = true;
+    private int sessionKey = 1;
 
-    private String dapId;
+    // It seems that half of this time is going to be the interval in which the remote device will be sending data.
+    private int sendClockFactor = 32;
+    private int reductionRatio = 16;
+    private int watchdogFactor = 3;
+    private int dataHoldFactor = 3;
+
     private ProfinetDeviceAccessPointItem dap;
     private Map<Integer, ProfinetModuleItem> moduleIndex;
     private Map<Integer, Map<Integer, ProfinetVirtualSubmoduleItem>> submoduleIndex;
@@ -157,20 +158,18 @@ public class ProfinetDriverContext implements DriverContext {
         this.deviceId = deviceId;
     }
 
-    public boolean isNonLegacyStartupMode() {
-        return nonLegacyStartupMode;
+    public boolean isAdvancedStartupMode() {
+        return advancedStartupMode;
     }
 
-    // TODO: Setup the nonLegacyStartupMode variable.
-    public void setNonLegacyStartupMode(boolean nonLegacyStartupMode) {
-        this.nonLegacyStartupMode = nonLegacyStartupMode;
+    public void setAdvancedSStartupMode(boolean advancedStartupMode) {
+        this.advancedStartupMode = advancedStartupMode;
     }
 
     public int getSessionKey() {
         return sessionKey;
     }
 
-    // TODO: Setup the sessionKey variable.
     public void setSessionKey(int sessionKey) {
         this.sessionKey = sessionKey;
     }
@@ -205,14 +204,6 @@ public class ProfinetDriverContext implements DriverContext {
 
     public void setDataHoldFactor(int dataHoldFactor) {
         this.dataHoldFactor = dataHoldFactor;
-    }
-
-    public String getDapId() {
-        return dapId;
-    }
-
-    public void setDapId(String dapId) {
-        this.dapId = dapId;
     }
 
     public ProfinetDeviceAccessPointItem getDap() {
@@ -265,8 +256,8 @@ public class ProfinetDriverContext implements DriverContext {
 
     public DceRpc_ObjectUuid getCmInitiatorObjectUuid() {
         return new DceRpc_ObjectUuid((byte) 0x00, (short) 0x0001,
-            Integer.decode("0x" + getDeviceId()),
-            Integer.decode("0x" + getVendorId()));
+            getDeviceId(),
+            getVendorId());
     }
 
     public Uuid generateUuid() {

@@ -36,8 +36,8 @@
     <module>../../code-generation</module>
     <module>../../protocols</module>
     <module>../../plc4j/drivers</module>
-    <module>../../sandbox/test-java-bacnetip-driver</module>
-    <module>../../sandbox/test-java-df1-driver</module>
+    <!--module>../../sandbox/test-java-bacnetip-driver</module-->
+    <!--module>../../sandbox/test-java-df1-driver</module-->
   </modules>
 
 </project>

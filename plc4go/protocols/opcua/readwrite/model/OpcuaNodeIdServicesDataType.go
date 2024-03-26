@@ -477,8 +477,16 @@ const (
 	OpcuaNodeIdServicesDataType_TrimmedString                          OpcuaNodeIdServicesDataType = 31918
 	OpcuaNodeIdServicesDataType_AlarmMask                              OpcuaNodeIdServicesDataType = 32251
 	OpcuaNodeIdServicesDataType_TransactionErrorType                   OpcuaNodeIdServicesDataType = 32285
+	OpcuaNodeIdServicesDataType_RedundantServerMode                    OpcuaNodeIdServicesDataType = 32417
+	OpcuaNodeIdServicesDataType_BitFieldDefinition                     OpcuaNodeIdServicesDataType = 32421
+	OpcuaNodeIdServicesDataType_AnnotationDataType                     OpcuaNodeIdServicesDataType = 32434
+	OpcuaNodeIdServicesDataType_LinearConversionDataType               OpcuaNodeIdServicesDataType = 32435
+	OpcuaNodeIdServicesDataType_ConversionLimitEnum                    OpcuaNodeIdServicesDataType = 32436
+	OpcuaNodeIdServicesDataType_QuantityDimension                      OpcuaNodeIdServicesDataType = 32438
 	OpcuaNodeIdServicesDataType_ReferenceDescriptionDataType           OpcuaNodeIdServicesDataType = 32659
 	OpcuaNodeIdServicesDataType_ReferenceListEntryDataType             OpcuaNodeIdServicesDataType = 32660
+	OpcuaNodeIdServicesDataType_ReadEventDetails2                      OpcuaNodeIdServicesDataType = 32799
+	OpcuaNodeIdServicesDataType_HistoryModifiedEvent                   OpcuaNodeIdServicesDataType = 32824
 )
 
 var OpcuaNodeIdServicesDataTypeValues []OpcuaNodeIdServicesDataType
@@ -922,8 +930,16 @@ func init() {
 		OpcuaNodeIdServicesDataType_TrimmedString,
 		OpcuaNodeIdServicesDataType_AlarmMask,
 		OpcuaNodeIdServicesDataType_TransactionErrorType,
+		OpcuaNodeIdServicesDataType_RedundantServerMode,
+		OpcuaNodeIdServicesDataType_BitFieldDefinition,
+		OpcuaNodeIdServicesDataType_AnnotationDataType,
+		OpcuaNodeIdServicesDataType_LinearConversionDataType,
+		OpcuaNodeIdServicesDataType_ConversionLimitEnum,
+		OpcuaNodeIdServicesDataType_QuantityDimension,
 		OpcuaNodeIdServicesDataType_ReferenceDescriptionDataType,
 		OpcuaNodeIdServicesDataType_ReferenceListEntryDataType,
+		OpcuaNodeIdServicesDataType_ReadEventDetails2,
+		OpcuaNodeIdServicesDataType_HistoryModifiedEvent,
 	}
 }
 
@@ -1385,12 +1401,28 @@ func OpcuaNodeIdServicesDataTypeByValue(value int32) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_AlarmMask, true
 	case 32285:
 		return OpcuaNodeIdServicesDataType_TransactionErrorType, true
+	case 32417:
+		return OpcuaNodeIdServicesDataType_RedundantServerMode, true
+	case 32421:
+		return OpcuaNodeIdServicesDataType_BitFieldDefinition, true
+	case 32434:
+		return OpcuaNodeIdServicesDataType_AnnotationDataType, true
+	case 32435:
+		return OpcuaNodeIdServicesDataType_LinearConversionDataType, true
+	case 32436:
+		return OpcuaNodeIdServicesDataType_ConversionLimitEnum, true
+	case 32438:
+		return OpcuaNodeIdServicesDataType_QuantityDimension, true
 	case 325:
 		return OpcuaNodeIdServicesDataType_X509IdentityToken, true
 	case 32659:
 		return OpcuaNodeIdServicesDataType_ReferenceDescriptionDataType, true
 	case 32660:
 		return OpcuaNodeIdServicesDataType_ReferenceListEntryDataType, true
+	case 32799:
+		return OpcuaNodeIdServicesDataType_ReadEventDetails2, true
+	case 32824:
+		return OpcuaNodeIdServicesDataType_HistoryModifiedEvent, true
 	case 331:
 		return OpcuaNodeIdServicesDataType_EndpointConfiguration, true
 	case 338:
@@ -2267,12 +2299,28 @@ func OpcuaNodeIdServicesDataTypeByName(value string) (enum OpcuaNodeIdServicesDa
 		return OpcuaNodeIdServicesDataType_AlarmMask, true
 	case "TransactionErrorType":
 		return OpcuaNodeIdServicesDataType_TransactionErrorType, true
+	case "RedundantServerMode":
+		return OpcuaNodeIdServicesDataType_RedundantServerMode, true
+	case "BitFieldDefinition":
+		return OpcuaNodeIdServicesDataType_BitFieldDefinition, true
+	case "AnnotationDataType":
+		return OpcuaNodeIdServicesDataType_AnnotationDataType, true
+	case "LinearConversionDataType":
+		return OpcuaNodeIdServicesDataType_LinearConversionDataType, true
+	case "ConversionLimitEnum":
+		return OpcuaNodeIdServicesDataType_ConversionLimitEnum, true
+	case "QuantityDimension":
+		return OpcuaNodeIdServicesDataType_QuantityDimension, true
 	case "X509IdentityToken":
 		return OpcuaNodeIdServicesDataType_X509IdentityToken, true
 	case "ReferenceDescriptionDataType":
 		return OpcuaNodeIdServicesDataType_ReferenceDescriptionDataType, true
 	case "ReferenceListEntryDataType":
 		return OpcuaNodeIdServicesDataType_ReferenceListEntryDataType, true
+	case "ReadEventDetails2":
+		return OpcuaNodeIdServicesDataType_ReadEventDetails2, true
+	case "HistoryModifiedEvent":
+		return OpcuaNodeIdServicesDataType_HistoryModifiedEvent, true
 	case "EndpointConfiguration":
 		return OpcuaNodeIdServicesDataType_EndpointConfiguration, true
 	case "BuildInfo":
@@ -3210,12 +3258,28 @@ func (e OpcuaNodeIdServicesDataType) PLC4XEnumName() string {
 		return "AlarmMask"
 	case OpcuaNodeIdServicesDataType_TransactionErrorType:
 		return "TransactionErrorType"
+	case OpcuaNodeIdServicesDataType_RedundantServerMode:
+		return "RedundantServerMode"
+	case OpcuaNodeIdServicesDataType_BitFieldDefinition:
+		return "BitFieldDefinition"
+	case OpcuaNodeIdServicesDataType_AnnotationDataType:
+		return "AnnotationDataType"
+	case OpcuaNodeIdServicesDataType_LinearConversionDataType:
+		return "LinearConversionDataType"
+	case OpcuaNodeIdServicesDataType_ConversionLimitEnum:
+		return "ConversionLimitEnum"
+	case OpcuaNodeIdServicesDataType_QuantityDimension:
+		return "QuantityDimension"
 	case OpcuaNodeIdServicesDataType_X509IdentityToken:
 		return "X509IdentityToken"
 	case OpcuaNodeIdServicesDataType_ReferenceDescriptionDataType:
 		return "ReferenceDescriptionDataType"
 	case OpcuaNodeIdServicesDataType_ReferenceListEntryDataType:
 		return "ReferenceListEntryDataType"
+	case OpcuaNodeIdServicesDataType_ReadEventDetails2:
+		return "ReadEventDetails2"
+	case OpcuaNodeIdServicesDataType_HistoryModifiedEvent:
+		return "HistoryModifiedEvent"
 	case OpcuaNodeIdServicesDataType_EndpointConfiguration:
 		return "EndpointConfiguration"
 	case OpcuaNodeIdServicesDataType_BuildInfo:

@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *   https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -22,15 +22,10 @@ package org.apache.plc4x.java.spi.connection;
 import static java.util.concurrent.ForkJoinPool.commonPool;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.netty.channel.ChannelPipeline;
-import java.util.List;
-import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xNettyWrapper;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
 import org.junit.jupiter.api.Test;
@@ -50,26 +45,20 @@ class DefaultNettyPlcConnectionTest {
         final GateKeeper disconnect = new GateKeeper("disconnect");
         final GateKeeper close = new GateKeeper("close");
 
-        ProtocolStackConfigurer<Message> stackConfigurer = new ProtocolStackConfigurer<>() {
-            @Override
-            public Plc4xProtocolBase<Message> configurePipeline(Configuration configuration, ChannelPipeline pipeline, PlcAuthentication authentication, boolean passive, List<EventListener> listeners) {
-                TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
-                Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, base, authentication, Message.class);
-                pipeline.addLast(context);
-                return base;
-            }
+        ProtocolStackConfigurer<Message> stackConfigurer = (configuration, pipeline, authentication, passive, listeners) -> {
+            TestProtocolBase base = new TestProtocolBase(discovery, connect, disconnect, close);
+            Plc4xNettyWrapper<Message> context = new Plc4xNettyWrapper<>(new NettyHashTimerTimeoutManager(), pipeline, passive, base, authentication, Message.class);
+            pipeline.addLast(context);
+            return base;
         };
 
         DefaultNettyPlcConnection connection = new PlcConnectionFactory().withDiscovery().create(channelFactory, stackConfigurer);
-        commonPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    logger.info("Activating connection");
-                    connection.connect();
-                } catch (PlcConnectionException e) {
-                    throw new RuntimeException(e);
-                }
+        commonPool().submit(() -> {
+            try {
+                logger.info("Activating connection");
+                connection.connect();
+            } catch (PlcConnectionException e) {
+                throw new RuntimeException(e);
             }
         });
 

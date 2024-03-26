@@ -22,88 +22,115 @@
 
 // Remark: The different fields are encoded in Little-endian.
 
+[type OpcuaConstants
+    [const          uint 8     protocolVersion 0]
+]
+
 [type OpcuaAPU(bit response) byteOrder='LITTLE_ENDIAN'
     [simple MessagePDU('response') message]
 ]
 
+[enum string 8 ChunkType
+    ['"C"' CONTINUE ]
+    ['"F"' FINAL    ]
+    ['"A"' ABORT    ]
+]
+
+[enum string 24 MessageType
+    ['"HEL"' HELLO       ]
+    ['"ACK"' ACKNOWLEDGE ]
+    ['"ERR"' ERROR       ]
+    ['"OPN"' OPEN        ]
+    ['"CLO"' CLOSE       ]
+    ['"MSG"' MESSAGE     ]
+]
+
 [discriminatedType MessagePDU(bit response)
-    [discriminator string 24            messageType]
+    [discriminator    string 24          messageType]
+    [simple           ChunkType          chunk]
+    [implicit         uint 32            totalLength 'lengthInBytes']
     [typeSwitch messageType,response
-        ['"HEL"','false'     OpcuaHelloRequest
-            [simple          string 8           chunk]
-            [implicit        int 32             messageSize 'lengthInBytes']
-            [simple          int 32             version]
-            [simple          int 32             receiveBufferSize]
-            [simple          int 32             sendBufferSize]
-            [simple          int 32             maxMessageSize]
-            [simple          int 32             maxChunkCount]
-            [simple          PascalString       endpoint]
+        ['"HEL"','false'      OpcuaHelloRequest
+            [simple           uint 32                 version   ]
+            [simple           OpcuaProtocolLimits     limits    ]
+            [simple           PascalString            endpoint  ]
         ]
-        ['"ACK"','true'     OpcuaAcknowledgeResponse
-            [simple          string 8           chunk]
-            [implicit        int 32             messageSize 'lengthInBytes']
-            [simple          int 32             version]
-            [simple          int 32             receiveBufferSize]
-            [simple          int 32             sendBufferSize]
-            [simple          int 32             maxMessageSize]
-            [simple          int 32             maxChunkCount]
+        ['"ACK"','true'       OpcuaAcknowledgeResponse
+            [simple           uint 32                 version   ]
+            [simple           OpcuaProtocolLimits     limits    ]
         ]
-        ['"OPN"','false'     OpcuaOpenRequest
-            [simple          string 8           chunk]
-            [implicit        int 32             messageSize 'lengthInBytes']
+
+        ['"OPN"','false'     OpcuaOpenRequest (uint 32 totalLength)
+            [simple          OpenChannelMessage('response')  openRequest]
+            [simple          Payload('false', 'totalLength - openRequest.lengthInBytes - 16') message]
+        ]
+        ['"OPN"','true'      OpcuaOpenResponse (uint 32 totalLength)
+            [simple          OpenChannelMessage('response') openResponse]
+            [simple          Payload('false', 'totalLength - openResponse.lengthInBytes - 16') message]
+        ]
+        ['"CLO"','false'     OpcuaCloseRequest
+            [simple          SecurityHeader        securityHeader ]
+            [simple          Payload('false', '0') message        ]
+        ]
+        ['"MSG"','false'     OpcuaMessageRequest (uint 32 totalLength)
+            [simple          SecurityHeader     securityHeader ]
+            [simple          Payload('false', 'totalLength - securityHeader.lengthInBytes - 16') message]
+        ]
+        ['"MSG"','true'      OpcuaMessageResponse (uint 32 totalLength)
+            [simple          SecurityHeader     securityHeader ]
+            [simple          Payload('false', 'totalLength - securityHeader.lengthInBytes - 16') message]
+        ]
+        ['"ERR"','true'      OpcuaMessageError
+            [simple          OpcuaStatusCode    error ]
+            [simple          PascalString       reason]
+        ]
+    ]
+]
+
+[type OpenChannelMessage (bit response)
+    [typeSwitch response
+        ['false' OpenChannelMessageRequest
             [simple          int 32             secureChannelId]
             [simple          PascalString       endpoint]
             [simple          PascalByteString   senderCertificate]
             [simple          PascalByteString   receiverCertificateThumbprint]
-            [simple          int 32             sequenceNumber]
-            [simple          int 32             requestId]
-            [array           byte               message count 'messageSize - (endpoint.stringLength == -1 ? 0 : endpoint.stringLength ) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
-       ]
-       ['"OPN"','true'     OpcuaOpenResponse
-           [simple          string 8           chunk]
-           [implicit        int 32             messageSize 'lengthInBytes']
-           [simple          int 32             secureChannelId]
-           [simple          PascalString       securityPolicyUri]
-           [simple          PascalByteString   senderCertificate]
-           [simple          PascalByteString   receiverCertificateThumbprint]
-           [simple          int 32             sequenceNumber]
-           [simple          int 32             requestId]
-           [array           byte               message count 'messageSize - (securityPolicyUri.stringLength == -1 ? 0 : securityPolicyUri.stringLength) - (senderCertificate.stringLength == -1 ? 0 : senderCertificate.stringLength) - (receiverCertificateThumbprint.stringLength == -1 ? 0 : receiverCertificateThumbprint.stringLength) - 32']
-       ]
-       ['"CLO"','false'     OpcuaCloseRequest
-           [simple          string 8           chunk]
-           [implicit        int 32             messageSize 'lengthInBytes']
-           [simple          int 32             secureChannelId]
-           [simple          int 32             secureTokenId]
-           [simple          int 32             sequenceNumber]
-           [simple          int 32             requestId]
-           [simple          ExtensionObject('false')       message]
-       ]
-       ['"MSG"','false'     OpcuaMessageRequest
-           [simple          string 8           chunk]
-           [implicit        int 32             messageSize 'lengthInBytes']
-           [simple          int 32             secureChannelId]
-           [simple          int 32             secureTokenId]
-           [simple          int 32             sequenceNumber]
-           [simple          int 32             requestId]
-           [array           byte               message count 'messageSize - 24']
-       ]
-       ['"MSG"','true'     OpcuaMessageResponse
-           [simple          string 8           chunk]
-           [implicit        int 32             messageSize 'lengthInBytes']
-           [simple          int 32             secureChannelId]
-           [simple          int 32             secureTokenId]
-           [simple          int 32             sequenceNumber]
-           [simple          int 32             requestId]
-           [array           byte               message count 'messageSize - 24']
-       ]
-       ['"ERR"','true'     OpcuaMessageError
-           [simple          string 8           chunk ]
-           [implicit        int 32             messageSize 'lengthInBytes']
-           [simple          OpcuaStatusCode    error ]
-           [simple          PascalString       reason]
-       ]
+        ]
+        ['true' OpenChannelMessageResponse
+            [simple          int 32             secureChannelId]
+            [simple          PascalString       securityPolicyUri]
+            [simple          PascalByteString   senderCertificate]
+            [simple          PascalByteString   receiverCertificateThumbprint]
+        ]
     ]
+]
+
+[type OpcuaProtocolLimits
+    [simple           uint 32             receiveBufferSize]
+    [simple           uint 32             sendBufferSize]
+    [simple           uint 32             maxMessageSize]
+    [simple           uint 32             maxChunkCount]
+]
+
+[type SecurityHeader
+    [simple           uint 32            secureChannelId]
+    [simple           uint 32            secureTokenId]
+]
+
+[discriminatedType Payload (bit extensible, uint 32 byteCount)
+    [simple SequenceHeader                    sequenceHeader ]
+    [typeSwitch extensible
+        ['true'       ExtensiblePayload
+            [simple   ExtensionObject('false') payload ]
+        ]
+        ['false'      BinaryPayload
+            [array    byte                     payload count 'byteCount']
+        ]
+    ]
+]
+
+[type SequenceHeader
+    [simple           int 32             sequenceNumber]
+    [simple           int 32             requestId]
 ]
 
 [type ByteStringArray
@@ -181,6 +208,15 @@
             [simple PascalString transportProfileUri]
             
         ]
+        ['"32423"' BitFieldDefinition
+            [simple PascalString name]
+            [simple LocalizedText description]
+            [reserved uint 7 '0x00']
+            [reserved bit 'false']
+            [simple uint 32 startingBitPosition]
+            [simple uint 32 endingBitPosition]
+            
+        ]
         ['"18808"' RationalNumber
             [simple int 32 numerator]
             [simple uint 32 denominator]
@@ -208,6 +244,30 @@
             [simple int 8 exponent]
             [simple PascalString alphabeticCode]
             [simple LocalizedText currency]
+            
+        ]
+        ['"32436"' AnnotationDataType
+            [simple PascalString annotation]
+            [simple PascalString discipline]
+            [simple PascalString uri]
+            
+        ]
+        ['"32437"' LinearConversionDataType
+            [simple float 32 initialAddend]
+            [simple float 32 multiplicand]
+            [simple float 32 divisor]
+            [simple float 32 finalAddend]
+            
+        ]
+        ['"32440"' QuantityDimension
+            [simple int 8 massExponent]
+            [simple int 8 lengthExponent]
+            [simple int 8 timeExponent]
+            [simple int 8 electricCurrentExponent]
+            [simple int 8 amountOfSubstanceExponent]
+            [simple int 8 luminousIntensityExponent]
+            [simple int 8 absoluteTemperatureExponent]
+            [simple int 8 dimensionlessExponent]
             
         ]
         ['"12556"' TrustListDataType
@@ -1341,7 +1401,6 @@
                     
         ]
         ['"679"' HistoryUpdateDetails
-            [simple NodeId nodeId]
             
         ]
         ['"697"' HistoryUpdateResult
@@ -2352,6 +2411,16 @@
 ]
             
 
+[enum uint 32 RedundantServerMode
+
+    ['0' redundantServerModePrimaryWithBackup]
+    ['1' redundantServerModePrimaryOnly]
+    ['2' redundantServerModeBackupReady]
+    ['3' redundantServerModeBackupNotReady]
+    
+]
+            
+
 [enum uint 32 OpenFileMode
 
     ['1' openFileModeRead]
@@ -2372,6 +2441,15 @@
     ['6' identityCriteriaTypeAuthenticatedUser]
     ['7' identityCriteriaTypeApplication]
     ['8' identityCriteriaTypeX509Subject]
+    
+]
+            
+
+[enum uint 32 ConversionLimitEnum
+
+    ['0' conversionLimitEnumNoConversion]
+    ['1' conversionLimitEnumLimited]
+    ['2' conversionLimitEnumUnlimited]
     
 ]
             
@@ -2502,6 +2580,7 @@
     ['8' jsonNetworkMessageContentMaskPublisherId]
     ['16' jsonNetworkMessageContentMaskDataSetClassId]
     ['32' jsonNetworkMessageContentMaskReplyTo]
+    ['64' jsonNetworkMessageContentMaskWriterGroupName]
     
 ]
             
@@ -2517,6 +2596,9 @@
     ['32' jsonDataSetMessageContentMaskMessageType]
     ['64' jsonDataSetMessageContentMaskDataSetWriterName]
     ['128' jsonDataSetMessageContentMaskReversibleFieldEncoding]
+    ['256' jsonDataSetMessageContentMaskPublisherId]
+    ['512' jsonDataSetMessageContentMaskWriterGroupName]
+    ['1024' jsonDataSetMessageContentMaskMinorVersion]
     
 ]
             

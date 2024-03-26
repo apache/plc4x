@@ -35,8 +35,6 @@ type HistoryUpdateDetails interface {
 	utils.LengthAware
 	utils.Serializable
 	ExtensionObjectDefinition
-	// GetNodeId returns NodeId (property field)
-	GetNodeId() NodeId
 }
 
 // HistoryUpdateDetailsExactly can be used when we want exactly this type and not a type which fulfills HistoryUpdateDetails.
@@ -49,7 +47,6 @@ type HistoryUpdateDetailsExactly interface {
 // _HistoryUpdateDetails is the data-structure of this message
 type _HistoryUpdateDetails struct {
 	*_ExtensionObjectDefinition
-	NodeId NodeId
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,24 +69,9 @@ func (m *_HistoryUpdateDetails) GetParent() ExtensionObjectDefinition {
 	return m._ExtensionObjectDefinition
 }
 
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-/////////////////////// Accessors for property fields.
-///////////////////////
-
-func (m *_HistoryUpdateDetails) GetNodeId() NodeId {
-	return m.NodeId
-}
-
-///////////////////////
-///////////////////////
-///////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
 // NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
-func NewHistoryUpdateDetails(nodeId NodeId) *_HistoryUpdateDetails {
+func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
 	_result := &_HistoryUpdateDetails{
-		NodeId:                     nodeId,
 		_ExtensionObjectDefinition: NewExtensionObjectDefinition(),
 	}
 	_result._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _result
@@ -114,9 +96,6 @@ func (m *_HistoryUpdateDetails) GetTypeName() string {
 func (m *_HistoryUpdateDetails) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (nodeId)
-	lengthInBits += m.NodeId.GetLengthInBits(ctx)
-
 	return lengthInBits
 }
 
@@ -139,19 +118,6 @@ func HistoryUpdateDetailsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of HistoryUpdateDetails")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
-	}
-
 	if closeErr := readBuffer.CloseContext("HistoryUpdateDetails"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HistoryUpdateDetails")
 	}
@@ -159,7 +125,6 @@ func HistoryUpdateDetailsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	// Create a partially initialized instance
 	_child := &_HistoryUpdateDetails{
 		_ExtensionObjectDefinition: &_ExtensionObjectDefinition{},
-		NodeId:                     nodeId,
 	}
 	_child._ExtensionObjectDefinition._ExtensionObjectDefinitionChildRequirements = _child
 	return _child, nil
@@ -181,18 +146,6 @@ func (m *_HistoryUpdateDetails) SerializeWithWriteBuffer(ctx context.Context, wr
 	ser := func() error {
 		if pushErr := writeBuffer.PushContext("HistoryUpdateDetails"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for HistoryUpdateDetails")
-		}
-
-		// Simple Field (nodeId)
-		if pushErr := writeBuffer.PushContext("nodeId"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeId")
-		}
-		_nodeIdErr := writeBuffer.WriteSerializable(ctx, m.GetNodeId())
-		if popErr := writeBuffer.PopContext("nodeId"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeId")
-		}
-		if _nodeIdErr != nil {
-			return errors.Wrap(_nodeIdErr, "Error serializing 'nodeId' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryUpdateDetails"); popErr != nil {

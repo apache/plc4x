@@ -18,18 +18,21 @@
  */
 package org.apache.plc4x.java.modbus.rtu.config;
 
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 
-public class ModbusRtuConfiguration implements Configuration {
+public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter("request-timeout")
     @IntDefaultValue(5_000)
+    @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
     @ConfigurationParameter("unit-identifier")
     @IntDefaultValue(1)
+    @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
     private int unitIdentifier;
 
     public int getRequestTimeout() {

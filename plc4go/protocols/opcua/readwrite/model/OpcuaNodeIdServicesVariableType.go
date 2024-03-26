@@ -101,6 +101,7 @@ const (
 	OpcuaNodeIdServicesVariableType_MultiStateDictionaryEntryDiscreteType     OpcuaNodeIdServicesVariableType = 19084
 	OpcuaNodeIdServicesVariableType_PubSubDiagnosticsCounterType              OpcuaNodeIdServicesVariableType = 19725
 	OpcuaNodeIdServicesVariableType_AlarmStateVariableType                    OpcuaNodeIdServicesVariableType = 32244
+	OpcuaNodeIdServicesVariableType_BitFieldType                              OpcuaNodeIdServicesVariableType = 32431
 	OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType          OpcuaNodeIdServicesVariableType = 32657
 )
 
@@ -169,6 +170,7 @@ func init() {
 		OpcuaNodeIdServicesVariableType_MultiStateDictionaryEntryDiscreteType,
 		OpcuaNodeIdServicesVariableType_PubSubDiagnosticsCounterType,
 		OpcuaNodeIdServicesVariableType_AlarmStateVariableType,
+		OpcuaNodeIdServicesVariableType_BitFieldType,
 		OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType,
 	}
 }
@@ -281,6 +283,8 @@ func OpcuaNodeIdServicesVariableTypeByValue(value int32) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableType_BuildInfoType, true
 	case 32244:
 		return OpcuaNodeIdServicesVariableType_AlarmStateVariableType, true
+	case 32431:
+		return OpcuaNodeIdServicesVariableType_BitFieldType, true
 	case 32657:
 		return OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType, true
 	case 62:
@@ -409,6 +413,8 @@ func OpcuaNodeIdServicesVariableTypeByName(value string) (enum OpcuaNodeIdServic
 		return OpcuaNodeIdServicesVariableType_BuildInfoType, true
 	case "AlarmStateVariableType":
 		return OpcuaNodeIdServicesVariableType_AlarmStateVariableType, true
+	case "BitFieldType":
+		return OpcuaNodeIdServicesVariableType_BitFieldType, true
 	case "ReferenceDescriptionVariableType":
 		return OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType, true
 	case "BaseVariableType":
@@ -598,6 +604,8 @@ func (e OpcuaNodeIdServicesVariableType) PLC4XEnumName() string {
 		return "BuildInfoType"
 	case OpcuaNodeIdServicesVariableType_AlarmStateVariableType:
 		return "AlarmStateVariableType"
+	case OpcuaNodeIdServicesVariableType_BitFieldType:
+		return "BitFieldType"
 	case OpcuaNodeIdServicesVariableType_ReferenceDescriptionVariableType:
 		return "ReferenceDescriptionVariableType"
 	case OpcuaNodeIdServicesVariableType_BaseVariableType:

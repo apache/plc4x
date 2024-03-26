@@ -68,6 +68,7 @@ const (
 	OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_MaxByteStringLength         OpcuaNodeIdServicesVariableNamespaces = 24247
 	OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_LastModifiedTime            OpcuaNodeIdServicesVariableNamespaces = 25203
 	OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion                      OpcuaNodeIdServicesVariableNamespaces = 25268
+	OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion                              OpcuaNodeIdServicesVariableNamespaces = 32420
 )
 
 var OpcuaNodeIdServicesVariableNamespacesValues []OpcuaNodeIdServicesVariableNamespaces
@@ -102,6 +103,7 @@ func init() {
 		OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_MaxByteStringLength,
 		OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_LastModifiedTime,
 		OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion,
+		OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion,
 	}
 }
 
@@ -161,6 +163,8 @@ func OpcuaNodeIdServicesVariableNamespacesByValue(value int32) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_LastModifiedTime, true
 	case 25268:
 		return OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion, true
+	case 32420:
+		return OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion, true
 	}
 	return 0, false
 }
@@ -221,6 +225,8 @@ func OpcuaNodeIdServicesVariableNamespacesByName(value string) (enum OpcuaNodeId
 		return OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_LastModifiedTime, true
 	case "NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion":
 		return OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion, true
+	case "NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion":
+		return OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion, true
 	}
 	return 0, false
 }
@@ -342,6 +348,8 @@ func (e OpcuaNodeIdServicesVariableNamespaces) PLC4XEnumName() string {
 		return "NamespacesType_NamespaceIdentifier_Placeholder_NamespaceFile_LastModifiedTime"
 	case OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion:
 		return "NamespacesType_NamespaceIdentifier_Placeholder_ConfigurationVersion"
+	case OpcuaNodeIdServicesVariableNamespaces_NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion:
+		return "NamespacesType_NamespaceIdentifier_Placeholder_ModelVersion"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

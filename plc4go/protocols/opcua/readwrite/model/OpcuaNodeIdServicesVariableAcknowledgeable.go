@@ -41,19 +41,6 @@ type IOpcuaNodeIdServicesVariableAcknowledgeable interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId                                OpcuaNodeIdServicesVariableAcknowledgeable = 5113
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType                              OpcuaNodeIdServicesVariableAcknowledgeable = 5114
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode                             OpcuaNodeIdServicesVariableAcknowledgeable = 5115
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName                             OpcuaNodeIdServicesVariableAcknowledgeable = 5116
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time                                   OpcuaNodeIdServicesVariableAcknowledgeable = 5117
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime                            OpcuaNodeIdServicesVariableAcknowledgeable = 5118
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime                              OpcuaNodeIdServicesVariableAcknowledgeable = 5119
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message                                OpcuaNodeIdServicesVariableAcknowledgeable = 5120
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity                               OpcuaNodeIdServicesVariableAcknowledgeable = 5121
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain                                 OpcuaNodeIdServicesVariableAcknowledgeable = 5122
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments        OpcuaNodeIdServicesVariableAcknowledgeable = 5124
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName                          OpcuaNodeIdServicesVariableAcknowledgeable = 9071
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId                               OpcuaNodeIdServicesVariableAcknowledgeable = 9072
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState                           OpcuaNodeIdServicesVariableAcknowledgeable = 9073
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id                        OpcuaNodeIdServicesVariableAcknowledgeable = 9074
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Name                      OpcuaNodeIdServicesVariableAcknowledgeable = 9075
@@ -63,14 +50,6 @@ const (
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveTransitionTime   OpcuaNodeIdServicesVariableAcknowledgeable = 9079
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState                 OpcuaNodeIdServicesVariableAcknowledgeable = 9080
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState                OpcuaNodeIdServicesVariableAcknowledgeable = 9081
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality                                OpcuaNodeIdServicesVariableAcknowledgeable = 9082
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp                OpcuaNodeIdServicesVariableAcknowledgeable = 9083
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity                           OpcuaNodeIdServicesVariableAcknowledgeable = 9084
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp           OpcuaNodeIdServicesVariableAcknowledgeable = 9085
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment                                OpcuaNodeIdServicesVariableAcknowledgeable = 9086
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp                OpcuaNodeIdServicesVariableAcknowledgeable = 9087
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId                           OpcuaNodeIdServicesVariableAcknowledgeable = 9088
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments              OpcuaNodeIdServicesVariableAcknowledgeable = 9092
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState                             OpcuaNodeIdServicesVariableAcknowledgeable = 9093
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id                          OpcuaNodeIdServicesVariableAcknowledgeable = 9094
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Name                        OpcuaNodeIdServicesVariableAcknowledgeable = 9095
@@ -91,12 +70,6 @@ const (
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_FalseState              OpcuaNodeIdServicesVariableAcknowledgeable = 9110
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Acknowledge_InputArguments             OpcuaNodeIdServicesVariableAcknowledgeable = 9112
 	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Confirm_InputArguments                 OpcuaNodeIdServicesVariableAcknowledgeable = 9114
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId                       OpcuaNodeIdServicesVariableAcknowledgeable = 11116
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName                     OpcuaNodeIdServicesVariableAcknowledgeable = 11117
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments       OpcuaNodeIdServicesVariableAcknowledgeable = 12919
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId                    OpcuaNodeIdServicesVariableAcknowledgeable = 16367
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName                  OpcuaNodeIdServicesVariableAcknowledgeable = 16368
-	OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain                 OpcuaNodeIdServicesVariableAcknowledgeable = 32062
 )
 
 var OpcuaNodeIdServicesVariableAcknowledgeableValues []OpcuaNodeIdServicesVariableAcknowledgeable
@@ -104,19 +77,6 @@ var OpcuaNodeIdServicesVariableAcknowledgeableValues []OpcuaNodeIdServicesVariab
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableAcknowledgeableValues = []OpcuaNodeIdServicesVariableAcknowledgeable{
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Name,
@@ -126,14 +86,6 @@ func init() {
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Name,
@@ -154,55 +106,11 @@ func init() {
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConfirmedState_FalseState,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Acknowledge_InputArguments,
 		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Confirm_InputArguments,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain,
 	}
 }
 
 func OpcuaNodeIdServicesVariableAcknowledgeableByValue(value int32) (enum OpcuaNodeIdServicesVariableAcknowledgeable, ok bool) {
 	switch value {
-	case 11116:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId, true
-	case 11117:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName, true
-	case 12919:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments, true
-	case 16367:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId, true
-	case 16368:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName, true
-	case 32062:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain, true
-	case 5113:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId, true
-	case 5114:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType, true
-	case 5115:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode, true
-	case 5116:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName, true
-	case 5117:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time, true
-	case 5118:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime, true
-	case 5119:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime, true
-	case 5120:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message, true
-	case 5121:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity, true
-	case 5122:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain, true
-	case 5124:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments, true
-	case 9071:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName, true
-	case 9072:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId, true
 	case 9073:
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState, true
 	case 9074:
@@ -221,22 +129,6 @@ func OpcuaNodeIdServicesVariableAcknowledgeableByValue(value int32) (enum OpcuaN
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState, true
 	case 9081:
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState, true
-	case 9082:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality, true
-	case 9083:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp, true
-	case 9084:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity, true
-	case 9085:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp, true
-	case 9086:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment, true
-	case 9087:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp, true
-	case 9088:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId, true
-	case 9092:
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments, true
 	case 9093:
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState, true
 	case 9094:
@@ -283,44 +175,6 @@ func OpcuaNodeIdServicesVariableAcknowledgeableByValue(value int32) (enum OpcuaN
 
 func OpcuaNodeIdServicesVariableAcknowledgeableByName(value string) (enum OpcuaNodeIdServicesVariableAcknowledgeable, ok bool) {
 	switch value {
-	case "AcknowledgeableConditionType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId, true
-	case "AcknowledgeableConditionType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName, true
-	case "AcknowledgeableConditionType_ConditionRefresh2_InputArguments":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments, true
-	case "AcknowledgeableConditionType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId, true
-	case "AcknowledgeableConditionType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName, true
-	case "AcknowledgeableConditionType_SupportsFilteredRetain":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain, true
-	case "AcknowledgeableConditionType_EventId":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId, true
-	case "AcknowledgeableConditionType_EventType":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType, true
-	case "AcknowledgeableConditionType_SourceNode":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode, true
-	case "AcknowledgeableConditionType_SourceName":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName, true
-	case "AcknowledgeableConditionType_Time":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time, true
-	case "AcknowledgeableConditionType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime, true
-	case "AcknowledgeableConditionType_LocalTime":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime, true
-	case "AcknowledgeableConditionType_Message":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message, true
-	case "AcknowledgeableConditionType_Severity":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity, true
-	case "AcknowledgeableConditionType_Retain":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain, true
-	case "AcknowledgeableConditionType_ConditionRefresh_InputArguments":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments, true
-	case "AcknowledgeableConditionType_ConditionName":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName, true
-	case "AcknowledgeableConditionType_BranchId":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId, true
 	case "AcknowledgeableConditionType_EnabledState":
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState, true
 	case "AcknowledgeableConditionType_EnabledState_Id":
@@ -339,22 +193,6 @@ func OpcuaNodeIdServicesVariableAcknowledgeableByName(value string) (enum OpcuaN
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_TrueState, true
 	case "AcknowledgeableConditionType_EnabledState_FalseState":
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState, true
-	case "AcknowledgeableConditionType_Quality":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality, true
-	case "AcknowledgeableConditionType_Quality_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp, true
-	case "AcknowledgeableConditionType_LastSeverity":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity, true
-	case "AcknowledgeableConditionType_LastSeverity_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp, true
-	case "AcknowledgeableConditionType_Comment":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment, true
-	case "AcknowledgeableConditionType_Comment_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp, true
-	case "AcknowledgeableConditionType_ClientUserId":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId, true
-	case "AcknowledgeableConditionType_AddComment_InputArguments":
-		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments, true
 	case "AcknowledgeableConditionType_AckedState":
 		return OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState, true
 	case "AcknowledgeableConditionType_AckedState_Id":
@@ -462,44 +300,6 @@ func (e OpcuaNodeIdServicesVariableAcknowledgeable) SerializeWithWriteBuffer(ctx
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableAcknowledgeable) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassId:
-		return "AcknowledgeableConditionType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionClassName:
-		return "AcknowledgeableConditionType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh2_InputArguments:
-		return "AcknowledgeableConditionType_ConditionRefresh2_InputArguments"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassId:
-		return "AcknowledgeableConditionType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionSubClassName:
-		return "AcknowledgeableConditionType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SupportsFilteredRetain:
-		return "AcknowledgeableConditionType_SupportsFilteredRetain"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventId:
-		return "AcknowledgeableConditionType_EventId"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EventType:
-		return "AcknowledgeableConditionType_EventType"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceNode:
-		return "AcknowledgeableConditionType_SourceNode"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_SourceName:
-		return "AcknowledgeableConditionType_SourceName"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Time:
-		return "AcknowledgeableConditionType_Time"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ReceiveTime:
-		return "AcknowledgeableConditionType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LocalTime:
-		return "AcknowledgeableConditionType_LocalTime"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Message:
-		return "AcknowledgeableConditionType_Message"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Severity:
-		return "AcknowledgeableConditionType_Severity"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Retain:
-		return "AcknowledgeableConditionType_Retain"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionRefresh_InputArguments:
-		return "AcknowledgeableConditionType_ConditionRefresh_InputArguments"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ConditionName:
-		return "AcknowledgeableConditionType_ConditionName"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_BranchId:
-		return "AcknowledgeableConditionType_BranchId"
 	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState:
 		return "AcknowledgeableConditionType_EnabledState"
 	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_Id:
@@ -518,22 +318,6 @@ func (e OpcuaNodeIdServicesVariableAcknowledgeable) PLC4XEnumName() string {
 		return "AcknowledgeableConditionType_EnabledState_TrueState"
 	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_EnabledState_FalseState:
 		return "AcknowledgeableConditionType_EnabledState_FalseState"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality:
-		return "AcknowledgeableConditionType_Quality"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Quality_SourceTimestamp:
-		return "AcknowledgeableConditionType_Quality_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity:
-		return "AcknowledgeableConditionType_LastSeverity"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_LastSeverity_SourceTimestamp:
-		return "AcknowledgeableConditionType_LastSeverity_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment:
-		return "AcknowledgeableConditionType_Comment"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_Comment_SourceTimestamp:
-		return "AcknowledgeableConditionType_Comment_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_ClientUserId:
-		return "AcknowledgeableConditionType_ClientUserId"
-	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AddComment_InputArguments:
-		return "AcknowledgeableConditionType_AddComment_InputArguments"
 	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState:
 		return "AcknowledgeableConditionType_AckedState"
 	case OpcuaNodeIdServicesVariableAcknowledgeable_AcknowledgeableConditionType_AckedState_Id:

@@ -54,6 +54,8 @@ const (
 	OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfArchive                                OpcuaNodeIdServicesVariableH = 11503
 	OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableH = 11504
 	OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported                      OpcuaNodeIdServicesVariableH = 19093
+	OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeStoredValues                           OpcuaNodeIdServicesVariableH = 32635
+	OpcuaNodeIdServicesVariableH_HAConfiguration_MaxCountStoredValues                          OpcuaNodeIdServicesVariableH = 32636
 )
 
 var OpcuaNodeIdServicesVariableHValues []OpcuaNodeIdServicesVariableH
@@ -74,6 +76,8 @@ func init() {
 		OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfArchive,
 		OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive,
 		OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported,
+		OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeStoredValues,
+		OpcuaNodeIdServicesVariableH_HAConfiguration_MaxCountStoredValues,
 	}
 }
 
@@ -105,6 +109,10 @@ func OpcuaNodeIdServicesVariableHByValue(value int32) (enum OpcuaNodeIdServicesV
 		return OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive, true
 	case 19093:
 		return OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported, true
+	case 32635:
+		return OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeStoredValues, true
+	case 32636:
+		return OpcuaNodeIdServicesVariableH_HAConfiguration_MaxCountStoredValues, true
 	}
 	return 0, false
 }
@@ -137,6 +145,10 @@ func OpcuaNodeIdServicesVariableHByName(value string) (enum OpcuaNodeIdServicesV
 		return OpcuaNodeIdServicesVariableH_HAConfiguration_StartOfOnlineArchive, true
 	case "HAConfiguration_ServerTimestampSupported":
 		return OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported, true
+	case "HAConfiguration_MaxTimeStoredValues":
+		return OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeStoredValues, true
+	case "HAConfiguration_MaxCountStoredValues":
+		return OpcuaNodeIdServicesVariableH_HAConfiguration_MaxCountStoredValues, true
 	}
 	return 0, false
 }
@@ -230,6 +242,10 @@ func (e OpcuaNodeIdServicesVariableH) PLC4XEnumName() string {
 		return "HAConfiguration_StartOfOnlineArchive"
 	case OpcuaNodeIdServicesVariableH_HAConfiguration_ServerTimestampSupported:
 		return "HAConfiguration_ServerTimestampSupported"
+	case OpcuaNodeIdServicesVariableH_HAConfiguration_MaxTimeStoredValues:
+		return "HAConfiguration_MaxTimeStoredValues"
+	case OpcuaNodeIdServicesVariableH_HAConfiguration_MaxCountStoredValues:
+		return "HAConfiguration_MaxCountStoredValues"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

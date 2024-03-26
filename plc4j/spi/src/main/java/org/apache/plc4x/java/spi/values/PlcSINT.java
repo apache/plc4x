@@ -246,6 +246,11 @@ public class PlcSINT extends PlcIECValue<Byte> {
         return Byte.toString(value);
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         byte[] bytes = new byte[1];
         bytes[0] = (byte) (value & 0xff);
@@ -254,7 +259,7 @@ public class PlcSINT extends PlcIECValue<Byte> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.writeByte(getClass().getSimpleName(), value);
+        writeBuffer.writeInt(getClass().getSimpleName(), 8, value);
     }
 
 }

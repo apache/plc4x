@@ -209,11 +209,11 @@ func (d *SecureChannel) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return err
 	}
 
-	if err := writeBuffer.WriteInt32("channelId", 32, d.channelId.Load()); err != nil {
+	if err := writeBuffer.WriteUint32("channelId", 32, d.channelId.Load()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteInt32("tokenId", 32, d.tokenId.Load()); err != nil {
+	if err := writeBuffer.WriteUint32("tokenId", 32, d.tokenId.Load()); err != nil {
 		return err
 	}
 

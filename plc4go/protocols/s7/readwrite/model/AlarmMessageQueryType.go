@@ -143,7 +143,7 @@ func (m *_AlarmMessageQueryType) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (transportSize)
 	lengthInBits += 8
 
-	// Const Field (DataLength)
+	// Const Field (dataLength)
 	lengthInBits += 16
 
 	// Array field
@@ -218,13 +218,13 @@ func AlarmMessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
-	// Const Field (DataLength)
-	DataLength, _DataLengthErr := readBuffer.ReadUint16("DataLength", 16)
-	if _DataLengthErr != nil {
-		return nil, errors.Wrap(_DataLengthErr, "Error parsing 'DataLength' field of AlarmMessageQueryType")
+	// Const Field (dataLength)
+	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
+	if _dataLengthErr != nil {
+		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of AlarmMessageQueryType")
 	}
-	if DataLength != AlarmMessageQueryType_DATALENGTH {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageQueryType_DATALENGTH) + " but got " + fmt.Sprintf("%d", DataLength))
+	if dataLength != AlarmMessageQueryType_DATALENGTH {
+		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AlarmMessageQueryType_DATALENGTH) + " but got " + fmt.Sprintf("%d", dataLength))
 	}
 
 	// Array field (messageObjects)
@@ -323,10 +323,10 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 
-	// Const Field (DataLength)
-	_DataLengthErr := writeBuffer.WriteUint16("DataLength", 16, uint16(0xFFFF))
-	if _DataLengthErr != nil {
-		return errors.Wrap(_DataLengthErr, "Error serializing 'DataLength' field")
+	// Const Field (dataLength)
+	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16(0xFFFF))
+	if _dataLengthErr != nil {
+		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Array Field (messageObjects)

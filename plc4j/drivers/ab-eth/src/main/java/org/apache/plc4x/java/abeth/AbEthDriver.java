@@ -25,18 +25,20 @@ import org.apache.plc4x.java.abeth.tag.AbEthTag;
 import org.apache.plc4x.java.abeth.tag.AbEthTagHandler;
 import org.apache.plc4x.java.abeth.protocol.AbEthProtocolLogic;
 import org.apache.plc4x.java.abeth.readwrite.CIPEncapsulationPacket;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> implements TransportConfigurationTypeProvider {
+public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> {
 
     public static final int AB_ETH_PORT = 2222;
 
@@ -52,13 +54,27 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> imp
 
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return AbEthConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "raw";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(AbEthTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("raw");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Collections.singletonList("tcp");
     }
 
     @Override
@@ -105,15 +121,6 @@ public class AbEthDriver extends GeneratedDriverBase<CIPEncapsulationPacket> imp
     @Override
     public PlcTag prepareTag(String tagAddress) {
         return AbEthTag.of(tagAddress);
-    }
-
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return AbEthTcpTransportConfiguration.class;
-        }
-        return null;
     }
 
 }

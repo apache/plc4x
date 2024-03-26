@@ -41,14 +41,8 @@ type IOpcuaNodeIdServicesVariableWriter interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableWriter_WriterGroupType_GroupProperties                                                                               OpcuaNodeIdServicesVariableWriter = 17489
 	OpcuaNodeIdServicesVariableWriter_WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties                                         OpcuaNodeIdServicesVariableWriter = 17490
 	OpcuaNodeIdServicesVariableWriter_WriterGroupType_HeaderLayoutUri                                                                               OpcuaNodeIdServicesVariableWriter = 17559
-	OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityMode                                                                                  OpcuaNodeIdServicesVariableWriter = 17726
-	OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityGroupId                                                                               OpcuaNodeIdServicesVariableWriter = 17727
-	OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityKeyServices                                                                           OpcuaNodeIdServicesVariableWriter = 17728
-	OpcuaNodeIdServicesVariableWriter_WriterGroupType_MaxNetworkMessageSize                                                                         OpcuaNodeIdServicesVariableWriter = 17729
-	OpcuaNodeIdServicesVariableWriter_WriterGroupType_Status_State                                                                                  OpcuaNodeIdServicesVariableWriter = 17731
 	OpcuaNodeIdServicesVariableWriter_WriterGroupType_WriterGroupId                                                                                 OpcuaNodeIdServicesVariableWriter = 17736
 	OpcuaNodeIdServicesVariableWriter_WriterGroupType_PublishingInterval                                                                            OpcuaNodeIdServicesVariableWriter = 17737
 	OpcuaNodeIdServicesVariableWriter_WriterGroupType_KeepAliveTime                                                                                 OpcuaNodeIdServicesVariableWriter = 17738
@@ -188,14 +182,8 @@ var OpcuaNodeIdServicesVariableWriterValues []OpcuaNodeIdServicesVariableWriter
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableWriterValues = []OpcuaNodeIdServicesVariableWriter{
-		OpcuaNodeIdServicesVariableWriter_WriterGroupType_GroupProperties,
 		OpcuaNodeIdServicesVariableWriter_WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties,
 		OpcuaNodeIdServicesVariableWriter_WriterGroupType_HeaderLayoutUri,
-		OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityMode,
-		OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityGroupId,
-		OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityKeyServices,
-		OpcuaNodeIdServicesVariableWriter_WriterGroupType_MaxNetworkMessageSize,
-		OpcuaNodeIdServicesVariableWriter_WriterGroupType_Status_State,
 		OpcuaNodeIdServicesVariableWriter_WriterGroupType_WriterGroupId,
 		OpcuaNodeIdServicesVariableWriter_WriterGroupType_PublishingInterval,
 		OpcuaNodeIdServicesVariableWriter_WriterGroupType_KeepAliveTime,
@@ -333,22 +321,10 @@ func init() {
 
 func OpcuaNodeIdServicesVariableWriterByValue(value int32) (enum OpcuaNodeIdServicesVariableWriter, ok bool) {
 	switch value {
-	case 17489:
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_GroupProperties, true
 	case 17490:
 		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
 	case 17559:
 		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_HeaderLayoutUri, true
-	case 17726:
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityMode, true
-	case 17727:
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityGroupId, true
-	case 17728:
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityKeyServices, true
-	case 17729:
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_MaxNetworkMessageSize, true
-	case 17731:
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_Status_State, true
 	case 17736:
 		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_WriterGroupId, true
 	case 17737:
@@ -619,22 +595,10 @@ func OpcuaNodeIdServicesVariableWriterByValue(value int32) (enum OpcuaNodeIdServ
 
 func OpcuaNodeIdServicesVariableWriterByName(value string) (enum OpcuaNodeIdServicesVariableWriter, ok bool) {
 	switch value {
-	case "WriterGroupType_GroupProperties":
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_GroupProperties, true
 	case "WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties":
 		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties, true
 	case "WriterGroupType_HeaderLayoutUri":
 		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_HeaderLayoutUri, true
-	case "WriterGroupType_SecurityMode":
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityMode, true
-	case "WriterGroupType_SecurityGroupId":
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityGroupId, true
-	case "WriterGroupType_SecurityKeyServices":
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityKeyServices, true
-	case "WriterGroupType_MaxNetworkMessageSize":
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_MaxNetworkMessageSize, true
-	case "WriterGroupType_Status_State":
-		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_Status_State, true
 	case "WriterGroupType_WriterGroupId":
 		return OpcuaNodeIdServicesVariableWriter_WriterGroupType_WriterGroupId, true
 	case "WriterGroupType_PublishingInterval":
@@ -966,22 +930,10 @@ func (e OpcuaNodeIdServicesVariableWriter) SerializeWithWriteBuffer(ctx context.
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableWriter) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_GroupProperties:
-		return "WriterGroupType_GroupProperties"
 	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties:
 		return "WriterGroupType_DataSetWriterName_Placeholder_DataSetWriterProperties"
 	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_HeaderLayoutUri:
 		return "WriterGroupType_HeaderLayoutUri"
-	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityMode:
-		return "WriterGroupType_SecurityMode"
-	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityGroupId:
-		return "WriterGroupType_SecurityGroupId"
-	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_SecurityKeyServices:
-		return "WriterGroupType_SecurityKeyServices"
-	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_MaxNetworkMessageSize:
-		return "WriterGroupType_MaxNetworkMessageSize"
-	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_Status_State:
-		return "WriterGroupType_Status_State"
 	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_WriterGroupId:
 		return "WriterGroupType_WriterGroupId"
 	case OpcuaNodeIdServicesVariableWriter_WriterGroupType_PublishingInterval:

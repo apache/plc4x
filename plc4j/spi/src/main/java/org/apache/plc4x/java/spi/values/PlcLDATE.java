@@ -99,6 +99,11 @@ public class PlcLDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @Override
+    public LocalDateTime getDateTime() {
+        return value.atStartOfDay();
+    }
+
+    @Override
     public String toString() {
         return String.valueOf(value);
     }

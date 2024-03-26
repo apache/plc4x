@@ -124,8 +124,9 @@ public abstract class PnDcp_Block implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =
-        readDiscriminatorField(
+        readDiscriminatorEnumField(
             "option",
+            "PnDcp_BlockOptions",
             new DataReaderEnumDefault<>(
                 PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

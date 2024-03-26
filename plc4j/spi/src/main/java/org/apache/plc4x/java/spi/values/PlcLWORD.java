@@ -277,6 +277,11 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
         return value.toString();
     }
 
+    @Override
+    public byte[] getRaw() {
+        return getBytes();
+    }    
+    
     public byte[] getBytes() {
         byte[] tmp = value.toByteArray();
         byte[] bytes = new byte[8];

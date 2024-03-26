@@ -19,6 +19,8 @@
 package org.apache.plc4x.java.modbus.rtu;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
@@ -26,19 +28,19 @@ import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
 import org.apache.plc4x.java.modbus.rtu.protocol.ModbusRtuProtocolLogic;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> implements TransportConfigurationTypeProvider {
+public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
 
     @Override
     public String getProtocolCode() {
@@ -51,13 +53,27 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> implement
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ModbusRtuConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "serial";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(ModbusTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("serial");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("tcp", "serial");
     }
 
     /**
@@ -133,15 +149,6 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> implement
     @Override
     public ModbusTag prepareTag(String tagAddress){
         return ModbusTag.of(tagAddress);
-    }
-
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return ModbusTcpTransportConfiguration.class;
-        }
-        return null;
     }
 
 }

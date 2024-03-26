@@ -379,67 +379,67 @@ if( ( cpuFunctionGroup == 0x02 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunct
 if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadDiagnosticMessage */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message;
 
-  // Simple Field (EventId)
-  uint16_t EventId = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &EventId);
+  // Simple Field (eventId)
+  uint16_t eventId = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &eventId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_event_id = EventId;
+  (*_message)->s7_payload_diagnostic_message_event_id = eventId;
 
 
-  // Simple Field (PriorityClass)
-  uint8_t PriorityClass = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &PriorityClass);
+  // Simple Field (priorityClass)
+  uint8_t priorityClass = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &priorityClass);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_priority_class = PriorityClass;
+  (*_message)->s7_payload_diagnostic_message_priority_class = priorityClass;
 
 
-  // Simple Field (ObNumber)
-  uint8_t ObNumber = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &ObNumber);
+  // Simple Field (obNumber)
+  uint8_t obNumber = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &obNumber);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_ob_number = ObNumber;
+  (*_message)->s7_payload_diagnostic_message_ob_number = obNumber;
 
 
-  // Simple Field (DatId)
-  uint16_t DatId = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &DatId);
+  // Simple Field (datId)
+  uint16_t datId = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &datId);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_dat_id = DatId;
+  (*_message)->s7_payload_diagnostic_message_dat_id = datId;
 
 
-  // Simple Field (Info1)
-  uint16_t Info1 = 0;
-  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &Info1);
+  // Simple Field (info1)
+  uint16_t info1 = 0;
+  _res = plc4c_spi_read_unsigned_short(readBuffer, 16, (uint16_t*) &info1);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_info1 = Info1;
+  (*_message)->s7_payload_diagnostic_message_info1 = info1;
 
 
-  // Simple Field (Info2)
-  uint32_t Info2 = 0;
-  _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &Info2);
+  // Simple Field (info2)
+  uint32_t info2 = 0;
+  _res = plc4c_spi_read_unsigned_int(readBuffer, 32, (uint32_t*) &info2);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_info2 = Info2;
+  (*_message)->s7_payload_diagnostic_message_info2 = info2;
 
 
-  // Simple Field (TimeStamp)
-  plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  // Simple Field (timeStamp)
+  plc4c_s7_read_write_date_and_time* timeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &timeStamp);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_diagnostic_message_time_stamp = TimeStamp;
+  (*_message)->s7_payload_diagnostic_message_time_stamp = timeStamp;
   } else 
 if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x00 ) && ( cpuSubfunction == 0x05 ) ) { /* S7PayloadAlarm8 */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_alarm8;
@@ -567,13 +567,13 @@ if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunct
 if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x02 ) ) { /* S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request;
 
-  // Simple Field (Subscription)
-  uint8_t Subscription = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Subscription);
+  // Simple Field (subscription)
+  uint8_t subscription = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &subscription);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_subscription = Subscription;
+  (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_subscription = subscription;
 
 
   // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -598,32 +598,32 @@ if( ( cpuFunctionGroup == 0x04 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunct
   (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_magic_key = magicKey;
 
 
-  // Optional Field (Alarmtype) (Can be skipped, if a given expression evaluates to false)
-  plc4c_s7_read_write_alarm_state_type* Alarmtype = NULL;
-  if((Subscription) >= (128)) {
-    _res = plc4c_s7_read_write_alarm_state_type_parse(ctx, readBuffer, &Alarmtype);
+  // Optional Field (alarmtype) (Can be skipped, if a given expression evaluates to false)
+  plc4c_s7_read_write_alarm_state_type* alarmtype = NULL;
+  if((subscription) >= (128)) {
+    _res = plc4c_s7_read_write_alarm_state_type_parse(ctx, readBuffer, &alarmtype);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype = Alarmtype;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype = alarmtype;
   } else {
     (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype = NULL;
   }
 
 
-  // Optional Field (Reserve) (Can be skipped, if a given expression evaluates to false)
-  uint8_t* Reserve = NULL;
-  if((Subscription) >= (128)) {
-    Reserve = malloc(sizeof(uint8_t));
-    if(Reserve == NULL) {
+  // Optional Field (reserve) (Can be skipped, if a given expression evaluates to false)
+  uint8_t* reserve = NULL;
+  if((subscription) >= (128)) {
+    reserve = malloc(sizeof(uint8_t));
+    if(reserve == NULL) {
       return NO_MEMORY;
     }
-    *Reserve = 0;
-    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) Reserve);
+    *reserve = 0;
+    _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) reserve);
     if(_res != OK) {
       return _res;
     }
-    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve = Reserve;
+    (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve = reserve;
   } else {
     (*_message)->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve = NULL;
   }
@@ -916,31 +916,31 @@ if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunct
 if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x01 ) ) { /* S7PayloadUserDataItemClkResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response;
 
-  // Simple Field (Reserved)
-  uint8_t Reserved = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Reserved);
+  // Simple Field (res)
+  uint8_t res = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &res);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_response_reserved = Reserved;
+  (*_message)->s7_payload_user_data_item_clk_response_res = res;
 
 
-  // Simple Field (Year1)
-  uint8_t Year1 = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Year1);
+  // Simple Field (year1)
+  uint8_t year1 = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &year1);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_response_year1 = Year1;
+  (*_message)->s7_payload_user_data_item_clk_response_year1 = year1;
 
 
-  // Simple Field (TimeStamp)
-  plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  // Simple Field (timeStamp)
+  plc4c_s7_read_write_date_and_time* timeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &timeStamp);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_response_time_stamp = TimeStamp;
+  (*_message)->s7_payload_user_data_item_clk_response_time_stamp = timeStamp;
   } else 
 if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadUserDataItemClkFRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_request;
@@ -948,31 +948,31 @@ if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunct
 if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x03 ) ) { /* S7PayloadUserDataItemClkFResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response;
 
-  // Simple Field (Reserved)
-  uint8_t Reserved = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Reserved);
+  // Simple Field (res)
+  uint8_t res = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &res);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_f_response_reserved = Reserved;
+  (*_message)->s7_payload_user_data_item_clk_f_response_res = res;
 
 
-  // Simple Field (Year1)
-  uint8_t Year1 = 0;
-  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &Year1);
+  // Simple Field (year1)
+  uint8_t year1 = 0;
+  _res = plc4c_spi_read_unsigned_byte(readBuffer, 8, (uint8_t*) &year1);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_f_response_year1 = Year1;
+  (*_message)->s7_payload_user_data_item_clk_f_response_year1 = year1;
 
 
-  // Simple Field (TimeStamp)
-  plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  // Simple Field (timeStamp)
+  plc4c_s7_read_write_date_and_time* timeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &timeStamp);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_f_response_time_stamp = TimeStamp;
+  (*_message)->s7_payload_user_data_item_clk_f_response_time_stamp = timeStamp;
   } else 
 if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunction == 0x04 ) ) { /* S7PayloadUserDataItemClkSetRequest */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_request;
@@ -1003,13 +1003,13 @@ if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x04 ) && ( cpuSubfunct
   }
 
 
-  // Simple Field (TimeStamp)
-  plc4c_s7_read_write_date_and_time* TimeStamp;
-  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &TimeStamp);
+  // Simple Field (timeStamp)
+  plc4c_s7_read_write_date_and_time* timeStamp;
+  _res = plc4c_s7_read_write_date_and_time_parse(ctx, readBuffer, (void*) &timeStamp);
   if(_res != OK) {
     return _res;
   }
-  (*_message)->s7_payload_user_data_item_clk_set_request_time_stamp = TimeStamp;
+  (*_message)->s7_payload_user_data_item_clk_set_request_time_stamp = timeStamp;
   } else 
 if( ( cpuFunctionGroup == 0x07 ) && ( cpuFunctionType == 0x08 ) && ( cpuSubfunction == 0x04 ) ) { /* S7PayloadUserDataItemClkSetResponse */
     (*_message)->_type = plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_set_response;
@@ -1189,43 +1189,43 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message: {
 
-  // Simple Field (EventId)
+  // Simple Field (eventId)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_diagnostic_message_event_id);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (PriorityClass)
+  // Simple Field (priorityClass)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_diagnostic_message_priority_class);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (ObNumber)
+  // Simple Field (obNumber)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_diagnostic_message_ob_number);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (DatId)
+  // Simple Field (datId)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_diagnostic_message_dat_id);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (Info1)
+  // Simple Field (info1)
   _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, _message->s7_payload_diagnostic_message_info1);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (Info2)
+  // Simple Field (info2)
   _res = plc4c_spi_write_unsigned_int(writeBuffer, 32, _message->s7_payload_diagnostic_message_info2);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (TimeStamp)
+  // Simple Field (timeStamp)
   _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_diagnostic_message_time_stamp);
   if(_res != OK) {
     return _res;
@@ -1338,7 +1338,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request: {
 
-  // Simple Field (Subscription)
+  // Simple Field (subscription)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_cpu_function_msg_subscription_request_subscription);
   if(_res != OK) {
     return _res;
@@ -1356,7 +1356,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     return _res;
   }
 
-  // Optional Field (Alarmtype)
+  // Optional Field (alarmtype)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype != NULL) {
     _res = plc4c_s7_read_write_alarm_state_type_serialize(ctx, writeBuffer, &_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype);
     if(_res != OK) {
@@ -1364,7 +1364,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     }
   }
 
-  // Optional Field (Reserve)
+  // Optional Field (reserve)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve != NULL) {
     _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, *_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve);
     if(_res != OK) {
@@ -1547,19 +1547,19 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response: {
 
-  // Simple Field (Reserved)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_response_reserved);
+  // Simple Field (res)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_response_res);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (Year1)
+  // Simple Field (year1)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_response_year1);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (TimeStamp)
+  // Simple Field (timeStamp)
   _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_clk_response_time_stamp);
   if(_res != OK) {
     return _res;
@@ -1573,19 +1573,19 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response: {
 
-  // Simple Field (Reserved)
-  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_f_response_reserved);
+  // Simple Field (res)
+  _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_f_response_res);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (Year1)
+  // Simple Field (year1)
   _res = plc4c_spi_write_unsigned_byte(writeBuffer, 8, _message->s7_payload_user_data_item_clk_f_response_year1);
   if(_res != OK) {
     return _res;
   }
 
-  // Simple Field (TimeStamp)
+  // Simple Field (timeStamp)
   _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_clk_f_response_time_stamp);
   if(_res != OK) {
     return _res;
@@ -1607,7 +1607,7 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_
     return _res;
   }
 
-  // Simple Field (TimeStamp)
+  // Simple Field (timeStamp)
   _res = plc4c_s7_read_write_date_and_time_serialize(ctx, writeBuffer, _message->s7_payload_user_data_item_clk_set_request_time_stamp);
   if(_res != OK) {
     return _res;
@@ -1756,31 +1756,31 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_diagnostic_message: {
 
-  // Simple field (EventId)
+  // Simple field (eventId)
   lengthInBits += 16;
 
 
-  // Simple field (PriorityClass)
+  // Simple field (priorityClass)
   lengthInBits += 8;
 
 
-  // Simple field (ObNumber)
+  // Simple field (obNumber)
   lengthInBits += 8;
 
 
-  // Simple field (DatId)
+  // Simple field (datId)
   lengthInBits += 16;
 
 
-  // Simple field (Info1)
+  // Simple field (info1)
   lengthInBits += 16;
 
 
-  // Simple field (Info2)
+  // Simple field (info2)
   lengthInBits += 32;
 
 
-  // Simple field (TimeStamp)
+  // Simple field (timeStamp)
   lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_diagnostic_message_time_stamp);
 
       break;
@@ -1858,7 +1858,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_cpu_function_msg_subscription_request: {
 
-  // Simple field (Subscription)
+  // Simple field (subscription)
   lengthInBits += 8;
 
 
@@ -1870,13 +1870,13 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
   lengthInBits += 64;
 
 
-  // Optional Field (Alarmtype)
+  // Optional Field (alarmtype)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype != NULL) {
     lengthInBits += plc4c_s7_read_write_alarm_state_type_length_in_bits(ctx, _message->s7_payload_user_data_item_cpu_function_msg_subscription_request_alarmtype);
   }
 
 
-  // Optional Field (Reserve)
+  // Optional Field (reserve)
   if(_message->s7_payload_user_data_item_cpu_function_msg_subscription_request_reserve != NULL) {
     lengthInBits += 8;
   }
@@ -2013,15 +2013,15 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_response: {
 
-  // Simple field (Reserved)
+  // Simple field (res)
   lengthInBits += 8;
 
 
-  // Simple field (Year1)
+  // Simple field (year1)
   lengthInBits += 8;
 
 
-  // Simple field (TimeStamp)
+  // Simple field (timeStamp)
   lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_user_data_item_clk_response_time_stamp);
 
       break;
@@ -2032,15 +2032,15 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
     }
     case plc4c_s7_read_write_s7_payload_user_data_item_type_plc4c_s7_read_write_s7_payload_user_data_item_clk_f_response: {
 
-  // Simple field (Reserved)
+  // Simple field (res)
   lengthInBits += 8;
 
 
-  // Simple field (Year1)
+  // Simple field (year1)
   lengthInBits += 8;
 
 
-  // Simple field (TimeStamp)
+  // Simple field (timeStamp)
   lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_user_data_item_clk_f_response_time_stamp);
 
       break;
@@ -2055,7 +2055,7 @@ uint16_t plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_
   lengthInBits += 8;
 
 
-  // Simple field (TimeStamp)
+  // Simple field (timeStamp)
   lengthInBits += plc4c_s7_read_write_date_and_time_length_in_bits(ctx, _message->s7_payload_user_data_item_clk_set_request_time_stamp);
 
       break;

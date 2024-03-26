@@ -48,6 +48,7 @@ const (
 	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId          JsonNetworkMessageContentMask = 8
 	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetClassId       JsonNetworkMessageContentMask = 16
 	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo              JsonNetworkMessageContentMask = 32
+	JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskWriterGroupName      JsonNetworkMessageContentMask = 64
 )
 
 var JsonNetworkMessageContentMaskValues []JsonNetworkMessageContentMask
@@ -62,6 +63,7 @@ func init() {
 		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId,
 		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskDataSetClassId,
 		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo,
+		JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskWriterGroupName,
 	}
 }
 
@@ -79,6 +81,8 @@ func JsonNetworkMessageContentMaskByValue(value uint32) (enum JsonNetworkMessage
 		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo, true
 	case 4:
 		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskSingleDataSetMessage, true
+	case 64:
+		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskWriterGroupName, true
 	case 8:
 		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId, true
 	}
@@ -99,6 +103,8 @@ func JsonNetworkMessageContentMaskByName(value string) (enum JsonNetworkMessageC
 		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskReplyTo, true
 	case "jsonNetworkMessageContentMaskSingleDataSetMessage":
 		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskSingleDataSetMessage, true
+	case "jsonNetworkMessageContentMaskWriterGroupName":
+		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskWriterGroupName, true
 	case "jsonNetworkMessageContentMaskPublisherId":
 		return JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId, true
 	}
@@ -180,6 +186,8 @@ func (e JsonNetworkMessageContentMask) PLC4XEnumName() string {
 		return "jsonNetworkMessageContentMaskReplyTo"
 	case JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskSingleDataSetMessage:
 		return "jsonNetworkMessageContentMaskSingleDataSetMessage"
+	case JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskWriterGroupName:
+		return "jsonNetworkMessageContentMaskWriterGroupName"
 	case JsonNetworkMessageContentMask_jsonNetworkMessageContentMaskPublisherId:
 		return "jsonNetworkMessageContentMaskPublisherId"
 	}

@@ -21,6 +21,7 @@ package org.apache.plc4x.java.profinet.config;
 
 import org.apache.plc4x.java.transport.rawsocket.DefaultRawSocketTransportConfiguration;
 import org.apache.plc4x.java.utils.pcap.netty.handlers.PacketHandler;
+import org.pcap4j.packet.*;
 
 public class ProfinetRawSocketTransportConfiguration extends DefaultRawSocketTransportConfiguration {
 
@@ -35,7 +36,24 @@ public class ProfinetRawSocketTransportConfiguration extends DefaultRawSocketTra
 
     @Override
     public PacketHandler getPcapPacketHandler() {
-        return null;
+        return new PacketHandler() {
+            @Override
+            public byte[] getData(Packet packet) {
+                if(packet instanceof EthernetPacket) {
+                    EthernetPacket ethernetPacket = (EthernetPacket) packet;
+                    if(ethernetPacket.getPayload() instanceof IpV4Packet) {
+                        IpV4Packet ipV4Packet = (IpV4Packet) ethernetPacket.getPayload();
+                        if(ipV4Packet.getPayload() instanceof UdpPacket) {
+                            UdpPacket udpPacket = (UdpPacket) ipV4Packet.getPayload();
+                            if(udpPacket.getHeader().getSrcPort().value() == (short) 49156) {
+                                System.out.println(packet);
+                            }
+                        }
+                    }
+                }
+                return packet.getRawData();
+            }
+        };
     }
 
 }

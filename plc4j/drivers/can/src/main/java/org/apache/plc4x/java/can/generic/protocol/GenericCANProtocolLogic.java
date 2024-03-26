@@ -63,6 +63,11 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     }
 
     @Override
+    public void close(ConversationContext<GenericFrame> context) {
+        tm.shutdown();
+    }
+
+    @Override
     public void setContext(ConversationContext<GenericFrame> context) {
         super.setContext(context);
     }
@@ -78,11 +83,6 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
     }
 
     @Override
-    public void close(ConversationContext<GenericFrame> context) {
-
-    }
-
-    @Override
     public void decode(ConversationContext<GenericFrame> context, GenericFrame msg) throws Exception {
         for (Map.Entry<DefaultPlcConsumerRegistration, Consumer<PlcSubscriptionEvent>> entry : consumers.entrySet()) {
             DefaultPlcConsumerRegistration registration = entry.getKey();
@@ -93,9 +93,11 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                 ReadBuffer buffer = new ReadBufferByteBased(msg.getData(), ByteOrder.LITTLE_ENDIAN);
                 buffer.pullContext("readTags");
                 if (subscription.matches(msg.getNodeId())) {
+                    byte[] data = msg.getData();
+                    ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, ByteOrder.LITTLE_ENDIAN);
                     for (Entry<String, GenericCANTag> tag : subscription.getTags().entrySet()) {
                         try {
-                            PlcValue value = read(buffer, tag.getValue());
+                            PlcValue value = read(readBuffer, tag.getValue(), data.length);
                             if (value == null) {
                                 tags.put(tag.getKey(), new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
                             } else {
@@ -112,21 +114,21 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
         }
     }
 
-    private PlcValue read(ReadBuffer buffer, GenericCANTag tag) throws ParseException {
+    private PlcValue read(ReadBuffer buffer, GenericCANTag tag, int length) throws ParseException {
         try {
             buffer.pullContext("read-" + tag);
-            return DataItem.staticParse(buffer, tag.getDataType());
+            return DataItem.staticParse(buffer, tag.getDataType(), length);
         } finally {
             buffer.closeContext("read-" + tag);
         }
     }
 
     private void write(WriteBuffer buffer, GenericCANTag tag, PlcValue value) throws SerializationException {
-        WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, tag.getDataType()));
-        DataItem.staticSerialize(writeBuffer, value, tag.getDataType());
         try {
             buffer.pushContext("write-" + tag);
-            buffer.writeByteArray(writeBuffer.getData());
+            WriteBufferByteBased writeBuffer = new WriteBufferByteBased(DataItem.getLengthInBytes(value, tag.getDataType(), value.getLength()), ByteOrder.LITTLE_ENDIAN);
+            DataItem.staticSerialize(writeBuffer, value, tag.getDataType(), value.getLength(), ByteOrder.LITTLE_ENDIAN);
+            buffer.writeByteArray(writeBuffer.getBytes());
         } finally {
             buffer.popContext("write-" + tag);
         }
@@ -173,7 +175,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
                     }
                 }
                 if (!discarded) {
-                    byte[] data = message.getValue().getData();
+                    byte[] data = message.getValue().getBytes();
                     logger.debug("Writing message with id {} and {} bytes of data", message.getKey(), data.length);
                     context.sendToWire(new GenericFrame(message.getKey(), data));
                 }
@@ -193,7 +195,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
         Map<String, ResponseItem<PlcSubscriptionHandle>> answers = new LinkedHashMap<>();
         DefaultPlcSubscriptionResponse response = new DefaultPlcSubscriptionResponse(rq, answers);
 
-        Map<Integer, GenericCANSubscriptionHandle> handles = new HashMap<>();
+        Map<Integer, GenericCANSubscriptionHandle> handles = new LinkedHashMap<>();
         for (String key : rq.getTagNames()) {
             DefaultPlcSubscriptionTag subscription = (DefaultPlcSubscriptionTag) rq.getTag(key);
             if (subscription.getPlcSubscriptionType() != PlcSubscriptionType.EVENT) {
@@ -215,7 +217,7 @@ public class GenericCANProtocolLogic extends Plc4xCANProtocolBase<GenericFrame> 
 
     @Override
     public PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer, Collection<PlcSubscriptionHandle> handles) {
-        final DefaultPlcConsumerRegistration consumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new DefaultPlcSubscriptionHandle[0]));
+        final DefaultPlcConsumerRegistration consumerRegistration = new DefaultPlcConsumerRegistration(this, consumer, handles.toArray(new PlcSubscriptionHandle[0]));
         consumers.put(consumerRegistration, consumer);
         return consumerRegistration;
     }

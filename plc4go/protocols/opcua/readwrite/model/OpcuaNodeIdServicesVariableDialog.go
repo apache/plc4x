@@ -42,20 +42,7 @@ type IOpcuaNodeIdServicesVariableDialog interface {
 
 const (
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Prompt                               OpcuaNodeIdServicesVariableDialog = 2831
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventId                              OpcuaNodeIdServicesVariableDialog = 4188
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventType                            OpcuaNodeIdServicesVariableDialog = 4189
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceNode                           OpcuaNodeIdServicesVariableDialog = 4190
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceName                           OpcuaNodeIdServicesVariableDialog = 4191
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Time                                 OpcuaNodeIdServicesVariableDialog = 4192
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ReceiveTime                          OpcuaNodeIdServicesVariableDialog = 4193
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_LocalTime                            OpcuaNodeIdServicesVariableDialog = 4194
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Message                              OpcuaNodeIdServicesVariableDialog = 4195
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Severity                             OpcuaNodeIdServicesVariableDialog = 4196
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Retain                               OpcuaNodeIdServicesVariableDialog = 4197
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh_InputArguments      OpcuaNodeIdServicesVariableDialog = 4199
 	OpcuaNodeIdServicesVariableDialog_DialogResponseMethodType_InputArguments                  OpcuaNodeIdServicesVariableDialog = 9032
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionName                        OpcuaNodeIdServicesVariableDialog = 9033
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_BranchId                             OpcuaNodeIdServicesVariableDialog = 9034
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState                         OpcuaNodeIdServicesVariableDialog = 9035
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_Id                      OpcuaNodeIdServicesVariableDialog = 9036
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_Name                    OpcuaNodeIdServicesVariableDialog = 9037
@@ -65,14 +52,6 @@ const (
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_EffectiveTransitionTime OpcuaNodeIdServicesVariableDialog = 9041
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_TrueState               OpcuaNodeIdServicesVariableDialog = 9042
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_FalseState              OpcuaNodeIdServicesVariableDialog = 9043
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality                              OpcuaNodeIdServicesVariableDialog = 9044
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality_SourceTimestamp              OpcuaNodeIdServicesVariableDialog = 9045
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity                         OpcuaNodeIdServicesVariableDialog = 9046
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity_SourceTimestamp         OpcuaNodeIdServicesVariableDialog = 9047
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment                              OpcuaNodeIdServicesVariableDialog = 9048
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment_SourceTimestamp              OpcuaNodeIdServicesVariableDialog = 9049
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ClientUserId                         OpcuaNodeIdServicesVariableDialog = 9050
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_AddComment_InputArguments            OpcuaNodeIdServicesVariableDialog = 9054
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState                          OpcuaNodeIdServicesVariableDialog = 9055
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState_Id                       OpcuaNodeIdServicesVariableDialog = 9056
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState_Name                     OpcuaNodeIdServicesVariableDialog = 9057
@@ -88,14 +67,8 @@ const (
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_CancelResponse                       OpcuaNodeIdServicesVariableDialog = 9067
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastResponse                         OpcuaNodeIdServicesVariableDialog = 9068
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond_InputArguments               OpcuaNodeIdServicesVariableDialog = 9070
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassId                     OpcuaNodeIdServicesVariableDialog = 11114
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassName                   OpcuaNodeIdServicesVariableDialog = 11115
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh2_InputArguments     OpcuaNodeIdServicesVariableDialog = 12917
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassId                  OpcuaNodeIdServicesVariableDialog = 16365
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassName                OpcuaNodeIdServicesVariableDialog = 16366
 	OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond2_InputArguments              OpcuaNodeIdServicesVariableDialog = 24313
 	OpcuaNodeIdServicesVariableDialog_DialogResponse2MethodType_InputArguments                 OpcuaNodeIdServicesVariableDialog = 24315
-	OpcuaNodeIdServicesVariableDialog_DialogConditionType_SupportsFilteredRetain               OpcuaNodeIdServicesVariableDialog = 32061
 )
 
 var OpcuaNodeIdServicesVariableDialogValues []OpcuaNodeIdServicesVariableDialog
@@ -104,20 +77,7 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableDialogValues = []OpcuaNodeIdServicesVariableDialog{
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Prompt,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventId,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventType,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceNode,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceName,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Time,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ReceiveTime,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_LocalTime,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Message,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Severity,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Retain,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh_InputArguments,
 		OpcuaNodeIdServicesVariableDialog_DialogResponseMethodType_InputArguments,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionName,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_BranchId,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_Id,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_Name,
@@ -127,14 +87,6 @@ func init() {
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_TrueState,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_FalseState,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality_SourceTimestamp,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity_SourceTimestamp,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment_SourceTimestamp,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ClientUserId,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_AddComment_InputArguments,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState_Id,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState_Name,
@@ -150,65 +102,21 @@ func init() {
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_CancelResponse,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastResponse,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond_InputArguments,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassId,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassName,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh2_InputArguments,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassName,
 		OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond2_InputArguments,
 		OpcuaNodeIdServicesVariableDialog_DialogResponse2MethodType_InputArguments,
-		OpcuaNodeIdServicesVariableDialog_DialogConditionType_SupportsFilteredRetain,
 	}
 }
 
 func OpcuaNodeIdServicesVariableDialogByValue(value int32) (enum OpcuaNodeIdServicesVariableDialog, ok bool) {
 	switch value {
-	case 11114:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassId, true
-	case 11115:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassName, true
-	case 12917:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh2_InputArguments, true
-	case 16365:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassId, true
-	case 16366:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassName, true
 	case 24313:
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond2_InputArguments, true
 	case 24315:
 		return OpcuaNodeIdServicesVariableDialog_DialogResponse2MethodType_InputArguments, true
 	case 2831:
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Prompt, true
-	case 32061:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_SupportsFilteredRetain, true
-	case 4188:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventId, true
-	case 4189:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventType, true
-	case 4190:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceNode, true
-	case 4191:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceName, true
-	case 4192:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Time, true
-	case 4193:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ReceiveTime, true
-	case 4194:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_LocalTime, true
-	case 4195:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Message, true
-	case 4196:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Severity, true
-	case 4197:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Retain, true
-	case 4199:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh_InputArguments, true
 	case 9032:
 		return OpcuaNodeIdServicesVariableDialog_DialogResponseMethodType_InputArguments, true
-	case 9033:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionName, true
-	case 9034:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_BranchId, true
 	case 9035:
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState, true
 	case 9036:
@@ -227,22 +135,6 @@ func OpcuaNodeIdServicesVariableDialogByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_TrueState, true
 	case 9043:
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_FalseState, true
-	case 9044:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality, true
-	case 9045:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality_SourceTimestamp, true
-	case 9046:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity, true
-	case 9047:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity_SourceTimestamp, true
-	case 9048:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment, true
-	case 9049:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment_SourceTimestamp, true
-	case 9050:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ClientUserId, true
-	case 9054:
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_AddComment_InputArguments, true
 	case 9055:
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState, true
 	case 9056:
@@ -279,52 +171,14 @@ func OpcuaNodeIdServicesVariableDialogByValue(value int32) (enum OpcuaNodeIdServ
 
 func OpcuaNodeIdServicesVariableDialogByName(value string) (enum OpcuaNodeIdServicesVariableDialog, ok bool) {
 	switch value {
-	case "DialogConditionType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassId, true
-	case "DialogConditionType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassName, true
-	case "DialogConditionType_ConditionRefresh2_InputArguments":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh2_InputArguments, true
-	case "DialogConditionType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassId, true
-	case "DialogConditionType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassName, true
 	case "DialogConditionType_Respond2_InputArguments":
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond2_InputArguments, true
 	case "DialogResponse2MethodType_InputArguments":
 		return OpcuaNodeIdServicesVariableDialog_DialogResponse2MethodType_InputArguments, true
 	case "DialogConditionType_Prompt":
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Prompt, true
-	case "DialogConditionType_SupportsFilteredRetain":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_SupportsFilteredRetain, true
-	case "DialogConditionType_EventId":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventId, true
-	case "DialogConditionType_EventType":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventType, true
-	case "DialogConditionType_SourceNode":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceNode, true
-	case "DialogConditionType_SourceName":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceName, true
-	case "DialogConditionType_Time":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Time, true
-	case "DialogConditionType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ReceiveTime, true
-	case "DialogConditionType_LocalTime":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_LocalTime, true
-	case "DialogConditionType_Message":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Message, true
-	case "DialogConditionType_Severity":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Severity, true
-	case "DialogConditionType_Retain":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Retain, true
-	case "DialogConditionType_ConditionRefresh_InputArguments":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh_InputArguments, true
 	case "DialogResponseMethodType_InputArguments":
 		return OpcuaNodeIdServicesVariableDialog_DialogResponseMethodType_InputArguments, true
-	case "DialogConditionType_ConditionName":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionName, true
-	case "DialogConditionType_BranchId":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_BranchId, true
 	case "DialogConditionType_EnabledState":
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState, true
 	case "DialogConditionType_EnabledState_Id":
@@ -343,22 +197,6 @@ func OpcuaNodeIdServicesVariableDialogByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_TrueState, true
 	case "DialogConditionType_EnabledState_FalseState":
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_FalseState, true
-	case "DialogConditionType_Quality":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality, true
-	case "DialogConditionType_Quality_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality_SourceTimestamp, true
-	case "DialogConditionType_LastSeverity":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity, true
-	case "DialogConditionType_LastSeverity_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity_SourceTimestamp, true
-	case "DialogConditionType_Comment":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment, true
-	case "DialogConditionType_Comment_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment_SourceTimestamp, true
-	case "DialogConditionType_ClientUserId":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_ClientUserId, true
-	case "DialogConditionType_AddComment_InputArguments":
-		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_AddComment_InputArguments, true
 	case "DialogConditionType_DialogState":
 		return OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState, true
 	case "DialogConditionType_DialogState_Id":
@@ -456,52 +294,14 @@ func (e OpcuaNodeIdServicesVariableDialog) SerializeWithWriteBuffer(ctx context.
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableDialog) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassId:
-		return "DialogConditionType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionClassName:
-		return "DialogConditionType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh2_InputArguments:
-		return "DialogConditionType_ConditionRefresh2_InputArguments"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassId:
-		return "DialogConditionType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionSubClassName:
-		return "DialogConditionType_ConditionSubClassName"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Respond2_InputArguments:
 		return "DialogConditionType_Respond2_InputArguments"
 	case OpcuaNodeIdServicesVariableDialog_DialogResponse2MethodType_InputArguments:
 		return "DialogResponse2MethodType_InputArguments"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Prompt:
 		return "DialogConditionType_Prompt"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_SupportsFilteredRetain:
-		return "DialogConditionType_SupportsFilteredRetain"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventId:
-		return "DialogConditionType_EventId"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_EventType:
-		return "DialogConditionType_EventType"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceNode:
-		return "DialogConditionType_SourceNode"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_SourceName:
-		return "DialogConditionType_SourceName"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Time:
-		return "DialogConditionType_Time"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ReceiveTime:
-		return "DialogConditionType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_LocalTime:
-		return "DialogConditionType_LocalTime"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Message:
-		return "DialogConditionType_Message"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Severity:
-		return "DialogConditionType_Severity"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Retain:
-		return "DialogConditionType_Retain"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionRefresh_InputArguments:
-		return "DialogConditionType_ConditionRefresh_InputArguments"
 	case OpcuaNodeIdServicesVariableDialog_DialogResponseMethodType_InputArguments:
 		return "DialogResponseMethodType_InputArguments"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ConditionName:
-		return "DialogConditionType_ConditionName"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_BranchId:
-		return "DialogConditionType_BranchId"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState:
 		return "DialogConditionType_EnabledState"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_Id:
@@ -520,22 +320,6 @@ func (e OpcuaNodeIdServicesVariableDialog) PLC4XEnumName() string {
 		return "DialogConditionType_EnabledState_TrueState"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_EnabledState_FalseState:
 		return "DialogConditionType_EnabledState_FalseState"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality:
-		return "DialogConditionType_Quality"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Quality_SourceTimestamp:
-		return "DialogConditionType_Quality_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity:
-		return "DialogConditionType_LastSeverity"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_LastSeverity_SourceTimestamp:
-		return "DialogConditionType_LastSeverity_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment:
-		return "DialogConditionType_Comment"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_Comment_SourceTimestamp:
-		return "DialogConditionType_Comment_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_ClientUserId:
-		return "DialogConditionType_ClientUserId"
-	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_AddComment_InputArguments:
-		return "DialogConditionType_AddComment_InputArguments"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState:
 		return "DialogConditionType_DialogState"
 	case OpcuaNodeIdServicesVariableDialog_DialogConditionType_DialogState_Id:

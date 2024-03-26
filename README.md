@@ -83,12 +83,12 @@ It also provides (Java) tools for usage inside an application:
 ## Getting started
 
 Depending on the programming language, the usage will differ, therefore please go to the
-[Getting Started](https://plc4x.apache.org/users/gettingstarted.html) on the PLC4X website to look up
+[Getting Started](https://plc4x.apache.org/users/getting-started/plc4j.html) on the PLC4X website to look up
 the language of choice.
 
 ### Java
 
-NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 11 (Currently with Java 19 the Apache Kafka integration module is excluded from the build as the plugins it requires are incompatible with this version)
+NOTE: Currently the Java version which supports building of all parts of Apache PLC4X is at least Java 19 (We have tested all versions up to Java 21), however it's only the Java Tool UI, that requires this right now. All other modules need at least Java 11. 
 
 See the PLC4J user guide on the website to start using PLC4X in your Java application:
 [https://plc4x.apache.org/users/getting-started/plc4j.html](https://plc4x.apache.org/users/getting-started/plc4j.html)
@@ -156,7 +156,7 @@ The `out` directory however is excluded per default from the assembly descriptor
 You must have at least Java 11 installed on your system and connectivity to Maven Central
 (for downloading external third party dependencies). Maven 3.6 is required to build, so be sure it's installed and available on your system.
 
-NOTE: When using Java 19 currently the Apache Kafka integration module is excluded from the build as one of the plugins it requires has proven to be incompatible with this version.
+NOTE: When using Java 21 currently the Apache Kafka integration module is excluded from the build as one of the plugins it requires has proven to be incompatible with this version.
 
 NOTE: There is a convenience Maven-Wrapper installed in the repo, when used, this automatically downloads and installs Maven. If you want to use this, please use `./mvnw` or `mvnw` instead of the normal `mvn` command.
 
@@ -184,6 +184,12 @@ The `Go` drivers can be built by enabling the `with-go` profile:
 ./mvnw -P with-go install 
 ```
 
+The `Java` drivers can be built by enabling the `with-java` profile:
+
+```
+./mvnw -P with-java install 
+```
+
 The `C# / .Net` implementation is currently in a `work in progress` state.
 In order to be able to build the `C# / .Net` module, you currently need to activate the:
 `with-dotnet` profiles.
@@ -194,16 +200,16 @@ In order to be able to build the `C# / .Net` module, you currently need to activ
 
 The Python implementation is currently in a somewhat unclean state and still needs refactoring.
 In order to be able to build the Python module, you currently need to activate the:
-`with-sandbox` and `with-python` profiles.
+`with-python` profiles.
 
 ```
-./mvnw -P with-sandbox,with-python install
+./mvnw -P with-python install
 ```
 
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox,enable-all-checks install
+./mvnw -P with-c,with-dotnet,with-go,with-java,with-python,enable-all-checks,update-generated-code install
 ```
 
 ## Community

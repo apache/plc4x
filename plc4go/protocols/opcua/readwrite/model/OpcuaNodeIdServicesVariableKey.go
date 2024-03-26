@@ -50,8 +50,6 @@ const (
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_UpdateCredential_InputArguments  OpcuaNodeIdServicesVariableKey = 17520
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_InputArguments                          OpcuaNodeIdServicesVariableKey = 17523
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments                         OpcuaNodeIdServicesVariableKey = 17524
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments            OpcuaNodeIdServicesVariableKey = 17526
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments           OpcuaNodeIdServicesVariableKey = 17527
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_InputArguments                                    OpcuaNodeIdServicesVariableKey = 17529
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_OutputArguments                                   OpcuaNodeIdServicesVariableKey = 17530
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_GetEncryptingKey_InputArguments                                OpcuaNodeIdServicesVariableKey = 17535
@@ -60,76 +58,10 @@ const (
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ServiceStatus                                                  OpcuaNodeIdServicesVariableKey = 18005
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_UpdateCredential_InputArguments                                OpcuaNodeIdServicesVariableKey = 18007
 	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdateMethodType_InputArguments                                                  OpcuaNodeIdServicesVariableKey = 18010
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventId                                                           OpcuaNodeIdServicesVariableKey = 18012
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventType                                                         OpcuaNodeIdServicesVariableKey = 18013
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceNode                                                        OpcuaNodeIdServicesVariableKey = 18014
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceName                                                        OpcuaNodeIdServicesVariableKey = 18015
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Time                                                              OpcuaNodeIdServicesVariableKey = 18016
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ReceiveTime                                                       OpcuaNodeIdServicesVariableKey = 18017
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_LocalTime                                                         OpcuaNodeIdServicesVariableKey = 18018
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Message                                                           OpcuaNodeIdServicesVariableKey = 18019
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Severity                                                          OpcuaNodeIdServicesVariableKey = 18020
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ActionTimeStamp                                                   OpcuaNodeIdServicesVariableKey = 18021
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Status                                                            OpcuaNodeIdServicesVariableKey = 18022
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ServerId                                                          OpcuaNodeIdServicesVariableKey = 18023
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientAuditEntryId                                                OpcuaNodeIdServicesVariableKey = 18024
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientUserId                                                      OpcuaNodeIdServicesVariableKey = 18025
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_MethodId                                                          OpcuaNodeIdServicesVariableKey = 18026
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_InputArguments                                                    OpcuaNodeIdServicesVariableKey = 18027
 	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ResourceUri                                                       OpcuaNodeIdServicesVariableKey = 18028
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventId                                                    OpcuaNodeIdServicesVariableKey = 18030
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventType                                                  OpcuaNodeIdServicesVariableKey = 18031
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceNode                                                 OpcuaNodeIdServicesVariableKey = 18032
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceName                                                 OpcuaNodeIdServicesVariableKey = 18033
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Time                                                       OpcuaNodeIdServicesVariableKey = 18034
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ReceiveTime                                                OpcuaNodeIdServicesVariableKey = 18035
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_LocalTime                                                  OpcuaNodeIdServicesVariableKey = 18036
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Message                                                    OpcuaNodeIdServicesVariableKey = 18037
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Severity                                                   OpcuaNodeIdServicesVariableKey = 18038
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ActionTimeStamp                                            OpcuaNodeIdServicesVariableKey = 18039
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Status                                                     OpcuaNodeIdServicesVariableKey = 18040
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ServerId                                                   OpcuaNodeIdServicesVariableKey = 18041
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientAuditEntryId                                         OpcuaNodeIdServicesVariableKey = 18042
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientUserId                                               OpcuaNodeIdServicesVariableKey = 18043
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_MethodId                                                   OpcuaNodeIdServicesVariableKey = 18044
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_InputArguments                                             OpcuaNodeIdServicesVariableKey = 18045
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ResourceUri                                                OpcuaNodeIdServicesVariableKey = 18046
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventId                                                    OpcuaNodeIdServicesVariableKey = 18048
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventType                                                  OpcuaNodeIdServicesVariableKey = 18049
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceNode                                                 OpcuaNodeIdServicesVariableKey = 18050
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceName                                                 OpcuaNodeIdServicesVariableKey = 18051
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Time                                                       OpcuaNodeIdServicesVariableKey = 18052
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ReceiveTime                                                OpcuaNodeIdServicesVariableKey = 18053
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_LocalTime                                                  OpcuaNodeIdServicesVariableKey = 18054
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Message                                                    OpcuaNodeIdServicesVariableKey = 18055
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Severity                                                   OpcuaNodeIdServicesVariableKey = 18056
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ActionTimeStamp                                            OpcuaNodeIdServicesVariableKey = 18057
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Status                                                     OpcuaNodeIdServicesVariableKey = 18058
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ServerId                                                   OpcuaNodeIdServicesVariableKey = 18059
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientAuditEntryId                                         OpcuaNodeIdServicesVariableKey = 18060
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientUserId                                               OpcuaNodeIdServicesVariableKey = 18061
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_MethodId                                                   OpcuaNodeIdServicesVariableKey = 18062
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_InputArguments                                             OpcuaNodeIdServicesVariableKey = 18063
 	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri                                                OpcuaNodeIdServicesVariableKey = 18064
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri                                                    OpcuaNodeIdServicesVariableKey = 18069
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri                                OpcuaNodeIdServicesVariableKey = 18157
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls                               OpcuaNodeIdServicesVariableKey = 18159
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus                              OpcuaNodeIdServicesVariableKey = 18160
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments            OpcuaNodeIdServicesVariableKey = 18162
-	OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri                                 OpcuaNodeIdServicesVariableKey = 18164
 	OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri                                                     OpcuaNodeIdServicesVariableKey = 18165
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassId                                                  OpcuaNodeIdServicesVariableKey = 32035
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassName                                                OpcuaNodeIdServicesVariableKey = 32036
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassId                                               OpcuaNodeIdServicesVariableKey = 32037
-	OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassName                                             OpcuaNodeIdServicesVariableKey = 32038
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassId                                           OpcuaNodeIdServicesVariableKey = 32039
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassName                                         OpcuaNodeIdServicesVariableKey = 32040
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassId                                        OpcuaNodeIdServicesVariableKey = 32041
-	OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassName                                      OpcuaNodeIdServicesVariableKey = 32042
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassId                                           OpcuaNodeIdServicesVariableKey = 32043
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassName                                         OpcuaNodeIdServicesVariableKey = 32044
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassId                                        OpcuaNodeIdServicesVariableKey = 32045
-	OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassName                                      OpcuaNodeIdServicesVariableKey = 32046
 )
 
 var OpcuaNodeIdServicesVariableKeyValues []OpcuaNodeIdServicesVariableKey
@@ -146,8 +78,6 @@ func init() {
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_ServiceName_Placeholder_UpdateCredential_InputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_InputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_InputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_OutputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_GetEncryptingKey_InputArguments,
@@ -156,76 +86,10 @@ func init() {
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ServiceStatus,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_UpdateCredential_InputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdateMethodType_InputArguments,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Time,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Message,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Status,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_MethodId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_InputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ResourceUri,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Time,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Message,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Status,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_MethodId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_InputArguments,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ResourceUri,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventType,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceNode,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Time,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ReceiveTime,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_LocalTime,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Message,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Severity,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ActionTimeStamp,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Status,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ServerId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientAuditEntryId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientUserId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_MethodId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_InputArguments,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri,
 		OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassName,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassName,
 	}
 }
 
@@ -249,10 +113,6 @@ func OpcuaNodeIdServicesVariableKeyByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_InputArguments, true
 	case 17524:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments, true
-	case 17526:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments, true
-	case 17527:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments, true
 	case 17529:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_InputArguments, true
 	case 17530:
@@ -269,146 +129,14 @@ func OpcuaNodeIdServicesVariableKeyByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_UpdateCredential_InputArguments, true
 	case 18010:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdateMethodType_InputArguments, true
-	case 18012:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventId, true
-	case 18013:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventType, true
-	case 18014:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceNode, true
-	case 18015:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceName, true
-	case 18016:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Time, true
-	case 18017:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ReceiveTime, true
-	case 18018:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_LocalTime, true
-	case 18019:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Message, true
-	case 18020:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Severity, true
-	case 18021:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ActionTimeStamp, true
-	case 18022:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Status, true
-	case 18023:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ServerId, true
-	case 18024:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientAuditEntryId, true
-	case 18025:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientUserId, true
-	case 18026:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_MethodId, true
-	case 18027:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_InputArguments, true
 	case 18028:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ResourceUri, true
-	case 18030:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventId, true
-	case 18031:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventType, true
-	case 18032:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceNode, true
-	case 18033:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceName, true
-	case 18034:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Time, true
-	case 18035:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ReceiveTime, true
-	case 18036:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_LocalTime, true
-	case 18037:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Message, true
-	case 18038:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Severity, true
-	case 18039:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ActionTimeStamp, true
-	case 18040:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Status, true
-	case 18041:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ServerId, true
-	case 18042:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientAuditEntryId, true
-	case 18043:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientUserId, true
-	case 18044:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_MethodId, true
-	case 18045:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_InputArguments, true
-	case 18046:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ResourceUri, true
-	case 18048:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventId, true
-	case 18049:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventType, true
-	case 18050:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceNode, true
-	case 18051:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceName, true
-	case 18052:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Time, true
-	case 18053:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ReceiveTime, true
-	case 18054:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_LocalTime, true
-	case 18055:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Message, true
-	case 18056:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Severity, true
-	case 18057:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ActionTimeStamp, true
-	case 18058:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Status, true
-	case 18059:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ServerId, true
-	case 18060:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientAuditEntryId, true
-	case 18061:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientUserId, true
-	case 18062:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_MethodId, true
-	case 18063:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_InputArguments, true
 	case 18064:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri, true
 	case 18069:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri, true
-	case 18157:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri, true
-	case 18159:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls, true
-	case 18160:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus, true
-	case 18162:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments, true
-	case 18164:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri, true
 	case 18165:
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri, true
-	case 32035:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassId, true
-	case 32036:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassName, true
-	case 32037:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassId, true
-	case 32038:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassName, true
-	case 32039:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassId, true
-	case 32040:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassName, true
-	case 32041:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassId, true
-	case 32042:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassName, true
-	case 32043:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassId, true
-	case 32044:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassName, true
-	case 32045:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassId, true
-	case 32046:
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassName, true
 	}
 	return 0, false
 }
@@ -433,10 +161,6 @@ func OpcuaNodeIdServicesVariableKeyByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_InputArguments, true
 	case "KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments, true
 	case "KeyCredentialConfiguration_CreateCredential_InputArguments":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_InputArguments, true
 	case "KeyCredentialConfiguration_CreateCredential_OutputArguments":
@@ -453,146 +177,14 @@ func OpcuaNodeIdServicesVariableKeyByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_UpdateCredential_InputArguments, true
 	case "KeyCredentialUpdateMethodType_InputArguments":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdateMethodType_InputArguments, true
-	case "KeyCredentialAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventId, true
-	case "KeyCredentialAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventType, true
-	case "KeyCredentialAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceNode, true
-	case "KeyCredentialAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceName, true
-	case "KeyCredentialAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Time, true
-	case "KeyCredentialAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ReceiveTime, true
-	case "KeyCredentialAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_LocalTime, true
-	case "KeyCredentialAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Message, true
-	case "KeyCredentialAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Severity, true
-	case "KeyCredentialAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ActionTimeStamp, true
-	case "KeyCredentialAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Status, true
-	case "KeyCredentialAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ServerId, true
-	case "KeyCredentialAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientAuditEntryId, true
-	case "KeyCredentialAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientUserId, true
-	case "KeyCredentialAuditEventType_MethodId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_MethodId, true
-	case "KeyCredentialAuditEventType_InputArguments":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_InputArguments, true
 	case "KeyCredentialAuditEventType_ResourceUri":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ResourceUri, true
-	case "KeyCredentialUpdatedAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventId, true
-	case "KeyCredentialUpdatedAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventType, true
-	case "KeyCredentialUpdatedAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceNode, true
-	case "KeyCredentialUpdatedAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceName, true
-	case "KeyCredentialUpdatedAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Time, true
-	case "KeyCredentialUpdatedAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ReceiveTime, true
-	case "KeyCredentialUpdatedAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_LocalTime, true
-	case "KeyCredentialUpdatedAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Message, true
-	case "KeyCredentialUpdatedAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Severity, true
-	case "KeyCredentialUpdatedAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ActionTimeStamp, true
-	case "KeyCredentialUpdatedAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Status, true
-	case "KeyCredentialUpdatedAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ServerId, true
-	case "KeyCredentialUpdatedAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientAuditEntryId, true
-	case "KeyCredentialUpdatedAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientUserId, true
-	case "KeyCredentialUpdatedAuditEventType_MethodId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_MethodId, true
-	case "KeyCredentialUpdatedAuditEventType_InputArguments":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_InputArguments, true
-	case "KeyCredentialUpdatedAuditEventType_ResourceUri":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ResourceUri, true
-	case "KeyCredentialDeletedAuditEventType_EventId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventId, true
-	case "KeyCredentialDeletedAuditEventType_EventType":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventType, true
-	case "KeyCredentialDeletedAuditEventType_SourceNode":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceNode, true
-	case "KeyCredentialDeletedAuditEventType_SourceName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceName, true
-	case "KeyCredentialDeletedAuditEventType_Time":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Time, true
-	case "KeyCredentialDeletedAuditEventType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ReceiveTime, true
-	case "KeyCredentialDeletedAuditEventType_LocalTime":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_LocalTime, true
-	case "KeyCredentialDeletedAuditEventType_Message":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Message, true
-	case "KeyCredentialDeletedAuditEventType_Severity":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Severity, true
-	case "KeyCredentialDeletedAuditEventType_ActionTimeStamp":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ActionTimeStamp, true
-	case "KeyCredentialDeletedAuditEventType_Status":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Status, true
-	case "KeyCredentialDeletedAuditEventType_ServerId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ServerId, true
-	case "KeyCredentialDeletedAuditEventType_ClientAuditEntryId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientAuditEntryId, true
-	case "KeyCredentialDeletedAuditEventType_ClientUserId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientUserId, true
-	case "KeyCredentialDeletedAuditEventType_MethodId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_MethodId, true
-	case "KeyCredentialDeletedAuditEventType_InputArguments":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_InputArguments, true
 	case "KeyCredentialDeletedAuditEventType_ResourceUri":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri, true
 	case "KeyCredentialConfigurationType_ResourceUri":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments, true
-	case "KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri, true
 	case "KeyCredentialConfigurationType_ProfileUri":
 		return OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri, true
-	case "KeyCredentialAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassId, true
-	case "KeyCredentialAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassName, true
-	case "KeyCredentialAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassId, true
-	case "KeyCredentialAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassName, true
-	case "KeyCredentialUpdatedAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassId, true
-	case "KeyCredentialUpdatedAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassName, true
-	case "KeyCredentialUpdatedAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassId, true
-	case "KeyCredentialUpdatedAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassName, true
-	case "KeyCredentialDeletedAuditEventType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassId, true
-	case "KeyCredentialDeletedAuditEventType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassName, true
-	case "KeyCredentialDeletedAuditEventType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassId, true
-	case "KeyCredentialDeletedAuditEventType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassName, true
 	}
 	return 0, false
 }
@@ -678,10 +270,6 @@ func (e OpcuaNodeIdServicesVariableKey) PLC4XEnumName() string {
 		return "KeyCredentialConfigurationFolderType_CreateCredential_InputArguments"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments:
 		return "KeyCredentialConfigurationFolderType_CreateCredential_OutputArguments"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_InputArguments"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_GetEncryptingKey_OutputArguments"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_InputArguments:
 		return "KeyCredentialConfiguration_CreateCredential_InputArguments"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_CreateCredential_OutputArguments:
@@ -698,146 +286,14 @@ func (e OpcuaNodeIdServicesVariableKey) PLC4XEnumName() string {
 		return "KeyCredentialConfigurationType_UpdateCredential_InputArguments"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdateMethodType_InputArguments:
 		return "KeyCredentialUpdateMethodType_InputArguments"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventId:
-		return "KeyCredentialAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_EventType:
-		return "KeyCredentialAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceNode:
-		return "KeyCredentialAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_SourceName:
-		return "KeyCredentialAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Time:
-		return "KeyCredentialAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ReceiveTime:
-		return "KeyCredentialAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_LocalTime:
-		return "KeyCredentialAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Message:
-		return "KeyCredentialAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Severity:
-		return "KeyCredentialAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ActionTimeStamp:
-		return "KeyCredentialAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_Status:
-		return "KeyCredentialAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ServerId:
-		return "KeyCredentialAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientAuditEntryId:
-		return "KeyCredentialAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ClientUserId:
-		return "KeyCredentialAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_MethodId:
-		return "KeyCredentialAuditEventType_MethodId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_InputArguments:
-		return "KeyCredentialAuditEventType_InputArguments"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ResourceUri:
 		return "KeyCredentialAuditEventType_ResourceUri"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventId:
-		return "KeyCredentialUpdatedAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_EventType:
-		return "KeyCredentialUpdatedAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceNode:
-		return "KeyCredentialUpdatedAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_SourceName:
-		return "KeyCredentialUpdatedAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Time:
-		return "KeyCredentialUpdatedAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ReceiveTime:
-		return "KeyCredentialUpdatedAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_LocalTime:
-		return "KeyCredentialUpdatedAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Message:
-		return "KeyCredentialUpdatedAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Severity:
-		return "KeyCredentialUpdatedAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ActionTimeStamp:
-		return "KeyCredentialUpdatedAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_Status:
-		return "KeyCredentialUpdatedAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ServerId:
-		return "KeyCredentialUpdatedAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientAuditEntryId:
-		return "KeyCredentialUpdatedAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ClientUserId:
-		return "KeyCredentialUpdatedAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_MethodId:
-		return "KeyCredentialUpdatedAuditEventType_MethodId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_InputArguments:
-		return "KeyCredentialUpdatedAuditEventType_InputArguments"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ResourceUri:
-		return "KeyCredentialUpdatedAuditEventType_ResourceUri"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventId:
-		return "KeyCredentialDeletedAuditEventType_EventId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_EventType:
-		return "KeyCredentialDeletedAuditEventType_EventType"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceNode:
-		return "KeyCredentialDeletedAuditEventType_SourceNode"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_SourceName:
-		return "KeyCredentialDeletedAuditEventType_SourceName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Time:
-		return "KeyCredentialDeletedAuditEventType_Time"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ReceiveTime:
-		return "KeyCredentialDeletedAuditEventType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_LocalTime:
-		return "KeyCredentialDeletedAuditEventType_LocalTime"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Message:
-		return "KeyCredentialDeletedAuditEventType_Message"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Severity:
-		return "KeyCredentialDeletedAuditEventType_Severity"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ActionTimeStamp:
-		return "KeyCredentialDeletedAuditEventType_ActionTimeStamp"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_Status:
-		return "KeyCredentialDeletedAuditEventType_Status"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ServerId:
-		return "KeyCredentialDeletedAuditEventType_ServerId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientAuditEntryId:
-		return "KeyCredentialDeletedAuditEventType_ClientAuditEntryId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ClientUserId:
-		return "KeyCredentialDeletedAuditEventType_ClientUserId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_MethodId:
-		return "KeyCredentialDeletedAuditEventType_MethodId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_InputArguments:
-		return "KeyCredentialDeletedAuditEventType_InputArguments"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ResourceUri:
 		return "KeyCredentialDeletedAuditEventType_ResourceUri"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ResourceUri:
 		return "KeyCredentialConfigurationType_ResourceUri"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_ResourceUri"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_EndpointUrls"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_ServiceStatus"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_UpdateCredential_InputArguments"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri:
-		return "KeyCredentialConfiguration_ServiceName_Placeholder_ProfileUri"
 	case OpcuaNodeIdServicesVariableKey_KeyCredentialConfigurationType_ProfileUri:
 		return "KeyCredentialConfigurationType_ProfileUri"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassId:
-		return "KeyCredentialAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionClassName:
-		return "KeyCredentialAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassId:
-		return "KeyCredentialAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialAuditEventType_ConditionSubClassName:
-		return "KeyCredentialAuditEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassId:
-		return "KeyCredentialUpdatedAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionClassName:
-		return "KeyCredentialUpdatedAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassId:
-		return "KeyCredentialUpdatedAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialUpdatedAuditEventType_ConditionSubClassName:
-		return "KeyCredentialUpdatedAuditEventType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassId:
-		return "KeyCredentialDeletedAuditEventType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionClassName:
-		return "KeyCredentialDeletedAuditEventType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassId:
-		return "KeyCredentialDeletedAuditEventType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableKey_KeyCredentialDeletedAuditEventType_ConditionSubClassName:
-		return "KeyCredentialDeletedAuditEventType_ConditionSubClassName"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

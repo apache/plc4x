@@ -19,11 +19,11 @@
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.channel.Channel;
-import org.apache.plc4x.java.spi.configuration.Configuration;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 
 public interface S7HMux {
 
-    void setEmbededhannel(Channel embeded_channel, Configuration configuration);
+    void setEmbededhannel(Channel embeded_channel, PlcConnectionConfiguration configuration);
 
     void setPrimaryChannel(Channel primary_channel);
 

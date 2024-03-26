@@ -117,6 +117,9 @@ public abstract class ExtensionObjectDefinition implements Message {
           EphemeralKeyType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "15530")) {
       builder = EndpointType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
+    } else if (EvaluationHelper.equals(identifier, (String) "32423")) {
+      builder =
+          BitFieldDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "18808")) {
       builder = RationalNumber.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "18809")) {
@@ -135,6 +138,16 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(identifier, (String) "23500")) {
       builder =
           CurrencyUnitType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
+    } else if (EvaluationHelper.equals(identifier, (String) "32436")) {
+      builder =
+          AnnotationDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
+    } else if (EvaluationHelper.equals(identifier, (String) "32437")) {
+      builder =
+          LinearConversionDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, identifier);
+    } else if (EvaluationHelper.equals(identifier, (String) "32440")) {
+      builder =
+          QuantityDimension.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "12556")) {
       builder =
           TrustListDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);

@@ -2166,6 +2166,20 @@ const (
 	OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_AffectedTrustLists                                                                             OpcuaNodeIdServicesVariableServer = 32340
 	OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_AffectedCertificateGroups                                                                      OpcuaNodeIdServicesVariableServer = 32341
 	OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_Errors                                                                                         OpcuaNodeIdServicesVariableServer = 32342
+	OpcuaNodeIdServicesVariableServer_ServerType_ServerRedundancy_RedundantServerArray                                                                                          OpcuaNodeIdServicesVariableServer = 32409
+	OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray                                                                                                 OpcuaNodeIdServicesVariableServer = 32410
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit                                                                                                            OpcuaNodeIdServicesVariableServer = 32461
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol                                                                                                        OpcuaNodeIdServicesVariableServer = 32463
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description                                                                                                   OpcuaNodeIdServicesVariableServer = 32464
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem                                                                                                    OpcuaNodeIdServicesVariableServer = 32465
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline                                                                                                    OpcuaNodeIdServicesVariableServer = 32466
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol                                                                        OpcuaNodeIdServicesVariableServer = 32588
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description                                                                   OpcuaNodeIdServicesVariableServer = 32589
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem                                                                    OpcuaNodeIdServicesVariableServer = 32590
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline                                                                    OpcuaNodeIdServicesVariableServer = 32591
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion                                                              OpcuaNodeIdServicesVariableServer = 32592
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion                                                              OpcuaNodeIdServicesVariableServer = 32593
+	OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion                                                       OpcuaNodeIdServicesVariableServer = 32594
 )
 
 var OpcuaNodeIdServicesVariableServerValues []OpcuaNodeIdServicesVariableServer
@@ -4298,6 +4312,20 @@ func init() {
 		OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_AffectedTrustLists,
 		OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_AffectedCertificateGroups,
 		OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_Errors,
+		OpcuaNodeIdServicesVariableServer_ServerType_ServerRedundancy_RedundantServerArray,
+		OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion,
+		OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion,
 	}
 }
 
@@ -8529,6 +8557,34 @@ func OpcuaNodeIdServicesVariableServerByValue(value int32) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_AffectedCertificateGroups, true
 	case 32342:
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_Errors, true
+	case 32409:
+		return OpcuaNodeIdServicesVariableServer_ServerType_ServerRedundancy_RedundantServerArray, true
+	case 32410:
+		return OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray, true
+	case 32461:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit, true
+	case 32463:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol, true
+	case 32464:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description, true
+	case 32465:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem, true
+	case 32466:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline, true
+	case 32588:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol, true
+	case 32589:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description, true
+	case 32590:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem, true
+	case 32591:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline, true
+	case 32592:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion, true
+	case 32593:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion, true
+	case 32594:
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion, true
 	case 3698:
 		return OpcuaNodeIdServicesVariableServer_ServerStatusType_BuildInfo_ProductUri, true
 	case 3699:
@@ -12785,6 +12841,34 @@ func OpcuaNodeIdServicesVariableServerByName(value string) (enum OpcuaNodeIdServ
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_AffectedCertificateGroups, true
 	case "ServerConfiguration_TransactionDiagnostics_Errors":
 		return OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_Errors, true
+	case "ServerType_ServerRedundancy_RedundantServerArray":
+		return OpcuaNodeIdServicesVariableServer_ServerType_ServerRedundancy_RedundantServerArray, true
+	case "ServerRedundancyType_RedundantServerArray":
+		return OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray, true
+	case "ServerUnitType_ConversionLimit":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit, true
+	case "ServerUnitType_CoherentUnit_Symbol":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol, true
+	case "ServerUnitType_CoherentUnit_Description":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description, true
+	case "ServerUnitType_CoherentUnit_UnitSystem":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem, true
+	case "ServerUnitType_CoherentUnit_Discipline":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion, true
+	case "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion":
+		return OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion, true
 	case "ServerStatusType_BuildInfo_ProductUri":
 		return OpcuaNodeIdServicesVariableServer_ServerStatusType_BuildInfo_ProductUri, true
 	case "ServerStatusType_BuildInfo_ManufacturerName":
@@ -17102,6 +17186,34 @@ func (e OpcuaNodeIdServicesVariableServer) PLC4XEnumName() string {
 		return "ServerConfiguration_TransactionDiagnostics_AffectedCertificateGroups"
 	case OpcuaNodeIdServicesVariableServer_ServerConfiguration_TransactionDiagnostics_Errors:
 		return "ServerConfiguration_TransactionDiagnostics_Errors"
+	case OpcuaNodeIdServicesVariableServer_ServerType_ServerRedundancy_RedundantServerArray:
+		return "ServerType_ServerRedundancy_RedundantServerArray"
+	case OpcuaNodeIdServicesVariableServer_ServerRedundancyType_RedundantServerArray:
+		return "ServerRedundancyType_RedundantServerArray"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_ConversionLimit:
+		return "ServerUnitType_ConversionLimit"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Symbol:
+		return "ServerUnitType_CoherentUnit_Symbol"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Description:
+		return "ServerUnitType_CoherentUnit_Description"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_UnitSystem:
+		return "ServerUnitType_CoherentUnit_UnitSystem"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_CoherentUnit_Discipline:
+		return "ServerUnitType_CoherentUnit_Discipline"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Symbol"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Description"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_UnitSystem"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_Discipline"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_LinearConversion"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLConversion"
+	case OpcuaNodeIdServicesVariableServer_ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion:
+		return "ServerUnitType_AlternativeUnits_AlternativeUnit_Placeholder_MathMLInverseConversion"
 	case OpcuaNodeIdServicesVariableServer_ServerStatusType_BuildInfo_ProductUri:
 		return "ServerStatusType_BuildInfo_ProductUri"
 	case OpcuaNodeIdServicesVariableServer_ServerStatusType_BuildInfo_ManufacturerName:

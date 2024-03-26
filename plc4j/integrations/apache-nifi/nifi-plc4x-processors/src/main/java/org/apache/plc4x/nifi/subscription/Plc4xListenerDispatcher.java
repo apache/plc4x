@@ -75,7 +75,7 @@ public class Plc4xListenerDispatcher implements Runnable {
     public void open(String plcConnectionString, Map<String, String> tags) throws PlcConnectionException, Exception {
         connection = connectionManager.getConnection(plcConnectionString);
 
-        if (!connection.getMetadata().canSubscribe()) {
+        if (!connection.getMetadata().isSubscribeSupported()) {
             throw new PlcProtocolException("This connection does not support subscription");
         }
 

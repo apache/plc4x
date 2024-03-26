@@ -41,8 +41,6 @@ type IOpcuaNodeIdServicesVariableArray interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableArray_ArrayItemType_Definition       OpcuaNodeIdServicesVariableArray = 12022
-	OpcuaNodeIdServicesVariableArray_ArrayItemType_ValuePrecision   OpcuaNodeIdServicesVariableArray = 12023
 	OpcuaNodeIdServicesVariableArray_ArrayItemType_InstrumentRange  OpcuaNodeIdServicesVariableArray = 12024
 	OpcuaNodeIdServicesVariableArray_ArrayItemType_EURange          OpcuaNodeIdServicesVariableArray = 12025
 	OpcuaNodeIdServicesVariableArray_ArrayItemType_EngineeringUnits OpcuaNodeIdServicesVariableArray = 12026
@@ -55,8 +53,6 @@ var OpcuaNodeIdServicesVariableArrayValues []OpcuaNodeIdServicesVariableArray
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableArrayValues = []OpcuaNodeIdServicesVariableArray{
-		OpcuaNodeIdServicesVariableArray_ArrayItemType_Definition,
-		OpcuaNodeIdServicesVariableArray_ArrayItemType_ValuePrecision,
 		OpcuaNodeIdServicesVariableArray_ArrayItemType_InstrumentRange,
 		OpcuaNodeIdServicesVariableArray_ArrayItemType_EURange,
 		OpcuaNodeIdServicesVariableArray_ArrayItemType_EngineeringUnits,
@@ -67,10 +63,6 @@ func init() {
 
 func OpcuaNodeIdServicesVariableArrayByValue(value int32) (enum OpcuaNodeIdServicesVariableArray, ok bool) {
 	switch value {
-	case 12022:
-		return OpcuaNodeIdServicesVariableArray_ArrayItemType_Definition, true
-	case 12023:
-		return OpcuaNodeIdServicesVariableArray_ArrayItemType_ValuePrecision, true
 	case 12024:
 		return OpcuaNodeIdServicesVariableArray_ArrayItemType_InstrumentRange, true
 	case 12025:
@@ -87,10 +79,6 @@ func OpcuaNodeIdServicesVariableArrayByValue(value int32) (enum OpcuaNodeIdServi
 
 func OpcuaNodeIdServicesVariableArrayByName(value string) (enum OpcuaNodeIdServicesVariableArray, ok bool) {
 	switch value {
-	case "ArrayItemType_Definition":
-		return OpcuaNodeIdServicesVariableArray_ArrayItemType_Definition, true
-	case "ArrayItemType_ValuePrecision":
-		return OpcuaNodeIdServicesVariableArray_ArrayItemType_ValuePrecision, true
 	case "ArrayItemType_InstrumentRange":
 		return OpcuaNodeIdServicesVariableArray_ArrayItemType_InstrumentRange, true
 	case "ArrayItemType_EURange":
@@ -168,10 +156,6 @@ func (e OpcuaNodeIdServicesVariableArray) SerializeWithWriteBuffer(ctx context.C
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableArray) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableArray_ArrayItemType_Definition:
-		return "ArrayItemType_Definition"
-	case OpcuaNodeIdServicesVariableArray_ArrayItemType_ValuePrecision:
-		return "ArrayItemType_ValuePrecision"
 	case OpcuaNodeIdServicesVariableArray_ArrayItemType_InstrumentRange:
 		return "ArrayItemType_InstrumentRange"
 	case OpcuaNodeIdServicesVariableArray_ArrayItemType_EURange:

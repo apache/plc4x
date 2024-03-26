@@ -58,7 +58,7 @@ public class CANOpenFrameDataHandler implements FrameHandler<Message, CANOpenFra
             WriteBufferByteBased buffer = new WriteBufferByteBased(payload.getLengthInBytes(), ByteOrder.LITTLE_ENDIAN);
             payload.serialize(buffer);
             return builder.get().withId(frame.getService().getMin() + frame.getNodeId())
-                .withData(buffer.getData())
+                .withData(buffer.getBytes())
                 .create();
         } catch (SerializationException e) {
             throw new PlcRuntimeException(e);

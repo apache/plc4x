@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4x-parent</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4go</artifactId>
@@ -34,7 +34,7 @@
   <description>Implementation of the protocol adapters for usage as Go(lang) library.</description>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
     <!-- Tell Sonar where to find the sources -->
     <sonar.sources>.</sonar.sources>
     <sonar.inclusions>**</sonar.inclusions>
@@ -348,7 +348,7 @@
             </configuration>
           </execution>
 
-          <!-- Check all tests with producing report file in Golang format -->
+          <!-- Disabling the default binding, because we're running a custom version after this -->
           <execution>
             <id>default-test</id>
             <phase>test</phase>
@@ -356,73 +356,30 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <buildFlags>
-                <!--flag>-v</flag-->
-                <!-- TODO: race detection temporary disabled till root cause for the issue is found https://github.com/golang/go/issues/40343 -->
-                <!--flag>-race</flag-->
-                <flag>${go.cover.flag}</flag>
-              </buildFlags>
-              <outLogFile>test-out-verbose.log</outLogFile>
-              <!--
-                Don't fail the build if we have test failures as we'll have the results translated
-                to junit format and will have the failsafe-plugin then fail the build. This way Jenkins
-                can display the results better.
-              -->
-              <ignoreErrorExitCode>true</ignoreErrorExitCode>
-              <packages>
-                <package>./...</package>
-              </packages>
+              <skip>true</skip>
             </configuration>
           </execution>
 
-          <!--execution>
-            <id>readable-test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>custom</goal>
-            </goals>
-            <configuration>
-              <exec>gotestsum</exec>
-              <customCommand>-f</customCommand>
-              <buildFlags>
-                <flag>short</flag>
-              </buildFlags>
-              <packages>
-                <package>./...</package>
-              </packages>
-            </configuration>
-          </execution-->
-
-          <!-- Convert generated test report into go-junit-report format and save as file -->
-          <!--execution>
-            <id>make-junit-report</id>
+          <execution>
+            <id>test</id>
             <phase>test</phase>
             <goals>
               <goal>custom</goal>
             </goals>
             <configuration>
               <skip>${skipTests}</skip>
-              <exec>go-junit-report</exec>
-              <!- -
-                This is just stupid, I need to provide something here, or the build won't work ...
-                this should hopefully have very little side-effects
-              - ->
-              <customCommand>-no-xml-header</customCommand>
+              <exec>gotestsum</exec>
+              <customCommand>--junitfile</customCommand>
               <buildFlags>
-                <flag>-in</flag>
-                <flag>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</flag>
-                <flag>-out</flag>
+                <flag>target/surefire-reports/go-junit-report.xml</flag>
+                <flag>--</flag>
+                <flag>${go.cover.flag}</flag>
               </buildFlags>
-              <echo>
-                <info>JUnit report saved as
-                  target${file.separator}surefire-reports${file.separator}go-junit-report.xml
-                </info>
-              </echo>
               <packages>
-                <package>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</package>
+                <package>./...</package>
               </packages>
             </configuration>
-          </execution-->
+          </execution>
 
           <execution>
             <id>run-go-vet</id>
@@ -442,58 +399,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>make-junit-report</id>
-            <!-- We need to ensure it's after test and before verify -->
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${project.build.directory}/go-junit-report</executable>
-              <arguments>
-                <argument>-in</argument>
-                <argument>${project.build.directory}${file.separator}reports${file.separator}test-out-verbose.log</argument>
-                <argument>-out</argument>
-                <argument>target${file.separator}surefire-reports${file.separator}go-junit-report.xml</argument>
-              </arguments>
-              <successCodes>
-                <successCode>0</successCode>
-              </successCodes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>output-failing-tests</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <inherited>false</inherited>
-            <configuration>
-              <source>${project.basedir}/script/validate-go-test-results.groovy</source>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy-xml</artifactId>
-            <version>4.0.16</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
       <!-- Ensure we don't deploy anything -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -509,7 +414,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ab-eth</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -517,7 +422,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-ads</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -525,7 +430,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-bacnetip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -533,7 +438,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-c-bus</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -541,7 +446,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-df1</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -549,7 +454,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-eip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -557,7 +462,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-firmata</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -565,7 +470,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-knxnetip</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -573,7 +478,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-modbus</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -581,7 +486,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-opcua</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -589,7 +494,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-s7</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -597,7 +502,7 @@
     <dependency>
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4x-protocols-simulated</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
+      <version>0.13.0-SNAPSHOT</version>
       <type>test-jar</type>
       <!-- Scope is 'provided' as this way it's not shipped with the driver -->
       <scope>provided</scope>
@@ -810,7 +715,7 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-code-generation-language-go</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
@@ -818,89 +723,88 @@
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ab-eth</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-ads</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-bacnetip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-c-bus</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-df1</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-eip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-firmata</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-knxnetip</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-modbus</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-opcua</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-s7</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.plc4x</groupId>
           <artifactId>plc4x-protocols-simulated</artifactId>
-          <version>0.12.0-SNAPSHOT</version>
+          <version>0.13.0-SNAPSHOT</version>
           <!-- Scope is 'provided' as this way it's not shipped with the driver -->
           <scope>provided</scope>
         </dependency>
       </dependencies>
     </profile>
   </profiles>
-
 </project>

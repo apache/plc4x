@@ -102,9 +102,9 @@ func (m *_S7PayloadUserDataItemClkSetRequest) GetTimeStamp() DateAndTime {
 ///////////////////////////////////////////////////////////
 
 // NewS7PayloadUserDataItemClkSetRequest factory function for _S7PayloadUserDataItemClkSetRequest
-func NewS7PayloadUserDataItemClkSetRequest(TimeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetRequest {
+func NewS7PayloadUserDataItemClkSetRequest(timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetRequest {
 	_result := &_S7PayloadUserDataItemClkSetRequest{
-		TimeStamp:              TimeStamp,
+		TimeStamp:              timeStamp,
 		_S7PayloadUserDataItem: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
 	}
 	_result._S7PayloadUserDataItem._S7PayloadUserDataItemChildRequirements = _result
@@ -135,7 +135,7 @@ func (m *_S7PayloadUserDataItemClkSetRequest) GetLengthInBits(ctx context.Contex
 	// Reserved Field (reserved)
 	lengthInBits += 8
 
-	// Simple field (TimeStamp)
+	// Simple field (timeStamp)
 	lengthInBits += m.TimeStamp.GetLengthInBits(ctx)
 
 	return lengthInBits
@@ -194,17 +194,17 @@ func S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx context.Context, read
 		}
 	}
 
-	// Simple Field (TimeStamp)
-	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
+	// Simple Field (timeStamp)
+	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _TimeStampErr != nil {
-		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of S7PayloadUserDataItemClkSetRequest")
+	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
+	if _timeStampErr != nil {
+		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadUserDataItemClkSetRequest")
 	}
-	TimeStamp := _TimeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("TimeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for TimeStamp")
+	timeStamp := _timeStamp.(DateAndTime)
+	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemClkSetRequest"); closeErr != nil {
@@ -214,7 +214,7 @@ func S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx context.Context, read
 	// Create a partially initialized instance
 	_child := &_S7PayloadUserDataItemClkSetRequest{
 		_S7PayloadUserDataItem: &_S7PayloadUserDataItem{},
-		TimeStamp:              TimeStamp,
+		TimeStamp:              timeStamp,
 		reservedField0:         reservedField0,
 		reservedField1:         reservedField1,
 	}
@@ -272,16 +272,16 @@ func (m *_S7PayloadUserDataItemClkSetRequest) SerializeWithWriteBuffer(ctx conte
 			}
 		}
 
-		// Simple Field (TimeStamp)
-		if pushErr := writeBuffer.PushContext("TimeStamp"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for TimeStamp")
+		// Simple Field (timeStamp)
+		if pushErr := writeBuffer.PushContext("timeStamp"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for timeStamp")
 		}
-		_TimeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
-		if popErr := writeBuffer.PopContext("TimeStamp"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for TimeStamp")
+		_timeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
+		if popErr := writeBuffer.PopContext("timeStamp"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for timeStamp")
 		}
-		if _TimeStampErr != nil {
-			return errors.Wrap(_TimeStampErr, "Error serializing 'TimeStamp' field")
+		if _timeStampErr != nil {
+			return errors.Wrap(_timeStampErr, "Error serializing 'timeStamp' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemClkSetRequest"); popErr != nil {

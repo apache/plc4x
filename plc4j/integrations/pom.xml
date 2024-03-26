@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.plc4x</groupId>
     <artifactId>plc4j</artifactId>
-    <version>0.12.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plc4j-integrations</artifactId>
@@ -34,25 +34,13 @@
   <description>Parent of all product specific integration modules.</description>
 
   <properties>
-    <project.build.outputTimestamp>2023-11-02T07:23:09Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-02-16T14:53:02Z</project.build.outputTimestamp>
   </properties>
 
   <modules>
     <module>apache-calcite</module>
     <module>apache-nifi</module>
+    <module>apache-kafka</module>
   </modules>
-
-  <!-- It seems that the Kafka-Connect plugin doesn't work with Java 21 -->
-  <profiles>
-    <profile>
-      <id>.below-java-21</id>
-      <activation>
-        <jdk>[1.8,21)</jdk>
-      </activation>
-      <modules>
-        <module>apache-kafka</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

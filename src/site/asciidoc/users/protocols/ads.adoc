@@ -24,7 +24,7 @@ The ADS (automation device specification) describes a device-independent and fie
 
 ADS device concept: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
 
-Specifcation for ADS devices: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
+Specification for ADS devices: https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/4275563275.html&id= Source (accessed 7 August 2022)
 
 === Structure AMS/TCP Packet
 ADS (Automation Device Specification) is the TwinCAT communication protocol that specifies the interaction between two ADS devices. For example, it defines what operations can be executed on another ADS device, what parameters are necessary for that and what return value is sent after execution.
@@ -34,49 +34,7 @@ Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/
 
 === Connection String Options
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-|Code
-2+|`ADS`
-
-|Name
-2+|ADS Protocol
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-ads</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `tcp`
-3+|Supported Operations
-
-|
-| `read`
-| 
-
-3+|Options
-
-| AmsNetId
-| getTargetAmsNetId()
-| setTargetAmsNetId(AmsNetId targetAmsNetId)
-
-| AmsNetIdConverter
-| 
-|
-
-| targetAmsPort
-| getDefaultPort(48898)
-| Defaults to 48898
-
-|===
+include::../../../plc4j/drivers/all/src/site/generated/ads.adoc[]
 
 [%header, cols=3*]
 |===
@@ -90,7 +48,7 @@ Source https://infosys.beckhoff.com/english.php?content=../content/1033/ams_nat/
 
 | AMS Header
 | 32 bytes
-| The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition the AMS error code , the ADS command Id and some other information.
+| The AMS/TCP-Header contains the addresses of the transmitter and receiver. In addition, the AMS error code , the ADS command Id and some other information.
 
 | ADS Data
 | n bytes

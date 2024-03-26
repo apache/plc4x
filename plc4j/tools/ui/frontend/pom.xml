@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.plc4x</groupId>
+    <artifactId>plc4j-tools-ui</artifactId>
+    <version>0.13.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>plc4j-tools-ui-frontend</artifactId>
+  <name>PLC4J: Tools: Frontend</name>
+
+  <properties>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.15.0</version>
+        <executions>
+          <execution>
+            <id>install-node-and-npm</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>npm-install</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-run-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <workingDirectory>project</workingDirectory>
+          <nodeVersion>v20.9.0</nodeVersion>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classesDirectory>project/dist</classesDirectory>
+              <includes>
+                <include>**</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Exclude the Node directories and the output directory -->
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>project/dist/**</exclude>
+            <exclude>project/node/**</exclude>
+            <exclude>project/node_modules/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-api</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.plc4x</groupId>
+      <artifactId>plc4j-tools-ui-backend</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>update-generated-code</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>cz.habarta.typescript-generator</groupId>
+            <artifactId>typescript-generator-maven-plugin</artifactId>
+            <version>3.2.1263</version>
+            <executions>
+              <execution>
+                <id>generate-rest-client</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <skip>false</skip>
+                  <classes>
+                    <!-- These are the PLC4J API types -->
+                    <!--class>org.apache.plc4x.java.api.messages.PlcBrowseItem</class>
+                    <class>org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo</class>
+                    <class>org.apache.plc4x.java.api.messages.PlcBrowseRequest</class>
+                    <class>org.apache.plc4x.java.api.messages.PlcBrowseResponse</class>
+                    <class>org.apache.plc4x.java.api.messages.PlcDiscoveryItem</class>
+                    <class>org.apache.plc4x.java.api.messages.PlcDiscoveryRequest</class>
+                    <class>org.apache.plc4x.java.api.messages.PlcDiscoveryResponse</class>
+                    <class>org.apache.plc4x.java.api.metadata.PlcConnectionMetadata</class>
+                    <class>org.apache.plc4x.java.api.metadata.PlcDriverMetadata</class>
+                    <class>org.apache.plc4x.java.api.model.ArrayInfo</class>
+                    <class>org.apache.plc4x.java.api.model.PlcQuery</class>
+                    <class>org.apache.plc4x.java.api.model.PlcTag</class>
+                    <class>org.apache.plc4x.java.api.types.PlcResponseCode</class>
+                    <class>org.apache.plc4x.java.api.types.PlcSubscriptionType</class>
+                    <class>org.apache.plc4x.java.api.types.PlcValueType</class>
+                    <class>org.apache.plc4x.java.api.value.PlcValue</class-->
+                    <class>org.apache.plc4x.java.tools.ui.model.Device</class>
+                    <class>org.apache.plc4x.java.tools.ui.model.Driver</class>
+                    <class>org.apache.plc4x.java.tools.ui.event.EventType</class>
+                    <class>org.apache.plc4x.java.tools.ui.event.UiApplicationEvent</class>
+                    <class>org.apache.plc4x.java.tools.ui.event.DeviceEvent</class>
+                    <!-- Here come the REST controllers -->
+                    <class>org.apache.plc4x.java.tools.ui.controller.DeviceController</class>
+                    <class>org.apache.plc4x.java.tools.ui.controller.DriverController</class>
+                  </classes>
+                  <excludeClasses>
+                    <excludeClass>java.lang.Comparable</excludeClass>
+                  </excludeClasses>
+                  <extensions>
+                    <extension>cz.habarta.typescript.generator.ext.AxiosClientExtension</extension>
+                  </extensions>
+                  <outputKind>module</outputKind>
+                  <outputFileType>implementationFile</outputFileType>
+                  <classesFromAutomaticJaxrsApplication>true</classesFromAutomaticJaxrsApplication>
+                  <generateJaxrsApplicationClient>true</generateJaxrsApplicationClient>
+                  <generateSpringApplicationClient>true</generateSpringApplicationClient>
+                  <jsonLibrary>jackson2</jsonLibrary>
+                  <restOptionsType>AxiosRequestConfig</restOptionsType>
+                  <restResponseType>AxiosPromise</restResponseType>
+                  <outputFile>project/src/generated/plc4j-tools-ui-frontend.ts</outputFile>
+                  <noFileComment>true</noFileComment>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-spring</artifactId>
+                <version>3.2.1263</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>2.4.0</version>
+            <executions>
+              <execution>
+                <id>add-apache-headers</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>update-file-header</goal>
+                </goals>
+                <configuration>
+                  <licenseName>apache_v2</licenseName>
+                  <roots>
+                    <root>project/src/generated</root>
+                  </roots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>

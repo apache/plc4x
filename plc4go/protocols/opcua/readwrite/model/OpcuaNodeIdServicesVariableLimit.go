@@ -41,160 +41,22 @@ type IOpcuaNodeIdServicesVariableLimit interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventId                                              OpcuaNodeIdServicesVariableLimit = 6116
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventType                                            OpcuaNodeIdServicesVariableLimit = 6117
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceNode                                           OpcuaNodeIdServicesVariableLimit = 6118
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceName                                           OpcuaNodeIdServicesVariableLimit = 6119
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Time                                                 OpcuaNodeIdServicesVariableLimit = 6120
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReceiveTime                                          OpcuaNodeIdServicesVariableLimit = 6121
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LocalTime                                            OpcuaNodeIdServicesVariableLimit = 6122
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Message                                              OpcuaNodeIdServicesVariableLimit = 6123
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Severity                                             OpcuaNodeIdServicesVariableLimit = 6124
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Retain                                               OpcuaNodeIdServicesVariableLimit = 6125
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh_InputArguments                      OpcuaNodeIdServicesVariableLimit = 6127
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionName                                        OpcuaNodeIdServicesVariableLimit = 9217
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BranchId                                             OpcuaNodeIdServicesVariableLimit = 9218
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState                                         OpcuaNodeIdServicesVariableLimit = 9219
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Id                                      OpcuaNodeIdServicesVariableLimit = 9220
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Name                                    OpcuaNodeIdServicesVariableLimit = 9221
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Number                                  OpcuaNodeIdServicesVariableLimit = 9222
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableLimit = 9223
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TransitionTime                          OpcuaNodeIdServicesVariableLimit = 9224
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableLimit = 9225
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TrueState                               OpcuaNodeIdServicesVariableLimit = 9226
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_FalseState                              OpcuaNodeIdServicesVariableLimit = 9227
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality                                              OpcuaNodeIdServicesVariableLimit = 9228
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality_SourceTimestamp                              OpcuaNodeIdServicesVariableLimit = 9229
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity                                         OpcuaNodeIdServicesVariableLimit = 9230
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity_SourceTimestamp                         OpcuaNodeIdServicesVariableLimit = 9231
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment                                              OpcuaNodeIdServicesVariableLimit = 9232
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment_SourceTimestamp                              OpcuaNodeIdServicesVariableLimit = 9233
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ClientUserId                                         OpcuaNodeIdServicesVariableLimit = 9234
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AddComment_InputArguments                            OpcuaNodeIdServicesVariableLimit = 9238
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState                                           OpcuaNodeIdServicesVariableLimit = 9239
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Id                                        OpcuaNodeIdServicesVariableLimit = 9240
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Name                                      OpcuaNodeIdServicesVariableLimit = 9241
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Number                                    OpcuaNodeIdServicesVariableLimit = 9242
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveDisplayName                      OpcuaNodeIdServicesVariableLimit = 9243
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TransitionTime                            OpcuaNodeIdServicesVariableLimit = 9244
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveTransitionTime                   OpcuaNodeIdServicesVariableLimit = 9245
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TrueState                                 OpcuaNodeIdServicesVariableLimit = 9246
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_FalseState                                OpcuaNodeIdServicesVariableLimit = 9247
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState                                       OpcuaNodeIdServicesVariableLimit = 9248
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Id                                    OpcuaNodeIdServicesVariableLimit = 9249
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Name                                  OpcuaNodeIdServicesVariableLimit = 9250
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Number                                OpcuaNodeIdServicesVariableLimit = 9251
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveDisplayName                  OpcuaNodeIdServicesVariableLimit = 9252
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TransitionTime                        OpcuaNodeIdServicesVariableLimit = 9253
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveTransitionTime               OpcuaNodeIdServicesVariableLimit = 9254
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TrueState                             OpcuaNodeIdServicesVariableLimit = 9255
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_FalseState                            OpcuaNodeIdServicesVariableLimit = 9256
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Acknowledge_InputArguments                           OpcuaNodeIdServicesVariableLimit = 9258
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Confirm_InputArguments                               OpcuaNodeIdServicesVariableLimit = 9260
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState                                          OpcuaNodeIdServicesVariableLimit = 9261
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Id                                       OpcuaNodeIdServicesVariableLimit = 9262
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Name                                     OpcuaNodeIdServicesVariableLimit = 9263
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Number                                   OpcuaNodeIdServicesVariableLimit = 9264
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveDisplayName                     OpcuaNodeIdServicesVariableLimit = 9265
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TransitionTime                           OpcuaNodeIdServicesVariableLimit = 9266
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveTransitionTime                  OpcuaNodeIdServicesVariableLimit = 9267
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TrueState                                OpcuaNodeIdServicesVariableLimit = 9268
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_FalseState                               OpcuaNodeIdServicesVariableLimit = 9269
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState                                      OpcuaNodeIdServicesVariableLimit = 9270
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Id                                   OpcuaNodeIdServicesVariableLimit = 9271
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Name                                 OpcuaNodeIdServicesVariableLimit = 9272
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Number                               OpcuaNodeIdServicesVariableLimit = 9273
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveDisplayName                 OpcuaNodeIdServicesVariableLimit = 9274
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TransitionTime                       OpcuaNodeIdServicesVariableLimit = 9275
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveTransitionTime              OpcuaNodeIdServicesVariableLimit = 9276
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TrueState                            OpcuaNodeIdServicesVariableLimit = 9277
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_FalseState                           OpcuaNodeIdServicesVariableLimit = 9278
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState                           OpcuaNodeIdServicesVariableLimit = 9280
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Id                        OpcuaNodeIdServicesVariableLimit = 9281
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Name                      OpcuaNodeIdServicesVariableLimit = 9282
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Number                    OpcuaNodeIdServicesVariableLimit = 9283
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName      OpcuaNodeIdServicesVariableLimit = 9284
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition                         OpcuaNodeIdServicesVariableLimit = 9285
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Id                      OpcuaNodeIdServicesVariableLimit = 9286
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Name                    OpcuaNodeIdServicesVariableLimit = 9287
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Number                  OpcuaNodeIdServicesVariableLimit = 9288
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_TransitionTime          OpcuaNodeIdServicesVariableLimit = 9289
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_UnshelveTime                           OpcuaNodeIdServicesVariableLimit = 9290
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve_InputArguments             OpcuaNodeIdServicesVariableLimit = 9315
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedOrShelved                                  OpcuaNodeIdServicesVariableLimit = 9316
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_MaxTimeShelved                                       OpcuaNodeIdServicesVariableLimit = 9317
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassId                                     OpcuaNodeIdServicesVariableLimit = 11121
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassName                                   OpcuaNodeIdServicesVariableLimit = 11122
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_InputNode                                            OpcuaNodeIdServicesVariableLimit = 11123
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighLimit                                        OpcuaNodeIdServicesVariableLimit = 11124
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighLimit                                            OpcuaNodeIdServicesVariableLimit = 11125
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLimit                                             OpcuaNodeIdServicesVariableLimit = 11126
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowLimit                                          OpcuaNodeIdServicesVariableLimit = 11127
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime OpcuaNodeIdServicesVariableLimit = 11467
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh2_InputArguments                     OpcuaNodeIdServicesVariableLimit = 12987
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassId                                  OpcuaNodeIdServicesVariableLimit = 16536
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassName                                OpcuaNodeIdServicesVariableLimit = 16537
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState                                    OpcuaNodeIdServicesVariableLimit = 16538
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Id                                 OpcuaNodeIdServicesVariableLimit = 16539
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Name                               OpcuaNodeIdServicesVariableLimit = 16540
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Number                             OpcuaNodeIdServicesVariableLimit = 16541
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveDisplayName               OpcuaNodeIdServicesVariableLimit = 16542
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TransitionTime                     OpcuaNodeIdServicesVariableLimit = 16543
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveTransitionTime            OpcuaNodeIdServicesVariableLimit = 16544
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TrueState                          OpcuaNodeIdServicesVariableLimit = 16545
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_FalseState                         OpcuaNodeIdServicesVariableLimit = 16546
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState                                         OpcuaNodeIdServicesVariableLimit = 16547
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Id                                      OpcuaNodeIdServicesVariableLimit = 16548
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Name                                    OpcuaNodeIdServicesVariableLimit = 16549
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Number                                  OpcuaNodeIdServicesVariableLimit = 16550
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableLimit = 16551
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TransitionTime                          OpcuaNodeIdServicesVariableLimit = 16552
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableLimit = 16553
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TrueState                               OpcuaNodeIdServicesVariableLimit = 16554
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_FalseState                              OpcuaNodeIdServicesVariableLimit = 16555
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleEnabled                                       OpcuaNodeIdServicesVariableLimit = 16556
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound                                         OpcuaNodeIdServicesVariableLimit = 16557
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OnDelay                                              OpcuaNodeIdServicesVariableLimit = 16562
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OffDelay                                             OpcuaNodeIdServicesVariableLimit = 16563
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_FirstInGroupFlag                                     OpcuaNodeIdServicesVariableLimit = 16564
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmTime                                          OpcuaNodeIdServicesVariableLimit = 16567
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmRepeatCount                                   OpcuaNodeIdServicesVariableLimit = 16568
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighHighLimit                                    OpcuaNodeIdServicesVariableLimit = 16572
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighLimit                                        OpcuaNodeIdServicesVariableLimit = 16573
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLimit                                         OpcuaNodeIdServicesVariableLimit = 16574
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLowLimit                                      OpcuaNodeIdServicesVariableLimit = 16575
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableStates                        OpcuaNodeIdServicesVariableLimit = 17664
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableTransitions                   OpcuaNodeIdServicesVariableLimit = 17665
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_ListId                                  OpcuaNodeIdServicesVariableLimit = 17879
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_AgencyId                                OpcuaNodeIdServicesVariableLimit = 17880
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_VersionId                               OpcuaNodeIdServicesVariableLimit = 17881
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState                                         OpcuaNodeIdServicesVariableLimit = 18213
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Id                                      OpcuaNodeIdServicesVariableLimit = 18214
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Name                                    OpcuaNodeIdServicesVariableLimit = 18215
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Number                                  OpcuaNodeIdServicesVariableLimit = 18216
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveDisplayName                    OpcuaNodeIdServicesVariableLimit = 18217
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TransitionTime                          OpcuaNodeIdServicesVariableLimit = 18218
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveTransitionTime                 OpcuaNodeIdServicesVariableLimit = 18219
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TrueState                               OpcuaNodeIdServicesVariableLimit = 18220
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_FalseState                              OpcuaNodeIdServicesVariableLimit = 18221
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Suppress2_InputArguments                             OpcuaNodeIdServicesVariableLimit = 24339
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Unsuppress2_InputArguments                           OpcuaNodeIdServicesVariableLimit = 24341
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_RemoveFromService2_InputArguments                    OpcuaNodeIdServicesVariableLimit = 24343
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_PlaceInService2_InputArguments                       OpcuaNodeIdServicesVariableLimit = 24345
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Reset2_InputArguments                                OpcuaNodeIdServicesVariableLimit = 24347
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve2_InputArguments            OpcuaNodeIdServicesVariableLimit = 24763
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_Unshelve2_InputArguments               OpcuaNodeIdServicesVariableLimit = 24765
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments          OpcuaNodeIdServicesVariableLimit = 24767
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHighHigh                                     OpcuaNodeIdServicesVariableLimit = 24770
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHigh                                         OpcuaNodeIdServicesVariableLimit = 24771
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityLow                                          OpcuaNodeIdServicesVariableLimit = 24772
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityLowLow                                       OpcuaNodeIdServicesVariableLimit = 24773
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighDeadband                                     OpcuaNodeIdServicesVariableLimit = 24774
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighDeadband                                         OpcuaNodeIdServicesVariableLimit = 24775
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowDeadband                                          OpcuaNodeIdServicesVariableLimit = 24776
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowDeadband                                       OpcuaNodeIdServicesVariableLimit = 24777
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_GetGroupMemberships_OutputArguments                  OpcuaNodeIdServicesVariableLimit = 25159
-	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SupportsFilteredRetain                               OpcuaNodeIdServicesVariableLimit = 32227
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighLimit     OpcuaNodeIdServicesVariableLimit = 11124
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighLimit         OpcuaNodeIdServicesVariableLimit = 11125
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLimit          OpcuaNodeIdServicesVariableLimit = 11126
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowLimit       OpcuaNodeIdServicesVariableLimit = 11127
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighHighLimit OpcuaNodeIdServicesVariableLimit = 16572
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighLimit     OpcuaNodeIdServicesVariableLimit = 16573
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLimit      OpcuaNodeIdServicesVariableLimit = 16574
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLowLimit   OpcuaNodeIdServicesVariableLimit = 16575
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHighHigh  OpcuaNodeIdServicesVariableLimit = 24770
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHigh      OpcuaNodeIdServicesVariableLimit = 24771
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityLow       OpcuaNodeIdServicesVariableLimit = 24772
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityLowLow    OpcuaNodeIdServicesVariableLimit = 24773
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighDeadband  OpcuaNodeIdServicesVariableLimit = 24774
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighDeadband      OpcuaNodeIdServicesVariableLimit = 24775
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowDeadband       OpcuaNodeIdServicesVariableLimit = 24776
+	OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowDeadband    OpcuaNodeIdServicesVariableLimit = 24777
 )
 
 var OpcuaNodeIdServicesVariableLimitValues []OpcuaNodeIdServicesVariableLimit
@@ -202,150 +64,14 @@ var OpcuaNodeIdServicesVariableLimitValues []OpcuaNodeIdServicesVariableLimit
 func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableLimitValues = []OpcuaNodeIdServicesVariableLimit{
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventType,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceNode,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Time,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReceiveTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LocalTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Message,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Severity,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Retain,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BranchId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality_SourceTimestamp,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity_SourceTimestamp,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment_SourceTimestamp,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ClientUserId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AddComment_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Acknowledge_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Confirm_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_UnshelveTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedOrShelved,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_MaxTimeShelved,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_InputNode,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighLimit,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighLimit,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLimit,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowLimit,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleEnabled,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OnDelay,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OffDelay,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_FirstInGroupFlag,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmRepeatCount,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighHighLimit,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighLimit,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLimit,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLowLimit,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableStates,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableTransitions,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_ListId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_AgencyId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_VersionId,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Id,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Name,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Number,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveDisplayName,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveTransitionTime,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TrueState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_FalseState,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Suppress2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Unsuppress2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_RemoveFromService2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_PlaceInService2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Reset2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_Unshelve2_InputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHighHigh,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHigh,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityLow,
@@ -354,19 +80,11 @@ func init() {
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighDeadband,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowDeadband,
 		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowDeadband,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_GetGroupMemberships_OutputArguments,
-		OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SupportsFilteredRetain,
 	}
 }
 
 func OpcuaNodeIdServicesVariableLimitByValue(value int32) (enum OpcuaNodeIdServicesVariableLimit, ok bool) {
 	switch value {
-	case 11121:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassId, true
-	case 11122:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassName, true
-	case 11123:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_InputNode, true
 	case 11124:
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighLimit, true
 	case 11125:
@@ -375,64 +93,6 @@ func OpcuaNodeIdServicesVariableLimitByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLimit, true
 	case 11127:
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowLimit, true
-	case 11467:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-	case 12987:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh2_InputArguments, true
-	case 16536:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassId, true
-	case 16537:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassName, true
-	case 16538:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState, true
-	case 16539:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Id, true
-	case 16540:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Name, true
-	case 16541:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Number, true
-	case 16542:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveDisplayName, true
-	case 16543:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TransitionTime, true
-	case 16544:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-	case 16545:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TrueState, true
-	case 16546:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_FalseState, true
-	case 16547:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState, true
-	case 16548:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Id, true
-	case 16549:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Name, true
-	case 16550:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Number, true
-	case 16551:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveDisplayName, true
-	case 16552:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TransitionTime, true
-	case 16553:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveTransitionTime, true
-	case 16554:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TrueState, true
-	case 16555:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_FalseState, true
-	case 16556:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleEnabled, true
-	case 16557:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound, true
-	case 16562:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OnDelay, true
-	case 16563:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OffDelay, true
-	case 16564:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_FirstInGroupFlag, true
-	case 16567:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmTime, true
-	case 16568:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmRepeatCount, true
 	case 16572:
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighHighLimit, true
 	case 16573:
@@ -441,50 +101,6 @@ func OpcuaNodeIdServicesVariableLimitByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLimit, true
 	case 16575:
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLowLimit, true
-	case 17664:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableStates, true
-	case 17665:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableTransitions, true
-	case 17879:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_ListId, true
-	case 17880:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_AgencyId, true
-	case 17881:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_VersionId, true
-	case 18213:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState, true
-	case 18214:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Id, true
-	case 18215:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Name, true
-	case 18216:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Number, true
-	case 18217:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveDisplayName, true
-	case 18218:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TransitionTime, true
-	case 18219:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveTransitionTime, true
-	case 18220:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TrueState, true
-	case 18221:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_FalseState, true
-	case 24339:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Suppress2_InputArguments, true
-	case 24341:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Unsuppress2_InputArguments, true
-	case 24343:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_RemoveFromService2_InputArguments, true
-	case 24345:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_PlaceInService2_InputArguments, true
-	case 24347:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Reset2_InputArguments, true
-	case 24763:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-	case 24765:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_Unshelve2_InputArguments, true
-	case 24767:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
 	case 24770:
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHighHigh, true
 	case 24771:
@@ -501,186 +117,12 @@ func OpcuaNodeIdServicesVariableLimitByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowDeadband, true
 	case 24777:
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowDeadband, true
-	case 25159:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_GetGroupMemberships_OutputArguments, true
-	case 32227:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SupportsFilteredRetain, true
-	case 6116:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventId, true
-	case 6117:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventType, true
-	case 6118:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceNode, true
-	case 6119:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceName, true
-	case 6120:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Time, true
-	case 6121:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReceiveTime, true
-	case 6122:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LocalTime, true
-	case 6123:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Message, true
-	case 6124:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Severity, true
-	case 6125:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Retain, true
-	case 6127:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh_InputArguments, true
-	case 9217:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionName, true
-	case 9218:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BranchId, true
-	case 9219:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState, true
-	case 9220:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Id, true
-	case 9221:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Name, true
-	case 9222:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Number, true
-	case 9223:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveDisplayName, true
-	case 9224:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TransitionTime, true
-	case 9225:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveTransitionTime, true
-	case 9226:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TrueState, true
-	case 9227:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_FalseState, true
-	case 9228:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality, true
-	case 9229:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality_SourceTimestamp, true
-	case 9230:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity, true
-	case 9231:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity_SourceTimestamp, true
-	case 9232:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment, true
-	case 9233:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment_SourceTimestamp, true
-	case 9234:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ClientUserId, true
-	case 9238:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AddComment_InputArguments, true
-	case 9239:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState, true
-	case 9240:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Id, true
-	case 9241:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Name, true
-	case 9242:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Number, true
-	case 9243:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveDisplayName, true
-	case 9244:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TransitionTime, true
-	case 9245:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveTransitionTime, true
-	case 9246:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TrueState, true
-	case 9247:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_FalseState, true
-	case 9248:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState, true
-	case 9249:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Id, true
-	case 9250:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Name, true
-	case 9251:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Number, true
-	case 9252:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveDisplayName, true
-	case 9253:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TransitionTime, true
-	case 9254:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveTransitionTime, true
-	case 9255:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TrueState, true
-	case 9256:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_FalseState, true
-	case 9258:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Acknowledge_InputArguments, true
-	case 9260:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Confirm_InputArguments, true
-	case 9261:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState, true
-	case 9262:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Id, true
-	case 9263:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Name, true
-	case 9264:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Number, true
-	case 9265:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveDisplayName, true
-	case 9266:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TransitionTime, true
-	case 9267:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveTransitionTime, true
-	case 9268:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TrueState, true
-	case 9269:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_FalseState, true
-	case 9270:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState, true
-	case 9271:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Id, true
-	case 9272:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Name, true
-	case 9273:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Number, true
-	case 9274:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveDisplayName, true
-	case 9275:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TransitionTime, true
-	case 9276:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveTransitionTime, true
-	case 9277:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TrueState, true
-	case 9278:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_FalseState, true
-	case 9280:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState, true
-	case 9281:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Id, true
-	case 9282:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Name, true
-	case 9283:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Number, true
-	case 9284:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-	case 9285:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition, true
-	case 9286:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Id, true
-	case 9287:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Name, true
-	case 9288:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Number, true
-	case 9289:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_TransitionTime, true
-	case 9290:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_UnshelveTime, true
-	case 9315:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve_InputArguments, true
-	case 9316:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedOrShelved, true
-	case 9317:
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_MaxTimeShelved, true
 	}
 	return 0, false
 }
 
 func OpcuaNodeIdServicesVariableLimitByName(value string) (enum OpcuaNodeIdServicesVariableLimit, ok bool) {
 	switch value {
-	case "LimitAlarmType_ConditionClassId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassId, true
-	case "LimitAlarmType_ConditionClassName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassName, true
-	case "LimitAlarmType_InputNode":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_InputNode, true
 	case "LimitAlarmType_HighHighLimit":
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighLimit, true
 	case "LimitAlarmType_HighLimit":
@@ -689,64 +131,6 @@ func OpcuaNodeIdServicesVariableLimitByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLimit, true
 	case "LimitAlarmType_LowLowLimit":
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowLimit, true
-	case "LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime, true
-	case "LimitAlarmType_ConditionRefresh2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh2_InputArguments, true
-	case "LimitAlarmType_ConditionSubClassId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassId, true
-	case "LimitAlarmType_ConditionSubClassName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassName, true
-	case "LimitAlarmType_OutOfServiceState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState, true
-	case "LimitAlarmType_OutOfServiceState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Id, true
-	case "LimitAlarmType_OutOfServiceState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Name, true
-	case "LimitAlarmType_OutOfServiceState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Number, true
-	case "LimitAlarmType_OutOfServiceState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveDisplayName, true
-	case "LimitAlarmType_OutOfServiceState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TransitionTime, true
-	case "LimitAlarmType_OutOfServiceState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveTransitionTime, true
-	case "LimitAlarmType_OutOfServiceState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TrueState, true
-	case "LimitAlarmType_OutOfServiceState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_FalseState, true
-	case "LimitAlarmType_SilenceState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState, true
-	case "LimitAlarmType_SilenceState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Id, true
-	case "LimitAlarmType_SilenceState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Name, true
-	case "LimitAlarmType_SilenceState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Number, true
-	case "LimitAlarmType_SilenceState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveDisplayName, true
-	case "LimitAlarmType_SilenceState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TransitionTime, true
-	case "LimitAlarmType_SilenceState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveTransitionTime, true
-	case "LimitAlarmType_SilenceState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TrueState, true
-	case "LimitAlarmType_SilenceState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_FalseState, true
-	case "LimitAlarmType_AudibleEnabled":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleEnabled, true
-	case "LimitAlarmType_AudibleSound":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound, true
-	case "LimitAlarmType_OnDelay":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OnDelay, true
-	case "LimitAlarmType_OffDelay":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OffDelay, true
-	case "LimitAlarmType_FirstInGroupFlag":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_FirstInGroupFlag, true
-	case "LimitAlarmType_ReAlarmTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmTime, true
-	case "LimitAlarmType_ReAlarmRepeatCount":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmRepeatCount, true
 	case "LimitAlarmType_BaseHighHighLimit":
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighHighLimit, true
 	case "LimitAlarmType_BaseHighLimit":
@@ -755,50 +139,6 @@ func OpcuaNodeIdServicesVariableLimitByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLimit, true
 	case "LimitAlarmType_BaseLowLowLimit":
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLowLimit, true
-	case "LimitAlarmType_ShelvingState_AvailableStates":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableStates, true
-	case "LimitAlarmType_ShelvingState_AvailableTransitions":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableTransitions, true
-	case "LimitAlarmType_AudibleSound_ListId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_ListId, true
-	case "LimitAlarmType_AudibleSound_AgencyId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_AgencyId, true
-	case "LimitAlarmType_AudibleSound_VersionId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_VersionId, true
-	case "LimitAlarmType_LatchedState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState, true
-	case "LimitAlarmType_LatchedState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Id, true
-	case "LimitAlarmType_LatchedState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Name, true
-	case "LimitAlarmType_LatchedState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Number, true
-	case "LimitAlarmType_LatchedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveDisplayName, true
-	case "LimitAlarmType_LatchedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TransitionTime, true
-	case "LimitAlarmType_LatchedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveTransitionTime, true
-	case "LimitAlarmType_LatchedState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TrueState, true
-	case "LimitAlarmType_LatchedState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_FalseState, true
-	case "LimitAlarmType_Suppress2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Suppress2_InputArguments, true
-	case "LimitAlarmType_Unsuppress2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Unsuppress2_InputArguments, true
-	case "LimitAlarmType_RemoveFromService2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_RemoveFromService2_InputArguments, true
-	case "LimitAlarmType_PlaceInService2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_PlaceInService2_InputArguments, true
-	case "LimitAlarmType_Reset2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Reset2_InputArguments, true
-	case "LimitAlarmType_ShelvingState_TimedShelve2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve2_InputArguments, true
-	case "LimitAlarmType_ShelvingState_Unshelve2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_Unshelve2_InputArguments, true
-	case "LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments, true
 	case "LimitAlarmType_SeverityHighHigh":
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHighHigh, true
 	case "LimitAlarmType_SeverityHigh":
@@ -815,174 +155,6 @@ func OpcuaNodeIdServicesVariableLimitByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowDeadband, true
 	case "LimitAlarmType_LowLowDeadband":
 		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowDeadband, true
-	case "LimitAlarmType_GetGroupMemberships_OutputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_GetGroupMemberships_OutputArguments, true
-	case "LimitAlarmType_SupportsFilteredRetain":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SupportsFilteredRetain, true
-	case "LimitAlarmType_EventId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventId, true
-	case "LimitAlarmType_EventType":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventType, true
-	case "LimitAlarmType_SourceNode":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceNode, true
-	case "LimitAlarmType_SourceName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceName, true
-	case "LimitAlarmType_Time":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Time, true
-	case "LimitAlarmType_ReceiveTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReceiveTime, true
-	case "LimitAlarmType_LocalTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LocalTime, true
-	case "LimitAlarmType_Message":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Message, true
-	case "LimitAlarmType_Severity":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Severity, true
-	case "LimitAlarmType_Retain":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Retain, true
-	case "LimitAlarmType_ConditionRefresh_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh_InputArguments, true
-	case "LimitAlarmType_ConditionName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionName, true
-	case "LimitAlarmType_BranchId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BranchId, true
-	case "LimitAlarmType_EnabledState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState, true
-	case "LimitAlarmType_EnabledState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Id, true
-	case "LimitAlarmType_EnabledState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Name, true
-	case "LimitAlarmType_EnabledState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Number, true
-	case "LimitAlarmType_EnabledState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveDisplayName, true
-	case "LimitAlarmType_EnabledState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TransitionTime, true
-	case "LimitAlarmType_EnabledState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveTransitionTime, true
-	case "LimitAlarmType_EnabledState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TrueState, true
-	case "LimitAlarmType_EnabledState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_FalseState, true
-	case "LimitAlarmType_Quality":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality, true
-	case "LimitAlarmType_Quality_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality_SourceTimestamp, true
-	case "LimitAlarmType_LastSeverity":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity, true
-	case "LimitAlarmType_LastSeverity_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity_SourceTimestamp, true
-	case "LimitAlarmType_Comment":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment, true
-	case "LimitAlarmType_Comment_SourceTimestamp":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment_SourceTimestamp, true
-	case "LimitAlarmType_ClientUserId":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ClientUserId, true
-	case "LimitAlarmType_AddComment_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AddComment_InputArguments, true
-	case "LimitAlarmType_AckedState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState, true
-	case "LimitAlarmType_AckedState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Id, true
-	case "LimitAlarmType_AckedState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Name, true
-	case "LimitAlarmType_AckedState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Number, true
-	case "LimitAlarmType_AckedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveDisplayName, true
-	case "LimitAlarmType_AckedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TransitionTime, true
-	case "LimitAlarmType_AckedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveTransitionTime, true
-	case "LimitAlarmType_AckedState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TrueState, true
-	case "LimitAlarmType_AckedState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_FalseState, true
-	case "LimitAlarmType_ConfirmedState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState, true
-	case "LimitAlarmType_ConfirmedState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Id, true
-	case "LimitAlarmType_ConfirmedState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Name, true
-	case "LimitAlarmType_ConfirmedState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Number, true
-	case "LimitAlarmType_ConfirmedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveDisplayName, true
-	case "LimitAlarmType_ConfirmedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TransitionTime, true
-	case "LimitAlarmType_ConfirmedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveTransitionTime, true
-	case "LimitAlarmType_ConfirmedState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TrueState, true
-	case "LimitAlarmType_ConfirmedState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_FalseState, true
-	case "LimitAlarmType_Acknowledge_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Acknowledge_InputArguments, true
-	case "LimitAlarmType_Confirm_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Confirm_InputArguments, true
-	case "LimitAlarmType_ActiveState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState, true
-	case "LimitAlarmType_ActiveState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Id, true
-	case "LimitAlarmType_ActiveState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Name, true
-	case "LimitAlarmType_ActiveState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Number, true
-	case "LimitAlarmType_ActiveState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveDisplayName, true
-	case "LimitAlarmType_ActiveState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TransitionTime, true
-	case "LimitAlarmType_ActiveState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveTransitionTime, true
-	case "LimitAlarmType_ActiveState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TrueState, true
-	case "LimitAlarmType_ActiveState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_FalseState, true
-	case "LimitAlarmType_SuppressedState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState, true
-	case "LimitAlarmType_SuppressedState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Id, true
-	case "LimitAlarmType_SuppressedState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Name, true
-	case "LimitAlarmType_SuppressedState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Number, true
-	case "LimitAlarmType_SuppressedState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveDisplayName, true
-	case "LimitAlarmType_SuppressedState_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TransitionTime, true
-	case "LimitAlarmType_SuppressedState_EffectiveTransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveTransitionTime, true
-	case "LimitAlarmType_SuppressedState_TrueState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TrueState, true
-	case "LimitAlarmType_SuppressedState_FalseState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_FalseState, true
-	case "LimitAlarmType_ShelvingState_CurrentState":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState, true
-	case "LimitAlarmType_ShelvingState_CurrentState_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Id, true
-	case "LimitAlarmType_ShelvingState_CurrentState_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Name, true
-	case "LimitAlarmType_ShelvingState_CurrentState_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Number, true
-	case "LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName, true
-	case "LimitAlarmType_ShelvingState_LastTransition":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition, true
-	case "LimitAlarmType_ShelvingState_LastTransition_Id":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Id, true
-	case "LimitAlarmType_ShelvingState_LastTransition_Name":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Name, true
-	case "LimitAlarmType_ShelvingState_LastTransition_Number":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Number, true
-	case "LimitAlarmType_ShelvingState_LastTransition_TransitionTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_TransitionTime, true
-	case "LimitAlarmType_ShelvingState_UnshelveTime":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_UnshelveTime, true
-	case "LimitAlarmType_ShelvingState_TimedShelve_InputArguments":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve_InputArguments, true
-	case "LimitAlarmType_SuppressedOrShelved":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedOrShelved, true
-	case "LimitAlarmType_MaxTimeShelved":
-		return OpcuaNodeIdServicesVariableLimit_LimitAlarmType_MaxTimeShelved, true
 	}
 	return 0, false
 }
@@ -1050,12 +222,6 @@ func (e OpcuaNodeIdServicesVariableLimit) SerializeWithWriteBuffer(ctx context.C
 // PLC4XEnumName returns the name that is used in code to identify this enum
 func (e OpcuaNodeIdServicesVariableLimit) PLC4XEnumName() string {
 	switch e {
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassId:
-		return "LimitAlarmType_ConditionClassId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionClassName:
-		return "LimitAlarmType_ConditionClassName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_InputNode:
-		return "LimitAlarmType_InputNode"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighHighLimit:
 		return "LimitAlarmType_HighHighLimit"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_HighLimit:
@@ -1064,64 +230,6 @@ func (e OpcuaNodeIdServicesVariableLimit) PLC4XEnumName() string {
 		return "LimitAlarmType_LowLimit"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowLimit:
 		return "LimitAlarmType_LowLowLimit"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime:
-		return "LimitAlarmType_ShelvingState_LastTransition_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh2_InputArguments:
-		return "LimitAlarmType_ConditionRefresh2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassId:
-		return "LimitAlarmType_ConditionSubClassId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionSubClassName:
-		return "LimitAlarmType_ConditionSubClassName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState:
-		return "LimitAlarmType_OutOfServiceState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Id:
-		return "LimitAlarmType_OutOfServiceState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Name:
-		return "LimitAlarmType_OutOfServiceState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_Number:
-		return "LimitAlarmType_OutOfServiceState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveDisplayName:
-		return "LimitAlarmType_OutOfServiceState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TransitionTime:
-		return "LimitAlarmType_OutOfServiceState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_EffectiveTransitionTime:
-		return "LimitAlarmType_OutOfServiceState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_TrueState:
-		return "LimitAlarmType_OutOfServiceState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OutOfServiceState_FalseState:
-		return "LimitAlarmType_OutOfServiceState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState:
-		return "LimitAlarmType_SilenceState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Id:
-		return "LimitAlarmType_SilenceState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Name:
-		return "LimitAlarmType_SilenceState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_Number:
-		return "LimitAlarmType_SilenceState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveDisplayName:
-		return "LimitAlarmType_SilenceState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TransitionTime:
-		return "LimitAlarmType_SilenceState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_EffectiveTransitionTime:
-		return "LimitAlarmType_SilenceState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_TrueState:
-		return "LimitAlarmType_SilenceState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SilenceState_FalseState:
-		return "LimitAlarmType_SilenceState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleEnabled:
-		return "LimitAlarmType_AudibleEnabled"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound:
-		return "LimitAlarmType_AudibleSound"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OnDelay:
-		return "LimitAlarmType_OnDelay"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_OffDelay:
-		return "LimitAlarmType_OffDelay"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_FirstInGroupFlag:
-		return "LimitAlarmType_FirstInGroupFlag"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmTime:
-		return "LimitAlarmType_ReAlarmTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReAlarmRepeatCount:
-		return "LimitAlarmType_ReAlarmRepeatCount"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighHighLimit:
 		return "LimitAlarmType_BaseHighHighLimit"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseHighLimit:
@@ -1130,50 +238,6 @@ func (e OpcuaNodeIdServicesVariableLimit) PLC4XEnumName() string {
 		return "LimitAlarmType_BaseLowLimit"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BaseLowLowLimit:
 		return "LimitAlarmType_BaseLowLowLimit"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableStates:
-		return "LimitAlarmType_ShelvingState_AvailableStates"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_AvailableTransitions:
-		return "LimitAlarmType_ShelvingState_AvailableTransitions"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_ListId:
-		return "LimitAlarmType_AudibleSound_ListId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_AgencyId:
-		return "LimitAlarmType_AudibleSound_AgencyId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AudibleSound_VersionId:
-		return "LimitAlarmType_AudibleSound_VersionId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState:
-		return "LimitAlarmType_LatchedState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Id:
-		return "LimitAlarmType_LatchedState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Name:
-		return "LimitAlarmType_LatchedState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_Number:
-		return "LimitAlarmType_LatchedState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveDisplayName:
-		return "LimitAlarmType_LatchedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TransitionTime:
-		return "LimitAlarmType_LatchedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_EffectiveTransitionTime:
-		return "LimitAlarmType_LatchedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_TrueState:
-		return "LimitAlarmType_LatchedState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LatchedState_FalseState:
-		return "LimitAlarmType_LatchedState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Suppress2_InputArguments:
-		return "LimitAlarmType_Suppress2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Unsuppress2_InputArguments:
-		return "LimitAlarmType_Unsuppress2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_RemoveFromService2_InputArguments:
-		return "LimitAlarmType_RemoveFromService2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_PlaceInService2_InputArguments:
-		return "LimitAlarmType_PlaceInService2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Reset2_InputArguments:
-		return "LimitAlarmType_Reset2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve2_InputArguments:
-		return "LimitAlarmType_ShelvingState_TimedShelve2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_Unshelve2_InputArguments:
-		return "LimitAlarmType_ShelvingState_Unshelve2_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments:
-		return "LimitAlarmType_ShelvingState_OneShotShelve2_InputArguments"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHighHigh:
 		return "LimitAlarmType_SeverityHighHigh"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SeverityHigh:
@@ -1190,174 +254,6 @@ func (e OpcuaNodeIdServicesVariableLimit) PLC4XEnumName() string {
 		return "LimitAlarmType_LowDeadband"
 	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LowLowDeadband:
 		return "LimitAlarmType_LowLowDeadband"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_GetGroupMemberships_OutputArguments:
-		return "LimitAlarmType_GetGroupMemberships_OutputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SupportsFilteredRetain:
-		return "LimitAlarmType_SupportsFilteredRetain"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventId:
-		return "LimitAlarmType_EventId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EventType:
-		return "LimitAlarmType_EventType"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceNode:
-		return "LimitAlarmType_SourceNode"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SourceName:
-		return "LimitAlarmType_SourceName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Time:
-		return "LimitAlarmType_Time"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ReceiveTime:
-		return "LimitAlarmType_ReceiveTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LocalTime:
-		return "LimitAlarmType_LocalTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Message:
-		return "LimitAlarmType_Message"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Severity:
-		return "LimitAlarmType_Severity"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Retain:
-		return "LimitAlarmType_Retain"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionRefresh_InputArguments:
-		return "LimitAlarmType_ConditionRefresh_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConditionName:
-		return "LimitAlarmType_ConditionName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_BranchId:
-		return "LimitAlarmType_BranchId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState:
-		return "LimitAlarmType_EnabledState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Id:
-		return "LimitAlarmType_EnabledState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Name:
-		return "LimitAlarmType_EnabledState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_Number:
-		return "LimitAlarmType_EnabledState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveDisplayName:
-		return "LimitAlarmType_EnabledState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TransitionTime:
-		return "LimitAlarmType_EnabledState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_EffectiveTransitionTime:
-		return "LimitAlarmType_EnabledState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_TrueState:
-		return "LimitAlarmType_EnabledState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_EnabledState_FalseState:
-		return "LimitAlarmType_EnabledState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality:
-		return "LimitAlarmType_Quality"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Quality_SourceTimestamp:
-		return "LimitAlarmType_Quality_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity:
-		return "LimitAlarmType_LastSeverity"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_LastSeverity_SourceTimestamp:
-		return "LimitAlarmType_LastSeverity_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment:
-		return "LimitAlarmType_Comment"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Comment_SourceTimestamp:
-		return "LimitAlarmType_Comment_SourceTimestamp"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ClientUserId:
-		return "LimitAlarmType_ClientUserId"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AddComment_InputArguments:
-		return "LimitAlarmType_AddComment_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState:
-		return "LimitAlarmType_AckedState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Id:
-		return "LimitAlarmType_AckedState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Name:
-		return "LimitAlarmType_AckedState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_Number:
-		return "LimitAlarmType_AckedState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveDisplayName:
-		return "LimitAlarmType_AckedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TransitionTime:
-		return "LimitAlarmType_AckedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_EffectiveTransitionTime:
-		return "LimitAlarmType_AckedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_TrueState:
-		return "LimitAlarmType_AckedState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_AckedState_FalseState:
-		return "LimitAlarmType_AckedState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState:
-		return "LimitAlarmType_ConfirmedState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Id:
-		return "LimitAlarmType_ConfirmedState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Name:
-		return "LimitAlarmType_ConfirmedState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_Number:
-		return "LimitAlarmType_ConfirmedState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveDisplayName:
-		return "LimitAlarmType_ConfirmedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TransitionTime:
-		return "LimitAlarmType_ConfirmedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_EffectiveTransitionTime:
-		return "LimitAlarmType_ConfirmedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_TrueState:
-		return "LimitAlarmType_ConfirmedState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ConfirmedState_FalseState:
-		return "LimitAlarmType_ConfirmedState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Acknowledge_InputArguments:
-		return "LimitAlarmType_Acknowledge_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_Confirm_InputArguments:
-		return "LimitAlarmType_Confirm_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState:
-		return "LimitAlarmType_ActiveState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Id:
-		return "LimitAlarmType_ActiveState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Name:
-		return "LimitAlarmType_ActiveState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_Number:
-		return "LimitAlarmType_ActiveState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveDisplayName:
-		return "LimitAlarmType_ActiveState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TransitionTime:
-		return "LimitAlarmType_ActiveState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_EffectiveTransitionTime:
-		return "LimitAlarmType_ActiveState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_TrueState:
-		return "LimitAlarmType_ActiveState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ActiveState_FalseState:
-		return "LimitAlarmType_ActiveState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState:
-		return "LimitAlarmType_SuppressedState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Id:
-		return "LimitAlarmType_SuppressedState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Name:
-		return "LimitAlarmType_SuppressedState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_Number:
-		return "LimitAlarmType_SuppressedState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveDisplayName:
-		return "LimitAlarmType_SuppressedState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TransitionTime:
-		return "LimitAlarmType_SuppressedState_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_EffectiveTransitionTime:
-		return "LimitAlarmType_SuppressedState_EffectiveTransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_TrueState:
-		return "LimitAlarmType_SuppressedState_TrueState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedState_FalseState:
-		return "LimitAlarmType_SuppressedState_FalseState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState:
-		return "LimitAlarmType_ShelvingState_CurrentState"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Id:
-		return "LimitAlarmType_ShelvingState_CurrentState_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Name:
-		return "LimitAlarmType_ShelvingState_CurrentState_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_Number:
-		return "LimitAlarmType_ShelvingState_CurrentState_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName:
-		return "LimitAlarmType_ShelvingState_CurrentState_EffectiveDisplayName"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition:
-		return "LimitAlarmType_ShelvingState_LastTransition"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Id:
-		return "LimitAlarmType_ShelvingState_LastTransition_Id"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Name:
-		return "LimitAlarmType_ShelvingState_LastTransition_Name"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_Number:
-		return "LimitAlarmType_ShelvingState_LastTransition_Number"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_LastTransition_TransitionTime:
-		return "LimitAlarmType_ShelvingState_LastTransition_TransitionTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_UnshelveTime:
-		return "LimitAlarmType_ShelvingState_UnshelveTime"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_ShelvingState_TimedShelve_InputArguments:
-		return "LimitAlarmType_ShelvingState_TimedShelve_InputArguments"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_SuppressedOrShelved:
-		return "LimitAlarmType_SuppressedOrShelved"
-	case OpcuaNodeIdServicesVariableLimit_LimitAlarmType_MaxTimeShelved:
-		return "LimitAlarmType_MaxTimeShelved"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

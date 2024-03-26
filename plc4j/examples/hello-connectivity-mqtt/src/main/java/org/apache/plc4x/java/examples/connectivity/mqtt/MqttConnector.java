@@ -86,7 +86,7 @@ public class MqttConnector {
         try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(config.getPlcConfig().getConnection())) {
 
             // Check if this connection support reading of data.
-            if (!plcConnection.getMetadata().canRead()) {
+            if (!plcConnection.getMetadata().isReadSupported()) {
                 System.err.println("This connection doesn't support reading.");
                 return;
             }

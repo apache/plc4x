@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.canopen;
 
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -27,7 +28,6 @@ import org.apache.plc4x.java.canopen.context.CANOpenDriverContext;
 import org.apache.plc4x.java.canopen.tag.CANOpenTagHandler;
 import org.apache.plc4x.java.canopen.protocol.CANOpenProtocolLogic;
 import org.apache.plc4x.java.canopen.transport.CANOpenFrameDataHandler;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.CustomProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
@@ -39,6 +39,8 @@ import org.apache.plc4x.java.spi.transport.Transport;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.transport.can.CANTransport;
+
+import java.util.Optional;
 
 /**
  */
@@ -52,11 +54,6 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     @Override
     public String getProtocolName() {
         return "CAN open";
-    }
-
-    @Override
-    protected Class<? extends Configuration> getConfigurationType() {
-        return CANOpenConfiguration.class;
     }
 
     @Override
@@ -75,8 +72,13 @@ public class CANOpenPlcDriver extends GeneratedDriverBase<Message> {
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "socketcan";
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
+        return CANOpenConfiguration.class;
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("socketcan");
     }
 
     @Override

@@ -43,12 +43,7 @@ type IOpcuaNodeIdServicesVariableTwo interface {
 const (
 	OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_FalseState              OpcuaNodeIdServicesVariableTwo = 2374
 	OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_TrueState               OpcuaNodeIdServicesVariableTwo = 2375
-	OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_Definition              OpcuaNodeIdServicesVariableTwo = 3778
-	OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_ValuePrecision          OpcuaNodeIdServicesVariableTwo = 3779
 	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Id                      OpcuaNodeIdServicesVariableTwo = 8996
-	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Name                    OpcuaNodeIdServicesVariableTwo = 8997
-	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Number                  OpcuaNodeIdServicesVariableTwo = 8998
-	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveDisplayName    OpcuaNodeIdServicesVariableTwo = 8999
 	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TransitionTime          OpcuaNodeIdServicesVariableTwo = 9000
 	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveTransitionTime OpcuaNodeIdServicesVariableTwo = 9001
 	OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TrueState               OpcuaNodeIdServicesVariableTwo = 11110
@@ -62,12 +57,7 @@ func init() {
 	OpcuaNodeIdServicesVariableTwoValues = []OpcuaNodeIdServicesVariableTwo{
 		OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_FalseState,
 		OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_TrueState,
-		OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_Definition,
-		OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_ValuePrecision,
 		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Id,
-		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Name,
-		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Number,
-		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveDisplayName,
 		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TransitionTime,
 		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveTransitionTime,
 		OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TrueState,
@@ -85,18 +75,8 @@ func OpcuaNodeIdServicesVariableTwoByValue(value int32) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_FalseState, true
 	case 2375:
 		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_TrueState, true
-	case 3778:
-		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_Definition, true
-	case 3779:
-		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_ValuePrecision, true
 	case 8996:
 		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Id, true
-	case 8997:
-		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Name, true
-	case 8998:
-		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Number, true
-	case 8999:
-		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveDisplayName, true
 	case 9000:
 		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TransitionTime, true
 	case 9001:
@@ -115,18 +95,8 @@ func OpcuaNodeIdServicesVariableTwoByName(value string) (enum OpcuaNodeIdService
 		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_FalseState, true
 	case "TwoStateDiscreteType_TrueState":
 		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_TrueState, true
-	case "TwoStateDiscreteType_Definition":
-		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_Definition, true
-	case "TwoStateDiscreteType_ValuePrecision":
-		return OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_ValuePrecision, true
 	case "TwoStateVariableType_Id":
 		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Id, true
-	case "TwoStateVariableType_Name":
-		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Name, true
-	case "TwoStateVariableType_Number":
-		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Number, true
-	case "TwoStateVariableType_EffectiveDisplayName":
-		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveDisplayName, true
 	case "TwoStateVariableType_TransitionTime":
 		return OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TransitionTime, true
 	case "TwoStateVariableType_EffectiveTransitionTime":
@@ -206,18 +176,8 @@ func (e OpcuaNodeIdServicesVariableTwo) PLC4XEnumName() string {
 		return "TwoStateDiscreteType_FalseState"
 	case OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_TrueState:
 		return "TwoStateDiscreteType_TrueState"
-	case OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_Definition:
-		return "TwoStateDiscreteType_Definition"
-	case OpcuaNodeIdServicesVariableTwo_TwoStateDiscreteType_ValuePrecision:
-		return "TwoStateDiscreteType_ValuePrecision"
 	case OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Id:
 		return "TwoStateVariableType_Id"
-	case OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Name:
-		return "TwoStateVariableType_Name"
-	case OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_Number:
-		return "TwoStateVariableType_Number"
-	case OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveDisplayName:
-		return "TwoStateVariableType_EffectiveDisplayName"
 	case OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_TransitionTime:
 		return "TwoStateVariableType_TransitionTime"
 	case OpcuaNodeIdServicesVariableTwo_TwoStateVariableType_EffectiveTransitionTime:

@@ -107,6 +107,11 @@ const (
 	OpcuaNodeIdServicesReferenceType_IsExecutingOn                       OpcuaNodeIdServicesReferenceType = 25265
 	OpcuaNodeIdServicesReferenceType_HasPushedSecurityGroup              OpcuaNodeIdServicesReferenceType = 25345
 	OpcuaNodeIdServicesReferenceType_AlarmSuppressionGroupMember         OpcuaNodeIdServicesReferenceType = 32059
+	OpcuaNodeIdServicesReferenceType_HasKeyValueDescription              OpcuaNodeIdServicesReferenceType = 32407
+	OpcuaNodeIdServicesReferenceType_HasEngineeringUnitDetails           OpcuaNodeIdServicesReferenceType = 32558
+	OpcuaNodeIdServicesReferenceType_HasQuantity                         OpcuaNodeIdServicesReferenceType = 32559
+	OpcuaNodeIdServicesReferenceType_HasCurrentData                      OpcuaNodeIdServicesReferenceType = 32633
+	OpcuaNodeIdServicesReferenceType_HasCurrentEvent                     OpcuaNodeIdServicesReferenceType = 32634
 	OpcuaNodeIdServicesReferenceType_HasReferenceDescription             OpcuaNodeIdServicesReferenceType = 32679
 )
 
@@ -181,6 +186,11 @@ func init() {
 		OpcuaNodeIdServicesReferenceType_IsExecutingOn,
 		OpcuaNodeIdServicesReferenceType_HasPushedSecurityGroup,
 		OpcuaNodeIdServicesReferenceType_AlarmSuppressionGroupMember,
+		OpcuaNodeIdServicesReferenceType_HasKeyValueDescription,
+		OpcuaNodeIdServicesReferenceType_HasEngineeringUnitDetails,
+		OpcuaNodeIdServicesReferenceType_HasQuantity,
+		OpcuaNodeIdServicesReferenceType_HasCurrentData,
+		OpcuaNodeIdServicesReferenceType_HasCurrentEvent,
 		OpcuaNodeIdServicesReferenceType_HasReferenceDescription,
 	}
 }
@@ -273,6 +283,16 @@ func OpcuaNodeIdServicesReferenceTypeByValue(value int32) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesReferenceType_NonHierarchicalReferences, true
 	case 32059:
 		return OpcuaNodeIdServicesReferenceType_AlarmSuppressionGroupMember, true
+	case 32407:
+		return OpcuaNodeIdServicesReferenceType_HasKeyValueDescription, true
+	case 32558:
+		return OpcuaNodeIdServicesReferenceType_HasEngineeringUnitDetails, true
+	case 32559:
+		return OpcuaNodeIdServicesReferenceType_HasQuantity, true
+	case 32633:
+		return OpcuaNodeIdServicesReferenceType_HasCurrentData, true
+	case 32634:
+		return OpcuaNodeIdServicesReferenceType_HasCurrentEvent, true
 	case 32679:
 		return OpcuaNodeIdServicesReferenceType_HasReferenceDescription, true
 	case 33:
@@ -413,6 +433,16 @@ func OpcuaNodeIdServicesReferenceTypeByName(value string) (enum OpcuaNodeIdServi
 		return OpcuaNodeIdServicesReferenceType_NonHierarchicalReferences, true
 	case "AlarmSuppressionGroupMember":
 		return OpcuaNodeIdServicesReferenceType_AlarmSuppressionGroupMember, true
+	case "HasKeyValueDescription":
+		return OpcuaNodeIdServicesReferenceType_HasKeyValueDescription, true
+	case "HasEngineeringUnitDetails":
+		return OpcuaNodeIdServicesReferenceType_HasEngineeringUnitDetails, true
+	case "HasQuantity":
+		return OpcuaNodeIdServicesReferenceType_HasQuantity, true
+	case "HasCurrentData":
+		return OpcuaNodeIdServicesReferenceType_HasCurrentData, true
+	case "HasCurrentEvent":
+		return OpcuaNodeIdServicesReferenceType_HasCurrentEvent, true
 	case "HasReferenceDescription":
 		return OpcuaNodeIdServicesReferenceType_HasReferenceDescription, true
 	case "HierarchicalReferences":
@@ -614,6 +644,16 @@ func (e OpcuaNodeIdServicesReferenceType) PLC4XEnumName() string {
 		return "NonHierarchicalReferences"
 	case OpcuaNodeIdServicesReferenceType_AlarmSuppressionGroupMember:
 		return "AlarmSuppressionGroupMember"
+	case OpcuaNodeIdServicesReferenceType_HasKeyValueDescription:
+		return "HasKeyValueDescription"
+	case OpcuaNodeIdServicesReferenceType_HasEngineeringUnitDetails:
+		return "HasEngineeringUnitDetails"
+	case OpcuaNodeIdServicesReferenceType_HasQuantity:
+		return "HasQuantity"
+	case OpcuaNodeIdServicesReferenceType_HasCurrentData:
+		return "HasCurrentData"
+	case OpcuaNodeIdServicesReferenceType_HasCurrentEvent:
+		return "HasCurrentEvent"
 	case OpcuaNodeIdServicesReferenceType_HasReferenceDescription:
 		return "HasReferenceDescription"
 	case OpcuaNodeIdServicesReferenceType_HierarchicalReferences:

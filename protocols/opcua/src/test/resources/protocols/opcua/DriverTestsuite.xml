@@ -27,6 +27,12 @@
   <protocolName>opcua</protocolName>
   <outputFlavor>read-write</outputFlavor>
   <driver-name>opcua</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>discovery</name>
+      <value>false</value>
+    </parameter>
+  </driver-parameters>
 
   <testcase>
     <name>Hello Request Response</name>
@@ -37,14 +43,20 @@
         </parser-arguments>
         <MessagePDU>
           <messageType dataType="string" bitLength="24" encoding="UTF-8">HEL</messageType>
+          <chunk>
+            <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+          </chunk>
+          <totalLength dataType="uint" bitLength="32">47</totalLength>
           <OpcuaHelloRequest>
-            <chunk dataType="string" bitLength="8" encoding="UTF-8">F</chunk>
-            <messageSize dataType="int" bitLength="32">47</messageSize>
-            <version dataType="int" bitLength="32">0</version>
-            <receiveBufferSize dataType="int" bitLength="32">65535</receiveBufferSize>
-            <sendBufferSize dataType="int" bitLength="32">65535</sendBufferSize>
-            <maxMessageSize dataType="int" bitLength="32">2097152</maxMessageSize>
-            <maxChunkCount dataType="int" bitLength="32">64</maxChunkCount>
+            <version dataType="uint" bitLength="32">0</version>
+            <limits>
+              <OpcuaProtocolLimits>
+                <receiveBufferSize dataType="uint" bitLength="32">65535</receiveBufferSize>
+                <sendBufferSize dataType="uint" bitLength="32">65535</sendBufferSize>
+                <maxMessageSize dataType="uint" bitLength="32">2097152</maxMessageSize>
+                <maxChunkCount dataType="uint" bitLength="32">64</maxChunkCount>
+              </OpcuaProtocolLimits>
+            </limits>
             <endpoint>
               <PascalString>
                 <sLength dataType="int" bitLength="32">15</sLength>
@@ -60,15 +72,21 @@
           <response>true</response>
         </parser-arguments>
         <MessagePDU>
-          <messageType dataType="string" bitLength="24">ACK</messageType>
+          <messageType dataType="string" bitLength="24" encoding="UTF-8">ACK</messageType>
+          <chunk>
+            <ChunkType dataType="string" bitLength="8" stringRepresentation="FINAL" encoding="UTF-8">F</ChunkType>
+          </chunk>
+          <totalLength dataType="uint" bitLength="32">24</totalLength>
           <OpcuaAcknowledgeResponse>
-            <chunk dataType="string" bitLength="8">F</chunk>
-            <messageSize dataType="int" bitLength="32">24</messageSize>
-            <version dataType="int" bitLength="32">0</version>
-            <receiveBufferSize dataType="int" bitLength="32">65535</receiveBufferSize>
-            <sendBufferSize dataType="int" bitLength="32">65535</sendBufferSize>
-            <maxMessageSize dataType="int" bitLength="32">2097152</maxMessageSize>
-            <maxChunkCount dataType="int" bitLength="32">64</maxChunkCount>
+            <version dataType="uint" bitLength="32">0</version>
+            <limits>
+              <OpcuaProtocolLimits>
+                <receiveBufferSize dataType="uint" bitLength="32">65535</receiveBufferSize>
+                <sendBufferSize dataType="uint" bitLength="32">65535</sendBufferSize>
+                <maxMessageSize dataType="uint" bitLength="32">2097152</maxMessageSize>
+                <maxChunkCount dataType="uint" bitLength="32">64</maxChunkCount>
+              </OpcuaProtocolLimits>
+            </limits>
           </OpcuaAcknowledgeResponse>
         </MessagePDU>
       </incoming-plc-message>

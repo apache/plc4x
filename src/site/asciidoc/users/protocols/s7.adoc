@@ -47,6 +47,7 @@ These functionalities normally available on the Siemens platform (STEP7/TIA/WinC
 
 Although this driver is developed using Siemens Hardware, it should be functional with VIPA brand equipment, which is a version (clone) of the S7-300, with more memory and functionalities. If you have one of these devices and you are in your best disposition to carry out communication tests, we would be very grateful if you collaborate with the results in the development list and placing the model and firmware version that you have used.
 
+NOTE: When trying to connect to a Siemens `LOGO` device, it is important to add one connection option, as Siemens seems to have only partially implemented the protocol, the device simply terminates the connection as soon as our driver tried to read the SZL table in order to find out which type of S7 device it is talking to. This can be disabled by passing in the type of PLC. For a Siemens LOGO device therefore please add `?controller-type=LOGO` to the connection string.
 
 === Regarding the Support
 
@@ -88,36 +89,13 @@ image::s7_url.png[s7_url,,,,align="center"]
 
 The SCHEMA and DOMAINE NAME are almost standard for any URL and do not require further explanation. The PARAMETERS that define the behavior of the driver are defined in the following table.
 
+=== Connection String Options
 
-===== Connection string parametes for S7 driver
+include::../../../plc4j/drivers/all/src/site/generated/s7.adoc[]
 
 [cols="2,2a,5a"]
 |===
 |Name |Value |Description
-
-|Code
-2+|`s7`
-
-|Name
-2+|Siemens S7 Protocol
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-s7</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `tcp`
-
-|Compatible Transports:
-2+| - `tcp` (Default Port: 102)
-//- `raw-socket`
-//- `pcap-replay`
 
 3+|Supported Operations
 
@@ -134,107 +112,7 @@ The SCHEMA and DOMAINE NAME are almost standard for any URL and do not require f
 //| Generally supported with `tcp` transport with S7 devices of types: `S7 300`, `S7 400`, `S7 1500` (active and passive).
 //With `raw-socket` and `pcap-replay` supported on all devices (passive).
 
-3+|Options
-
-|
-| `local-rack`
-| `Rack` value for the client (PLC4X device). Defaults to 1.
-Default value: 1
-
-|
-| `local-slot`
-| `Slot` value for the client (PLC4X device). Defaults to 1.
-Default value: 1
-
-|
-| `local-tsap`
-| `tsap` .
-Default value: 0
-
-|
-| `remote-rack`
-| `Rack` value for the remote main CPU (PLC). Defaults to 0.
-Default value: 0
-
-|
-| `remote-slot`
-| `Slot` value for the remote main CPU (PLC). Defaults to 0.
-Default value: 0
-
-|
-| `remote-rack2`
-| `Rack` value for the remote secondary CPU (PLC). Defaults to 0.
-Default value: 0
-
-|
-| `remote-slot2`
-| `Slot` value for the remote secondary CPU (PLC). Defaults to 0.
-Default value: 0
-
-|
-| `remote-tsap`
-| `tsap` .
-Default value: 0
-
-|
-| `pdu-size`
-| Maximum size of a data-packet sent to and received from the remote PLC.
-During the connection process both parties will negotiate a maximum size both parties can work with and is equal or smaller than the given value is used.
-The driver will automatically split up large requests to not exceed this value in a request or expected response. 
-Default value: 1024 bytes
-
-|
-| `max-amq-caller`
-| Maximum number of unconfirmed requests the PLC will accept in parallel before discarding with errors.
-This parameter also will be negotiated during the connection process and the maximum both parties can work with and is equal or smaller than the given value is used.
-The driver will automatically take care not exceeding this value while processing requests. Too many requests can cause a growing queue.
-Default value: 8
-
-|
-| `max-amq-callee`
-| Maximum number of unconfirmed responses or requests PLC4X will accept in parallel before discarding with errors.
-This option is available for completeness and is correctly handled out during the connection process, however it is currently not enforced on PLC4X's side.
-So if a PLC would send more messages than agreed upon, these would still be processed.
-Default value: 8
-
-|
-| `controller-type`
-| As part of the connection process, usually the PLC4X S7 driver would try to identify the remote device.
-However some devices seem to have problems with this and hang up or cause other problems.
-In such a case, providing the `controller-type` will skip the identification process and hereby avoid this type of problem.
-Possible values are:
-
-- `S7_300`
-- `S7_400`
-- `S7_1200`
-- `S7_1500`
-- `LOGO`
-
-|
-| `read-timeout`
-| This is the maximum waiting time for reading on the TCP channel. 
-As there is no traffic, it must be assumed that the connection with the interlocutor was lost and it must be restarted.
-When the channel is closed, the "fail over" is carried out in case of having the secondary channel, or it is expected that it will be restored automatically, which is done every 4 seconds.
-Default value: 8 seconds.
-
-|
-| `retry-time`
-| Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.
-Default value: 4 seconds  
-
-|
-| `ping`
-| If your application requires sampling times greater than the set "read-timeout" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily. 
-Default value: false
-
-|
-| `ping-time`
-| Time value in seconds at which the execution of the PING will be scheduled.
-Generally set by developer experience, but generally should be the same as (read-timeout / 2).
-Default value: -1 seconds  
-
 |===
-
 
 ==== TWO
 

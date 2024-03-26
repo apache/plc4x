@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -29,8 +28,8 @@ import io.vavr.control.Either;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
 import org.apache.plc4x.java.spi.internal.DefaultConversationContext;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
@@ -108,18 +107,18 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
-            public void fireDiscovered(Configuration c) {
+            public void fireDiscovered(PlcConnectionConfiguration c) {
                 pipeline.fireUserEventTriggered(DiscoveredEvent.class);
             }
 
             @Override
             public SendRequestContext<T> sendRequest(T packet) {
-                return new DefaultSendRequestContext<>(Plc4xNettyWrapper.this::registerHandler, packet, this);
+                return new DefaultSendRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, packet, this);
             }
 
             @Override
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
-                return new DefaultExpectRequestContext<>(Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
+                return new DefaultExpectRequestContext<>(null, Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
             }
 
         });
@@ -232,6 +231,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         });
         // wrap handler, so we can catch packet consumer call and inform completion callback.
         HandlerRegistration registration = new HandlerRegistration(
+            handler.getName(),
             handler.getCommands(),
             handler.getExpectClazz(),
             completionCallback.andThen(handler.getPacketConsumer()),

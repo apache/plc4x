@@ -41,7 +41,24 @@ type IOpcuaNodeIdServicesVariableDefault interface {
 }
 
 const (
-	OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName OpcuaNodeIdServicesVariableDefault = 17605
+	OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName                                            OpcuaNodeIdServicesVariableDefault = 17605
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad    OpcuaNodeIdServicesVariableDefault = 32639
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad         OpcuaNodeIdServicesVariableDefault = 32640
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood        OpcuaNodeIdServicesVariableDefault = 32641
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation OpcuaNodeIdServicesVariableDefault = 32642
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Stepped                                       OpcuaNodeIdServicesVariableDefault = 32644
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Definition                                    OpcuaNodeIdServicesVariableDefault = 32645
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeInterval                               OpcuaNodeIdServicesVariableDefault = 32646
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MinTimeInterval                               OpcuaNodeIdServicesVariableDefault = 32647
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviation                            OpcuaNodeIdServicesVariableDefault = 32648
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviationFormat                      OpcuaNodeIdServicesVariableDefault = 32649
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfArchive                                OpcuaNodeIdServicesVariableDefault = 32650
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableDefault = 32656
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ServerTimestampSupported                      OpcuaNodeIdServicesVariableDefault = 32682
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeStoredValues                           OpcuaNodeIdServicesVariableDefault = 32752
+	OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxCountStoredValues                          OpcuaNodeIdServicesVariableDefault = 32753
+	OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfArchive                                OpcuaNodeIdServicesVariableDefault = 32756
+	OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfOnlineArchive                          OpcuaNodeIdServicesVariableDefault = 32757
 )
 
 var OpcuaNodeIdServicesVariableDefaultValues []OpcuaNodeIdServicesVariableDefault
@@ -50,6 +67,23 @@ func init() {
 	_ = errors.New
 	OpcuaNodeIdServicesVariableDefaultValues = []OpcuaNodeIdServicesVariableDefault{
 		OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Stepped,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Definition,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeInterval,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MinTimeInterval,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviation,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviationFormat,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfArchive,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfOnlineArchive,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ServerTimestampSupported,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeStoredValues,
+		OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxCountStoredValues,
+		OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfArchive,
+		OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfOnlineArchive,
 	}
 }
 
@@ -57,6 +91,40 @@ func OpcuaNodeIdServicesVariableDefaultByValue(value int32) (enum OpcuaNodeIdSer
 	switch value {
 	case 17605:
 		return OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName, true
+	case 32639:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad, true
+	case 32640:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad, true
+	case 32641:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood, true
+	case 32642:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation, true
+	case 32644:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Stepped, true
+	case 32645:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Definition, true
+	case 32646:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeInterval, true
+	case 32647:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MinTimeInterval, true
+	case 32648:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviation, true
+	case 32649:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviationFormat, true
+	case 32650:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfArchive, true
+	case 32656:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfOnlineArchive, true
+	case 32682:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ServerTimestampSupported, true
+	case 32752:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeStoredValues, true
+	case 32753:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxCountStoredValues, true
+	case 32756:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfArchive, true
+	case 32757:
+		return OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfOnlineArchive, true
 	}
 	return 0, false
 }
@@ -65,6 +133,40 @@ func OpcuaNodeIdServicesVariableDefaultByName(value string) (enum OpcuaNodeIdSer
 	switch value {
 	case "DefaultInstanceBrowseName":
 		return OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName, true
+	case "DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad, true
+	case "DefaultHAConfiguration_AggregateConfiguration_PercentDataBad":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad, true
+	case "DefaultHAConfiguration_AggregateConfiguration_PercentDataGood":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood, true
+	case "DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation, true
+	case "DefaultHAConfiguration_Stepped":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Stepped, true
+	case "DefaultHAConfiguration_Definition":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Definition, true
+	case "DefaultHAConfiguration_MaxTimeInterval":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeInterval, true
+	case "DefaultHAConfiguration_MinTimeInterval":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MinTimeInterval, true
+	case "DefaultHAConfiguration_ExceptionDeviation":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviation, true
+	case "DefaultHAConfiguration_ExceptionDeviationFormat":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviationFormat, true
+	case "DefaultHAConfiguration_StartOfArchive":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfArchive, true
+	case "DefaultHAConfiguration_StartOfOnlineArchive":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfOnlineArchive, true
+	case "DefaultHAConfiguration_ServerTimestampSupported":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ServerTimestampSupported, true
+	case "DefaultHAConfiguration_MaxTimeStoredValues":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeStoredValues, true
+	case "DefaultHAConfiguration_MaxCountStoredValues":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxCountStoredValues, true
+	case "DefaultHEConfiguration_StartOfArchive":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfArchive, true
+	case "DefaultHEConfiguration_StartOfOnlineArchive":
+		return OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfOnlineArchive, true
 	}
 	return 0, false
 }
@@ -134,6 +236,40 @@ func (e OpcuaNodeIdServicesVariableDefault) PLC4XEnumName() string {
 	switch e {
 	case OpcuaNodeIdServicesVariableDefault_DefaultInstanceBrowseName:
 		return "DefaultInstanceBrowseName"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad:
+		return "DefaultHAConfiguration_AggregateConfiguration_TreatUncertainAsBad"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataBad:
+		return "DefaultHAConfiguration_AggregateConfiguration_PercentDataBad"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_PercentDataGood:
+		return "DefaultHAConfiguration_AggregateConfiguration_PercentDataGood"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation:
+		return "DefaultHAConfiguration_AggregateConfiguration_UseSlopedExtrapolation"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Stepped:
+		return "DefaultHAConfiguration_Stepped"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_Definition:
+		return "DefaultHAConfiguration_Definition"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeInterval:
+		return "DefaultHAConfiguration_MaxTimeInterval"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MinTimeInterval:
+		return "DefaultHAConfiguration_MinTimeInterval"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviation:
+		return "DefaultHAConfiguration_ExceptionDeviation"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ExceptionDeviationFormat:
+		return "DefaultHAConfiguration_ExceptionDeviationFormat"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfArchive:
+		return "DefaultHAConfiguration_StartOfArchive"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_StartOfOnlineArchive:
+		return "DefaultHAConfiguration_StartOfOnlineArchive"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_ServerTimestampSupported:
+		return "DefaultHAConfiguration_ServerTimestampSupported"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxTimeStoredValues:
+		return "DefaultHAConfiguration_MaxTimeStoredValues"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHAConfiguration_MaxCountStoredValues:
+		return "DefaultHAConfiguration_MaxCountStoredValues"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfArchive:
+		return "DefaultHEConfiguration_StartOfArchive"
+	case OpcuaNodeIdServicesVariableDefault_DefaultHEConfiguration_StartOfOnlineArchive:
+		return "DefaultHEConfiguration_StartOfOnlineArchive"
 	}
 	return fmt.Sprintf("Unknown(%v)", int32(e))
 }

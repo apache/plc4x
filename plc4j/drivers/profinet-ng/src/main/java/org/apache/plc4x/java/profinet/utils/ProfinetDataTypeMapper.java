@@ -81,10 +81,10 @@ public class ProfinetDataTypeMapper {
                             case 8:
                                 return new DataTypeInformation(PlcValueType.LWORD, 1);
                             default:
-                                return new DataTypeInformation(PlcValueType.List, dataItem.getLength() * 8);
+                                return new DataTypeInformation(PlcValueType.BYTE, dataItem.getLength());
                         }
                     } else {
-                        return new DataTypeInformation(PlcValueType.List, dataItem.getLength());
+                        return new DataTypeInformation(PlcValueType.BYTE, dataItem.getLength());
                     }
                 case "Unsigned8+Unsigned8":
                 case "Float32+Unsigned8":

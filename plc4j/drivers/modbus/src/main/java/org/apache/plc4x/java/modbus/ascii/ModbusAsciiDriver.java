@@ -21,6 +21,8 @@ package org.apache.plc4x.java.modbus.ascii;
 import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
 import org.apache.plc4x.java.modbus.ascii.protocol.ModbusAsciiProtocolLogic;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
@@ -28,21 +30,21 @@ import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.DriverType;
 import org.apache.plc4x.java.modbus.readwrite.ModbusAsciiADU;
 import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
-import org.apache.plc4x.java.spi.transport.TransportConfiguration;
-import org.apache.plc4x.java.spi.transport.TransportConfigurationTypeProvider;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> implements TransportConfigurationTypeProvider {
+public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
 
     @Override
     public String getProtocolCode() {
@@ -55,13 +57,27 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> imple
     }
 
     @Override
-    protected Class<? extends Configuration> getConfigurationType() {
+    protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return ModbusAsciiConfiguration.class;
     }
 
     @Override
-    protected String getDefaultTransport() {
-        return "serial";
+    protected Optional<Class<? extends PlcTransportConfiguration>> getTransportConfigurationClass(String transportCode) {
+        switch (transportCode) {
+            case "tcp":
+                return Optional.of(ModbusTcpTransportConfiguration.class);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<String> getDefaultTransportCode() {
+        return Optional.of("serial");
+    }
+
+    @Override
+    protected List<String> getSupportedTransportCodes() {
+        return Arrays.asList("tcp", "serial");
     }
 
     /**
@@ -185,15 +201,6 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> imple
             encodedWriteBuffer.writeShort(8, (short) 0x0a);
             return encodedWriteBuffer;
         }
-    }
-
-    @Override
-    public Class<? extends TransportConfiguration> getTransportConfigurationType(String transportCode) {
-        switch (transportCode) {
-            case "tcp":
-                return ModbusTcpTransportConfiguration.class;
-        }
-        return null;
     }
 
 }

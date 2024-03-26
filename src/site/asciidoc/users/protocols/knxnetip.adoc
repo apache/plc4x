@@ -19,84 +19,10 @@
 
 == KNXnet/IP
 image::knx_banner.png[banner,512,167]
+
 === Connection String Options
 
-[cols="2,2a,5a"]
-|===
-|Name |Value |Description
-
-|Code
-2+|`knxnet-ip`
-
-|Name
-2+|KNXnet/IP Protocol
-
-|Maven Dependency
-2+|
-----
-<dependency>
-  <groupId>org.apache.plc4x</groupId>
-  <artifactId>plc4j-driver-knxnetip</artifactId>
-  <version>{current-last-released-version}</version>
-</dependency>
-----
-
-|Default Transport:
-2+| `udp`
-
-|Compatible Transports:
-2+| - `udp` (Default Port: 3671)
-//- `raw-socket`
-- `pcap-replay`
-
-3+|Supported Operations
-
-|
-| `write`
-| Only supported with `tcp` transport.
-
-|
-| `subscribe`
-|
-
-3+|Options
-
-|
-| `knxproj-file-path`
-| Path to the `knxproj` file. The default KNXnet/IP protocol doesn't provide all the information needed to be able to fully decode the messages. For this the user needs to provide the project file created in the KNX IDE `ETS5` to provide the missing information. Only if this file is provided, will the driver be able to decode the data entirely. If this parameter is omitted, only raw KNX payload will be returned.
-NOTE: This setting is currently only supported in the Java implementation
-
-|
-| `knxproj-password`
-| Password needed to read the knxproj file.
-NOTE: This setting is currently only supported in the Java implementation
-
-|
-| `group-address-num-levels` (3)
-| KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:
-
-- 3 Levels: {main-group (5 bit)}/{middle-group (3 bit)}/{sub-group (8 bit)}
-- 2 Levels: {main-group (5 bit)}/{sub-group (11 bit)}
-- 1 Level: {sub-group (16 bit)}
-
-The default is 3 levels. If the `knxproj-file-path` this information is provided by the file.
-
-|
-| `connection-type`
-| Type of connection used to communicate. Possible values are:
-
-- 'LINK_LAYER' (default): The client becomes a participant of the KNX bus and gets it's own individual KNX address.
-- 'RAW': The client gets unmanaged access to the bus (be careful with this)
-- 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.
-
-|
-| `replay-speed-factor`
-| When running in pcap-replay mode, the speed in which the replay should be done. `1.0f` being the normal speed.
-
-|
-| `loop`
-| When running in pcap-replay mode, tell if the replay should start from the beginning once it reaches the end of the recording.
-|===
+include::../../../plc4j/drivers/all/src/site/generated/knxnet-ip.adoc[]
 
 === Individual Resource Address Format
 

@@ -113,7 +113,7 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Cache local Maven repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -167,7 +167,7 @@ jobs:
             }
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: go
 
@@ -182,7 +182,7 @@ jobs:
           ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,enable-all-checks,update-generated-code' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report (first failure)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: "golang-test-report-first-failure-${{ matrix.os }}"
@@ -195,7 +195,7 @@ jobs:
         run: ./mvnw${{ steps.platform_suffix.outputs.platform_suffix }} ${{ steps.extra_options.outputs.extra_options }} -B -P'with-go,skip-bacnet-regression-test,update-generated-code' -pl :plc4go -am ${{ steps.platform_opts.outputs.platform_opts }} install
 
       - name: Upload Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: "golang-test-report-${{ matrix.os }}"
@@ -204,4 +204,4 @@ jobs:
             **/reports/test-out-verbose.log
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3

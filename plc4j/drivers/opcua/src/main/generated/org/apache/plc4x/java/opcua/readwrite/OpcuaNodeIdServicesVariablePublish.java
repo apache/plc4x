@@ -33,59 +33,15 @@ public enum OpcuaNodeIdServicesVariablePublish {
   PublishSubscribeType_PublishedDataSets_AddPublishedEvents_InputArguments((int) 14439L),
   PublishSubscribeType_PublishedDataSets_AddPublishedEvents_OutputArguments((int) 14440L),
   PublishSubscribeType_PublishedDataSets_RemovePublishedDataSet_InputArguments((int) 14442L),
-  PublishSubscribeType_GetSecurityKeys_InputArguments((int) 15213L),
-  PublishSubscribeType_GetSecurityKeys_OutputArguments((int) 15214L),
   PublishSubscribe_GetSecurityKeys_InputArguments((int) 15216L),
   PublishSubscribe_GetSecurityKeys_OutputArguments((int) 15217L),
-  PublishSubscribeType_GetSecurityGroup_InputArguments((int) 15432L),
-  PublishSubscribeType_GetSecurityGroup_OutputArguments((int) 15433L),
-  PublishSubscribeType_SecurityGroups_AddSecurityGroup_InputArguments((int) 15436L),
-  PublishSubscribeType_SecurityGroups_AddSecurityGroup_OutputArguments((int) 15437L),
-  PublishSubscribeType_SecurityGroups_RemoveSecurityGroup_InputArguments((int) 15439L),
   PublishSubscribe_GetSecurityGroup_InputArguments((int) 15441L),
   PublishSubscribe_GetSecurityGroup_OutputArguments((int) 15442L),
   PublishSubscribe_SecurityGroups_AddSecurityGroup_InputArguments((int) 15445L),
   PublishSubscribe_SecurityGroups_AddSecurityGroup_OutputArguments((int) 15446L),
   PublishSubscribe_SecurityGroups_RemoveSecurityGroup_InputArguments((int) 15448L),
   PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface((int) 15533L),
-  PublishSubscribe_ConnectionName_Placeholder_PublisherId((int) 15791L),
-  PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri((int) 15792L),
   PublishSubscribeType_Status_State((int) 15845L),
-  PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_Selections((int) 15848L),
-  PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions(
-      (int) 15849L),
-  PublishSubscribe_ConnectionName_Placeholder_TransportProfileUri_RestrictToList((int) 15850L),
-  PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface((int) 15863L),
-  PublishSubscribe_ConnectionName_Placeholder_Status_State((int) 15892L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_DiagnosticsLevel((int) 15938L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation((int) 15939L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Active((int) 15989L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_Classification(
-      (int) 15994L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_DiagnosticsLevel(
-      (int) 16013L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalInformation_TimeFirstChange(
-      (int) 16020L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError((int) 16059L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Active((int) 16060L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_Classification((int) 16061L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_DiagnosticsLevel((int) 16074L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_TotalError_TimeFirstChange((int) 16075L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_SubError((int) 16101L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError((int) 16103L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Active((int) 16122L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_Classification(
-      (int) 16123L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_DiagnosticsLevel(
-      (int) 16124L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateError_TimeFirstChange(
-      (int) 16160L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod(
-      (int) 16283L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Active(
-      (int) 16322L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_Classification(
-      (int) 16523L),
   PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_InputArguments((int) 16558L),
   PublishSubscribeType_ConnectionName_Placeholder_AddWriterGroup_OutputArguments((int) 16559L),
   PublishSubscribeType_ConnectionName_Placeholder_AddReaderGroup_InputArguments((int) 16561L),
@@ -103,58 +59,6 @@ public enum OpcuaNodeIdServicesVariablePublish {
   PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri((int) 17292L),
   PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_RestrictToList((int) 17295L),
   PublishSubscribeType_SetSecurityKeys_InputArguments((int) 17297L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_DiagnosticsLevel(
-      (int) 17300L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByMethod_TimeFirstChange(
-      (int) 17303L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent(
-      (int) 17304L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Active(
-      (int) 17305L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_Classification(
-      (int) 17320L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_DiagnosticsLevel(
-      (int) 17335L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalByParent_TimeFirstChange(
-      (int) 17336L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError(
-      (int) 17337L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Active(
-      (int) 17338L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_Classification(
-      (int) 17339L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_DiagnosticsLevel(
-      (int) 17340L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateOperationalFromError_TimeFirstChange(
-      (int) 17341L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent(
-      (int) 17342L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Active(
-      (int) 17343L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_Classification(
-      (int) 17344L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_DiagnosticsLevel(
-      (int) 17345L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StatePausedByParent_TimeFirstChange(
-      (int) 17346L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod(
-      (int) 17347L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Active(
-      (int) 17348L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_Classification(
-      (int) 17349L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_DiagnosticsLevel(
-      (int) 17350L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_Counters_StateDisabledByMethod_TimeFirstChange(
-      (int) 17351L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress((int) 17353L),
-  PublishSubscribe_ConnectionName_Placeholder_Diagnostics_LiveValues_ResolvedAddress_DiagnosticsLevel(
-      (int) 17354L),
-  PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_InputArguments((int) 17357L),
-  PublishSubscribe_ConnectionName_Placeholder_AddWriterGroup_OutputArguments((int) 17358L),
-  PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_InputArguments((int) 17360L),
-  PublishSubscribe_ConnectionName_Placeholder_AddReaderGroup_OutputArguments((int) 17361L),
-  PublishSubscribe_ConnectionName_Placeholder_RemoveGroup_InputArguments((int) 17363L),
   PublishSubscribe_SetSecurityKeys_InputArguments((int) 17365L),
   PublishSubscribe_AddConnection_InputArguments((int) 17367L),
   PublishSubscribe_AddConnection_OutputArguments((int) 17368L),
@@ -224,17 +128,12 @@ public enum OpcuaNodeIdServicesVariablePublish {
   PublishSubscribe_Diagnostics_LiveValues_OperationalDataSetReaders_DiagnosticsLevel((int) 17466L),
   PublishSubscribeType_ConnectionName_Placeholder_ConnectionProperties((int) 17478L),
   PublishSubscribeType_SupportedTransportProfiles((int) 17479L),
-  PublishSubscribe_ConnectionName_Placeholder_ConnectionProperties((int) 17480L),
   PublishSubscribe_SupportedTransportProfiles((int) 17481L),
   PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_Selections((int) 17503L),
   PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions(
       (int) 17504L),
   PublishSubscribeType_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList(
       (int) 17505L),
-  PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_Selections((int) 17506L),
-  PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_SelectionDescriptions(
-      (int) 17509L),
-  PublishSubscribe_ConnectionName_Placeholder_Address_NetworkInterface_RestrictToList((int) 17510L),
   PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_Selections((int) 17706L),
   PublishSubscribeType_ConnectionName_Placeholder_TransportProfileUri_SelectionDescriptions(
       (int) 17707L),
@@ -399,17 +298,6 @@ public enum OpcuaNodeIdServicesVariablePublish {
   PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_InputArguments((int) 24011L),
   PublishSubscribe_SubscribedDataSets_AddSubscribedDataSet_OutputArguments((int) 24012L),
   PublishSubscribe_SubscribedDataSets_RemoveSubscribedDataSet_InputArguments((int) 24014L),
-  PublishSubscribe_DataSetClasses_DataSetName_Placeholder((int) 24015L),
-  PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_InputArguments((int) 25387L),
-  PublishSubscribeType_SecurityGroups_AddSecurityGroupFolder_OutputArguments((int) 25388L),
-  PublishSubscribeType_SecurityGroups_RemoveSecurityGroupFolder_InputArguments((int) 25390L),
-  PublishSubscribeType_SecurityGroups_SupportedSecurityPolicyUris((int) 25391L),
-  PublishSubscribeType_KeyPushTargets_AddPushTarget_InputArguments((int) 25394L),
-  PublishSubscribeType_KeyPushTargets_AddPushTarget_OutputArguments((int) 25395L),
-  PublishSubscribeType_KeyPushTargets_RemovePushTarget_InputArguments((int) 25397L),
-  PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_InputArguments((int) 25399L),
-  PublishSubscribeType_KeyPushTargets_AddPushTargetFolder_OutputArguments((int) 25400L),
-  PublishSubscribeType_KeyPushTargets_RemovePushTargetFolder_InputArguments((int) 25402L),
   PublishSubscribeType_PubSubConfiguration_Size((int) 25404L),
   PublishSubscribeType_PubSubConfiguration_Writable((int) 25405L),
   PublishSubscribeType_PubSubConfiguration_UserWritable((int) 25406L),
@@ -477,7 +365,17 @@ public enum OpcuaNodeIdServicesVariablePublish {
   PublishSubscribe_PubSubCapablities_SupportSecurityKeyPull((int) 32401L),
   PublishSubscribe_PubSubCapablities_SupportSecurityKeyPush((int) 32402L),
   PublishSubscribe_DefaultSecurityKeyServices((int) 32403L),
-  PublishSubscribe_ConfigurationProperties((int) 32404L);
+  PublishSubscribe_ConfigurationProperties((int) 32404L),
+  PublishSubscribeType_PubSubCapablities_MaxSecurityGroups((int) 32834L),
+  PublishSubscribeType_PubSubCapablities_MaxPushTargets((int) 32835L),
+  PublishSubscribeType_PubSubCapablities_MaxPublishedDataSets((int) 32836L),
+  PublishSubscribeType_PubSubCapablities_MaxStandaloneSubscribedDataSets((int) 32837L),
+  PublishSubscribeType_PubSubCapablities_SupportSecurityKeyServer((int) 32838L),
+  PublishSubscribe_PubSubCapablities_MaxSecurityGroups((int) 32839L),
+  PublishSubscribe_PubSubCapablities_MaxPushTargets((int) 32840L),
+  PublishSubscribe_PubSubCapablities_MaxPublishedDataSets((int) 32841L),
+  PublishSubscribe_PubSubCapablities_MaxStandaloneSubscribedDataSets((int) 32842L),
+  PublishSubscribe_PubSubCapablities_SupportSecurityKeyServer((int) 32843L);
   private static final Map<Integer, OpcuaNodeIdServicesVariablePublish> map;
 
   static {

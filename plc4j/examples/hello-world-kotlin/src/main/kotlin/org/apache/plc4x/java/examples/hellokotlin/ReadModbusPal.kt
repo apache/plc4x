@@ -27,7 +27,7 @@ fun main() {
     DefaultPlcDriverManager()
         .getConnection("modbus-tcp://localhost:502")
         .use { conn ->
-            if (!conn.metadata.canRead()) {
+            if (!conn.metadata.isReadSupported()) {
                 println("Cannot read!!")
                 return
             }

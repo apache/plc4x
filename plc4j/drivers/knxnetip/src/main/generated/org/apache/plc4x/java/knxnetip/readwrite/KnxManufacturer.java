@@ -752,9 +752,31 @@ public enum KnxManufacturer {
   M_RHOMBUS_EUROPE((int) 652, (int) 710, (String) "Rhombus Europe"),
   M_TURING_THINK((int) 653, (int) 711, (String) "Turing-Think"),
   M_MICHOI((int) 654, (int) 712, (String) "Michoi"),
-  M_ABB___RESERVED((int) 655, (int) 43954, (String) "ABB - reserved"),
+  M_CAV_AUDIOGUANGZHOUCO__LTD((int) 655, (int) 713, (String) "CAV AUDIO(GUANGZHOU)CO.,LTD"),
+  M_HELKAMA_BICA_OY((int) 656, (int) 714, (String) "Helkama Bica Oy"),
+  M_MODULYTE((int) 657, (int) 715, (String) "ModuLyte"),
+  M_CONSOLINNO_ENERGY_GMBH((int) 658, (int) 716, (String) "Consolinno Energy GmbH"),
+  M_SCHIDERON_ELECTRIC_ASIA_LIMITED(
+      (int) 659, (int) 717, (String) "SCHIDERON ELECTRIC (ASIA) LIMITED"),
+  M_3R((int) 660, (int) 718, (String) "3R"),
+  M_ARKLYFE((int) 661, (int) 719, (String) "Arklyfe"),
+  M_FOSHAN_HAYDN_TECHNOLOGY_LIGHTING_CO__LTD_(
+      (int) 662, (int) 720, (String) "Foshan Haydn Technology Lighting Co.,Ltd."),
+  M_KNXES_COMPANY_LIMITED((int) 663, (int) 721, (String) "KNXES COMPANY LIMITED"),
+  M_THE_AKUVOX_COMPANY((int) 664, (int) 722, (String) "The Akuvox Company"),
+  M_NINGBO_YINZHOU_SHENGRUIJIE_ELECTRONICS_CO__LTD_(
+      (int) 665, (int) 723, (String) "NingBo Yinzhou ShengRuiJie Electronics Co. Ltd."),
+  M_SHENZHEN_HAIZHICHUANG_TECHNOLOGY_CO___LTD(
+      (int) 666, (int) 724, (String) "Shenzhen Haizhichuang Technology Co., Ltd"),
+  M_SHENZHEN_EASYDETEK_TECHNOLOGY_CO_LTD(
+      (int) 667, (int) 725, (String) "Shenzhen easydetek technology Co.Ltd"),
+  M_MUTLUSAN_ELECTRIC((int) 668, (int) 726, (String) "Mutlusan Electric"),
+  M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_(
+      (int) 669, (int) 727, (String) "Hangzhou BroadLink Technology Co.,Ltd."),
+  M_MARLEY_DEUTSCHLAND_GMBH((int) 670, (int) 728, (String) "Marley Deutschland GmbH"),
+  M_ABB___RESERVED((int) 671, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 656, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 672, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
