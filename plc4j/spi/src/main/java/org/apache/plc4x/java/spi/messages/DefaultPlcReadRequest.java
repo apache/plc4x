@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcTagRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -28,11 +29,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -137,6 +134,19 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             LinkedHashMap<String, PlcTag> parsedTags = new LinkedHashMap<>();
             tags.forEach((name, tagSupplier) -> parsedTags.put(name, tagSupplier.get()));
             return new DefaultPlcReadRequest(reader, parsedTags);
+        }
+
+        public PlcTag parseOrNull(String tagAddress){
+            try{
+                return tagHandler.parseTag(tagAddress);
+            }catch (PlcInvalidTagException e){
+                return null;
+            }
+        }
+
+        @Override
+        public Optional<PlcTag> parseSafe(String tagAddress){
+            return Optional.ofNullable(parseOrNull(tagAddress));
         }
 
     }

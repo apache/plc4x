@@ -176,6 +176,11 @@ public class LeasedPlcConnection implements PlcConnection {
             public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
                 return innerBuilder.addTag(name, tag);
             }
+
+            @Override
+            public Optional<PlcTag> parseSafe(String tagAddress) {
+                return innerBuilder.parseSafe(tagAddress);
+            }
         };
     }
 
