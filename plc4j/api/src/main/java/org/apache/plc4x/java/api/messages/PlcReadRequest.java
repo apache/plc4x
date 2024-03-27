@@ -48,7 +48,7 @@ public interface PlcReadRequest extends PlcTagRequest {
          * @param tagAddress The string representation of the tag address to parse.
          * @return An optional holding the parsed PLC tag if successful, otherwise an empty optional.
          */
-        Optional<PlcTag> parseTagAddressSafe(String tagAddress);
+        Optional<PlcTag> parseTagAddress(String tagAddress);
     }
 
 }
