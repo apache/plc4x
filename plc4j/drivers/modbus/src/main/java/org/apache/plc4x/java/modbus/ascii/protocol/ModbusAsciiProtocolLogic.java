@@ -47,7 +47,7 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
     @Override
     public void setConfiguration(ModbusAsciiConfiguration configuration) {
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
-        this.unitIdentifier = (short) configuration.getUnitIdentifier();
+        this.unitIdentifier = configuration.getDefaultUnitIdentifier();
         this.tm = new RequestTransactionManager(1);
     }
 
@@ -64,7 +64,8 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
         // So we fall back to a request, that most certainly is implemented by any device. Even if the device doesn't
         // have any holding-register:1, it should still gracefully respond.
         ModbusPDU readRequestPdu = getReadRequestPdu(pingAddress);
-        ModbusAsciiADU modbusTcpADU = new ModbusAsciiADU(unitIdentifier, readRequestPdu);
+        short unitId = getUnitId(pingAddress);
+        ModbusAsciiADU modbusTcpADU = new ModbusAsciiADU(unitId, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(modbusTcpADU)
@@ -99,8 +100,9 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
             String tagName = request.getTagNames().iterator().next();
             ModbusTag tag = (ModbusTag) request.getTag(tagName);
             final ModbusPDU requestPdu = getReadRequestPdu(tag);
+            final short unitId = getUnitId(tag);
 
-            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitIdentifier, requestPdu);
+            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusAsciiADU)
                 .expectResponse(ModbusAsciiADU.class, requestTimeout)
@@ -158,7 +160,8 @@ public class ModbusAsciiProtocolLogic extends ModbusProtocolLogic<ModbusAsciiADU
             String tagName = request.getTagNames().iterator().next();
             PlcTag tag = request.getTag(tagName);
             final ModbusPDU requestPdu = getWriteRequestPdu(tag, writeRequest.getPlcValue(tagName));
-            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitIdentifier, requestPdu);
+            final short unitId = getUnitId(tag);
+            ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusAsciiADU)
                 .expectResponse(ModbusAsciiADU.class, requestTimeout)

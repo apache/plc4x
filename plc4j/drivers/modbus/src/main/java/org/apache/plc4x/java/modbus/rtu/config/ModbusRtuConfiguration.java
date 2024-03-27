@@ -30,10 +30,10 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
-    @ConfigurationParameter("unit-identifier")
+    @ConfigurationParameter("default-unit-identifier")
     @IntDefaultValue(1)
     @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
-    private int unitIdentifier;
+    private int defaultUnitIdentifier;
 
     public int getRequestTimeout() {
         return requestTimeout;
@@ -43,19 +43,19 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
         this.requestTimeout = requestTimeout;
     }
 
-    public int getUnitIdentifier() {
-        return unitIdentifier;
+    public int getDefaultUnitIdentifier() {
+        return defaultUnitIdentifier;
     }
 
-    public void setUnitIdentifier(int unitIdentifier) {
-        this.unitIdentifier = unitIdentifier;
+    public void setDefaultUnitIdentifier(int defaultUnitIdentifier) {
+        this.defaultUnitIdentifier = defaultUnitIdentifier;
     }
 
     @Override
     public String toString() {
         return "ModbusRtuConfiguration{" +
             "requestTimeout=" + requestTimeout +
-            ", unitIdentifier=" + unitIdentifier +
+            ", unitIdentifier=" + defaultUnitIdentifier +
             '}';
     }
 

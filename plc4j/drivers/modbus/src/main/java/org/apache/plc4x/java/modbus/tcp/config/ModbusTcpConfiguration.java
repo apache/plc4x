@@ -31,10 +31,10 @@ public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
     @Description("Default timeout for all types of requests.")
     private int requestTimeout;
 
-    @ConfigurationParameter("unit-identifier")
+    @ConfigurationParameter("default-unit-identifier")
     @IntDefaultValue(1)
     @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
-    private int unitIdentifier;
+    private int defaultUnitIdentifier;
 
     @ConfigurationParameter("ping-address")
     @StringDefaultValue("4x00001:BOOL")
@@ -49,12 +49,12 @@ public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
         this.requestTimeout = requestTimeout;
     }
 
-    public int getUnitIdentifier() {
-        return unitIdentifier;
+    public int getDefaultUnitIdentifier() {
+        return defaultUnitIdentifier;
     }
 
-    public void setUnitIdentifier(int unitIdentifier) {
-        this.unitIdentifier = unitIdentifier;
+    public void setDefaultUnitIdentifier(int defaultUnitIdentifier) {
+        this.defaultUnitIdentifier = defaultUnitIdentifier;
     }
 
     public String getPingAddress() {
@@ -65,7 +65,7 @@ public class ModbusTcpConfiguration implements PlcConnectionConfiguration {
     public String toString() {
         return "ModbusTcpConfiguration{" +
             "requestTimeout=" + requestTimeout +
-            ", unitIdentifier=" + unitIdentifier +
+            ", unitIdentifier=" + defaultUnitIdentifier +
             ", pingAddress=" + pingAddress +
             '}';
     }

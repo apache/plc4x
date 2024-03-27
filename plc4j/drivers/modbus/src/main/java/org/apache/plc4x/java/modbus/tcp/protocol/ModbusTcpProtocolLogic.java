@@ -48,7 +48,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
     @Override
     public void setConfiguration(ModbusTcpConfiguration configuration) {
         this.requestTimeout = Duration.ofMillis(configuration.getRequestTimeout());
-        this.unitIdentifier = (short) configuration.getUnitIdentifier();
+        this.unitIdentifier = (short) configuration.getDefaultUnitIdentifier();
         this.pingAddress = new ModbusTagHandler().parseTag(configuration.getPingAddress());
         this.tm = new RequestTransactionManager(1);
     }
@@ -66,12 +66,13 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
         // So we fall back to a request, that most certainly is implemented by any device. Even if the device doesn't
         // have any holding-register:1, it should still gracefully respond.
         ModbusPDU readRequestPdu = getReadRequestPdu(pingAddress);
+        final short unitId = getUnitId(pingAddress);
         int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
         // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
         if (transactionIdentifierGenerator.get() == 0xFFFF) {
             transactionIdentifierGenerator.set(1);
         }
-        ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, readRequestPdu);
+        ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitId, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> context.sendRequest(modbusTcpADU)
@@ -79,7 +80,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             .onTimeout(future::completeExceptionally)
             .onError((p, e) -> future.completeExceptionally(e))
             .check(p -> ((p.getTransactionIdentifier() == transactionIdentifier) &&
-                (p.getUnitIdentifier() == unitIdentifier)))
+                (p.getUnitIdentifier() == unitId)))
             .unwrap(ModbusTcpADU::getPdu)
             .handle(responsePdu -> {
                 transaction.endRequest();
@@ -108,20 +109,21 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             String tagName = request.getTagNames().iterator().next();
             ModbusTag tag = (ModbusTag) request.getTag(tagName);
             final ModbusPDU requestPdu = getReadRequestPdu(tag);
+            final short unitId = getUnitId(tag);
 
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
             // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
             if (transactionIdentifierGenerator.get() == 0xFFFF) {
                 transactionIdentifierGenerator.set(1);
             }
-            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
+            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)
                 .expectResponse(ModbusTcpADU.class, requestTimeout)
                 .onTimeout(future::completeExceptionally)
                 .onError((p, e) -> future.completeExceptionally(e))
                 .check(p -> ((p.getTransactionIdentifier() == transactionIdentifier) &&
-                    (p.getUnitIdentifier() == unitIdentifier)))
+                    (p.getUnitIdentifier() == unitId)))
                 .unwrap(ModbusTcpADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.
@@ -174,12 +176,13 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             String tagName = request.getTagNames().iterator().next();
             PlcTag tag = request.getTag(tagName);
             final ModbusPDU requestPdu = getWriteRequestPdu(tag, writeRequest.getPlcValue(tagName));
+            final short unitId = getUnitId(tag);
             int transactionIdentifier = transactionIdentifierGenerator.getAndIncrement();
             // If we've reached the max value for a 16 bit transaction identifier, reset back to 1
             if (transactionIdentifierGenerator.get() == 0xFFFF) {
                 transactionIdentifierGenerator.set(1);
             }
-            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
+            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)
                 .expectResponse(ModbusTcpADU.class, requestTimeout)
