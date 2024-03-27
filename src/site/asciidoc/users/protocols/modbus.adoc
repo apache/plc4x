@@ -74,6 +74,12 @@ In general all Modbus addresses have this format:
 If the array-size part is omitted, the size-default of `1` is assumed.
 If the data-type part is omitted, it defaults to BOOL for Coils and Discrete Inputs and INT for input, holding and extended registers.
 
+Additionally address can contain tag configuration:
+----
+{unit-id: 123}
+----
+Specifying this value overrides value of `default-unit-id` parameter specified at the connection string.
+
 ==== Memory Areas
 
 There are a number of memory areas defined in the Modbus specification.
@@ -166,6 +172,14 @@ To read 1 holding register at address 5678 the following examples are valid.
 - 4x05678
 - 45678
 - 4x5678
+
+To read 1 holding register of unit 10 at address 5678 the following examples are valid.
+
+- holding-register:5678{unit-id: 10}
+- 405678{unit-id: 10}
+- 4x05678{unit-id: 10}
+- 45678{unit-id: 10}
+- 4x5678{unit-id: 10}
 
 To read 10 extended registers starting at address 50 the following examples are valid.
 

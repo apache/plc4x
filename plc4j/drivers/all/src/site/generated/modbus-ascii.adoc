@@ -38,7 +38,7 @@
  - `serial`
 5+|Config options:
 |`request-timeout` |INT |5000| |Default timeout for all types of requests.
-|`unit-identifier` |INT |1| |Unit-identifier that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
+|`default-unit-identifier` |STRUCT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
 5+|Transport config options:
 5+|
 +++
