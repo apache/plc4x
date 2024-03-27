@@ -178,8 +178,8 @@ public class LeasedPlcConnection implements PlcConnection {
             }
 
             @Override
-            public Optional<PlcTag> parseSafe(String tagAddress) {
-                return innerBuilder.parseSafe(tagAddress);
+            public Optional<PlcTag> parseTagAddressSafe(String tagAddress) {
+                return innerBuilder.parseTagAddressSafe(tagAddress);
             }
         };
     }
