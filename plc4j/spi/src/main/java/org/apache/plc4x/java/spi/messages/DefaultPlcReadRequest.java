@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
-import org.apache.plc4x.java.api.messages.PlcTagRequest;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcTagRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -33,6 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -138,7 +139,6 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             tags.forEach((name, tagSupplier) -> parsedTags.put(name, tagSupplier.get()));
             return new DefaultPlcReadRequest(reader, parsedTags);
         }
-
     }
 
 }

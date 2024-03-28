@@ -26,12 +26,14 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -228,4 +230,14 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         return protocol.browseWithInterceptor(browseRequest, interceptor);
     }
 
+    @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        PlcTag plcTag;
+        try{
+            plcTag = tagHandler.parseTag(tagAddress);
+        }catch (Exception e){
+            return Optional.empty();
+        }
+        return Optional.ofNullable(plcTag);
+    }
 }
