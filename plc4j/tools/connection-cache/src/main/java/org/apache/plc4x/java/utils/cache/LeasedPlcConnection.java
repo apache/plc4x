@@ -81,6 +81,11 @@ public class LeasedPlcConnection implements PlcConnection {
     }
 
     @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        return Optional.empty();
+    }
+
+    @Override
     public void connect() throws PlcConnectionException {
         throw new PlcConnectionException("Error connecting leased connection");
     }
@@ -175,11 +180,6 @@ public class LeasedPlcConnection implements PlcConnection {
             @Override
             public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
                 return innerBuilder.addTag(name, tag);
-            }
-
-            @Override
-            public Optional<PlcTag> parseTagAddress(String tagAddress) {
-                return innerBuilder.parseTagAddress(tagAddress);
             }
         };
     }

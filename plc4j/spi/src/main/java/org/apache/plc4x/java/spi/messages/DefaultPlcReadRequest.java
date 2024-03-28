@@ -139,17 +139,6 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
             tags.forEach((name, tagSupplier) -> parsedTags.put(name, tagSupplier.get()));
             return new DefaultPlcReadRequest(reader, parsedTags);
         }
-
-        @Override
-        public Optional<PlcTag> parseTagAddress(String tagAddress){
-            PlcTag plcTag;
-            try{
-                plcTag = tagHandler.parseTag(tagAddress);
-            }catch (Exception e){
-                return Optional.empty();
-            }
-            return Optional.ofNullable(plcTag);
-        }
     }
 
 }

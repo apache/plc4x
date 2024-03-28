@@ -38,17 +38,6 @@ public interface PlcReadRequest extends PlcTagRequest {
 
         Builder addTagAddress(String name, String tagAddress);
         Builder addTag(String name, PlcTag tag);
-
-        /**
-         * Parses a string representation of a tag address into a {@link PlcTag} object.
-         * <p>
-         * This method safely attempts to convert the given tag address string into a PlcTag, returning an
-         * {@link Optional} that is empty if the parsing fails.
-         *
-         * @param tagAddress The string representation of the tag address to parse.
-         * @return An optional holding the parsed PLC tag if successful, otherwise an empty optional.
-         */
-        Optional<PlcTag> parseTagAddress(String tagAddress);
     }
 
 }
