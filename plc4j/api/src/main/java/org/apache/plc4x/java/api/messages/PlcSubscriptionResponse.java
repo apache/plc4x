@@ -18,26 +18,25 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
-public interface PlcSubscriptionResponse extends PlcSubscriptionTagResponse {
+public interface PlcSubscriptionResponse extends PlcResponse {
 
     @Override
     PlcSubscriptionRequest getRequest();
 
-    /**
-     * Returns a {@link PlcSubscriptionHandle} associated with a {@code name} from {@link PlcSubscriptionRequest#getTag(String)}
-     *
-     * @param name the tag name which a {@link PlcSubscriptionHandle} is required to
-     * @return a {@link PlcSubscriptionHandle}
-     */
-    PlcSubscriptionHandle getSubscriptionHandle(String name);
+    PlcUnsubscriptionRequest getUnsubscriptionRequest();
 
-    /**
-     * @return all {@link PlcSubscriptionHandle}s
-     */
-    Collection<PlcSubscriptionHandle> getSubscriptionHandles();
+    Collection<String> getTagNames();
+
+    PlcSubscriptionTag getTag(String name);
+
+    PlcResponseCode getResponseCode(String name);
+
+    void registerConsumer(Consumer<PlcSubscriptionEvent> subscriptionConsumer);
 
 }

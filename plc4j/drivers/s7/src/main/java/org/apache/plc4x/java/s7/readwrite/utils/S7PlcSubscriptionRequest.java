@@ -61,7 +61,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
     }
 
     @Override
-    public CompletableFuture<PlcSubscriptionResponse> execute() {
+    public CompletableFuture<PlcSubscriptionResponse> execute(Consumer<PlcSubscriptionEvent> subscriptionConsumer) {
         return subscriber.subscribe(this);
     }
 

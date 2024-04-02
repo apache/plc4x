@@ -56,10 +56,7 @@ public interface PlcConnection extends AutoCloseable {
      *
      * @throws PlcRuntimeException If the string cannot be parsed
      */
-    @Deprecated
-    default PlcTag parseTagAddress(String tagAddress) throws PlcInvalidTagException {
-        throw new PlcRuntimeException("Parse method is not implemented for this connection / driver");
-    }
+    PlcTag parseTagAddress(String tagAddress) throws PlcInvalidTagException;
 
     /**
      * Provides connection metadata.

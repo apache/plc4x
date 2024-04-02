@@ -18,45 +18,11 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface PlcUnsubscriptionRequest extends PlcRequest {
 
-    List<PlcSubscriptionHandle> getSubscriptionHandles();
-
     @Override
     CompletableFuture<PlcUnsubscriptionResponse> execute();
-
-    interface Builder extends PlcRequestBuilder {
-
-        @Override
-        PlcUnsubscriptionRequest build();
-
-        /**
-         * {@link PlcSubscriptionHandle} that should be removed from the subscription
-         *
-         * @param plcSubscriptionHandle {@link PlcSubscriptionHandle} to be removed
-         */
-        PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle);
-
-        /**
-         * {@link PlcSubscriptionHandle}s that should be removed from the subscription
-         *
-         * @param plcSubscriptionHandle1 {@link PlcSubscriptionHandle} to be removed
-         * @param plcSubscriptionHandles {@link PlcSubscriptionHandle} to be removed
-         */
-        PlcUnsubscriptionRequest.Builder addHandles(PlcSubscriptionHandle plcSubscriptionHandle1, PlcSubscriptionHandle... plcSubscriptionHandles);
-
-        /**
-         * {@link PlcSubscriptionHandle}s that should be removed from the subscription
-         *
-         * @param plcSubscriptionHandle {@link PlcSubscriptionHandle} to be removed
-         */
-        PlcUnsubscriptionRequest.Builder addHandles(Collection<PlcSubscriptionHandle> plcSubscriptionHandle);
-    }
 
 }

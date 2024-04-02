@@ -18,16 +18,27 @@
  */
 package org.apache.plc4x.java.api.messages;
 
+import org.apache.plc4x.java.api.model.PlcPublicationTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.time.Duration;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface PlcPublicationRequest extends PlcPublicationTagRequest {
+public interface PlcPublicationRequest extends PlcRequest {
 
     @Override
     CompletableFuture<? extends PlcPublicationResponse> execute();
+
+    int getNumberOfTags();
+
+    LinkedHashSet<String> getTagNames();
+
+    PlcPublicationTag getTag(String name);
+
+    List<PlcPublicationTag> getTags();
 
     interface Builder extends PlcRequestBuilder {
 

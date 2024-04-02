@@ -18,27 +18,21 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcPublicationHandle;
-import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
+import org.apache.plc4x.java.api.model.PlcPublicationTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 import java.util.Collection;
 
-public interface PlcPublicationResponse extends PlcPublicationTagResponse {
+public interface PlcPublicationResponse extends PlcResponse {
 
     @Override
     PlcPublicationRequest getRequest();
 
-    /**
-     * Returns a {@link PlcPublicationHandle} associated with a {@code name} from {@link PlcPublicationRequest#getTag(String)}
-     *
-     * @param name the tag name which a {@link PlcPublicationHandle} is required to
-     * @return a {@link PlcPublicationHandle}
-     */
-    PlcPublicationHandle getPublicationHandle(String name);
+    Collection<String> getTagNames();
 
-    /**
-     * @return all {@link PlcPublicationHandle}s
-     */
-    Collection<PlcPublicationHandle> getPublicationHandles();
+    PlcPublicationTag getTag(String name);
+
+    PlcResponseCode getResponseCode(String name);
+
 
 }
