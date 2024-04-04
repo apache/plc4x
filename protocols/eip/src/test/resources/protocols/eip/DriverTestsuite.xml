@@ -245,7 +245,7 @@
           <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
-              <address>%rate</address>
+              <address>%A0:2</address>
             </tag>
           </tags>
         </TestReadRequest>

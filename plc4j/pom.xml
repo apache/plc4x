@@ -40,8 +40,6 @@
   <modules>
     <module>api</module>
     <module>drivers</module>
-    <module>examples</module>
-    <module>integrations</module>
     <module>spi</module>
     <module>tools</module>
     <module>transports</module>

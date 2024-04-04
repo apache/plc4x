@@ -61,13 +61,13 @@ https://vimeo.com/167857327
 
 As especially building the C++, and C# drivers requires building of some third party artifacts and increases build-time dramatically and requires setting up some additional third party tools, we have excluded these parts form the default Maven build.
 
-The following profiles are available (*They have to be enabled additionally to the `with-sandbox` profile*):
+The following profiles are available:
 
-- `with-c`: Builds all C related modules, integrations and examples
-- `with-dotnet`: Builds all C# and .Net related modules, integrations and examples
-- `with-go`: Builds all Go related modules, integrations and examples
-- `with-java`: Builds all Java related modules, integrations and examples
-- `with-python`: Builds all Python related modules, integrations and examples
+- `with-c`: Builds all C related modules
+- `with-dotnet`: Builds all C# and .Net related modules
+- `with-go`: Builds all Go related modules
+- `with-java`: Builds all Java related modules
+- `with-python`: Builds all Python related modules
 
 WARNING: As these profiles typically require some preparation and setup on your development machine, please read the link:preparing/index.html[Preparing your Computer] guide for a detailed description on this.
 

@@ -1503,6 +1503,12 @@ const (
 	BACnetVendorId_VERGE_SENSE                                                                  BACnetVendorId = 1466
 	BACnetVendorId_SYSTEMAIR_MFG_INC                                                            BACnetVendorId = 1467
 	BACnetVendorId_SEELEY_INTERNATIONAL                                                         BACnetVendorId = 1468
+	BACnetVendorId_CRANE_BUILDING_SERVICES_UTILITIES                                            BACnetVendorId = 1469
+	BACnetVendorId_BRADY_CORPORATION                                                            BACnetVendorId = 1470
+	BACnetVendorId_QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD                      BACnetVendorId = 1471
+	BACnetVendorId_GOLDEN_QUALITY_CO_LTD                                                        BACnetVendorId = 1472
+	BACnetVendorId_ELVACOAB                                                                     BACnetVendorId = 1473
+	BACnetVendorId_STRONG_TECHNOLOGYLLC                                                         BACnetVendorId = 1474
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2971,6 +2977,12 @@ func init() {
 		BACnetVendorId_VERGE_SENSE,
 		BACnetVendorId_SYSTEMAIR_MFG_INC,
 		BACnetVendorId_SEELEY_INTERNATIONAL,
+		BACnetVendorId_CRANE_BUILDING_SERVICES_UTILITIES,
+		BACnetVendorId_BRADY_CORPORATION,
+		BACnetVendorId_QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD,
+		BACnetVendorId_GOLDEN_QUALITY_CO_LTD,
+		BACnetVendorId_ELVACOAB,
+		BACnetVendorId_STRONG_TECHNOLOGYLLC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5061,9 +5073,33 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1468' */
 			return 1468
 		}
+	case 1469:
+		{ /* '1469' */
+			return 1469
+		}
 	case 147:
 		{ /* '147' */
 			return 147
+		}
+	case 1470:
+		{ /* '1470' */
+			return 1470
+		}
+	case 1471:
+		{ /* '1471' */
+			return 1471
+		}
+	case 1472:
+		{ /* '1472' */
+			return 1472
+		}
+	case 1473:
+		{ /* '1473' */
+			return 1473
+		}
+	case 1474:
+		{ /* '1474' */
+			return 1474
 		}
 	case 148:
 		{ /* '148' */
@@ -10923,9 +10959,33 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1468' */
 			return "Seeley International"
 		}
+	case 1469:
+		{ /* '1469' */
+			return "Crane Building Services & Utilities"
+		}
 	case 147:
 		{ /* '147' */
 			return "Integrated Information Systems, Inc."
+		}
+	case 1470:
+		{ /* '1470' */
+			return "Brady Corporation"
+		}
+	case 1471:
+		{ /* '1471' */
+			return "Qingdao Hisense Hitachi Air-Conditioning Systems Co., Ltd."
+		}
+	case 1472:
+		{ /* '1472' */
+			return "Golden Quality Co. Ltd."
+		}
+	case 1473:
+		{ /* '1473' */
+			return "Elvaco AB"
+		}
+	case 1474:
+		{ /* '1474' */
+			return "Strong Technology, LLC"
 		}
 	case 148:
 		{ /* '148' */
@@ -15742,8 +15802,20 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SYSTEMAIR_MFG_INC, true
 	case 1468:
 		return BACnetVendorId_SEELEY_INTERNATIONAL, true
+	case 1469:
+		return BACnetVendorId_CRANE_BUILDING_SERVICES_UTILITIES, true
 	case 147:
 		return BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC, true
+	case 1470:
+		return BACnetVendorId_BRADY_CORPORATION, true
+	case 1471:
+		return BACnetVendorId_QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD, true
+	case 1472:
+		return BACnetVendorId_GOLDEN_QUALITY_CO_LTD, true
+	case 1473:
+		return BACnetVendorId_ELVACOAB, true
+	case 1474:
+		return BACnetVendorId_STRONG_TECHNOLOGYLLC, true
 	case 148:
 		return BACnetVendorId_TEMCO_CONTROLS_LTD, true
 	case 149:
@@ -18670,8 +18742,20 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_SYSTEMAIR_MFG_INC, true
 	case "SEELEY_INTERNATIONAL":
 		return BACnetVendorId_SEELEY_INTERNATIONAL, true
+	case "CRANE_BUILDING_SERVICES_UTILITIES":
+		return BACnetVendorId_CRANE_BUILDING_SERVICES_UTILITIES, true
 	case "INTEGRATED_INFORMATION_SYSTEMS_INC":
 		return BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC, true
+	case "BRADY_CORPORATION":
+		return BACnetVendorId_BRADY_CORPORATION, true
+	case "QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD":
+		return BACnetVendorId_QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD, true
+	case "GOLDEN_QUALITY_CO_LTD":
+		return BACnetVendorId_GOLDEN_QUALITY_CO_LTD, true
+	case "ELVACOAB":
+		return BACnetVendorId_ELVACOAB, true
+	case "STRONG_TECHNOLOGYLLC":
+		return BACnetVendorId_STRONG_TECHNOLOGYLLC, true
 	case "TEMCO_CONTROLS_LTD":
 		return BACnetVendorId_TEMCO_CONTROLS_LTD, true
 	case "AIRTEK_INTERNATIONAL_INC":
@@ -21659,8 +21743,20 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "SYSTEMAIR_MFG_INC"
 	case BACnetVendorId_SEELEY_INTERNATIONAL:
 		return "SEELEY_INTERNATIONAL"
+	case BACnetVendorId_CRANE_BUILDING_SERVICES_UTILITIES:
+		return "CRANE_BUILDING_SERVICES_UTILITIES"
 	case BACnetVendorId_INTEGRATED_INFORMATION_SYSTEMS_INC:
 		return "INTEGRATED_INFORMATION_SYSTEMS_INC"
+	case BACnetVendorId_BRADY_CORPORATION:
+		return "BRADY_CORPORATION"
+	case BACnetVendorId_QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD:
+		return "QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD"
+	case BACnetVendorId_GOLDEN_QUALITY_CO_LTD:
+		return "GOLDEN_QUALITY_CO_LTD"
+	case BACnetVendorId_ELVACOAB:
+		return "ELVACOAB"
+	case BACnetVendorId_STRONG_TECHNOLOGYLLC:
+		return "STRONG_TECHNOLOGYLLC"
 	case BACnetVendorId_TEMCO_CONTROLS_LTD:
 		return "TEMCO_CONTROLS_LTD"
 	case BACnetVendorId_AIRTEK_INTERNATIONAL_INC:
