@@ -42,7 +42,7 @@
 
     <sonar.tests>.</sonar.tests>
     <sonar.test.inclusions>**/*_test.go</sonar.test.inclusions>
-    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,examples/**/*,tests/**/*,tools/**/*
+    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,tests/**/*,tools/**/*
     </sonar.coverage.exclusions>
 
     <sonar.go.exclusions>**/vendor/**,**/*_mock.go,**/mock_*.go</sonar.go.exclusions>
@@ -395,7 +395,7 @@
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
-          <goVersion>1.20.7</goVersion>
+          <goVersion>1.22.0</goVersion>
         </configuration>
       </plugin>
 
