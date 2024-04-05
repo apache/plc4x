@@ -56,8 +56,8 @@
   </distributionManagement>
 
   <issueManagement>
-    <system>Jira</system>
-    <url>https://issues.apache.org/jira/browse/PLC4X</url>
+    <system>GitHub</system>
+    <url>https://github.com/apache/plc4x/issues</url>
   </issueManagement>
 
   <mailingLists>
@@ -862,7 +862,7 @@
             <configuration>
               <resourceBundles>
                 <!-- Will generate META-INF/{DEPENDENCIES,LICENSE,NOTICE} -->
-                <resourceBundle>org.apache:apache-jar-resource-bundle:1.4</resourceBundle>
+                <resourceBundle>org.apache.apache.resources:apache-jar-resource-bundle:1.5</resourceBundle>
               </resourceBundles>
               <!-- Content in this directory will be appended to generated resources -->
               <appendedResourcesDirectory>${basedir}/src/remote-resources</appendedResourcesDirectory>
