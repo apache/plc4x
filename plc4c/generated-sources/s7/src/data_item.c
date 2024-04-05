@@ -593,14 +593,14 @@ plc4c_return_code plc4c_s7_read_write_data_item_serialize(plc4x_spi_context ctx,
         } else         if(strcmp(dataProtocolId, "IEC61131_CHAR") == 0) { /* CHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (char*) &(*data_item)->data.char_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (char*) (*data_item)->data.char_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(strcmp(dataProtocolId, "IEC61131_WCHAR") == 0) { /* CHAR */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (char*) &(*data_item)->data.char_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (char*) (*data_item)->data.char_value);
                     if(_res != OK) {
                         return _res;
                     }
