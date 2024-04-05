@@ -55,10 +55,10 @@
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
 
-    <go.stringer.version>v0.11.1</go.stringer.version>
+    <go.stringer.version>v0.20.0</go.stringer.version>
     <go.junit-report.version>v2.0.1</go.junit-report.version>
-    <go.gotestsum.version>v1.10.1</go.gotestsum.version>
-    <go.mockery.version>v2.32.4</go.mockery.version>
+    <go.gotestsum.version>v1.11.0</go.gotestsum.version>
+    <go.mockery.version>v2.42.2</go.mockery.version>
   </properties>
 
   <build>
