@@ -122,14 +122,12 @@
     <commons-logging.version>1.3.0</commons-logging.version>
     <commons-math3.version>3.6.1</commons-math3.version>
     <commons-net.version>3.10.0</commons-net.version>
-    <commons-pool2.version>2.12.0</commons-pool2.version>
     <commons-text.version>1.11.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.16</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.20</groovy.version>
-    <gson.version>2.10.1</gson.version>
     <guava.version>33.1.0-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -141,7 +139,6 @@
     <!-- Starting with Jetty 12 Java 17 is required -->
     <jetty-util.version>11.0.20</jetty-util.version>
     <jna.version>5.14.0</jna.version>
-    <joda-time.version>2.12.7</joda-time.version>
     <jserialcom.version>2.10.4</jserialcom.version>
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
@@ -271,11 +268,6 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-pool2</artifactId>
-        <version>${commons-pool2.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>${commons-text.version}</version>
       </dependency>
@@ -286,11 +278,6 @@
       </dependency>
 
       <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>${gson.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
         <version>1.21.0</version>
@@ -300,12 +287,6 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>${joda-time.version}</version>
       </dependency>
 
       <!-- For Either types ... -->
@@ -471,11 +452,6 @@
 
       <dependency>
         <groupId>org.bouncycastle</groupId>
-        <artifactId>bcmail-jdk18on</artifactId>
-        <version>${bouncycastle.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.bouncycastle</groupId>
         <artifactId>bcpkix-jdk18on</artifactId>
         <version>${bouncycastle.version}</version>
       </dependency>
@@ -486,39 +462,13 @@
       </dependency>
 
       <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-util</artifactId>
-        <version>${jetty-util.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>sdk-server</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>sdk-core</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-core</artifactId>
         <version>${milo.version}</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.milo</groupId>
-        <artifactId>stack-server</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
         <artifactId>stack-client</artifactId>
-        <version>${milo.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.eclipse.milo</groupId>
-        <artifactId>dictionary-manager</artifactId>
         <version>${milo.version}</version>
       </dependency>
 
@@ -623,9 +573,27 @@
       </dependency>
 
       <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.23.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>failureaccess</artifactId>
+        <version>1.0.2</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.j2objc</groupId>
+        <artifactId>j2objc-annotations</artifactId>
+        <version>2.8</version>
       </dependency>
 
       <dependency>
@@ -693,7 +661,7 @@
           <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
+            <version>2.12.7</version>
           </dependency>
           <dependency>
             <groupId>org.apache.groovy</groupId>
@@ -1080,12 +1048,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>properties-maven-plugin</artifactId>
-          <version>1.2.1</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.antlr</groupId>
           <artifactId>antlr4-maven-plugin</artifactId>
           <version>${antlr.version}</version>
@@ -1095,12 +1057,6 @@
           <groupId>org.apache.plc4x.plugins</groupId>
           <artifactId>plc4x-maven-plugin</artifactId>
           <version>${plc4x-code-generation.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>buildnumber-maven-plugin</artifactId>
-          <version>3.2.0</version>
         </plugin>
 
         <plugin>
@@ -1125,12 +1081,6 @@
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
           <version>4.4.5</version>
-        </plugin>
-
-        <plugin>
-          <groupId>com.google.code.maven-replacer-plugin</groupId>
-          <artifactId>replacer</artifactId>
-          <version>1.5.3</version>
         </plugin>
 
         <plugin>
@@ -1360,12 +1310,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changelog-plugin</artifactId>
-          <version>2.3</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.2.0</version>
@@ -1417,87 +1361,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <reporting>
-    <plugins>
-      <!-- Generate the unit- and integration-test reports -->
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report-only</report>
-              <report>failsafe-report-only</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin-->
-
-      <!-- Generate a code coverage report -->
-      <!--plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report</report>
-              <report>report-integration</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>aggregate</id>
-            <inherited>false</inherited>
-            <reports>
-              <report>report-aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin-->
-
-      <!-- Add html friendly version of source files with line-numbers -->
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>3.0.0</version>
-      </plugin-->
-
-      <!-- Generate javadoc documentation -->
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>javadoc-no-fork</report>
-              <report>test-javadoc-no-fork</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <failOnError>true</failOnError>
-        </configuration>
-      </plugin-->
-
-      <!-- Generates a changelog report from GIT commits -->
-      <!--plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changelog-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changelog</report>
-              <report>file-activity</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <!- Automatically link Jira issues ->
-          <issueLinkUrl>https://issues.apache.org/jira/browse/%ISSUE%</issueLinkUrl>
-        </configuration>
-      </plugin-->
-    </plugins>
-  </reporting>
 
   <!-- Make Snapshots of Apache projects available -->
   <repositories>

@@ -39,13 +39,13 @@ TIP: Currently, Maven 3.6 and above is required for being able to build all part
 [width=100%]
 |===
 | Profile        | Description                                              | Requirements
-|                | Builds Java API, drivers, integrations, examples        a|
+|                | Builds Java API, drivers                                a|
 * Git
 * LibPCAP
-| `with-c`  | Builds C API, drivers, integrations, examples a|
-| `with-dotnet`  | Builds C# and .Net API, drivers, integrations, examples a|
+| `with-c`       | Builds C API, drivers                                   a|
+| `with-dotnet`  | Builds C# and .Net API, drivers                         a|
 * dotnet
-| `with-python`  | Builds Python API, drivers, integrations, examples      a|
+| `with-python`  | Builds Python API, drivers                              a|
 * python (min 3.7)
 * pyenv
 |===
