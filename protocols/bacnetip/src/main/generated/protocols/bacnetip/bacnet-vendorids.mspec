@@ -1481,6 +1481,12 @@
   ['1466' VERGE_SENSE ['1466', '"VergeSense"']]
   ['1467' SYSTEMAIR_MFG_INC ['1467', '"Systemair Mfg. Inc."']]
   ['1468' SEELEY_INTERNATIONAL ['1468', '"Seeley International"']]
+  ['1469' CRANE_BUILDING_SERVICES_UTILITIES ['1469', '"Crane Building Services & Utilities"']]
+  ['1470' BRADY_CORPORATION ['1470', '"Brady Corporation"']]
+  ['1471' QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD ['1471', '"Qingdao Hisense Hitachi Air-Conditioning Systems Co., Ltd."']]
+  ['1472' GOLDEN_QUALITY_CO_LTD ['1472', '"Golden Quality Co. Ltd."']]
+  ['1473' ELVACOAB ['1473', '"Elvaco AB"']]
+  ['1474' STRONG_TECHNOLOGYLLC ['1474', '"Strong Technology, LLC"']]
  
   ['0xFFFF' UNKNOWN_VENDOR ['0xFFFF', '"Unknown"']]
 ]

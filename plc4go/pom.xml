@@ -42,7 +42,7 @@
 
     <sonar.tests>.</sonar.tests>
     <sonar.test.inclusions>**/*_test.go</sonar.test.inclusions>
-    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,examples/**/*,tests/**/*,tools/**/*
+    <sonar.coverage.exclusions>**/*_test.go,spi/testutils/*,**/*_plc4xgen.go,tests/**/*,tools/**/*
     </sonar.coverage.exclusions>
 
     <sonar.go.exclusions>**/vendor/**,**/*_mock.go,**/mock_*.go</sonar.go.exclusions>
@@ -55,10 +55,10 @@
 
     <go.cover.flag>-coverprofile=target/coverage.out</go.cover.flag>
 
-    <go.stringer.version>v0.11.1</go.stringer.version>
+    <go.stringer.version>v0.20.0</go.stringer.version>
     <go.junit-report.version>v2.0.1</go.junit-report.version>
-    <go.gotestsum.version>v1.10.1</go.gotestsum.version>
-    <go.mockery.version>v2.32.4</go.mockery.version>
+    <go.gotestsum.version>v1.11.0</go.gotestsum.version>
+    <go.mockery.version>v2.42.2</go.mockery.version>
   </properties>
 
   <build>
@@ -395,7 +395,7 @@
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
-          <goVersion>1.20.7</goVersion>
+          <goVersion>1.22.0</goVersion>
         </configuration>
       </plugin>
 

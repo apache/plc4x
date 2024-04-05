@@ -227,7 +227,7 @@ NOTE: Not implemented yet
 
 ==== Subscribing to Data
 
-As the `Modbus` protocol, which we used in the above examples, doesn't support subscriptions, we are uing the `KNX` protocol for a demonstration on the subscription API.
+As the `Modbus` protocol, which we used in the above examples, doesn't support subscriptions, we are using the `KNX` protocol for a demonstration on the subscription API.
 
 Subscribing to data can be considered similar to reading data, at least the subscription itself if very similar to reading of data.
 

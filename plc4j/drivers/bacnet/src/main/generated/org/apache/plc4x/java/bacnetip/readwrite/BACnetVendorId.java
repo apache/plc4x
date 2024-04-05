@@ -1682,6 +1682,16 @@ public enum BACnetVendorId {
   VERGE_SENSE((int) 1466, (int) 1466, (String) "VergeSense"),
   SYSTEMAIR_MFG_INC((int) 1467, (int) 1467, (String) "Systemair Mfg. Inc."),
   SEELEY_INTERNATIONAL((int) 1468, (int) 1468, (String) "Seeley International"),
+  CRANE_BUILDING_SERVICES_UTILITIES(
+      (int) 1469, (int) 1469, (String) "Crane Building Services & Utilities"),
+  BRADY_CORPORATION((int) 1470, (int) 1470, (String) "Brady Corporation"),
+  QINGDAO_HISENSE_HITACHI_AIR_CONDITIONING_SYSTEMS_CO_LTD(
+      (int) 1471,
+      (int) 1471,
+      (String) "Qingdao Hisense Hitachi Air-Conditioning Systems Co., Ltd."),
+  GOLDEN_QUALITY_CO_LTD((int) 1472, (int) 1472, (String) "Golden Quality Co. Ltd."),
+  ELVACOAB((int) 1473, (int) 1473, (String) "Elvaco AB"),
+  STRONG_TECHNOLOGYLLC((int) 1474, (int) 1474, (String) "Strong Technology, LLC"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

@@ -87,6 +87,10 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
         plc4c_utils_list_create(&${arrayField.name});
         int itemCount = (int) ${helper.toParseExpression(type, arrayField, arrayField.loopExpression, parserArguments)};
         for(int curItem = 0; curItem < itemCount; curItem++) {
+            <#-- Commenting out this code as we really need to figgure out how to handle strings -->
+            <#if helper.getLanguageTypeNameForTypeReference(elementTypeReference) == "char*">
+                /*
+            </#if>
             ${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}* _val = malloc(sizeof(${helper.getLanguageTypeNameForTypeReference(elementTypeReference)}) * 1);
             _res = <#if elementTypeReference.isSimpleTypeReference()>${helper.getReadBufferReadMethodCall(elementTypeReference.asSimpleTypeReference().orElseThrow(), "_val", arrayField)}<#else>${elementTypeReference.asNonSimpleTypeReference().orElseThrow().name}IO.staticParse(readBuffer<#if arrayField.params.isPresent()>, <#list arrayField.params.orElseThrow() as parserArgument>(${helper.getLanguageTypeNameForTypeReference(helper.getArgumentType(elementTypeReference, parserArgument?index))}) (${helper.toParseExpression(type, arrayField, parserArgument, parserArguments)})<#sep>, </#sep></#list></#if>)</#if>;
             if(_res != OK) {
@@ -94,6 +98,9 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
             }
             plc4c_data* _item = plc4c_data_create_${helper.getDataIoTypeNameForTypeReference(elementTypeReference)}_data(*_val);
             plc4c_utils_list_insert_head_value(${arrayField.name}, _item);
+            <#if helper.getLanguageTypeNameForTypeReference(elementTypeReference) == "char*">
+                */
+            </#if>
         }
                     <#-- In all other cases do we have to work with a list, that is later converted to an array -->
                     <#else>
@@ -229,6 +236,10 @@ plc4c_return_code ${helper.getCTypeName(type.name)}_parse(plc4x_spi_context ctx,
                     <#else>
                 *data_item = plc4c_data_create_string_data(${simpleField.type.asStringTypeReference().orElseThrow().sizeInBits}, ${simpleField.name});
                     </#if>
+                <#elseif case.name == "CHAR">
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(*${simpleField.name});
+                <#elseif case.name == "WCHAR">
+                *data_item = plc4c_data_create_${case.name?lower_case}_data(*${simpleField.name});
                 <#else>
                 *data_item = plc4c_data_create_${case.name?lower_case}_data(${simpleField.name});
                 </#if>

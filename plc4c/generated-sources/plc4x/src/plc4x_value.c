@@ -440,14 +440,14 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_value_serialize(plc4x_spi_context
         } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_CHAR) { /* STRING */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (*data_item)->data.string_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 8, "UTF-8", (char*) (*data_item)->data.string_value);
                     if(_res != OK) {
                         return _res;
                     }
         } else         if(valueType == plc4c_plc4x_read_write_plc4x_value_type_WCHAR) { /* STRING */
 
                     // Simple field (value)
-                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (*data_item)->data.string_value);
+                    _res = plc4c_spi_write_string(writeBuffer, 16, "UTF-16", (char*) (*data_item)->data.string_value);
                     if(_res != OK) {
                         return _res;
                     }
