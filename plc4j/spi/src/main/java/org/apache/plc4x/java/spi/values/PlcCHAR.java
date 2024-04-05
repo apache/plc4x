@@ -53,7 +53,9 @@ public class PlcCHAR extends PlcIECValue<Short> {
             return new PlcCHAR((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcCHAR((BigDecimal) value);
-        } else {
+        } else if(value instanceof Character){
+            return new PlcCHAR((Character) value)
+        }else {
             return new PlcCHAR((String) value);
         }
     }
