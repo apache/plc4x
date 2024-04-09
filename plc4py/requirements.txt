@@ -45,7 +45,7 @@ pycodestyle==2.11.1
 pyflakes==3.2.0
 pyproject_hooks==1.0.0
 pytest==8.0.0
-pytest-asyncio==0.23.5
+pytest-asyncio==0.23.6
 pytest-mock==3.14.0
 PyYAML==6.0.1
 requires==0.10.5
