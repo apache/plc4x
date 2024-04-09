@@ -44,9 +44,9 @@ async def communicate_with_plc():
             builder.add_item("Random Tag", "4x00001[10]")
             request = builder.build()
 
-    future = connection.execute(request)
-    await future
-    response = future.result()
+        future = connection.execute(request)
+        await future
+        response = future.result()
 
 asyncio.run(communicate_with_plc())
 ----
