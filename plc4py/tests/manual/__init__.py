@@ -16,24 +16,3 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
-from asyncio import Protocol, Future, BaseProtocol
-from dataclasses import dataclass
-from typing import Union
-
-
-@dataclass
-class Plc4xBaseProtocol(Protocol):
-    handler: Future
-    connected: bool = False
-
-    def data_received(self, data) -> None:
-        self.handler.set_result(data)
-
-    def connection_made(self, transport):
-        self.connected = True
-
-    def connection_lost(self, exc: Union[Exception, None]) -> None:
-        self.connected = False
-        if exc is not None:
-            raise ConnectionError

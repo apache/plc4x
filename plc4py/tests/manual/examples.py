@@ -16,41 +16,24 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import time
 
-import pytest
-
+import asyncio
 from plc4py.PlcDriverManager import PlcDriverManager
-from plc4py.api.value.PlcValue import PlcResponseCode
-import logging
 
-logger = logging.getLogger("testing")
-
-
-@pytest.mark.asyncio
-async def manual_test_plc_driver_modbus_connect():
-    driver_manager = PlcDriverManager()
-    async with driver_manager.connection("modbus://1") as connection:
-        assert connection.is_connected()
-    assert not connection.is_connected()
+connection_string = "modbus://127.0.0.1:5020"
+driver_manager = PlcDriverManager()
 
 
-@pytest.mark.asyncio
-async def test_plc_driver_modbus_read():
-
-    connection_string = "modbus://127.0.0.1:5020"
-    driver_manager = PlcDriverManager()
-    response = None
-
-    async def communicate_with_plc():
-        async with driver_manager.connection(connection_string) as connection:
-            with connection.read_request_builder() as builder:
-                builder.add_item("Random Tag", "4x00001[10]")
-                request = builder.build()
+async def communicate_with_plc():
+    async with driver_manager.connection(connection_string) as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001[10]")
+            request = builder.build()
 
         future = connection.execute(request)
         await future
         response = future.result()
-
-    communicate_with_plc()
+        print(response)
     pass
+
+asyncio.run(communicate_with_plc())
