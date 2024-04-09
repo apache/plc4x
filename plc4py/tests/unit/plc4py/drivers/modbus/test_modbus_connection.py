@@ -36,7 +36,7 @@ async def manual_test_plc_driver_modbus_connect():
 
 
 @pytest.mark.asyncio
-async def test_plc_driver_modbus_read():
+async def manual_test_plc_driver_modbus_read():
 
     connection_string = "modbus://127.0.0.1:5020"
     driver_manager = PlcDriverManager()
