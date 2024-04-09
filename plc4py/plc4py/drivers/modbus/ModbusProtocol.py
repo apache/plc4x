@@ -43,6 +43,7 @@ class ModbusProtocol(Plc4xBaseProtocol):
         ).build(True)
         if adu.transaction_identifier in self.messages:
             self.messages[adu.transaction_identifier].set_result(adu.pdu)
+            self.messages.pop(adu.transaction_identifier)
         else:
             logging.error("Unsolicited message returned")
             self.close()
@@ -57,4 +58,5 @@ class ModbusProtocol(Plc4xBaseProtocol):
         for key, message in self.messages.items:
             logging.debug("Removing un-replied message with identifier " + str(key))
             message.set_result(None)
+            self.messages.pop()
         self.messages = None

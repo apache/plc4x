@@ -109,7 +109,7 @@ class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
         """
         return DefaultReadRequestBuilder(MockTagBuilder)
 
-    def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
+    async def execute(self, request: PlcRequest) -> PlcResponse:
         """
         Executes a PlcRequest as long as it's already connected
         :param PlcRequest: Plc Request to execute
@@ -119,11 +119,11 @@ class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         if isinstance(request, PlcReadRequest):
-            return self._read(request)
+            return await self._read(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-    def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
+    async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
         """
         Executes a PlcReadRequest
         """
@@ -131,22 +131,21 @@ class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
             logging.error("No device is set in the mock connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-        async def _request(req, device) -> PlcReadResponse:
-            try:
-                response = PlcReadResponse(
-                    PlcResponseCode.OK,
-                    {tag_name: device.read(tag) for tag_name, tag in req.tags.items()},
-                )
-                return response
-            except Exception as e:
-                # TODO:- This exception is very general and probably should be replaced
-                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.tags, {})
+        try:
+            logging.debug("Sending read request to Mock Device")
+            response = PlcReadResponse(
+                PlcResponseCode.OK,
+                {
+                    tag_name: self.device.read(tag)
+                    for tag_name, tag in request.tags.items()
+                },
+            )
+            return response
+        except Exception as e:
+            # TODO:- This exception is very general and probably should be replaced
+            return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
-        logging.debug("Sending read request to MockDevice")
-        future = asyncio.ensure_future(_request(request, self.device))
-        return future
-
-    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcWriteResponse]:
+    async def _write(self, request: PlcWriteRequest) -> PlcWriteResponse:
         """
         Executes a PlcReadRequest
         """
@@ -154,20 +153,19 @@ class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
             logging.error("No device is set in the mock connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-        async def _request(req, device) -> PlcReadResponse:
-            try:
-                response = PlcReadResponse(
-                    PlcResponseCode.OK,
-                    {tag_name: device.read(tag) for tag_name, tag in req.tags.items()},
-                )
-                return response
-            except Exception as e:
-                # TODO:- This exception is very general and probably should be replaced
-                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, req.tags, {})
-
-        logging.debug("Sending read request to MockDevice")
-        future = asyncio.ensure_future(_request(request, self.device))
-        return future
+        try:
+            logging.debug("Sending read request to MockDevice")
+            response = PlcWriteResponse(
+                PlcResponseCode.OK,
+                {
+                    tag_name: self.device.write(tag)
+                    for tag_name, tag in request.tags.items()
+                },
+            )
+            return response
+        except Exception as e:
+            # TODO:- This exception is very general and probably should be replaced
+            return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, request.tags)
 
     def is_read_supported(self) -> bool:
         """

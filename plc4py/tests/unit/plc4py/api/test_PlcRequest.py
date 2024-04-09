@@ -81,7 +81,7 @@ async def test_read_request_builder_non_empty_request_not_connected(mocker) -> N
     with connection.read_request_builder() as builder:
         builder.add_item("Random Tag", "1:BOOL")
         request: PlcTagRequest = builder.build()
-        response = await connection.execute(request)
+    response = await connection.execute(request)
 
     # verify that request has one field
     assert response.response_code == PlcResponseCode.NOT_CONNECTED

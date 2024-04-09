@@ -44,9 +44,7 @@ async def communicate_with_plc():
             builder.add_item("Random Tag", "4x00001[10]")
             request = builder.build()
 
-        future = connection.execute(request)
-        await future
-        response = future.result()
+        response = await connection.execute(request)
 
 asyncio.run(communicate_with_plc())
 ----
@@ -100,9 +98,7 @@ The request is sent to the PLC by issuing the `execute` method on the request ob
 
 ----
 try:
-    future = connection.execute(request)
-    await future
-    response = future.result()
+    response = await connection.execute(request)
 except TimeOutException:
     # Handle timeout error
 except ...
@@ -183,9 +179,7 @@ The same way read requests are sent to the PLC by issuing the `execute` method o
 
 ----
 try:
-    future = connection.execute(request)
-    await future
-    response = future.result()
+    response = await connection.execute(request)
 except TimeOutException:
     # Handle timeout error
 except ...
