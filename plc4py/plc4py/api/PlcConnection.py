@@ -72,16 +72,13 @@ class PlcConnection(GenericGenerator):
 
     def _default_failed_request(
         self, code: PlcResponseCode
-    ) -> Awaitable[Union[PlcReadResponse, PlcWriteResponse, PlcBrowseResponse]]:
+    ) -> Union[PlcReadResponse, PlcWriteResponse, PlcBrowseResponse]:
         """
         Returns a default PlcResponse, mainly used in case of a failed request
         :param code: The response code to return
         :return: The PlcResponse
         """
-        loop = asyncio.get_running_loop()
-        future = loop.create_future()
-        future.set_result(PlcResponse(code))
-        return future
+        return PlcResponse(code)
 
 
 class PlcConnectionMetaData:
