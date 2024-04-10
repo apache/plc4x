@@ -26,7 +26,7 @@ mission-critical applications.
 # PLC4X Kafka Connectors
 
 The PLC4X connectors have the ability to pass data between Kafka and devices using industrial protocols.
-They can be built from source from the latest https://plc4x.apache.org/users/download.html[release] of
+They can be built from source from the latest https://github.com/apache/plc4x-extras/tree/main/plc4j/integrations/apache-kafka[plc4x extras - kafka integration] and plc4x https://plc4x.apache.org/users/download.html[release] of
 PLC4X or from the latest snapshot from https://github.com/apache/plc4x[github].
 
 ## Introduction
@@ -88,7 +88,7 @@ A sample configuration file is provided in the PLC4X Kafka integration repositor
 This includes comments as well as meaningful properties that can be used with the worker.
 
 The configuration of the connectors via the REST interface expects the same properties as are specified within the
-example https://github.com/apache/plc4x/tree/develop/plc4j/integrations/apache-kafka/config[config/plc4x-source.properties] file. These will need to be in JSON format and included with a couple of headers.
+example https://github.com/apache/plc4x-extras/blob/main/plc4j/integrations/apache-kafka/config/plc4x-source.properties[config/plc4x-source.properties] file. These will need to be in JSON format and included with a couple of headers.
 An example below shows the format it expects:-
 
     curl -X POST -H "Content-Type: application/json" --data '{"name": "plc-source-test", "config": {"connector.class":"org.apache.plc4x.kafka.Plc4xSourceConnector",
@@ -134,7 +134,7 @@ The configuration of the Connectors is then provided via REST interface:
 
 ## Sink Connector
 
-See https://github.com/apache/plc4x/tree/develop/plc4j/integrations/apache-kafka/config[config/sink.properties] for an example configuration.
+See https://github.com/apache/plc4x-extras/blob/main/plc4j/integrations/apache-kafka/config/plc4x-sink.properties[config/sink.properties] for an example configuration.
 
 ### Start a Kafka Connect Sink Worker (Standalone)
 
