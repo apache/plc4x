@@ -65,7 +65,7 @@ public class ManualModbusTCPDriverTest extends ManualTest {
      */
 
     public ManualModbusTCPDriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {

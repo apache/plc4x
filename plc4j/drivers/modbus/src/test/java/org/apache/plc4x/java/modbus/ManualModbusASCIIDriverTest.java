@@ -65,7 +65,7 @@ public class ManualModbusASCIIDriverTest extends ManualTest {
      */
 
     public ManualModbusASCIIDriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {

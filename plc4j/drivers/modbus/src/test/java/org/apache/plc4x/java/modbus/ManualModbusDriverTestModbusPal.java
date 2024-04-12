@@ -65,7 +65,7 @@ public class ManualModbusDriverTestModbusPal extends ManualTest {
      */
 
     public ManualModbusDriverTestModbusPal(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {

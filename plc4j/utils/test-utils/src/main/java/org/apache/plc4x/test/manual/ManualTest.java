@@ -38,22 +38,23 @@ import java.util.List;
 public abstract class ManualTest {
 
     private final String connectionString;
+    private final boolean testRead;
     private final boolean testWrite;
+    private final boolean enableSingleIteTests;
     private final List<TestCase> testCases;
 
-    private final int numRandomReads;
+    private final int numRandomMultiItemRequests;
 
     public ManualTest(String connectionString) {
-        this(connectionString, true);
+        this(connectionString, true, true, true, 100);
     }
 
-    public ManualTest(String connectionString, boolean testWrite) {
-        this(connectionString, testWrite, 100);
-    }
-    public ManualTest(String connectionString, boolean testWrite, int numRandomReads) {
+    public ManualTest(String connectionString, boolean testRead, boolean testWrite, boolean enableSingleIteTests, int numRandomMultiItemRequests) {
         this.connectionString = connectionString;
+        this.testRead = testRead;
         this.testWrite = testWrite;
-        this.numRandomReads = numRandomReads;
+        this.enableSingleIteTests = enableSingleIteTests;
+        this.numRandomMultiItemRequests = numRandomMultiItemRequests;
         testCases = new ArrayList<>();
     }
 
@@ -65,124 +66,153 @@ public abstract class ManualTest {
     public void run() throws Exception {
         try (PlcConnection plcConnection = new DefaultPlcDriverManager().getConnection(connectionString)) {
             System.out.println("Reading all types in separate requests");
-            // Run all entries separately:
-            for (TestCase testCase : testCases) {
-                String tagName = testCase.address;
 
-                System.out.println(" - Reading: " + tagName);
-                // Prepare the read-request
-                final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(tagName, testCase.address).build();
+            if(enableSingleIteTests) {
+                // Run all entries separately:
+                for (TestCase testCase : testCases) {
+                    String tagName = testCase.address;
 
-                // Execute the read request
-                final PlcReadResponse readResponse = readRequest.execute().get();
+                    // Try reading the value from the PLC.
+                    if (testRead) {
+                        System.out.println(" - Reading: " + tagName);
+                        // Prepare the read-request
+                        final PlcReadRequest readRequest = plcConnection.readRequestBuilder().addTagAddress(tagName, testCase.address).build();
 
-                // Check the result
-                Assertions.assertEquals(1, readResponse.getTagNames().size(), tagName);
-                Assertions.assertEquals(tagName, readResponse.getTagNames().iterator().next(), tagName);
-                Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName), tagName);
-                Assertions.assertNotNull(readResponse.getPlcValue(tagName), tagName);
-                if (readResponse.getPlcValue(tagName) instanceof PlcList) {
-                    PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
-                    List expectedValues;
-                    if (testCase.expectedReadValue instanceof PlcList) {
-                        PlcList expectedPlcList = (PlcList) testCase.expectedReadValue;
-                        expectedValues = expectedPlcList.getList();
-                    } else if (testCase.expectedReadValue instanceof List) {
-                        expectedValues = (List) testCase.expectedReadValue;
-                    } else {
-                        Assertions.fail("Got a list of values, but only expected one.");
-                        return;
-                    }
-                    for (int j = 0; j < expectedValues.size(); j++) {
-                        if (expectedValues.get(j) instanceof PlcValue) {
-                            Assertions.assertEquals(((PlcValue) expectedValues.get(j)).getObject(), plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
+                        // Execute the read request
+                        final PlcReadResponse readResponse = readRequest.execute().get();
+
+                        // Check the result
+                        Assertions.assertEquals(1, readResponse.getTagNames().size(), tagName);
+                        Assertions.assertEquals(tagName, readResponse.getTagNames().iterator().next(), tagName);
+                        Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName), tagName);
+                        Assertions.assertNotNull(readResponse.getPlcValue(tagName), tagName);
+                        if (readResponse.getPlcValue(tagName) instanceof PlcList) {
+                            PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
+                            List<?> expectedValues;
+                            if (testCase.expectedReadValue instanceof PlcList) {
+                                PlcList expectedPlcList = (PlcList) testCase.expectedReadValue;
+                                expectedValues = expectedPlcList.getList();
+                            } else if (testCase.expectedReadValue instanceof List) {
+                                expectedValues = (List<?>) testCase.expectedReadValue;
+                            } else {
+                                Assertions.fail("Got a list of values, but only expected one.");
+                                return;
+                            }
+                            for (int j = 0; j < expectedValues.size(); j++) {
+                                if (expectedValues.get(j) instanceof PlcValue) {
+                                    Assertions.assertEquals(((PlcValue) expectedValues.get(j)).getObject(), plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
+                                } else {
+                                    Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
+                                }
+                            }
                         } else {
-                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j).getObject(), tagName + "[" + j + "]");
+                            if (testCase.expectedReadValue instanceof PlcStruct) {
+                                Assertions.assertEquals(testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).toString(), tagName);
+                            } else if (testCase.expectedReadValue instanceof PlcValue) {
+                                Assertions.assertEquals(
+                                    ((PlcValue) testCase.expectedReadValue).getObject(), readResponse.getPlcValue(tagName).getObject(), tagName);
+                            } else {
+                                Assertions.assertEquals(
+                                    testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).getObject().toString(), tagName);
+                            }
                         }
                     }
-                } else {
-                    if (testCase.expectedReadValue instanceof PlcStruct) {
-                        Assertions.assertEquals(testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).toString(), tagName);
-                    } else if (testCase.expectedReadValue instanceof PlcValue) {
-                        Assertions.assertEquals(
-                            ((PlcValue) testCase.expectedReadValue).getObject(), readResponse.getPlcValue(tagName).getObject(), tagName);
-                    } else {
-                        Assertions.assertEquals(
-                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).getObject().toString(), tagName);
+
+                    // Try writing the value to the PLC.
+                    if (testWrite) {
+                        System.out.println(" - Writing: " + tagName);
+                        PlcValue plcValue;
+                        if (testCase.expectedReadValue instanceof PlcValue) {
+                            plcValue = ((PlcValue) testCase.expectedReadValue);
+                        } else {
+                            plcValue = PlcValues.of(testCase.expectedReadValue);
+                        }
+
+                        // Prepare the write request
+                        PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(tagName, testCase.address, plcValue).build();
+
+                        // Execute the write request
+                        PlcWriteResponse writeResponse = writeRequest.execute().get();
+
+                        // Check the result
+                        Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
                     }
                 }
-
-                // Try writing the same value back to the PLC.
-                if (testWrite) {
-                    System.out.println(" - Writing: " + tagName);
-                    PlcValue plcValue;
-                    if (testCase.expectedReadValue instanceof PlcValue) {
-                        plcValue = ((PlcValue) testCase.expectedReadValue);
-                    } else {
-                        plcValue = PlcValues.of(testCase.expectedReadValue);
-                    }
-
-                    // Prepare the write request
-                    PlcWriteRequest writeRequest = plcConnection.writeRequestBuilder().addTagAddress(tagName, testCase.address, plcValue).build();
-
-                    // Execute the write request
-                    PlcWriteResponse writeResponse = writeRequest.execute().get();
-
-                    // Check the result
-                    Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName), String.format("Got status %s for %s", writeResponse.getResponseCode(tagName).name(), testCase.address));
-                }
+                System.out.println("Success");
             }
-            System.out.println("Success");
 
+            if(numRandomMultiItemRequests > 0) {
+                // Read all items in one big request.
+                // Shuffle the list of test cases and run the test 10 times.
+                System.out.println("Reading all items together in random order");
+                for (int i = 0; i < numRandomMultiItemRequests; i++) {
+                    System.out.println(" - run number " + i + " of " + numRandomMultiItemRequests);
+                    final List<TestCase> shuffledTestcases = new ArrayList<>(testCases);
+                    Collections.shuffle(shuffledTestcases);
 
-            // Read all items in one big request.
-            // Shuffle the list of test cases and run the test 10 times.
-            System.out.println("Reading all items together in random order");
-            for (int i = 0; i < numRandomReads; i++) {
-                System.out.println(" - run number " + i + " of " + numRandomReads);
-                final List<TestCase> shuffledTestcases = new ArrayList<>(testCases);
-                Collections.shuffle(shuffledTestcases);
+                    StringBuilder sb = new StringBuilder();
+                    for (TestCase testCase : shuffledTestcases) {
+                        sb.append(testCase.address).append(", ");
+                    }
+                    System.out.println("       using order: " + sb);
 
-                StringBuilder sb = new StringBuilder();
-                for (TestCase testCase : shuffledTestcases) {
-                    sb.append(testCase.address).append(", ");
-                }
-                System.out.println("       using order: " + sb);
+                    if(testRead) {
+                        final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
+                        for (TestCase testCase : shuffledTestcases) {
+                            String tagName = testCase.address;
+                            builder.addTagAddress(tagName, testCase.address);
+                        }
+                        final PlcReadRequest readRequest = builder.build();
 
-                final PlcReadRequest.Builder builder = plcConnection.readRequestBuilder();
-                for (TestCase testCase : shuffledTestcases) {
-                    String tagName = testCase.address;
-                    builder.addTagAddress(tagName, testCase.address);
-                }
-                final PlcReadRequest readRequest = builder.build();
+                        // Execute the read request
+                        final PlcReadResponse readResponse = readRequest.execute().get();
 
-                // Execute the read request
-                final PlcReadResponse readResponse = readRequest.execute().get();
+                        // Check the result
+                        Assertions.assertEquals(shuffledTestcases.size(), readResponse.getTagNames().size());
+                        for (TestCase testCase : shuffledTestcases) {
+                            String tagName = testCase.address;
+                            Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName),
+                                "Tag: " + tagName);
+                            Assertions.assertNotNull(readResponse.getPlcValue(tagName), "Tag: " + tagName);
+                            if (readResponse.getPlcValue(tagName) instanceof PlcList) {
+                                PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
+                                List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
+                                for (int j = 0; j < expectedValues.size(); j++) {
+                                    Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j),
+                                        "Tag: " + tagName);
+                                }
+                            } else {
+                                Assertions.assertEquals(
+                                    testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).toString(),
+                                    "Tag: " + tagName);
+                            }
+                        }
+                        System.out.println("        - Read OK");
+                    }
 
-                // Check the result
-                Assertions.assertEquals(shuffledTestcases.size(), readResponse.getTagNames().size());
-                for (TestCase testCase : shuffledTestcases) {
-                    String tagName = testCase.address;
-                    Assertions.assertEquals(PlcResponseCode.OK, readResponse.getResponseCode(tagName),
-                        "Tag: " + tagName);
-                    Assertions.assertNotNull(readResponse.getPlcValue(tagName), "Tag: " + tagName);
-                    if (readResponse.getPlcValue(tagName) instanceof PlcList) {
-                        PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
-                        List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
-                        for (int j = 0; j < expectedValues.size(); j++) {
-                            Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j),
+                    if (testWrite) {
+                        final PlcWriteRequest.Builder writeBuilder = plcConnection.writeRequestBuilder();
+                        for (TestCase testCase : shuffledTestcases) {
+                            String tagName = testCase.address;
+                            writeBuilder.addTagAddress(tagName, testCase.address, testCase.expectedReadValue);
+                        }
+                        final PlcWriteRequest writeRequest = writeBuilder.build();
+
+                        // Execute the read request
+                        final PlcWriteResponse writeResponse = writeRequest.execute().get();
+
+                        // Check the result
+                        Assertions.assertEquals(shuffledTestcases.size(), writeResponse.getTagNames().size());
+                        for (TestCase testCase : shuffledTestcases) {
+                            String tagName = testCase.address;
+                            Assertions.assertEquals(PlcResponseCode.OK, writeResponse.getResponseCode(tagName),
                                 "Tag: " + tagName);
                         }
-                    } else {
-                        Assertions.assertEquals(
-                            testCase.expectedReadValue.toString(), readResponse.getPlcValue(tagName).toString(),
-                            "Tag: " + tagName);
+                        System.out.println("        - Write OK");
                     }
                 }
-
-                // TODO: We should also test multi-item-write-requests here, just like we do single-item ones.
+                System.out.println("Success");
             }
-            System.out.println("Success");
         } catch (Exception e) {
             Assertions.fail(e);
         }

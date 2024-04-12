@@ -86,7 +86,7 @@ public class CtrlXDriver implements PlcDriver {
             throw new PlcConnectionException("Only 'https' transport is supported by this driver");
         }
 
-        if((authentication == null) || (!(authentication instanceof PlcUsernamePasswordAuthentication))) {
+        if((!(authentication instanceof PlcUsernamePasswordAuthentication))) {
             throw new PlcConnectionException("CtrlX connections require username-password authentication");
         }
         PlcUsernamePasswordAuthentication usernamePasswordAuthentication =
