@@ -23,7 +23,7 @@ black==24.3.0
 build==1.2.1
 cfgv==3.4.0
 click==8.1.7
-coverage==7.4.1
+coverage==7.4.4
 distlib==0.3.8
 filelock==3.13.4
 flake8==7.0.0
