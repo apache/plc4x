@@ -30,11 +30,16 @@ class GateKeeper {
 
     private final Logger logger = LoggerFactory.getLogger(GateKeeper.class);
     private final String gate;
-    private final CountDownLatch in = new CountDownLatch(1);
-    private final CountDownLatch out = new CountDownLatch(1);
+    private CountDownLatch in = new CountDownLatch(1);
+    private CountDownLatch out = new CountDownLatch(1);
 
     GateKeeper(String gate) {
         this.gate = gate;
+    }
+
+    void reset() {
+        in = new CountDownLatch(1);
+        out = new CountDownLatch(1);
     }
 
     boolean awaitIn() throws InterruptedException {
@@ -43,7 +48,7 @@ class GateKeeper {
         return true;
     }
 
-    boolean awaitOut() throws InterruptedException {
+    boolean awaitExit() throws InterruptedException {
         logger.debug("Awaiting exit permit for {}", gate);
         out.await();
         return true;
@@ -57,12 +62,12 @@ class GateKeeper {
         return out.getCount() == 0;
     }
 
-    void permitIn() {
+    void permitEntry() {
         logger.info("Allowing permit for {}", gate);
         in.countDown();
     }
 
-    public void permitOut() {
+    public void reportExit() {
         logger.info("Allowing exit for {}", gate);
         out.countDown();
     }
