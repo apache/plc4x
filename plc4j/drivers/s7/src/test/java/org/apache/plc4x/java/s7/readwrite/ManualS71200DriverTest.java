@@ -68,7 +68,7 @@ public class ManualS71200DriverTest extends ManualTest {
      */
 
     public ManualS71200DriverTest(String connectionString) {
-        super(connectionString, true);
+        super(connectionString);
     }
 
     public static void main(String[] args) throws Exception {
