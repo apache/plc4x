@@ -1144,8 +1144,9 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 throw new SerializationException(String.format(
                     "Expected a PlcList of size %d, but got one of size %d", curArrayLevel.getNumElements(), list.size()));
             }
+            AdsDataTypeTableEntry childDataType = dataTypeTable.get(dataType.getSimpleTypeName());
             for (PlcValue plcValue : list) {
-                serializeInternal(plcValue, dataType, arrayInfo.subList(1, arrayInfo.size()), writeBuffer);
+                serializeInternal(plcValue, childDataType, arrayInfo.subList(1, arrayInfo.size()), writeBuffer);
             }
         }
 
