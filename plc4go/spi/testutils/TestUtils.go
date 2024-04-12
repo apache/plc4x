@@ -180,8 +180,14 @@ func shouldNoColor() bool {
 	return noColor
 }
 
+type TestingLog interface {
+	Log(args ...interface{})
+	Logf(format string, args ...interface{})
+	Helper()
+}
+
 // ProduceTestingLogger produces a logger which redirects to testing.T
-func ProduceTestingLogger(t *testing.T) zerolog.Logger {
+func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 	noColor := shouldNoColor()
 	consoleWriter := zerolog.NewConsoleWriter(
 		zerolog.ConsoleTestWriter(t),
