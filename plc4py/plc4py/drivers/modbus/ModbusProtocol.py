@@ -33,20 +33,28 @@ from plc4py.utils.GenericTypes import ByteOrder
 class ModbusProtocol(Plc4xBaseProtocol):
     messages: Dict[int, Future] = field(default_factory=lambda: {})
 
+    def packet_length_estimator(self, read_buffer: ReadBufferByteBased):
+        current_position = read_buffer.position
+        read_buffer.position = 8 * 4
+        packet_length: int = read_buffer.read_unsigned_short()
+        read_buffer.position = current_position
+        return packet_length + current_position < len(read_buffer.bb)
+
     def data_received(self, data):
         """Unpack the adu and return the pdu"""
         read_buffer = ReadBufferByteBased(
             bytearray(data), byte_order=ByteOrder.BIG_ENDIAN
         )
-        adu: ModbusTcpADU = ModbusTcpADU.static_parse_builder(
-            read_buffer, DriverType.MODBUS_TCP, True
-        ).build(True)
-        if adu.transaction_identifier in self.messages:
-            self.messages[adu.transaction_identifier].set_result(adu.pdu)
-            self.messages.pop(adu.transaction_identifier)
-        else:
-            logging.error("Unsolicited message returned")
-            self.close()
+        while self.packet_length_estimator(read_buffer):
+            adu: ModbusTcpADU = ModbusTcpADU.static_parse_builder(
+                read_buffer, DriverType.MODBUS_TCP, True
+            ).build(True)
+            if adu.transaction_identifier in self.messages:
+                self.messages[adu.transaction_identifier].set_result(adu.pdu)
+                self.messages.pop(adu.transaction_identifier)
+            else:
+                logging.error("Unsolicited message returned")
+                self.close()
 
     def write_wait_for_response(self, data, transport, transaction_id, message_future):
         """Writes a message to the wire and records the identifier to identify and route the response"""
