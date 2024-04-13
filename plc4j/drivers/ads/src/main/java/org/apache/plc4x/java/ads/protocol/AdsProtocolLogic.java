@@ -1081,11 +1081,11 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
         // With multi-requests, the index-group is fixed and the index offset indicates the number of elements.
         AmsPacket amsPacket = new AdsReadWriteRequest(configuration.getTargetAmsNetId(), configuration.getTargetAmsPort(),
             configuration.getSourceAmsNetId(), configuration.getSourceAmsPort(),
-            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), serializedSize,
+            0, getInvokeId(), ReservedIndexGroups.ADSIGRP_MULTIPLE_WRITE.getValue(), serializedTags.size(),
             (long) numTags * 4,
             directAdsTags.entrySet().stream().map(entry -> new AdsMultiRequestItemWrite(
                     entry.getKey().getIndexGroup(), entry.getKey().getIndexOffset(),
-                    entry.getValue().getEntryLength()))
+                    entry.getValue().getSize()))
                 .collect(Collectors.toList()), writeBuffer.getBytes());
         AmsTCPPacket amsTCPPacket = new AmsTCPPacket(amsPacket);
 
