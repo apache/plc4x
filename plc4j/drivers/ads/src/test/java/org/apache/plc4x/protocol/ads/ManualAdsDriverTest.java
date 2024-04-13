@@ -130,7 +130,7 @@ public class ManualAdsDriverTest extends ManualTest {
         children.put("hurz_DATE", new PlcDATE(LocalDate.parse("1978-03-28")));
         children.put("hurz_TIME_OF_DAY", new PlcTIME_OF_DAY(LocalTime.parse("15:36:30.123")));
         children.put("hurz_DATE_AND_TIME", new PlcDATE_AND_TIME(LocalDateTime.parse("1996-05-06T15:36:30")));
-        //test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
+        test.addTestCase("MAIN.hurz_Struct", new PlcStruct(children));
         test.run();
     }
 
