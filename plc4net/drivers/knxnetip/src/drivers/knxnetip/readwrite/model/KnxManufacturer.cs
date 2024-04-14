@@ -696,8 +696,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_HANGZHOU_BROADLINK_TECHNOLOGY_CO__LTD_ = 669,
         M_MARLEY_DEUTSCHLAND_GMBH = 670,
         M_CREATROL = 671,
-        M_ABB___RESERVED = 672,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 673,
+        M_EUTELSAT = 672,
+        M_ABB___RESERVED = 673,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 674,
     }
 
     public static class KnxManufacturerInfo
@@ -2618,10 +2619,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_CREATROL: { /* '671' */
                     return 729;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '672' */
+                case KnxManufacturer.M_EUTELSAT: { /* '672' */
+                    return 730;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '673' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '673' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '674' */
                     return 43959;
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
@@ -4650,10 +4654,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_CREATROL: { /* '671' */
                     return "Creatrol";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '672' */
+                case KnxManufacturer.M_EUTELSAT: { /* '672' */
+                    return "EUTELSAT";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '673' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '673' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '674' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */

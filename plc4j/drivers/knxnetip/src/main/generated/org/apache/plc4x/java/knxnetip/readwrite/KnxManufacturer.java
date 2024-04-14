@@ -775,9 +775,10 @@ public enum KnxManufacturer {
       (int) 669, (int) 727, (String) "Hangzhou BroadLink Technology Co.,Ltd."),
   M_MARLEY_DEUTSCHLAND_GMBH((int) 670, (int) 728, (String) "Marley Deutschland GmbH"),
   M_CREATROL((int) 671, (int) 729, (String) "Creatrol"),
-  M_ABB___RESERVED((int) 672, (int) 43954, (String) "ABB - reserved"),
+  M_EUTELSAT((int) 672, (int) 730, (String) "EUTELSAT"),
+  M_ABB___RESERVED((int) 673, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 673, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 674, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
