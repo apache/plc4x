@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
+import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -50,7 +51,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canBrowse = false;
     private PlcTagHandler tagHandler;
     private PlcValueHandler valueHandler;
-    private Plc4xProtocolBase<?> protocol;
+    private Plc4xProtocolBase<? extends Message> protocol;
     private BaseOptimizer optimizer;
     private PlcAuthentication authentication;
 
@@ -76,11 +77,11 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         this.authentication = authentication;
     }
 
-    public void setProtocol(Plc4xProtocolBase<?> protocol) {
+    public void setProtocol(Plc4xProtocolBase<? extends Message> protocol) {
         this.protocol = protocol;
     }
 
-    public Plc4xProtocolBase<?> getProtocol() {
+    public Plc4xProtocolBase<? extends Message> getProtocol() {
         return protocol;
     }
 

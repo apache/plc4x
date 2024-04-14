@@ -24,16 +24,16 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class DisableOnJenkinsFlagCondition implements ExecutionCondition {
 
-    private static final boolean isJenkins;
+    private static final boolean IS_JENKINS;
     static {
         // This environment variable is set in Jenkinsfile.
         String propertyValue = System.getenv("PLC4X_BUILD_ON_JENKINS");
-        isJenkins = "true".equalsIgnoreCase(propertyValue);
+        IS_JENKINS = "true".equalsIgnoreCase(propertyValue);
     }
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext extensionContext) {
-        if(isJenkins) {
+        if(IS_JENKINS) {
             return ConditionEvaluationResult.disabled("Jenkins detected");
         }
         return ConditionEvaluationResult.enabled("Jenkins not detected");

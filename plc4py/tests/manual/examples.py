@@ -36,4 +36,5 @@ async def communicate_with_plc():
         print(response)
     pass
 
+
 asyncio.run(communicate_with_plc())
