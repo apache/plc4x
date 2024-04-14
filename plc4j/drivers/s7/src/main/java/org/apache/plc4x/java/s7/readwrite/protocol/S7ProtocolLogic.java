@@ -964,10 +964,6 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             new S7PayloadUserData(payloadItems));
     }
 
-    private void encodeCycledSubscriptionRequest(S7PlcSubscriptionRequest request, int tpduId) {
-
-    }
-
     private S7Message encodeCycledS7ANYSubscriptionRequest(S7PlcSubscriptionRequest request, int tpduId) {
         List<S7ParameterUserDataItem> parameterItems = new ArrayList<>(request.getNumberOfTags());
         List<S7PayloadUserDataItem> payloadItems = new ArrayList<>(request.getNumberOfTags());

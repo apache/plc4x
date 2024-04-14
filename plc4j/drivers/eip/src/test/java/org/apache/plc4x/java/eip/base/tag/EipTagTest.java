@@ -19,6 +19,8 @@
 
 package org.apache.plc4x.java.eip.base.tag;
 
+import org.apache.plc4x.java.eip.readwrite.CIPDataTypeCode;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class EipTagTest {
@@ -26,7 +28,11 @@ public class EipTagTest {
     @Test
     public void testTagParse() {
         EipTag eipTag = EipTag.of("%A0:2");
-        System.out.println(eipTag);
+
+        Assertions.assertNotNull(eipTag);
+        Assertions.assertEquals(eipTag.getTag(), "%A0");
+        Assertions.assertEquals(eipTag.getType(), CIPDataTypeCode.DINT);
+        Assertions.assertEquals(eipTag.getElementNb(), 2);
     }
 
 }
