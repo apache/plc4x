@@ -221,7 +221,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                                                 CompletableFuture<Void> readSymbolTableFuture = readSymbolTableAndDatatypeTable(context);
                                                 readSymbolTableFuture.whenComplete((unused2, throwable2) -> {
                                                     if (throwable2 != null) {
-                                                        LOGGER.error("Error fetching symbol and datatype table sizes");
+                                                        context.getChannel().pipeline().fireExceptionCaught(new PlcConnectionException("Error fetching symbol and datatype table sizes", throwable2));
                                                     } else {
                                                         context.fireConnected();
                                                     }
