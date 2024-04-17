@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.opcua.protocol;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -67,7 +66,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     private final AtomicLong clientHandles = new AtomicLong(1L);
     private final RequestTransactionManager tm;
 
-    private final List<SubscriptionAcknowledgement> outstandingAcknowledgements = new CopyOnWriteArrayList();
+    private final List<SubscriptionAcknowledgement> outstandingAcknowledgements = new CopyOnWriteArrayList<>();
     private ScheduledFuture<?> publishTask;
 
     public OpcuaSubscriptionHandle(OpcuaProtocolLogic plcSubscriber, RequestTransactionManager tm,
@@ -145,7 +144,10 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     LOGGER.info("Error while sending the Create Monitored Item Subscription Message", error);
                 }
             }).thenApply(responseMessage -> {
-                MonitoredItemCreateResult[] array = responseMessage.getResults().toArray(new MonitoredItemCreateResult[0]);
+                MonitoredItemCreateResult[] array = responseMessage.getResults().stream()
+                    .filter(extensionObjectDefinition -> extensionObjectDefinition instanceof MonitoredItemCreateResult)
+                    .map(extensionObjectDefinition -> (MonitoredItemCreateResult) extensionObjectDefinition)
+                    .toArray(MonitoredItemCreateResult[]::new);
                 for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
                     MonitoredItemCreateResult result = array[index];
                     if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
@@ -165,8 +167,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * Main subscriber loop. For subscription, we still need to send a request the server on every cycle.
      * Which includes a request for an update of the previously agreed upon list of tags.
      * The server will respond at most once every cycle.
-     *
-     * @return
      */
     private void sendPublishRequest() {
         List<Long> outstandingRequests = new LinkedList<>();
@@ -200,7 +200,10 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         if (notification instanceof DataChangeNotification) {
                             LOGGER.trace("Found a Data Change notification");
                             List<ExtensionObjectDefinition> items = ((DataChangeNotification) notification).getMonitoredItems();
-                            onSubscriptionValue(items.toArray(new MonitoredItemNotification[0]));
+                            onSubscriptionValue(items.stream()
+                                .filter(extensionObjectDefinition -> extensionObjectDefinition instanceof MonitoredItemNotification)
+                                .map(extensionObjectDefinition -> (MonitoredItemNotification) extensionObjectDefinition)
+                                .toArray(MonitoredItemNotification[]::new));
                         } else {
                             LOGGER.warn("Unsupported Notification type");
                         }
@@ -222,8 +225,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
     /**
      * Stop the subscriber either on disconnect or on error
-     *
-     * @return
      */
     public void stopSubscriber() {
         RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);

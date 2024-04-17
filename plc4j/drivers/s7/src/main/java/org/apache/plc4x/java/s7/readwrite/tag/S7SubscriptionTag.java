@@ -219,6 +219,9 @@ public class S7SubscriptionTag implements PlcTag {
     }
 
     public static S7SubscriptionTag of(String tagString) {
+        // TODO: This method needs some major cleanup.
+        //  - A lot of duplicated code
+        //  - Not making use of named groups using the name constants
         {
             Matcher matcher = EVENT_SUBSCRIPTION_TYPE_PATTERN.matcher(tagString);
             if (matcher.matches()) {
@@ -243,7 +246,6 @@ public class S7SubscriptionTag implements PlcTag {
                 }
                 return new S7SubscriptionTag(S7SubscriptionType.ALARM_ACK,
                     arrEventId);
-
             }
         }
 
@@ -275,7 +277,6 @@ public class S7SubscriptionTag implements PlcTag {
                     tb,
                     multi);
             }
-
         }
 
         {
@@ -335,8 +336,6 @@ public class S7SubscriptionTag implements PlcTag {
             }
         }
                 
-
-
         throw new PlcInvalidTagException("Unable to parse address: " + tagString);
     }
 

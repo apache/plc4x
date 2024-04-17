@@ -103,7 +103,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             writeBuffer.pushContext(tagName);
             PlcTag tag = tagEntry.getValue();
             if (!(tag instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
+                throw new PlcRuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
             }
             ((Serializable) tag).serialize(writeBuffer);
             writeBuffer.popContext(tagName);
@@ -291,7 +291,7 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             });
             preRegisteredConsumers.forEach((tagName, ignored) -> {
                 if (!tags.containsKey(tagName)) {
-                    throw new RuntimeException("tagName " + tagName + "for preRegisteredConsumer not found");
+                    throw new PlcRuntimeException("tagName " + tagName + "for preRegisteredConsumer not found");
                 }
             });
             return new S7PlcSubscriptionRequest(subscriber, parsedTags, preRegisteredConsumers);
