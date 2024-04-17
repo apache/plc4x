@@ -475,7 +475,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_ONEHOME = 448,
         M_EOS_SAUNATECHNIK_GMBH = 449,
         M_KUSATEK_GMBH = 450,
-        M_EISBAER_SCADA = 451,
+        M_ALEXANDER_MAIER_GMBH = 451,
         M_AUTOMATISMI_BENINCA_S_P_A_ = 452,
         M_BLENDOM = 453,
         M_MADEL_AIR_TECHNICAL_DIFFUSION = 454,
@@ -1884,7 +1884,7 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_KUSATEK_GMBH: { /* '450' */
                     return 503;
                 }
-                case KnxManufacturer.M_EISBAER_SCADA: { /* '451' */
+                case KnxManufacturer.M_ALEXANDER_MAIER_GMBH: { /* '451' */
                     return 504;
                 }
                 case KnxManufacturer.M_AUTOMATISMI_BENINCA_S_P_A_: { /* '452' */
@@ -3919,8 +3919,8 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_KUSATEK_GMBH: { /* '450' */
                     return "KUSATEK GmbH";
                 }
-                case KnxManufacturer.M_EISBAER_SCADA: { /* '451' */
-                    return "EisBär Scada";
+                case KnxManufacturer.M_ALEXANDER_MAIER_GMBH: { /* '451' */
+                    return "Alexander Maier GmbH";
                 }
                 case KnxManufacturer.M_AUTOMATISMI_BENINCA_S_P_A_: { /* '452' */
                     return "AUTOMATISMI BENINCA S.P.A.";
