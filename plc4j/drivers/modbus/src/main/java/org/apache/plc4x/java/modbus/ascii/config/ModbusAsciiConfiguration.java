@@ -22,6 +22,8 @@ import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
+import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 public class ModbusAsciiConfiguration implements PlcConnectionConfiguration {
 
@@ -34,6 +36,14 @@ public class ModbusAsciiConfiguration implements PlcConnectionConfiguration {
     @IntDefaultValue(1)
     @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
     private short defaultUnitIdentifier;
+
+    @ConfigurationParameter("default-payload-byte-order")
+    @StringDefaultValue("BIG_ENDIAN")
+    @Description("Default encoding used for transporting register values (Defaults to BIG_ENDIAN).\n" +
+        "Allowed values are: \n" +
+        " - BIG_ENDIAN\n" +
+        " - LITTLE_ENDIAN")
+    private ByteOrder defaultPayloadByteOrder;
 
     public int getRequestTimeout() {
         return requestTimeout;
@@ -51,11 +61,20 @@ public class ModbusAsciiConfiguration implements PlcConnectionConfiguration {
         this.defaultUnitIdentifier = defaultUnitIdentifier;
     }
 
+    public ByteOrder getDefaultPayloadByteOrder() {
+        return defaultPayloadByteOrder;
+    }
+
+    public void setDefaultPayloadByteOrder(ByteOrder defaultPayloadByteOrder) {
+        this.defaultPayloadByteOrder = defaultPayloadByteOrder;
+    }
+
     @Override
     public String toString() {
         return "ModbusAsciiConfiguration{" +
             "requestTimeout=" + requestTimeout +
             ", defaultUnitIdentifier=" + defaultUnitIdentifier +
+            ", defaultPayloadByteOrder=" + defaultPayloadByteOrder +
             '}';
     }
 

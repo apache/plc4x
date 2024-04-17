@@ -50,9 +50,16 @@ import math
 class DataItem:
     @staticmethod
     def static_parse(
-        read_buffer: ReadBuffer, data_type: ModbusDataType, number_of_values: int
+        read_buffer: ReadBuffer,
+        data_type: ModbusDataType,
+        number_of_values: int,
+        big_endian: bool,
     ):
-        if data_type == ModbusDataType.BOOL and number_of_values == int(1):  # BOOL
+        if (
+            data_type == ModbusDataType.BOOL
+            and number_of_values == int(1)
+            and big_endian == true
+        ):  # BOOL
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_int(15, logical_name="")
@@ -69,6 +76,38 @@ class DataItem:
             value: bool = read_buffer.read_bit("")
 
             return PlcBOOL(value)
+        if (
+            data_type == ModbusDataType.BOOL
+            and number_of_values == int(1)
+            and big_endian == false
+        ):  # BOOL
+
+            # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+            reserved: int = read_buffer.read_unsigned_short(7, logical_name="")
+            if reserved != int(0x00):
+                logging.warning(
+                    "Expected constant value "
+                    + str(0x00)
+                    + " but got "
+                    + str(reserved)
+                    + " for reserved field."
+                )
+
+            # Simple Field (value)
+            value: bool = read_buffer.read_bit("")
+
+            # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+            reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
+            if reserved != int(0x00):
+                logging.warning(
+                    "Expected constant value "
+                    + str(0x00)
+                    + " but got "
+                    + str(reserved)
+                    + " for reserved field."
+                )
+
+            return PlcBOOL(value)
         if data_type == ModbusDataType.BOOL:  # List
             # Array field (value)
             # Count array
@@ -78,7 +117,11 @@ class DataItem:
                 value.append(PlcBOOL(bool(read_buffer.read_bit(""))))
 
             return PlcList(value)
-        if data_type == ModbusDataType.BYTE and number_of_values == int(1):  # BYTE
+        if (
+            data_type == ModbusDataType.BYTE
+            and number_of_values == int(1)
+            and big_endian == true
+        ):  # BYTE
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
@@ -93,6 +136,27 @@ class DataItem:
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
+
+            return PlcBYTE(value)
+        if (
+            data_type == ModbusDataType.BYTE
+            and number_of_values == int(1)
+            and big_endian == false
+        ):  # BYTE
+
+            # Simple Field (value)
+            value: int = read_buffer.read_unsigned_short(8, logical_name="")
+
+            # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+            reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
+            if reserved != int(0x00):
+                logging.warning(
+                    "Expected constant value "
+                    + str(0x00)
+                    + " but got "
+                    + str(reserved)
+                    + " for reserved field."
+                )
 
             return PlcBYTE(value)
         if data_type == ModbusDataType.BYTE:  # List
@@ -122,7 +186,11 @@ class DataItem:
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
             return PlcLWORD(value)
-        if data_type == ModbusDataType.SINT and number_of_values == int(1):  # SINT
+        if (
+            data_type == ModbusDataType.SINT
+            and number_of_values == int(1)
+            and big_endian == true
+        ):  # SINT
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
@@ -137,6 +205,27 @@ class DataItem:
 
             # Simple Field (value)
             value: int = read_buffer.read_signed_byte(8, logical_name="")
+
+            return PlcSINT(value)
+        if (
+            data_type == ModbusDataType.SINT
+            and number_of_values == int(1)
+            and big_endian == false
+        ):  # SINT
+
+            # Simple Field (value)
+            value: int = read_buffer.read_signed_byte(8, logical_name="")
+
+            # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+            reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
+            if reserved != int(0x00):
+                logging.warning(
+                    "Expected constant value "
+                    + str(0x00)
+                    + " but got "
+                    + str(reserved)
+                    + " for reserved field."
+                )
 
             return PlcSINT(value)
         if data_type == ModbusDataType.SINT:  # List
@@ -195,7 +284,11 @@ class DataItem:
                 value.append(PlcLINT(int(read_buffer.read_long(64, logical_name=""))))
 
             return PlcList(value)
-        if data_type == ModbusDataType.USINT and number_of_values == int(1):  # USINT
+        if (
+            data_type == ModbusDataType.USINT
+            and number_of_values == int(1)
+            and big_endian == true
+        ):  # USINT
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
@@ -210,6 +303,27 @@ class DataItem:
 
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
+
+            return PlcUSINT(value)
+        if (
+            data_type == ModbusDataType.USINT
+            and number_of_values == int(1)
+            and big_endian == false
+        ):  # USINT
+
+            # Simple Field (value)
+            value: int = read_buffer.read_unsigned_short(8, logical_name="")
+
+            # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+            reserved: int = read_buffer.read_unsigned_short(8, logical_name="")
+            if reserved != int(0x00):
+                logging.warning(
+                    "Expected constant value "
+                    + str(0x00)
+                    + " but got "
+                    + str(reserved)
+                    + " for reserved field."
+                )
 
             return PlcUSINT(value)
         if data_type == ModbusDataType.USINT:  # List
@@ -354,28 +468,61 @@ class DataItem:
         _value: PlcValue,
         data_type: ModbusDataType,
         number_of_values: int,
+        big_endian: bool,
         byte_order: ByteOrder,
     ) -> None:
-        if data_type == ModbusDataType.BOOL and number_of_values == int(1):  # BOOL
+        if (
+            data_type == ModbusDataType.BOOL
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # BOOL
             # Reserved Field
             write_buffer.write_unsigned_short(int(0x0000), 15, "int0x0000")
             # Simple Field (value)
             value: bool = _value.get_bool()
             write_buffer.write_bit((value), "value")
 
+        elif (
+            data_type == ModbusDataType.BOOL
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # BOOL
+            # Reserved Field
+            write_buffer.write_byte(int(0x00), 7, "int0x00")
+            # Simple Field (value)
+            value: bool = _value.get_bool()
+            write_buffer.write_bit((value), "value")
+
+            # Reserved Field
+            write_buffer.write_byte(int(0x00), 8, "int0x00")
         elif data_type == ModbusDataType.BOOL:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
                 value: bool = val.get_bool()
                 write_buffer.write_bit((value), "value")
 
-        elif data_type == ModbusDataType.BYTE and number_of_values == int(1):  # BYTE
+        elif (
+            data_type == ModbusDataType.BYTE
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # BYTE
             # Reserved Field
             write_buffer.write_byte(int(0x00), 8, "int0x00")
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_byte((value), 8, "value")
 
+        elif (
+            data_type == ModbusDataType.BYTE
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # BYTE
+            # Simple Field (value)
+            value: int = _value.get_int()
+            write_buffer.write_byte((value), 8, "value")
+
+            # Reserved Field
+            write_buffer.write_byte(int(0x00), 8, "int0x00")
         elif data_type == ModbusDataType.BYTE:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
@@ -397,13 +544,28 @@ class DataItem:
             value: int = _value.get_int()
             write_buffer.write_unsigned_long((value), 64, "value")
 
-        elif data_type == ModbusDataType.SINT and number_of_values == int(1):  # SINT
+        elif (
+            data_type == ModbusDataType.SINT
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # SINT
             # Reserved Field
             write_buffer.write_byte(int(0x00), 8, "int0x00")
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_signed_byte((value), 8, "value")
 
+        elif (
+            data_type == ModbusDataType.SINT
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # SINT
+            # Simple Field (value)
+            value: int = _value.get_int()
+            write_buffer.write_signed_byte((value), 8, "value")
+
+            # Reserved Field
+            write_buffer.write_byte(int(0x00), 8, "int0x00")
         elif data_type == ModbusDataType.SINT:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
@@ -443,13 +605,28 @@ class DataItem:
                 value: int = val.get_int()
                 write_buffer.write_long((value), 64, "value")
 
-        elif data_type == ModbusDataType.USINT and number_of_values == int(1):  # USINT
+        elif (
+            data_type == ModbusDataType.USINT
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # USINT
             # Reserved Field
             write_buffer.write_byte(int(0x00), 8, "int0x00")
             # Simple Field (value)
             value: int = _value.get_int()
             write_buffer.write_byte((value), 8, "value")
 
+        elif (
+            data_type == ModbusDataType.USINT
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # USINT
+            # Simple Field (value)
+            value: int = _value.get_int()
+            write_buffer.write_byte((value), 8, "value")
+
+            # Reserved Field
+            write_buffer.write_byte(int(0x00), 8, "int0x00")
         elif data_type == ModbusDataType.USINT:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
@@ -535,32 +712,70 @@ class DataItem:
 
     @staticmethod
     def get_length_in_bytes(
-        _value: PlcValue, data_type: ModbusDataType, number_of_values: int
+        _value: PlcValue,
+        data_type: ModbusDataType,
+        number_of_values: int,
+        big_endian: bool,
     ) -> int:
         return int(
             math.ceil(
-                float(DataItem.get_length_in_bits(_value, data_type, number_of_values))
+                float(
+                    DataItem.get_length_in_bits(
+                        _value, data_type, number_of_values, big_endian
+                    )
+                )
                 / 8.0
             )
         )
 
     @staticmethod
     def get_length_in_bits(
-        _value: PlcValue, data_type: ModbusDataType, number_of_values: int
+        _value: PlcValue,
+        data_type: ModbusDataType,
+        number_of_values: int,
+        big_endian: bool,
     ) -> int:
         size_in_bits: int = 0
-        if data_type == ModbusDataType.BOOL and number_of_values == int(1):  # BOOL
+        if (
+            data_type == ModbusDataType.BOOL
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # BOOL
             # Reserved Field
             size_in_bits += 15
             # Simple Field (value)
             size_in_bits += 1
+        elif (
+            data_type == ModbusDataType.BOOL
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # BOOL
+            # Reserved Field
+            size_in_bits += 7
+            # Simple Field (value)
+            size_in_bits += 1
+            # Reserved Field
+            size_in_bits += 8
         elif data_type == ModbusDataType.BOOL:  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 1
-        elif data_type == ModbusDataType.BYTE and number_of_values == int(1):  # BYTE
+        elif (
+            data_type == ModbusDataType.BYTE
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # BYTE
             # Reserved Field
             size_in_bits += 8
             # Simple Field (value)
+            size_in_bits += 8
+        elif (
+            data_type == ModbusDataType.BYTE
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # BYTE
+            # Simple Field (value)
+            size_in_bits += 8
+            # Reserved Field
             size_in_bits += 8
         elif data_type == ModbusDataType.BYTE:  # List
             values: PlcList = cast(PlcList, _value)
@@ -574,10 +789,23 @@ class DataItem:
         elif data_type == ModbusDataType.LWORD:  # LWORD
             # Simple Field (value)
             size_in_bits += 64
-        elif data_type == ModbusDataType.SINT and number_of_values == int(1):  # SINT
+        elif (
+            data_type == ModbusDataType.SINT
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # SINT
             # Reserved Field
             size_in_bits += 8
             # Simple Field (value)
+            size_in_bits += 8
+        elif (
+            data_type == ModbusDataType.SINT
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # SINT
+            # Simple Field (value)
+            size_in_bits += 8
+            # Reserved Field
             size_in_bits += 8
         elif data_type == ModbusDataType.SINT:  # List
             values: PlcList = cast(PlcList, _value)
@@ -600,10 +828,23 @@ class DataItem:
         elif data_type == ModbusDataType.LINT:  # List
             values: PlcList = cast(PlcList, _value)
             size_in_bits += len(values.get_list()) * 64
-        elif data_type == ModbusDataType.USINT and number_of_values == int(1):  # USINT
+        elif (
+            data_type == ModbusDataType.USINT
+            and number_of_values == int(1)
+            and big_endian == True
+        ):  # USINT
             # Reserved Field
             size_in_bits += 8
             # Simple Field (value)
+            size_in_bits += 8
+        elif (
+            data_type == ModbusDataType.USINT
+            and number_of_values == int(1)
+            and big_endian == False
+        ):  # USINT
+            # Simple Field (value)
+            size_in_bits += 8
+            # Reserved Field
             size_in_bits += 8
         elif data_type == ModbusDataType.USINT:  # List
             values: PlcList = cast(PlcList, _value)
