@@ -1,0 +1,198 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== Beckhoff ADS Protocol
+
+// https://plantuml.com/de/activity-diagram-legacy
+// https://deepu.js.org/svg-seq-diagram/Reference_Guide.pdf
+
+[plantuml,ads-statemachine,svg,opts="inline",svg-type="inline"]
+----
+@startuml
+
+(*) --> Connect
+
+partition "Connected" #EEEEEE {
+    ===Connected=== -->[API Browse Request] Browse
+    ===Connected=== -->[API Read Request] Read
+    ===Connected=== -->[API Write Request] Write
+    ===Connected=== -->[API Subscription Request] Subscribe
+    ===Connected=== -->[API Unsubscription Request] Unsubscribe
+}
+
+partition Connect #EEEECC {
+    (*) --> "initializing"
+    if "Using Authentication?" then
+        -->[true] "Send 'Add Or Update AMS Routes'"
+    else
+        -->[false] "Send 'ADS Read Device Info'"
+    endif
+    "Send 'Add Or Update AMS Routes'" ..> "Receive 'Add Or Update AMS Routes'"
+    "Receive 'Add Or Update AMS Routes'" --> "Send 'ADS Read Device Info'"
+    "Send 'ADS Read Device Info'" ..> "Receive 'ADS Read Device Info'"
+    if "Config: Monitor PLC changes?" then
+        -->[true] "Init Read Online and Offline Version"
+    else
+        -->[false] "Reset Symbol and Data-Type Data"
+    endif
+    "Init Read Online and Offline Version" --> "Send 'Read Online-Version (Symbolic)'"
+    "Init Read Online and Offline Version" --> "Send 'Read Offline-Version'"
+    "Send 'Read Online-Version (Symbolic)'" ..> "Receive 'Read Online-Version (Symbolic)'"
+    "Receive 'Read Online-Version (Symbolic)'" --> ===OnlineAndOfflineVersionRead===
+    "Send 'Read Offline-Version'" ..> "Receive 'Read Offline-Version'"
+    "Receive 'Read Offline-Version'" --> ===OnlineAndOfflineVersionRead===
+    ===OnlineAndOfflineVersionRead=== --> "Reset Symbol and Data-Type Data"
+    if "Config: Load Symbol- and Data-Type-Tables?" then
+        -->[true] "Send 'Read Symbol- and Data-Type-Table sizes'"
+    else
+        -->[false] ===FinishedReadingSymbolAndDataTypeTable===
+    endif
+    "Send 'Read Symbol- and Data-Type-Table sizes'" ..> "Receive 'Read Symbol- and Data-Type-Table sizes'"
+    "Receive 'Read Symbol- and Data-Type-Table sizes'" --> "Send 'Read Data-Type-Table'"
+    "Send 'Read Data-Type-Table'" ..> "Receive 'Read Data-Type-Table'"
+    "Receive 'Read Data-Type-Table'" --> ===FinishedReadingSymbolAndDataTypeTable===
+    "Receive 'Read Symbol- and Data-Type-Table sizes'" --> "Send 'Read Symbol-Table'"
+    "Send 'Read Symbol-Table'" ..> "Receive 'Read Symbol-Table'"
+    "Receive 'Read Symbol-Table'" --> ===FinishedReadingSymbolAndDataTypeTable===
+    if "Config: Monitor PLC changes?" then
+        -right->[true] "Subscribe to changes to the Online- and Offline Version"#EECCEE
+    endif
+    "Subscribe to changes to the Online- and Offline Version" ..>[Update the online- or offline version (Depending on wich one changed)] "Reset Symbol and Data-Type Data"
+    ===FinishedReadingSymbolAndDataTypeTable=== --> ===Connected===
+}
+
+partition Browse #CCCCEE {
+    "Browse" --> ===BrowseStart===
+    if "Is symbol- and data-type-table loaded?" then
+        -->[true] ===BrowseFinishedReadingSymbolAndDataTypeTable===
+    else
+        -->[false] "Browse: Send 'Read Symbol- and Data-Type-Table sizes'"
+        "Browse: Send 'Read Symbol- and Data-Type-Table sizes'" ..> "Browse: Receive 'Read Symbol- and Data-Type-Table sizes'"
+        "Browse: Receive 'Read Symbol- and Data-Type-Table sizes'" --> "Browse: Send 'Read Data-Type-Table'"
+        "Browse: Send 'Read Data-Type-Table'" ..> "Browse: Receive 'Read Data-Type-Table'"
+        "Browse: Receive 'Read Data-Type-Table'" --> ===BrowseFinishedReadingSymbolAndDataTypeTable===
+        "Browse: Receive 'Read Symbol- and Data-Type-Table sizes'" --> "Browse: Send 'Read Symbol-Table'"
+        "Browse: Send 'Read Symbol-Table'" ..> "Browse: Receive 'Read Symbol-Table'"
+        "Browse: Receive 'Read Symbol-Table'" --> ===BrowseFinishedReadingSymbolAndDataTypeTable===
+    endif
+    ===BrowseFinishedReadingSymbolAndDataTypeTable=== --> "Return API Browse Result"
+    "Return API Browse Result" --> ===Connected===
+}
+
+partition Read #CCEECC {
+    "Read" --> ===ReadStart===
+    if "Is single item read request?" then
+        -->[false] if "Are all field addresses resolved?" then
+            -->[unresolved] "Read: Send 'Multi Item Address Resolution' for unresolved"
+            "Read: Send 'Multi Item Address Resolution' for unresolved" ..> "Read: Receive 'Multi Item Address Resolution' for unresolved"
+            "Read: Receive 'Multi Item Address Resolution' for unresolved" --> ===ReadAllItemsResolved===
+        else
+            -->[resolved] ===ReadAllItemsResolved===
+        endif
+        ===ReadAllItemsResolved=== --> "Read: Send 'Multi Item Read'"
+        "Read: Send 'Multi Item Read'" ..> "Read: Receive 'Multi Item Read'"
+        "Read: Receive 'Multi Item Read'" --> "Read: Return API Read Result"
+    else
+        -->[true] if "Is the field address resolved?" then
+            -->[false] "Read: Send 'Single Item Address Resolution'"
+            "Read: Send 'Single Item Address Resolution'" ..> "Read: Receive 'Single Item Address Resolution'"
+            "Read: Receive 'Single Item Address Resolution'" --> "Read: Send 'Single Item Read'"
+        else
+            -->[true] "Read: Send 'Single Item Read'"
+        endif
+        "Read: Send 'Single Item Read'" ..> "Read: Receive 'Single Item Read'"
+        "Read: Receive 'Single Item Read'" --> "Read: Return API Read Result"
+    endif
+    "Read: Return API Read Result" --> ===Connected===
+}
+
+partition Write #EECCCC {
+    "Write" --> ===WriteStart===
+    if "Is single item write request?" then
+        -->[false] if "Are all field addresses resolved?" then
+            -->[unresolved] "Write: Send 'Multi Item Address Resolution' for unresolved"
+            "Write: Send 'Multi Item Address Resolution' for unresolved" ..> "Write: Receive 'Multi Item Address Resolution' for unresolved"
+            "Write: Receive 'Multi Item Address Resolution' for unresolved" --> ===WriteAllItemsResolved===
+        else
+            -->[resolved] ===WriteAllItemsResolved===
+        endif
+        ===WriteAllItemsResolved=== --> "Write: Send 'Multi Item Write'"
+        "Write: Send 'Multi Item Write'" ..> "Write: Receive 'Multi Item Write'"
+        "Write: Receive 'Multi Item Write'" --> "Write: Return API Write Result"
+    else
+        -->[true] if "Is the field address resolved?" then
+            -->[false] "Write: Send 'Single Item Address Resolution'"
+            "Write: Send 'Single Item Address Resolution'" ..> "Write: Receive 'Single Item Address Resolution'"
+            "Write: Receive 'Single Item Address Resolution'" --> "Write: Send 'Single Item Write'"
+        else
+            -->[true] "Write: Send 'Single Item Write'"
+        endif
+        "Write: Send 'Single Item Write'" ..> "Write: Receive 'Single Item Write'"
+        "Write: Receive 'Single Item Write'" --> "Write: Return API Write Result"
+    endif
+    "Write: Return API Write Result" --> ===Connected===
+}
+
+partition Subscribe #EECCEE {
+    "Subscribe" --> ===SubscribeStart===
+    if "Is single item subscription request?" then
+        -->[false] if "Are all field addresses resolved?" then
+            -->[unresolved] "Subscribe: Send 'Multi Item Address Resolution' for unresolved"
+            "Subscribe: Send 'Multi Item Address Resolution' for unresolved" ..> "Subscribe: Receive 'Multi Item Address Resolution' for unresolved"
+            "Subscribe: Receive 'Multi Item Address Resolution' for unresolved" --> ===SubscribeAllItemsResolved===
+        else
+            -->[resolved] ===SubscribeAllItemsResolved===
+        endif
+    else
+        -->[true] if "Is the field address resolved?" then
+            -->[false] "Subscribe: Send 'Single Item Address Resolution'"
+            "Subscribe: Send 'Single Item Address Resolution'" ..> "Subscribe: Receive 'Single Item Address Resolution'"
+            "Subscribe: Receive 'Single Item Address Resolution'" --> ===SubscribeAllItemsResolved===
+        else
+            -->[true] ===SubscribeAllItemsResolved===
+        endif
+        ===SubscribeAllItemsResolved=== --> "Subscribe: Send 'Single Item 1 Subscibe'"
+        "Subscribe: Send 'Single Item 1 Subscibe'" ..> "Subscribe: Receive 'Single Item 1 Subscibe'"
+        "Subscribe: Receive 'Single Item 1 Subscibe'" --> ===SubscribeAllItemsSubscribed===
+        ===SubscribeAllItemsResolved=== --> "Subscribe: Send 'Single Item 2 Subscibe'"
+        "Subscribe: Send 'Single Item 2 Subscibe'" ..> "Subscribe: Receive 'Single Item 2 Subscibe'"
+        "Subscribe: Receive 'Single Item 2 Subscibe'" --> ===SubscribeAllItemsSubscribed===
+        ===SubscribeAllItemsResolved=== --> "Subscribe: Send 'Single Item n Subscibe'"
+        "Subscribe: Send 'Single Item n Subscibe'" ..> "Subscribe: Receive 'Single Item n Subscibe'"
+        "Subscribe: Receive 'Single Item n Subscibe'" --> ===SubscribeAllItemsSubscribed===
+        ===SubscribeAllItemsSubscribed=== --> "Subscribe: Return API Write Result"
+    endif
+    "Subscribe: Return API Write Result" --> ===Connected===
+}
+
+partition Unsubscribe #LightSkyBlue {
+    "Unsubscribe" --> ===UnsubscribeStart===
+    ===UnsubscribeStart=== --> "Unsubscribe: Send 'Single Item 1 Unsubscribe'"
+    "Unsubscribe: Send 'Single Item 1 Unsubscribe'" ..> "Unsubscribe: Receive 'Single Item 1 Unsubscribe'"
+    "Unsubscribe: Receive 'Single Item 1 Unsubscribe'" --> ===UnsubscribeAllItemsUnsubscribed===
+    ===UnsubscribeStart=== --> "Unsubscribe: Send 'Single Item 2 Unsubscribe'"
+    "Unsubscribe: Send 'Single Item 2 Unsubscribe'" ..> "Unsubscribe: Receive 'Single Item 2 Unsubscribe'"
+    "Unsubscribe: Receive 'Single Item 2 Unsubscribe'" --> ===UnsubscribeAllItemsUnsubscribed===
+    ===UnsubscribeStart=== --> "Unsubscribe: Send 'Single Item n Unsubscribe'"
+    "Unsubscribe: Send 'Single Item n Unsubscribe'" ..> "Unsubscribe: Receive 'Single Item n Unsubscribe'"
+    "Unsubscribe: Receive 'Single Item n Unsubscribe'" --> ===UnsubscribeAllItemsUnsubscribed===
+    ===UnsubscribeAllItemsUnsubscribed=== --> "Unsubscribe: Return API Unsubscribe Result"
+    "Unsubscribe: Return API Unsubscribe Result" --> ===Connected===
+}
+
+@enduml
+----
