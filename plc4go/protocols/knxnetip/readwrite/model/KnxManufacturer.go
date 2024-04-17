@@ -494,7 +494,7 @@ const (
 	KnxManufacturer_M_ONEHOME                                            KnxManufacturer = 448
 	KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH                              KnxManufacturer = 449
 	KnxManufacturer_M_KUSATEK_GMBH                                       KnxManufacturer = 450
-	KnxManufacturer_M_EISBAER_SCADA                                      KnxManufacturer = 451
+	KnxManufacturer_M_ALEXANDER_MAIER_GMBH                               KnxManufacturer = 451
 	KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_                         KnxManufacturer = 452
 	KnxManufacturer_M_BLENDOM                                            KnxManufacturer = 453
 	KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION                      KnxManufacturer = 454
@@ -1176,7 +1176,7 @@ func init() {
 		KnxManufacturer_M_ONEHOME,
 		KnxManufacturer_M_EOS_SAUNATECHNIK_GMBH,
 		KnxManufacturer_M_KUSATEK_GMBH,
-		KnxManufacturer_M_EISBAER_SCADA,
+		KnxManufacturer_M_ALEXANDER_MAIER_GMBH,
 		KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_,
 		KnxManufacturer_M_BLENDOM,
 		KnxManufacturer_M_MADEL_AIR_TECHNICAL_DIFFUSION,
@@ -5693,7 +5693,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 451:
 		{ /* '451' */
-			return "EisBär Scada"
+			return "Alexander Maier GmbH"
 		}
 	case 452:
 		{ /* '452' */
@@ -7625,7 +7625,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 450:
 		return KnxManufacturer_M_KUSATEK_GMBH, true
 	case 451:
-		return KnxManufacturer_M_EISBAER_SCADA, true
+		return KnxManufacturer_M_ALEXANDER_MAIER_GMBH, true
 	case 452:
 		return KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_, true
 	case 453:
@@ -8980,8 +8980,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_WINKHAUS, true
 	case "M_KUSATEK_GMBH":
 		return KnxManufacturer_M_KUSATEK_GMBH, true
-	case "M_EISBAER_SCADA":
-		return KnxManufacturer_M_EISBAER_SCADA, true
+	case "M_ALEXANDER_MAIER_GMBH":
+		return KnxManufacturer_M_ALEXANDER_MAIER_GMBH, true
 	case "M_AUTOMATISMI_BENINCA_S_P_A_":
 		return KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_, true
 	case "M_BLENDOM":
@@ -10397,8 +10397,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_WINKHAUS"
 	case KnxManufacturer_M_KUSATEK_GMBH:
 		return "M_KUSATEK_GMBH"
-	case KnxManufacturer_M_EISBAER_SCADA:
-		return "M_EISBAER_SCADA"
+	case KnxManufacturer_M_ALEXANDER_MAIER_GMBH:
+		return "M_ALEXANDER_MAIER_GMBH"
 	case KnxManufacturer_M_AUTOMATISMI_BENINCA_S_P_A_:
 		return "M_AUTOMATISMI_BENINCA_S_P_A_"
 	case KnxManufacturer_M_BLENDOM:

@@ -308,20 +308,29 @@
     [array    byte   data          count         'objectLength']
 ]
 
-[dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues)
-    [typeSwitch dataType,numberOfValues
-        ['BOOL','1'  BOOL
+[dataIo DataItem(ModbusDataType dataType, uint 16 numberOfValues, bit bigEndian)
+    [typeSwitch dataType,numberOfValues,bigEndian
+        ['BOOL','1','true'  BOOL
             // TODO: Possibly change the order of the bit and the reserved part.
             [reserved uint 15 '0x0000'                         ]
             [simple   bit     value                            ]
+        ]
+        ['BOOL','1','false'  BOOL
+            [reserved uint 7 '0x00'                            ]
+            [simple   bit     value                            ]
+            [reserved uint 8 '0x00'                            ]
         ]
         ['BOOL'      List
             // TODO: Handle adding some reserved bits at the end to fill up the last word.
             [array    bit     value count 'numberOfValues'     ]
         ]
-        ['BYTE','1'  BYTE
+        ['BYTE','1','true'  BYTE
             [reserved uint 8 '0x00']
             [simple uint 8 value]
+        ]
+        ['BYTE','1','false'  BYTE
+            [simple uint 8 value]
+            [reserved uint 8 '0x00']
         ]
         ['BYTE' List
             // TODO: If the number of values is odd, add a reserved byte
@@ -336,9 +345,13 @@
         ['LWORD'     LWORD
             [simple   uint 64 value]
         ]
-        ['SINT','1' SINT
+        ['SINT','1','true' SINT
             [reserved uint 8  '0x00']
             [simple   int 8   value ]
+        ]
+        ['SINT','1','false' SINT
+            [simple   int 8   value ]
+            [reserved uint 8  '0x00']
         ]
         ['SINT' List
             [array int 8 value count 'numberOfValues']
@@ -361,9 +374,13 @@
         ['LINT' List
             [array int 64 value count 'numberOfValues']
         ]
-        ['USINT','1' USINT
+        ['USINT','1','true' USINT
             [reserved uint 8 '0x00']
             [simple   uint 8 value ]
+        ]
+        ['USINT','1','false' USINT
+            [simple   uint 8 value ]
+            [reserved uint 8 '0x00']
         ]
         ['USINT' List
             [array uint 8 value count 'numberOfValues']

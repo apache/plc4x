@@ -205,7 +205,7 @@ func (m *Reader) ToPlc4xReadResponse(responseAdu readWriteModel.ModbusTcpADU, re
 	// Decode the data according to the information from the request
 	m.log.Trace().Msg("decode data")
 	ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
-	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity)
+	value, err := readWriteModel.DataItemParse(ctxForModel, data, tag.Datatype, tag.Quantity, true)
 	if err != nil {
 		return nil, errors.Wrap(err, "Error parsing data item")
 	}

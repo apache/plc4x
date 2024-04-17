@@ -42,7 +42,11 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.DataItemParseWithBuffer(context.Background(), io, dataType, numberOfValues)
+		bigEndian, err := utils.StrToBool(arguments[2])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.DataItemParseWithBuffer(context.Background(), io, dataType, numberOfValues, bigEndian)
 	case "ModbusPDUReadFileRecordResponseItem":
 		return model.ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), io)
 	case "ModbusDeviceInformationObject":
