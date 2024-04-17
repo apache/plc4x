@@ -1199,7 +1199,7 @@
     ['448' M_ONEHOME ['501', '"1Home"']]
     ['449' M_EOS_SAUNATECHNIK_GMBH ['502', '"EOS Saunatechnik GmbH"']]
     ['450' M_KUSATEK_GMBH ['503', '"KUSATEK GmbH"']]
-    ['451' M_EISBAER_SCADA ['504', '"EisBär Scada"']]
+    ['451' M_ALEXANDER_MAIER_GMBH ['504', '"Alexander Maier GmbH"']]
     ['452' M_AUTOMATISMI_BENINCA_S_P_A_ ['505', '"AUTOMATISMI BENINCA S.P.A."']]
     ['453' M_BLENDOM ['506', '"Blendom"']]
     ['454' M_MADEL_AIR_TECHNICAL_DIFFUSION ['507', '"Madel Air Technical diffusion"']]
