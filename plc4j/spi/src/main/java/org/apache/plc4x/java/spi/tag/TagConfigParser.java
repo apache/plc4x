@@ -26,14 +26,17 @@ import java.util.regex.Pattern;
 
 /**
  * Dedicated parser which parses config portion of tag address.
- *
  * Tag config comes in curly braces and follows json syntax with key value pairs (fields are not quoted)
  */
 public class TagConfigParser {
 
-    public static final Pattern TAG_CONFIG_PATTERN = Pattern.compile("(\\{(?<config>.*?)\\})?$");
+    public static final Pattern TAG_CONFIG_PATTERN = Pattern.compile("(\\{(?<config>.*?)})?$");
 
     protected static final Pattern KEY_VALUE_PATTERN = Pattern.compile("(?<parameter>[\\w\\-_]+):\\s*(?<value>-?\\d+.\\d+|-?\\d+|\"[^\"]*\"|'[^']*'|true|false),?");
+
+    private TagConfigParser() {
+        // Prevent this from being instantiated.
+    }
 
     public static Map<String, String> parse(String tagAddress) {
         Map<String, String> params = new HashMap<>();
