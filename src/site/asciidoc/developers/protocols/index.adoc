@@ -17,6 +17,7 @@
 
 == Usage of protocols
 
-Currently documented are:
-* link:ads/index.html[Beckhoff/ ADS]
-* link:eip/index.html[EIP]
+=== Currently documented are:
+
+- link:ads/protocol.html[Beckhoff/ ADS]
+- link:eip/protocol.html[EIP]
