@@ -109,7 +109,7 @@
 |icon:times[role="red"]
 |icon:check[role="green"]
 |icon:check[role="green"]
-|icon:times[role="red"]
+|icon:exclamation[role="yellow"]
 
 |OPC-UA
 |icon:times[role="red"]
