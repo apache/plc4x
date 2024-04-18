@@ -137,6 +137,7 @@
       </item>
       <item name="Protocols" href="developers/protocols/index.html">
         <item name="ADS/AMS" href="developers/protocols/ads/protocol.html"/>
+        <item name="EIP" href="developers/protocols/eip/protocol.html"/>
       </item>
       <item name="Infrastructure" href="developers/infrastructure/index.html">
         <item name="Continuous Integration" href="developers/infrastructure/ci.html"/>
