@@ -36,15 +36,19 @@
 |Supported Transports 4+|
  - `tcp`
 5+|Config options:
-|`request-timeout` |INT |5000| |Default timeout for all types of requests.
-|`default-unit-identifier` |INT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
-|`ping-address` |STRING |4x00001:BOOL| |Simple address, that the driver will use to check, if the connection to a given device is active (Defaults to reading holding-register 1).
+|`request-timeout` |INT |5000| |Default timeout for all types of requests.)
+|`default-unit-identifier` |INT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.)
+|`ping-address` |STRING |4x00001:BOOL| |Simple address, that the driver will use to check, if the connection to a given device is active (Defaults to reading holding-register 1).)
+|`default-payload-byte-order` |STRING |BIG_ENDIAN| |Default encoding used for transporting register values (Defaults to BIG_ENDIAN). +
+Allowed values are:  +
+ - BIG_ENDIAN +
+ - LITTLE_ENDIAN)
 5+|Transport config options:
 5+|
 +++
 <h4>tcp</h4>
 +++
-|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
-|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
-|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
+|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?)
+|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.)
+|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.)
 |===
