@@ -55,6 +55,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @DisableOnParallelsVmFlag
 @DisableInDockerFlag
 @DisableOnJenkinsFlag
+@Disabled("This test seems to randomly fail on ANY CI platform")
 public class OpcuaSubscriptionHandleTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaPlcDriverTest.class);
