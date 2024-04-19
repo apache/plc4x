@@ -44,6 +44,7 @@
   </properties>
 
   <build>
+    <sourceDirectory>${project.basedir}</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
@@ -242,13 +243,25 @@
         </configuration>
       </plugin>
 
-      <!-- For this module deploying maven artifacts doesn't make any sense -->
+      <!-- Create a source bundle, so we can use this in the extras build -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>build-utils/source-bundle-descriptor.xml</descriptor>
+              </descriptors>
+              <classifier>sources</classifier>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <!--
