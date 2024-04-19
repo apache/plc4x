@@ -16,22 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.spi.configuration.annotations;
 
-package org.apache.plc4x.java.api.metadata;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.apache.plc4x.java.api.types.OptionType;
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Since {
 
-import java.util.Optional;
-
-public interface Option {
-
-    String getKey();
-
-    OptionType getType();
-
-    String getDescription();
-    boolean isRequired();
-    Optional<Object> getDefaultValue();
-    Optional<String> getSince();
+    String value() default "";
 
 }

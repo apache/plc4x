@@ -136,7 +136,8 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                                 option.getType(),
                                 option.getDescription(),
                                 option.isRequired(),
-                                option.getDefaultValue().orElse(null)
+                                option.getDefaultValue().orElse(null),
+                                option.getSince().orElse(null)
                             ))
                             .collect(Collectors.toList());
                     }
@@ -223,7 +224,12 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
                     type = OptionType.STRING;
                     defaultValue = stringDefaultValueAnnotation.value();
                 }
-                return Collections.singletonList(new DefaultOption(key, type, description, required, defaultValue));
+                String since = null;
+                var sinceAnnotation = field.getAnnotation(Since.class);
+                if(sinceAnnotation != null) {
+                    since = sinceAnnotation.value();
+                }
+                return Collections.singletonList(new DefaultOption(key, type, description, required, defaultValue, since));
             }
 
             @Override

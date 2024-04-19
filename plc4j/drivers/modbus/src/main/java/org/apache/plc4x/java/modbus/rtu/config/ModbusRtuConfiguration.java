@@ -21,6 +21,7 @@ package org.apache.plc4x.java.modbus.rtu.config;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.Since;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
@@ -35,6 +36,7 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
     @ConfigurationParameter("default-unit-identifier")
     @IntDefaultValue(1)
     @Description("Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.")
+    @Since("renamed from 'unit-identifier' in 0.13.0")
     private int defaultUnitIdentifier;
 
     @ConfigurationParameter("default-payload-byte-order")
@@ -43,6 +45,7 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
         "Allowed values are: \n" +
         " - BIG_ENDIAN\n" +
         " - LITTLE_ENDIAN")
+    @Since("0.13.0")
     private ByteOrder defaultPayloadByteOrder;
 
     public int getRequestTimeout() {

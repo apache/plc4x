@@ -31,13 +31,15 @@ public class DefaultOption implements Option {
     private final String description;
     private final boolean required;
     private final Object defaultValue;
+    private final String since;
 
-    public DefaultOption(String key, OptionType type, String description, boolean required, Object defaultValue) {
+    public DefaultOption(String key, OptionType type, String description, boolean required, Object defaultValue, String since) {
         this.key = key;
         this.type = type;
         this.description = description;
         this.required = required;
         this.defaultValue = defaultValue;
+        this.since = since;
     }
 
     @Override
@@ -64,4 +66,10 @@ public class DefaultOption implements Option {
     public Optional<Object> getDefaultValue() {
         return Optional.ofNullable(defaultValue);
     }
+
+    @Override
+    public Optional<String> getSince() {
+        return Optional.ofNullable(since);
+    }
+
 }
