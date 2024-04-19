@@ -36,9 +36,9 @@
 |Supported Transports 4+|
  - `socketcan`
 5+|Config options:
-|`node-id` |INT | | |CAN node identifier. Depending on used CAN version it might be 11 or 29 bit unsigned int.)
-|`heartbeat` |BOOLEAN | | |Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.)
-|`request-timeout` |INT |1000| |Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.)
+|`node-id` |INT | | |CAN node identifier. Depending on used CAN version it might be 11 or 29 bit unsigned int.
+|`heartbeat` |BOOLEAN | | |Forces PLC4X to send CANopen heartbeat (NMT) messages to the bus.
+|`request-timeout` |INT |1000| |Time after which dispatched BUS operation (ie. SDO request) will be marked as failed.
 5+|Transport config options:
 5+|
 +++

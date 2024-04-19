@@ -21,6 +21,7 @@ package org.apache.plc4x.java.modbus.ascii.config;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.Since;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
@@ -43,6 +44,7 @@ public class ModbusAsciiConfiguration implements PlcConnectionConfiguration {
         "Allowed values are: \n" +
         " - BIG_ENDIAN\n" +
         " - LITTLE_ENDIAN")
+    @Since("0.13.0")
     private ByteOrder defaultPayloadByteOrder;
 
     public int getRequestTimeout() {

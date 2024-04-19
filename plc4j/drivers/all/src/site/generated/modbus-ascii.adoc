@@ -37,20 +37,21 @@
  - `tcp`
  - `serial`
 5+|Config options:
-|`request-timeout` |INT |5000| |Default timeout for all types of requests.)
-|`default-unit-identifier` |STRUCT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.)
+|`request-timeout` |INT |5000| |Default timeout for all types of requests.
+|`default-unit-identifier` |STRUCT |1| |Unit-identifier or slave-id that identifies the target PLC (On RS485 multiple Modbus Devices can be listening). Defaults to 1.
 |`default-payload-byte-order` |STRING |BIG_ENDIAN| |Default encoding used for transporting register values (Defaults to BIG_ENDIAN). +
 Allowed values are:  +
  - BIG_ENDIAN +
- - LITTLE_ENDIAN)
+ - LITTLE_ENDIAN +
+*Since: 0.13.0*
 5+|Transport config options:
 5+|
 +++
 <h4>tcp</h4>
 +++
-|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?)
-|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.)
-|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.)
+|`tcp.keep-alive` |BOOLEAN |false| |Should keep-alive packets be sent?
+|`tcp.no-delay` |BOOLEAN |true| |Should packets be sent instantly or should we give the OS some time to aggregate data.
+|`tcp.default-timeout` |INT |1000| |Timeout after which a connection will be treated as disconnected.
 5+|
 +++
 <h4>serial</h4>
@@ -64,17 +65,17 @@ Typical values are: +
 - 57600 +
 - 115200 +
 - 128000 +
-But can also be smaller or larger values.)
+But can also be smaller or larger values.
 |`serial.num-data-bits` |INT |8| |Number of data-bits used to send data. +
 Typical values are: +
 - 7 +
 - 8 +
-But can also be smaller or larger values.)
+But can also be smaller or larger values.
 |`serial.num-stop-bits` |INT |1| |Number of stop-bits used to terminate data. +
 Typical values are: +
 - 1 +
 - 2 +
-(The theoretical 1.5 stop-bits setting is not supported))
+(The theoretical 1.5 stop-bits setting is not supported)
 |`serial.parity` |STRING |NO_PARITY| |Number of bits used to calculate data parity. +
 This is used to detect errors in transmission. +
 Allowed values are: +
@@ -82,5 +83,5 @@ Allowed values are: +
 - ODD_PARITY +
 - EVEN_PARITY +
 - MARK_PARITY +
-- SPACE_PARITY)
+- SPACE_PARITY
 |===

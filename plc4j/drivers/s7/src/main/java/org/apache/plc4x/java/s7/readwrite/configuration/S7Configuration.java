@@ -22,6 +22,7 @@ import org.apache.plc4x.java.s7.readwrite.DeviceGroup;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
+import org.apache.plc4x.java.spi.configuration.annotations.Since;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.BooleanDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
@@ -41,6 +42,7 @@ public class S7Configuration implements PlcConnectionConfiguration {
     @ConfigurationParameter("local-device-group")
     @StringDefaultValue("OTHERS")
     @Description("Local Device Group. (Defaults to 'OTHERS').\nAllowed values:\n - PG_OR_PC\n - OS\n - OTHERS")
+    @Since("0.13.0")
     public DeviceGroup localDeviceGroup;
 
     @ConfigurationParameter("local-tsap")
@@ -61,6 +63,7 @@ public class S7Configuration implements PlcConnectionConfiguration {
     @ConfigurationParameter("remote-device-group")
     @StringDefaultValue("PG_OR_PC")
     @Description("Remote Device Group (Defaults to 'PG_OR_PC').\nAllowed values:\n - PG_OR_PC\n - OS\n - OTHERS")
+    @Since("0.13.0")
     public DeviceGroup remoteDeviceGroup;
 
     @ConfigurationParameter("remote-tsap")
@@ -81,6 +84,7 @@ public class S7Configuration implements PlcConnectionConfiguration {
     @ConfigurationParameter("remote-device-group2")
     @StringDefaultValue("PG_OR_PC")
     @Description("Remote Device Group. (Defaults to 'PG_OR_PC').\nAllowed values:\n - PG_OR_PC\n - OS\n - OTHERS")
+    @Since("0.13.0")
     public DeviceGroup remoteDeviceGroup2;
 
     @ConfigurationParameter("pdu-size")
