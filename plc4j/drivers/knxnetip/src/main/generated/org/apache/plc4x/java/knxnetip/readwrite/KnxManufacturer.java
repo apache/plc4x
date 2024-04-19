@@ -578,7 +578,7 @@ public enum KnxManufacturer {
   M_AUTOMATIONPlus((int) 501, (int) 556, (String) "Automation+"),
   M_BLUE_AND_RED((int) 502, (int) 557, (String) "blue and red"),
   M_FROGBLUE((int) 503, (int) 558, (String) "frogblue"),
-  M_SAVESOR((int) 504, (int) 559, (String) "SAVESOR"),
+  M_LUXIO((int) 504, (int) 559, (String) "LUXIO"),
   M_APP_TECH((int) 505, (int) 560, (String) "App Tech"),
   M_SENSORTEC_AG((int) 506, (int) 561, (String) "sensortec AG"),
   M_NYSA_TECHNOLOGY_AND_SOLUTIONS((int) 507, (int) 562, (String) "nysa technology & solutions"),
@@ -776,9 +776,10 @@ public enum KnxManufacturer {
   M_MARLEY_DEUTSCHLAND_GMBH((int) 670, (int) 728, (String) "Marley Deutschland GmbH"),
   M_CREATROL((int) 671, (int) 729, (String) "Creatrol"),
   M_EUTELSAT((int) 672, (int) 730, (String) "EUTELSAT"),
-  M_ABB___RESERVED((int) 673, (int) 43954, (String) "ABB - reserved"),
+  M_TECNIKABEL((int) 673, (int) 731, (String) "TECNIKABEL"),
+  M_ABB___RESERVED((int) 674, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 674, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 675, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {

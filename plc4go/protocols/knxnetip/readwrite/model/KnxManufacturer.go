@@ -547,7 +547,7 @@ const (
 	KnxManufacturer_M_AUTOMATIONPlus                                     KnxManufacturer = 501
 	KnxManufacturer_M_BLUE_AND_RED                                       KnxManufacturer = 502
 	KnxManufacturer_M_FROGBLUE                                           KnxManufacturer = 503
-	KnxManufacturer_M_SAVESOR                                            KnxManufacturer = 504
+	KnxManufacturer_M_LUXIO                                              KnxManufacturer = 504
 	KnxManufacturer_M_APP_TECH                                           KnxManufacturer = 505
 	KnxManufacturer_M_SENSORTEC_AG                                       KnxManufacturer = 506
 	KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS                      KnxManufacturer = 507
@@ -716,8 +716,9 @@ const (
 	KnxManufacturer_M_MARLEY_DEUTSCHLAND_GMBH                            KnxManufacturer = 670
 	KnxManufacturer_M_CREATROL                                           KnxManufacturer = 671
 	KnxManufacturer_M_EUTELSAT                                           KnxManufacturer = 672
-	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 673
-	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 674
+	KnxManufacturer_M_TECNIKABEL                                         KnxManufacturer = 673
+	KnxManufacturer_M_ABB___RESERVED                                     KnxManufacturer = 674
+	KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED                    KnxManufacturer = 675
 )
 
 var KnxManufacturerValues []KnxManufacturer
@@ -1229,7 +1230,7 @@ func init() {
 		KnxManufacturer_M_AUTOMATIONPlus,
 		KnxManufacturer_M_BLUE_AND_RED,
 		KnxManufacturer_M_FROGBLUE,
-		KnxManufacturer_M_SAVESOR,
+		KnxManufacturer_M_LUXIO,
 		KnxManufacturer_M_APP_TECH,
 		KnxManufacturer_M_SENSORTEC_AG,
 		KnxManufacturer_M_NYSA_TECHNOLOGY_AND_SOLUTIONS,
@@ -1398,6 +1399,7 @@ func init() {
 		KnxManufacturer_M_MARLEY_DEUTSCHLAND_GMBH,
 		KnxManufacturer_M_CREATROL,
 		KnxManufacturer_M_EUTELSAT,
+		KnxManufacturer_M_TECNIKABEL,
 		KnxManufacturer_M_ABB___RESERVED,
 		KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED,
 	}
@@ -3959,10 +3961,14 @@ func (e KnxManufacturer) Number() uint16 {
 		}
 	case 673:
 		{ /* '673' */
-			return 43954
+			return 731
 		}
 	case 674:
 		{ /* '674' */
+			return 43954
+		}
+	case 675:
+		{ /* '675' */
 			return 43959
 		}
 	case 68:
@@ -5929,7 +5935,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 504:
 		{ /* '504' */
-			return "SAVESOR"
+			return "LUXIO"
 		}
 	case 505:
 		{ /* '505' */
@@ -6677,10 +6683,14 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 673:
 		{ /* '673' */
-			return "ABB - reserved"
+			return "TECNIKABEL"
 		}
 	case 674:
 		{ /* '674' */
+			return "ABB - reserved"
+		}
+	case 675:
+		{ /* '675' */
 			return "Busch-Jaeger Elektro - reserved"
 		}
 	case 68:
@@ -7743,7 +7753,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 503:
 		return KnxManufacturer_M_FROGBLUE, true
 	case 504:
-		return KnxManufacturer_M_SAVESOR, true
+		return KnxManufacturer_M_LUXIO, true
 	case 505:
 		return KnxManufacturer_M_APP_TECH, true
 	case 506:
@@ -8117,8 +8127,10 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 672:
 		return KnxManufacturer_M_EUTELSAT, true
 	case 673:
-		return KnxManufacturer_M_ABB___RESERVED, true
+		return KnxManufacturer_M_TECNIKABEL, true
 	case 674:
+		return KnxManufacturer_M_ABB___RESERVED, true
+	case 675:
 		return KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED, true
 	case 68:
 		return KnxManufacturer_M_WAREMA_RENKHOFF_SE, true
@@ -9098,8 +9110,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_BLUE_AND_RED, true
 	case "M_FROGBLUE":
 		return KnxManufacturer_M_FROGBLUE, true
-	case "M_SAVESOR":
-		return KnxManufacturer_M_SAVESOR, true
+	case "M_LUXIO":
+		return KnxManufacturer_M_LUXIO, true
 	case "M_APP_TECH":
 		return KnxManufacturer_M_APP_TECH, true
 	case "M_SENSORTEC_AG":
@@ -9472,6 +9484,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_CREATROL, true
 	case "M_EUTELSAT":
 		return KnxManufacturer_M_EUTELSAT, true
+	case "M_TECNIKABEL":
+		return KnxManufacturer_M_TECNIKABEL, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10515,8 +10529,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_BLUE_AND_RED"
 	case KnxManufacturer_M_FROGBLUE:
 		return "M_FROGBLUE"
-	case KnxManufacturer_M_SAVESOR:
-		return "M_SAVESOR"
+	case KnxManufacturer_M_LUXIO:
+		return "M_LUXIO"
 	case KnxManufacturer_M_APP_TECH:
 		return "M_APP_TECH"
 	case KnxManufacturer_M_SENSORTEC_AG:
@@ -10889,6 +10903,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_CREATROL"
 	case KnxManufacturer_M_EUTELSAT:
 		return "M_EUTELSAT"
+	case KnxManufacturer_M_TECNIKABEL:
+		return "M_TECNIKABEL"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

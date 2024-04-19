@@ -1252,7 +1252,7 @@
     ['501' M_AUTOMATIONPlus ['556', '"Automation+"']]
     ['502' M_BLUE_AND_RED ['557', '"blue and red"']]
     ['503' M_FROGBLUE ['558', '"frogblue"']]
-    ['504' M_SAVESOR ['559', '"SAVESOR"']]
+    ['504' M_LUXIO ['559', '"LUXIO"']]
     ['505' M_APP_TECH ['560', '"App Tech"']]
     ['506' M_SENSORTEC_AG ['561', '"sensortec AG"']]
     ['507' M_NYSA_TECHNOLOGY_AND_SOLUTIONS ['562', '"nysa technology & solutions"']]
@@ -1421,8 +1421,9 @@
     ['670' M_MARLEY_DEUTSCHLAND_GMBH ['728', '"Marley Deutschland GmbH"']]
     ['671' M_CREATROL ['729', '"Creatrol"']]
     ['672' M_EUTELSAT ['730', '"EUTELSAT"']]
-    ['673' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['674' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['673' M_TECNIKABEL ['731', '"TECNIKABEL"']]
+    ['674' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['675' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
