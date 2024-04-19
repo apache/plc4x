@@ -46,14 +46,13 @@ public class S7DriverContext implements DriverContext, HasConfiguration<S7Config
 
     @Override
     public void setConfiguration(S7Configuration configuration) {
-        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.OTHERS,
+        this.callingTsapId = S7TsapIdEncoder.encodeS7TsapId(configuration.localDeviceGroup,
             configuration.localRack, configuration.localSlot);
-        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
+        this.calledTsapId = S7TsapIdEncoder.encodeS7TsapId(configuration.remoteDeviceGroup,
             configuration.remoteRack, configuration.remoteSlot);
 
-        this.calledTsapId2 = S7TsapIdEncoder.encodeS7TsapId(DeviceGroup.PG_OR_PC,
+        this.calledTsapId2 = S7TsapIdEncoder.encodeS7TsapId(configuration.remoteDeviceGroup2,
             configuration.remoteRack2, configuration.remoteSlot2);
-
 
         if (configuration.localTsap > 0) {
             this.callingTsapId = configuration.localTsap;
