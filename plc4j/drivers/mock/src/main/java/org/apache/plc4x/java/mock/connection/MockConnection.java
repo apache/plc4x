@@ -227,9 +227,10 @@ public class MockConnection implements PlcConnection, PlcReader, PlcWriter, PlcS
     @Override
     public Optional<PlcTag> parseTagAddress(String tagAddress) {
         PlcTag plcTag;
-        try{
+        try {
             plcTag = mockTagHandler.parseTag(tagAddress);
-        }catch (Exception e){
+        } catch (Exception e) {
+            LOGGER.error("Error parsing tag address {}", tagAddress);
             return Optional.empty();
         }
         return Optional.ofNullable(plcTag);

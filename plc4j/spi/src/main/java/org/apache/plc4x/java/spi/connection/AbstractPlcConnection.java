@@ -31,6 +31,8 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -44,6 +46,8 @@ import java.util.function.Consumer;
  * and for obtaining respective request builders.
  */
 public abstract class AbstractPlcConnection implements PlcConnection, PlcConnectionMetadata, PlcPinger, PlcReader, PlcWriter, PlcSubscriber, PlcBrowser {
+
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractPlcConnection.class);
 
     private boolean canPing = false;
     private boolean canRead = false;
@@ -233,9 +237,10 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     @Override
     public Optional<PlcTag> parseTagAddress(String tagAddress) {
         PlcTag plcTag;
-        try{
+        try {
             plcTag = tagHandler.parseTag(tagAddress);
-        }catch (Exception e){
+        } catch (Exception e) {
+            logger.error("Error parsing tag address {}", tagAddress);
             return Optional.empty();
         }
         return Optional.ofNullable(plcTag);

@@ -42,6 +42,8 @@ import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.apache.plc4x.java.spi.messages.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -50,6 +52,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CtrlXConnection.class);
 
     private final String baseUrl;
     private final String username;
@@ -99,6 +103,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         try {
             plcTag = controlXTagHandler.parseTag(tagAddress);
         } catch (Exception e) {
+            logger.error("Error parsing tag address {}", tagAddress);
             return Optional.empty();
         }
         return Optional.ofNullable(plcTag);
