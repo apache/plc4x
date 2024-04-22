@@ -39,7 +39,7 @@ packaging==24.0
 pathspec==0.12.1
 pip-tools==7.4.1
 platformdirs==4.2.0
-pluggy==1.4.0
+pluggy==1.5.0
 pre-commit==3.7.0
 pycodestyle==2.11.1
 pyflakes==3.2.0
