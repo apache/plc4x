@@ -265,7 +265,7 @@ public class LeasedPlcConnection implements PlcConnection {
                 PlcSubscriptionRequest innerPlcSubscriptionRequest = innerBuilder.build();
                 return new PlcSubscriptionRequest() {
                     @Override
-                    public CompletableFuture<? extends PlcSubscriptionResponse> execute() {
+                    public CompletableFuture<? extends PlcSubscriptionResponse> execute(Consumer<PlcSubscriptionEvent> subscriptionConsumer) {
                         CompletableFuture<? extends PlcSubscriptionResponse> future = innerPlcSubscriptionRequest.execute();
                         final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcSubscriptionResponse, throwable)->{

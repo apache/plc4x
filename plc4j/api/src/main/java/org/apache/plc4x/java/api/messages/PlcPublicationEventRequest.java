@@ -18,11 +18,13 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import java.util.concurrent.CompletableFuture;
+import java.time.Instant;
 
-public interface PlcUnsubscriptionRequest extends PlcRequest {
+public interface PlcPublicationEventRequest extends PlcWriteRequest {
 
-    @Override
-    CompletableFuture<PlcUnsubscriptionResponse> execute();
+    /**
+     * @return the timestamp at which this event occurred.
+     */
+    Instant getTimestamp();
 
 }

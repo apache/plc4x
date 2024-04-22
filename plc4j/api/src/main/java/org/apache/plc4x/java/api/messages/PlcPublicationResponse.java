@@ -18,11 +18,21 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import java.util.concurrent.CompletableFuture;
+import org.apache.plc4x.java.api.model.PlcPublicationTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 
-public interface PlcUnsubscriptionRequest extends PlcRequest {
+import java.util.Collection;
+
+public interface PlcPublicationResponse extends PlcResponse {
 
     @Override
-    CompletableFuture<PlcUnsubscriptionResponse> execute();
+    PlcPublicationRequest getRequest();
+
+    Collection<String> getTagNames();
+
+    PlcPublicationTag getTag(String name);
+
+    PlcResponseCode getResponseCode(String name);
+
 
 }

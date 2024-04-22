@@ -16,29 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.api.messages;
+package org.apache.plc4x.java.api.model;
 
-import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-
-public interface PlcSubscriptionTagRequest extends PlcRequest {
-
-    @Override
-    CompletableFuture<? extends PlcSubscriptionTagResponse> execute();
-
-    int getNumberOfTags();
-
-    LinkedHashSet<String> getTagNames();
-
-    PlcSubscriptionTag getTag(String name);
-
-    List<PlcSubscriptionTag> getTags();
-
-    Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers();
+public interface PlcPublicationTag extends PlcTag {
 
 }

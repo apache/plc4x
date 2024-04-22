@@ -54,7 +54,7 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
     }
 
     @Override
-    public CompletableFuture<PlcSubscriptionResponse> execute() {
+    public CompletableFuture<PlcSubscriptionResponse> execute(Consumer<PlcSubscriptionEvent> subscriptionConsumer) {
         return subscriber.subscribe(this);
     }
 

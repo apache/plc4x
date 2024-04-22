@@ -18,24 +18,6 @@
  */
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-
-import java.util.Collection;
-
-/**
- * Base type for all response messages sent as response for a prior request
- * from a plc to the plc4x system.
- */
-public interface PlcSubscriptionTagResponse extends PlcResponse {
-
-    @Override
-    PlcSubscriptionTagRequest getRequest();
-
-    Collection<String> getTagNames();
-
-    PlcSubscriptionTag getTag(String name);
-
-    PlcResponseCode getResponseCode(String name);
+public interface PlcPublicationEventResponse extends PlcWriteResponse {
 
 }

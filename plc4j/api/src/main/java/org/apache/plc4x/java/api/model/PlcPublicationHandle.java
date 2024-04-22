@@ -18,27 +18,26 @@
  */
 package org.apache.plc4x.java.api.model;
 
+import org.apache.plc4x.java.api.messages.PlcPublicationEventRequest;
+import org.apache.plc4x.java.api.messages.PlcPublicationEventResponse;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 
 import java.util.function.Consumer;
 
 /**
- * When subscribing to remote resources, depending on the used protocol
- * different data is used to identify a subscription. This interface is
+ * When publishing data to remote resources, depending on the used protocol
+ * different data is used to identify a publication. This interface is
  * to be implemented in the individual Driver implementations to contain
- * all information needed to pull or unsubscribe any form of subscription.
- * <p>
- * For every subscribed item, a separate {@link PlcSubscriptionHandle} object is
- * returned in order to allow fine granular un-subscriptions.
+ * all information needed to publish data or to unsubscribe any form of publication.
  */
-public interface PlcSubscriptionHandle {
+public interface PlcPublicationHandle {
 
     /**
-     * Registers a given consumer for the events emitted by the current subscription handle.
+     * Allows publishing events to the registered consumer..
      *
-     * @param consumer consumer
-     * @return consumer registration
+     * @param publicationEvent publication event containing the data we want to publish.
+     * @return PlcPublicationEventResponse response of the publication.
      */
-    PlcConsumerRegistration register(Consumer<PlcSubscriptionEvent> consumer);
+    PlcPublicationEventResponse publish(PlcPublicationEventRequest publicationEvent);
 
 }
