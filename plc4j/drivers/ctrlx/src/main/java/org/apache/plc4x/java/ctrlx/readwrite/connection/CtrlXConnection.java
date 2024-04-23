@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.exceptions.PlcProtocolException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.ctrlx.readwrite.rest.datalayer.ApiClient;
@@ -41,6 +42,8 @@ import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTag;
 import org.apache.plc4x.java.ctrlx.readwrite.tag.CtrlXTagHandler;
 import org.apache.plc4x.java.ctrlx.readwrite.utils.ApiClientFactory;
 import org.apache.plc4x.java.spi.messages.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -49,6 +52,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
+
+    private static final Logger logger = LoggerFactory.getLogger(CtrlXConnection.class);
 
     private final String baseUrl;
     private final String username;
@@ -60,6 +65,8 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
     private NodesApi nodesApi;
     private DataLayerInformationAndSettingsApi dataLayerApi;
 
+    private final CtrlXTagHandler controlXTagHandler = new CtrlXTagHandler();
+
     public CtrlXConnection(String baseUrl, String username, String password) {
         this.baseUrl = baseUrl;
         this.username = username;
@@ -69,7 +76,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     @Override
     public void connect() throws PlcConnectionException {
-        if(apiClient != null) {
+        if (apiClient != null) {
             throw new PlcConnectionException("Already connected");
         }
         apiClient = ApiClientFactory.getApiClient(baseUrl, username, password);
@@ -88,6 +95,18 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
         apiClient = null;
         dataLayerApi = null;
         executorService.shutdown();
+    }
+
+    @Override
+    public Optional<PlcTag> parseTagAddress(String tagAddress) {
+        PlcTag plcTag;
+        try {
+            plcTag = controlXTagHandler.parseTag(tagAddress);
+        } catch (Exception e) {
+            logger.error("Error parsing tag address {}", tagAddress);
+            return Optional.empty();
+        }
+        return Optional.ofNullable(plcTag);
     }
 
     @Override
@@ -122,7 +141,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
 
     @Override
     public PlcBrowseRequest.Builder browseRequestBuilder() {
-        return new DefaultPlcBrowseRequest.Builder(this, new CtrlXTagHandler());
+        return new DefaultPlcBrowseRequest.Builder(this, controlXTagHandler);
     }
 
     @Override
