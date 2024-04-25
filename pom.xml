@@ -112,7 +112,7 @@
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
-    <commons-cli.version>1.6.0</commons-cli.version>
+    <commons-cli.version>1.7.0</commons-cli.version>
     <commons-codec.version>1.16.1</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.26.1</commons-compress.version>
