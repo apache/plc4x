@@ -24,7 +24,8 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>32</version>
+    <!-- When updating to 32 the site build starts failing -->
+    <version>31</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
