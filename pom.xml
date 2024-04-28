@@ -1519,7 +1519,7 @@
         <os>
           <family>unix</family>
           <name>Linux</name>
-          <arch>amg64</arch>
+          <arch>amd64</arch>
         </os>
       </activation>
       <properties>
