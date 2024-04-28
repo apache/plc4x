@@ -1512,6 +1512,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
+    <!-- Profile for linux amd64 (Self-Enabling) -->
     <profile>
       <id>.os-linux-amd64</id>
       <activation>
@@ -1547,6 +1548,26 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
+    <!-- Default Profile for linux -->
+    <profile>
+      <id>.os-linux-default</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <name>Linux</name>
+        </os>
+        <property>
+          <name>!os.suffix</name>
+        </property>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-default</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
+      </properties>
+    </profile>
     <!-- Profile for mac x86_64 (Self-Enabling) -->
     <profile>
       <id>.os-mac-x86_64</id>
@@ -1564,6 +1585,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
+    <!-- Profile for mac amd64 (Self-Enabling) -->
     <profile>
       <id>.os-mac-amd64</id>
       <activation>
@@ -1597,7 +1619,26 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
-    <!-- profile for windows x86_64 (Self-Enabling) -->
+    <!-- Default profile for mac (Self-Enabling) -->
+    <profile>
+      <id>.os-mac-default</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+        <property>
+          <name>!os.suffix</name>
+        </property>
+      </activation>
+      <properties>
+        <os.suffix>mac</os.suffix>
+        <os.classifier>mac-default</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
+      </properties>
+    </profile>
+    <!-- Profile for windows x86_64 (Self-Enabling) -->
     <profile>
       <id>.os-windows-x86_64</id>
       <activation>
@@ -1614,6 +1655,7 @@
         <python.exe.bin>python</python.exe.bin>
       </properties>
     </profile>
+    <!-- Profile for windows amd64 (Self-Enabling) -->
     <profile>
       <id>.os-windows-amd64</id>
       <activation>
@@ -1630,7 +1672,7 @@
         <python.exe.bin>python</python.exe.bin>
       </properties>
     </profile>
-    <!-- profile for windows aarch64 (Self-Enabling) -->
+    <!-- Profile for windows aarch64 (Self-Enabling) -->
     <profile>
       <id>.os-windows-aarch64</id>
       <activation>
@@ -1642,6 +1684,25 @@
       <properties>
         <os.suffix>win</os.suffix>
         <os.classifier>windows-aarch64</os.classifier>
+        <cmake.generator>MinGW Makefiles</cmake.generator>
+        <python.venv.bin>venv/Scripts/</python.venv.bin>
+        <python.exe.bin>python</python.exe.bin>
+      </properties>
+    </profile>
+    <!-- Default profile for windows (Self-Enabling) -->
+    <profile>
+      <id>.os-windows-default</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+        <property>
+          <name>!os.suffix</name>
+        </property>
+      </activation>
+      <properties>
+        <os.suffix>win</os.suffix>
+        <os.classifier>windows-default</os.classifier>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
         <python.exe.bin>python</python.exe.bin>
