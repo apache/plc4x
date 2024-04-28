@@ -1512,6 +1512,24 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
+    <!-- Profile for linux amd64 (Self-Enabling) -->
+    <profile>
+      <id>.os-linux-amd64</id>
+      <activation>
+        <os>
+          <family>unix</family>
+          <name>Linux</name>
+          <arch>amg64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>linux</os.suffix>
+        <os.classifier>linux-amd64</os.classifier>
+        <cmake.generator>Unix Makefiles</cmake.generator>
+        <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
+      </properties>
+    </profile>
     <!-- Profile for linux aarch64 (Self-Enabling) -->
     <profile>
       <id>.os-linux-aarch64</id>
@@ -1576,6 +1594,23 @@
       <properties>
         <os.suffix>win</os.suffix>
         <os.classifier>windows-x86_64</os.classifier>
+        <cmake.generator>MinGW Makefiles</cmake.generator>
+        <python.venv.bin>venv/Scripts/</python.venv.bin>
+        <python.exe.bin>python</python.exe.bin>
+      </properties>
+    </profile>
+    <!-- profile for windows x86_64 (Self-Enabling) -->
+    <profile>
+      <id>.os-windows-amd64</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>amd64</arch>
+        </os>
+      </activation>
+      <properties>
+        <os.suffix>win</os.suffix>
+        <os.classifier>windows-amd64</os.classifier>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
         <python.exe.bin>python</python.exe.bin>
