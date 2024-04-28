@@ -1494,7 +1494,7 @@
       </modules>
     </profile>
 
-    <!-- Profile for linux x86_64 (Self-Enabling) -->
+    <!-- Profile for linux x86_64 (mainly Intel Processors) (Self-Enabling) -->
     <profile>
       <id>.os-linux-x86_64</id>
       <activation>
@@ -1512,7 +1512,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
-    <!-- Profile for linux amd64 (Self-Enabling) -->
+    <!-- Profile for linux amd64 (mainly AMD Processors) (Self-Enabling) -->
     <profile>
       <id>.os-linux-amd64</id>
       <activation>
@@ -1530,7 +1530,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
-    <!-- Profile for linux aarch64 (Self-Enabling) -->
+    <!-- Profile for linux aarch64 (mainly newer Mac or Raspberry PI Processors) (Self-Enabling) -->
     <profile>
       <id>.os-linux-aarch64</id>
       <activation>
@@ -1548,7 +1548,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
-    <!-- Profile for mac x86_64 (Self-Enabling) -->
+    <!-- Profile for mac x86_64 (mainly Intel Processors) (Self-Enabling) -->
     <profile>
       <id>.os-mac-x86_64</id>
       <activation>
@@ -1565,7 +1565,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
-    <!-- Profile for mac aarch64 (Self-Enabling) -->
+    <!-- Profile for mac aarch64 (mainly AMD Processors) (Self-Enabling) -->
     <profile>
       <id>.os-mac-aarch64</id>
       <activation>
@@ -1582,7 +1582,7 @@
         <python.exe.bin>python3</python.exe.bin>
       </properties>
     </profile>
-    <!-- profile for windows x86_64 (Self-Enabling) -->
+    <!-- profile for windows x86_64 (mainly Intel Processors) (Self-Enabling) -->
     <profile>
       <id>.os-windows-x86_64</id>
       <activation>
@@ -1599,7 +1599,7 @@
         <python.exe.bin>python</python.exe.bin>
       </properties>
     </profile>
-    <!-- profile for windows x86_64 (Self-Enabling) -->
+    <!-- profile for windows amd64 (mainly AMD Processors) (Self-Enabling) -->
     <profile>
       <id>.os-windows-amd64</id>
       <activation>
@@ -1616,7 +1616,7 @@
         <python.exe.bin>python</python.exe.bin>
       </properties>
     </profile>
-    <!-- profile for windows aarch64 (Self-Enabling) -->
+    <!-- profile for windows aarch64 (mainly newer Mac or Raspberry PI Processors) (Self-Enabling) -->
     <profile>
       <id>.os-windows-aarch64</id>
       <activation>
