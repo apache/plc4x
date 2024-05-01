@@ -412,6 +412,7 @@ class UmasDevice:
                     variable.get_variable_reference(umas_tag.tag_name),
                 )
             )
+
         sorted_tag_lists: List[List[Tuple[str, VariableReadRequestReference]]] = []
         for request in tag_list:
             sorted_tags = sorted(

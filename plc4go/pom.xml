@@ -511,10 +511,27 @@
 
   <profiles>
     <profile>
-      <id>.os-windows</id>
+      <id>.os-windows-x86_64</id>
       <activation>
         <os>
           <family>windows</family>
+          <arch>x86_64</arch>
+        </os>
+      </activation>
+      <properties>
+        <!--
+        Coverage doesn't work in windows because of a long path issue in cover.exe
+        Tracked upstream issue: https://github.com/golang/go/issues/60785
+        -->
+        <go.cover.flag>-v</go.cover.flag>
+      </properties>
+    </profile>
+    <profile>
+      <id>.os-windows-aarch64</id>
+      <activation>
+        <os>
+          <family>windows</family>
+          <arch>aarch64</arch>
         </os>
       </activation>
       <properties>
