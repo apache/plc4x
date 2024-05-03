@@ -35,24 +35,46 @@ class PlcDriverManager:
     _driver_map: Dict[str, Type[PlcDriver]] = field(default_factory=lambda: {})
 
     def __post_init__(self):
+        """
+        Initialize the PLC Driver Manager.
+
+        This function is called automatically when a new instance of the
+        PlcDriverManager class is created.
+
+        It registers the available drivers, by loading the entry points
+        defined in the "plc4py.drivers" namespace.
+        """
+        # Log the class loader used
         logging.info(
             f"Instantiating new PLC Driver Manager with class loader {self.class_loader}"
         )
+
+        # Add the PlcDriverClassLoader hookspecs to the class loader
         self.class_loader.add_hookspecs(PlcDriverClassLoader)
+
+        # Log the registration of drivers
         logging.info("Registering available drivers...")
 
+        # Register the plc4py.drivers package
         import plc4py.drivers
-
         self.class_loader.register(plc4py.drivers)
+
+        # Load the setuptools entry points defined in the "plc4py.drivers" namespace
         self.class_loader.load_setuptools_entrypoints("plc4py.drivers")
+
+        # Create a dictionary mapping the hook names to the PlcDriver instances
         self._driver_map = {
             key: loader
             for key, loader in zip(
                 self.class_loader.hook.key(), self.class_loader.hook.get_driver()
             )
         }
+
+        # Log the successful registration of each driver
         for driver in self._driver_map:
             logging.info(f"... {driver} .. OK")
+
+        # Check for any pending plugins
         self.class_loader.check_pending()
 
     @asynccontextmanager
@@ -95,9 +117,13 @@ class PlcDriverManager:
 
     def get_driver_for_url(self, url: str) -> Type[PlcDriver]:
         """
-        Returns the driver class that matches that identified within the connection string
+        Returns the driver class that matches the one identified within the connection string.
+
         :param url: The plc connection string
-        :return: the protocol code
+        :return: The driver class that matches the protocol code identified within the connection string
         """
+        # Extract the protocol code from the connection string
         protocol_code = get_protocol_code(url)
+
+        # Retrieve the driver class using the protocol code
         return self._driver_map[protocol_code]

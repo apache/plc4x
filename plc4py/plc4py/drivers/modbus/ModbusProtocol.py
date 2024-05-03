@@ -40,31 +40,77 @@ class ModbusProtocol(Plc4xBaseProtocol):
         read_buffer.position = current_position
         return packet_length + current_position < len(read_buffer.bb)
 
+
     def data_received(self, data):
-        """Unpack the adu and return the pdu"""
+        """
+        Unpack the adu and return the pdu.
+
+        This function continuously processes incoming data until the complete
+        ADU (ModbusTcpADU) is extracted. If the ADU transaction identifier is
+        found in the messages dictionary, the corresponding PDU (data) is set
+        as a result of the associated Future object. If the transaction
+        identifier is not found, an error message is logged and the connection
+        is closed.
+
+        Args:
+            data (bytes): The raw data received from the transport.
+        """
+        # Convert data to ReadBufferByteBased
         read_buffer = ReadBufferByteBased(
             bytearray(data), byte_order=ByteOrder.BIG_ENDIAN
         )
+
+        # Continuously process incoming data until the complete ADU is
+        # extracted.
         while self.packet_length_estimator(read_buffer):
+
+            # Parse the ADU from the ReadBufferByteBased.
             adu: ModbusTcpADU = ModbusTcpADU.static_parse_builder(
                 read_buffer, DriverType.MODBUS_TCP, True
             ).build(True)
+
+            # If the ADU transaction identifier is in the messages dictionary,
+            # set the PDU (data) as a result of the associated Future object.
             if adu.transaction_identifier in self.messages:
                 self.messages[adu.transaction_identifier].set_result(adu.pdu)
                 self.messages.pop(adu.transaction_identifier)
+
+            # If the ADU transaction identifier is not found, log an error
+            # message and close the connection.
             else:
                 logging.error("Unsolicited message returned")
                 self.close()
 
     def write_wait_for_response(self, data, transport, transaction_id, message_future):
-        """Writes a message to the wire and records the identifier to identify and route the response"""
+        """
+        Writes a message to the wire and records the transaction identifier to identify and route the response.
+
+        Args:
+            data (bytes): The data to be written to the wire.
+            transport (asyncio.Transport): The transport to use for writing the data.
+            transaction_id (int): The transaction identifier of the message.
+            message_future (concurrent.futures.Future): The future to set the result of when the response is received.
+        """
+        # Record the message's transaction identifier and the future to set the result of.
         self.messages[transaction_id] = message_future
+        # Write the data to the wire.
         transport.write(data)
 
     def close(self):
-        """Clean up the message which didn't receive a response"""
-        for key, message in self.messages.items:
+        """
+        Clean up the message which didn't receive a response.
+
+        This function iterates over the messages dictionary,
+        sets the result of each message to None and removes it from the dictionary.
+        After that, it sets the messages dictionary to None.
+        """
+        # Iterate over the messages dictionary
+        for key, message in self.messages.items():
+            # Log the removal of un-replied message
             logging.debug("Removing un-replied message with identifier " + str(key))
+            # Set the result of the message to None
             message.set_result(None)
-            self.messages.pop()
+            # Remove the message from the dictionary
+            self.messages.pop(key)
+        # Set the messages dictionary to None
         self.messages = None
