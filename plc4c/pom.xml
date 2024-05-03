@@ -258,7 +258,6 @@
               <descriptors>
                 <descriptor>build-utils/source-bundle-descriptor.xml</descriptor>
               </descriptors>
-              <classifier>sources</classifier>
             </configuration>
           </execution>
         </executions>
