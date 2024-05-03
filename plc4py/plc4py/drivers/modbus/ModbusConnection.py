@@ -61,24 +61,12 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         self._transport: Plc4xBaseTransport = transport
 
     @staticmethod
-    async def create(url: str):
-        """
-        Static Factory to return an instance of a ModbusConnection.
-        It creates the TCP connection to the Modbus device before returning.
-
-        :param url: PLC4X connection string of the Modbus TCP connection
-        :return ModbusConnection instance using the configuration from the url provided
-        """
-        config = ModbusConfiguration(url)
-        loop = asyncio.get_running_loop()
-        connection_future = loop.create_future()
-        transport = await asyncio.wait_for(
-            TCPTransport.create(
-                protocol_factory=lambda: ModbusProtocol(connection_future),
-                host=config.host,
-                port=config.port,
-            ),
-            10,
+    async def create(connection_string: str) -> "ModbusConnection":
+        config = ModbusConfiguration(connection_string)
+        transport = await TCPTransport.create(
+            protocol_factory=lambda: ModbusProtocol(connection_future),
+            host=config.host,
+            port=config.port,
         )
         return ModbusConnection(config, transport)
 
@@ -108,22 +96,31 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
 
     async def execute(self, request: PlcRequest) -> PlcResponse:
         """
-        Executes a PlcRequest as long as it's already connected
+        Executes a PlcRequest as long as it's already connected.
+
         :param request: Plc Request to execute
         :return: The response from the Plc/Device
         """
+        # Check if the connection is established
         if not self.is_connected():
+            # Return a default failed response if not connected
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
+        # Check the type of the request and execute the corresponding method
         if isinstance(request, PlcReadRequest):
+            # Execute a read request
             return await self._read(request)
         elif isinstance(request, PlcWriteRequest):
+            # Execute a write request
             return await self._write(request)
 
+        # Return a default failed response if the request type is not supported
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-    def _check_connection(self) -> bool:
-        return self._device is None
+
+    def _connection_established(self) -> bool:
+        """Check if the connection to the PLC is established."""
+        return self._device is not None
 
     async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
         """
