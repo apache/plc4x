@@ -65,8 +65,10 @@
                   <outputDirectory>${project.basedir}/drivers/knxnetip-test/resources</outputDirectory>
                   <includes>**/*.xml</includes>
                   <excludes>META-INF/**,org/**</excludes>
+                  <overWrite>true</overWrite>
                 </artifactItem>
               </artifactItems>
+              <ignorePermissions>true</ignorePermissions>
             </configuration>
           </execution>
         </executions>

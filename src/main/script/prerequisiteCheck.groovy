@@ -203,7 +203,7 @@ def checkGit() {
 // that's why this is the baseline for python.
 def checkPython() {
     def python = project.properties['python.exe.bin']
-    println "Using python executable:   " + python + "        OK"
+    println "Using python executable:    " + python + "        OK"
     print "Detecting Python version:  "
     try {
         def process = (python + " --version").execute()
