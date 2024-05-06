@@ -1092,7 +1092,7 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 }
 
 func Test_defaultCodec_Work(t *testing.T) {
-	if os.Getenv("ENABLE_RANDOMLY_FAILING_TESTS") != "" {
+	if os.Getenv("ENABLE_RANDOMLY_FAILING_TESTS") == "" {
 		t.Skip("Skipping randomly failing tests")
 	}
 	type fields struct {
