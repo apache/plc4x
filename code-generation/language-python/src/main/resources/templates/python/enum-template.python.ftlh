@@ -83,7 +83,7 @@ class ${type.name}(AutoNumberEnum):
                         <#if helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElse(null)) == 'null'>
                             = None
                         <#elseif type.getConstantType(constantName).isEnumTypeReference()>
-                            = ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}.${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}(${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())})</#if><#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}(${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())})
+                            ${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}.${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())}<#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}(${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())})</#if><#else>${helper.getLanguageTypeNameForTypeReference(type.getConstantType(constantName), true)}(${helper.escapeValue(type.getConstantType(constantName), enumValue.getConstant(constantName).orElseThrow())})
                         </#if>
                     <#sep>, </#sep>
                 </#list>
