@@ -459,7 +459,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         # Padding Field (padding)
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        _timesPadding: int = int(${helper.toParseExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
+        _timesPadding: int = int(${helper.toSerializationExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
         length_in_bits = ${simpleTypeReference.sizeInBits} * _timesPadding
 
         <#break>
@@ -666,6 +666,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign optionalField = field.asOptionalField().orElseThrow()>
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign namedField = field.asNamedField().orElseThrow()>
+
         ${helper.camelCaseToSnakeCase(namedField.name)}: ${helper.getLanguageTypeNameForTypeReference(optionalField.type, false)} = None
         <#if optionalField.conditionExpression.present>
         if ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}:
@@ -677,13 +678,16 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#assign typedField = field.asTypedField().orElseThrow()>
                 <#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
-        read_buffer.${helper.getDataReaderCall(paddingField.type)}(int) (${helper.toParseExpression(paddingField, paddingField.type, paddingField.paddingCondition, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
+        for _ in range(${helper.toSerializationExpression(paddingField, paddingField.type, paddingField.paddingCondition, parserArguments)}):
+            read_buffer.${helper.getDataReaderCall(paddingField.type)}(${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
                 <#break>
             <#case "reserved">
                 <#assign reservedField = field.asReservedField().orElseThrow()>
                 <#assign typedField = field.asTypedField().orElseThrow()>
 
-        reserved_field_${reservedFieldIndex}: ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)}<#assign reservedFieldIndex=reservedFieldIndex+1> = read_buffer.${helper.getDataReaderCall(reservedField.type)}(logical_name="reserved"${helper.getReservedValue(reservedField)}${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
+        reserved_field_${reservedFieldIndex}: ${helper.getLanguageTypeNameForTypeReference(reservedField.type, false)}<#assign reservedFieldIndex=reservedFieldIndex+1> = read_buffer.${helper.getDataReaderCall(reservedField.type)}(logical_name="reserved"${helper.getFieldOptions(typedField, parserArguments)}<#if hasParserArguments>, ${parsedList}</#if>)
+        if reserved_field_${reservedFieldIndex} != ${helper.getReservedValue(reservedField)}:
+            raise ParseValidationException("reserved_field_${reservedFieldIndex} != ${helper.getReservedValue(reservedField)}")
                 <#break>
             <#case "simple">
                 <#assign simpleField = field.asSimpleField().orElseThrow()>
@@ -757,8 +761,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                 <#break>
             <#case "validation">
                 <#assign validationField = field.asValidationField().orElseThrow()>
+
         # Validation
-        if not ${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)}):
+        if not ${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)}:
             <#assign errorType="ParseValidationException">
             <#if !validationField.shouldFail()><#assign errorType="ParseAssertException"></#if>
             raise ${errorType}(${validationField.getDescription().orElse("\"Validation failed\"")})
