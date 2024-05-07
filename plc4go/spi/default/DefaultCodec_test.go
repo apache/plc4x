@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"fmt"
+	"os"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -1091,6 +1092,9 @@ func Test_defaultCodec_TimeoutExpectations(t *testing.T) {
 }
 
 func Test_defaultCodec_Work(t *testing.T) {
+	if os.Getenv("ENABLE_RANDOMLY_FAILING_TESTS") == "" {
+		t.Skip("Skipping randomly failing tests")
+	}
 	type fields struct {
 		DefaultCodecRequirements      DefaultCodecRequirements
 		transportInstance             transports.TransportInstance

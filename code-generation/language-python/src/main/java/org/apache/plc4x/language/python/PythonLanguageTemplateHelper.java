@@ -768,19 +768,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             Term b = ternaryTerm.getB();
             Term c = ternaryTerm.getC();
             String castExpressionForTypeReference = getCastExpressionForTypeReference(fieldType);
-            String inlineIf = castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ") if " +
+            String inlineIf = toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + " if " +
                 toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + " else " +
-                castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")";
-            
-            if (fieldType != null) {
-                if (fieldType instanceof ByteOrderTypeReference) {
-                    return tracer.dive("byteordertypereference") + "(" + inlineIf + ").(binary.ByteOrder)";
-                }
-                if (fieldType.isNonSimpleTypeReference()) {
-                    return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
-                }
-                return tracer + inlineIf;
-            }
+                toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false);
+
             return tracer + inlineIf;
         } else {
             throw new FreemarkerException("Unsupported ternary operation type " + ternaryTerm.getOperation());
@@ -1290,7 +1281,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     private String toOptionalVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("optional fields");
-        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "") + camelCaseToSnakeCase(variableLiteral.getName()) + ")" +
+        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + variableLiteral.getName() + ")" +
             variableLiteral.getChild().map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
     }
 
