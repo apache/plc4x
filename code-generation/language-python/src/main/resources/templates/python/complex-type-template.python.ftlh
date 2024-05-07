@@ -278,9 +278,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
                         <#if optionalField.conditionExpression.present>
         if ${helper.toSerializationExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}:
                             <#if optionalField.type.isEnumTypeReference()>
-            write_buffer.${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")}(self.${helper.camelCaseToSnakeCase(optionalField.name)}, logical_name="${optionalField.name}")
+        write_buffer.${helper.getEnumDataWriterCall(optionalField.type, optionalField.name, "value")}(self.${helper.camelCaseToSnakeCase(optionalField.name)}, logical_name="${optionalField.name}")
                             <#elseif optionalField.type.isDataIoTypeReference()>
-            write_buffer.${helper.getDataWriterCall(typedField.type, optionalField.name)}(self.${helper.camelCaseToSnakeCase(optionalField.name)}, logical_name="${optionalField.name}", <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list>)))
+        write_buffer.${helper.getDataWriterCall(typedField.type, optionalField.name)}(self.${helper.camelCaseToSnakeCase(optionalField.name)}, logical_name="${optionalField.name}", <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list>)))
                             <#else>
             write_buffer.${helper.getDataWriterCall(typedField.type, optionalField.name)}(self.${helper.camelCaseToSnakeCase(optionalField.name)}, logical_name="${optionalField.name}"<#if optionalField.conditionExpression.present></#if>)
                             </#if>
@@ -444,16 +444,16 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
             <#assign simpleTypeReference = optionalField.type.asSimpleTypeReference().orElseThrow()>
             <#if simpleTypeReference.isVstringTypeReference()>
                 <#assign vstringTypeReference = simpleTypeReference.asVstringTypeReference().orElseThrow()>
-            length_in_bits += ${helper.toSerializationExpression(optionalField, helper.intTypeReference, vstringTypeReference.getLengthExpression(), parserArguments)}
+        length_in_bits += ${helper.toSerializationExpression(optionalField, helper.intTypeReference, vstringTypeReference.getLengthExpression(), parserArguments)}
             <#else>
-            length_in_bits += ${simpleTypeReference.sizeInBits}
+        length_in_bits += ${simpleTypeReference.sizeInBits}
             </#if>
         <#elseif helper.isEnumField(field)>
-            length_in_bits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
+        length_in_bits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
         <#elseif optionalField.type.isDataIoTypeReference()>
-            length_in_bits += ${optionalField.type.asComplexTypeReference().orElseThrow().name}.length_in_bits(self.${helper.camelCaseToSnakeCase(optionalField.name)}<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)
+        length_in_bits += ${optionalField.type.asComplexTypeReference().orElseThrow().name}.length_in_bits(self.${helper.camelCaseToSnakeCase(optionalField.name)}<#if optionalField.type.asComplexTypeReference().orElseThrow().params?has_content>, <#list optionalField.type.asComplexTypeReference().orElseThrow().params.orElseThrow() as param>${helper.toParseExpression(optionalField, helper.anyTypeReference, param, parserArguments)}<#sep>, </#sep></#list></#if>)
         <#else>
-            length_in_bits += self.${helper.camelCaseToSnakeCase(optionalField.name)}.length_in_bits()
+        length_in_bits += self.${helper.camelCaseToSnakeCase(optionalField.name)}.length_in_bits()
         </#if>
 
         <#break>
