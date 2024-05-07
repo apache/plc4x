@@ -768,18 +768,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             Term b = ternaryTerm.getB();
             Term c = ternaryTerm.getC();
             String castExpressionForTypeReference = getCastExpressionForTypeReference(fieldType);
-            String inlineIf = "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
-                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
-            if (fieldType != null) {
-                if (fieldType instanceof ByteOrderTypeReference) {
-                    return tracer.dive("byteordertypereference") + "(" + inlineIf + ").(binary.ByteOrder)";
-                }
-                if (fieldType.isNonSimpleTypeReference()) {
-                    return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
-                }
-                return tracer + inlineIf + ".(" + castExpressionForTypeReference + ")";
-            }
+            String inlineIf = toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + " if " +
+                toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + " else " +
+                toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false);
+
             return tracer + inlineIf;
         } else {
             throw new FreemarkerException("Unsupported ternary operation type " + ternaryTerm.getOperation());
