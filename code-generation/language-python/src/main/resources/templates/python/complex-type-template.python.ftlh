@@ -459,9 +459,8 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
 
         # Padding Field (padding)
         <#-- We're replacing the "lastItem" with 'false' here as the item itself can't know if it is the last -->
-        int _timesPadding = int(${helper.toParseExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
-        while _timesPadding-- > 0:
-            length_in_bits += ${simpleTypeReference.sizeInBits}
+        _timesPadding: int = int(${helper.toParseExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
+        length_in_bits = ${simpleTypeReference.sizeInBits} * _timesPadding
 
         <#break>
     <#case "reserved">
