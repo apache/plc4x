@@ -53,11 +53,11 @@ class ModbusPDU(ABC, PlcMessage):
         write_buffer.push_context("ModbusPDU")
 
         # Discriminator Field (errorFlag) (Used as input to a switch field)
-        write_buffer.write_bit(self.error_flag, logical_name="errorFlag", bit_length=1)
+        write_buffer.write_bit(self.error_flag, logical_name="error_flag", bit_length=1)
 
         # Discriminator Field (functionFlag) (Used as input to a switch field)
         write_buffer.write_unsigned_byte(
-            self.function_flag, logical_name="functionFlag", bit_length=7
+            self.function_flag, logical_name="function_flag", bit_length=7
         )
 
         # Switch field (Serialize the sub-type)
@@ -124,14 +124,14 @@ class ModbusPDU(ABC, PlcMessage):
     ):
         read_buffer.push_context("ModbusPDU")
         error_flag: bool = read_buffer.read_bit(
-            logical_name="errorFlag",
+            logical_name="error_flag",
             bit_length=1,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,
         )
 
         function_flag: int = read_buffer.read_unsigned_byte(
-            logical_name="functionFlag",
+            logical_name="function_flag",
             bit_length=7,
             umas_request_function_key=umas_request_function_key,
             byte_length=byte_length,

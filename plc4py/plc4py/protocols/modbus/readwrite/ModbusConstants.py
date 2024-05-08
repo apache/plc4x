@@ -62,7 +62,7 @@ class ModbusConstants:
         read_buffer.push_context("ModbusConstants")
 
         MODBUS_TCP_DEFAULT_PORT: int = read_buffer.read_unsigned_short(
-            logical_name="modbusTcpDefaultPort"
+            logical_name="modbus_tcp_default_port"
         )
 
         read_buffer.pop_context("ModbusConstants")

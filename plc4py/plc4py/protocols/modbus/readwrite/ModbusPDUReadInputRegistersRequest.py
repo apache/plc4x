@@ -73,7 +73,7 @@ class ModbusPDUReadInputRegistersRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadInputRegistersRequest")
 
         starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="startingAddress", bit_length=16, response=response
+            logical_name="starting_address", bit_length=16, response=response
         )
 
         quantity: int = read_buffer.read_unsigned_short(

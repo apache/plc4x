@@ -39,7 +39,7 @@ class ModbusPDUReadFileRecordResponseItem:
 
         # Implicit Field (data_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         data_length: int = int(len(self.data)) + int(1)
-        write_buffer.write_unsigned_byte(data_length, logical_name="dataLength")
+        write_buffer.write_unsigned_byte(data_length, logical_name="data_length")
 
         # Simple Field (referenceType)
         write_buffer.write_unsigned_byte(
@@ -78,10 +78,10 @@ class ModbusPDUReadFileRecordResponseItem:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusPDUReadFileRecordResponseItem")
 
-        data_length: int = read_buffer.read_unsigned_byte(logical_name="dataLength")
+        data_length: int = read_buffer.read_unsigned_byte(logical_name="data_length")
 
         reference_type: int = read_buffer.read_unsigned_byte(
-            logical_name="referenceType", bit_length=8
+            logical_name="reference_type", bit_length=8
         )
 
         data: List[Any] = read_buffer.read_array_field(

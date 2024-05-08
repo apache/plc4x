@@ -89,19 +89,19 @@ class ModbusPDUReadFileRecordRequestItem:
         read_buffer.push_context("ModbusPDUReadFileRecordRequestItem")
 
         reference_type: int = read_buffer.read_unsigned_byte(
-            logical_name="referenceType", bit_length=8
+            logical_name="reference_type", bit_length=8
         )
 
         file_number: int = read_buffer.read_unsigned_short(
-            logical_name="fileNumber", bit_length=16
+            logical_name="file_number", bit_length=16
         )
 
         record_number: int = read_buffer.read_unsigned_short(
-            logical_name="recordNumber", bit_length=16
+            logical_name="record_number", bit_length=16
         )
 
         record_length: int = read_buffer.read_unsigned_short(
-            logical_name="recordLength", bit_length=16
+            logical_name="record_length", bit_length=16
         )
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")

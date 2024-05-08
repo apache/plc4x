@@ -95,7 +95,7 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
         )
 
         number_of_bytes: int = read_buffer.read_unsigned_short(
-            logical_name="numberOfBytes",
+            logical_name="number_of_bytes",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

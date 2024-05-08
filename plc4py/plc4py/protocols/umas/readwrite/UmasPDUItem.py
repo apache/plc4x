@@ -61,7 +61,7 @@ class UmasPDUItem(ABC, PlcMessage):
         # Discriminator Field (umasFunctionKey) (Used as input to a switch field)
         write_buffer.write_unsigned_byte(
             self.umas_function_key,
-            logical_name="umasFunctionKey",
+            logical_name="umas_function_key",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
         )
@@ -131,7 +131,7 @@ class UmasPDUItem(ABC, PlcMessage):
         read_buffer.push_context("UmasPDUItem")
 
         pairing_key: int = read_buffer.read_unsigned_byte(
-            logical_name="pairingKey",
+            logical_name="pairing_key",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -139,7 +139,7 @@ class UmasPDUItem(ABC, PlcMessage):
         )
 
         umas_function_key: int = read_buffer.read_unsigned_byte(
-            logical_name="umasFunctionKey",
+            logical_name="umas_function_key",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -211,7 +211,6 @@ class UmasPDUItem(ABC, PlcMessage):
             builder = UmasPDUWriteVariableRequest.static_parse_builder(
                 read_buffer, umas_request_function_key, byte_length
             )
-
         from plc4py.protocols.umas.readwrite.UmasPDUReadUnlocatedVariableNamesRequest import (
             UmasPDUReadUnlocatedVariableNamesRequest,
         )

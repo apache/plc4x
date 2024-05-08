@@ -110,7 +110,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         )
 
         block_number: int = read_buffer.read_unsigned_short(
-            logical_name="blockNumber",
+            logical_name="block_number",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -126,7 +126,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         )
 
         unknown_object1: int = read_buffer.read_unsigned_short(
-            logical_name="unknownObject1",
+            logical_name="unknown_object1",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -134,7 +134,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         )
 
         number_of_bytes: int = read_buffer.read_unsigned_short(
-            logical_name="numberOfBytes",
+            logical_name="number_of_bytes",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

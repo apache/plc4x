@@ -96,7 +96,7 @@ class UmasPDUReadUmasUDTDefinitionResponse:
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
-            logical_name="noOfRecords", bit_length=16
+            logical_name="no_of_records", bit_length=16
         )
 
         records: List[Any] = read_buffer.read_array_field(

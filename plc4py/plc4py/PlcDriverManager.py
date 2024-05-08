@@ -57,6 +57,7 @@ class PlcDriverManager:
 
         # Register the plc4py.drivers package
         import plc4py.drivers
+
         self.class_loader.register(plc4py.drivers)
 
         # Load the setuptools entry points defined in the "plc4py.drivers" namespace

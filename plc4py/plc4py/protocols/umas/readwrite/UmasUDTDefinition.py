@@ -101,7 +101,7 @@ class UmasUDTDefinition:
         read_buffer.push_context("UmasUDTDefinition")
 
         data_type: int = read_buffer.read_unsigned_short(
-            logical_name="dataType", bit_length=16
+            logical_name="data_type", bit_length=16
         )
 
         offset: int = read_buffer.read_unsigned_short(

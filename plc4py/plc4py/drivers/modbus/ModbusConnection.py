@@ -117,7 +117,6 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         # Return a default failed response if the request type is not supported
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-
     def _connection_established(self) -> bool:
         """Check if the connection to the PLC is established."""
         return self._device is not None

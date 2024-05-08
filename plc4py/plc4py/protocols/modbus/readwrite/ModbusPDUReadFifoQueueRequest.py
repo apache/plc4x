@@ -64,7 +64,7 @@ class ModbusPDUReadFifoQueueRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadFifoQueueRequest")
 
         fifo_pointer_address: int = read_buffer.read_unsigned_short(
-            logical_name="fifoPointerAddress", bit_length=16, response=response
+            logical_name="fifo_pointer_address", bit_length=16, response=response
         )
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueRequest")

@@ -40,7 +40,6 @@ class ModbusProtocol(Plc4xBaseProtocol):
         read_buffer.position = current_position
         return packet_length + current_position < len(read_buffer.bb)
 
-
     def data_received(self, data):
         """
         Unpack the adu and return the pdu.

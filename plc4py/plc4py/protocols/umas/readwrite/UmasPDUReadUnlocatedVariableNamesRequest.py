@@ -109,7 +109,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
         record_type: int = read_buffer.read_unsigned_short(
-            logical_name="recordType",
+            logical_name="record_type",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -125,7 +125,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         )
 
         hardware_id: int = read_buffer.read_unsigned_int(
-            logical_name="hardwareId",
+            logical_name="hardware_id",
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -133,7 +133,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         )
 
         block_no: int = read_buffer.read_unsigned_short(
-            logical_name="blockNo",
+            logical_name="block_no",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

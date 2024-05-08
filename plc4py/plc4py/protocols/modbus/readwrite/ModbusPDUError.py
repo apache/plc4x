@@ -67,7 +67,7 @@ class ModbusPDUError(ModbusPDU):
         exception_code: ModbusErrorCode = read_buffer.read_enum(
             read_function=ModbusErrorCode,
             bit_length=8,
-            logical_name="exceptionCode",
+            logical_name="exception_code",
             response=response,
         )
 

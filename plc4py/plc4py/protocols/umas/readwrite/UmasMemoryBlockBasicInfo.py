@@ -95,7 +95,7 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         )
 
         not_sure: int = read_buffer.read_unsigned_short(
-            logical_name="notSure",
+            logical_name="not_sure",
             bit_length=16,
             block_number=block_number,
             offset=offset,
@@ -106,7 +106,7 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         )
 
         hardware_id: int = read_buffer.read_unsigned_int(
-            logical_name="hardwareId",
+            logical_name="hardware_id",
             bit_length=32,
             block_number=block_number,
             offset=offset,

@@ -77,7 +77,7 @@ class ModbusPDUGetComEventCounterResponse(ModbusPDU):
         )
 
         event_count: int = read_buffer.read_unsigned_short(
-            logical_name="eventCount", bit_length=16, response=response
+            logical_name="event_count", bit_length=16, response=response
         )
 
         read_buffer.pop_context("ModbusPDUGetComEventCounterResponse")

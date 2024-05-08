@@ -97,7 +97,7 @@ class UmasPDUReadVariableRequest(UmasPDUItem):
         )
 
         variable_count: int = read_buffer.read_unsigned_byte(
-            logical_name="variableCount",
+            logical_name="variable_count",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

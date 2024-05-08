@@ -82,15 +82,15 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterRequest")
 
         reference_address: int = read_buffer.read_unsigned_short(
-            logical_name="referenceAddress", bit_length=16, response=response
+            logical_name="reference_address", bit_length=16, response=response
         )
 
         and_mask: int = read_buffer.read_unsigned_short(
-            logical_name="andMask", bit_length=16, response=response
+            logical_name="and_mask", bit_length=16, response=response
         )
 
         or_mask: int = read_buffer.read_unsigned_short(
-            logical_name="orMask", bit_length=16, response=response
+            logical_name="or_mask", bit_length=16, response=response
         )
 
         read_buffer.pop_context("ModbusPDUMaskWriteHoldingRegisterRequest")

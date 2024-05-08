@@ -78,7 +78,7 @@ class VariableWriteRequestReference:
             )
 
         # Array Field (recordData)
-        write_buffer.write_byte_array(self.record_data, logical_name="recordData")
+        write_buffer.write_byte_array(self.record_data, logical_name="record_data")
 
         write_buffer.pop_context("VariableWriteRequestReference")
 
@@ -126,11 +126,11 @@ class VariableWriteRequestReference:
         read_buffer.push_context("VariableWriteRequestReference")
 
         is_array: int = read_buffer.read_unsigned_byte(
-            logical_name="isArray", bit_length=4
+            logical_name="is_array", bit_length=4
         )
 
         data_size_index: int = read_buffer.read_unsigned_byte(
-            logical_name="dataSizeIndex", bit_length=4
+            logical_name="data_size_index", bit_length=4
         )
 
         block: int = read_buffer.read_unsigned_short(
@@ -140,7 +140,7 @@ class VariableWriteRequestReference:
         UNKNOWN1: int = read_buffer.read_unsigned_byte(logical_name="unknown1")
 
         base_offset: int = read_buffer.read_unsigned_short(
-            logical_name="baseOffset", bit_length=16
+            logical_name="base_offset", bit_length=16
         )
 
         offset: int = read_buffer.read_unsigned_byte(
@@ -149,15 +149,15 @@ class VariableWriteRequestReference:
 
         array_length: int = None
         if is_array:
-            array_length = read_buffer.read_unsigned_short(logical_name="arrayLength")
+            array_length = read_buffer.read_unsigned_short(logical_name="array_length")
 
         record_data: List[Any] = read_buffer.read_array_field(
             logical_name="recordData",
             read_function=read_buffer.read_byte,
             count=(
-                int(data_size_index * (array_length))
+                data_size_index * array_length
                 if bool((is_array) == ((1)))
-                else int(data_size_index)
+                else data_size_index
             ),
         )
 

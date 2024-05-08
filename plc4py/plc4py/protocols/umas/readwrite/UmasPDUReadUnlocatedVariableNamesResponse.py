@@ -105,7 +105,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse:
         range: int = read_buffer.read_unsigned_byte(logical_name="range", bit_length=8)
 
         next_address: int = read_buffer.read_unsigned_short(
-            logical_name="nextAddress", bit_length=16
+            logical_name="next_address", bit_length=16
         )
 
         unknown1: int = read_buffer.read_unsigned_short(
@@ -113,7 +113,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse:
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
-            logical_name="noOfRecords", bit_length=16
+            logical_name="no_of_records", bit_length=16
         )
 
         records: List[Any] = read_buffer.read_array_field(

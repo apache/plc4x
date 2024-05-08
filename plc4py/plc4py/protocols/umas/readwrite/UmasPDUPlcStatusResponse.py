@@ -98,7 +98,7 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
         read_buffer.push_context("UmasPDUPlcStatusResponse")
 
         not_used1: int = read_buffer.read_unsigned_byte(
-            logical_name="notUsed1",
+            logical_name="not_used1",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -106,7 +106,7 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
         )
 
         not_used2: int = read_buffer.read_unsigned_short(
-            logical_name="notUsed2",
+            logical_name="not_used2",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -114,7 +114,7 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
         )
 
         number_of_blocks: int = read_buffer.read_unsigned_byte(
-            logical_name="numberOfBlocks",
+            logical_name="number_of_blocks",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

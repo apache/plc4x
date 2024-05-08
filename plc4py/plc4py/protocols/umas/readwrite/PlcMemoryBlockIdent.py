@@ -87,7 +87,7 @@ class PlcMemoryBlockIdent:
         read_buffer.push_context("PlcMemoryBlockIdent")
 
         block_type: int = read_buffer.read_unsigned_byte(
-            logical_name="blockType", bit_length=8
+            logical_name="block_type", bit_length=8
         )
 
         folio: int = read_buffer.read_unsigned_byte(logical_name="folio", bit_length=8)
@@ -97,7 +97,7 @@ class PlcMemoryBlockIdent:
         )
 
         memory_length: int = read_buffer.read_unsigned_int(
-            logical_name="memoryLength", bit_length=32
+            logical_name="memory_length", bit_length=32
         )
 
         read_buffer.pop_context("PlcMemoryBlockIdent")

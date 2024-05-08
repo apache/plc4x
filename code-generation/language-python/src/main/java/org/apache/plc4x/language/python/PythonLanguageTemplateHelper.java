@@ -803,8 +803,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 // Except for doing a nil or not-nil check :-(
                 // So in case of such a check, we need to suppress the pointer-access.
                 boolean suppressPointerAccessOverride = (operation.equals("==") || operation.equals("!=")) && ((a instanceof NullLiteral) || (b instanceof NullLiteral));
-                String aExpression = toExpression(field, null, a, parserArguments, serializerArguments, serialize, suppressPointerAccessOverride);
-                String bExpression = toExpression(field, null, b, parserArguments, serializerArguments, serialize, suppressPointerAccessOverride);
+                String aExpression = toExpression(field, null, a, parserArguments, serializerArguments, serialize, true);
+                String bExpression = toExpression(field, null, b, parserArguments, serializerArguments, serialize, true);
                 return tracer + "bool((" + aExpression + ") " + operation + " (" + bExpression + "))";
             case ">>":
             case "<<":
@@ -813,21 +813,21 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 tracer = tracer.dive("bitwise");
                 // We don't want casts here
                 return tracer +
-                    toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) +
+                    toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, true) +
                     operation + " " +
-                    toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false);
+                    toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, true);
             default:
                 tracer = tracer.dive("default");
                 if (fieldType instanceof StringTypeReference) {
                     tracer = tracer.dive("string type reference");
-                    return tracer + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) +
+                    return tracer + toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, true) +
                         operation + " " +
-                        toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false);
+                        toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, true);
                 }
                 return tracer +
-                    toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, false) +
+                    toExpression(field, fieldType, a, parserArguments, serializerArguments, serialize, true) +
                     operation + " " +
-                    toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false);
+                    toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, true);
         }
     }
 
@@ -1281,7 +1281,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
 
     private String toOptionalVariableExpression(Field field, TypeReference typeReference, VariableLiteral variableLiteral, List<Argument> parserArguments, List<Argument> serializerArguments, boolean suppressPointerAccess, Tracer tracer) {
         tracer = tracer.dive("optional fields");
-        return tracer + "(" + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + variableLiteral.getName() + ")" +
+        return tracer + (suppressPointerAccess || (typeReference != null && typeReference.isComplexTypeReference()) ? "" : "*") + camelCaseToSnakeCase(variableLiteral.getName()) +
             variableLiteral.getChild().map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true))).orElse("");
     }
 
