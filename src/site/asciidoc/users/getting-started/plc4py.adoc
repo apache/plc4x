@@ -35,16 +35,29 @@ You now should be able to use PLC4Py in your application. A minimal example is s
 import asyncio
 from plc4py.PlcDriverManager import PlcDriverManager
 
-connection_string = "modbus://192.168.1.174:502"
+connection_string = "modbus://127.0.0.1:5020"
 driver_manager = PlcDriverManager()
 
 async def communicate_with_plc():
+    """
+    Asynchronously communicates with a PLC using a PlcDriverManager.
+
+    This function establishes a connection to the PLC defined by the connection_string.
+    It builds a read request for a specific item ("Random Tag" in this case) using the connection's read request builder.
+    The request is then executed asynchronously, and the response code is printed.
+    """
+    print(f"Connecting to plc: {connection_string}")
     async with driver_manager.connection(connection_string) as connection:
+        print(f"Connected to {connection_string}")
         with connection.read_request_builder() as builder:
+            print(f"Building read request")
             builder.add_item("Random Tag", "4x00001[10]")
             request = builder.build()
-
-        response = await connection.execute(request)
+            print(f"Request built")
+            print(f"Executing request")
+            response = await connection.execute(request)
+            print(f"Request executed")
+            print(f"Response code: {response.response_code}")
 
 asyncio.run(communicate_with_plc())
 ----
