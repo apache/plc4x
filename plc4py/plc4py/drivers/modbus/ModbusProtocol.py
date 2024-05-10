@@ -34,10 +34,22 @@ class ModbusProtocol(Plc4xBaseProtocol):
     messages: Dict[int, Future] = field(default_factory=lambda: {})
 
     def packet_length_estimator(self, read_buffer: ReadBufferByteBased):
+        """
+        Estimate the length of the packet based on the provided `read_buffer`.
+
+        Args:
+            read_buffer (ReadBufferByteBased): The buffer containing the data to be read.
+
+        Returns:
+            bool: True if the estimated packet length plus the current position is less than the length of the buffer, False otherwise.
+        """
         current_position = read_buffer.position
+        logging.debug(f"Current position in packet_length_estimator: {current_position}")
         read_buffer.position = 8 * 4
         packet_length: int = read_buffer.read_unsigned_short()
+        logging.debug(f"Packet length in packet_length_estimator: {packet_length}")
         read_buffer.position = current_position
+        logging.debug(f"Buffer length in packet_length_estimator: {len(read_buffer.bb)}")
         return packet_length + current_position < len(read_buffer.bb)
 
     def data_received(self, data):
@@ -62,22 +74,23 @@ class ModbusProtocol(Plc4xBaseProtocol):
         # Continuously process incoming data until the complete ADU is
         # extracted.
         while self.packet_length_estimator(read_buffer):
-
+            logging.debug(f"Processing {len(data)} bytes of data")
             # Parse the ADU from the ReadBufferByteBased.
             adu: ModbusTcpADU = ModbusTcpADU.static_parse_builder(
                 read_buffer, DriverType.MODBUS_TCP, True
             ).build(True)
-
+            #logging.debug(f"Received ADU: {adu}")
             # If the ADU transaction identifier is in the messages dictionary,
             # set the PDU (data) as a result of the associated Future object.
             if adu.transaction_identifier in self.messages:
+                logging.debug(f"Found transaction ID {adu.transaction_identifier}")
                 self.messages[adu.transaction_identifier].set_result(adu.pdu)
                 self.messages.pop(adu.transaction_identifier)
-
             # If the ADU transaction identifier is not found, log an error
             # message and close the connection.
             else:
                 logging.error("Unsolicited message returned")
+                logging.debug(f"Transaction ID {adu.transaction_identifier} not found")
                 self.close()
 
     def write_wait_for_response(self, data, transport, transaction_id, message_future):

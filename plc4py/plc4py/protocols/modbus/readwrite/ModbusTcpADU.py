@@ -101,6 +101,7 @@ class ModbusTcpADU(ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
         read_buffer.push_context("ModbusTcpADU")
+        print(f"Entering ModbusTcpADU static_parse_builder()")
 
         transaction_identifier: int = read_buffer.read_unsigned_short(
             logical_name="transaction_identifier",
@@ -109,6 +110,7 @@ class ModbusTcpADU(ModbusADU):
             driver_type=driver_type,
             response=response,
         )
+        print(f"transaction_identifier: 0x{transaction_identifier:04x}")
 
         PROTOCOL_IDENTIFIER: int = read_buffer.read_unsigned_short(
             logical_name="protocol_identifier",
@@ -116,6 +118,7 @@ class ModbusTcpADU(ModbusADU):
             driver_type=driver_type,
             response=response,
         )
+        print(f"PROTOCOL_IDENTIFIER: 0x{PROTOCOL_IDENTIFIER:04x}")
 
         length: int = read_buffer.read_unsigned_short(
             logical_name="length",
@@ -123,6 +126,7 @@ class ModbusTcpADU(ModbusADU):
             driver_type=driver_type,
             response=response,
         )
+        print(f"length: {length}")
 
         unit_identifier: int = read_buffer.read_unsigned_byte(
             logical_name="unit_identifier",
@@ -131,6 +135,7 @@ class ModbusTcpADU(ModbusADU):
             driver_type=driver_type,
             response=response,
         )
+        print(f"unit_identifier: 0x{unit_identifier:02x}")
 
         pdu: ModbusPDU = read_buffer.read_complex(
             read_function=ModbusPDU.static_parse,
@@ -139,8 +144,9 @@ class ModbusTcpADU(ModbusADU):
             driver_type=driver_type,
             response=response,
         )
-
+        
         read_buffer.pop_context("ModbusTcpADU")
+        print(f"Exiting ModbusTcpADU static_parse_builder()")
         # Create the instance
         return ModbusTcpADUBuilder(transaction_identifier, unit_identifier, pdu)
 
