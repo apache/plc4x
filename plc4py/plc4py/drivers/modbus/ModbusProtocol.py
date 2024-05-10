@@ -44,12 +44,16 @@ class ModbusProtocol(Plc4xBaseProtocol):
             bool: True if the estimated packet length plus the current position is less than the length of the buffer, False otherwise.
         """
         current_position = read_buffer.position
-        logging.debug(f"Current position in packet_length_estimator: {current_position}")
+        logging.debug(
+            f"Current position in packet_length_estimator: {current_position}"
+        )
         read_buffer.position = 8 * 4
         packet_length: int = read_buffer.read_unsigned_short()
         logging.debug(f"Packet length in packet_length_estimator: {packet_length}")
         read_buffer.position = current_position
-        logging.debug(f"Buffer length in packet_length_estimator: {len(read_buffer.bb)}")
+        logging.debug(
+            f"Buffer length in packet_length_estimator: {len(read_buffer.bb)}"
+        )
         return packet_length + current_position < len(read_buffer.bb)
 
     def data_received(self, data):
@@ -79,7 +83,7 @@ class ModbusProtocol(Plc4xBaseProtocol):
             adu: ModbusTcpADU = ModbusTcpADU.static_parse_builder(
                 read_buffer, DriverType.MODBUS_TCP, True
             ).build(True)
-            #logging.debug(f"Received ADU: {adu}")
+            # logging.debug(f"Received ADU: {adu}")
             # If the ADU transaction identifier is in the messages dictionary,
             # set the PDU (data) as a result of the associated Future object.
             if adu.transaction_identifier in self.messages:

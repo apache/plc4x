@@ -143,6 +143,7 @@ class ModbusDevice:
             read_buffer,
             request.tags[request.tag_names[0]].data_type,
             request.tags[request.tag_names[0]].quantity,
+            True,
         )
 
         response_item = ResponseItem(PlcResponseCode.OK, returned_value)

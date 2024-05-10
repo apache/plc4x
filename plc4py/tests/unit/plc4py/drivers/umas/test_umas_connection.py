@@ -34,7 +34,7 @@ async def manual_test_plc_driver_umas_connect():
 
 
 @pytest.mark.asyncio
-async def manual_test_plc_driver_umas_read():
+async def test_plc_driver_umas_read():
     log = logging.getLogger(__name__)
 
     driver_manager = PlcDriverManager()
