@@ -121,7 +121,7 @@ class ModbusPDUWriteSingleCoilResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteSingleCoilResponse:
-        modbus_pdu_write_single_coil_response: ModbusPDUWriteSingleCoilResponse = (
+        modbus_pduwrite_single_coil_response: ModbusPDUWriteSingleCoilResponse = (
             ModbusPDUWriteSingleCoilResponse(self.address, self.value)
         )
-        return modbus_pdu_write_single_coil_response
+        return modbus_pduwrite_single_coil_response

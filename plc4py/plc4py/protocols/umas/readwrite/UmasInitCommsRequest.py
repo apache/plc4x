@@ -39,7 +39,7 @@ class UmasInitCommsRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x01
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasInitCommsRequest")
 
         # Simple Field (unknownObject)

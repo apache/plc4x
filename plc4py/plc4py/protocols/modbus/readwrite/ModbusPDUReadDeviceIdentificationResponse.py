@@ -238,7 +238,7 @@ class ModbusPDUReadDeviceIdentificationResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDeviceIdentificationResponse:
-        modbus_pdu_read_device_identification_response: (
+        modbus_pduread_device_identification_response: (
             ModbusPDUReadDeviceIdentificationResponse
         ) = ModbusPDUReadDeviceIdentificationResponse(
             self.level,
@@ -248,4 +248,4 @@ class ModbusPDUReadDeviceIdentificationResponseBuilder:
             self.next_object_id,
             self.objects,
         )
-        return modbus_pdu_read_device_identification_response
+        return modbus_pduread_device_identification_response

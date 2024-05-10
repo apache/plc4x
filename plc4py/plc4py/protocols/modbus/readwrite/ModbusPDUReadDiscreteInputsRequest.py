@@ -121,7 +121,7 @@ class ModbusPDUReadDiscreteInputsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDiscreteInputsRequest:
-        modbus_pdu_read_discrete_inputs_request: ModbusPDUReadDiscreteInputsRequest = (
+        modbus_pduread_discrete_inputs_request: ModbusPDUReadDiscreteInputsRequest = (
             ModbusPDUReadDiscreteInputsRequest(self.starting_address, self.quantity)
         )
-        return modbus_pdu_read_discrete_inputs_request
+        return modbus_pduread_discrete_inputs_request

@@ -117,7 +117,7 @@ class ModbusPDUReportServerIdResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReportServerIdResponse:
-        modbus_pdu_report_server_id_response: ModbusPDUReportServerIdResponse = (
+        modbus_pdureport_server_id_response: ModbusPDUReportServerIdResponse = (
             ModbusPDUReportServerIdResponse(self.value)
         )
-        return modbus_pdu_report_server_id_response
+        return modbus_pdureport_server_id_response

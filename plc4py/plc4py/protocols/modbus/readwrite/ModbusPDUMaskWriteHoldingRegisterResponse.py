@@ -140,9 +140,9 @@ class ModbusPDUMaskWriteHoldingRegisterResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUMaskWriteHoldingRegisterResponse:
-        modbus_pdu_mask_write_holding_register_response: (
+        modbus_pdumask_write_holding_register_response: (
             ModbusPDUMaskWriteHoldingRegisterResponse
         ) = ModbusPDUMaskWriteHoldingRegisterResponse(
             self.reference_address, self.and_mask, self.or_mask
         )
-        return modbus_pdu_mask_write_holding_register_response
+        return modbus_pdumask_write_holding_register_response

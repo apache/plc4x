@@ -153,9 +153,9 @@ class ModbusPDUWriteMultipleCoilsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteMultipleCoilsRequest:
-        modbus_pdu_write_multiple_coils_request: ModbusPDUWriteMultipleCoilsRequest = (
+        modbus_pduwrite_multiple_coils_request: ModbusPDUWriteMultipleCoilsRequest = (
             ModbusPDUWriteMultipleCoilsRequest(
                 self.starting_address, self.quantity, self.value
             )
         )
-        return modbus_pdu_write_multiple_coils_request
+        return modbus_pduwrite_multiple_coils_request

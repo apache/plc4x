@@ -44,7 +44,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x26
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
         # Simple Field (recordType)
@@ -206,7 +206,7 @@ class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
     def build(
         self, byte_length: int, pairing_key
     ) -> UmasPDUReadUnlocatedVariableNamesRequest:
-        umas_pdu_read_unlocated_variable_names_request: (
+        umas_pduread_unlocated_variable_names_request: (
             UmasPDUReadUnlocatedVariableNamesRequest
         ) = UmasPDUReadUnlocatedVariableNamesRequest(
             byte_length,
@@ -217,4 +217,4 @@ class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
             self.block_no,
             self.offset,
         )
-        return umas_pdu_read_unlocated_variable_names_request
+        return umas_pduread_unlocated_variable_names_request

@@ -124,12 +124,12 @@ class UmasPDUReadUnlocatedVariableNamesResponse:
 
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesResponse")
         # Create the instance
-        _umas_pdu_read_unlocated_variable_names_response: (
+        _umas_pduread_unlocated_variable_names_response: (
             UmasPDUReadUnlocatedVariableNamesResponse
         ) = UmasPDUReadUnlocatedVariableNamesResponse(
             range, next_address, unknown1, no_of_records, records
         )
-        return _umas_pdu_read_unlocated_variable_names_response
+        return _umas_pduread_unlocated_variable_names_response
 
     def equals(self, o: object) -> bool:
         if self == o:

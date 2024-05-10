@@ -106,7 +106,7 @@ class ModbusPDUReadFifoQueueRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadFifoQueueRequest:
-        modbus_pdu_read_fifo_queue_request: ModbusPDUReadFifoQueueRequest = (
+        modbus_pduread_fifo_queue_request: ModbusPDUReadFifoQueueRequest = (
             ModbusPDUReadFifoQueueRequest(self.fifo_pointer_address)
         )
-        return modbus_pdu_read_fifo_queue_request
+        return modbus_pduread_fifo_queue_request

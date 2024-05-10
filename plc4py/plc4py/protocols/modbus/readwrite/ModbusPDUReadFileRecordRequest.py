@@ -122,7 +122,7 @@ class ModbusPDUReadFileRecordRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadFileRecordRequest:
-        modbus_pdu_read_file_record_request: ModbusPDUReadFileRecordRequest = (
+        modbus_pduread_file_record_request: ModbusPDUReadFileRecordRequest = (
             ModbusPDUReadFileRecordRequest(self.items)
         )
-        return modbus_pdu_read_file_record_request
+        return modbus_pduread_file_record_request

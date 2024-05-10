@@ -123,10 +123,10 @@ class UmasUDTDefinition:
 
         read_buffer.pop_context("UmasUDTDefinition")
         # Create the instance
-        _umas_udt_definition: UmasUDTDefinition = UmasUDTDefinition(
+        _umas_udtdefinition: UmasUDTDefinition = UmasUDTDefinition(
             data_type, offset, unknown5, unknown4, value
         )
-        return _umas_udt_definition
+        return _umas_udtdefinition
 
     def equals(self, o: object) -> bool:
         if self == o:

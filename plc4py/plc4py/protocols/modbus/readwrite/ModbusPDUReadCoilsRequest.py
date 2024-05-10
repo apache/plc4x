@@ -121,7 +121,7 @@ class ModbusPDUReadCoilsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadCoilsRequest:
-        modbus_pdu_read_coils_request: ModbusPDUReadCoilsRequest = (
+        modbus_pduread_coils_request: ModbusPDUReadCoilsRequest = (
             ModbusPDUReadCoilsRequest(self.starting_address, self.quantity)
         )
-        return modbus_pdu_read_coils_request
+        return modbus_pduread_coils_request

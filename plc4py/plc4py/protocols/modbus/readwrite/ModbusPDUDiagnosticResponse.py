@@ -119,7 +119,7 @@ class ModbusPDUDiagnosticResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUDiagnosticResponse:
-        modbus_pdu_diagnostic_response: ModbusPDUDiagnosticResponse = (
+        modbus_pdudiagnostic_response: ModbusPDUDiagnosticResponse = (
             ModbusPDUDiagnosticResponse(self.sub_function, self.data)
         )
-        return modbus_pdu_diagnostic_response
+        return modbus_pdudiagnostic_response

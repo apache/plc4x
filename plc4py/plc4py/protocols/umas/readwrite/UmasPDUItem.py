@@ -47,7 +47,7 @@ class UmasPDUItem(ABC, PlcMessage):
         pass
 
     @abstractmethod
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer) -> None:
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
@@ -67,7 +67,7 @@ class UmasPDUItem(ABC, PlcMessage):
         )
 
         # Switch field (Serialize the sub-type)
-        self.serialize_umas_pdu_item_child(write_buffer)
+        self.serialize_umas_pduitem_child(write_buffer)
 
         write_buffer.pop_context("UmasPDUItem")
 
@@ -297,8 +297,8 @@ class UmasPDUItem(ABC, PlcMessage):
 
         read_buffer.pop_context("UmasPDUItem")
         # Create the instance
-        _umas_pdu_item: UmasPDUItem = builder.build(pairing_key, byte_length)
-        return _umas_pdu_item
+        _umas_pduitem: UmasPDUItem = builder.build(pairing_key, byte_length)
+        return _umas_pduitem
 
     def equals(self, o: object) -> bool:
         if self == o:

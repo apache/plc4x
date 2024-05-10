@@ -123,7 +123,7 @@ class ModbusPDUGetComEventCounterResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventCounterResponse:
-        modbus_pdu_get_com_event_counter_response: (
+        modbus_pduget_com_event_counter_response: (
             ModbusPDUGetComEventCounterResponse
         ) = ModbusPDUGetComEventCounterResponse(self.status, self.event_count)
-        return modbus_pdu_get_com_event_counter_response
+        return modbus_pduget_com_event_counter_response

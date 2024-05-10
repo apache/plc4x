@@ -122,7 +122,7 @@ class ModbusPDUReadFileRecordResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadFileRecordResponse:
-        modbus_pdu_read_file_record_response: ModbusPDUReadFileRecordResponse = (
+        modbus_pduread_file_record_response: ModbusPDUReadFileRecordResponse = (
             ModbusPDUReadFileRecordResponse(self.items)
         )
-        return modbus_pdu_read_file_record_response
+        return modbus_pduread_file_record_response

@@ -117,7 +117,7 @@ class ModbusPDUErrorBuilder:
         umas_request_function_key: int,
         byte_length: int,
     ) -> ModbusPDUError:
-        modbus_pdu_error: ModbusPDUError = ModbusPDUError(
+        modbus_pduerror: ModbusPDUError = ModbusPDUError(
             umas_request_function_key, byte_length, self.exception_code
         )
-        return modbus_pdu_error
+        return modbus_pduerror

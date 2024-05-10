@@ -132,7 +132,7 @@ class ModbusPDUReadFifoQueueResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadFifoQueueResponse:
-        modbus_pdu_read_fifo_queue_response: ModbusPDUReadFifoQueueResponse = (
+        modbus_pduread_fifo_queue_response: ModbusPDUReadFifoQueueResponse = (
             ModbusPDUReadFifoQueueResponse(self.fifo_value)
         )
-        return modbus_pdu_read_fifo_queue_response
+        return modbus_pduread_fifo_queue_response

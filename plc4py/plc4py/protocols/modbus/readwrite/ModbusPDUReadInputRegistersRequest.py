@@ -121,7 +121,7 @@ class ModbusPDUReadInputRegistersRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadInputRegistersRequest:
-        modbus_pdu_read_input_registers_request: ModbusPDUReadInputRegistersRequest = (
+        modbus_pduread_input_registers_request: ModbusPDUReadInputRegistersRequest = (
             ModbusPDUReadInputRegistersRequest(self.starting_address, self.quantity)
         )
-        return modbus_pdu_read_input_registers_request
+        return modbus_pduread_input_registers_request

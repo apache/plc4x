@@ -120,12 +120,12 @@ class UmasPDUReadDatatypeNamesResponse:
 
         read_buffer.pop_context("UmasPDUReadDatatypeNamesResponse")
         # Create the instance
-        _umas_pdu_read_datatype_names_response: UmasPDUReadDatatypeNamesResponse = (
+        _umas_pduread_datatype_names_response: UmasPDUReadDatatypeNamesResponse = (
             UmasPDUReadDatatypeNamesResponse(
                 range, next_address, unknown1, no_of_records, records
             )
         )
-        return _umas_pdu_read_datatype_names_response
+        return _umas_pduread_datatype_names_response
 
     def equals(self, o: object) -> bool:
         if self == o:

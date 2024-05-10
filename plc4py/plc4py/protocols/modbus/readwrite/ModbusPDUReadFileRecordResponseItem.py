@@ -92,10 +92,10 @@ class ModbusPDUReadFileRecordResponseItem:
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
         # Create the instance
-        _modbus_pdu_read_file_record_response_item: (
+        _modbus_pduread_file_record_response_item: (
             ModbusPDUReadFileRecordResponseItem
         ) = ModbusPDUReadFileRecordResponseItem(reference_type, data)
-        return _modbus_pdu_read_file_record_response_item
+        return _modbus_pduread_file_record_response_item
 
     def equals(self, o: object) -> bool:
         if self == o:

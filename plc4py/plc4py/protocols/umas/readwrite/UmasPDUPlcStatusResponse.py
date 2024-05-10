@@ -44,7 +44,7 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x04
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUPlcStatusResponse")
 
         # Simple Field (notUsed1)
@@ -175,7 +175,7 @@ class UmasPDUPlcStatusResponseBuilder:
     blocks: List[int]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcStatusResponse:
-        umas_pdu_plc_status_response: UmasPDUPlcStatusResponse = (
+        umas_pduplc_status_response: UmasPDUPlcStatusResponse = (
             UmasPDUPlcStatusResponse(
                 byte_length,
                 pairing_key,
@@ -185,4 +185,4 @@ class UmasPDUPlcStatusResponseBuilder:
                 self.blocks,
             )
         )
-        return umas_pdu_plc_status_response
+        return umas_pduplc_status_response

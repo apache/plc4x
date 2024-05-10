@@ -41,7 +41,7 @@ class UmasPDUWriteVariableResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x23
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUWriteVariableResponse")
 
         # Array Field (block)
@@ -112,7 +112,7 @@ class UmasPDUWriteVariableResponseBuilder:
     block: List[int]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUWriteVariableResponse:
-        umas_pdu_write_variable_response: UmasPDUWriteVariableResponse = (
+        umas_pduwrite_variable_response: UmasPDUWriteVariableResponse = (
             UmasPDUWriteVariableResponse(byte_length, pairing_key, self.block)
         )
-        return umas_pdu_write_variable_response
+        return umas_pduwrite_variable_response

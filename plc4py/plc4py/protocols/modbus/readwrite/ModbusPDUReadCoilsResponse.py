@@ -117,7 +117,7 @@ class ModbusPDUReadCoilsResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadCoilsResponse:
-        modbus_pdu_read_coils_response: ModbusPDUReadCoilsResponse = (
+        modbus_pduread_coils_response: ModbusPDUReadCoilsResponse = (
             ModbusPDUReadCoilsResponse(self.value)
         )
-        return modbus_pdu_read_coils_response
+        return modbus_pduread_coils_response

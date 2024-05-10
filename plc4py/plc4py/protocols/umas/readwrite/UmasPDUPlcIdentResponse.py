@@ -54,7 +54,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x02
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUPlcIdentResponse")
 
         # Simple Field (range)
@@ -358,7 +358,7 @@ class UmasPDUPlcIdentResponseBuilder:
     memory_idents: List[PlcMemoryBlockIdent]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcIdentResponse:
-        umas_pdu_plc_ident_response: UmasPDUPlcIdentResponse = UmasPDUPlcIdentResponse(
+        umas_pduplc_ident_response: UmasPDUPlcIdentResponse = UmasPDUPlcIdentResponse(
             byte_length,
             pairing_key,
             self.range,
@@ -375,4 +375,4 @@ class UmasPDUPlcIdentResponseBuilder:
             self.number_of_memory_banks,
             self.memory_idents,
         )
-        return umas_pdu_plc_ident_response
+        return umas_pduplc_ident_response

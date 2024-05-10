@@ -88,7 +88,7 @@ class ModbusPDUGetComEventLogRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventLogRequest:
-        modbus_pdu_get_com_event_log_request: ModbusPDUGetComEventLogRequest = (
+        modbus_pduget_com_event_log_request: ModbusPDUGetComEventLogRequest = (
             ModbusPDUGetComEventLogRequest()
         )
-        return modbus_pdu_get_com_event_log_request
+        return modbus_pduget_com_event_log_request

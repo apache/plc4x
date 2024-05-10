@@ -122,7 +122,7 @@ class ModbusPDUWriteFileRecordRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteFileRecordRequest:
-        modbus_pdu_write_file_record_request: ModbusPDUWriteFileRecordRequest = (
+        modbus_pduwrite_file_record_request: ModbusPDUWriteFileRecordRequest = (
             ModbusPDUWriteFileRecordRequest(self.items)
         )
-        return modbus_pdu_write_file_record_request
+        return modbus_pduwrite_file_record_request

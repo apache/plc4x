@@ -119,7 +119,7 @@ class ModbusPDUReadDiscreteInputsResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDiscreteInputsResponse:
-        modbus_pdu_read_discrete_inputs_response: (
-            ModbusPDUReadDiscreteInputsResponse
-        ) = ModbusPDUReadDiscreteInputsResponse(self.value)
-        return modbus_pdu_read_discrete_inputs_response
+        modbus_pduread_discrete_inputs_response: ModbusPDUReadDiscreteInputsResponse = (
+            ModbusPDUReadDiscreteInputsResponse(self.value)
+        )
+        return modbus_pduread_discrete_inputs_response

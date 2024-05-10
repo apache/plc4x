@@ -168,9 +168,9 @@ class ModbusPDUGetComEventLogResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventLogResponse:
-        modbus_pdu_get_com_event_log_response: ModbusPDUGetComEventLogResponse = (
+        modbus_pduget_com_event_log_response: ModbusPDUGetComEventLogResponse = (
             ModbusPDUGetComEventLogResponse(
                 self.status, self.event_count, self.message_count, self.events
             )
         )
-        return modbus_pdu_get_com_event_log_response
+        return modbus_pduget_com_event_log_response
