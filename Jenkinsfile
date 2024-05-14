@@ -164,7 +164,7 @@ pipeline {
                 unstash name: 'plc4x-build-snapshots'
 
                 // Deploy the artifacts using the wagon-maven-plugin.
-                sh './mvnw -f jenkins.pom -X -P deploy-snapshots wagon:upload'
+                sh 'until ./mvnw -f jenkins.pom -X -P deploy-snapshots wagon:upload || (( count++ >= 5 )); do echo "Retrying to deploy"; done'
 
                 // Clean up the snapshots directory (freeing up more space after deploying).
                 dir("local-snapshots-dir/") {
