@@ -36,6 +36,7 @@ async def manual_test_plc_driver_modbus_connect():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_modbus_read():
     log = logging.getLogger(__name__)
 

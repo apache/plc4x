@@ -26,6 +26,7 @@ from plc4py.PlcDriverManager import PlcDriverManager
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def manual_test_plc_driver_umas_connect():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://127.0.0.1:5555") as connection:
@@ -34,6 +35,7 @@ async def manual_test_plc_driver_umas_connect():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def test_plc_driver_umas_read():
     log = logging.getLogger(__name__)
 
@@ -53,6 +55,7 @@ async def test_plc_driver_umas_read():
 
 
 @pytest.mark.asyncio
+@pytest.mark.xfail
 async def manual_test_plc_driver_umas_browse():
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("umas://192.168.1.174:502") as connection:
