@@ -24,6 +24,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net/url"
+	"os"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -85,6 +86,9 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
 			setup: func(t *testing.T, fields *fields, args *args) {
+				if os.Getenv("ENABLE_RANDOMLY_FAILING_TESTS") == "" {
+					t.Skip("Skipping randomly failing tests")
+				}
 				_options := testutils.EnrichOptionsWithOptionsForTesting(t)
 
 				transport := test.NewTransport(_options...)

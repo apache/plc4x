@@ -36,21 +36,20 @@ async def manual_test_plc_driver_modbus_connect():
 
 
 @pytest.mark.asyncio
-async def manual_test_plc_driver_modbus_read():
+@pytest.mark.xfail
+async def test_plc_driver_modbus_read():
+    log = logging.getLogger(__name__)
 
-    connection_string = "modbus://127.0.0.1:5020"
     driver_manager = PlcDriverManager()
-    response = None
-
-    async def communicate_with_plc():
-        async with driver_manager.connection(connection_string) as connection:
-            with connection.read_request_builder() as builder:
-                builder.add_item("Random Tag", "4x00001[10]")
-                request = builder.build()
+    async with driver_manager.connection("modbus://127.0.0.1:5020") as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001[10]")
+            request = builder.build()
 
         future = connection.execute(request)
         await future
         response = future.result()
+        value = response.tags["Random Tag"].value
+        log.error(f"Read tag 4x00001[10] - {value}")
 
-    communicate_with_plc()
     pass

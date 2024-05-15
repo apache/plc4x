@@ -62,7 +62,7 @@ class UmasConstants:
         read_buffer.push_context("UmasConstants")
 
         UMAS_TCP_DEFAULT_PORT: int = read_buffer.read_unsigned_short(
-            logical_name="UmasTcpDefaultPort"
+            logical_name="umas_tcp_default_port"
         )
 
         read_buffer.pop_context("UmasConstants")

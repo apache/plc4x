@@ -73,7 +73,7 @@ class ModbusPDUWriteMultipleCoilsResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUWriteMultipleCoilsResponse")
 
         starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="startingAddress", bit_length=16, response=response
+            logical_name="starting_address", bit_length=16, response=response
         )
 
         quantity: int = read_buffer.read_unsigned_short(
@@ -123,7 +123,7 @@ class ModbusPDUWriteMultipleCoilsResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteMultipleCoilsResponse:
-        modbus_pdu_write_multiple_coils_response: (
-            ModbusPDUWriteMultipleCoilsResponse
-        ) = ModbusPDUWriteMultipleCoilsResponse(self.starting_address, self.quantity)
-        return modbus_pdu_write_multiple_coils_response
+        modbus_pduwrite_multiple_coils_response: ModbusPDUWriteMultipleCoilsResponse = (
+            ModbusPDUWriteMultipleCoilsResponse(self.starting_address, self.quantity)
+        )
+        return modbus_pduwrite_multiple_coils_response

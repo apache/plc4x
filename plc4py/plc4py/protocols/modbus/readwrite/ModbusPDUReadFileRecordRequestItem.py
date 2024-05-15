@@ -89,29 +89,29 @@ class ModbusPDUReadFileRecordRequestItem:
         read_buffer.push_context("ModbusPDUReadFileRecordRequestItem")
 
         reference_type: int = read_buffer.read_unsigned_byte(
-            logical_name="referenceType", bit_length=8
+            logical_name="reference_type", bit_length=8
         )
 
         file_number: int = read_buffer.read_unsigned_short(
-            logical_name="fileNumber", bit_length=16
+            logical_name="file_number", bit_length=16
         )
 
         record_number: int = read_buffer.read_unsigned_short(
-            logical_name="recordNumber", bit_length=16
+            logical_name="record_number", bit_length=16
         )
 
         record_length: int = read_buffer.read_unsigned_short(
-            logical_name="recordLength", bit_length=16
+            logical_name="record_length", bit_length=16
         )
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance
-        _modbus_pdu_read_file_record_request_item: (
-            ModbusPDUReadFileRecordRequestItem
-        ) = ModbusPDUReadFileRecordRequestItem(
-            reference_type, file_number, record_number, record_length
+        _modbus_pduread_file_record_request_item: ModbusPDUReadFileRecordRequestItem = (
+            ModbusPDUReadFileRecordRequestItem(
+                reference_type, file_number, record_number, record_length
+            )
         )
-        return _modbus_pdu_read_file_record_request_item
+        return _modbus_pduread_file_record_request_item
 
     def equals(self, o: object) -> bool:
         if self == o:

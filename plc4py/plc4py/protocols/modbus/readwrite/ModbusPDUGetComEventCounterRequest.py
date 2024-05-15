@@ -88,7 +88,7 @@ class ModbusPDUGetComEventCounterRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventCounterRequest:
-        modbus_pdu_get_com_event_counter_request: ModbusPDUGetComEventCounterRequest = (
+        modbus_pduget_com_event_counter_request: ModbusPDUGetComEventCounterRequest = (
             ModbusPDUGetComEventCounterRequest()
         )
-        return modbus_pdu_get_com_event_counter_request
+        return modbus_pduget_com_event_counter_request

@@ -87,7 +87,7 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         # Implicit Field (number_of_objects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         number_of_objects: int = int(len(self.objects))
         write_buffer.write_unsigned_byte(
-            number_of_objects, logical_name="numberOfObjects"
+            number_of_objects, logical_name="number_of_objects"
         )
 
         # Array Field (objects)
@@ -135,7 +135,7 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadDeviceIdentificationResponse")
 
         MEI_TYPE: int = read_buffer.read_unsigned_byte(
-            logical_name="meiType", response=response
+            logical_name="mei_type", response=response
         )
 
         level: ModbusDeviceInformationLevel = read_buffer.read_enum(
@@ -146,14 +146,14 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         )
 
         individual_access: bool = read_buffer.read_bit(
-            logical_name="individualAccess", bit_length=1, response=response
+            logical_name="individual_access", bit_length=1, response=response
         )
 
         conformity_level: ModbusDeviceInformationConformityLevel = (
             read_buffer.read_enum(
                 read_function=ModbusDeviceInformationConformityLevel,
                 bit_length=7,
-                logical_name="conformityLevel",
+                logical_name="conformity_level",
                 response=response,
             )
         )
@@ -161,16 +161,16 @@ class ModbusPDUReadDeviceIdentificationResponse(ModbusPDU):
         more_follows: ModbusDeviceInformationMoreFollows = read_buffer.read_enum(
             read_function=ModbusDeviceInformationMoreFollows,
             bit_length=8,
-            logical_name="moreFollows",
+            logical_name="more_follows",
             response=response,
         )
 
         next_object_id: int = read_buffer.read_unsigned_byte(
-            logical_name="nextObjectId", bit_length=8, response=response
+            logical_name="next_object_id", bit_length=8, response=response
         )
 
         number_of_objects: int = read_buffer.read_unsigned_byte(
-            logical_name="numberOfObjects", response=response
+            logical_name="number_of_objects", response=response
         )
 
         objects: List[Any] = read_buffer.read_array_field(
@@ -238,7 +238,7 @@ class ModbusPDUReadDeviceIdentificationResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDeviceIdentificationResponse:
-        modbus_pdu_read_device_identification_response: (
+        modbus_pduread_device_identification_response: (
             ModbusPDUReadDeviceIdentificationResponse
         ) = ModbusPDUReadDeviceIdentificationResponse(
             self.level,
@@ -248,4 +248,4 @@ class ModbusPDUReadDeviceIdentificationResponseBuilder:
             self.next_object_id,
             self.objects,
         )
-        return modbus_pdu_read_device_identification_response
+        return modbus_pduread_device_identification_response

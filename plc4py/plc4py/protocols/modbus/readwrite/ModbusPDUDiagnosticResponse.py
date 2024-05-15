@@ -71,7 +71,7 @@ class ModbusPDUDiagnosticResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUDiagnosticResponse")
 
         sub_function: int = read_buffer.read_unsigned_short(
-            logical_name="subFunction", bit_length=16, response=response
+            logical_name="sub_function", bit_length=16, response=response
         )
 
         data: int = read_buffer.read_unsigned_short(
@@ -119,7 +119,7 @@ class ModbusPDUDiagnosticResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUDiagnosticResponse:
-        modbus_pdu_diagnostic_response: ModbusPDUDiagnosticResponse = (
+        modbus_pdudiagnostic_response: ModbusPDUDiagnosticResponse = (
             ModbusPDUDiagnosticResponse(self.sub_function, self.data)
         )
-        return modbus_pdu_diagnostic_response
+        return modbus_pdudiagnostic_response

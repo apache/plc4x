@@ -73,7 +73,7 @@ class ModbusPDUReadHoldingRegistersRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadHoldingRegistersRequest")
 
         starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="startingAddress", bit_length=16, response=response
+            logical_name="starting_address", bit_length=16, response=response
         )
 
         quantity: int = read_buffer.read_unsigned_short(
@@ -123,7 +123,7 @@ class ModbusPDUReadHoldingRegistersRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadHoldingRegistersRequest:
-        modbus_pdu_read_holding_registers_request: (
+        modbus_pduread_holding_registers_request: (
             ModbusPDUReadHoldingRegistersRequest
         ) = ModbusPDUReadHoldingRegistersRequest(self.starting_address, self.quantity)
-        return modbus_pdu_read_holding_registers_request
+        return modbus_pduread_holding_registers_request

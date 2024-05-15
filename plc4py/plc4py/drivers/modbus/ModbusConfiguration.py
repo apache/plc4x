@@ -25,13 +25,17 @@ class ModbusConfiguration(PlcConfiguration):
     """
 
     def __init__(self, url):
+        """
+        Initializes the ModbusConfiguration with the given URL.
+
+        Args:
+            url (str): The URL of the Modbus device.
+        """
         super().__init__(url)
 
-        if self.transport is None:
-            self.transport = "tcp"
-
-        if self.port is None:
-            self.port = 502
-
-        if "unit_identifier" not in self.parameters:
-            self.unit_identifier = 1
+        # Set the transport to TCP if not specified
+        self.transport = self.transport or "tcp"
+        # Set the port to 502 if not specified
+        self.port = self.port or 502
+        # Get the unit identifier from the parameters, default to 1
+        self.unit_identifier = self.parameters.get("unit_identifier", 1)

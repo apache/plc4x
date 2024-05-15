@@ -46,7 +46,7 @@ class UmasPDUWriteVariableRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x23
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUWriteVariableRequest")
 
         # Simple Field (crc)
@@ -97,7 +97,7 @@ class UmasPDUWriteVariableRequest(UmasPDUItem):
         )
 
         variable_count: int = read_buffer.read_unsigned_byte(
-            logical_name="variableCount",
+            logical_name="variable_count",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -154,9 +154,9 @@ class UmasPDUWriteVariableRequestBuilder:
     variables: List[VariableWriteRequestReference]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUWriteVariableRequest:
-        umas_pdu_write_variable_request: UmasPDUWriteVariableRequest = (
+        umas_pduwrite_variable_request: UmasPDUWriteVariableRequest = (
             UmasPDUWriteVariableRequest(
                 byte_length, pairing_key, self.crc, self.variable_count, self.variables
             )
         )
-        return umas_pdu_write_variable_request
+        return umas_pduwrite_variable_request

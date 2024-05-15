@@ -25,7 +25,7 @@
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <!-- When updating to 32 the site build starts failing -->
-    <version>32</version>
+    <version>31</version>
   </parent>
 
   <groupId>org.apache.plc4x</groupId>
@@ -111,7 +111,7 @@
     <bouncycastle.version>1.78.1</bouncycastle.version>
     <byte-buddy.version>1.14.14</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
-    <cmake-version>3.27.2</cmake-version>
+    <cmake.version>3.27.7-b1</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.7.0</commons-cli.version>
     <commons-codec.version>1.17.0</commons-codec.version>
@@ -124,12 +124,12 @@
     <commons-math3.version>3.6.1</commons-math3.version>
     <commons-net.version>3.10.0</commons-net.version>
     <commons-text.version>1.12.0</commons-text.version>
-    <commons-csv.version>1.10.0</commons-csv.version>
+    <commons-csv.version>1.11.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.16.1</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.21</groovy.version>
-    <guava.version>33.1.0-jre</guava.version>
+    <guava.version>33.2.0-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
@@ -576,7 +576,7 @@
       <dependency>
         <groupId>com.google.errorprone</groupId>
         <artifactId>error_prone_annotations</artifactId>
-        <version>2.27.0</version>
+        <version>2.27.1</version>
       </dependency>
 
       <dependency>
@@ -594,7 +594,7 @@
       <dependency>
         <groupId>com.google.j2objc</groupId>
         <artifactId>j2objc-annotations</artifactId>
-        <version>2.8</version>
+        <version>3.0.0</version>
       </dependency>
 
       <dependency>
@@ -1326,7 +1326,7 @@
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
           <!-- Not all versions have all types of binaries deployed -->
-          <version>3.27.7-b1</version>
+          <version>${cmake.version}</version>
         </plugin>
 
         <plugin>

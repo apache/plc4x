@@ -43,7 +43,7 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x20
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadMemoryBlockResponse")
 
         # Simple Field (range)
@@ -95,7 +95,7 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
         )
 
         number_of_bytes: int = read_buffer.read_unsigned_short(
-            logical_name="numberOfBytes",
+            logical_name="number_of_bytes",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -152,9 +152,9 @@ class UmasPDUReadMemoryBlockResponseBuilder:
     block: List[int]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUReadMemoryBlockResponse:
-        umas_pdu_read_memory_block_response: UmasPDUReadMemoryBlockResponse = (
+        umas_pduread_memory_block_response: UmasPDUReadMemoryBlockResponse = (
             UmasPDUReadMemoryBlockResponse(
                 byte_length, pairing_key, self.range, self.number_of_bytes, self.block
             )
         )
-        return umas_pdu_read_memory_block_response
+        return umas_pduread_memory_block_response

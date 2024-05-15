@@ -47,7 +47,7 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = int(len(self.events)) + int(6)
-        write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
+        write_buffer.write_unsigned_byte(byte_count, logical_name="byte_count")
 
         # Simple Field (status)
         write_buffer.write_unsigned_short(
@@ -99,7 +99,7 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUGetComEventLogResponse")
 
         byte_count: int = read_buffer.read_unsigned_byte(
-            logical_name="byteCount", response=response
+            logical_name="byte_count", response=response
         )
 
         status: int = read_buffer.read_unsigned_short(
@@ -107,11 +107,11 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
         )
 
         event_count: int = read_buffer.read_unsigned_short(
-            logical_name="eventCount", bit_length=16, response=response
+            logical_name="event_count", bit_length=16, response=response
         )
 
         message_count: int = read_buffer.read_unsigned_short(
-            logical_name="messageCount", bit_length=16, response=response
+            logical_name="message_count", bit_length=16, response=response
         )
 
         events: List[Any] = read_buffer.read_array_field(
@@ -168,9 +168,9 @@ class ModbusPDUGetComEventLogResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventLogResponse:
-        modbus_pdu_get_com_event_log_response: ModbusPDUGetComEventLogResponse = (
+        modbus_pduget_com_event_log_response: ModbusPDUGetComEventLogResponse = (
             ModbusPDUGetComEventLogResponse(
                 self.status, self.event_count, self.message_count, self.events
             )
         )
-        return modbus_pdu_get_com_event_log_response
+        return modbus_pduget_com_event_log_response

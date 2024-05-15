@@ -72,7 +72,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = int(len(self.value))
-        write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
+        write_buffer.write_unsigned_byte(byte_count, logical_name="byte_count")
 
         # Array Field (value)
         write_buffer.write_byte_array(self.value, logical_name="value")
@@ -112,23 +112,23 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
         read_starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="readStartingAddress", bit_length=16, response=response
+            logical_name="read_starting_address", bit_length=16, response=response
         )
 
         read_quantity: int = read_buffer.read_unsigned_short(
-            logical_name="readQuantity", bit_length=16, response=response
+            logical_name="read_quantity", bit_length=16, response=response
         )
 
         write_starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="writeStartingAddress", bit_length=16, response=response
+            logical_name="write_starting_address", bit_length=16, response=response
         )
 
         write_quantity: int = read_buffer.read_unsigned_short(
-            logical_name="writeQuantity", bit_length=16, response=response
+            logical_name="write_quantity", bit_length=16, response=response
         )
 
         byte_count: int = read_buffer.read_unsigned_byte(
-            logical_name="byteCount", response=response
+            logical_name="byte_count", response=response
         )
 
         value: List[Any] = read_buffer.read_array_field(
@@ -193,7 +193,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadWriteMultipleHoldingRegistersRequest:
-        modbus_pdu_read_write_multiple_holding_registers_request: (
+        modbus_pduread_write_multiple_holding_registers_request: (
             ModbusPDUReadWriteMultipleHoldingRegistersRequest
         ) = ModbusPDUReadWriteMultipleHoldingRegistersRequest(
             self.read_starting_address,
@@ -202,4 +202,4 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder:
             self.write_quantity,
             self.value,
         )
-        return modbus_pdu_read_write_multiple_holding_registers_request
+        return modbus_pduread_write_multiple_holding_registers_request

@@ -67,7 +67,7 @@ class ModbusPDUError(ModbusPDU):
         exception_code: ModbusErrorCode = read_buffer.read_enum(
             read_function=ModbusErrorCode,
             bit_length=8,
-            logical_name="exceptionCode",
+            logical_name="exception_code",
             response=response,
         )
 
@@ -110,5 +110,5 @@ class ModbusPDUErrorBuilder:
     def build(
         self,
     ) -> ModbusPDUError:
-        modbus_pdu_error: ModbusPDUError = ModbusPDUError(self.exception_code)
-        return modbus_pdu_error
+        modbus_pduerror: ModbusPDUError = ModbusPDUError(self.exception_code)
+        return modbus_pduerror

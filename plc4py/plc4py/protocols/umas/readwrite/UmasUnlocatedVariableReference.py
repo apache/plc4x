@@ -128,7 +128,7 @@ class UmasUnlocatedVariableReference:
         read_buffer.push_context("UmasUnlocatedVariableReference")
 
         data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="dataType", bit_length=8
+            logical_name="data_type", bit_length=8
         )
 
         unknown1: int = read_buffer.read_unsigned_byte(
@@ -152,7 +152,7 @@ class UmasUnlocatedVariableReference:
         )
 
         string_length: int = read_buffer.read_unsigned_short(
-            logical_name="stringLength", bit_length=16
+            logical_name="string_length", bit_length=16
         )
 
         value = read_buffer.read_manual(

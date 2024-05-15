@@ -39,7 +39,7 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x03
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUProjectInfoRequest")
 
         # Simple Field (subcode)
@@ -108,7 +108,7 @@ class UmasPDUProjectInfoRequestBuilder:
     subcode: int
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUProjectInfoRequest:
-        umas_pdu_project_info_request: UmasPDUProjectInfoRequest = (
+        umas_pduproject_info_request: UmasPDUProjectInfoRequest = (
             UmasPDUProjectInfoRequest(byte_length, pairing_key, self.subcode)
         )
-        return umas_pdu_project_info_request
+        return umas_pduproject_info_request

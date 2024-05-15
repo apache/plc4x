@@ -23,7 +23,7 @@ black==24.4.2
 build==1.2.1
 cfgv==3.4.0
 click==8.1.7
-coverage==7.5.0
+coverage==7.5.1
 distlib==0.3.8
 filelock==3.14.0
 flake8==7.0.0
@@ -38,9 +38,9 @@ nodeenv==1.8.0
 packaging==24.0
 pathspec==0.12.1
 pip-tools==7.4.1
-platformdirs==4.2.1
+platformdirs==4.2.2
 pluggy==1.5.0
-pre-commit==3.7.0
+pre-commit==3.7.1
 pycodestyle==2.11.1
 pyflakes==3.2.0
 pyproject_hooks==1.1.0
@@ -50,5 +50,5 @@ pytest-mock==3.14.0
 PyYAML==6.0.1
 requires==0.10.5
 typing_extensions==4.11.0
-virtualenv==20.26.1
+virtualenv==20.26.2
 xtyping==0.8.2

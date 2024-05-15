@@ -90,7 +90,7 @@ class ModbusPDUReadExceptionStatusRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadExceptionStatusRequest:
-        modbus_pdu_read_exception_status_request: (
-            ModbusPDUReadExceptionStatusRequest
-        ) = ModbusPDUReadExceptionStatusRequest()
-        return modbus_pdu_read_exception_status_request
+        modbus_pduread_exception_status_request: ModbusPDUReadExceptionStatusRequest = (
+            ModbusPDUReadExceptionStatusRequest()
+        )
+        return modbus_pduread_exception_status_request
