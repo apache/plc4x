@@ -56,10 +56,10 @@ class ModbusPDUWriteFileRecordResponseItem:
 
         # Implicit Field (record_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         record_length: int = int(len(self.record_data)) / int(2)
-        write_buffer.write_unsigned_short(record_length, logical_name="recordLength")
+        write_buffer.write_unsigned_short(record_length, logical_name="record_length")
 
         # Array Field (recordData)
-        write_buffer.write_byte_array(self.record_data, logical_name="recordData")
+        write_buffer.write_byte_array(self.record_data, logical_name="record_data")
 
         write_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
 
@@ -97,19 +97,19 @@ class ModbusPDUWriteFileRecordResponseItem:
         read_buffer.push_context("ModbusPDUWriteFileRecordResponseItem")
 
         reference_type: int = read_buffer.read_unsigned_byte(
-            logical_name="referenceType", bit_length=8
+            logical_name="reference_type", bit_length=8
         )
 
         file_number: int = read_buffer.read_unsigned_short(
-            logical_name="fileNumber", bit_length=16
+            logical_name="file_number", bit_length=16
         )
 
         record_number: int = read_buffer.read_unsigned_short(
-            logical_name="recordNumber", bit_length=16
+            logical_name="record_number", bit_length=16
         )
 
         record_length: int = read_buffer.read_unsigned_short(
-            logical_name="recordLength"
+            logical_name="record_length"
         )
 
         record_data: List[Any] = read_buffer.read_array_field(
@@ -120,12 +120,12 @@ class ModbusPDUWriteFileRecordResponseItem:
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
         # Create the instance
-        _modbus_pdu_write_file_record_response_item: (
+        _modbus_pduwrite_file_record_response_item: (
             ModbusPDUWriteFileRecordResponseItem
         ) = ModbusPDUWriteFileRecordResponseItem(
             reference_type, file_number, record_number, record_data
         )
-        return _modbus_pdu_write_file_record_response_item
+        return _modbus_pduwrite_file_record_response_item
 
     def equals(self, o: object) -> bool:
         if self == o:

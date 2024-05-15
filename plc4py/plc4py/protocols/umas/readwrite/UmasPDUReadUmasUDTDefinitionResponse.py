@@ -96,7 +96,7 @@ class UmasPDUReadUmasUDTDefinitionResponse:
         )
 
         no_of_records: int = read_buffer.read_unsigned_short(
-            logical_name="noOfRecords", bit_length=16
+            logical_name="no_of_records", bit_length=16
         )
 
         records: List[Any] = read_buffer.read_array_field(
@@ -107,12 +107,12 @@ class UmasPDUReadUmasUDTDefinitionResponse:
 
         read_buffer.pop_context("UmasPDUReadUmasUDTDefinitionResponse")
         # Create the instance
-        _umas_pdu_read_umas_udt_definition_response: (
+        _umas_pduread_umas_udtdefinition_response: (
             UmasPDUReadUmasUDTDefinitionResponse
         ) = UmasPDUReadUmasUDTDefinitionResponse(
             range, unknown1, no_of_records, records
         )
-        return _umas_pdu_read_umas_udt_definition_response
+        return _umas_pduread_umas_udtdefinition_response
 
     def equals(self, o: object) -> bool:
         if self == o:

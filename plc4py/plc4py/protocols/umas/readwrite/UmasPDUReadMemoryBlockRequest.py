@@ -43,7 +43,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x20
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
         # Simple Field (range)
@@ -110,7 +110,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         )
 
         block_number: int = read_buffer.read_unsigned_short(
-            logical_name="blockNumber",
+            logical_name="block_number",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -126,7 +126,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         )
 
         unknown_object1: int = read_buffer.read_unsigned_short(
-            logical_name="unknownObject1",
+            logical_name="unknown_object1",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -134,7 +134,7 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         )
 
         number_of_bytes: int = read_buffer.read_unsigned_short(
-            logical_name="numberOfBytes",
+            logical_name="number_of_bytes",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -188,7 +188,7 @@ class UmasPDUReadMemoryBlockRequestBuilder:
     number_of_bytes: int
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUReadMemoryBlockRequest:
-        umas_pdu_read_memory_block_request: UmasPDUReadMemoryBlockRequest = (
+        umas_pduread_memory_block_request: UmasPDUReadMemoryBlockRequest = (
             UmasPDUReadMemoryBlockRequest(
                 byte_length,
                 pairing_key,
@@ -199,4 +199,4 @@ class UmasPDUReadMemoryBlockRequestBuilder:
                 self.number_of_bytes,
             )
         )
-        return umas_pdu_read_memory_block_request
+        return umas_pduread_memory_block_request

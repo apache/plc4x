@@ -33,30 +33,30 @@ import math
 
 
 @dataclass
-class UmasPDUReadVariableResponse(UmasPDUItem):
+class UmasPDUWriteVariableResponse(UmasPDUItem):
     block: List[int]
     # Arguments.
     byte_length: int
     # Accessors for discriminator values.
     umas_function_key: ClassVar[int] = 0xFE
-    umas_request_function_key: ClassVar[int] = 0x22
+    umas_request_function_key: ClassVar[int] = 0x23
 
     def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
-        write_buffer.push_context("UmasPDUReadVariableResponse")
+        write_buffer.push_context("UmasPDUWriteVariableResponse")
 
         # Array Field (block)
         write_buffer.write_simple_array(
             self.block, write_buffer.write_unsigned_byte, logical_name="block"
         )
 
-        write_buffer.pop_context("UmasPDUReadVariableResponse")
+        write_buffer.pop_context("UmasPDUWriteVariableResponse")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
 
     def length_in_bits(self) -> int:
         length_in_bits: int = super().length_in_bits()
-        _value: UmasPDUReadVariableResponse = self
+        _value: UmasPDUWriteVariableResponse = self
 
         # Array field
         if self.block is not None:
@@ -68,7 +68,7 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
     def static_parse_builder(
         read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
-        read_buffer.push_context("UmasPDUReadVariableResponse")
+        read_buffer.push_context("UmasPDUWriteVariableResponse")
 
         block: List[Any] = read_buffer.read_array_field(
             logical_name="block",
@@ -79,18 +79,18 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
             byte_length=byte_length,
         )
 
-        read_buffer.pop_context("UmasPDUReadVariableResponse")
+        read_buffer.pop_context("UmasPDUWriteVariableResponse")
         # Create the instance
-        return UmasPDUReadVariableResponseBuilder(block)
+        return UmasPDUWriteVariableResponseBuilder(block)
 
     def equals(self, o: object) -> bool:
         if self == o:
             return True
 
-        if not isinstance(o, UmasPDUReadVariableResponse):
+        if not isinstance(o, UmasPDUWriteVariableResponse):
             return False
 
-        that: UmasPDUReadVariableResponse = UmasPDUReadVariableResponse(o)
+        that: UmasPDUWriteVariableResponse = UmasPDUWriteVariableResponse(o)
         return (self.block == that.block) and super().equals(that) and True
 
     def hash_code(self) -> int:
@@ -108,11 +108,11 @@ class UmasPDUReadVariableResponse(UmasPDUItem):
 
 
 @dataclass
-class UmasPDUReadVariableResponseBuilder:
+class UmasPDUWriteVariableResponseBuilder:
     block: List[int]
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUReadVariableResponse:
-        umas_pduread_variable_response: UmasPDUReadVariableResponse = (
-            UmasPDUReadVariableResponse(byte_length, pairing_key, self.block)
+    def build(self, byte_length: int, pairing_key) -> UmasPDUWriteVariableResponse:
+        umas_pduwrite_variable_response: UmasPDUWriteVariableResponse = (
+            UmasPDUWriteVariableResponse(byte_length, pairing_key, self.block)
         )
-        return umas_pduread_variable_response
+        return umas_pduwrite_variable_response

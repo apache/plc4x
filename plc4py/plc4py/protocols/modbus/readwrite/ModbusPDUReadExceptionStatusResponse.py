@@ -102,7 +102,7 @@ class ModbusPDUReadExceptionStatusResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadExceptionStatusResponse:
-        modbus_pdu_read_exception_status_response: (
+        modbus_pduread_exception_status_response: (
             ModbusPDUReadExceptionStatusResponse
         ) = ModbusPDUReadExceptionStatusResponse(self.value)
-        return modbus_pdu_read_exception_status_response
+        return modbus_pduread_exception_status_response

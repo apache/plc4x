@@ -110,7 +110,7 @@ class UmasDatatypeReference:
         read_buffer.push_context("UmasDatatypeReference")
 
         data_size: int = read_buffer.read_unsigned_short(
-            logical_name="dataSize", bit_length=16
+            logical_name="data_size", bit_length=16
         )
 
         unknown1: int = read_buffer.read_unsigned_short(
@@ -118,15 +118,15 @@ class UmasDatatypeReference:
         )
 
         class_identifier: int = read_buffer.read_unsigned_byte(
-            logical_name="classIdentifier", bit_length=8
+            logical_name="class_identifier", bit_length=8
         )
 
         data_type: int = read_buffer.read_unsigned_byte(
-            logical_name="dataType", bit_length=8
+            logical_name="data_type", bit_length=8
         )
 
         string_length: int = read_buffer.read_unsigned_byte(
-            logical_name="stringLength", bit_length=8
+            logical_name="string_length", bit_length=8
         )
 
         value = read_buffer.read_manual(

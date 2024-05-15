@@ -37,7 +37,7 @@ class UmasPDUPlcIdentRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x02
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUPlcIdentRequest")
 
         write_buffer.pop_context("UmasPDUPlcIdentRequest")
@@ -89,8 +89,8 @@ class UmasPDUPlcIdentRequest(UmasPDUItem):
 class UmasPDUPlcIdentRequestBuilder:
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcIdentRequest:
-        umas_pdu_plc_ident_request: UmasPDUPlcIdentRequest = UmasPDUPlcIdentRequest(
+        umas_pduplc_ident_request: UmasPDUPlcIdentRequest = UmasPDUPlcIdentRequest(
             byte_length,
             pairing_key,
         )
-        return umas_pdu_plc_ident_request
+        return umas_pduplc_ident_request

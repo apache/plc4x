@@ -9510,10 +9510,6 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_EUTELSAT, true
 	case "M_TECNIKABEL":
 		return KnxManufacturer_M_TECNIKABEL, true
-	case "M_ATIOS_AG":
-		return KnxManufacturer_M_ATIOS_AG, true
-	case "M_SMARTLICHT":
-		return KnxManufacturer_M_SMARTLICHT, true
 	case "M_ABB___RESERVED":
 		return KnxManufacturer_M_ABB___RESERVED, true
 	case "M_BUSCH_JAEGER_ELEKTRO___RESERVED":
@@ -10933,10 +10929,6 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_EUTELSAT"
 	case KnxManufacturer_M_TECNIKABEL:
 		return "M_TECNIKABEL"
-	case KnxManufacturer_M_ATIOS_AG:
-		return "M_ATIOS_AG"
-	case KnxManufacturer_M_SMARTLICHT:
-		return "M_SMARTLICHT"
 	case KnxManufacturer_M_ABB___RESERVED:
 		return "M_ABB___RESERVED"
 	case KnxManufacturer_M_BUSCH_JAEGER_ELEKTRO___RESERVED:

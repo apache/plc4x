@@ -44,15 +44,17 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = (int(len(self.fifo_value)) * int(2)) + int(2)
-        write_buffer.write_unsigned_short(byte_count, logical_name="byteCount")
+        write_buffer.write_unsigned_short(byte_count, logical_name="byte_count")
 
         # Implicit Field (fifo_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         fifo_count: int = (int(len(self.fifo_value)) * int(2)) / int(2)
-        write_buffer.write_unsigned_short(fifo_count, logical_name="fifoCount")
+        write_buffer.write_unsigned_short(fifo_count, logical_name="fifo_count")
 
         # Array Field (fifoValue)
         write_buffer.write_simple_array(
-            self.fifo_value, write_buffer.write_unsigned_short, logical_name="fifoValue"
+            self.fifo_value,
+            write_buffer.write_unsigned_short,
+            logical_name="fifo_value",
         )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueResponse")
@@ -81,11 +83,11 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadFifoQueueResponse")
 
         byte_count: int = read_buffer.read_unsigned_short(
-            logical_name="byteCount", response=response
+            logical_name="byte_count", response=response
         )
 
         fifo_count: int = read_buffer.read_unsigned_short(
-            logical_name="fifoCount", response=response
+            logical_name="fifo_count", response=response
         )
 
         fifo_value: List[Any] = read_buffer.read_array_field(
@@ -130,7 +132,7 @@ class ModbusPDUReadFifoQueueResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadFifoQueueResponse:
-        modbus_pdu_read_fifo_queue_response: ModbusPDUReadFifoQueueResponse = (
+        modbus_pduread_fifo_queue_response: ModbusPDUReadFifoQueueResponse = (
             ModbusPDUReadFifoQueueResponse(self.fifo_value)
         )
-        return modbus_pdu_read_fifo_queue_response
+        return modbus_pduread_fifo_queue_response

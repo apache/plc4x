@@ -44,7 +44,7 @@ class UmasInitCommsResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x01
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasInitCommsResponse")
 
         # Simple Field (maxFrameSize)
@@ -111,7 +111,7 @@ class UmasInitCommsResponse(UmasPDUItem):
         read_buffer.push_context("UmasInitCommsResponse")
 
         max_frame_size: int = read_buffer.read_unsigned_short(
-            logical_name="maxFrameSize",
+            logical_name="max_frame_size",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -119,7 +119,7 @@ class UmasInitCommsResponse(UmasPDUItem):
         )
 
         firmware_version: int = read_buffer.read_unsigned_short(
-            logical_name="firmwareVersion",
+            logical_name="firmware_version",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -127,7 +127,7 @@ class UmasInitCommsResponse(UmasPDUItem):
         )
 
         not_sure: int = read_buffer.read_unsigned_int(
-            logical_name="notSure",
+            logical_name="not_sure",
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -135,7 +135,7 @@ class UmasInitCommsResponse(UmasPDUItem):
         )
 
         internal_code: int = read_buffer.read_unsigned_int(
-            logical_name="internalCode",
+            logical_name="internal_code",
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -143,7 +143,7 @@ class UmasInitCommsResponse(UmasPDUItem):
         )
 
         hostname_length: int = read_buffer.read_unsigned_byte(
-            logical_name="hostnameLength",
+            logical_name="hostname_length",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,

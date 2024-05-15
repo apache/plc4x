@@ -73,7 +73,7 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadDiscreteInputsRequest")
 
         starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="startingAddress", bit_length=16, response=response
+            logical_name="starting_address", bit_length=16, response=response
         )
 
         quantity: int = read_buffer.read_unsigned_short(
@@ -121,7 +121,7 @@ class ModbusPDUReadDiscreteInputsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDiscreteInputsRequest:
-        modbus_pdu_read_discrete_inputs_request: ModbusPDUReadDiscreteInputsRequest = (
+        modbus_pduread_discrete_inputs_request: ModbusPDUReadDiscreteInputsRequest = (
             ModbusPDUReadDiscreteInputsRequest(self.starting_address, self.quantity)
         )
-        return modbus_pdu_read_discrete_inputs_request
+        return modbus_pduread_discrete_inputs_request

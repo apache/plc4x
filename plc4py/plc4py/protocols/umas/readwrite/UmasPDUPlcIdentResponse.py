@@ -54,7 +54,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0xFE
     umas_request_function_key: ClassVar[int] = 0x02
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUPlcIdentResponse")
 
         # Simple Field (range)
@@ -117,7 +117,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
 
         # Array Field (memoryIdents)
         write_buffer.write_complex_array(
-            self.memory_idents, logical_name="memoryIdents"
+            self.memory_idents, logical_name="memory_idents"
         )
 
         write_buffer.pop_context("UmasPDUPlcIdentResponse")
@@ -203,7 +203,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         com_version: int = read_buffer.read_unsigned_short(
-            logical_name="comVersion",
+            logical_name="com_version",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -211,7 +211,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         com_patch: int = read_buffer.read_unsigned_short(
-            logical_name="comPatch",
+            logical_name="com_patch",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -219,7 +219,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         int_version: int = read_buffer.read_unsigned_short(
-            logical_name="intVersion",
+            logical_name="int_version",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -227,7 +227,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         hardware_version: int = read_buffer.read_unsigned_short(
-            logical_name="hardwareVersion",
+            logical_name="hardware_version",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -235,7 +235,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         crash_code: int = read_buffer.read_unsigned_int(
-            logical_name="crashCode",
+            logical_name="crash_code",
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -251,7 +251,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         hostname_length: int = read_buffer.read_unsigned_byte(
-            logical_name="hostnameLength",
+            logical_name="hostname_length",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -267,7 +267,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         number_of_memory_banks: int = read_buffer.read_unsigned_byte(
-            logical_name="numberOfMemoryBanks",
+            logical_name="number_of_memory_banks",
             bit_length=8,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -358,7 +358,7 @@ class UmasPDUPlcIdentResponseBuilder:
     memory_idents: List[PlcMemoryBlockIdent]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcIdentResponse:
-        umas_pdu_plc_ident_response: UmasPDUPlcIdentResponse = UmasPDUPlcIdentResponse(
+        umas_pduplc_ident_response: UmasPDUPlcIdentResponse = UmasPDUPlcIdentResponse(
             byte_length,
             pairing_key,
             self.range,
@@ -375,4 +375,4 @@ class UmasPDUPlcIdentResponseBuilder:
             self.number_of_memory_banks,
             self.memory_idents,
         )
-        return umas_pdu_plc_ident_response
+        return umas_pduplc_ident_response

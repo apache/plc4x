@@ -44,7 +44,7 @@ class ModbusDeviceInformationObject:
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         object_length: int = int(len(self.data))
-        write_buffer.write_unsigned_byte(object_length, logical_name="objectLength")
+        write_buffer.write_unsigned_byte(object_length, logical_name="object_length")
 
         # Array Field (data)
         write_buffer.write_byte_array(self.data, logical_name="data")
@@ -79,10 +79,12 @@ class ModbusDeviceInformationObject:
         read_buffer.push_context("ModbusDeviceInformationObject")
 
         object_id: int = read_buffer.read_unsigned_byte(
-            logical_name="objectId", bit_length=8
+            logical_name="object_id", bit_length=8
         )
 
-        object_length: int = read_buffer.read_unsigned_byte(logical_name="objectLength")
+        object_length: int = read_buffer.read_unsigned_byte(
+            logical_name="object_length"
+        )
 
         data: List[Any] = read_buffer.read_array_field(
             logical_name="data",

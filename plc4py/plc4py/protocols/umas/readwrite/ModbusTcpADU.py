@@ -62,7 +62,7 @@ class ModbusTcpADU:
         )
 
         # Array Field (pduArray)
-        write_buffer.write_byte_array(self.pdu_array, logical_name="pduArray")
+        write_buffer.write_byte_array(self.pdu_array, logical_name="pdu_array")
 
         write_buffer.pop_context("ModbusTcpADU")
 
@@ -100,13 +100,13 @@ class ModbusTcpADU:
         read_buffer.push_context("ModbusTcpADU")
 
         transaction_identifier: int = read_buffer.read_unsigned_short(
-            logical_name="transactionIdentifier",
+            logical_name="transaction_identifier",
             bit_length=16,
             byte_order=ByteOrder.BIG_ENDIAN,
         )
 
         PROTOCOL_IDENTIFIER: int = read_buffer.read_unsigned_short(
-            logical_name="protocolIdentifier", byte_order=ByteOrder.BIG_ENDIAN
+            logical_name="protocol_identifier", byte_order=ByteOrder.BIG_ENDIAN
         )
 
         length: int = read_buffer.read_unsigned_short(
@@ -114,7 +114,9 @@ class ModbusTcpADU:
         )
 
         unit_identifier: int = read_buffer.read_unsigned_byte(
-            logical_name="unitIdentifier", bit_length=8, byte_order=ByteOrder.BIG_ENDIAN
+            logical_name="unit_identifier",
+            bit_length=8,
+            byte_order=ByteOrder.BIG_ENDIAN,
         )
 
         pdu_array: List[Any] = read_buffer.read_array_field(

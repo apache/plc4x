@@ -103,7 +103,7 @@ class ModbusTcpADU(ModbusADU):
         read_buffer.push_context("ModbusTcpADU")
 
         transaction_identifier: int = read_buffer.read_unsigned_short(
-            logical_name="transactionIdentifier",
+            logical_name="transaction_identifier",
             bit_length=16,
             byte_order=ByteOrder.BIG_ENDIAN,
             driver_type=driver_type,
@@ -111,7 +111,7 @@ class ModbusTcpADU(ModbusADU):
         )
 
         PROTOCOL_IDENTIFIER: int = read_buffer.read_unsigned_short(
-            logical_name="protocolIdentifier",
+            logical_name="protocol_identifier",
             byte_order=ByteOrder.BIG_ENDIAN,
             driver_type=driver_type,
             response=response,
@@ -125,7 +125,7 @@ class ModbusTcpADU(ModbusADU):
         )
 
         unit_identifier: int = read_buffer.read_unsigned_byte(
-            logical_name="unitIdentifier",
+            logical_name="unit_identifier",
             bit_length=8,
             byte_order=ByteOrder.BIG_ENDIAN,
             driver_type=driver_type,

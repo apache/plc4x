@@ -31,11 +31,44 @@ from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
 
 
 def test_version():
+    """
+    This test verifies the version of the package.
+
+    The version is a string that is expected to match the version specified in the
+    `__version__` constant at the top of the file. If the versions do not match,
+    the test will fail.
+
+    :return: None
+    """
+    """
+    This test verifies the version of the package.
+
+    The version is a string that is expected to match the version specified in the
+    `__version__` constant at the top of the file. If the versions do not match,
+    the test will fail.
+
+    :return: None
+    """
     assert __version__ == "0.1.0"
 
 
 @pytest.mark.asyncio
 async def test_plc_driver_manager_init():
+    """
+    This test verifies that the PlcDriverManager class is able to create a connection
+    successfully.
+
+    :return: None
+    """
+    """
+    This test verifies that the PlcDriverManager class is able to create a connection
+    successfully.
+
+    The test creates a PlcDriverManager object and then uses the connection method
+    to get a connection to a mock PLC. The connection should be an instance of
+    the PlcConnection class.
+
+    """
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, PlcConnection)
@@ -43,13 +76,31 @@ async def test_plc_driver_manager_init():
 
 @pytest.mark.asyncio
 async def manual_test_plc_driver_manager_init_modbus():
+    """
+    This test verifies that the PlcDriverManager class is able to create a connection
+    successfully with the Modbus protocol.
+
+    The test creates a PlcDriverManager object and then uses the connection method
+    to get a connection to a Modbus PLC. The connection should be an instance of
+    the ModbusConnection class.
+
+    """
     driver_manager = PlcDriverManager()
-    async with driver_manager.connection("nodbus:tcp://127.0.0.1:502") as connection:
+    async with driver_manager.connection("modbus:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, ModbusConnection)
 
 
 @pytest.mark.asyncio
 async def test_plc_driver_manager_init_mock():
+    """
+    This test verifies that the PlcDriverManager class is able to create a connection
+    successfully with the Mock driver.
+
+    The test creates a PlcDriverManager object and then uses the connection method
+    to get a connection to a Mock PLC. The connection should be an instance of
+    the MockConnection class.
+
+    """
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
         assert isinstance(connection, MockConnection)
@@ -57,16 +108,30 @@ async def test_plc_driver_manager_init_mock():
 
 @pytest.mark.asyncio
 async def test_plc_driver_manager_init_mock_read_request():
+    """
+    This test verifies that the PlcDriverManager class is able to create a
+    connection to a mock PLC and then execute a read request successfully.
+
+    The test creates a PlcDriverManager object and then uses the connection method
+    to get a connection to a Mock PLC. It then uses the read_request_builder
+    to construct a read request with one item. The request is then executed
+    and the result should be a PlcReadResponse with a response code of OK.
+
+    """
     driver_manager = PlcDriverManager()
     tag = "1:BOOL"
 
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:
+        # Create a read request builder
         with connection.read_request_builder() as builder:
+            # Add the tag to the request
             builder.add_item("Random Tag", tag)
+            # Build the request
             request: PlcTagRequest = builder.build()
+            # Execute the request
             response: PlcReadResponse = cast(
                 PlcReadResponse, await connection.execute(request)
             )
 
-    # verify that request has one field
+    # Verify that the request has one field
     assert response.response_code == PlcResponseCode.OK

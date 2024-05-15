@@ -81,7 +81,7 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
 
         MEI_TYPE: int = read_buffer.read_unsigned_byte(
-            logical_name="meiType", response=response
+            logical_name="mei_type", response=response
         )
 
         level: ModbusDeviceInformationLevel = read_buffer.read_enum(
@@ -92,7 +92,7 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
         )
 
         object_id: int = read_buffer.read_unsigned_byte(
-            logical_name="objectId", bit_length=8, response=response
+            logical_name="object_id", bit_length=8, response=response
         )
 
         read_buffer.pop_context("ModbusPDUReadDeviceIdentificationRequest")
@@ -138,7 +138,7 @@ class ModbusPDUReadDeviceIdentificationRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDeviceIdentificationRequest:
-        modbus_pdu_read_device_identification_request: (
+        modbus_pduread_device_identification_request: (
             ModbusPDUReadDeviceIdentificationRequest
         ) = ModbusPDUReadDeviceIdentificationRequest(self.level, self.object_id)
-        return modbus_pdu_read_device_identification_request
+        return modbus_pduread_device_identification_request

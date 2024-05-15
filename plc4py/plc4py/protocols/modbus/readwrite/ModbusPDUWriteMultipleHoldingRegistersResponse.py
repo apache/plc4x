@@ -73,7 +73,7 @@ class ModbusPDUWriteMultipleHoldingRegistersResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUWriteMultipleHoldingRegistersResponse")
 
         starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="startingAddress", bit_length=16, response=response
+            logical_name="starting_address", bit_length=16, response=response
         )
 
         quantity: int = read_buffer.read_unsigned_short(
@@ -125,9 +125,9 @@ class ModbusPDUWriteMultipleHoldingRegistersResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteMultipleHoldingRegistersResponse:
-        modbus_pdu_write_multiple_holding_registers_response: (
+        modbus_pduwrite_multiple_holding_registers_response: (
             ModbusPDUWriteMultipleHoldingRegistersResponse
         ) = ModbusPDUWriteMultipleHoldingRegistersResponse(
             self.starting_address, self.quantity
         )
-        return modbus_pdu_write_multiple_holding_registers_response
+        return modbus_pduwrite_multiple_holding_registers_response

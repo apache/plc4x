@@ -63,6 +63,13 @@ auch_crc_lo: bytearray = bytearray(
 
 
 def rtu_crc_check(address: int, pdu: ModbusPDU) -> int:
+    """
+    Calculates the RTU style CRC16 value for a given PDU and address.
+
+    :param address: The address of the PDU.
+    :param pdu: The PDU to calculate the CRC for.
+    :return: The calculated CRC16 value.
+    """
     # Using the algorithm from PI_MBUS_300.pdf page 121
     write_buffer: WriteBufferByteBased = WriteBufferByteBased(
         pdu.length_in_bytes() + 2, byte_order=ByteOrder.LITTLE_ENDIAN
@@ -73,10 +80,14 @@ def rtu_crc_check(address: int, pdu: ModbusPDU) -> int:
     uch_crc_hi: int = 0xFF
     uch_crc_lo: int = 0xFF
     u_index: int
+    # Calculate the CRC16 value
     for b in m_view:
+        # XOR the current byte with the high byte of the CRC
         u_index = (uch_crc_hi ^ b) & 0xFF
-        uch_crc_hi = uch_crc_lo ^ auch_crc_hi[u_index]
-        uch_crc_lo = auch_crc_lo[u_index]
+        # Swap the high and low bytes, then XOR the low byte with
+        # the current high byte
+        uch_crc_hi, uch_crc_lo = uch_crc_lo ^ auch_crc_hi[u_index], uch_crc_hi
+    # Return the calculated CRC16 value
     return ((uch_crc_hi << 8) & 0xFFFF) | (uch_crc_lo & 0x00FF)
 
 

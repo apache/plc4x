@@ -87,8 +87,8 @@ from plc4py.protocols.umas.readwrite.UmasPDUReadVariableResponse import (
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
     UmasUnlocatedVariableReference,
 )
-from plc4py.protocols.umas.readwrite.VariableRequestReference import (
-    VariableRequestReference,
+from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
+    VariableReadRequestReference,
 )
 from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
@@ -351,7 +351,7 @@ class UmasDevice:
     ):
         message_future = loop.create_future()
 
-        sorted_variable_list: List[VariableRequestReference] = [
+        sorted_variable_list: List[VariableReadRequestReference] = [
             variable_reference[1] for variable_reference in sorted_tags
         ]
         request_pdu = UmasPDUReadVariableRequestBuilder(
@@ -391,7 +391,7 @@ class UmasDevice:
         return response
 
     def _sort_tags_based_on_memory_address(self, request):
-        tag_list: List[List[Tuple[str, VariableRequestReference]]] = [[]]
+        tag_list: List[List[Tuple[str, VariableReadRequestReference]]] = [[]]
         current_list_index = 0
         current_list = tag_list[current_list_index]
         byte_count: int = 0
@@ -412,7 +412,8 @@ class UmasDevice:
                     variable.get_variable_reference(umas_tag.tag_name),
                 )
             )
-        sorted_tag_lists: List[List[Tuple[str, VariableRequestReference]]] = []
+
+        sorted_tag_lists: List[List[Tuple[str, VariableReadRequestReference]]] = []
         for request in tag_list:
             sorted_tags = sorted(
                 request,

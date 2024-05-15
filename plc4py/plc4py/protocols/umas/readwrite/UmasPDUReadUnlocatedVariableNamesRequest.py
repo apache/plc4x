@@ -44,7 +44,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
     umas_function_key: ClassVar[int] = 0x26
     umas_request_function_key: ClassVar[int] = 0
 
-    def serialize_umas_pdu_item_child(self, write_buffer: WriteBuffer):
+    def serialize_umas_pduitem_child(self, write_buffer: WriteBuffer):
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
         # Simple Field (recordType)
@@ -109,7 +109,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
         record_type: int = read_buffer.read_unsigned_short(
-            logical_name="recordType",
+            logical_name="record_type",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -125,7 +125,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         )
 
         hardware_id: int = read_buffer.read_unsigned_int(
-            logical_name="hardwareId",
+            logical_name="hardware_id",
             bit_length=32,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -133,7 +133,7 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         )
 
         block_no: int = read_buffer.read_unsigned_short(
-            logical_name="blockNo",
+            logical_name="block_no",
             bit_length=16,
             byte_order=ByteOrder.LITTLE_ENDIAN,
             umas_request_function_key=umas_request_function_key,
@@ -206,7 +206,7 @@ class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
     def build(
         self, byte_length: int, pairing_key
     ) -> UmasPDUReadUnlocatedVariableNamesRequest:
-        umas_pdu_read_unlocated_variable_names_request: (
+        umas_pduread_unlocated_variable_names_request: (
             UmasPDUReadUnlocatedVariableNamesRequest
         ) = UmasPDUReadUnlocatedVariableNamesRequest(
             byte_length,
@@ -217,4 +217,4 @@ class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
             self.block_no,
             self.offset,
         )
-        return umas_pdu_read_unlocated_variable_names_request
+        return umas_pduread_unlocated_variable_names_request

@@ -73,7 +73,7 @@ class ModbusPDUReadCoilsRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadCoilsRequest")
 
         starting_address: int = read_buffer.read_unsigned_short(
-            logical_name="startingAddress", bit_length=16, response=response
+            logical_name="starting_address", bit_length=16, response=response
         )
 
         quantity: int = read_buffer.read_unsigned_short(
@@ -121,7 +121,7 @@ class ModbusPDUReadCoilsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadCoilsRequest:
-        modbus_pdu_read_coils_request: ModbusPDUReadCoilsRequest = (
+        modbus_pduread_coils_request: ModbusPDUReadCoilsRequest = (
             ModbusPDUReadCoilsRequest(self.starting_address, self.quantity)
         )
-        return modbus_pdu_read_coils_request
+        return modbus_pduread_coils_request

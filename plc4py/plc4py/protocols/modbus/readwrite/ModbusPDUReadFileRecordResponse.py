@@ -48,7 +48,7 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = int(getsizeof(self.items))
-        write_buffer.write_unsigned_byte(byte_count, logical_name="byteCount")
+        write_buffer.write_unsigned_byte(byte_count, logical_name="byte_count")
 
         # Array Field (items)
         write_buffer.write_complex_array(self.items, logical_name="items")
@@ -77,7 +77,7 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadFileRecordResponse")
 
         byte_count: int = read_buffer.read_unsigned_byte(
-            logical_name="byteCount", response=response
+            logical_name="byte_count", response=response
         )
 
         items: List[Any] = read_buffer.read_array_field(
@@ -122,7 +122,7 @@ class ModbusPDUReadFileRecordResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadFileRecordResponse:
-        modbus_pdu_read_file_record_response: ModbusPDUReadFileRecordResponse = (
+        modbus_pduread_file_record_response: ModbusPDUReadFileRecordResponse = (
             ModbusPDUReadFileRecordResponse(self.items)
         )
-        return modbus_pdu_read_file_record_response
+        return modbus_pduread_file_record_response
