@@ -19,22 +19,34 @@
 
 Building a project like Apache PLC4X on multiple target operating-systems is quite a challenge, but I think we managed to make it as simple as possible.
 
+We usually test the PLC4X build on the following systems:
+
+width=100%]
+|===
+| Operating System | CPU Architecture | Description
+| Linux            | x86_64           | Most computers
+| Linux            | aarch64          | Linux running on Macs with M processors (Paralells)
+| Windows          | x86_64           | Most computers
+| Windows          | aarch64          | Windows running on Macs with M processors (Paralells)
+| Mac              | x86_64           | Older Macs
+| Mac              | aarch64          | Newer Macs with M processors (Paralells)
+|===
+
 However, when building PLC4X there are some requirements the build is expecting you to have provided.
-However, this greatly depends on which parts you want to build.
-The `Java` modules hereby probably have the least demanding requirements.
+These greatly depend on which parts you want to build.
 
-In order to build most Java parts of `PLC4X` you are required to have at least `Java 9` installed on your machine.
-Some integration modules and some other languages however may add some additional constraints to this.
+If you're just building the `Java` modules, these probably have the least demanding requirements.
+Also, should the `Go` parts generally work without any additional installations as the maven build should automatically pull the required packages.
 
-TIP: We have tested the build with Java 11 up to Java 18 (Latest version at the time of writing this document).
+In order to build all Java parts of `PLC4X` you are required to have at least `Java 11` installed on your machine.
+
+TIP: We have tested the build with Java 11 up to Java 21 (Latest version at the time of writing this document).
 
 If a new version comes out, please give us a little time to verify and handle any related issues.
 We'll probably fix them as soon as possible.
 However, in the past with Oracle's new release strategy, there have been a few bumps on the road.
 
-Also will PLC4X build with any Maven version starting with `Maven 3.3.0` however the `with-c` profile requires at least `Maven 3.6` as the `cmake-maven-plugin` requires this.
-
-TIP: Currently, Maven 3.6 and above is required for being able to build all parts of PLC4X.
+Also will PLC4X build with any Maven version starting with `Maven 3.6.0`.
 
 [width=100%]
 |===
