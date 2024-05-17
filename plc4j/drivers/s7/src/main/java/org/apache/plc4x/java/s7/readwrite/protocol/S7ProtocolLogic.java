@@ -1706,18 +1706,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
             }
         }
 
-        //TODO: Reassembling message.
-        if (responseMessage instanceof S7MessageResponseData) {
-            for (String tagName : plcReadRequest.getTagNames()) {
-                if (plcReadRequest.getTag(tagName) instanceof S7StringVarLengthTag) {
-                    PlcValue plcValue = null;
-                    PlcResponseCode responseCode = PlcResponseCode.INTERNAL_ERROR;
-                    ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
-                    values.put(tagName, result);
-                }
-            }
-        } else if (responseMessage instanceof S7MessageUserData) {
-
+        if (responseMessage instanceof S7MessageUserData) {
             S7PayloadUserData payload = (S7PayloadUserData) responseMessage.getPayload();
             if (plcReadRequest.getNumberOfTags() != payload.getItems().size()) {
                 throw new PlcProtocolException(
