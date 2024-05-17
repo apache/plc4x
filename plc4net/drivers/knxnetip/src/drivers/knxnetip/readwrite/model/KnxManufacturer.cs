@@ -700,8 +700,9 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
         M_TECNIKABEL = 673,
         M_ATIOS_AG = 674,
         M_SMARTLICHT = 675,
-        M_ABB___RESERVED = 676,
-        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 677,
+        M_BEIJING_BEVONE_ELECTRIC_CO__LTD_ = 676,
+        M_ABB___RESERVED = 677,
+        M_BUSCH_JAEGER_ELEKTRO___RESERVED = 678,
     }
 
     public static class KnxManufacturerInfo
@@ -2634,10 +2635,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SMARTLICHT: { /* '675' */
                     return 733;
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '676' */
+                case KnxManufacturer.M_BEIJING_BEVONE_ELECTRIC_CO__LTD_: { /* '676' */
+                    return 734;
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '677' */
                     return 43954;
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '677' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '678' */
                     return 43959;
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */
@@ -4678,10 +4682,13 @@ namespace org.apache.plc4net.drivers.knxnetip.readwrite.model
                 case KnxManufacturer.M_SMARTLICHT: { /* '675' */
                     return "SmartLicht";
                 }
-                case KnxManufacturer.M_ABB___RESERVED: { /* '676' */
+                case KnxManufacturer.M_BEIJING_BEVONE_ELECTRIC_CO__LTD_: { /* '676' */
+                    return "Beijing Bevone Electric Co. Ltd.";
+                }
+                case KnxManufacturer.M_ABB___RESERVED: { /* '677' */
                     return "ABB - reserved";
                 }
-                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '677' */
+                case KnxManufacturer.M_BUSCH_JAEGER_ELEKTRO___RESERVED: { /* '678' */
                     return "Busch-Jaeger Elektro - reserved";
                 }
                 case KnxManufacturer.M_WAREMA_RENKHOFF_SE: { /* '68' */

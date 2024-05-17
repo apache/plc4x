@@ -779,9 +779,11 @@ public enum KnxManufacturer {
   M_TECNIKABEL((int) 673, (int) 731, (String) "TECNIKABEL"),
   M_ATIOS_AG((int) 674, (int) 732, (String) "Atios AG"),
   M_SMARTLICHT((int) 675, (int) 733, (String) "SmartLicht"),
-  M_ABB___RESERVED((int) 676, (int) 43954, (String) "ABB - reserved"),
+  M_BEIJING_BEVONE_ELECTRIC_CO__LTD_(
+      (int) 676, (int) 734, (String) "Beijing Bevone Electric Co. Ltd."),
+  M_ABB___RESERVED((int) 677, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 677, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 678, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
