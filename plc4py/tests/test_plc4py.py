@@ -40,15 +40,6 @@ def test_version():
 
     :return: None
     """
-    """
-    This test verifies the version of the package.
-
-    The version is a string that is expected to match the version specified in the
-    `__version__` constant at the top of the file. If the versions do not match,
-    the test will fail.
-
-    :return: None
-    """
     assert __version__ == "0.1.0"
 
 
@@ -59,15 +50,6 @@ async def test_plc_driver_manager_init():
     successfully.
 
     :return: None
-    """
-    """
-    This test verifies that the PlcDriverManager class is able to create a connection
-    successfully.
-
-    The test creates a PlcDriverManager object and then uses the connection method
-    to get a connection to a mock PLC. The connection should be an instance of
-    the PlcConnection class.
-
     """
     driver_manager = PlcDriverManager()
     async with driver_manager.connection("mock:tcp://127.0.0.1:502") as connection:

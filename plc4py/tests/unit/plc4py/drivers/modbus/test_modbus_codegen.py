@@ -28,13 +28,23 @@ from plc4py.utils.GenericTypes import ByteOrder
 
 
 @pytest.mark.asyncio
-async def test_modbus_discrete_inputs_request():
-    request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
-    assert request is not None
+async def test_modbus_discrete_inputs_request_standardized():
+    """
+    Test case for Modbus PDU Read Discrete Inputs Request
+    """
+    # Create a Modbus PDU Read Discrete Inputs Request with address 0 and quantity 10
+    discrete_inputs_request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
+    
+    # Ensure the request object is not None
+    assert discrete_inputs_request is not None
 
 
 @pytest.mark.asyncio
 async def test_modbus_discrete_inputs_request_serialize():
+    """
+    Test case for serializing Modbus PDU Read Discrete Inputs Request
+    """
+    # Create a Modbus PDU Read Discrete Inputs Request
     request = ModbusPDUReadDiscreteInputsRequestBuilder(5, 2).build()
     size = request.length_in_bytes()
     write_buffer = WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN)
@@ -49,11 +59,25 @@ async def test_modbus_discrete_inputs_request_serialize():
 
 @pytest.mark.asyncio
 async def test_modbus_ModbusTcpADUBuilder_serialize():
+    """
+    Test case for serializing Modbus TCP ADU
+    """
+    # Create a Modbus PDU Read Discrete Inputs
     pdu = ModbusPDUReadDiscreteInputsRequestBuilder(5, 2).build()
+    
+    # Build Modbus TCP ADU
     request = ModbusTcpADUBuilder(10, 5, pdu).build(False)
+    
+    # Get the size of the request
     size = request.length_in_bytes()
+    
+    # Create a write buffer
     write_buffer = WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN)
+    
+    # Serialize the request
     serialize = request.serialize(write_buffer)
+    
+    # Get the serialized bytes
     bytes_array = write_buffer.get_bytes().tobytes()
 
     assert request is not None

@@ -20,4 +20,9 @@ from plc4py.spi.values.Common import Serializable
 
 
 class PlcMessage(Serializable):
+    """
+    A class representing a PLC message.
+    
+    Add more details about the class and its functionality here.
+    """
     pass
