@@ -69,10 +69,7 @@ class VariableRequestReference:
         )
 
         # Optional Field (arrayLength) (Can be skipped, if the value is null)
-        if self.is_array:
-            write_buffer.write_unsigned_short(
-                self.array_length, logical_name="arrayLength"
-            )
+        write_buffer.write_unsigned_short(self.array_length, logical_name="arrayLength")
 
         write_buffer.pop_context("VariableRequestReference")
 
@@ -102,8 +99,7 @@ class VariableRequestReference:
         length_in_bits += 8
 
         # Optional Field (arrayLength)
-        if self.is_array:
-            length_in_bits += 16
+        length_in_bits += 16
 
         return length_in_bits
 
@@ -138,7 +134,7 @@ class VariableRequestReference:
         )
 
         array_length: int = None
-        if is_array:
+        if self.is_array:
             array_length = read_buffer.read_unsigned_short(logical_name="arrayLength")
 
         read_buffer.pop_context("VariableRequestReference")
