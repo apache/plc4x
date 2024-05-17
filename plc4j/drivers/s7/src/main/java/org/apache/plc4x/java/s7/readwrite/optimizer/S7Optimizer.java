@@ -154,7 +154,7 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, TagValueItem> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
-            
+
             if ((writeRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
                 LinkedHashMap<String, TagValueItem> strTags = new LinkedHashMap<>();
                 strTags.put(tagName, 
@@ -178,11 +178,13 @@ public class S7Optimizer extends BaseOptimizer {
             if (writeRequestItemSize % 2 == 1) {
                 writeRequestItemSize++;
             }
-            int writeResponseItemSize = 4;
+            // The response for one item is just one byte containing the return code.
+            int writeResponseItemSize = 1;
 
             // If adding the item would not exceed the sizes, add it to the current request.
-            if (((curRequestSize + writeRequestItemSize) <= s7DriverContext.getPduSize()) &&
-                ((curResponseSize + writeResponseItemSize) <= s7DriverContext.getPduSize())) {
+            // (I have no idea why I have to subtract 9 here, this was just the limit where things started working again)
+            if (((curRequestSize + writeRequestItemSize) <= s7DriverContext.getPduSize() - 9) &&
+                ((curResponseSize + writeResponseItemSize) <= s7DriverContext.getPduSize() - 9)) {
                 // Increase the current request sizes.
                 curRequestSize += writeRequestItemSize;
                 curResponseSize += writeResponseItemSize;
