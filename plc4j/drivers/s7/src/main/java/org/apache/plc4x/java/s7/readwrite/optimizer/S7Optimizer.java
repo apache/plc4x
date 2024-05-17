@@ -25,9 +25,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.readwrite.*;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.tag.S7ClkTag;
-import org.apache.plc4x.java.s7.readwrite.tag.S7SzlTag;
-import org.apache.plc4x.java.s7.readwrite.tag.S7Tag;
+import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.messages.DefaultPlcReadRequest;
 import org.apache.plc4x.java.spi.messages.DefaultPlcWriteRequest;
@@ -38,8 +36,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.plc4x.java.s7.readwrite.tag.S7StringVarLengthTag;
 
 public class S7Optimizer extends BaseOptimizer {
 
@@ -154,24 +150,33 @@ public class S7Optimizer extends BaseOptimizer {
         LinkedHashMap<String, TagValueItem> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
-
-            if ((writeRequest.getTag(tagName) instanceof S7StringVarLengthTag)) {
-                LinkedHashMap<String, TagValueItem> strTags = new LinkedHashMap<>();
-                strTags.put(tagName, 
-                        new TagValueItem(writeRequest.getTag(tagName), 
-                                writeRequest.getPlcValue(tagName)));  
-                processedRequests.add(new DefaultPlcWriteRequest(
-                ((DefaultPlcWriteRequest) writeRequest).getWriter(), strTags));
-                continue;                
-            }
-                                    
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
             PlcValue value = writeRequest.getPlcValue(tagName);
 
             int writeRequestItemSize = S7_ADDRESS_ANY_SIZE + 4/* Size of Payload item header*/;
             if (tag.getDataType() == TransportSize.BOOL) {
                 writeRequestItemSize += (int) Math.ceil((double) tag.getNumberOfElements() / 8);
-            } else {
+            }
+            // Handle fixed length strings differently.
+            else if (tag instanceof S7StringFixedLengthTag) {
+                S7StringFixedLengthTag stringFixedLengthTag = (S7StringFixedLengthTag) tag;
+                if(tag.getDataType() == TransportSize.WSTRING) {
+                    writeRequestItemSize += tag.getNumberOfElements() * (stringFixedLengthTag.getStringLength() + 2) * 2;
+                } else {
+                    writeRequestItemSize += tag.getNumberOfElements() * (stringFixedLengthTag.getStringLength() + 2);
+                }
+            }
+            // With var-length strings, we need to get the length of the string first and use that.
+            else if (tag instanceof S7StringVarLengthTag) {
+                PlcValue plcValue = writeRequest.getPlcValue(tagName);
+                int length = plcValue.getString().length();
+                if(tag.getDataType() == TransportSize.WSTRING) {
+                    writeRequestItemSize += tag.getNumberOfElements() * (length + 2) * 2;
+                } else {
+                    writeRequestItemSize += tag.getNumberOfElements() * (length + 2);
+                }
+            }
+            else {
                 writeRequestItemSize += (tag.getNumberOfElements() * tag.getDataType().getSizeInBytes());
             }
             // If it's an odd number of bytes, add one to make it even
@@ -182,9 +187,8 @@ public class S7Optimizer extends BaseOptimizer {
             int writeResponseItemSize = 1;
 
             // If adding the item would not exceed the sizes, add it to the current request.
-            // (I have no idea why I have to subtract 9 here, this was just the limit where things started working again)
-            if (((curRequestSize + writeRequestItemSize) <= s7DriverContext.getPduSize() - 9) &&
-                ((curResponseSize + writeResponseItemSize) <= s7DriverContext.getPduSize() - 9)) {
+            if (((curRequestSize + writeRequestItemSize) <= s7DriverContext.getPduSize()) &&
+                ((curResponseSize + writeResponseItemSize) <= s7DriverContext.getPduSize())) {
                 // Increase the current request sizes.
                 curRequestSize += writeRequestItemSize;
                 curResponseSize += writeResponseItemSize;

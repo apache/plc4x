@@ -1692,6 +1692,15 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     values.put(tagName, result);
                 }
                 return new DefaultPlcReadResponse(plcReadRequest, values);
+            } else if ((errorClass == 0x85) && (errorCode == 0)) {
+                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                    "that we sent a too large packet or would be receiving a too large one. " +
+                    "Please report this, as this is most probably a bug.");
+                for (String tagName : plcReadRequest.getTagNames()) {
+                    ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
+                    values.put(tagName, result);
+                }
+                return new DefaultPlcReadResponse(plcReadRequest, values);
             } else {
                 logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
                         "We probably need to implement explicit handling for this, so please file a bug-report " +
@@ -1884,6 +1893,14 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
                     "that PUT/GET is not enabled on the PLC.");
                 for (String tagName : plcWriteRequest.getTagNames()) {
                     responses.put(tagName, PlcResponseCode.ACCESS_DENIED);
+                }
+                return new DefaultPlcWriteResponse(plcWriteRequest, responses);
+            } else if ((errorClass == 0x85) && (errorCode == 0)) {
+                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                    "that we sent a too large packet or would be receiving a too large one. " +
+                    "Please report this, as this is most probably a bug.");
+                for (String tagName : plcWriteRequest.getTagNames()) {
+                    responses.put(tagName, PlcResponseCode.INTERNAL_ERROR);
                 }
                 return new DefaultPlcWriteResponse(plcWriteRequest, responses);
             } else {

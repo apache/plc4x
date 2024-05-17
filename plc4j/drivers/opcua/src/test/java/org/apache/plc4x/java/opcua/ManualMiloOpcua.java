@@ -19,6 +19,7 @@
 
 package org.apache.plc4x.java.opcua;
 
+import org.apache.plc4x.java.spi.values.PlcBOOL;
 import org.apache.plc4x.test.manual.ManualTest;
 
 public class ManualMiloOpcua extends ManualTest {
@@ -30,7 +31,7 @@ public class ManualMiloOpcua extends ManualTest {
     public static void main(String[] args) throws Exception {
         ManualMiloOpcua manualMiloOpcua = new ManualMiloOpcua("opcua:tcp://milo.digitalpetri.com:62541/milo");
         manualMiloOpcua
-            .addTestCase("ns=2;i=10846;BOOL", 0)
+            .addTestCase("ns=2;i=10846;BOOL", new PlcBOOL(false))
             .run();
     }
 }

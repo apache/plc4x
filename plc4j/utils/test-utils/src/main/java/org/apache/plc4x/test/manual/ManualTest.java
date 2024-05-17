@@ -58,7 +58,7 @@ public abstract class ManualTest {
         testCases = new ArrayList<>();
     }
 
-    public ManualTest addTestCase(String address, Object expectedReadValue) {
+    public ManualTest addTestCase(String address, PlcValue expectedReadValue) {
         testCases.add(new TestCase(address, expectedReadValue, null));
         return this;
     }
@@ -176,9 +176,9 @@ public abstract class ManualTest {
                             Assertions.assertNotNull(readResponse.getPlcValue(tagName), "Tag: " + tagName);
                             if (readResponse.getPlcValue(tagName) instanceof PlcList) {
                                 PlcList plcList = (PlcList) readResponse.getPlcValue(tagName);
-                                List<Object> expectedValues = (List<Object>) testCase.expectedReadValue;
-                                for (int j = 0; j < expectedValues.size(); j++) {
-                                    Assertions.assertEquals(expectedValues.get(j), plcList.getIndex(j),
+                                PlcList expectedValues = (PlcList) testCase.expectedReadValue;
+                                for (int j = 0; j < expectedValues.getLength(); j++) {
+                                    Assertions.assertEquals(expectedValues.getIndex(j).toString(), plcList.getIndex(j).toString(),
                                         "Tag: " + tagName);
                                 }
                             } else {
