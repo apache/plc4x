@@ -451,69 +451,6 @@
       </build>
     </profile>
 
-    <!--
-      In order to build on windows with aarch64 systems, we need to re-deploy an
-      artifact which was unfortunately deployed with the wrong classifier.
-    -->
-    <!--profile>
-      <id>.os-windows-aarch64</id>
-      <activation>
-        <os>
-          <family>windows</family>
-          <arch>aarch64</arch>
-        </os>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>download-aarch64-windows-binaries</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.directory}/redeploy</outputDirectory>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>com.googlecode.cmake-maven-project</groupId>
-                      <artifactId>cmake-binaries</artifactId>
-                      <version>${cmake.version}</version>
-                      <classifier>windows-arm_64</classifier>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>install-aarch64-windows-binaries</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>install-file</goal>
-                </goals>
-                <configuration>
-                  <file>${project.build.directory}/redeploy/cmake-binaries-${cmake.version}-windows-arm_64.jar</file>
-                  <groupId>com.googlecode.cmake-maven-project</groupId>
-                  <artifactId>cmake-binaries</artifactId>
-                  <version>${cmake.version}</version>
-                  <classifier>windows-arm64</classifier>
-                  <packaging>jar</packaging>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile-->
-
     <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
     <profile>
       <id>jenkins-build</id>
