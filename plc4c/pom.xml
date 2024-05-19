@@ -455,7 +455,7 @@
       In order to build on windows with aarch64 systems, we need to re-deploy an
       artifact which was unfortunately deployed with the wrong classifier.
     -->
-    <profile>
+    <!--profile>
       <id>.os-windows-aarch64</id>
       <activation>
         <os>
@@ -512,7 +512,7 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
+    </profile-->
 
     <!-- When running on jenkins, download the sonar build-wrapper, so we can do a code analysis -->
     <profile>
