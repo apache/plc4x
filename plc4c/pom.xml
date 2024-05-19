@@ -388,7 +388,7 @@
       </activation>
       <build>
         <plugins>
-          <!--plugin>
+          <plugin>
             <groupId>com.googlecode.maven-download-plugin</groupId>
             <artifactId>download-maven-plugin</artifactId>
             <executions>
@@ -399,7 +399,7 @@
                   <goal>wget</goal>
                 </goals>
                 <configuration>
-                  <url>https://cmake.org/files/v3.27/cmake-3.27.7-linux-aarch64.tar.gz</url>
+                  <url>https://cmake.org/files/v3.29/cmake-3.29.3-linux-aarch64.tar.gz</url>
                   <unpack>true</unpack>
                   <outputDirectory>${project.build.directory}/redeploy</outputDirectory>
                 </configuration>
@@ -417,7 +417,7 @@
                   <goal>jar</goal>
                 </goals>
                 <configuration>
-                  <classesDirectory>${project.build.directory}/redeploy/cmake-3.27.7-linux-aarch64</classesDirectory>
+                  <classesDirectory>${project.build.directory}/redeploy/cmake-3.29.3-linux-aarch64</classesDirectory>
                   <includes>
                     <include>**</include>
                   </includes>
@@ -446,7 +446,7 @@
                 </configuration>
               </execution>
             </executions>
-          </plugin-->
+          </plugin>
         </plugins>
       </build>
     </profile>
