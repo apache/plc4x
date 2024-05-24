@@ -110,8 +110,7 @@
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.78.1</bouncycastle.version>
     <byte-buddy.version>1.14.14</byte-buddy.version>
-    <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
-    <cmake.version>3.27.7-b1</cmake.version>
+    <cmake.version>3.29.3-b2</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.7.0</commons-cli.version>
     <commons-codec.version>1.17.0</commons-codec.version>
