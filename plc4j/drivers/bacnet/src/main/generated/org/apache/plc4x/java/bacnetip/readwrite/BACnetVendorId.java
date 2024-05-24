@@ -179,7 +179,7 @@ public enum BACnetVendorId {
   DATA_AIRE_INC((int) 126, (int) 126, (String) "Data Aire, Inc."),
   ABB_INC((int) 127, (int) 127, (String) "ABB, Inc."),
   TRANSBIT_SPZOO((int) 128, (int) 128, (String) "Transbit Sp. z o. o."),
-  TOSHIBA_CARRIER_CORPORATION((int) 129, (int) 129, (String) "Toshiba Carrier Corporation"),
+  CARRIER_JAPAN_CORPORATION((int) 129, (int) 129, (String) "Carrier Japan Corporation"),
   SHENZHEN_JUNZHI_HI_TECH_CO_LTD(
       (int) 130, (int) 130, (String) "Shenzhen Junzhi Hi-Tech Co., Ltd."),
   TOKAI_SOFT((int) 131, (int) 131, (String) "Tokai Soft"),
@@ -1692,6 +1692,14 @@ public enum BACnetVendorId {
   GOLDEN_QUALITY_CO_LTD((int) 1472, (int) 1472, (String) "Golden Quality Co. Ltd."),
   ELVACOAB((int) 1473, (int) 1473, (String) "Elvaco AB"),
   STRONG_TECHNOLOGYLLC((int) 1474, (int) 1474, (String) "Strong Technology, LLC"),
+  REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED(
+      (int) 1475, (int) 1475, (String) "REC Environmental Technology (Guangzhou) Company Limited"),
+  DISRUPTIVE_TECHNOLOGIES_RESEARCHAS(
+      (int) 1476, (int) 1476, (String) "Disruptive Technologies Research AS"),
+  NICO_CONSULTANCY_LIMITED((int) 1477, (int) 1477, (String) "Nico Consultancy Limited"),
+  HORTENLOT_JIANGSU_CO_LTD((int) 1478, (int) 1478, (String) "Horten lot (Jiangsu) Co., Ltd."),
+  PAXTON_CONTROLS_CORP((int) 1479, (int) 1479, (String) "Paxton Controls Corp."),
+  FELL_TECHNOLOGYAS((int) 1480, (int) 1480, (String) "Fell Technology AS"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

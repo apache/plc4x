@@ -172,7 +172,7 @@ const (
 	BACnetVendorId_DATA_AIRE_INC                                                                BACnetVendorId = 126
 	BACnetVendorId_ABB_INC                                                                      BACnetVendorId = 127
 	BACnetVendorId_TRANSBIT_SPZOO                                                               BACnetVendorId = 128
-	BACnetVendorId_TOSHIBA_CARRIER_CORPORATION                                                  BACnetVendorId = 129
+	BACnetVendorId_CARRIER_JAPAN_CORPORATION                                                    BACnetVendorId = 129
 	BACnetVendorId_SHENZHEN_JUNZHI_HI_TECH_CO_LTD                                               BACnetVendorId = 130
 	BACnetVendorId_TOKAI_SOFT                                                                   BACnetVendorId = 131
 	BACnetVendorId_BLUE_RIDGE_TECHNOLOGIES                                                      BACnetVendorId = 132
@@ -1509,6 +1509,12 @@ const (
 	BACnetVendorId_GOLDEN_QUALITY_CO_LTD                                                        BACnetVendorId = 1472
 	BACnetVendorId_ELVACOAB                                                                     BACnetVendorId = 1473
 	BACnetVendorId_STRONG_TECHNOLOGYLLC                                                         BACnetVendorId = 1474
+	BACnetVendorId_REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED                       BACnetVendorId = 1475
+	BACnetVendorId_DISRUPTIVE_TECHNOLOGIES_RESEARCHAS                                           BACnetVendorId = 1476
+	BACnetVendorId_NICO_CONSULTANCY_LIMITED                                                     BACnetVendorId = 1477
+	BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD                                                     BACnetVendorId = 1478
+	BACnetVendorId_PAXTON_CONTROLS_CORP                                                         BACnetVendorId = 1479
+	BACnetVendorId_FELL_TECHNOLOGYAS                                                            BACnetVendorId = 1480
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -1646,7 +1652,7 @@ func init() {
 		BACnetVendorId_DATA_AIRE_INC,
 		BACnetVendorId_ABB_INC,
 		BACnetVendorId_TRANSBIT_SPZOO,
-		BACnetVendorId_TOSHIBA_CARRIER_CORPORATION,
+		BACnetVendorId_CARRIER_JAPAN_CORPORATION,
 		BACnetVendorId_SHENZHEN_JUNZHI_HI_TECH_CO_LTD,
 		BACnetVendorId_TOKAI_SOFT,
 		BACnetVendorId_BLUE_RIDGE_TECHNOLOGIES,
@@ -2983,6 +2989,12 @@ func init() {
 		BACnetVendorId_GOLDEN_QUALITY_CO_LTD,
 		BACnetVendorId_ELVACOAB,
 		BACnetVendorId_STRONG_TECHNOLOGYLLC,
+		BACnetVendorId_REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED,
+		BACnetVendorId_DISRUPTIVE_TECHNOLOGIES_RESEARCHAS,
+		BACnetVendorId_NICO_CONSULTANCY_LIMITED,
+		BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD,
+		BACnetVendorId_PAXTON_CONTROLS_CORP,
+		BACnetVendorId_FELL_TECHNOLOGYAS,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5101,9 +5113,33 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1474' */
 			return 1474
 		}
+	case 1475:
+		{ /* '1475' */
+			return 1475
+		}
+	case 1476:
+		{ /* '1476' */
+			return 1476
+		}
+	case 1477:
+		{ /* '1477' */
+			return 1477
+		}
+	case 1478:
+		{ /* '1478' */
+			return 1478
+		}
+	case 1479:
+		{ /* '1479' */
+			return 1479
+		}
 	case 148:
 		{ /* '148' */
 			return 148
+		}
+	case 1480:
+		{ /* '1480' */
+			return 1480
 		}
 	case 149:
 		{ /* '149' */
@@ -10173,7 +10209,7 @@ func (e BACnetVendorId) VendorName() string {
 		}
 	case 129:
 		{ /* '129' */
-			return "Toshiba Carrier Corporation"
+			return "Carrier Japan Corporation"
 		}
 	case 1290:
 		{ /* '1290' */
@@ -10987,9 +11023,33 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1474' */
 			return "Strong Technology, LLC"
 		}
+	case 1475:
+		{ /* '1475' */
+			return "REC Environmental Technology (Guangzhou) Company Limited"
+		}
+	case 1476:
+		{ /* '1476' */
+			return "Disruptive Technologies Research AS"
+		}
+	case 1477:
+		{ /* '1477' */
+			return "Nico Consultancy Limited"
+		}
+	case 1478:
+		{ /* '1478' */
+			return "Horten lot (Jiangsu) Co., Ltd."
+		}
+	case 1479:
+		{ /* '1479' */
+			return "Paxton Controls Corp."
+		}
 	case 148:
 		{ /* '148' */
 			return "Temco Controls, Ltd."
+		}
+	case 1480:
+		{ /* '1480' */
+			return "Fell Technology AS"
 		}
 	case 149:
 		{ /* '149' */
@@ -15409,7 +15469,7 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	case 1289:
 		return BACnetVendorId_ENVISION_DIGITAL_INTERNATIONAL_PTE_LTD, true
 	case 129:
-		return BACnetVendorId_TOSHIBA_CARRIER_CORPORATION, true
+		return BACnetVendorId_CARRIER_JAPAN_CORPORATION, true
 	case 1290:
 		return BACnetVendorId_ANTONY_DEVELOPPEMENT_ELECTRONIQUE, true
 	case 1291:
@@ -15816,8 +15876,20 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ELVACOAB, true
 	case 1474:
 		return BACnetVendorId_STRONG_TECHNOLOGYLLC, true
+	case 1475:
+		return BACnetVendorId_REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED, true
+	case 1476:
+		return BACnetVendorId_DISRUPTIVE_TECHNOLOGIES_RESEARCHAS, true
+	case 1477:
+		return BACnetVendorId_NICO_CONSULTANCY_LIMITED, true
+	case 1478:
+		return BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD, true
+	case 1479:
+		return BACnetVendorId_PAXTON_CONTROLS_CORP, true
 	case 148:
 		return BACnetVendorId_TEMCO_CONTROLS_LTD, true
+	case 1480:
+		return BACnetVendorId_FELL_TECHNOLOGYAS, true
 	case 149:
 		return BACnetVendorId_AIRTEK_INTERNATIONAL_INC, true
 	case 15:
@@ -18348,8 +18420,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ECO_PARKING_TECHNOLOGIES, true
 	case "ENVISION_DIGITAL_INTERNATIONAL_PTE_LTD":
 		return BACnetVendorId_ENVISION_DIGITAL_INTERNATIONAL_PTE_LTD, true
-	case "TOSHIBA_CARRIER_CORPORATION":
-		return BACnetVendorId_TOSHIBA_CARRIER_CORPORATION, true
+	case "CARRIER_JAPAN_CORPORATION":
+		return BACnetVendorId_CARRIER_JAPAN_CORPORATION, true
 	case "ANTONY_DEVELOPPEMENT_ELECTRONIQUE":
 		return BACnetVendorId_ANTONY_DEVELOPPEMENT_ELECTRONIQUE, true
 	case "ISYSTEMS":
@@ -18756,8 +18828,20 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_ELVACOAB, true
 	case "STRONG_TECHNOLOGYLLC":
 		return BACnetVendorId_STRONG_TECHNOLOGYLLC, true
+	case "REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED":
+		return BACnetVendorId_REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED, true
+	case "DISRUPTIVE_TECHNOLOGIES_RESEARCHAS":
+		return BACnetVendorId_DISRUPTIVE_TECHNOLOGIES_RESEARCHAS, true
+	case "NICO_CONSULTANCY_LIMITED":
+		return BACnetVendorId_NICO_CONSULTANCY_LIMITED, true
+	case "HORTENLOT_JIANGSU_CO_LTD":
+		return BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD, true
+	case "PAXTON_CONTROLS_CORP":
+		return BACnetVendorId_PAXTON_CONTROLS_CORP, true
 	case "TEMCO_CONTROLS_LTD":
 		return BACnetVendorId_TEMCO_CONTROLS_LTD, true
+	case "FELL_TECHNOLOGYAS":
+		return BACnetVendorId_FELL_TECHNOLOGYAS, true
 	case "AIRTEK_INTERNATIONAL_INC":
 		return BACnetVendorId_AIRTEK_INTERNATIONAL_INC, true
 	case "CORNELL_UNIVERSITY":
@@ -21349,8 +21433,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ECO_PARKING_TECHNOLOGIES"
 	case BACnetVendorId_ENVISION_DIGITAL_INTERNATIONAL_PTE_LTD:
 		return "ENVISION_DIGITAL_INTERNATIONAL_PTE_LTD"
-	case BACnetVendorId_TOSHIBA_CARRIER_CORPORATION:
-		return "TOSHIBA_CARRIER_CORPORATION"
+	case BACnetVendorId_CARRIER_JAPAN_CORPORATION:
+		return "CARRIER_JAPAN_CORPORATION"
 	case BACnetVendorId_ANTONY_DEVELOPPEMENT_ELECTRONIQUE:
 		return "ANTONY_DEVELOPPEMENT_ELECTRONIQUE"
 	case BACnetVendorId_ISYSTEMS:
@@ -21757,8 +21841,20 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "ELVACOAB"
 	case BACnetVendorId_STRONG_TECHNOLOGYLLC:
 		return "STRONG_TECHNOLOGYLLC"
+	case BACnetVendorId_REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED:
+		return "REC_ENVIRONMENTAL_TECHNOLOGY_GUANGZHOU_COMPANY_LIMITED"
+	case BACnetVendorId_DISRUPTIVE_TECHNOLOGIES_RESEARCHAS:
+		return "DISRUPTIVE_TECHNOLOGIES_RESEARCHAS"
+	case BACnetVendorId_NICO_CONSULTANCY_LIMITED:
+		return "NICO_CONSULTANCY_LIMITED"
+	case BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD:
+		return "HORTENLOT_JIANGSU_CO_LTD"
+	case BACnetVendorId_PAXTON_CONTROLS_CORP:
+		return "PAXTON_CONTROLS_CORP"
 	case BACnetVendorId_TEMCO_CONTROLS_LTD:
 		return "TEMCO_CONTROLS_LTD"
+	case BACnetVendorId_FELL_TECHNOLOGYAS:
+		return "FELL_TECHNOLOGYAS"
 	case BACnetVendorId_AIRTEK_INTERNATIONAL_INC:
 		return "AIRTEK_INTERNATIONAL_INC"
 	case BACnetVendorId_CORNELL_UNIVERSITY:
