@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.rtu;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
@@ -31,6 +32,8 @@ import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 import org.apache.plc4x.java.spi.values.PlcValueHandler;
@@ -139,8 +142,22 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 1) {
-                return byteBuf.readableBytes();
+            // A Modbus RTU packet has the absolute minimum size of 4 (if it has absolutely no payload)
+            if (byteBuf.readableBytes() >= 4) {
+                // Fetch what's currently in the buffer
+                byte[] buf = new byte[byteBuf.readableBytes()];
+                byteBuf.getBytes(byteBuf.readerIndex(), buf);
+                ReadBufferByteBased reader = new ReadBufferByteBased(buf);
+
+                // Try to parse the buffer content.
+                try {
+                    ModbusADU modbusADU = ModbusRtuADU.staticParse(reader, DriverType.MODBUS_RTU, true);
+
+                    // Theoretically, the buffer could contain more than one message.
+                    return modbusADU.getLengthInBytes();
+                } catch (ParseException e) {
+                    return -1;
+                }
             }
             return -1;
         }

@@ -21,6 +21,8 @@ package org.apache.plc4x.java.modbus.ascii;
 import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
+import org.apache.plc4x.java.modbus.readwrite.ModbusRtuADU;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
@@ -42,6 +44,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
 public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
@@ -134,6 +137,7 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
                 new ModbusAsciiInput(), new ModbusAsciiOutput())
             .withProtocol(ModbusAsciiProtocolLogic.class)
             .withPacketSizeEstimator(ModbusAsciiDriver.ByteLengthEstimator.class)
+            .withCorruptPacketRemover(ModbusAsciiDriver.CorruptPackageCleaner.class)
             // Every incoming message is to be treated as a response.
             .withParserArgs(DriverType.MODBUS_ASCII, true)
             .build();
@@ -143,10 +147,41 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
-            if (byteBuf.readableBytes() >= 1) {
-                return byteBuf.readableBytes();
+            // A Modbus ASCII packet has the absolute minimum size of 9 (if it has absolutely no payload)
+            // That's one starting character ":" two chars at the end CR + LF
+            // The message itself is encoded as two ascii digits of a hex-encoded byte and the minimum of
+            // a Modbus ASCII PDU is 3 bytes, which is 6 bytes in hex-encoded ascii string.
+            if (byteBuf.readableBytes() >= 9) {
+                // Fetch what's currently in the buffer
+                byte[] buf = new byte[byteBuf.readableBytes()];
+                byteBuf.getBytes(byteBuf.readerIndex(), buf);
+                ReadBufferByteBased reader = new ReadBufferByteBased(buf);
+
+                // Try to parse the buffer content.
+                try {
+                    ModbusAsciiInput input = new ModbusAsciiInput();
+                    ModbusAsciiADU modbusADU = input.parse(reader, DriverType.MODBUS_ASCII, true);
+
+                    // Make sure we only read one message.
+                    return (modbusADU.getLengthInBytes() * 2) + 3;
+                } catch (ParseException e) {
+                    return -1;
+                }
             }
             return -1;
+        }
+    }
+
+    /**
+     * Consumes all Bytes until the starting character ":" is found
+     */
+    public static class CorruptPackageCleaner implements Consumer<ByteBuf> {
+        @Override
+        public void accept(ByteBuf byteBuf) {
+            while (byteBuf.getUnsignedByte(0) != 0x3A) {
+                // Just consume the bytes till the next possible start position.
+                byteBuf.readByte();
+            }
         }
     }
 
@@ -158,6 +193,10 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
     public static class ModbusAsciiInput implements MessageInput<ModbusAsciiADU> {
         @Override
         public ModbusAsciiADU parse(ReadBuffer io, Object... args) throws ParseException {
+            // A Modbus ASCII message starts with an ASCII character ":" and is ended by two characters CRLF
+            // (Carriage-Return + Line-Feed)
+            // The actual payload is that each byte of the message is encoded by a string representation of it's
+            // two hex-digits.
             final short startChar = io.readShort(8);
             // Check if the message starts with the ":" char.
             if(startChar != 0x3A) {
@@ -165,7 +204,7 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
             }
             // Read in all the bytes in the message.
             final ReadBufferByteBased bufferByteBased = (ReadBufferByteBased) io;
-            // Read in all bytes except the last two ones, which contain a line-break and carriage-return.
+            // Read in all bytes except the last two ones, which contain a carriage-return and line-break.
             final byte[] bytes = bufferByteBased.getBytes(bufferByteBased.getPos(), bufferByteBased.getTotalBytes() - 2);
             // Convert the bytes into a string (Which is the hex-encoded message)
             final String inputString = new String(bytes, StandardCharsets.UTF_8);
