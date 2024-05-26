@@ -45,9 +45,7 @@ class PlcDriverManager:
         defined in the "plc4py.drivers" namespace.
         """
         # Log the class loader used
-        logging.info(
-            f"Instantiating new PLC Driver Manager with class loader {self.class_loader}"
-        )
+        logging.info("Instantiating new PLC Driver Manager with class loader %s", self.class_loader)
 
         # Add the PlcDriverClassLoader hookspecs to the class loader
         self.class_loader.add_hookspecs(PlcDriverClassLoader)
@@ -73,7 +71,7 @@ class PlcDriverManager:
 
         # Log the successful registration of each driver
         for driver in self._driver_map:
-            logging.info(f"... {driver} .. OK")
+            logging.info("... %s .. OK", driver)
 
         # Check for any pending plugins
         self.class_loader.check_pending()
