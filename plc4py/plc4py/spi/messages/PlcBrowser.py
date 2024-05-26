@@ -19,12 +19,12 @@
 import asyncio
 import logging
 
-from plc4py.api.messages.PlcRequest import PlcReadRequest
-from plc4py.api.messages.PlcResponse import PlcReadResponse
+from plc4py.api.messages.PlcRequest import PlcBrowseRequest
+from plc4py.api.messages.PlcResponse import PlcBrowseResponse
 from plc4py.api.value.PlcValue import PlcResponseCode
 
 
-class PlcReader:
+class PlcBrowser:
     """
     Interface implemented by all PlcConnections that are able to read from remote resources.
     """
@@ -33,35 +33,28 @@ class PlcReader:
         self._transport = None
         self._device = None
 
-    async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
+    async def _browse(self, request: PlcBrowseRequest) -> PlcBrowseResponse:
         """
-        Executes a PlcReadRequest
-
-        This method sends a read request to the connected device and waits for a response.
-        The response is then returned as a PlcReadResponse.
-
-        If no device is set, an error is logged and a PlcResponseCode.NOT_CONNECTED is returned.
-        If an error occurs during the execution of the read request, a PlcResponseCode.INTERNAL_ERROR is
-        returned.
-
-        :param request: PlcReadRequest to execute
-        :return: PlcReadResponse
+        Executes a PlcBrowseRequest
         """
 
-        # TODO: Insert Optimizer base on data from a browse request
         try:
-            logging.debug("Sending read request to Device")
+            # Send the browse request to the device and wait for a response
+            logging.debug("Sending browse request to Device")
             response = await asyncio.wait_for(
-                self._device.read(request, self._transport), 10
+                self._device.browse(request, self._transport), 5
             )
+            # Return the response
             return response
         except Exception:
+            # If an error occurs during the execution of the browse request, return a response with
+            # the INTERNAL_ERROR code. This exception is very general and probably should be replaced.
             # TODO:- This exception is very general and probably should be replaced
-            return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
+            return PlcBrowseResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
-    def is_read_supported(self) -> bool:
+    def is_browse_supported(self) -> bool:
         """
-        Indicates if the connection supports read requests.
-        :return: True if connection supports reading, False otherwise
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
         """
         return True

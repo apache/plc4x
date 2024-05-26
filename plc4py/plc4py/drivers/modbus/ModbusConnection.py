@@ -117,40 +117,6 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         # using the configuration from the url provided and the transport
         return ModbusConnection(config, transport)
 
-    def is_connected(self) -> bool:
-        """
-        Indicates if the connection is established to a remote PLC.
-
-        :return: True if connection, False otherwise
-        """
-        """
-        The function checks if the connection to the remote PLC is established.
-        The connection is considered established if the transport object is not None
-        and the transport is not closing.
-
-        :return bool: True if connection, False otherwise
-        """
-        if self._transport is not None:
-            # The transport is not None if a connection is established
-            return not self._transport.is_closing()
-        else:
-            # The transport is None if no connection is established
-            return False
-
-    def close(self) -> None:
-        """
-        Closes the connection to the remote PLC.
-        :return:
-        """
-        if self._transport is not None:
-            self._transport.close()
-
-    def read_request_builder(self) -> ReadRequestBuilder:
-        """
-        :return: read request builder.
-        """
-        return DefaultReadRequestBuilder(ModbusTagBuilder)
-
     async def execute(self, request: PlcRequest) -> PlcResponse:
         """
         Executes a PlcRequest as long as it's already connected
@@ -168,97 +134,11 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-    def _check_connection(self) -> bool:
+    def read_request_builder(self) -> ReadRequestBuilder:
         """
-        Checks if a ModbusDevice is set.
-
-        :return: True if no device is set, False otherwise.
+        :return: read request builder.
         """
-        """
-        A ModbusDevice is only set if the device was successfully connected during the constructor.
-        If no device is set, it's not possible to execute any read or write requests.
-
-        This method is used to prevent calling methods on the ModbusConnection which are not possible
-        if no device is set.
-        """
-        return self._device is None
-
-    async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
-        """
-        Executes a PlcReadRequest
-
-        This method sends a read request to the connected modbus device and waits for a response.
-        The response is then returned as a PlcReadResponse.
-
-        If no device is set, an error is logged and a PlcResponseCode.NOT_CONNECTED is returned.
-        If an error occurs during the execution of the read request, a PlcResponseCode.INTERNAL_ERROR is
-        returned.
-
-        :param request: PlcReadRequest to execute
-        :return: PlcReadResponse
-        """
-        if self._check_connection():
-            logging.error("No device is set in the Modbus connection!")
-            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
-
-        # TODO: Insert Optimizer base on data from a browse request
-        try:
-            logging.debug("Sending read request to Modbus Device")
-            response = await asyncio.wait_for(
-                self._device.read(request, self._transport), 10
-            )
-            return response
-        except Exception:
-            # TODO:- This exception is very general and probably should be replaced
-            return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
-
-    async def _write(self, request: PlcWriteRequest) -> PlcWriteResponse:
-        """
-        Executes a PlcWriteRequest
-
-        This method sends a write request to the connected Modbus device and waits for a response.
-        The response is then returned as a PlcWriteResponse.
-
-        If no device is set, an error is logged and a PlcWriteResponse with the
-        PlcResponseCode.NOT_CONNECTED code is returned.
-        If an error occurs during the execution of the write request, a
-        PlcWriteResponse with the PlcResponseCode.INTERNAL_ERROR code is returned.
-
-        :param request: PlcWriteRequest to execute
-        :return: PlcWriteResponse
-        """
-        if self._check_connection():
-            # If no device is set, log an error and return a response with the NOT_CONNECTED code
-            logging.error("No device is set in the modbus connection!")
-            return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
-
-        try:
-            # Send the write request to the device and wait for a response
-            logging.debug("Sending write request to Modbus Device")
-            response = await asyncio.wait_for(
-                self._device.write(request, self._transport), 5
-            )
-            # Return the response
-            return response
-        except Exception:
-            # If an error occurs during the execution of the write request, return a response with
-            # the INTERNAL_ERROR code. This exception is very general and probably should be replaced.
-            # TODO:- This exception is very general and probably should be replaced
-            return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
-
-    def is_read_supported(self) -> bool:
-        """
-        Indicates if the connection supports read requests.
-        :return: True if connection supports reading, False otherwise
-        """
-        return True
-
-    def is_write_supported(self) -> bool:
-        """
-        Indicates if the connection supports write requests.
-        :return: True if connection supports writing, False otherwise
-        """
-        return False
+        return DefaultReadRequestBuilder(ModbusTagBuilder)
 
     def is_subscribe_supported(self) -> bool:
         """

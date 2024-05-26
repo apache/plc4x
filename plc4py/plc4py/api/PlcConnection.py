@@ -37,22 +37,35 @@ from plc4py.utils.GenericTypes import GenericGenerator
 class PlcConnection(GenericGenerator):
     def __init__(self, config: PlcConfiguration):
         self._configuration = config
+        self._transport = None
 
-    @abstractmethod
     def is_connected(self) -> bool:
         """
         Indicates if the connection is established to a remote PLC.
+
         :return: True if connection, False otherwise
         """
-        pass
+        """
+        The function checks if the connection to the remote PLC is established.
+        The connection is considered established if the transport object is not None
+        and the transport is not closing.
 
-    @abstractmethod
+        :return bool: True if connection, False otherwise
+        """
+        if self._transport is not None:
+            # The transport is not None if a connection is established
+            return not self._transport.is_closing()
+        else:
+            # The transport is None if no connection is established
+            return False
+
     def close(self) -> None:
         """
         Closes the connection to the remote PLC.
         :return:
         """
-        pass
+        if self._transport is not None:
+            self._transport.close()
 
     @abstractmethod
     def read_request_builder(self) -> ReadRequestBuilder:

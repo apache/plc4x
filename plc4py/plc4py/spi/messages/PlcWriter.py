@@ -16,11 +16,12 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-
-from typing import Awaitable
+import asyncio
+import logging
 
 from plc4py.api.messages.PlcRequest import PlcWriteRequest
 from plc4py.api.messages.PlcResponse import PlcWriteResponse
+from plc4py.api.value.PlcValue import PlcResponseCode
 
 
 class PlcWriter:
@@ -28,10 +29,43 @@ class PlcWriter:
     Interface implemented by all PlcConnections that are able to write from remote resources.
     """
 
-    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcWriteResponse]:
-        """
-        Writes a requested value to a PLC
+    def __init__(self):
+        self._transport = None
+        self._device = None
 
-        :param request: object describing the type and location of the value
-        :return: Future, giving async access to the returned value
+    async def _write(self, request: PlcWriteRequest) -> PlcWriteResponse:
         """
+        Executes a PlcWriteRequest
+
+        This method sends a write request to the connected Modbus device and waits for a response.
+        The response is then returned as a PlcWriteResponse.
+
+        If no device is set, an error is logged and a PlcWriteResponse with the
+        PlcResponseCode.NOT_CONNECTED code is returned.
+        If an error occurs during the execution of the write request, a
+        PlcWriteResponse with the PlcResponseCode.INTERNAL_ERROR code is returned.
+
+        :param request: PlcWriteRequest to execute
+        :return: PlcWriteResponse
+        """
+
+        try:
+            # Send the write request to the device and wait for a response
+            logging.debug("Sending write request to Device")
+            response = await asyncio.wait_for(
+                self._device.write(request, self._transport), 5
+            )
+            # Return the response
+            return response
+        except Exception:
+            # If an error occurs during the execution of the write request, return a response with
+            # the INTERNAL_ERROR code. This exception is very general and probably should be replaced.
+            # TODO:- This exception is very general and probably should be replaced
+            return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
+
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        return True
