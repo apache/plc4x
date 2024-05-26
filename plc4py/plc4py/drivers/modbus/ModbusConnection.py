@@ -151,7 +151,7 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         """
         return DefaultReadRequestBuilder(ModbusTagBuilder)
 
-    def execute(self, request: PlcRequest) -> Awaitable[PlcResponse]:
+    async def execute(self, request: PlcRequest) -> PlcResponse:
         """
         Executes a PlcRequest as long as it's already connected
         :param request: Plc Request to execute
@@ -161,10 +161,10 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         if isinstance(request, PlcReadRequest):
-            return self._read(request)
+            return await self._read(request)
 
         elif isinstance(request, PlcWriteRequest):
-            return self._write(request)
+            return await self._write(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
@@ -183,7 +183,7 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         """
         return self._device is None
 
-    def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
+    async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
         """
         Executes a PlcReadRequest
 
@@ -197,23 +197,20 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         :param request: PlcReadRequest to execute
         :return: PlcReadResponse
         """
-        if self._device is None:
-            logging.error("No device is set in the Umas connection!")
+        if self._check_connection():
+            logging.error("No device is set in the Modbus connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         # TODO: Insert Optimizer base on data from a browse request
-        async def _request(req, device) -> PlcReadResponse:
-            try:
-                response = await asyncio.wait_for(device.read(req, self._transport), 10)
-                return response
-            except Exception:
-                # TODO:- This exception is very general and probably should be replaced
-
-                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
-
-        logging.debug("Sending read request to UmasDevice")
-        future = asyncio.ensure_future(_request(request, self._device))
-        return future
+        try:
+            logging.debug("Sending read request to Modbus Device")
+            response = await asyncio.wait_for(
+                self._device.read(request, self._transport), 10
+            )
+            return response
+        except Exception:
+            # TODO:- This exception is very general and probably should be replaced
+            return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
     async def _write(self, request: PlcWriteRequest) -> PlcWriteResponse:
         """

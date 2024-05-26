@@ -160,47 +160,68 @@ class UmasConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-    def _read(self, request: PlcReadRequest) -> Awaitable[PlcReadResponse]:
+    async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
         """
         Executes a PlcReadRequest
+
+        This method sends a read request to the connected modbus device and waits for a response.
+        The response is then returned as a PlcReadResponse.
+
+        If no device is set, an error is logged and a PlcResponseCode.NOT_CONNECTED is returned.
+        If an error occurs during the execution of the read request, a PlcResponseCode.INTERNAL_ERROR is
+        returned.
+
+        :param request: PlcReadRequest to execute
+        :return: PlcReadResponse
         """
-        if self._device is None:
+        if self._check_connection():
             logging.error("No device is set in the Umas connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
         # TODO: Insert Optimizer base on data from a browse request
-        async def _request(req, device) -> PlcReadResponse:
-            try:
-                response = await asyncio.wait_for(device.read(req, self._transport), 10)
-                return response
-            except Exception:
-                # TODO:- This exception is very general and probably should be replaced
-                self.log.exception("Caught an exception while executing a read request")
-                return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
+        try:
+            logging.debug("Sending read request to Umas Device")
+            response = await asyncio.wait_for(
+                self._device.read(request, self._transport), 10
+            )
+            return response
+        except Exception:
+            # TODO:- This exception is very general and probably should be replaced
+            return PlcReadResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
-        logging.debug("Sending read request to UmasDevice")
-        future = asyncio.ensure_future(_request(request, self._device))
-        return future
-
-    def _write(self, request: PlcWriteRequest) -> Awaitable[PlcTagResponse]:
+    async def _write(self, request: PlcWriteRequest) -> PlcWriteResponse:
         """
         Executes a PlcWriteRequest
+
+        This method sends a write request to the connected Modbus device and waits for a response.
+        The response is then returned as a PlcWriteResponse.
+
+        If no device is set, an error is logged and a PlcWriteResponse with the
+        PlcResponseCode.NOT_CONNECTED code is returned.
+        If an error occurs during the execution of the write request, a
+        PlcWriteResponse with the PlcResponseCode.INTERNAL_ERROR code is returned.
+
+        :param request: PlcWriteRequest to execute
+        :return: PlcWriteResponse
         """
-        if self._device is None:
-            logging.error("No device is set in the umas connection!")
+        if self._check_connection():
+            # If no device is set, log an error and return a response with the NOT_CONNECTED code
+            logging.error("No device is set in the Umas connection!")
             return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
 
-        async def _request(req, device) -> PlcWriteResponse:
-            try:
-                response = await asyncio.wait_for(device.write(req, self._transport), 5)
-                return response
-            except Exception as e:
-                # TODO:- This exception is very general and probably should be replaced
-                return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
-
-        logging.debug("Sending write request to ModbusDevice")
-        future = asyncio.ensure_future(_request(request, self._device))
-        return future
+        try:
+            # Send the write request to the device and wait for a response
+            logging.debug("Sending write request to Umas Device")
+            response = await asyncio.wait_for(
+                self._device.write(request, self._transport), 5
+            )
+            # Return the response
+            return response
+        except Exception:
+            # If an error occurs during the execution of the write request, return a response with
+            # the INTERNAL_ERROR code. This exception is very general and probably should be replaced.
+            # TODO:- This exception is very general and probably should be replaced
+            return PlcWriteResponse(PlcResponseCode.INTERNAL_ERROR, {})
 
     def _browse(self, request: PlcBrowseRequest) -> Awaitable[PlcBrowseResponse]:
         """

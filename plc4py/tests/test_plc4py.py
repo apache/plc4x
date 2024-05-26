@@ -111,9 +111,7 @@ async def test_plc_driver_manager_init_mock_read_request():
             # Build the request
             request: PlcTagRequest = builder.build()
             # Execute the request
-            response: PlcReadResponse = cast(
-                PlcReadResponse, await connection.execute(request)
-            )
+            response = await connection.execute(request)
 
     # Verify that the request has one field
     assert response.response_code == PlcResponseCode.OK

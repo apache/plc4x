@@ -34,7 +34,7 @@ async def test_modbus_discrete_inputs_request_standardized():
     """
     # Create a Modbus PDU Read Discrete Inputs Request with address 0 and quantity 10
     discrete_inputs_request = ModbusPDUReadDiscreteInputsRequestBuilder(0, 10).build()
-    
+
     # Ensure the request object is not None
     assert discrete_inputs_request is not None
 
@@ -64,19 +64,19 @@ async def test_modbus_ModbusTcpADUBuilder_serialize():
     """
     # Create a Modbus PDU Read Discrete Inputs
     pdu = ModbusPDUReadDiscreteInputsRequestBuilder(5, 2).build()
-    
+
     # Build Modbus TCP ADU
     request = ModbusTcpADUBuilder(10, 5, pdu).build(False)
-    
+
     # Get the size of the request
     size = request.length_in_bytes()
-    
+
     # Create a write buffer
     write_buffer = WriteBufferByteBased(size, ByteOrder.BIG_ENDIAN)
-    
+
     # Serialize the request
     serialize = request.serialize(write_buffer)
-    
+
     # Get the serialized bytes
     bytes_array = write_buffer.get_bytes().tobytes()
 

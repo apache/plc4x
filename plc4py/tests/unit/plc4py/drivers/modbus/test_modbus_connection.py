@@ -34,12 +34,12 @@ async def manual_test_plc_driver_modbus_connect():
     """
     # Initialize the PlcDriverManager
     driver_manager = PlcDriverManager()
-    
+
     # Establish a connection to the Modbus PLC
     async with driver_manager.connection("modbus://1") as connection:
         # Check if the connection is successful
         assert connection.is_connected()
-    
+
     # Ensure the connection is closed after exiting the context manager
     assert not connection.is_connected()
 
@@ -54,7 +54,7 @@ async def test_plc_driver_modbus_read():
 
     # Initialize the PlcDriverManager
     driver_manager = PlcDriverManager()
-    
+
     # Establish a connection to the Modbus PLC
     async with driver_manager.connection("modbus://127.0.0.1:5020") as connection:
         with connection.read_request_builder() as builder:
@@ -62,10 +62,11 @@ async def test_plc_driver_modbus_read():
             request = builder.build()
 
         # Execute the read request
-        future = connection.execute(request)
-        await future
-        response = future.result()
-        value = response.tags["Random Tag"].value
-        log.error("Read tag 4x00001[10] - %s", value)
+        for _ in range(100):
+            future = connection.execute(request)
+
+            response = await future
+            value = response.tags["Random Tag"].value
+            log.error("Read tag 4x00001[10] - %s", value)
 
     pass
