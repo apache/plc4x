@@ -41,8 +41,8 @@ from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
 from plc4py.drivers.umas.UmasDevice import UmasDevice
 from plc4py.drivers.umas.UmasProtocol import UmasProtocol
 from plc4py.drivers.umas.UmasTag import UmasTagBuilder
-from plc4py.spi.messages.PlcBrowser import PlcBrowser
-from plc4py.spi.messages.PlcReader import PlcReader
+from plc4py.spi.messages.PlcBrowser import DefaultPlcBrowser
+from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import (
     DefaultReadRequestBuilder,
     DefaultBrowseRequestBuilder,
@@ -51,7 +51,7 @@ from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class UmasConnection(PlcConnection, PlcReader, PlcBrowser, PlcConnectionMetaData):
+class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
     """
     Umas TCP PLC connection implementation
     """
@@ -136,13 +136,6 @@ class UmasConnection(PlcConnection, PlcReader, PlcBrowser, PlcConnectionMetaData
             return self._browse(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
-
-    def is_subscribe_supported(self) -> bool:
-        """
-        Indicates if the connection supports subscription requests.
-        :return: True if connection supports subscriptions, False otherwise
-        """
-        return False
 
 
 class UmasDriver(PlcDriver):

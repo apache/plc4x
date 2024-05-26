@@ -18,6 +18,7 @@
 #
 import asyncio
 import logging
+from abc import abstractmethod
 
 from plc4py.api.messages.PlcRequest import PlcBrowseRequest
 from plc4py.api.messages.PlcResponse import PlcBrowseResponse
@@ -25,6 +26,27 @@ from plc4py.api.value.PlcValue import PlcResponseCode
 
 
 class PlcBrowser:
+    """
+    Interface implemented by all PlcConnections that are able to read from remote resources.
+    """
+
+    @abstractmethod
+    async def _browse(self, request: PlcBrowseRequest) -> PlcBrowseResponse:
+        """
+        Executes a PlcBrowseRequest
+        """
+        pass
+
+    @abstractmethod
+    def is_browse_supported(self) -> bool:
+        """
+        Indicates if the connection supports browsing requests.
+        :return: True if connection supports browsing, False otherwise
+        """
+        pass
+
+
+class DefaultPlcBrowser(PlcBrowser):
     """
     Interface implemented by all PlcConnections that are able to read from remote resources.
     """

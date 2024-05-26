@@ -39,9 +39,9 @@ from plc4py.api.messages.PlcResponse import (
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.mock.MockTag import MockTagBuilder
-from plc4py.spi.messages.PlcReader import PlcReader
+from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
-from plc4py.spi.messages.PlcWriter import PlcWriter
+from plc4py.spi.messages.PlcWriter import DefaultPlcWriter
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.transport.MockTransport import MockTransport
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
@@ -73,7 +73,7 @@ class MockDevice:
 
 
 @dataclass
-class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData):
+class MockConnection(PlcConnection, DefaultPlcReader, DefaultPlcWriter):
     _device: MockDevice = field(default_factory=lambda: MockDevice())
     _transport: Union[Plc4xBaseTransport, None] = None
 
@@ -111,20 +111,6 @@ class MockConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData)
             return await self._read(request)
 
         return self._default_failed_request(PlcResponseCode.NOT_CONNECTED)
-
-    def is_subscribe_supported(self) -> bool:
-        """
-        Indicates if the connection supports subscription requests.
-        :return: True if connection supports subscriptions, False otherwise
-        """
-        return False
-
-    def is_browse_supported(self) -> bool:
-        """
-        Indicates if the connection supports browsing requests.
-        :return: True if connection supports browsing, False otherwise
-        """
-        return False
 
 
 class MockDriver(PlcDriver):

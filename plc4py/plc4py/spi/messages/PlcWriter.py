@@ -18,6 +18,7 @@
 #
 import asyncio
 import logging
+from abc import abstractmethod
 
 from plc4py.api.messages.PlcRequest import PlcWriteRequest
 from plc4py.api.messages.PlcResponse import PlcWriteResponse
@@ -25,6 +26,38 @@ from plc4py.api.value.PlcValue import PlcResponseCode
 
 
 class PlcWriter:
+    """
+    Interface implemented by all PlcConnections that are able to write from remote resources.
+    """
+
+    @abstractmethod
+    async def _write(self, request: PlcWriteRequest) -> PlcWriteResponse:
+        """
+        Executes a PlcWriteRequest
+
+        This method sends a write request to the connected Modbus device and waits for a response.
+        The response is then returned as a PlcWriteResponse.
+
+        If no device is set, an error is logged and a PlcWriteResponse with the
+        PlcResponseCode.NOT_CONNECTED code is returned.
+        If an error occurs during the execution of the write request, a
+        PlcWriteResponse with the PlcResponseCode.INTERNAL_ERROR code is returned.
+
+        :param request: PlcWriteRequest to execute
+        :return: PlcWriteResponse
+        """
+        pass
+
+    @abstractmethod
+    def is_write_supported(self) -> bool:
+        """
+        Indicates if the connection supports write requests.
+        :return: True if connection supports writing, False otherwise
+        """
+        pass
+
+
+class DefaultPlcWriter(PlcWriter):
     """
     Interface implemented by all PlcConnections that are able to write from remote resources.
     """

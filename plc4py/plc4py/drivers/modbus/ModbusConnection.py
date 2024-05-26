@@ -17,24 +17,20 @@
 # under the License.
 #
 import asyncio
-import logging
-from typing import Type, Awaitable
+from typing import Type
 
 import plc4py
 from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
-from plc4py.api.messages.PlcResponse import (
-    PlcResponse,
-    PlcReadResponse,
-    PlcWriteResponse,
-    PlcTagResponse,
-)
 from plc4py.api.messages.PlcRequest import (
     ReadRequestBuilder,
     PlcRequest,
     PlcReadRequest,
     PlcWriteRequest,
+)
+from plc4py.api.messages.PlcResponse import (
+    PlcResponse,
 )
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
@@ -42,14 +38,14 @@ from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusDevice import ModbusDevice
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
 from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
-from plc4py.spi.messages.PlcReader import PlcReader
+from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
-from plc4py.spi.messages.PlcWriter import PlcWriter
+from plc4py.spi.messages.PlcWriter import DefaultPlcWriter
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
-class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaData):
+class ModbusConnection(PlcConnection, DefaultPlcReader, DefaultPlcWriter):
     """
     Modbus TCP PLC connection implementation
     """
@@ -139,20 +135,6 @@ class ModbusConnection(PlcConnection, PlcReader, PlcWriter, PlcConnectionMetaDat
         :return: read request builder.
         """
         return DefaultReadRequestBuilder(ModbusTagBuilder)
-
-    def is_subscribe_supported(self) -> bool:
-        """
-        Indicates if the connection supports subscription requests.
-        :return: True if connection supports subscriptions, False otherwise
-        """
-        return False
-
-    def is_browse_supported(self) -> bool:
-        """
-        Indicates if the connection supports browsing requests.
-        :return: True if connection supports browsing, False otherwise
-        """
-        return False
 
 
 class ModbusDriver(PlcDriver):

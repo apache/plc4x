@@ -18,6 +18,7 @@
 #
 import asyncio
 import logging
+from abc import abstractmethod
 
 from plc4py.api.messages.PlcRequest import PlcReadRequest
 from plc4py.api.messages.PlcResponse import PlcReadResponse
@@ -25,6 +26,37 @@ from plc4py.api.value.PlcValue import PlcResponseCode
 
 
 class PlcReader:
+    """
+    Interface implemented by all PlcConnections that are able to read from remote resources.
+    """
+
+    @abstractmethod
+    async def _read(self, request: PlcReadRequest) -> PlcReadResponse:
+        """
+        Executes a PlcReadRequest
+
+        This method sends a read request to the connected device and waits for a response.
+        The response is then returned as a PlcReadResponse.
+
+        If no device is set, an error is logged and a PlcResponseCode.NOT_CONNECTED is returned.
+        If an error occurs during the execution of the read request, a PlcResponseCode.INTERNAL_ERROR is
+        returned.
+
+        :param request: PlcReadRequest to execute
+        :return: PlcReadResponse
+        """
+        pass
+
+    @abstractmethod
+    def is_read_supported(self) -> bool:
+        """
+        Indicates if the connection supports read requests.
+        :return: True if connection supports reading, False otherwise
+        """
+        pass
+
+
+class DefaultPlcReader(PlcReader):
     """
     Interface implemented by all PlcConnections that are able to read from remote resources.
     """
