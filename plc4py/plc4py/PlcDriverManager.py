@@ -27,12 +27,22 @@ from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.PlcDriver import PlcDriver
 from plc4py.spi.PlcDriverClassLoader import PlcDriverClassLoader
 from plc4py.utils.ConnectionStringHandling import get_protocol_code
+from plc4py.spi.PlcDriverClassLoader import PlcTransportClassLoader
+from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 
 
 @dataclass
 class PlcDriverManager:
-    class_loader: PluginManager = field(default_factory=lambda: PluginManager("plc4py"))
+    class_loader: PluginManager = field(
+        default_factory=lambda: PluginManager("plc4py.drivers")
+    )
+    transport_loader: PluginManager = field(
+        default_factory=lambda: PluginManager("plc4py.transports")
+    )
     _driver_map: Dict[str, Type[PlcDriver]] = field(default_factory=lambda: {})
+    _transport_map: Dict[str, Type[Plc4xBaseTransport]] = field(
+        default_factory=lambda: {}
+    )
 
     def __post_init__(self):
         """
@@ -78,6 +88,43 @@ class PlcDriverManager:
 
         # Check for any pending plugins
         self.class_loader.check_pending()
+
+        ######
+        # Log the class loader used
+        logging.info(
+            "Instantiating new PLC Transport Manager with class loader %s",
+            self.transport_loader,
+        )
+
+        # Add the PlcDriverClassLoader hookspecs to the class loader
+        self.transport_loader.add_hookspecs(PlcTransportClassLoader)
+
+        # Log the registration of drivers
+        logging.info("Registering available transports...")
+
+        # Register the plc4py.drivers package
+        import plc4py.spi.transport
+
+        self.transport_loader.register(plc4py.spi.transport)
+
+        # Load the setuptools entry points defined in the "plc4py.drivers" namespace
+        self.transport_loader.load_setuptools_entrypoints("plc4py.transports")
+
+        # Create a dictionary mapping the hook names to the PlcDriver instances
+        self._transport_map = {
+            key: loader
+            for key, loader in zip(
+                self.transport_loader.hook.key(),
+                self.transport_loader.hook.get_transport(),
+            )
+        }
+
+        # Log the successful registration of each driver
+        for transport in self._transport_map:
+            logging.info("... %s .. OK", transport)
+
+        # Check for any pending plugins
+        self.transport_loader.check_pending()
 
     @asynccontextmanager
     async def connection(self, url: str) -> AsyncIterator[PlcConnection]:

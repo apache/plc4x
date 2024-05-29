@@ -20,9 +20,13 @@ import asyncio
 import logging
 from asyncio import Protocol
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Type
 
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
+import plc4py
+from plc4py.spi.transport.PlcTransportLoader import PlcTransportLoader
+
+from plc4py.spi.transport.TCPTransport import TCPTransport
 
 
 @dataclass
@@ -45,3 +49,19 @@ class MockTransport(Plc4xBaseTransport):
         protocol_factory: Callable[[], Protocol], host: str, port: int
     ) -> Plc4xBaseTransport:
         return MockTransport(None, None, host, port)
+
+
+class MockTransportLoader(PlcTransportLoader):
+    """
+    Umas Driver Pluggy Hook Implementation, lets pluggy find the driver by name
+    """
+
+    @staticmethod
+    @plc4py.spi.transport.hookimpl
+    def get_transport() -> Type[MockTransport]:
+        return MockTransport
+
+    @staticmethod
+    @plc4py.spi.transport.hookimpl
+    def key() -> str:
+        return "mock"

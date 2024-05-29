@@ -36,8 +36,6 @@ from typing import List, Union
 
 from bitarray import bitarray
 from bitarray.util import zeros
-from typing_extensions import override
-
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware

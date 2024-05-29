@@ -162,11 +162,11 @@ class UmasDriverLoader(PlcDriverLoader):
     """
 
     @staticmethod
-    @plc4py.hookimpl
+    @plc4py.drivers.hookimpl
     def get_driver() -> Type[UmasDriver]:
         return UmasDriver
 
     @staticmethod
-    @plc4py.hookimpl
+    @plc4py.drivers.hookimpl
     def key() -> str:
         return "umas"

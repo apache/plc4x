@@ -63,6 +63,10 @@ setup(
             "mock = plc4py.drivers.mock.MockConnection:MockDriverLoader",
             "modbus = plc4py.drivers.modbus.ModbusConnection:ModbusDriverLoader",
             "umas = plc4py.drivers.umas.UmasConnection:UmasDriverLoader",
-        ]
+        ],
+        "plc4py.transports": [
+            "tcp = plc4py.spi.transport.TCPTransport:TCPTransportLoader",
+            "mock = plc4py.spi.transport.MockTransport:MockTransportLoader",
+        ],
     },
 )
