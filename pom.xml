@@ -112,7 +112,7 @@
     <byte-buddy.version>1.14.16</byte-buddy.version>
     <cmake.version>3.29.3-b2</cmake.version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
-    <commons-cli.version>1.7.0</commons-cli.version>
+    <commons-cli.version>1.8.0</commons-cli.version>
     <commons-codec.version>1.17.0</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
     <commons-compress.version>1.26.1</commons-compress.version>
