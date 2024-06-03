@@ -19,6 +19,13 @@
 package org.apache.plc4x.java.spi.generation;
 
 public enum ByteOrder {
+    //A B C D
     BIG_ENDIAN,
-    LITTLE_ENDIAN
+    //D C B A
+    LITTLE_ENDIAN,
+    //B A D C
+    BIG_ENDIAN_WORD_SWAP,
+    //C D A B
+    LITTLE_ENDIAN_WORD_SWAP
+
 }
