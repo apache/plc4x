@@ -26,6 +26,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -58,7 +59,7 @@ public class SymbolicAdsTag implements AdsTag {
         }
         String symbolicAddress = matcher.group("symbolicAddress");
 
-        return new SymbolicAdsTag(symbolicAddress, null, null);
+        return new SymbolicAdsTag(symbolicAddress, null, Collections.emptyList());
     }
 
     public static boolean matches(String address) {
