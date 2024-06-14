@@ -21,6 +21,7 @@ package org.apache.plc4x.java.spi.generation;
 import com.github.jinahya.bit.io.ArrayByteInput;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitInput;
+import org.apache.plc4x.java.spi.utils.ByteOrderUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -250,11 +251,16 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     return value;
                 case "default":
-                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                        final int longValue = bi.readInt(true, bitLength);
-                        return Integer.reverseBytes(longValue) >>> (32 - bitLength);
+                    switch (byteOrder){
+                        case LITTLE_ENDIAN:
+                            return ByteOrderUtils.LittleEndian(bi.readInt(true, bitLength));
+                        case BIG_ENDIAN_WORD_SWAP:
+                            return ByteOrderUtils.BigEndianWordSwap(bi.readInt(true, bitLength));
+                        case LITTLE_ENDIAN_WORD_SWAP:
+                            return ByteOrderUtils.LittleEndianWordSwap(bi.readInt(true, bitLength));
+                        default:
+                            return ByteOrderUtils.BigEndian(bi.readInt(true, bitLength));
                     }
-                    return bi.readInt(true, bitLength);
                 default:
                     throw new ParseException("unsupported encoding '" + encoding + "'");
             }
@@ -303,11 +309,17 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     }
                     return value;
                 case "default":
-                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                        final long longValue = bi.readLong(true, bitLength);
-                        return Long.reverseBytes(longValue) >>> 32;
+                    final long longValue = bi.readLong(true, bitLength);
+                    switch (byteOrder){
+                        case LITTLE_ENDIAN:
+                            return ByteOrderUtils.LittleEndian(longValue);
+                        case BIG_ENDIAN_WORD_SWAP:
+                            return ByteOrderUtils.BigEndianWordSwap(longValue);
+                        case LITTLE_ENDIAN_WORD_SWAP:
+                            return ByteOrderUtils.LittleEndianWordSwap(longValue);
+                        default:
+                            return ByteOrderUtils.BigEndian(longValue);
                     }
-                    return bi.readLong(true, bitLength);
                 default:
                     throw new ParseException("unsupported encoding '" + encoding + "'");
             }
@@ -359,9 +371,20 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                 case "default":
                     // Read as signed value
                     long val = bi.readLong(false, bitLength);
-                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                        val = Long.reverseBytes(val);
+                    switch (byteOrder){
+                        case LITTLE_ENDIAN:
+                            val = ByteOrderUtils.LittleEndian(val);
+                            break;
+                        case BIG_ENDIAN_WORD_SWAP:
+                            val = ByteOrderUtils.BigEndianWordSwap(val);
+                            break;
+                        case LITTLE_ENDIAN_WORD_SWAP:
+                            val = ByteOrderUtils.LittleEndianWordSwap(val);
+                            break;
+                        default:
+                            break;
                     }
+
                     if (val >= 0) {
                         return BigInteger.valueOf(val);
                     } else {
@@ -418,10 +441,16 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("int can only contain max 32 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                return Integer.reverseBytes(bi.readInt(false, bitLength));
+            switch (byteOrder){
+                case LITTLE_ENDIAN:
+                    return ByteOrderUtils.LittleEndian(bi.readInt(false, bitLength));
+                case BIG_ENDIAN_WORD_SWAP:
+                    return ByteOrderUtils.BigEndianWordSwap(bi.readInt(false, bitLength));
+                case LITTLE_ENDIAN_WORD_SWAP:
+                    return ByteOrderUtils.LittleEndianWordSwap(bi.readInt(false, bitLength));
+                default:
+                    return ByteOrderUtils.BigEndian(bi.readInt(false, bitLength));
             }
-            return bi.readInt(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading signed int", e);
         }
@@ -436,10 +465,16 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
             throw new ParseException("long can only contain max 64 bits");
         }
         try {
-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-                return Long.reverseBytes(bi.readLong(false, bitLength));
+            switch (byteOrder){
+                case LITTLE_ENDIAN:
+                    return ByteOrderUtils.LittleEndian(bi.readLong(false, bitLength));
+                case BIG_ENDIAN_WORD_SWAP:
+                    return ByteOrderUtils.BigEndianWordSwap(bi.readLong(false, bitLength));
+                case LITTLE_ENDIAN_WORD_SWAP:
+                    return ByteOrderUtils.LittleEndianWordSwap(bi.readLong(false, bitLength));
+                default:
+                    return ByteOrderUtils.BigEndian(bi.readLong(false, bitLength));
             }
-            return bi.readLong(false, bitLength);
         } catch (IOException e) {
             throw new ParseException("Error reading signed long", e);
         }
