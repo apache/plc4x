@@ -21,7 +21,6 @@ package org.apache.plc4x.java.spi.generation;
 import com.github.jinahya.bit.io.BufferByteOutput;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.plc4x.java.spi.generation.io.MyDefaultBitOutput;
-import org.apache.plc4x.java.spi.utils.ByteOrderUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -228,17 +227,8 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     break;
                 }
                 case "default":
-                    switch (byteOrder){
-                        case LITTLE_ENDIAN:
-                            value = ByteOrderUtils.LittleEndian(value);
-                            break;
-                        case BIG_ENDIAN_WORD_SWAP:
-                            value = ByteOrderUtils.BigEndianWordSwap(value);
-                            break;
-                        case LITTLE_ENDIAN_WORD_SWAP:
-                            value = ByteOrderUtils.LittleEndianWordSwap(value);
-                            break;
-                        default:
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        value = Integer.reverseBytes(value) >> (32 - bitLength);
                     }
                     bo.writeInt(true, bitLength, value);
                     break;
@@ -295,17 +285,8 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
                     break;
                 }
                 case "default":
-                    switch (byteOrder){
-                        case LITTLE_ENDIAN:
-                            value = ByteOrderUtils.LittleEndian(value);
-                            break;
-                        case BIG_ENDIAN_WORD_SWAP:
-                            value = ByteOrderUtils.BigEndianWordSwap(value);
-                            break;
-                        case LITTLE_ENDIAN_WORD_SWAP:
-                            value = ByteOrderUtils.LittleEndianWordSwap(value);
-                            break;
-                        default:
+                    if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                        value = Long.reverseBytes(value) >> 32;
                     }
                     bo.writeLong(true, bitLength, value);
                     break;
@@ -389,17 +370,8 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("int can only contain max 32 bits");
         }
         try {
-            switch (byteOrder){
-                case LITTLE_ENDIAN:
-                    value = ByteOrderUtils.LittleEndian(value);
-                    break;
-                case BIG_ENDIAN_WORD_SWAP:
-                    value = ByteOrderUtils.BigEndianWordSwap(value);
-                    break;
-                case LITTLE_ENDIAN_WORD_SWAP:
-                    value = ByteOrderUtils.LittleEndianWordSwap(value);
-                    break;
-                default:
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                value = Integer.reverseBytes(value);
             }
             bo.writeInt(false, bitLength, value);
         } catch (Exception e) {
@@ -416,17 +388,8 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
             throw new SerializationException("long can only contain max 64 bits");
         }
         try {
-            switch (byteOrder){
-                case LITTLE_ENDIAN:
-                    value = ByteOrderUtils.LittleEndian(value);
-                    break;
-                case BIG_ENDIAN_WORD_SWAP:
-                    value = ByteOrderUtils.BigEndianWordSwap(value);
-                    break;
-                case LITTLE_ENDIAN_WORD_SWAP:
-                    value = ByteOrderUtils.LittleEndianWordSwap(value);
-                    break;
-                default:
+            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+                value = Long.reverseBytes(value);
             }
             bo.writeLong(false, bitLength, value);
         } catch (Exception e) {

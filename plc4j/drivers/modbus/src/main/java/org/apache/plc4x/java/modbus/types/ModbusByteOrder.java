@@ -16,9 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.generation;
+package org.apache.plc4x.java.modbus.types;
 
-public enum ByteOrder {
+public enum ModbusByteOrder {
+    //A B C D
     BIG_ENDIAN,
-    LITTLE_ENDIAN
+    //D C B A
+    LITTLE_ENDIAN,
+    //B A D C
+    BIG_ENDIAN_WORD_SWAP,
+    //C D A B
+    LITTLE_ENDIAN_WORD_SWAP
+
 }
