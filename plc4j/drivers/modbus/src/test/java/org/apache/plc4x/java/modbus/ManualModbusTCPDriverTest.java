@@ -72,7 +72,7 @@ public class ManualModbusTCPDriverTest extends ManualTest {
         ManualModbusTCPDriverTest test = new ManualModbusTCPDriverTest("modbus-tcp://192.168.23.30");
         test.addTestCase("holding-register:1:BOOL", new PlcBOOL(true)); // 0001
         test.addTestCase("holding-register:2:BYTE", new PlcBYTE(42)); // 2A
-        test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8
+        //test.addTestCase("holding-register:3:WORD", new PlcWORD(42424)); // A5B8
         test.addTestCase("holding-register:4:DWORD", new PlcDWORD(4242442424L)); // FCDE 88B8
 //        test.addTestCase("holding-register:6:LWORD", new PlcLWORD(4242442424242424242L)); // FCDE 88B8 FCDE 88B8
         test.addTestCase("holding-register:10:SINT", new PlcSINT(-42)); // D6

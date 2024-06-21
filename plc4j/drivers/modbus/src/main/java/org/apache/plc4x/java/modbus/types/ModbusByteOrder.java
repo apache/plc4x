@@ -19,13 +19,16 @@
 package org.apache.plc4x.java.modbus.types;
 
 public enum ModbusByteOrder {
-    //A B C D
+    // [1, 2, 3, 4]
+    // [1, 2, 3, 4, 5, 6, 7, 8]
     BIG_ENDIAN,
-    //D C B A
+    // [4, 3, 2, 1]
+    // [8, 7, 6, 5, 4, 3, 2, 1]
     LITTLE_ENDIAN,
-    //B A D C
-    BIG_ENDIAN_WORD_SWAP,
-    //C D A B
-    LITTLE_ENDIAN_WORD_SWAP
-
+    // [2, 1, 4, 3]
+    // [2, 1, 4, 3, 6, 5, 8, 7]
+    BIG_ENDIAN_BYTE_SWAP,
+    // [3, 4, 1, 2]
+    // [7, 8, 5, 6, 3, 4, 1, 2]
+    LITTLE_ENDIAN_BYTE_SWAP
 }

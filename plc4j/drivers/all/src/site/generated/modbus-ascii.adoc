@@ -43,6 +43,9 @@
 Allowed values are:  +
  - BIG_ENDIAN +
  - LITTLE_ENDIAN +
+ - BIG_ENDIAN_BYTE_SWAP +
+ - LITTLE_ENDIAN_BYTE_SWAP +
+ +
 *Since: 0.13.0*
 5+|Transport config options:
 5+|

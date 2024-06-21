@@ -18,13 +18,13 @@
  */
 package org.apache.plc4x.java.modbus.rtu.config;
 
+import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.spi.configuration.annotations.Description;
 import org.apache.plc4x.java.spi.configuration.annotations.Since;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.IntDefaultValue;
 import org.apache.plc4x.java.spi.configuration.annotations.defaults.StringDefaultValue;
-import org.apache.plc4x.java.spi.generation.ByteOrder;
 
 public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
 
@@ -44,9 +44,11 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
     @Description("Default encoding used for transporting register values (Defaults to BIG_ENDIAN).\n" +
         "Allowed values are: \n" +
         " - BIG_ENDIAN\n" +
-        " - LITTLE_ENDIAN")
+        " - LITTLE_ENDIAN\n" +
+        " - BIG_ENDIAN_BYTE_SWAP\n" +
+        " - LITTLE_ENDIAN_BYTE_SWAP\n")
     @Since("0.13.0")
-    private ByteOrder defaultPayloadByteOrder;
+    private ModbusByteOrder defaultPayloadByteOrder;
 
     public int getRequestTimeout() {
         return requestTimeout;
@@ -64,11 +66,11 @@ public class ModbusRtuConfiguration implements PlcConnectionConfiguration {
         this.defaultUnitIdentifier = defaultUnitIdentifier;
     }
 
-    public ByteOrder getDefaultPayloadByteOrder() {
+    public ModbusByteOrder getDefaultPayloadByteOrder() {
         return defaultPayloadByteOrder;
     }
 
-    public void setDefaultPayloadByteOrder(ByteOrder defaultPayloadByteOrder) {
+    public void setDefaultPayloadByteOrder(ModbusByteOrder defaultPayloadByteOrder) {
         this.defaultPayloadByteOrder = defaultPayloadByteOrder;
     }
 
