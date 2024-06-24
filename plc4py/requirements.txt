@@ -50,5 +50,5 @@ pytest-mock==3.14.0
 PyYAML==6.0.1
 requires==0.10.5
 typing_extensions==4.12.2
-virtualenv==20.26.2
+virtualenv==20.26.3
 xtyping==0.8.2
