@@ -51,9 +51,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.MessageDigest;
-import java.security.cert.CertificateEncodingException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -61,9 +58,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.lang.Thread.currentThread;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static java.util.concurrent.ForkJoinPool.commonPool;
 
 public class SecureChannel {
 
@@ -150,23 +145,23 @@ public class SecureChannel {
         // Only the TCP transport supports login.
         LOGGER.debug("Opcua Driver running in ACTIVE mode.");
         return conversation.requestHello()
-            .thenCompose(r -> onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeIssue))
-            .thenCompose(r -> onConnectCreateSessionRequest(r))
+            .thenCompose(r -> onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeIssue, 0, 0))
+            .thenCompose(r -> onConnectCreateSessionRequest())
             .thenCompose(r -> onConnectActivateSessionRequest(r))
             .thenApply(response -> {
-                keepAlive();
+                renewToken();
                 return response;
             });
     }
 
-    public CompletableFuture<OpenSecureChannelResponse> onConnectOpenSecureChannel(SecurityTokenRequestType securityTokenRequestType) {
+    public CompletableFuture<OpenSecureChannelResponse> onConnectOpenSecureChannel(SecurityTokenRequestType securityTokenRequestType, int secureChannelId, int requestId) {
         LOGGER.debug("Sending open secure channel message to {}", this.driverContext.getEndpoint());
 
-        RequestHeader requestHeader = conversation.createRequestHeader(configuration.getNegotiationTimeout(), 0);
+        RequestHeader requestHeader = conversation.createRequestHeader(configuration.getNegotiationTimeout(), requestId);
 
         OpenSecureChannelRequest openSecureChannelRequest;
+        byte[] localNonce = conversation.createNonce();
         if (conversation.getSecurityPolicy() != SecurityPolicy.NONE) {
-            byte[] localNonce = conversation.getLocalNonce();
             openSecureChannelRequest = new OpenSecureChannelRequest(
                 requestHeader,
                 OpcuaConstants.PROTOCOLVERSION,
@@ -194,8 +189,7 @@ public class SecureChannel {
 
         Function<CallContext, OpcuaOpenRequest> openRequest = context -> {
             LOGGER.debug("Submitting OpenSecureChannel with id of {}", context.getRequestId());
-            return new OpcuaOpenRequest(FINAL, new OpenChannelMessageRequest(
-                0,
+            return new OpcuaOpenRequest(FINAL, new OpenChannelMessageRequest(secureChannelId,
                 new PascalString(conversation.getSecurityPolicy().getSecurityPolicyUri()),
                 this.localCertificateString,
                 this.remoteCertificateThumbprint
@@ -217,13 +211,16 @@ public class SecureChannel {
                 LOGGER.debug("Opened secure response id: {}, channel id:{}, token:{} lifetime:{}", openSecureChannelResponse.getIdentifier(),
                     securityToken.getChannelId(), securityToken.getTokenId(), securityToken.getRevisedLifetime());
 
+                // store server and client nonce
+                conversation.setRemoteNonce(openSecureChannelResponse.getServerNonce().getStringValue());
+                conversation.setLocalNonce(localNonce);
                 conversation.setSecurityHeader(new SecurityHeader(securityToken.getChannelId(), securityToken.getTokenId()));
                 revisedLifetime = securityToken.getRevisedLifetime();
                 return openSecureChannelResponse;
             });
     }
 
-    public CompletableFuture<CreateSessionResponse> onConnectCreateSessionRequest(OpenSecureChannelResponse response) {
+    public CompletableFuture<CreateSessionResponse> onConnectCreateSessionRequest() {
         LOGGER.debug("Sending create session request to {}", this.driverContext.getEndpoint());
         RequestHeader requestHeader = conversation.createRequestHeader();
 
@@ -248,11 +245,6 @@ public class SecureChannel {
             discoveryUrls
         );
 
-        ChannelSecurityToken securityToken = (ChannelSecurityToken) response.getSecurityToken();
-        LOGGER.debug("Opened secure response id: {}, channel id:{}, token:{} lifetime:{}", response.getIdentifier(),
-            securityToken.getChannelId(), securityToken.getTokenId(), securityToken.getRevisedLifetime());
-
-        conversation.setRemoteNonce(response.getServerNonce().getStringValue());
         byte[] temporaryNonce = conversation.createNonce(32);
         CreateSessionRequest createSessionRequest = new CreateSessionRequest(
             requestHeader,
@@ -407,15 +399,15 @@ public class SecureChannel {
         LOGGER.debug("Opcua Driver running in ACTIVE mode, discovering endpoints");
 
         return conversation.requestHello()
-            .thenCompose(ack -> onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeIssue))
-            .thenCompose(scr -> onDiscoverGetEndpointsRequest(scr))
+            .thenCompose(ack -> onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeIssue, 0, 0))
+            .thenCompose(scr -> onDiscoverGetEndpointsRequest())
             .thenApply(endpoint -> {
                 LOGGER.info("Finished discovery of communication endpoint");
                 return endpoint;
             });
     }
 
-    public CompletableFuture<EndpointDescription> onDiscoverGetEndpointsRequest(OpenSecureChannelResponse openSecureChannelResponse) {
+    public CompletableFuture<EndpointDescription> onDiscoverGetEndpointsRequest() {
         RequestHeader requestHeader = conversation.createRequestHeader();
 
         GetEndpointsRequest endpointsRequest = new GetEndpointsRequest(
@@ -470,22 +462,34 @@ public class SecureChannel {
         }
     }
 
-    private void keepAlive() {
+    private void renewToken() {
+        if (keepAlive != null) {
+            // cancel earlier renew feature
+            keepAlive.cancel(true);
+        }
         long keepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
         LOGGER.debug("Scheduling session keep alive to happen within {}s", TimeUnit.MILLISECONDS.toSeconds(keepAliveTime));
-        keepAlive = KEEP_ALIVE_EXECUTOR.schedule(() -> {
+        keepAlive = KEEP_ALIVE_EXECUTOR.scheduleAtFixedRate(() -> {
             RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> {
-                onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeRenew)
+                int securityChannelId = this.conversation.getSecurityChannelId();
+                int requestId = this.conversation.getRequestId();
+                onConnectOpenSecureChannel(SecurityTokenRequestType.securityTokenRequestTypeRenew, securityChannelId, requestId)
                     .whenComplete((response, error) -> {
                         if (error != null) {
                             transaction.failRequest(error);
                             return;
                         }
+                        // make sure we still honor channel lifetime boundary
+                        long newKeepAliveTime = (long) Math.ceil(revisedLifetime * 0.75f);
+                        if (newKeepAliveTime != keepAliveTime) {
+                            renewToken();
+                        }
                         transaction.endRequest();
+
                     });
             });
-        }, keepAliveTime, TimeUnit.MILLISECONDS);
+        }, keepAliveTime, keepAliveTime, TimeUnit.MILLISECONDS);
     }
 
     private static ReadBufferByteBased toBuffer(Supplier<Payload> supplier) {

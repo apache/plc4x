@@ -20,6 +20,7 @@ package org.apache.plc4x.java.opcua.context;
 
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import org.apache.plc4x.java.opcua.protocol.chunk.Chunk;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy.EncryptionAlgorithm;
@@ -40,6 +41,7 @@ import java.security.NoSuchAlgorithmException;
 public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
 
     private SymmetricKeys keys = null;
+    private byte[] senderNonce;
 
     public SymmetricEncryptionHandler(Conversation channel, SecurityPolicy policy) {
         super(channel, policy);
@@ -108,6 +110,13 @@ public class SymmetricEncryptionHandler extends BaseEncryptionHandler {
 
     private SymmetricKeys getSymmetricKeys(byte[] senderNonce, byte[] receiverNonce) {
         if (keys == null) {
+            this.senderNonce = senderNonce;
+            keys = SymmetricKeys.generateKeyPair(senderNonce, receiverNonce, securityPolicy);
+        } else if (!Arrays.equals(this.senderNonce, senderNonce)) {
+            // sender nonce changed, we have to roll new security keys because security token
+            // was just renewed.
+            // We do not track receiver nonce, because they change at the same time
+            this.senderNonce = senderNonce;
             keys = SymmetricKeys.generateKeyPair(senderNonce, receiverNonce, securityPolicy);
         }
         return keys;
