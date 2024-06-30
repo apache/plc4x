@@ -149,7 +149,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                         sessionDisconnectCompleteFuture,
                         sessionDiscoveredCompleteFuture));
 
-                channel.pipeline().addFirst(new LoggingHandler("DOOM"));
+                //channel.pipeline().addFirst(new LoggingHandler("DOOM"));
                 channel.pipeline().addFirst("Multiplexor", s7hmux);
             }
 
