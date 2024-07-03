@@ -88,6 +88,11 @@ public class AdsPlcDriver extends GeneratedDriverBase<AmsTCPPacket> {
     }
 
     @Override
+    protected boolean canDiscover() {
+        return true;
+    }
+
+    @Override
     protected Class<? extends PlcConnectionConfiguration> getConfigurationClass() {
         return AdsConfiguration.class;
     }

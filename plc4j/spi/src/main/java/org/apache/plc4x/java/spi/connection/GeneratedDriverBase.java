@@ -234,7 +234,7 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
 
             @Override
             public boolean isDiscoverySupported() {
-                return canBrowse();
+                return canDiscover();
             }
 
         };
@@ -257,6 +257,10 @@ public abstract class GeneratedDriverBase<BASE_PACKET extends Message> implement
     }
 
     protected boolean canBrowse() {
+        return false;
+    }
+
+    protected boolean canDiscover() {
         return false;
     }
 

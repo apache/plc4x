@@ -157,6 +157,11 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
     }
 
     @Override
+    protected boolean canDiscover() {
+        return true;
+    }
+
+    @Override
     protected BaseOptimizer getOptimizer() {
         return new SingleTagOptimizer();
     }
