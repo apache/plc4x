@@ -185,7 +185,7 @@ public class CachedPlcConnectionManagerTest {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
         Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
 
-        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(20)).build();
+        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(30)).build();
 
         // Have multiple leases borrowed.
         // The first should get the lease directly but will hang on to it for some time.
@@ -207,7 +207,7 @@ public class CachedPlcConnectionManagerTest {
         thread.start();
 
         // Give the thread some time to start up.
-        Thread.sleep(2L);
+        Thread.sleep(10L);
 
         // The second will wait in the queue.
         CompletableFuture<Void> secondFuture = new CompletableFuture<>();
@@ -224,7 +224,7 @@ public class CachedPlcConnectionManagerTest {
         }).start();
 
         // Give the thread some time to start up.
-        Thread.sleep(2L);
+        Thread.sleep(10L);
 
         // Check that only one connection has been requested from the PlcConnectionManager.
         Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("test");
@@ -233,6 +233,7 @@ public class CachedPlcConnectionManagerTest {
 
         // Close the connection manager.
         connectionManager.close();
+
         // Interrupt the first thread, that is just wasting our time waiting.
         thread.interrupt();
 
@@ -241,8 +242,10 @@ public class CachedPlcConnectionManagerTest {
             connectionManager.getConnection("test");
             Assertions.fail("This should have failed");
         } catch (PlcConnectionException e) {
-            // This should fail and give a reference to the closed connection cache.
-            Assertions.assertInstanceOf(PlcConnectionManagerClosedException.class, e);
+            if(!(e instanceof PlcConnectionManagerClosedException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected PlcConnectionManagerClosedException");
+            }
         }
 
         // Check that the connection borrowed from the Mocked ConnectionManager has been closed.
@@ -256,8 +259,14 @@ public class CachedPlcConnectionManagerTest {
             // In the case of the first thread, the thread was stuck waiting in the one-second pause
             // when we intentionally interrupted it after closing the cache. So we expect to see that
             // interrupt exception here.
-            Assertions.assertInstanceOf(ExecutionException.class, e);
-            Assertions.assertInstanceOf(InterruptedException.class, e.getCause());
+            if(!(e instanceof ExecutionException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected ExecutionException");
+            }
+            if(!(e.getCause() instanceof InterruptedException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected InterruptedException");
+            }
         }
 
         try {
@@ -267,9 +276,18 @@ public class CachedPlcConnectionManagerTest {
             // In this case the process was waiting for getting the connection thread 1 was hogging.
             // When closing the cache, all waiting connection requests were instantly finished with
             // an exception.
-            Assertions.assertInstanceOf(ExecutionException.class, e);
-            Assertions.assertInstanceOf(PlcConnectionException.class, e.getCause());
-            Assertions.assertInstanceOf(PlcConnectionManagerClosedException.class, e.getCause().getCause().getCause());
+            if(!(e instanceof ExecutionException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected ExecutionException");
+            }
+            if(!(e.getCause() instanceof PlcConnectionException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected PlcConnectionException");
+            }
+            if(!(e.getCause().getCause().getCause() instanceof PlcConnectionManagerClosedException)) {
+                e.printStackTrace();
+                Assertions.fail("Expected PlcConnectionManagerClosedException");
+            }
         }
     }
 
