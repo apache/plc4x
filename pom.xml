@@ -140,7 +140,7 @@
     <jetty-util.version>11.0.20</jetty-util.version>
     <jna.version>5.14.0</jna.version>
     <jserialcom.version>2.11.0</jserialcom.version>
-    <junit.jupiter.version>5.10.2</junit.jupiter.version>
+    <junit.jupiter.version>5.10.3</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.5.6</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
