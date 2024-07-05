@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,25 @@ class ConnectionContainer {
         this.queue = new LinkedList<>();
         this.connection = null;
         this.leasedConnection = null;
+    }
+
+    public synchronized void close() {
+        // Close all waiting clients exceptionally.
+        queue.forEach(plcConnectionCompletableFuture ->
+            plcConnectionCompletableFuture.completeExceptionally(new PlcConnectionManagerClosedException()));
+
+        // Clear the queue.
+        queue.clear();
+
+        // If the connection is currently used, close it.
+        if(leasedConnection != null) {
+            try {
+                leasedConnection.closeConnection();
+                leasedConnection = null;
+            } catch (Exception e) {
+                // Ignore this ...
+            }
+        }
     }
 
     public synchronized Future<PlcConnection> lease() {

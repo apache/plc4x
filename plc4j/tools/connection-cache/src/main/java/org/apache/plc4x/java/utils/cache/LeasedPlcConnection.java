@@ -63,6 +63,17 @@ public class LeasedPlcConnection implements PlcConnection {
         }, Date.from(LocalDateTime.now().plusNanos(maxUseTime.toNanos()).atZone(ZoneId.systemDefault()).toInstant()));
     }
 
+    public synchronized void closeConnection() throws Exception {
+        // Get the real connection and close it.
+        PlcConnection plcConnection = connection.get();
+        if(plcConnection != null) {
+            plcConnection.close();
+        }
+
+        // Close the LeasedPlcConnection.
+        close();
+    }
+
     @Override
     public synchronized void close() {
         // In this case the connection was already closed (possibly by the timer)
