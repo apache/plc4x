@@ -5,6 +5,13 @@
 New Features
 ------------
 
+- The CachedPlcConnectionManager now has a maxIdleTimeout time
+  which defaults to 5 minutes. If a connection is not being
+  used for that amount of time, the connection is closed and
+  removed from the cache.
+- The CachedPlcConnectionManager now has a close method, which
+  shuts down all connections.
+
 Incompatible changes
 --------------------
 

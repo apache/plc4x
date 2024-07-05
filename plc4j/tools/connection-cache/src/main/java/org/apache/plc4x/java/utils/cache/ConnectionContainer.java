@@ -143,6 +143,13 @@ class ConnectionContainer {
             idleTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    if(connection != null) {
+                        try {
+                            connection.close();
+                        } catch (Exception e) {
+                            // Ignore ...
+                        }
+                    }
                     closeConnectionHandler.apply(connectionUrl);
                 }
             }, maxIdleTime.toMillis());
