@@ -29,23 +29,32 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 class ConnectionContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionContainer.class);
     private final PlcConnectionManager connectionManager;
     private final String connectionUrl;
     private final Duration maxLeaseTime;
+    private final Duration maxIdleTime;
+    private final Function<String, Void> closeConnectionHandler;
     private final Queue<CompletableFuture<PlcConnection>> queue;
 
     private PlcConnection connection;
     private LeasedPlcConnection leasedConnection;
 
-    public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl, Duration maxLeaseTime) {
+    public ConnectionContainer(PlcConnectionManager connectionManager, String connectionUrl,
+                               Duration maxLeaseTime, Duration maxIdleTime,
+                               Function<String, Void> closeConnectionHandler) {
         this.connectionManager = connectionManager;
         this.connectionUrl = connectionUrl;
         this.maxLeaseTime = maxLeaseTime;
+        this.maxIdleTime = maxIdleTime;
+        this.closeConnectionHandler = closeConnectionHandler;
         this.queue = new LinkedList<>();
         this.connection = null;
         this.leasedConnection = null;
@@ -128,6 +137,15 @@ class ConnectionContainer {
         // If the queue is empty, simply return.
         if(queue.isEmpty()) {
             leasedConnection = null;
+
+            // Start a timer to invalidate this connection if it's idle for too long.
+            Timer idleTimer = new Timer();
+            idleTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    closeConnectionHandler.apply(connectionUrl);
+                }
+            }, maxIdleTime.toMillis());
             return;
         }
 

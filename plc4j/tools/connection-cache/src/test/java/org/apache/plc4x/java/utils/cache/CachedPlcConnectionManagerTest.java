@@ -291,4 +291,20 @@ public class CachedPlcConnectionManagerTest {
         }
     }
 
+    @Test
+    public void testCloseAfterIdleTime() throws Exception {
+        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
+        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(Mockito.mock(PlcConnection.class));
+        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxWaitTime(Duration.ofMillis(50)).withMaxIdleTime(Duration.ofMillis(10)).build();
+
+        // Get a connection and directly return it.
+        PlcConnection connection = connectionManager.getConnection("test");
+        connection.close();
+
+        // Wait for longer than the max idle time.
+        Thread.sleep(20);
+
+        Assertions.assertEquals(0, connectionManager.getCachedConnections().size());
+    }
+
 }
