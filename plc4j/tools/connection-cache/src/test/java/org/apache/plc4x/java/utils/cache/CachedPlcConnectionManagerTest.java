@@ -185,7 +185,7 @@ public class CachedPlcConnectionManagerTest {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
         Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
 
-        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(300)).build();
+        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(3000)).build();
 
         // Have multiple leases borrowed.
         // The first should get the lease directly but will hang on to it for some time.
