@@ -185,7 +185,7 @@ public class CachedPlcConnectionManagerTest {
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
         Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(mockConnection);
 
-        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(30)).build();
+        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxLeaseTime(Duration.ofMillis(300)).build();
 
         // Have multiple leases borrowed.
         // The first should get the lease directly but will hang on to it for some time.
@@ -207,7 +207,7 @@ public class CachedPlcConnectionManagerTest {
         thread.start();
 
         // Give the thread some time to start up.
-        Thread.sleep(10L);
+        Thread.sleep(100L);
 
         // The second will wait in the queue.
         CompletableFuture<Void> secondFuture = new CompletableFuture<>();
@@ -224,7 +224,7 @@ public class CachedPlcConnectionManagerTest {
         }).start();
 
         // Give the thread some time to start up.
-        Thread.sleep(10L);
+        Thread.sleep(100L);
 
         // Check that only one connection has been requested from the PlcConnectionManager.
         Mockito.verify(mockConnectionManager, Mockito.times(1)).getConnection("test");
@@ -302,7 +302,7 @@ public class CachedPlcConnectionManagerTest {
         connection.close();
 
         // Wait for longer than the max idle time.
-        Thread.sleep(20);
+        Thread.sleep(200);
 
         Assertions.assertEquals(0, connectionManager.getCachedConnections().size());
     }

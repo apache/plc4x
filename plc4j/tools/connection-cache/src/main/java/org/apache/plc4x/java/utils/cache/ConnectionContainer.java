@@ -76,6 +76,12 @@ class ConnectionContainer {
             } catch (Exception e) {
                 // Ignore this ...
             }
+        } else {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                // Ignore this ...
+            }
         }
     }
 
