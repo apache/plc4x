@@ -28,7 +28,7 @@
   <driver-name>eip</driver-name>
   <driver-parameters>
     <parameter>
-      <name>bigEndian</name>
+      <name>big-endian</name>
       <value>false</value>
     </parameter>
   </driver-parameters>
