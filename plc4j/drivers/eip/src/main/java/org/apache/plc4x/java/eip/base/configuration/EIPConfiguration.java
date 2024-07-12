@@ -29,23 +29,23 @@ import org.apache.plc4x.java.spi.generation.ByteOrder;
 public class EIPConfiguration implements PlcConnectionConfiguration {
 
     @ConfigurationParameter
-    @Description("Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.")
     @IntDefaultValue(1)
+    @Description("Without using routing information the backplane defaults to 1. This is overridden if communicationPath is provided.")
     private int backplane = 1;
 
     @ConfigurationParameter
-    @Description("The slot within the backplane the CPU is located.")
     @IntDefaultValue(0)
+    @Description("The slot within the backplane the CPU is located.")
     private int slot = 0;
 
     @ConfigurationParameter("big-endian")
-    @Description("Configure if the connection should be set to transport data in Big-Endian format, or not.")
     @BooleanDefaultValue(true)
+    @Description("Configure if the connection should be set to transport data in Big-Endian format, or not.")
     private boolean bigEndian = true;
 
     @ConfigurationParameter("force-unconnected-operation")
-    @Description("Forces the driver to use unconnected requests.")
     @BooleanDefaultValue(false)
+    @Description("Forces the driver to use unconnected requests.")
     @Since("0.13.0")
     private boolean forceUnconnectedOperation = false;
 
