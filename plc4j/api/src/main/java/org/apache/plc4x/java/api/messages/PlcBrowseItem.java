@@ -21,6 +21,7 @@ package org.apache.plc4x.java.api.messages;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PlcBrowseItem {
@@ -49,6 +50,13 @@ public interface PlcBrowseItem {
      * @return returns 'true' if we can subscribe this variable.
      */
     boolean isSubscribable();
+
+    boolean isArray();
+
+    /**
+     * @return list of elements providing information about the array dimensions of this item.
+     */
+    List<PlcBrowseItemArrayInfo> getArrayInformation();
 
     /**
      * @return returns any children this item might have

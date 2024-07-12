@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.spi.messages;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
+import org.apache.plc4x.java.api.messages.PlcBrowseItemArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -27,6 +28,8 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
@@ -79,6 +82,15 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
     public boolean isSubscribable() {
         return subscribable;
+    }
+
+    @Override
+    public boolean isArray() {
+        return false;
+    }
+
+    public List<PlcBrowseItemArrayInfo> getArrayInformation() {
+        return Collections.emptyList();
     }
 
     @Override

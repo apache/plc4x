@@ -505,13 +505,16 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                 options.put("size-in-bytes", new PlcUDINT(symbol.getSize()));
 
                 if (plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                    List<ArrayInfo> arrayInfo = new ArrayList<>();
+                    List<ArrayInfo> arrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
+                    List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(dataType.getArrayInfo().size());
                     for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : dataType.getArrayInfo()) {
                         arrayInfo.add(new DefaultArrayInfo(
                             (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
+                        itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
+                            adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                     }
                     DefaultListPlcBrowseItem item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo), itemName,
-                        true, !symbol.getFlagReadOnly(), true, childMap, options);
+                        true, !symbol.getFlagReadOnly(), true, childMap, options, itemArrayInfo);
 
                     // Check if this item should be added to the result
                     if (interceptor.intercept(item)) {
@@ -571,17 +574,23 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
             options.put("size-in-bytes", new PlcUDINT(childDataType.getSize()));
 
             if (plc4xPlcValueType == org.apache.plc4x.java.api.types.PlcValueType.List) {
-                List<ArrayInfo> arrayInfo = new ArrayList<>();
+                List<ArrayInfo> arrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
+                List<PlcBrowseItemArrayInfo> itemArrayInfo = new ArrayList<>(childDataType.getArrayInfo().size());
                 for (AdsDataTypeArrayInfo adsDataTypeArrayInfo : childDataType.getArrayInfo()) {
                     arrayInfo.add(new DefaultArrayInfo(
                         (int) adsDataTypeArrayInfo.getLowerBound(), (int) adsDataTypeArrayInfo.getUpperBound()));
+                    itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
+                        adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                 }
                 // Add the type itself.
-                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), itemName,
-                    true, parentWritable, true, childMap, options));
+                values.add(new DefaultListPlcBrowseItem(new SymbolicAdsTag(
+                    basePath + "." + child.getPropertyName(), plc4xPlcValueType, arrayInfo), itemName,
+                    true, parentWritable, true, childMap, options, itemArrayInfo));
             } else {
                 // Add the type itself.
-                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(basePath + "." + child.getPropertyName(), plc4xPlcValueType, Collections.emptyList()), itemName,
+                values.add(new DefaultPlcBrowseItem(new SymbolicAdsTag(
+                    basePath + "." + child.getPropertyName(), plc4xPlcValueType,
+                    Collections.emptyList()), itemName,
                     true, parentWritable, true, childMap, options));
             }
         }

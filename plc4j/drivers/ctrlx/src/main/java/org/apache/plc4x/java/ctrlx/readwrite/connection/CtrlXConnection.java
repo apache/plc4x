@@ -261,7 +261,7 @@ public class CtrlXConnection implements PlcConnection, PlcPinger, PlcBrowser {
                                 new DefaultListPlcBrowseItem(
                                     new CtrlXTag(curNode, PlcValueType.BOOL, Collections.emptyList()),
                                     curNode, true, true, true,
-                                    Collections.emptyMap(), Collections.emptyMap())));
+                                    Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList())));
                         }
                     }
                     // If this node has children, then it's branch, and we need to add its children to the queue.
