@@ -1449,8 +1449,8 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> {
 
         // Get the tpduId from the S7 message.
         int tpduId = request.getTpduReference();
-
-        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) tpduId));
+        //The "COTP - TPDU nnumber" field must always be zero.
+        TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) 0));
 
         // Start a new request-transaction (Is ended in the response-handler)
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
