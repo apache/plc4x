@@ -40,7 +40,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
-	"github.com/dchest/uniuri"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -129,9 +128,9 @@ func NewSecureChannel(log zerolog.Logger, ctx DriverContext, configuration Confi
 		username:                  configuration.Username,
 		password:                  configuration.Password,
 		securityPolicy:            "http://opcfoundation.org/UA/SecurityPolicy#" + configuration.SecurityPolicy,
-		sessionName:               "UaSession:" + APPLICATION_TEXT.GetStringValue() + ":" + uniuri.NewLen(20),
+		sessionName:               "UaSession:" + APPLICATION_TEXT.GetStringValue() + ":" + utils.RandomString(20),
 		authenticationToken:       readWriteModel.NewNodeIdTwoByte(0),
-		clientNonce:               []byte(uniuri.NewLen(40)),
+		clientNonce:               []byte(utils.RandomString(40)),
 		keyStoreFile:              configuration.KeyStoreFile,
 		channelTransactionManager: NewSecureChannelTransactionManager(log),
 		lifetime:                  DEFAULT_CONNECTION_LIFETIME,
