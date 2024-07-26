@@ -30,6 +30,7 @@ import (
 	"net"
 	"net/url"
 	"regexp"
+	"slices"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -42,7 +43,6 @@ import (
 	"github.com/dchest/uniuri"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"golang.org/x/exp/slices"
 )
 
 const (

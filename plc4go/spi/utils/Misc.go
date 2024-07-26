@@ -20,7 +20,6 @@
 package utils
 
 import (
-	"golang.org/x/exp/constraints"
 	"time"
 )
 
@@ -45,21 +44,5 @@ func CleanupTimer(timer *time.Timer) {
 		case <-timer.C:
 		default:
 		}
-	}
-}
-
-func Min[T constraints.Ordered](left, right T) T {
-	if left < right {
-		return left
-	} else {
-		return right
-	}
-}
-
-func Max[T constraints.Ordered](left, right T) T {
-	if left > right {
-		return left
-	} else {
-		return right
 	}
 }

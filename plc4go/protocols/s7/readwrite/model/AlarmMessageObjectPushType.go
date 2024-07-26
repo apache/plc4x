@@ -318,13 +318,13 @@ func AlarmMessageObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for AssociatedValues")
 	}
 	// Count array
-	AssociatedValues := make([]AssociatedValueType, utils.Max(numberOfValues, 0))
+	AssociatedValues := make([]AssociatedValueType, max(numberOfValues, 0))
 	// This happens when the size is set conditional to 0
 	if len(AssociatedValues) == 0 {
 		AssociatedValues = nil
 	}
 	{
-		_numItems := uint16(utils.Max(numberOfValues, 0))
+		_numItems := uint16(max(numberOfValues, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -311,13 +311,13 @@ func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for userIdentityTokens")
 	}
 	// Count array
-	userIdentityTokens := make([]ExtensionObjectDefinition, utils.Max(noOfUserIdentityTokens, 0))
+	userIdentityTokens := make([]ExtensionObjectDefinition, max(noOfUserIdentityTokens, 0))
 	// This happens when the size is set conditional to 0
 	if len(userIdentityTokens) == 0 {
 		userIdentityTokens = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfUserIdentityTokens, 0))
+		_numItems := uint16(max(noOfUserIdentityTokens, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

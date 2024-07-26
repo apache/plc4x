@@ -358,13 +358,13 @@ func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for serverEndpoints")
 	}
 	// Count array
-	serverEndpoints := make([]ExtensionObjectDefinition, utils.Max(noOfServerEndpoints, 0))
+	serverEndpoints := make([]ExtensionObjectDefinition, max(noOfServerEndpoints, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverEndpoints) == 0 {
 		serverEndpoints = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfServerEndpoints, 0))
+		_numItems := uint16(max(noOfServerEndpoints, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -392,13 +392,13 @@ func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for serverSoftwareCertificates")
 	}
 	// Count array
-	serverSoftwareCertificates := make([]ExtensionObjectDefinition, utils.Max(noOfServerSoftwareCertificates, 0))
+	serverSoftwareCertificates := make([]ExtensionObjectDefinition, max(noOfServerSoftwareCertificates, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverSoftwareCertificates) == 0 {
 		serverSoftwareCertificates = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfServerSoftwareCertificates, 0))
+		_numItems := uint16(max(noOfServerSoftwareCertificates, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

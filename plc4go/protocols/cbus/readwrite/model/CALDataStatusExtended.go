@@ -277,13 +277,13 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
 	}
 	// Count array
-	statusBytes := make([]StatusByte, utils.Max(numberOfStatusBytes, 0))
+	statusBytes := make([]StatusByte, max(numberOfStatusBytes, 0))
 	// This happens when the size is set conditional to 0
 	if len(statusBytes) == 0 {
 		statusBytes = nil
 	}
 	{
-		_numItems := uint16(utils.Max(numberOfStatusBytes, 0))
+		_numItems := uint16(max(numberOfStatusBytes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -304,13 +304,13 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for levelInformation")
 	}
 	// Count array
-	levelInformation := make([]LevelInformation, utils.Max(numberOfLevelInformation, 0))
+	levelInformation := make([]LevelInformation, max(numberOfLevelInformation, 0))
 	// This happens when the size is set conditional to 0
 	if len(levelInformation) == 0 {
 		levelInformation = nil
 	}
 	{
-		_numItems := uint16(utils.Max(numberOfLevelInformation, 0))
+		_numItems := uint16(max(numberOfLevelInformation, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -281,13 +281,13 @@ func StructureFieldParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for arrayDimensions")
 	}
 	// Count array
-	arrayDimensions := make([]uint32, utils.Max(noOfArrayDimensions, 0))
+	arrayDimensions := make([]uint32, max(noOfArrayDimensions, 0))
 	// This happens when the size is set conditional to 0
 	if len(arrayDimensions) == 0 {
 		arrayDimensions = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfArrayDimensions, 0))
+		_numItems := uint16(max(noOfArrayDimensions, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

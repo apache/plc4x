@@ -230,13 +230,13 @@ func SetMonitoringModeRequestParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(pullErr, "Error pulling for monitoredItemIds")
 	}
 	// Count array
-	monitoredItemIds := make([]uint32, utils.Max(noOfMonitoredItemIds, 0))
+	monitoredItemIds := make([]uint32, max(noOfMonitoredItemIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(monitoredItemIds) == 0 {
 		monitoredItemIds = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfMonitoredItemIds, 0))
+		_numItems := uint16(max(noOfMonitoredItemIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

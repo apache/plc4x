@@ -239,13 +239,13 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]AdsMultiRequestItem, utils.Max(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
+	items := make([]AdsMultiRequestItem, max(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(utils.Max(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
+		_numItems := uint16(max(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

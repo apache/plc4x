@@ -193,13 +193,13 @@ func DeleteReferencesRequestParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for referencesToDelete")
 	}
 	// Count array
-	referencesToDelete := make([]ExtensionObjectDefinition, utils.Max(noOfReferencesToDelete, 0))
+	referencesToDelete := make([]ExtensionObjectDefinition, max(noOfReferencesToDelete, 0))
 	// This happens when the size is set conditional to 0
 	if len(referencesToDelete) == 0 {
 		referencesToDelete = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfReferencesToDelete, 0))
+		_numItems := uint16(max(noOfReferencesToDelete, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

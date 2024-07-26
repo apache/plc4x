@@ -222,13 +222,13 @@ func ParsingResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for dataStatusCodes")
 	}
 	// Count array
-	dataStatusCodes := make([]StatusCode, utils.Max(noOfDataStatusCodes, 0))
+	dataStatusCodes := make([]StatusCode, max(noOfDataStatusCodes, 0))
 	// This happens when the size is set conditional to 0
 	if len(dataStatusCodes) == 0 {
 		dataStatusCodes = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfDataStatusCodes, 0))
+		_numItems := uint16(max(noOfDataStatusCodes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -256,13 +256,13 @@ func ParsingResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for dataDiagnosticInfos")
 	}
 	// Count array
-	dataDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfDataDiagnosticInfos, 0))
+	dataDiagnosticInfos := make([]DiagnosticInfo, max(noOfDataDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(dataDiagnosticInfos) == 0 {
 		dataDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfDataDiagnosticInfos, 0))
+		_numItems := uint16(max(noOfDataDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

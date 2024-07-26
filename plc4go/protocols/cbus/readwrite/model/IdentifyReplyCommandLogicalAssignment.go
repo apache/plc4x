@@ -151,13 +151,13 @@ func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(pullErr, "Error pulling for logicAssigment")
 	}
 	// Count array
-	logicAssigment := make([]LogicAssignment, utils.Max(numBytes, 0))
+	logicAssigment := make([]LogicAssignment, max(numBytes, 0))
 	// This happens when the size is set conditional to 0
 	if len(logicAssigment) == 0 {
 		logicAssigment = nil
 	}
 	{
-		_numItems := uint16(utils.Max(numBytes, 0))
+		_numItems := uint16(max(numBytes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

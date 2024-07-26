@@ -26,7 +26,6 @@ import (
 	"time"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -471,7 +470,7 @@ func (c *ClientSSM) Indication(apdu _PDU) error {
 		//      if the max npdu length of the server isn't known, assume that it is the same as the max apdu length accepted
 		c.segmentSize = uint(c.maxApduLengthAccepted.NumberOfOctets())
 	} else {
-		c.segmentSize = utils.Min(*c.deviceInfo.MaximumNpduLength, uint(c.maxApduLengthAccepted.NumberOfOctets()))
+		c.segmentSize = min(*c.deviceInfo.MaximumNpduLength, uint(c.maxApduLengthAccepted.NumberOfOctets()))
 	}
 	log.Debug().Uint("segmentSize", c.segmentSize).Msg("segment size")
 
@@ -689,7 +688,7 @@ func (c *ClientSSM) segmentedRequest(apdu _PDU) error {
 			}
 
 			// minimum of what the server is proposing and this client proposes
-			minWindowSize := utils.Min(*_apdu.GetProposedWindowSize(), c.ssmSAP.GetProposedWindowSize())
+			minWindowSize := min(*_apdu.GetProposedWindowSize(), c.ssmSAP.GetProposedWindowSize())
 			c.actualWindowSize = &minWindowSize
 			c.lastSequenceNumber = 0
 			c.initialSequenceNumber = 0
@@ -1112,7 +1111,7 @@ func (s *ServerSSM) Confirmation(apdu _PDU) error {
 		if s.deviceInfo == nil || s.deviceInfo.MaximumNpduLength == nil {
 			s.segmentSize = uint(s.maxApduLengthAccepted.NumberOfOctets())
 		} else {
-			s.segmentSize = utils.Min(*s.deviceInfo.MaximumNpduLength, uint(s.maxApduLengthAccepted.NumberOfOctets()))
+			s.segmentSize = min(*s.deviceInfo.MaximumNpduLength, uint(s.maxApduLengthAccepted.NumberOfOctets()))
 		}
 
 		// compute the segment count
@@ -1314,7 +1313,7 @@ func (s *ServerSSM) idle(apdu _PDU) error {
 	// the window size is the minimum of what I would propose and what the device has proposed
 	proposedWindowSize := *apduConfirmedRequest.GetProposedWindowSize()
 	configuredWindowSize := s.ssmSAP.GetProposedWindowSize()
-	minWindowSize := utils.Min(proposedWindowSize, configuredWindowSize)
+	minWindowSize := min(proposedWindowSize, configuredWindowSize)
 	s.actualWindowSize = &minWindowSize
 	log.Debug().
 		Uint8("proposedWindowSize", proposedWindowSize).

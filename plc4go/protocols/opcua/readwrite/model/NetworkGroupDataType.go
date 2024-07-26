@@ -193,13 +193,13 @@ func NetworkGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for networkPaths")
 	}
 	// Count array
-	networkPaths := make([]ExtensionObjectDefinition, utils.Max(noOfNetworkPaths, 0))
+	networkPaths := make([]ExtensionObjectDefinition, max(noOfNetworkPaths, 0))
 	// This happens when the size is set conditional to 0
 	if len(networkPaths) == 0 {
 		networkPaths = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfNetworkPaths, 0))
+		_numItems := uint16(max(noOfNetworkPaths, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

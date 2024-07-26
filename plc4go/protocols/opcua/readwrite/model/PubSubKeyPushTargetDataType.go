@@ -306,13 +306,13 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for pushTargetFolder")
 	}
 	// Count array
-	pushTargetFolder := make([]PascalString, utils.Max(noOfPushTargetFolder, 0))
+	pushTargetFolder := make([]PascalString, max(noOfPushTargetFolder, 0))
 	// This happens when the size is set conditional to 0
 	if len(pushTargetFolder) == 0 {
 		pushTargetFolder = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfPushTargetFolder, 0))
+		_numItems := uint16(max(noOfPushTargetFolder, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -393,13 +393,13 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for pushTargetProperties")
 	}
 	// Count array
-	pushTargetProperties := make([]ExtensionObjectDefinition, utils.Max(noOfPushTargetProperties, 0))
+	pushTargetProperties := make([]ExtensionObjectDefinition, max(noOfPushTargetProperties, 0))
 	// This happens when the size is set conditional to 0
 	if len(pushTargetProperties) == 0 {
 		pushTargetProperties = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfPushTargetProperties, 0))
+		_numItems := uint16(max(noOfPushTargetProperties, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -427,13 +427,13 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for securityGroups")
 	}
 	// Count array
-	securityGroups := make([]PascalString, utils.Max(noOfSecurityGroups, 0))
+	securityGroups := make([]PascalString, max(noOfSecurityGroups, 0))
 	// This happens when the size is set conditional to 0
 	if len(securityGroups) == 0 {
 		securityGroups = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfSecurityGroups, 0))
+		_numItems := uint16(max(noOfSecurityGroups, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

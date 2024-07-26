@@ -193,13 +193,13 @@ func DeleteNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for nodesToDelete")
 	}
 	// Count array
-	nodesToDelete := make([]ExtensionObjectDefinition, utils.Max(noOfNodesToDelete, 0))
+	nodesToDelete := make([]ExtensionObjectDefinition, max(noOfNodesToDelete, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodesToDelete) == 0 {
 		nodesToDelete = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfNodesToDelete, 0))
+		_numItems := uint16(max(noOfNodesToDelete, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

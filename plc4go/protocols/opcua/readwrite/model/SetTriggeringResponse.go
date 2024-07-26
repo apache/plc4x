@@ -280,13 +280,13 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for addResults")
 	}
 	// Count array
-	addResults := make([]StatusCode, utils.Max(noOfAddResults, 0))
+	addResults := make([]StatusCode, max(noOfAddResults, 0))
 	// This happens when the size is set conditional to 0
 	if len(addResults) == 0 {
 		addResults = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfAddResults, 0))
+		_numItems := uint16(max(noOfAddResults, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -314,13 +314,13 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for addDiagnosticInfos")
 	}
 	// Count array
-	addDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfAddDiagnosticInfos, 0))
+	addDiagnosticInfos := make([]DiagnosticInfo, max(noOfAddDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(addDiagnosticInfos) == 0 {
 		addDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfAddDiagnosticInfos, 0))
+		_numItems := uint16(max(noOfAddDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -348,13 +348,13 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for removeResults")
 	}
 	// Count array
-	removeResults := make([]StatusCode, utils.Max(noOfRemoveResults, 0))
+	removeResults := make([]StatusCode, max(noOfRemoveResults, 0))
 	// This happens when the size is set conditional to 0
 	if len(removeResults) == 0 {
 		removeResults = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfRemoveResults, 0))
+		_numItems := uint16(max(noOfRemoveResults, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -382,13 +382,13 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for removeDiagnosticInfos")
 	}
 	// Count array
-	removeDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfRemoveDiagnosticInfos, 0))
+	removeDiagnosticInfos := make([]DiagnosticInfo, max(noOfRemoveDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(removeDiagnosticInfos) == 0 {
 		removeDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfRemoveDiagnosticInfos, 0))
+		_numItems := uint16(max(noOfRemoveDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

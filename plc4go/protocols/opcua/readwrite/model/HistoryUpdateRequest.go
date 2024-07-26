@@ -193,13 +193,13 @@ func HistoryUpdateRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for historyUpdateDetails")
 	}
 	// Count array
-	historyUpdateDetails := make([]ExtensionObject, utils.Max(noOfHistoryUpdateDetails, 0))
+	historyUpdateDetails := make([]ExtensionObject, max(noOfHistoryUpdateDetails, 0))
 	// This happens when the size is set conditional to 0
 	if len(historyUpdateDetails) == 0 {
 		historyUpdateDetails = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfHistoryUpdateDetails, 0))
+		_numItems := uint16(max(noOfHistoryUpdateDetails, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

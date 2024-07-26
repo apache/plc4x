@@ -193,13 +193,13 @@ func UnregisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for nodesToUnregister")
 	}
 	// Count array
-	nodesToUnregister := make([]NodeId, utils.Max(noOfNodesToUnregister, 0))
+	nodesToUnregister := make([]NodeId, max(noOfNodesToUnregister, 0))
 	// This happens when the size is set conditional to 0
 	if len(nodesToUnregister) == 0 {
 		nodesToUnregister = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfNodesToUnregister, 0))
+		_numItems := uint16(max(noOfNodesToUnregister, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -22,17 +22,19 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"golang.org/x/exp/slices"
+	"slices"
 	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type SubscriptionHandle struct {

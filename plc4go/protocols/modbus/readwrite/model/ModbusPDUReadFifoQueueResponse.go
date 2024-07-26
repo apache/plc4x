@@ -174,13 +174,13 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for fifoValue")
 	}
 	// Count array
-	fifoValue := make([]uint16, utils.Max(fifoCount, 0))
+	fifoValue := make([]uint16, max(fifoCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(fifoValue) == 0 {
 		fifoValue = nil
 	}
 	{
-		_numItems := uint16(utils.Max(fifoCount, 0))
+		_numItems := uint16(max(fifoCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

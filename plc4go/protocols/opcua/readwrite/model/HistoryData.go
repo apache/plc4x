@@ -169,13 +169,13 @@ func HistoryDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for dataValues")
 	}
 	// Count array
-	dataValues := make([]DataValue, utils.Max(noOfDataValues, 0))
+	dataValues := make([]DataValue, max(noOfDataValues, 0))
 	// This happens when the size is set conditional to 0
 	if len(dataValues) == 0 {
 		dataValues = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfDataValues, 0))
+		_numItems := uint16(max(noOfDataValues, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

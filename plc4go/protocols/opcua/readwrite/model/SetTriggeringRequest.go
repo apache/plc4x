@@ -248,13 +248,13 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for linksToAdd")
 	}
 	// Count array
-	linksToAdd := make([]uint32, utils.Max(noOfLinksToAdd, 0))
+	linksToAdd := make([]uint32, max(noOfLinksToAdd, 0))
 	// This happens when the size is set conditional to 0
 	if len(linksToAdd) == 0 {
 		linksToAdd = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfLinksToAdd, 0))
+		_numItems := uint16(max(noOfLinksToAdd, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -282,13 +282,13 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(pullErr, "Error pulling for linksToRemove")
 	}
 	// Count array
-	linksToRemove := make([]uint32, utils.Max(noOfLinksToRemove, 0))
+	linksToRemove := make([]uint32, max(noOfLinksToRemove, 0))
 	// This happens when the size is set conditional to 0
 	if len(linksToRemove) == 0 {
 		linksToRemove = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfLinksToRemove, 0))
+		_numItems := uint16(max(noOfLinksToRemove, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

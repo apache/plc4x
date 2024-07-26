@@ -198,13 +198,13 @@ func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for adsStampHeaders")
 	}
 	// Count array
-	adsStampHeaders := make([]AdsStampHeader, utils.Max(stamps, 0))
+	adsStampHeaders := make([]AdsStampHeader, max(stamps, 0))
 	// This happens when the size is set conditional to 0
 	if len(adsStampHeaders) == 0 {
 		adsStampHeaders = nil
 	}
 	{
-		_numItems := uint16(utils.Max(stamps, 0))
+		_numItems := uint16(max(stamps, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

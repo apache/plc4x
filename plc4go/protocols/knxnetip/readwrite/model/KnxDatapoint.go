@@ -4536,6 +4536,20 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcUSINT(value), nil
+	case datapointType == KnxDatapointType_DPT_Converter_Control: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		_ = value // TODO: temporary till we fix TIME stuff in golang (see above in the template)
+		readBuffer.CloseContext("KnxDatapoint")
+		return values.NewPlcUSINT(value), nil
 	case datapointType == KnxDatapointType_DPT_SABExcept_Behaviour: // USINT
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
@@ -11437,6 +11451,16 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Converter_Test_Control: // USINT
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Simple Field (value)
+		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
+	case datapointType == KnxDatapointType_DPT_Converter_Control: // USINT
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")

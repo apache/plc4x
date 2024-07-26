@@ -205,13 +205,13 @@ func NotificationMessageParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for notificationData")
 	}
 	// Count array
-	notificationData := make([]ExtensionObject, utils.Max(noOfNotificationData, 0))
+	notificationData := make([]ExtensionObject, max(noOfNotificationData, 0))
 	// This happens when the size is set conditional to 0
 	if len(notificationData) == 0 {
 		notificationData = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfNotificationData, 0))
+		_numItems := uint16(max(noOfNotificationData, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

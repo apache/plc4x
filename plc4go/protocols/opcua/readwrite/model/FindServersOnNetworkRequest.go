@@ -229,13 +229,13 @@ func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(pullErr, "Error pulling for serverCapabilityFilter")
 	}
 	// Count array
-	serverCapabilityFilter := make([]PascalString, utils.Max(noOfServerCapabilityFilter, 0))
+	serverCapabilityFilter := make([]PascalString, max(noOfServerCapabilityFilter, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverCapabilityFilter) == 0 {
 		serverCapabilityFilter = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfServerCapabilityFilter, 0))
+		_numItems := uint16(max(noOfServerCapabilityFilter, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -246,13 +246,13 @@ func ActivateSessionResponseParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for results")
 	}
 	// Count array
-	results := make([]StatusCode, utils.Max(noOfResults, 0))
+	results := make([]StatusCode, max(noOfResults, 0))
 	// This happens when the size is set conditional to 0
 	if len(results) == 0 {
 		results = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfResults, 0))
+		_numItems := uint16(max(noOfResults, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -280,13 +280,13 @@ func ActivateSessionResponseParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
 	}
 	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfDiagnosticInfos, 0))
+	diagnosticInfos := make([]DiagnosticInfo, max(noOfDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(diagnosticInfos) == 0 {
 		diagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfDiagnosticInfos, 0))
+		_numItems := uint16(max(noOfDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

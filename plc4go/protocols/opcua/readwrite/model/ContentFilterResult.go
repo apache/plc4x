@@ -198,13 +198,13 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for elementResults")
 	}
 	// Count array
-	elementResults := make([]ExtensionObjectDefinition, utils.Max(noOfElementResults, 0))
+	elementResults := make([]ExtensionObjectDefinition, max(noOfElementResults, 0))
 	// This happens when the size is set conditional to 0
 	if len(elementResults) == 0 {
 		elementResults = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfElementResults, 0))
+		_numItems := uint16(max(noOfElementResults, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -232,13 +232,13 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for elementDiagnosticInfos")
 	}
 	// Count array
-	elementDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfElementDiagnosticInfos, 0))
+	elementDiagnosticInfos := make([]DiagnosticInfo, max(noOfElementDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(elementDiagnosticInfos) == 0 {
 		elementDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfElementDiagnosticInfos, 0))
+		_numItems := uint16(max(noOfElementDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

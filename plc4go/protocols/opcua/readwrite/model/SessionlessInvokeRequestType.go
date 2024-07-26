@@ -256,13 +256,13 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUris")
 	}
 	// Count array
-	namespaceUris := make([]PascalString, utils.Max(noOfNamespaceUris, 0))
+	namespaceUris := make([]PascalString, max(noOfNamespaceUris, 0))
 	// This happens when the size is set conditional to 0
 	if len(namespaceUris) == 0 {
 		namespaceUris = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfNamespaceUris, 0))
+		_numItems := uint16(max(noOfNamespaceUris, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -290,13 +290,13 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for serverUris")
 	}
 	// Count array
-	serverUris := make([]PascalString, utils.Max(noOfServerUris, 0))
+	serverUris := make([]PascalString, max(noOfServerUris, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverUris) == 0 {
 		serverUris = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfServerUris, 0))
+		_numItems := uint16(max(noOfServerUris, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -324,13 +324,13 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
 	}
 	// Count array
-	localeIds := make([]PascalString, utils.Max(noOfLocaleIds, 0))
+	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(localeIds) == 0 {
 		localeIds = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfLocaleIds, 0))
+		_numItems := uint16(max(noOfLocaleIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

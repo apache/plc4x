@@ -268,13 +268,13 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for clientSoftwareCertificates")
 	}
 	// Count array
-	clientSoftwareCertificates := make([]ExtensionObjectDefinition, utils.Max(noOfClientSoftwareCertificates, 0))
+	clientSoftwareCertificates := make([]ExtensionObjectDefinition, max(noOfClientSoftwareCertificates, 0))
 	// This happens when the size is set conditional to 0
 	if len(clientSoftwareCertificates) == 0 {
 		clientSoftwareCertificates = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfClientSoftwareCertificates, 0))
+		_numItems := uint16(max(noOfClientSoftwareCertificates, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -302,13 +302,13 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
 	}
 	// Count array
-	localeIds := make([]PascalString, utils.Max(noOfLocaleIds, 0))
+	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(localeIds) == 0 {
 		localeIds = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfLocaleIds, 0))
+		_numItems := uint16(max(noOfLocaleIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

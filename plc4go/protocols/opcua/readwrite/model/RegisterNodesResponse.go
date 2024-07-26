@@ -193,13 +193,13 @@ func RegisterNodesResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for registeredNodeIds")
 	}
 	// Count array
-	registeredNodeIds := make([]NodeId, utils.Max(noOfRegisteredNodeIds, 0))
+	registeredNodeIds := make([]NodeId, max(noOfRegisteredNodeIds, 0))
 	// This happens when the size is set conditional to 0
 	if len(registeredNodeIds) == 0 {
 		registeredNodeIds = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfRegisteredNodeIds, 0))
+		_numItems := uint16(max(noOfRegisteredNodeIds, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

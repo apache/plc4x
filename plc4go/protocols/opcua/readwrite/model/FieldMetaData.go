@@ -347,13 +347,13 @@ func FieldMetaDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for arrayDimensions")
 	}
 	// Count array
-	arrayDimensions := make([]uint32, utils.Max(noOfArrayDimensions, 0))
+	arrayDimensions := make([]uint32, max(noOfArrayDimensions, 0))
 	// This happens when the size is set conditional to 0
 	if len(arrayDimensions) == 0 {
 		arrayDimensions = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfArrayDimensions, 0))
+		_numItems := uint16(max(noOfArrayDimensions, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -401,13 +401,13 @@ func FieldMetaDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(pullErr, "Error pulling for properties")
 	}
 	// Count array
-	properties := make([]ExtensionObjectDefinition, utils.Max(noOfProperties, 0))
+	properties := make([]ExtensionObjectDefinition, max(noOfProperties, 0))
 	// This happens when the size is set conditional to 0
 	if len(properties) == 0 {
 		properties = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfProperties, 0))
+		_numItems := uint16(max(noOfProperties, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -222,13 +222,13 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for operandStatusCodes")
 	}
 	// Count array
-	operandStatusCodes := make([]StatusCode, utils.Max(noOfOperandStatusCodes, 0))
+	operandStatusCodes := make([]StatusCode, max(noOfOperandStatusCodes, 0))
 	// This happens when the size is set conditional to 0
 	if len(operandStatusCodes) == 0 {
 		operandStatusCodes = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfOperandStatusCodes, 0))
+		_numItems := uint16(max(noOfOperandStatusCodes, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -256,13 +256,13 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(pullErr, "Error pulling for operandDiagnosticInfos")
 	}
 	// Count array
-	operandDiagnosticInfos := make([]DiagnosticInfo, utils.Max(noOfOperandDiagnosticInfos, 0))
+	operandDiagnosticInfos := make([]DiagnosticInfo, max(noOfOperandDiagnosticInfos, 0))
 	// This happens when the size is set conditional to 0
 	if len(operandDiagnosticInfos) == 0 {
 		operandDiagnosticInfos = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfOperandDiagnosticInfos, 0))
+		_numItems := uint16(max(noOfOperandDiagnosticInfos, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

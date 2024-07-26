@@ -158,13 +158,13 @@ func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for adsNotificationSamples")
 	}
 	// Count array
-	adsNotificationSamples := make([]AdsNotificationSample, utils.Max(samples, 0))
+	adsNotificationSamples := make([]AdsNotificationSample, max(samples, 0))
 	// This happens when the size is set conditional to 0
 	if len(adsNotificationSamples) == 0 {
 		adsNotificationSamples = nil
 	}
 	{
-		_numItems := uint16(utils.Max(samples, 0))
+		_numItems := uint16(max(samples, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

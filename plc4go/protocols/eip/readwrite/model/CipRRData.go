@@ -210,13 +210,13 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(pullErr, "Error pulling for typeIds")
 	}
 	// Count array
-	typeIds := make([]TypeId, utils.Max(typeIdCount, 0))
+	typeIds := make([]TypeId, max(typeIdCount, 0))
 	// This happens when the size is set conditional to 0
 	if len(typeIds) == 0 {
 		typeIds = nil
 	}
 	{
-		_numItems := uint16(utils.Max(typeIdCount, 0))
+		_numItems := uint16(max(typeIdCount, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

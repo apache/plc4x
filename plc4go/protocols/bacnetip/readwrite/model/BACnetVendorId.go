@@ -1515,6 +1515,18 @@ const (
 	BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD                                                     BACnetVendorId = 1478
 	BACnetVendorId_PAXTON_CONTROLS_CORP                                                         BACnetVendorId = 1479
 	BACnetVendorId_FELL_TECHNOLOGYAS                                                            BACnetVendorId = 1480
+	BACnetVendorId_SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED                              BACnetVendorId = 1481
+	BACnetVendorId_MICROGROPLC_LTD                                                              BACnetVendorId = 1482
+	BACnetVendorId_CLOUDER_OY                                                                   BACnetVendorId = 1483
+	BACnetVendorId_GEBUDE_AUTOMATISIERUNG_GMBH                                                  BACnetVendorId = 1484
+	BACnetVendorId_SOLVIMUS_GMBH                                                                BACnetVendorId = 1485
+	BACnetVendorId_GUANG_ZHOU_WANGKONG_LTD                                                      BACnetVendorId = 1486
+	BACnetVendorId_SAFE_SQUARE_GMBH                                                             BACnetVendorId = 1487
+	BACnetVendorId_HEKLATECHAB                                                                  BACnetVendorId = 1488
+	BACnetVendorId_SILVAIR                                                                      BACnetVendorId = 1489
+	BACnetVendorId_ADVECO                                                                       BACnetVendorId = 1490
+	BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD                                                  BACnetVendorId = 1491
+	BACnetVendorId_CALEB_CONTROLS                                                               BACnetVendorId = 1492
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2995,6 +3007,18 @@ func init() {
 		BACnetVendorId_HORTENLOT_JIANGSU_CO_LTD,
 		BACnetVendorId_PAXTON_CONTROLS_CORP,
 		BACnetVendorId_FELL_TECHNOLOGYAS,
+		BACnetVendorId_SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED,
+		BACnetVendorId_MICROGROPLC_LTD,
+		BACnetVendorId_CLOUDER_OY,
+		BACnetVendorId_GEBUDE_AUTOMATISIERUNG_GMBH,
+		BACnetVendorId_SOLVIMUS_GMBH,
+		BACnetVendorId_GUANG_ZHOU_WANGKONG_LTD,
+		BACnetVendorId_SAFE_SQUARE_GMBH,
+		BACnetVendorId_HEKLATECHAB,
+		BACnetVendorId_SILVAIR,
+		BACnetVendorId_ADVECO,
+		BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD,
+		BACnetVendorId_CALEB_CONTROLS,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -5141,9 +5165,57 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1480' */
 			return 1480
 		}
+	case 1481:
+		{ /* '1481' */
+			return 1481
+		}
+	case 1482:
+		{ /* '1482' */
+			return 1482
+		}
+	case 1483:
+		{ /* '1483' */
+			return 1483
+		}
+	case 1484:
+		{ /* '1484' */
+			return 1484
+		}
+	case 1485:
+		{ /* '1485' */
+			return 1485
+		}
+	case 1486:
+		{ /* '1486' */
+			return 1486
+		}
+	case 1487:
+		{ /* '1487' */
+			return 1487
+		}
+	case 1488:
+		{ /* '1488' */
+			return 1488
+		}
+	case 1489:
+		{ /* '1489' */
+			return 1489
+		}
 	case 149:
 		{ /* '149' */
 			return 149
+		}
+	case 1490:
+		{ /* '1490' */
+			return 1490
+		}
+	case 1491:
+		{ /* '1491' */
+			return 1491
+		}
+	case 1492:
+		{ /* '1492' */
+			return 1492
 		}
 	case 15:
 		{ /* '15' */
@@ -11051,9 +11123,57 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1480' */
 			return "Fell Technology AS"
 		}
+	case 1481:
+		{ /* '1481' */
+			return "SHLOK Information Systems India Private Limited"
+		}
+	case 1482:
+		{ /* '1482' */
+			return "Microgro PLC Ltd."
+		}
+	case 1483:
+		{ /* '1483' */
+			return "Clouder Oy"
+		}
+	case 1484:
+		{ /* '1484' */
+			return "Gebäude Automatisierung GmbH"
+		}
+	case 1485:
+		{ /* '1485' */
+			return "solvimus GmbH"
+		}
+	case 1486:
+		{ /* '1486' */
+			return "GuangZhou Wangkong Ltd."
+		}
+	case 1487:
+		{ /* '1487' */
+			return "SafeSquare GmbH"
+		}
+	case 1488:
+		{ /* '1488' */
+			return "Heklatech AB"
+		}
+	case 1489:
+		{ /* '1489' */
+			return "Silvair"
+		}
 	case 149:
 		{ /* '149' */
 			return "Airtek International Inc."
+		}
+	case 1490:
+		{ /* '1490' */
+			return "Adveco"
+		}
+	case 1491:
+		{ /* '1491' */
+			return "Eura Drives Electric Co., Ltd."
+		}
+	case 1492:
+		{ /* '1492' */
+			return "Caleb Controls"
 		}
 	case 15:
 		{ /* '15' */
@@ -15890,8 +16010,32 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_TEMCO_CONTROLS_LTD, true
 	case 1480:
 		return BACnetVendorId_FELL_TECHNOLOGYAS, true
+	case 1481:
+		return BACnetVendorId_SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED, true
+	case 1482:
+		return BACnetVendorId_MICROGROPLC_LTD, true
+	case 1483:
+		return BACnetVendorId_CLOUDER_OY, true
+	case 1484:
+		return BACnetVendorId_GEBUDE_AUTOMATISIERUNG_GMBH, true
+	case 1485:
+		return BACnetVendorId_SOLVIMUS_GMBH, true
+	case 1486:
+		return BACnetVendorId_GUANG_ZHOU_WANGKONG_LTD, true
+	case 1487:
+		return BACnetVendorId_SAFE_SQUARE_GMBH, true
+	case 1488:
+		return BACnetVendorId_HEKLATECHAB, true
+	case 1489:
+		return BACnetVendorId_SILVAIR, true
 	case 149:
 		return BACnetVendorId_AIRTEK_INTERNATIONAL_INC, true
+	case 1490:
+		return BACnetVendorId_ADVECO, true
+	case 1491:
+		return BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD, true
+	case 1492:
+		return BACnetVendorId_CALEB_CONTROLS, true
 	case 15:
 		return BACnetVendorId_CORNELL_UNIVERSITY, true
 	case 150:
@@ -18842,8 +18986,32 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_TEMCO_CONTROLS_LTD, true
 	case "FELL_TECHNOLOGYAS":
 		return BACnetVendorId_FELL_TECHNOLOGYAS, true
+	case "SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED":
+		return BACnetVendorId_SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED, true
+	case "MICROGROPLC_LTD":
+		return BACnetVendorId_MICROGROPLC_LTD, true
+	case "CLOUDER_OY":
+		return BACnetVendorId_CLOUDER_OY, true
+	case "GEBUDE_AUTOMATISIERUNG_GMBH":
+		return BACnetVendorId_GEBUDE_AUTOMATISIERUNG_GMBH, true
+	case "SOLVIMUS_GMBH":
+		return BACnetVendorId_SOLVIMUS_GMBH, true
+	case "GUANG_ZHOU_WANGKONG_LTD":
+		return BACnetVendorId_GUANG_ZHOU_WANGKONG_LTD, true
+	case "SAFE_SQUARE_GMBH":
+		return BACnetVendorId_SAFE_SQUARE_GMBH, true
+	case "HEKLATECHAB":
+		return BACnetVendorId_HEKLATECHAB, true
+	case "SILVAIR":
+		return BACnetVendorId_SILVAIR, true
 	case "AIRTEK_INTERNATIONAL_INC":
 		return BACnetVendorId_AIRTEK_INTERNATIONAL_INC, true
+	case "ADVECO":
+		return BACnetVendorId_ADVECO, true
+	case "EURA_DRIVES_ELECTRIC_CO_LTD":
+		return BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD, true
+	case "CALEB_CONTROLS":
+		return BACnetVendorId_CALEB_CONTROLS, true
 	case "CORNELL_UNIVERSITY":
 		return BACnetVendorId_CORNELL_UNIVERSITY, true
 	case "ADVANTECH_CORPORATION":
@@ -21855,8 +22023,32 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "TEMCO_CONTROLS_LTD"
 	case BACnetVendorId_FELL_TECHNOLOGYAS:
 		return "FELL_TECHNOLOGYAS"
+	case BACnetVendorId_SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED:
+		return "SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED"
+	case BACnetVendorId_MICROGROPLC_LTD:
+		return "MICROGROPLC_LTD"
+	case BACnetVendorId_CLOUDER_OY:
+		return "CLOUDER_OY"
+	case BACnetVendorId_GEBUDE_AUTOMATISIERUNG_GMBH:
+		return "GEBUDE_AUTOMATISIERUNG_GMBH"
+	case BACnetVendorId_SOLVIMUS_GMBH:
+		return "SOLVIMUS_GMBH"
+	case BACnetVendorId_GUANG_ZHOU_WANGKONG_LTD:
+		return "GUANG_ZHOU_WANGKONG_LTD"
+	case BACnetVendorId_SAFE_SQUARE_GMBH:
+		return "SAFE_SQUARE_GMBH"
+	case BACnetVendorId_HEKLATECHAB:
+		return "HEKLATECHAB"
+	case BACnetVendorId_SILVAIR:
+		return "SILVAIR"
 	case BACnetVendorId_AIRTEK_INTERNATIONAL_INC:
 		return "AIRTEK_INTERNATIONAL_INC"
+	case BACnetVendorId_ADVECO:
+		return "ADVECO"
+	case BACnetVendorId_EURA_DRIVES_ELECTRIC_CO_LTD:
+		return "EURA_DRIVES_ELECTRIC_CO_LTD"
+	case BACnetVendorId_CALEB_CONTROLS:
+		return "CALEB_CONTROLS"
 	case BACnetVendorId_CORNELL_UNIVERSITY:
 		return "CORNELL_UNIVERSITY"
 	case BACnetVendorId_ADVANTECH_CORPORATION:

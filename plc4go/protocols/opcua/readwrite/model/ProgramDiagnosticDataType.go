@@ -352,13 +352,13 @@ func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodInputArguments")
 	}
 	// Count array
-	lastMethodInputArguments := make([]ExtensionObjectDefinition, utils.Max(noOfLastMethodInputArguments, 0))
+	lastMethodInputArguments := make([]ExtensionObjectDefinition, max(noOfLastMethodInputArguments, 0))
 	// This happens when the size is set conditional to 0
 	if len(lastMethodInputArguments) == 0 {
 		lastMethodInputArguments = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfLastMethodInputArguments, 0))
+		_numItems := uint16(max(noOfLastMethodInputArguments, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -386,13 +386,13 @@ func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodOutputArguments")
 	}
 	// Count array
-	lastMethodOutputArguments := make([]ExtensionObjectDefinition, utils.Max(noOfLastMethodOutputArguments, 0))
+	lastMethodOutputArguments := make([]ExtensionObjectDefinition, max(noOfLastMethodOutputArguments, 0))
 	// This happens when the size is set conditional to 0
 	if len(lastMethodOutputArguments) == 0 {
 		lastMethodOutputArguments = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfLastMethodOutputArguments, 0))
+		_numItems := uint16(max(noOfLastMethodOutputArguments, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -193,13 +193,13 @@ func PublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(pullErr, "Error pulling for subscriptionAcknowledgements")
 	}
 	// Count array
-	subscriptionAcknowledgements := make([]ExtensionObjectDefinition, utils.Max(noOfSubscriptionAcknowledgements, 0))
+	subscriptionAcknowledgements := make([]ExtensionObjectDefinition, max(noOfSubscriptionAcknowledgements, 0))
 	// This happens when the size is set conditional to 0
 	if len(subscriptionAcknowledgements) == 0 {
 		subscriptionAcknowledgements = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfSubscriptionAcknowledgements, 0))
+		_numItems := uint16(max(noOfSubscriptionAcknowledgements, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

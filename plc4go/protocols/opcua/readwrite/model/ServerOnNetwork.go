@@ -235,13 +235,13 @@ func ServerOnNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(pullErr, "Error pulling for serverCapabilities")
 	}
 	// Count array
-	serverCapabilities := make([]PascalString, utils.Max(noOfServerCapabilities, 0))
+	serverCapabilities := make([]PascalString, max(noOfServerCapabilities, 0))
 	// This happens when the size is set conditional to 0
 	if len(serverCapabilities) == 0 {
 		serverCapabilities = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfServerCapabilities, 0))
+		_numItems := uint16(max(noOfServerCapabilities, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

@@ -313,13 +313,13 @@ func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(pullErr, "Error pulling for metaDataProperties")
 	}
 	// Count array
-	metaDataProperties := make([]QualifiedName, utils.Max(noOfMetaDataProperties, 0))
+	metaDataProperties := make([]QualifiedName, max(noOfMetaDataProperties, 0))
 	// This happens when the size is set conditional to 0
 	if len(metaDataProperties) == 0 {
 		metaDataProperties = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfMetaDataProperties, 0))
+		_numItems := uint16(max(noOfMetaDataProperties, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

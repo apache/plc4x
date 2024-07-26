@@ -360,13 +360,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddress")
 	}
 	// Count array
-	destinationAddress := make([]uint8, utils.Max(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
+	destinationAddress := make([]uint8, max(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(destinationAddress) == 0 {
 		destinationAddress = nil
 	}
 	{
-		_numItems := uint16(utils.Max(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
+		_numItems := uint16(max(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -412,13 +412,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
 	// Count array
-	sourceAddress := make([]uint8, utils.Max(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
+	sourceAddress := make([]uint8, max(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 	// This happens when the size is set conditional to 0
 	if len(sourceAddress) == 0 {
 		sourceAddress = nil
 	}
 	{
-		_numItems := uint16(utils.Max(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
+		_numItems := uint16(max(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

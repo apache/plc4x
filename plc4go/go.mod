@@ -19,7 +19,7 @@
 
 module github.com/apache/plc4x/plc4go
 
-go 1.20
+go 1.21
 
 require (
 	github.com/IBM/netaddr v1.5.0
@@ -36,7 +36,6 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/subchen/go-xmldom v1.1.2
 	github.com/viney-shih/go-lock v1.1.2
-	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/net v0.27.0
 	golang.org/x/text v0.16.0
 	golang.org/x/tools v0.23.0

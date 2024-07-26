@@ -52,7 +52,7 @@ func Dump(data []byte, highlights ...int) string {
 	return DumpFixedWidth(data, DefaultWidth, highlights...)
 }
 
-// DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth
+// DumpFixedWidth dumps hex as hex string. The minimum width of string returned is 18 up to supplied charWidth
 func DumpFixedWidth(data []byte, desiredCharWidth int, highlights ...int) string {
 	if data == nil || len(data) < 1 {
 		return ""

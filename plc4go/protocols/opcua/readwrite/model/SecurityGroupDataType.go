@@ -306,13 +306,13 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for securityGroupFolder")
 	}
 	// Count array
-	securityGroupFolder := make([]PascalString, utils.Max(noOfSecurityGroupFolder, 0))
+	securityGroupFolder := make([]PascalString, max(noOfSecurityGroupFolder, 0))
 	// This happens when the size is set conditional to 0
 	if len(securityGroupFolder) == 0 {
 		securityGroupFolder = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfSecurityGroupFolder, 0))
+		_numItems := uint16(max(noOfSecurityGroupFolder, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -387,13 +387,13 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for rolePermissions")
 	}
 	// Count array
-	rolePermissions := make([]ExtensionObjectDefinition, utils.Max(noOfRolePermissions, 0))
+	rolePermissions := make([]ExtensionObjectDefinition, max(noOfRolePermissions, 0))
 	// This happens when the size is set conditional to 0
 	if len(rolePermissions) == 0 {
 		rolePermissions = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfRolePermissions, 0))
+		_numItems := uint16(max(noOfRolePermissions, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -421,13 +421,13 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(pullErr, "Error pulling for groupProperties")
 	}
 	// Count array
-	groupProperties := make([]ExtensionObjectDefinition, utils.Max(noOfGroupProperties, 0))
+	groupProperties := make([]ExtensionObjectDefinition, max(noOfGroupProperties, 0))
 	// This happens when the size is set conditional to 0
 	if len(groupProperties) == 0 {
 		groupProperties = nil
 	}
 	{
-		_numItems := uint16(utils.Max(noOfGroupProperties, 0))
+		_numItems := uint16(max(noOfGroupProperties, 0))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
