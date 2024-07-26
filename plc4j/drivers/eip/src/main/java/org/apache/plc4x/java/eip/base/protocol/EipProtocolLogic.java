@@ -430,12 +430,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0L,
                 DEFAULT_SENDER_CONTEXT,
                 0L);
-        context.sendRequest(connectionRequest)
-            .expectResponse(EipPacket.class, Duration.ofMillis(1))
-            .onError((p, e) -> context.fireDisconnected())
-            .onTimeout(p -> context.fireDisconnected())
-            .handle(p -> context.fireDisconnected());
-
+        try {
+            context.sendRequest(connectionRequest)
+                .expectResponse(EipPacket.class, Duration.ofMillis(1))
+                .onError((p, e) -> context.fireDisconnected())
+                .onTimeout(p -> context.fireDisconnected())
+                .handle(p -> context.fireDisconnected());
+        } catch (Exception e) {
+            // Some devices hang up when reading the last byte of the disconnect request, so we'll
+            // simply catch and ignore any exceptions potentially caused by this.
+        }
         context.fireDisconnected();
     }
 
