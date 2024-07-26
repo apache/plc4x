@@ -47,7 +47,7 @@ type ApplicationLayerMessageCodec struct {
 	localAddress  *net.UDPAddr `stringer:"true"`
 	remoteAddress *net.UDPAddr `stringer:"true"`
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {

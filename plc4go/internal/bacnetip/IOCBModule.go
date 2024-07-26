@@ -116,7 +116,7 @@ type IOCB struct {
 	ioTimoutCancel chan any
 	priority       int
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewIOCB(localLog zerolog.Logger, request _PDU, destination *Address) (*IOCB, error) {
@@ -361,7 +361,7 @@ type IOQueue struct {
 	notEmpty sync.Cond
 	queue    PriorityQueue
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewIOQueue(localLog zerolog.Logger, name string) *IOQueue {
@@ -481,7 +481,7 @@ type IOController struct {
 	name       string
 	rootStruct _IOController
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewIOController(localLog zerolog.Logger, name string, rootStruct _IOController) (*IOController, error) {
@@ -605,7 +605,7 @@ type IOQController struct {
 	waitTime   time.Duration `stringer:"true"`
 	rootStruct _IOQController
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewIOQController(localLog zerolog.Logger, name string, rootStruct _IOQController) (*IOQController, error) {
@@ -850,7 +850,7 @@ type SieveQueue struct {
 	requestFn func(apdu _PDU)
 	address   *Address
 
-	log zerolog.Logger
+	log zerolog.Logger `ignore:"true"`
 }
 
 func NewSieveQueue(localLog zerolog.Logger, fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
