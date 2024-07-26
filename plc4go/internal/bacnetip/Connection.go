@@ -37,7 +37,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/rs/zerolog/log"
 )
 
 type Connection struct {
@@ -121,9 +120,9 @@ func (c *Connection) passToDefaultIncomingMessageChannel() {
 	select {
 	case message := <-incomingMessageChannel:
 		// TODO: implement mapping to subscribers
-		log.Info().Stringer("message", message).Msg("Received")
+		c.log.Info().Stringer("message", message).Msg("Received")
 	case <-timeout.C:
-		log.Info().Msg("Message was not handled")
+		c.log.Info().Msg("Message was not handled")
 	}
 }
 

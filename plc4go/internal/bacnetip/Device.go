@@ -20,11 +20,13 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"strconv"
 	"strings"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type WhoIsIAmServicesRequirements interface {
@@ -35,24 +37,28 @@ type WhoIsIAmServices struct {
 	WhoIsIAmServicesRequirements
 	*Capability
 	localDevice *LocalDeviceObject
+
+	log zerolog.Logger
 }
 
-func NewWhoIsIAmServices(whoIsIAmServicesRequirements WhoIsIAmServicesRequirements) (*WhoIsIAmServices, error) {
-	w := &WhoIsIAmServices{}
+func NewWhoIsIAmServices(localLog zerolog.Logger, whoIsIAmServicesRequirements WhoIsIAmServicesRequirements) (*WhoIsIAmServices, error) {
+	w := &WhoIsIAmServices{
+		log: localLog,
+	}
 	w.WhoIsIAmServicesRequirements = whoIsIAmServicesRequirements
 	w.Capability = NewCapability()
 	return w, nil
 }
 
 func (w *WhoIsIAmServices) Startup() error {
-	log.Debug().Msg("Startup")
+	w.log.Debug().Msg("Startup")
 
 	// send a global broadcast I-Am
 	return w.IAm(nil)
 }
 
 func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) error {
-	log.Debug().Msg("WhoIs")
+	w.log.Debug().Msg("WhoIs")
 
 	var deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit uint
 	if lowLimit != nil {
@@ -81,18 +87,18 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 	// Build a request
 	whoIs := model.NewBACnetUnconfirmedServiceRequestWhoIs(model.CreateBACnetContextTagUnsignedInteger(0, deviceInstanceRangeLowLimit), model.CreateBACnetContextTagUnsignedInteger(1, deviceInstanceRangeHighLimit), 0)
 
-	log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
+	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
 	return w.Request(NewPDU(whoIs, WithPDUDestination(address)))
 }
 
 // DoWhoIsRequest respond to a Who-Is request.
 func (w *WhoIsIAmServices) DoWhoIsRequest(apdu _PDU) error {
-	log.Debug().Stringer("apdu", apdu).Msg("DoWhoIsRequest")
+	w.log.Debug().Stringer("apdu", apdu).Msg("DoWhoIsRequest")
 
 	// ignore this if there's no local device
 	if w.localDevice == nil {
-		log.Debug().Msg("No local device")
+		w.log.Debug().Msg("No local device")
 	}
 
 	// extract the parameters
@@ -140,11 +146,11 @@ func (w *WhoIsIAmServices) DoWhoIsRequest(apdu _PDU) error {
 }
 
 func (w *WhoIsIAmServices) IAm(address *Address) error {
-	log.Debug().Msg("IAm")
+	w.log.Debug().Msg("IAm")
 
 	// this requires a local device
 	if w.localDevice == nil {
-		log.Debug().Msg("no local device")
+		w.log.Debug().Msg("no local device")
 		return nil
 	}
 
@@ -160,7 +166,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	if address == nil {
 		address = NewGlobalBroadcast(nil)
 	}
-	log.Debug().Stringer("iAm", iAm).Msg("IAm")
+	w.log.Debug().Stringer("iAm", iAm).Msg("IAm")
 
 	return w.Request(NewPDU(iAm, WithPDUDestination(address)))
 }

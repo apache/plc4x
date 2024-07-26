@@ -20,7 +20,6 @@
 package bacnetip
 
 import (
-	"github.com/rs/zerolog/log"
 	"math"
 	"time"
 )
@@ -29,6 +28,8 @@ var running bool
 var spin = 10 * time.Millisecond
 var sleepTime = 0 * time.Nanosecond
 var deferredFunctions []func() error
+
+var ErrorCallback func(err error)
 
 func init() {
 	running = true
@@ -68,7 +69,9 @@ func init() {
 			deferredFunctions = nil
 			for _, fn := range fnlist {
 				if err := fn(); err != nil {
-					log.Debug().Err(err).Msg("error executing deferred function")
+					if ErrorCallback != nil {
+						ErrorCallback(err)
+					}
 				}
 			}
 		}
@@ -76,8 +79,6 @@ func init() {
 }
 
 func Deferred(fn func() error) {
-	log.Debug().Msg("Deferred")
-
 	// append it to the list
 	deferredFunctions = append(deferredFunctions, fn)
 

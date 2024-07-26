@@ -22,23 +22,23 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/IBM/netaddr"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/libp2p/go-reuseport"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/options"
+
+	"github.com/IBM/netaddr"
+	"github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Discoverer struct {
@@ -64,7 +64,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		return errors.Wrap(err, "error extracting protocol specific options")
 	}
 
-	communicationChannels, err := buildupCommunicationChannels(ctx, interfaces, specificOptions.bacNetPort)
+	communicationChannels, err := d.buildupCommunicationChannels(ctx, interfaces, specificOptions.bacNetPort)
 	if err != nil {
 		return errors.Wrap(err, "error building communication channels")
 	}
@@ -78,7 +78,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	if err != nil {
 		return errors.Wrap(err, "error broadcasting and discovering")
 	}
-	handleIncomingBVLCs(ctx, callback, incomingBVLCChannel)
+	d.handleIncomingBVLCs(ctx, callback, incomingBVLCChannel)
 	// TODO: make adjustable
 	time.Sleep(time.Second * 60)
 	for _, channel := range communicationChannels {
@@ -114,7 +114,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 				return nil, err
 			}
 			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(theBytes, communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
-				log.Debug().Err(err).Msg("Error sending broadcast")
+				d.log.Debug().Err(err).Msg("Error sending broadcast")
 			}
 		}
 		if whoHasOptions := specificOptions.whoHasOptions; whoHasOptions != nil {
@@ -158,7 +158,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 				return nil, err
 			}
 			if _, err := communicationChannelInstance.broadcastConnection.WriteTo(theBytes, communicationChannelInstance.broadcastConnection.LocalAddr()); err != nil {
-				log.Debug().Err(err).Msg("Error sending broadcast")
+				d.log.Debug().Err(err).Msg("Error sending broadcast")
 			}
 		}
 
@@ -173,15 +173,15 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.unicastConnection.ReadFrom(buf)
 					if err != nil {
-						log.Debug().Err(err).Msg("Ending unicast receive")
+						d.log.Debug().Err(err).Msg("Ending unicast receive")
 						blockingReadChan <- false
 						return
 					}
-					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
+					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
 					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
 					if err != nil {
-						log.Warn().Err(err).Msg("Could not parse bvlc")
+						d.log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
 						return
 					}
@@ -191,12 +191,12 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 				select {
 				case ok := <-blockingReadChan:
 					if !ok {
-						log.Debug().Msg("Ending unicast reading")
+						d.log.Debug().Msg("Ending unicast reading")
 						return
 					}
-					log.Trace().Msg("Received something unicast")
+					d.log.Trace().Msg("Received something unicast")
 				case <-ctx.Done():
-					log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
+					d.log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
 					return
 				}
 			}
@@ -213,15 +213,15 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 					buf := make([]byte, 4096)
 					n, addr, err := communicationChannelInstance.broadcastConnection.ReadFrom(buf)
 					if err != nil {
-						log.Debug().Err(err).Msg("Ending broadcast receive")
+						d.log.Debug().Err(err).Msg("Ending broadcast receive")
 						blockingReadChan <- false
 						return
 					}
-					log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
+					d.log.Debug().Stringer("addr", addr).Msg("Received broadcast bvlc")
 					ctxForModel := options.GetLoggerContextForModel(ctx, d.log, options.WithPassLoggerToModel(d.passLogToModel))
 					incomingBvlc, err := driverModel.BVLCParse(ctxForModel, buf[:n])
 					if err != nil {
-						log.Warn().Err(err).Msg("Could not parse bvlc")
+						d.log.Warn().Err(err).Msg("Could not parse bvlc")
 						blockingReadChan <- true
 					}
 					incomingBVLCChannel <- receivedBvlcMessage{incomingBvlc, addr}
@@ -230,12 +230,12 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 				select {
 				case ok := <-blockingReadChan:
 					if !ok {
-						log.Debug().Msg("Ending broadcast reading")
+						d.log.Debug().Msg("Ending broadcast reading")
 						return
 					}
-					log.Trace().Msg("Received something broadcast")
+					d.log.Trace().Msg("Received something broadcast")
 				case <-ctx.Done():
-					log.Debug().Err(ctx.Err()).Msg("Ending broadcast receive")
+					d.log.Debug().Err(ctx.Err()).Msg("Ending broadcast receive")
 					return
 				}
 			}
@@ -244,7 +244,7 @@ func (d *Discoverer) broadcastAndDiscover(ctx context.Context, communicationChan
 	return incomingBVLCChannel, nil
 }
 
-func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), incomingBVLCChannel chan receivedBvlcMessage) {
+func (d *Discoverer) handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), incomingBVLCChannel chan receivedBvlcMessage) {
 	for {
 		if err := ctx.Err(); err != nil {
 			// TODO: maybe we log something, but maybe it is fine
@@ -259,12 +259,12 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 			_ = npdu
 			if apdu := npdu.GetApdu(); apdu == nil {
 				nlm := npdu.GetNlm()
-				log.Debug().Stringer("nlm", nlm).Msg("Got nlm")
+				d.log.Debug().Stringer("nlm", nlm).Msg("Got nlm")
 				continue
 			}
 			apdu := npdu.GetApdu()
 			if _, ok := apdu.(driverModel.APDUConfirmedRequestExactly); ok {
-				log.Debug().Stringer("apdu", apdu).Msg("Got apdu")
+				d.log.Debug().Stringer("apdu", apdu).Msg("Got apdu")
 				continue
 			}
 			apduUnconfirmedRequest := apdu.(driverModel.APDUUnconfirmedRequestExactly)
@@ -274,7 +274,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				iAm := serviceRequest
 				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 				if err != nil {
-					log.Debug().Err(err).Msg("Error parsing url")
+					d.log.Debug().Err(err).Msg("Error parsing url")
 				}
 				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
@@ -291,7 +291,7 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				iHave := serviceRequest
 				remoteUrl, err := url.Parse("udp://" + receivedBvlc.addr.String())
 				if err != nil {
-					log.Debug().Err(err).Msg("Error parsing url")
+					d.log.Debug().Err(err).Msg("Error parsing url")
 				}
 				discoveryEvent := spiModel.NewDefaultPlcDiscoveryItem(
 					"bacnet-ip",
@@ -306,13 +306,13 @@ func handleIncomingBVLCs(ctx context.Context, callback func(event apiModel.PlcDi
 				callback(discoveryEvent)
 			}
 		case <-ctx.Done():
-			log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
+			d.log.Debug().Err(ctx.Err()).Msg("Ending unicast receive")
 			return
 		}
 	}
 }
 
-func buildupCommunicationChannels(ctx context.Context, interfaces []net.Interface, bacNetPort int) (communicationChannels []communicationChannel, err error) {
+func (d *Discoverer) buildupCommunicationChannels(ctx context.Context, interfaces []net.Interface, bacNetPort int) (communicationChannels []communicationChannel, err error) {
 	// Iterate over all network devices of this system.
 	for _, networkInterface := range interfaces {
 		if err := ctx.Err(); err != nil {
@@ -357,7 +357,7 @@ func buildupCommunicationChannels(ctx context.Context, interfaces []net.Interfac
 			// Handle undirected
 			unicastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", ipAddr, bacNetPort))
 			if err != nil {
-				log.Debug().Err(err).Msg("Error building unicast Port")
+				d.log.Debug().Err(err).Msg("Error building unicast Port")
 				continue
 			}
 
@@ -367,9 +367,9 @@ func buildupCommunicationChannels(ctx context.Context, interfaces []net.Interfac
 			broadcastConnection, err := reuseport.ListenPacket("udp4", fmt.Sprintf("%v:%d", broadcastAddr, bacNetPort))
 			if err != nil {
 				if err := unicastConnection.Close(); err != nil {
-					log.Debug().Err(err).Msg("Error closing transport instance")
+					d.log.Debug().Err(err).Msg("Error closing transport instance")
 				}
-				log.Debug().Err(err).Msg("Error building broadcast Port")
+				d.log.Debug().Err(err).Msg("Error building broadcast Port")
 				continue
 			}
 			communicationChannels = append(communicationChannels, communicationChannel{

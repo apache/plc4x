@@ -133,6 +133,7 @@ func Test_worker_start(t *testing.T) {
 			w.start()
 			t.Cleanup(func() {
 				w.stop(false)
+				time.Sleep(20 * time.Millisecond)
 			})
 		})
 	}

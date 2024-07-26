@@ -34,7 +34,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
@@ -47,9 +46,11 @@ type ApplicationLayerMessageCodec struct {
 
 	localAddress  *net.UDPAddr `stringer:"true"`
 	remoteAddress *net.UDPAddr `stringer:"true"`
+
+	log zerolog.Logger
 }
 
-func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
+func NewApplicationLayerMessageCodec(localLog zerolog.Logger, udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
 	// TODO: currently this is done by the BIP down below
 	// Have the transport create a new transport-instance.
 	//transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
@@ -59,15 +60,17 @@ func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl u
 	a := &ApplicationLayerMessageCodec{
 		localAddress:  localAddress,
 		remoteAddress: remoteAddress,
+
+		log: localLog,
 	}
-	address, err := NewAddress(localAddress)
+	address, err := NewAddress(localLog, localAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
 	// TODO: workaround for strange address parsing
 	at := AddressTuple[string, uint16]{fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort}
 	address.AddrTuple = &at
-	application, err := NewBIPSimpleApplication(&LocalDeviceObject{
+	application, err := NewBIPSimpleApplication(localLog, &LocalDeviceObject{
 		NumberOfAPDURetries: func() *uint { retries := uint(10); return &retries }(),
 	}, *address, &a.deviceInfoCache, nil)
 	if err != nil {
@@ -97,7 +100,7 @@ func (m *ApplicationLayerMessageCodec) ConnectWithContext(ctx context.Context) e
 
 func (m *ApplicationLayerMessageCodec) Disconnect() error {
 	if err := m.bipSimpleApplication.Close(); err != nil {
-		log.Error().Err(err).Msg("error closing application")
+		m.log.Error().Err(err).Msg("error closing application")
 	}
 	return m.messageCode.Disconnect()
 }
@@ -107,18 +110,18 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	address, err := NewAddress(m.remoteAddress)
+	address, err := NewAddress(m.log, m.remoteAddress)
 	if err != nil {
 		return err
 	}
-	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
+	iocb, err := NewIOCB(m.log, NewPDU(message, WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
 	go func() {
 		go func() {
 			if err := m.bipSimpleApplication.RequestIO(iocb); err != nil {
-				log.Debug().Err(err).Msg("errored")
+				m.log.Debug().Err(err).Msg("errored")
 			}
 		}()
 		iocb.Wait()
@@ -141,11 +144,11 @@ func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessag
 }
 
 func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-	address, err := NewAddress(m.remoteAddress)
+	address, err := NewAddress(m.log, m.remoteAddress)
 	if err != nil {
 		return err
 	}
-	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
+	iocb, err := NewIOCB(m.log, NewPDU(message, WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
@@ -158,7 +161,7 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 		iocb.Wait()
 		if err := iocb.ioError; err != nil {
 			if err := handleError(err); err != nil {
-				log.Debug().Err(err).Msg("error handling error")
+				m.log.Debug().Err(err).Msg("error handling error")
 				return
 			}
 		} else if response := iocb.ioResponse; response != nil {
@@ -190,7 +193,7 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 				if err := handleMessage(
 					tempBVLC,
 				); err != nil {
-					log.Debug().Err(err).Msg("error handling message")
+					m.log.Debug().Err(err).Msg("error handling message")
 					return
 				}
 			}
@@ -226,7 +229,7 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *MessageCodec) Send(message spi.Message) error {
-	log.Trace().Msg("Sending message")
+	m.log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
 	bvlcPacket := message.(model.BVLC)
 	// Serialize the request
@@ -246,16 +249,16 @@ func (m *MessageCodec) Send(message spi.Message) error {
 func (m *MessageCodec) Receive() (spi.Message, error) {
 	// We need at least 6 bytes in order to know how big the packet is in total
 	if num, err := m.GetTransportInstance().GetNumBytesAvailableInBuffer(); (err == nil) && (num >= 4) {
-		log.Debug().Uint32("num", num).Msg("we got num readable bytes")
+		m.log.Debug().Uint32("num", num).Msg("we got num readable bytes")
 		data, err := m.GetTransportInstance().PeekReadableBytes(4)
 		if err != nil {
-			log.Warn().Err(err).Msg("error peeking")
+			m.log.Warn().Err(err).Msg("error peeking")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		packetSize := uint32((uint16(data[2]) << 8) + uint16(data[3]))
 		if num < packetSize {
-			log.Debug().
+			m.log.Debug().
 				Uint32("num", num).
 				Uint32("packetSize", packetSize).
 				Msg("Not enough bytes. Got: num Need: packetSize")
@@ -263,20 +266,20 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		}
 		data, err = m.GetTransportInstance().Read(packetSize)
 		if err != nil {
-			log.Debug().Err(err).Msg("Error reading")
+			m.log.Debug().Err(err).Msg("Error reading")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		ctxForModel := options.GetLoggerContextForModel(context.TODO(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 		bvlcPacket, err := model.BVLCParse(ctxForModel, data)
 		if err != nil {
-			log.Warn().Err(err).Msg("error parsing")
+			m.log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...
 			return nil, nil
 		}
 		return bvlcPacket, nil
 	} else if err != nil {
-		log.Warn().Err(err).Msg("Got error reading")
+		m.log.Warn().Err(err).Msg("Got error reading")
 		return nil, nil
 	}
 	// TODO: maybe we return here a not enough error error

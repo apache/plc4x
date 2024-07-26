@@ -21,7 +21,7 @@ package bacnetip
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"sync"
 	"time"
 )
@@ -147,8 +147,6 @@ func OneShotFunction(fn func() error) *OneShotFunctionTask {
 func FunctionTask(fn func() error) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
-
-	log.Debug().Stringer("task", task).Msg("task")
 	return task
 }
 
@@ -163,7 +161,7 @@ type RecurringTask struct {
 	taskIntervalOffset *time.Duration
 }
 
-func NewRecurringTask(recurringTaskRequirements RecurringTaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
+func NewRecurringTask(localLog zerolog.Logger, recurringTaskRequirements RecurringTaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
 	r := &RecurringTask{RecurringTaskRequirements: recurringTaskRequirements}
 	r._Task = _New_Task(r)
 	// set the interval if it hasn't already been set
@@ -191,7 +189,7 @@ func NewRecurringTask(recurringTaskRequirements RecurringTaskRequirements, inter
 		_offset := time.Duration(0)
 		offset = &_offset
 	}
-	log.Debug().
+	localLog.Debug().
 		Interface("now", now).
 		Interface("interval", interval).
 		Interface("offset", offset).
@@ -216,9 +214,9 @@ type _RecurringFunctionTask struct {
 	fn func() error
 }
 
-func _New_RecurringFunctionTask(interval *time.Duration, fn func() error) *_RecurringFunctionTask {
+func _New_RecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn func() error) *_RecurringFunctionTask {
 	r := &_RecurringFunctionTask{fn: fn}
-	r.RecurringTask = NewRecurringTask(r, interval, nil)
+	r.RecurringTask = NewRecurringTask(localLog, r, interval, nil)
 	return r
 }
 
@@ -226,8 +224,8 @@ func (r _RecurringFunctionTask) processTask() error {
 	return r.fn()
 }
 
-func RecurringFunctionTask(interval *time.Duration, fn func() error) *RecurringTask {
-	return _New_RecurringFunctionTask(interval, fn).RecurringTask
+func RecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn func() error) *RecurringTask {
+	return _New_RecurringFunctionTask(localLog, interval, fn).RecurringTask
 }
 
 var _taskManager = TaskManager{}
@@ -235,6 +233,8 @@ var _taskManager = TaskManager{}
 type TaskManager struct {
 	sync.Mutex
 	tasks []_TaskRequirements
+
+	log zerolog.Logger
 }
 
 func (m *TaskManager) getTime() time.Time {
@@ -244,7 +244,7 @@ func (m *TaskManager) getTime() time.Time {
 func (m *TaskManager) installTask(task _TaskRequirements) {
 	m.Lock()
 	defer m.Unlock()
-	log.Debug().Interface("task", task).Msg("installTask")
+	m.log.Debug().Interface("task", task).Msg("installTask")
 
 	// if the taskTime is None is hasn't been computed correctly
 	if task.getTaskTime() == nil {
@@ -264,14 +264,14 @@ func (m *TaskManager) installTask(task _TaskRequirements) {
 }
 
 func (m *TaskManager) suspendTask(task _TaskRequirements) {
-	log.Debug().Interface("task", task).Msg("suspendTask ")
+	m.log.Debug().Interface("task", task).Msg("suspendTask ")
 	m.Lock()
 	defer m.Unlock()
 
 	iToDelete := -1
 	for i, _task := range m.tasks {
 		if _task == task {
-			log.Debug().Msg("task found")
+			m.log.Debug().Msg("task found")
 			iToDelete = i
 			task.setIsScheduled(false)
 			break
@@ -280,12 +280,12 @@ func (m *TaskManager) suspendTask(task _TaskRequirements) {
 	if iToDelete > 0 {
 		m.tasks = append(m.tasks[:iToDelete], m.tasks[iToDelete+1:]...)
 	} else {
-		log.Debug().Msg("task not found")
+		m.log.Debug().Msg("task not found")
 	}
 }
 
 func (m *TaskManager) resumeTask(task _TaskRequirements) {
-	log.Debug().Interface("task", task).Msg("resumeTask")
+	m.log.Debug().Interface("task", task).Msg("resumeTask")
 	m.Lock()
 	defer m.Unlock()
 
@@ -328,11 +328,11 @@ func (m *TaskManager) getNextTask() (_TaskRequirements, time.Duration) {
 }
 
 func (m *TaskManager) processTask(task _TaskRequirements) {
-	log.Debug().Interface("task", task).Msg("processTask")
+	m.log.Debug().Interface("task", task).Msg("processTask")
 
 	// process the task
 	if err := task.processTask(); err != nil {
-		log.Error().Err(err).Msg("Error processing Task")
+		m.log.Error().Err(err).Msg("Error processing Task")
 	}
 
 	switch task.(type) {

@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 // maps of named clients and servers
@@ -67,11 +67,14 @@ type _Client interface {
 type Client struct {
 	clientID   *int
 	clientPeer _Server
+
+	log zerolog.Logger
 }
 
-func NewClient(cid *int, rootStruct _Client) (*Client, error) {
+func NewClient(localLog zerolog.Logger, cid *int, rootStruct _Client) (*Client, error) {
 	c := &Client{
 		clientID: cid,
+		log:      localLog,
 	}
 	if cid != nil {
 		if _, ok := clientMap[*cid]; ok {
@@ -86,7 +89,7 @@ func NewClient(cid *int, rootStruct _Client) (*Client, error) {
 			}
 
 			// Note: we need to pass the rootStruct (which should contain c as delegate) here
-			if err := bind(rootStruct, server); err != nil {
+			if err := bind(localLog, rootStruct, server); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -95,7 +98,7 @@ func NewClient(cid *int, rootStruct _Client) (*Client, error) {
 }
 
 func (c *Client) Request(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Request")
+	c.log.Debug().Stringer("pdu", pdu).Msg("Request")
 
 	if c.clientPeer == nil {
 		return errors.New("unbound client")
@@ -135,11 +138,14 @@ type _Server interface {
 type Server struct {
 	serverID   *int
 	serverPeer _Client
+
+	log zerolog.Logger
 }
 
-func NewServer(sid *int, rootStruct _Server) (*Server, error) {
+func NewServer(localLog zerolog.Logger, sid *int, rootStruct _Server) (*Server, error) {
 	s := &Server{
 		serverID: sid,
+		log:      localLog,
 	}
 	if sid != nil {
 		if _, ok := serverMap[*sid]; ok {
@@ -154,7 +160,7 @@ func NewServer(sid *int, rootStruct _Server) (*Server, error) {
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
-			if err := bind(client, rootStruct); err != nil {
+			if err := bind(localLog, client, rootStruct); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -167,7 +173,7 @@ func (s *Server) Indication(_PDU) error {
 }
 
 func (s *Server) Response(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Response")
+	s.log.Debug().Stringer("pdu", pdu).Msg("Response")
 
 	if s.serverPeer == nil {
 		return errors.New("unbound server")
@@ -203,9 +209,11 @@ type _ServiceAccessPoint interface {
 type ServiceAccessPoint struct {
 	serviceID      *int
 	serviceElement _ApplicationServiceElement
+
+	log zerolog.Logger
 }
 
-func NewServiceAccessPoint(sapID *int, rootStruct _ServiceAccessPoint) (*ServiceAccessPoint, error) {
+func NewServiceAccessPoint(localLog zerolog.Logger, sapID *int, rootStruct _ServiceAccessPoint) (*ServiceAccessPoint, error) {
 	s := &ServiceAccessPoint{
 		serviceID: sapID,
 	}
@@ -222,7 +230,7 @@ func NewServiceAccessPoint(sapID *int, rootStruct _ServiceAccessPoint) (*Service
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
-			if err := bind(element, rootStruct); err != nil {
+			if err := bind(localLog, element, rootStruct); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -231,7 +239,7 @@ func NewServiceAccessPoint(sapID *int, rootStruct _ServiceAccessPoint) (*Service
 }
 
 func (s *ServiceAccessPoint) SapRequest(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapRequest")
+	s.log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
@@ -244,7 +252,7 @@ func (s *ServiceAccessPoint) SapIndication(_PDU) error {
 }
 
 func (s *ServiceAccessPoint) SapResponse(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapResponse")
+	s.log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
@@ -272,9 +280,11 @@ type _ApplicationServiceElement interface {
 type ApplicationServiceElement struct {
 	elementID      *int
 	elementService _ServiceAccessPoint
+
+	log zerolog.Logger
 }
 
-func NewApplicationServiceElement(aseID *int, rootStruct _ApplicationServiceElement) (*ApplicationServiceElement, error) {
+func NewApplicationServiceElement(localLog zerolog.Logger, aseID *int, rootStruct _ApplicationServiceElement) (*ApplicationServiceElement, error) {
 	a := &ApplicationServiceElement{
 		elementID: aseID,
 	}
@@ -292,7 +302,7 @@ func NewApplicationServiceElement(aseID *int, rootStruct _ApplicationServiceElem
 			}
 
 			// Note: we need to pass the rootStruct (which should contain a as delegate) here
-			if err := bind(rootStruct, service); err != nil {
+			if err := bind(localLog, rootStruct, service); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -301,7 +311,7 @@ func NewApplicationServiceElement(aseID *int, rootStruct _ApplicationServiceElem
 }
 
 func (a *ApplicationServiceElement) Request(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Request")
+	a.log.Debug().Stringer("pdu", pdu).Msg("Request")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
@@ -315,7 +325,7 @@ func (a *ApplicationServiceElement) Indication(_PDU) error {
 }
 
 func (a *ApplicationServiceElement) Response(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Response")
+	a.log.Debug().Stringer("pdu", pdu).Msg("Response")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
@@ -333,7 +343,7 @@ func (a *ApplicationServiceElement) _setElementService(elementService _ServiceAc
 }
 
 // bind a list of clients and servers together, top down
-func bind(args ...any) error {
+func bind(localLog zerolog.Logger, args ...any) error {
 	// generic bind is pairs of names
 	if len(args) == 0 {
 		// find unbound clients and bind them
@@ -352,7 +362,7 @@ func bind(args ...any) error {
 				return errors.Errorf("server already bound %d", cid)
 			}
 
-			if err := bind(client, server); err != nil {
+			if err := bind(localLog, client, server); err != nil {
 				return errors.Wrap(err, "error binding")
 			}
 		}
@@ -386,7 +396,7 @@ func bind(args ...any) error {
 				return errors.Errorf("element already bound %d", eid)
 			}
 
-			if err := bind(element, service); err != nil {
+			if err := bind(localLog, element, service); err != nil {
 				return errors.Wrap(err, "error binding")
 			}
 		}
@@ -408,9 +418,9 @@ func bind(args ...any) error {
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
 		client := args[i]
-		log.Debug().Interface("client", client).Msg("client")
+		localLog.Debug().Interface("client", client).Msg("client")
 		server := args[i+1]
-		log.Debug().Interface("server", server).Msg("server")
+		localLog.Debug().Interface("server", server).Msg("server")
 
 		// make sure we're binding clients and servers
 		clientCast, okClient := client.(_Client)
@@ -427,6 +437,6 @@ func bind(args ...any) error {
 			return errors.New("bind() requires a client and a server")
 		}
 	}
-	log.Debug().Msg("bound")
+	localLog.Debug().Msg("bound")
 	return nil
 }

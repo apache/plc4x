@@ -30,7 +30,6 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=UDPActor
@@ -39,10 +38,14 @@ type UDPActor struct {
 	timeout  uint32
 	timer    *OneShotFunctionTask
 	peer     string
+
+	log zerolog.Logger
 }
 
-func NewUDPActor(director *UDPDirector, peer string) *UDPActor {
-	a := &UDPActor{}
+func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *UDPActor {
+	a := &UDPActor{
+		log: localLog,
+	}
 
 	// keep track of the director
 	a.director = director
@@ -64,7 +67,7 @@ func NewUDPActor(director *UDPDirector, peer string) *UDPActor {
 }
 
 func (a *UDPActor) idleTimeout() error {
-	log.Debug().Msg("idleTimeout")
+	a.log.Debug().Msg("idleTimeout")
 
 	// tell the director this is gone
 	a.director.DelActor(a)
@@ -72,7 +75,7 @@ func (a *UDPActor) idleTimeout() error {
 }
 
 func (a *UDPActor) Indication(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Indication")
+	a.log.Debug().Stringer("pdu", pdu).Msg("Indication")
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -86,7 +89,7 @@ func (a *UDPActor) Indication(pdu _PDU) error {
 }
 
 func (a *UDPActor) Response(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Response")
+	a.log.Debug().Stringer("pdu", pdu).Msg("Response")
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -99,7 +102,7 @@ func (a *UDPActor) Response(pdu _PDU) error {
 }
 
 func (a *UDPActor) HandleError(err error) {
-	log.Debug().Err(err).Msg("HandleError")
+	a.log.Debug().Err(err).Msg("HandleError")
 
 	if err != nil {
 		a.director.ActorError(err)
@@ -115,7 +118,7 @@ type UDPDirector struct {
 	address AddressTuple[string, uint16]
 	udpConn *net.UDPConn
 
-	actorClass func(*UDPDirector, string) *UDPActor
+	actorClass func(zerolog.Logger, *UDPDirector, string) *UDPActor
 	request    chan _PDU
 	peers      map[string]*UDPActor
 	running    bool
@@ -124,14 +127,14 @@ type UDPDirector struct {
 	log            zerolog.Logger
 }
 
-func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
+func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
 	d := &UDPDirector{}
 	var err error
-	d.Server, err = NewServer(sid, d)
+	d.Server, err = NewServer(localLog, sid, d)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPoint, err = NewServiceAccessPoint(sapID, d)
+	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, sapID, d)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
@@ -182,7 +185,7 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 			pdu := <-d.request
 			serialize, err := pdu.GetMessage().Serialize()
 			if err != nil {
-				log.Error().Err(err).Msg("Error building message")
+				localLog.Error().Err(err).Msg("Error building message")
 				continue
 			}
 			// TODO: wonky address object
@@ -190,15 +193,15 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 			addr := net.IPv4(destination.AddrAddress[0], destination.AddrAddress[1], destination.AddrAddress[2], destination.AddrAddress[3])
 			udpAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("%s:%d", addr, *destination.AddrPort))
 			if err != nil {
-				log.Error().Err(err).Msg("Error resolving address")
+				localLog.Error().Err(err).Msg("Error resolving address")
 				continue
 			}
 			writtenBytes, err := d.udpConn.WriteToUDP(serialize, udpAddr)
 			if err != nil {
-				log.Error().Err(err).Msg("Error writing bytes")
+				localLog.Error().Err(err).Msg("Error writing bytes")
 				continue
 			}
-			log.Debug().Int("writtenBytes", writtenBytes).Msg("written bytes")
+			localLog.Debug().Int("writtenBytes", writtenBytes).Msg("written bytes")
 		}
 	}()
 
@@ -210,7 +213,7 @@ func NewUDPDirector(address AddressTuple[string, uint16], timeout *int, reuse *b
 
 // AddActor adds an actor when a new one is connected
 func (d *UDPDirector) AddActor(actor *UDPActor) {
-	log.Debug().Stringer("actor", actor).Msg("AddActor %v")
+	d.log.Debug().Stringer("actor", actor).Msg("AddActor %v")
 
 	d.peers[actor.peer] = actor
 
@@ -223,7 +226,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 // DelActor removes an actor when the socket is closed.
 func (d *UDPDirector) DelActor(actor *UDPActor) {
-	log.Debug().Stringer("actor", actor).Msg("DelActor")
+	d.log.Debug().Stringer("actor", actor).Msg("DelActor")
 
 	delete(d.peers, actor.peer)
 
@@ -252,12 +255,12 @@ func (d *UDPDirector) Close() error {
 }
 
 func (d *UDPDirector) handleRead() {
-	log.Debug().Stringer("address", &d.address).Msg("handleRead")
+	d.log.Debug().Stringer("address", &d.address).Msg("handleRead")
 
 	readBytes := make([]byte, 1500) // TODO: check if that is sufficient
 	var sourceAddr *net.UDPAddr
 	if _, addr, err := d.udpConn.ReadFromUDP(readBytes); err != nil {
-		log.Error().Err(err).Msg("error reading")
+		d.log.Error().Err(err).Msg("error reading")
 		return
 	} else {
 		sourceAddr = addr
@@ -271,13 +274,13 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 
-	saddr, err := NewAddress(sourceAddr)
+	saddr, err := NewAddress(d.log, sourceAddr)
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing source address"))
 		return
 	}
-	daddr, err := NewAddress(d.udpConn.LocalAddr())
+	daddr, err := NewAddress(d.log, d.udpConn.LocalAddr())
 	if err != nil {
 		// pass along to a handler
 		d.handleError(errors.Wrap(err, "error parsing destination address"))
@@ -287,18 +290,18 @@ func (d *UDPDirector) handleRead() {
 	// send the PDU up to the client
 	go func() {
 		if err := d._response(pdu); err != nil {
-			log.Debug().Err(err).Msg("errored")
+			d.log.Debug().Err(err).Msg("errored")
 		}
 	}()
 }
 
 func (d *UDPDirector) handleError(err error) {
-	log.Debug().Err(err).Msg("handleError")
+	d.log.Debug().Err(err).Msg("handleError")
 }
 
 // Indication Client requests are queued for delivery.
 func (d *UDPDirector) Indication(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("Indication")
+	d.log.Debug().Stringer("pdu", pdu).Msg("Indication")
 
 	// get the destination
 	addr := pdu.GetPDUDestination()
@@ -306,7 +309,7 @@ func (d *UDPDirector) Indication(pdu _PDU) error {
 	// get the peer
 	peer, ok := d.peers[addr.String()]
 	if !ok {
-		peer = d.actorClass(d, (*addr).String())
+		peer = d.actorClass(d.log, d, (*addr).String())
 	}
 
 	// send the message
@@ -315,7 +318,7 @@ func (d *UDPDirector) Indication(pdu _PDU) error {
 
 // _response Incoming datagrams are routed through an actor.
 func (d *UDPDirector) _response(pdu _PDU) error {
-	log.Debug().Stringer("pdu", pdu).Msg("_response")
+	d.log.Debug().Stringer("pdu", pdu).Msg("_response")
 
 	// get the destination
 	addr := pdu.GetPDUSource()
@@ -323,7 +326,7 @@ func (d *UDPDirector) _response(pdu _PDU) error {
 	// get the peer
 	peer, ok := d.peers[addr.String()]
 	if !ok {
-		peer = d.actorClass(d, addr.String())
+		peer = d.actorClass(d.log, d, addr.String())
 	}
 
 	// send the message

@@ -22,6 +22,7 @@ package bacnetip
 import (
 	"container/heap"
 	"fmt"
+	"github.com/rs/zerolog"
 	"sync"
 	"time"
 
@@ -114,9 +115,11 @@ type IOCB struct {
 	ioTimeout      *time.Timer `ignore:"true"`
 	ioTimoutCancel chan any
 	priority       int
+
+	log zerolog.Logger
 }
 
-func NewIOCB(request _PDU, destination *Address) (*IOCB, error) {
+func NewIOCB(localLog zerolog.Logger, request _PDU, destination *Address) (*IOCB, error) {
 	// lock the identity sequence number
 	_identLock.Lock()
 
@@ -128,7 +131,7 @@ func NewIOCB(request _PDU, destination *Address) (*IOCB, error) {
 	_identLock.Unlock()
 
 	//  debugging postponed until ID acquired
-	log.Debug().Int("ioID", ioID).Msg("NewIOCB(%d)")
+	localLog.Debug().Int("ioID", ioID).Msg("NewIOCB(%d)")
 
 	return &IOCB{
 		// save the ID
@@ -142,12 +145,14 @@ func NewIOCB(request _PDU, destination *Address) (*IOCB, error) {
 
 		// start with an idle request
 		ioState: IOCBState_IDLE,
+
+		log: localLog,
 	}, nil
 }
 
 // AddCallback Pass a function to be called when IO is complete.
 func (i *IOCB) AddCallback(fn func()) {
-	log.Debug().
+	i.log.Debug().
 		Int("ioID", i.ioID).
 		Interface("callback", fn).
 		Msg("AddCallback(ioID): callback")
@@ -162,7 +167,7 @@ func (i *IOCB) AddCallback(fn func()) {
 
 // Wait for the completion event to be set
 func (i *IOCB) Wait() {
-	log.Debug().
+	i.log.Debug().
 		Int("ioID", i.ioID).
 		Msg("Wait")
 	i.ioComplete.L.Lock()
@@ -173,7 +178,7 @@ func (i *IOCB) Wait() {
 // Trigger Set the completion event and make the callback(s)
 func (i *IOCB) Trigger() {
 	i.ioComplete.L.Lock()
-	log.Debug().
+	i.log.Debug().
 		Int("ioID", i.ioID).
 		Msg("Trigger")
 
@@ -186,20 +191,20 @@ func (i *IOCB) Trigger() {
 		}
 	}
 	if myIndex >= 0 {
-		log.Debug().Msg("dequeue")
+		i.log.Debug().Msg("dequeue")
 		i.ioQueue = append(i.ioQueue[:myIndex], i.ioQueue[myIndex+1:]...)
 	}
 
 	// if there's a timer, cancel it
 	if i.ioTimeout != nil {
-		log.Debug().Msg("cancel timeout")
+		i.log.Debug().Msg("cancel timeout")
 		i.ioTimeout.Stop()
 	}
 
 	// set the completion event
 	i.ioComplete.Broadcast()
 	i.ioComplete.L.Unlock()
-	log.Debug().Msg("complete event set")
+	i.log.Debug().Msg("complete event set")
 
 	// make callback(s)
 	for _, f := range i.ioCallback {
@@ -211,7 +216,7 @@ func (i *IOCB) Trigger() {
 //
 //	function.
 func (i *IOCB) Complete(apdu _PDU) error {
-	log.Debug().
+	i.log.Debug().
 		Int("ioID", i.ioID).
 		Stringer("apdu", apdu).
 		Msg("Complete")
@@ -230,7 +235,7 @@ func (i *IOCB) Complete(apdu _PDU) error {
 
 // Abort Called by a client to abort a transaction.
 func (i *IOCB) Abort(err error) error {
-	log.Debug().Err(err).
+	i.log.Debug().Err(err).
 		Int("ioID", i.ioID).
 		Msg("Abort")
 	defer close(i.ioTimoutCancel)
@@ -355,12 +360,15 @@ type IOQueue struct {
 	name     string
 	notEmpty sync.Cond
 	queue    PriorityQueue
+
+	log zerolog.Logger
 }
 
-func NewIOQueue(name string) *IOQueue {
-	log.Debug().Str("name", name).Msg("NewIOQueue")
+func NewIOQueue(localLog zerolog.Logger, name string) *IOQueue {
+	localLog.Debug().Str("name", name).Msg("NewIOQueue")
 	return &IOQueue{
 		name: name,
+		log:  localLog,
 	}
 }
 
@@ -368,7 +376,7 @@ func NewIOQueue(name string) *IOQueue {
 //
 //	correct processing thread.
 func (i *IOQueue) Put(iocb _IOCB) error {
-	log.Debug().Stringer("iocb", iocb).Msg("Put")
+	i.log.Debug().Stringer("iocb", iocb).Msg("Put")
 
 	// requests should be pending before being queued
 	if iocb.getIOState() != IOCBState_PENDING {
@@ -386,14 +394,14 @@ func (i *IOQueue) Put(iocb _IOCB) error {
 
 // Get a request from a queue, optionally block until a request is available.
 func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
-	log.Debug().
+	i.log.Debug().
 		Bool("block", block).
 		Interface("delay", delay).
 		Msg("Get")
 
 	// if the queue is empty, and we do not block return None
 	if !block && len(i.queue) == 0 {
-		log.Debug().Msg("not blocking and empty")
+		i.log.Debug().Msg("not blocking and empty")
 		return nil, nil
 	}
 
@@ -472,14 +480,17 @@ type _IOController interface {
 type IOController struct {
 	name       string
 	rootStruct _IOController
+
+	log zerolog.Logger
 }
 
-func NewIOController(name string, rootStruct _IOController) (*IOController, error) {
-	log.Debug().Str("name", name).Msg("NewIOController")
+func NewIOController(localLog zerolog.Logger, name string, rootStruct _IOController) (*IOController, error) {
+	localLog.Debug().Str("name", name).Msg("NewIOController")
 	return &IOController{
 		// save the name
 		name:       name,
 		rootStruct: rootStruct,
+		log:        localLog,
 	}, nil
 }
 
@@ -490,7 +501,7 @@ func (i *IOController) Abort(err error) error {
 
 // RequestIO Called by a client to start processing a request.
 func (i *IOController) RequestIO(iocb _IOCB) error {
-	log.Debug().Stringer("iocb", iocb).Msg("RequestIO")
+	i.log.Debug().Stringer("iocb", iocb).Msg("RequestIO")
 
 	// bind the iocb to this controller
 	iocb.setIOController(i)
@@ -518,7 +529,7 @@ func (i *IOController) ProcessIO(_IOCB) error {
 
 // ActiveIO Called by a handler to notify the controller that a request is being processed
 func (i *IOController) ActiveIO(iocb _IOCB) error {
-	log.Debug().Stringer("iocb", iocb).Msg("ActiveIO")
+	i.log.Debug().Stringer("iocb", iocb).Msg("ActiveIO")
 
 	// requests should be idle or pending before coming active
 	if iocb.getIOState() != IOCBState_IDLE && iocb.getIOState() != IOCBState_PENDING {
@@ -532,7 +543,7 @@ func (i *IOController) ActiveIO(iocb _IOCB) error {
 
 // CompleteIO Called by a handler to return data to the client
 func (i *IOController) CompleteIO(iocb _IOCB, apdu _PDU) error {
-	log.Debug().
+	i.log.Debug().
 		Stringer("iocb", iocb).
 		Stringer("apdu", apdu).
 		Msg("ActiveIO")
@@ -559,7 +570,7 @@ func (i *IOController) CompleteIO(iocb _IOCB, apdu _PDU) error {
 
 // AbortIO Called by a handler or a client to abort a transaction
 func (i *IOController) AbortIO(iocb _IOCB, err error) error {
-	log.Debug().Stringer("iocb", iocb).Msg("AbortIO")
+	i.log.Debug().Stringer("iocb", iocb).Msg("AbortIO")
 
 	// if it completed, leave it alone
 	if iocb.getIOState() == IOCBState_COMPLETED {
@@ -593,21 +604,24 @@ type IOQController struct {
 	ioQueue    *IOQueue
 	waitTime   time.Duration `stringer:"true"`
 	rootStruct _IOQController
+
+	log zerolog.Logger
 }
 
-func NewIOQController(name string, rootStruct _IOQController) (*IOQController, error) {
+func NewIOQController(localLog zerolog.Logger, name string, rootStruct _IOQController) (*IOQController, error) {
 	i := &IOQController{
 		rootStruct: rootStruct,
+		log:        localLog,
 	}
 	var err error
-	i.IOController, err = NewIOController(name, i)
+	i.IOController, err = NewIOController(localLog, name, i)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating IO controller")
 	}
 
 	// start idle
 	i.state = IOQControllerStates_CTRL_IDLE
-	log.Debug().
+	i.log.Debug().
 		Timestamp().
 		Str("name", name).
 		Stringer("state", i.state).
@@ -617,17 +631,17 @@ func NewIOQController(name string, rootStruct _IOQController) (*IOQController, e
 	i.activeIOCB = nil
 
 	// create an IOQueue for iocb's requested when not idle
-	i.ioQueue = NewIOQueue(name + " queue")
+	i.ioQueue = NewIOQueue(localLog, name+" queue")
 
 	return i, nil
 }
 
 // Abort all pending requests
 func (i *IOQController) Abort(err error) error {
-	log.Debug().Err(err).Msg("Abort")
+	i.log.Debug().Err(err).Msg("Abort")
 
 	if i.state == IOQControllerStates_CTRL_IDLE {
-		log.Debug().Msg("idle")
+		i.log.Debug().Msg("idle")
 		return nil
 	}
 
@@ -639,7 +653,7 @@ func (i *IOQController) Abort(err error) error {
 		if iocb == nil {
 			break
 		}
-		log.Debug().Stringer("iocb", iocb).Msg("working with iocb")
+		i.log.Debug().Stringer("iocb", iocb).Msg("working with iocb")
 
 		// change the state
 		iocb.setIOState(IOCBState_ABORTED)
@@ -650,7 +664,7 @@ func (i *IOQController) Abort(err error) error {
 	}
 
 	if i.state != IOQControllerStates_CTRL_IDLE {
-		log.Debug().Msg("busy after aborts")
+		i.log.Debug().Msg("busy after aborts")
 	}
 
 	return nil
@@ -658,14 +672,14 @@ func (i *IOQController) Abort(err error) error {
 
 // RequestIO Called by a client to start processing a request
 func (i *IOQController) RequestIO(iocb _IOCB) error {
-	log.Debug().Stringer("iocb", iocb).Msg("RequestIO")
+	i.log.Debug().Stringer("iocb", iocb).Msg("RequestIO")
 
 	// bind the iocb to this controller
 	iocb.setIOController(i)
 
 	// if we're busy, queue it
 	if i.state != IOQControllerStates_CTRL_IDLE {
-		log.Debug().
+		i.log.Debug().
 			Stringer("activeIOCB", i.activeIOCB).
 			Msg("busy, request queued, activeIOCB")
 
@@ -678,7 +692,7 @@ func (i *IOQController) RequestIO(iocb _IOCB) error {
 	}
 
 	if err := i.rootStruct.ProcessIO(iocb); err != nil {
-		log.Debug().Err(err).Msg("ProcessIO error")
+		i.log.Debug().Err(err).Msg("ProcessIO error")
 		if err := i.Abort(err); err != nil {
 			return errors.Wrap(err, "error sending abort")
 		}
@@ -694,7 +708,7 @@ func (i *IOQController) ProcessIO(_IOCB) error {
 
 // ActiveIO Called by a handler to notify the controller that a request is being processed
 func (i *IOQController) ActiveIO(iocb _IOCB) error {
-	log.Debug().Stringer("iocb", iocb).Msg("ActiveIO")
+	i.log.Debug().Stringer("iocb", iocb).Msg("ActiveIO")
 
 	// base class work first, setting iocb state and timer data
 	if err := i.IOController.ActiveIO(iocb); err != nil {
@@ -712,7 +726,7 @@ func (i *IOQController) ActiveIO(iocb _IOCB) error {
 
 // CompleteIO Called by a handler to return data to the client
 func (i *IOQController) CompleteIO(iocb _IOCB, msg _PDU) error {
-	log.Debug().Stringer("iocb", iocb).Stringer("msg", msg).Msg("CompleteIO")
+	i.log.Debug().Stringer("iocb", iocb).Stringer("msg", msg).Msg("CompleteIO")
 
 	// check to see if it is completing the active one
 	if iocb != i.activeIOCB {
@@ -749,7 +763,7 @@ func (i *IOQController) CompleteIO(iocb _IOCB, msg _PDU) error {
 
 // AbortIO Called by a handler or a client to abort a transaction
 func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
-	log.Debug().Err(err).Stringer("iocb", iocb).Msg("AbortIO")
+	i.log.Debug().Err(err).Stringer("iocb", iocb).Msg("AbortIO")
 
 	// Normal abort
 	if err := i.IOController.ActiveIO(iocb); err != nil {
@@ -758,7 +772,7 @@ func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
 
 	// check to see if it is completing the active one
 	if iocb != i.activeIOCB {
-		log.Debug().Msg("not current iocb")
+		i.log.Debug().Msg("not current iocb")
 		return nil
 	}
 
@@ -776,17 +790,17 @@ func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
 
 // _trigger Called to launch the next request in the queue
 func (i *IOQController) _trigger() error {
-	log.Debug().Msg("_trigger")
+	i.log.Debug().Msg("_trigger")
 
 	// if we are busy, do nothing
 	if i.state != IOQControllerStates_CTRL_IDLE {
-		log.Debug().Msg("not idle")
+		i.log.Debug().Msg("not idle")
 		return nil
 	}
 
 	// if there is nothing to do, return
 	if len(i.ioQueue.queue) == 0 {
-		log.Debug().Msg("empty queue")
+		i.log.Debug().Msg("empty queue")
 		return nil
 	}
 
@@ -799,7 +813,7 @@ func (i *IOQController) _trigger() error {
 	if err := i.ProcessIO(iocb); err != nil {
 		// if there was an error, abort the request
 		if err := i.Abort(err); err != nil {
-			log.Debug().Err(err).Msg("error aborting")
+			i.log.Debug().Err(err).Msg("error aborting")
 			return nil
 		}
 		return nil
@@ -814,11 +828,11 @@ func (i *IOQController) _trigger() error {
 
 // _waitTrigger is called to launch the next request in the queue
 func (i *IOQController) _waitTrigger() error {
-	log.Debug().Msg("_waitTrigger")
+	i.log.Debug().Msg("_waitTrigger")
 
 	// make sure we are waiting
 	if i.state != IOQControllerStates_CTRL_WAITING {
-		log.Debug().Msg("not waiting")
+		i.log.Debug().Msg("not waiting")
 		return nil
 	}
 
@@ -835,12 +849,14 @@ type SieveQueue struct {
 	*IOQController
 	requestFn func(apdu _PDU)
 	address   *Address
+
+	log zerolog.Logger
 }
 
-func NewSieveQueue(fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
+func NewSieveQueue(localLog zerolog.Logger, fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
-	s.IOQController, err = NewIOQController(address.String(), s)
+	s.IOQController, err = NewIOQController(localLog, address.String(), s)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating a IOQController")
 	}
@@ -852,7 +868,7 @@ func NewSieveQueue(fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
 }
 
 func (s *SieveQueue) ProcessIO(iocb _IOCB) error {
-	log.Debug().Stringer("iocb", iocb).Msg("ProcessIO")
+	s.log.Debug().Stringer("iocb", iocb).Msg("ProcessIO")
 
 	// this is now an active request
 	if err := s.ActiveIO(iocb); err != nil {

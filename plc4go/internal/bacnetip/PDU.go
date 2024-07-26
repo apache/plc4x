@@ -25,7 +25,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 	"net"
 	"reflect"
 	"regexp"
@@ -106,11 +106,14 @@ type Address struct {
 	AddrPort           *uint16
 	AddrTuple          *AddressTuple[string, uint16]
 	AddrBroadcastTuple *AddressTuple[string, uint16]
+
+	log zerolog.Logger
 }
 
-func NewAddress(args ...any) (*Address, error) {
-	log.Debug().Interface("args", args).Msg("NewAddress")
-	a := &Address{}
+func NewAddress(localLog zerolog.Logger, args ...any) (*Address, error) {
+	a := &Address{
+		log: localLog,
+	}
 	a.AddrNet = nil
 	a.AddrAddress = nil
 	a.AddrLen = nil
@@ -143,7 +146,7 @@ func NewAddress(args ...any) (*Address, error) {
 
 // decodeAddress Initialize the address from a string.  Lots of different forms are supported
 func (a *Address) decodeAddress(addr any) error {
-	log.Debug().Type("addrType", addr).Interface("addr", addr).Msg("decodeAddress")
+	a.log.Debug().Type("addrType", addr).Interface("addr", addr).Msg("decodeAddress")
 
 	// start out assuming this is a local station and didn't get routed
 	a.AddrType = LOCAL_STATION_ADDRESS
@@ -154,10 +157,10 @@ func (a *Address) decodeAddress(addr any) error {
 
 	switch {
 	case addr == "*":
-		log.Debug().Msg("localBroadcast")
+		a.log.Debug().Msg("localBroadcast")
 		a.AddrType = LOCAL_BROADCAST_ADDRESS
 	case addr == "*:*":
-		log.Debug().Msg("globalBroadcast")
+		a.log.Debug().Msg("globalBroadcast")
 		a.AddrType = GLOBAL_BROADCAST_ADDRESS
 	default:
 		switch addr := addr.(type) {
@@ -174,7 +177,7 @@ func (a *Address) decodeAddress(addr any) error {
 			a.AddrPort = &port
 			addr.String()
 		case int:
-			log.Debug().Msg("int")
+			a.log.Debug().Msg("int")
 			if addr < 0 || addr > 255 {
 				return errors.New("address out of range")
 			}
@@ -182,7 +185,7 @@ func (a *Address) decodeAddress(addr any) error {
 			length := uint32(1)
 			a.AddrLen = &length
 		case []byte:
-			log.Debug().Msg("byte array")
+			a.log.Debug().Msg("byte array")
 			a.AddrAddress = addr
 			length := uint32(len(addr))
 			a.AddrLen = &length
@@ -203,11 +206,11 @@ func (a *Address) decodeAddress(addr any) error {
 				a.AddrBroadcastTuple = &AddressTuple[string, uint16]{"255.255.255.255", *a.AddrPort}
 			}
 		case string:
-			log.Debug().Msg("str")
+			a.log.Debug().Msg("str")
 
 			m := combined_pattern.MatchString(addr)
 			if m {
-				log.Debug().Msg("combined pattern")
+				a.log.Debug().Msg("combined pattern")
 				groups := combined_pattern.FindStringSubmatch(addr)
 				_net := groups[0]
 				global_broadcast := groups[1]
@@ -239,7 +242,7 @@ func (a *Address) decodeAddress(addr any) error {
 				addrstr = net.ParseIP(uaddr)
 			}
 			a.AddrTuple = &AddressTuple[string, uint16]{uaddr, *a.AddrPort}
-			log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
+			a.log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -260,7 +263,7 @@ func (a *Address) decodeAddress(addr any) error {
 
 			addrstr := uint32ToIpv4(uint32(uaddr))
 			a.AddrTuple = &AddressTuple[string, uint16]{addrstr.String(), *a.AddrPort}
-			log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
+			a.log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
 
 			ip := ipv4ToUint32(addrstr)
 			a.AddrIP = &ip
@@ -375,8 +378,10 @@ func uint32ToIpv4(number uint32) net.IP {
 	return ipv4
 }
 
-func NewLocalStation(addr any, route *Address) (*Address, error) {
-	l := &Address{}
+func NewLocalStation(localLog zerolog.Logger, addr any, route *Address) (*Address, error) {
+	l := &Address{
+		log: localLog,
+	}
 	l.AddrType = LOCAL_STATION_ADDRESS
 	l.AddrRoute = route
 
@@ -389,7 +394,7 @@ func NewLocalStation(addr any, route *Address) (*Address, error) {
 		length := uint32(1)
 		l.AddrLen = &length
 	case []byte:
-		log.Debug().Msg("bytearray")
+		localLog.Debug().Msg("bytearray")
 		l.AddrAddress = addr
 		length := uint32(len(addr))
 		l.AddrLen = &length
@@ -399,8 +404,10 @@ func NewLocalStation(addr any, route *Address) (*Address, error) {
 	return l, nil
 }
 
-func NewRemoteStation(net *uint16, addr any, route *Address) (*Address, error) {
-	l := &Address{}
+func NewRemoteStation(localLog zerolog.Logger, net *uint16, addr any, route *Address) (*Address, error) {
+	l := &Address{
+		log: localLog,
+	}
 	l.AddrType = REMOTE_STATION_ADDRESS
 	l.AddrNet = net
 	l.AddrRoute = route
@@ -414,7 +421,7 @@ func NewRemoteStation(net *uint16, addr any, route *Address) (*Address, error) {
 		length := uint32(1)
 		l.AddrLen = &length
 	case []byte:
-		log.Debug().Msg("bytearray")
+		localLog.Debug().Msg("bytearray")
 		l.AddrAddress = addr
 		length := uint32(len(addr))
 		l.AddrLen = &length
