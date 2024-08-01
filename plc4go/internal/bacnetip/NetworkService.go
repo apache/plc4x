@@ -135,11 +135,12 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 }
 
 // Confirmation Decode upstream PDUs and pass them up to the service access point.
-func (n *NetworkAdapter) Confirmation(npdu _PDU) error {
+func (n *NetworkAdapter) Confirmation(args _args, kwargs _kwargs) error {
 	n.log.Debug().
-		Stringer("npdu", npdu).
+		Stringer("_args", args).Stringer("_kwargs", kwargs).
 		Interface("adapterNet", n.adapterNet).
 		Msg("confirmation")
+	npdu := args._0PDU()
 
 	return n.adapterSAP.ProcessNPDU(n, npdu)
 }
@@ -150,7 +151,7 @@ func (n *NetworkAdapter) ProcessNPDU(npdu _PDU) error {
 		Stringer("npdu", npdu).
 		Interface("adapterNet", n.adapterNet).
 		Msg("ProcessNPDU")
-	return n.Request(npdu)
+	return n.Request(_n_args(npdu), noKwargs)
 }
 
 func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {
@@ -297,8 +298,8 @@ func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address,
 	return n.routerInfoCache.DeleteRouterInfo(snet, address, dnets)
 }
 
-func (n *NetworkServiceAccessPoint) Indication(pdu _PDU) error {
-	n.log.Debug().Stringer("pdu", pdu).Msg("Indication")
+func (n *NetworkServiceAccessPoint) Indication(args _args, kwargs _kwargs) error {
+	n.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
 
 	// make sure our configuration is OK
 	if len(n.adapters) == 0 {
@@ -309,6 +310,7 @@ func (n *NetworkServiceAccessPoint) Indication(pdu _PDU) error {
 	localAdapter := n.localAdapter
 	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
 
+	pdu := args._0PDU()
 	// get the apdu
 	apdu := pdu.GetMessage().(readWriteModel.APDU)
 
@@ -461,7 +463,7 @@ func (n *NetworkServiceAccessPoint) Indication(pdu _PDU) error {
 
 		// send it to all the adapters
 		for _, adapter := range n.adapters {
-			if err := n.SapIndicationWithAdapter(adapter, NewPDU(whoIsRouterToNetwork, WithPDUDestination(NewLocalBroadcast(nil)))); err != nil {
+			if err := n.SapIndication(_n_args(adapter, NewPDU(whoIsRouterToNetwork, WithPDUDestination(NewLocalBroadcast(nil)))), noKwargs); err != nil {
 				return errors.Wrap(err, "error doing SapIndication")
 			}
 		}
@@ -662,7 +664,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PD
 		n.log.Debug().Stringer("pduSource", apdu.pduSource).Msg("apdu.pduSource")
 		n.log.Debug().Stringer("pduDestination", apdu.pduDestination).Msg("apdu.pduDestination")
 
-		if err := n.Response(apdu); err != nil {
+		if err := n.Response(_n_args(apdu), noKwargs); err != nil {
 			return errors.Wrap(err, "error passing response")
 		}
 	} else {
@@ -672,8 +674,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PD
 			n.log.Debug().Msg("processing NPDU locally")
 
 			// pass to the service element
-			// TODO: how to pass the adapter???
-			if err := n.SapRequest(pdu); err != nil {
+			if err := n.SapRequest(_n_args(adapter, pdu), noKwargs); err != nil {
 				return errors.Wrap(err, "error passing sap _request")
 			}
 		}
@@ -834,7 +835,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PD
 		xnpdu := readWriteModel.NewNLMWhoIsRouterToNetwork(dnet, 0)
 		pduDestination := NewLocalBroadcast(nil)
 
-		// send it to all of the connected adapters
+		// send it to all the connected adapters
 		for _, xadapter := range n.adapters {
 			// skip the horse it rode in on
 			if xadapter == adapter {
@@ -842,7 +843,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PD
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndicationWithAdapter(xadapter, NewPDU(xnpdu, WithPDUDestination(pduDestination))); err != nil {
+			if err := n.SapIndication(_n_args(xadapter, NewPDU(xnpdu, WithPDUDestination(pduDestination))), noKwargs); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}
@@ -857,12 +858,10 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu _PD
 	return nil
 }
 
-func (n *NetworkServiceAccessPoint) SapIndication(npdu _PDU) error {
-	panic("unused")
-}
-
-func (n *NetworkServiceAccessPoint) SapIndicationWithAdapter(adapter *NetworkAdapter, npdu _PDU) error {
-	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Msg("SapIndication")
+func (n *NetworkServiceAccessPoint) SapIndication(args _args, kwargs _kwargs) error {
+	n.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("SapIndication")
+	adapter := args._0NetworkAdapter()
+	npdu := args._1PDU()
 
 	// encode it as a generic NPDU
 	// TODO: we don't need that as a npdu is a npdu
@@ -871,12 +870,10 @@ func (n *NetworkServiceAccessPoint) SapIndicationWithAdapter(adapter *NetworkAda
 	return adapter.ProcessNPDU(npdu)
 }
 
-func (n *NetworkServiceAccessPoint) SapConfirmation(npdu _PDU) error {
-	panic("unused")
-}
-
-func (n *NetworkServiceAccessPoint) SapConfirmationWithAdapter(adapter *NetworkAdapter, npdu _PDU) error {
-	n.log.Debug().Stringer("adapter", adapter).Stringer("npdu", npdu).Msg("SapConfirmationWithAdapter")
+func (n *NetworkServiceAccessPoint) SapConfirmation(args _args, kwargs _kwargs) error {
+	n.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("SapConfirmation")
+	adapter := args._0NetworkAdapter()
+	npdu := args._1PDU()
 
 	// encode it as a generic NPDU
 	// TODO: we don't need that as a npdu is a npdu

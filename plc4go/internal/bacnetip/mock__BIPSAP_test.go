@@ -36,17 +36,17 @@ func (_m *mock_BIPSAP) EXPECT() *mock_BIPSAP_Expecter {
 	return &mock_BIPSAP_Expecter{mock: &_m.Mock}
 }
 
-// Confirmation provides a mock function with given fields: pdu
-func (_m *mock_BIPSAP) Confirmation(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// Confirmation provides a mock function with given fields: args, kwargs
+func (_m *mock_BIPSAP) Confirmation(args _args, kwargs _kwargs) error {
+	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Confirmation")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -60,14 +60,15 @@ type mock_BIPSAP_Confirmation_Call struct {
 }
 
 // Confirmation is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_BIPSAP_Expecter) Confirmation(pdu interface{}) *mock_BIPSAP_Confirmation_Call {
-	return &mock_BIPSAP_Confirmation_Call{Call: _e.mock.On("Confirmation", pdu)}
+//   - args _args
+//   - kwargs _kwargs
+func (_e *mock_BIPSAP_Expecter) Confirmation(args interface{}, kwargs interface{}) *mock_BIPSAP_Confirmation_Call {
+	return &mock_BIPSAP_Confirmation_Call{Call: _e.mock.On("Confirmation", args, kwargs)}
 }
 
-func (_c *mock_BIPSAP_Confirmation_Call) Run(run func(pdu _PDU)) *mock_BIPSAP_Confirmation_Call {
+func (_c *mock_BIPSAP_Confirmation_Call) Run(run func(args _args, kwargs _kwargs)) *mock_BIPSAP_Confirmation_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -77,22 +78,22 @@ func (_c *mock_BIPSAP_Confirmation_Call) Return(_a0 error) *mock_BIPSAP_Confirma
 	return _c
 }
 
-func (_c *mock_BIPSAP_Confirmation_Call) RunAndReturn(run func(_PDU) error) *mock_BIPSAP_Confirmation_Call {
+func (_c *mock_BIPSAP_Confirmation_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_BIPSAP_Confirmation_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Request provides a mock function with given fields: pdu
-func (_m *mock_BIPSAP) Request(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// Request provides a mock function with given fields: args, kwargs
+func (_m *mock_BIPSAP) Request(args _args, kwargs _kwargs) error {
+	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Request")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -106,14 +107,15 @@ type mock_BIPSAP_Request_Call struct {
 }
 
 // Request is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_BIPSAP_Expecter) Request(pdu interface{}) *mock_BIPSAP_Request_Call {
-	return &mock_BIPSAP_Request_Call{Call: _e.mock.On("Request", pdu)}
+//   - args _args
+//   - kwargs _kwargs
+func (_e *mock_BIPSAP_Expecter) Request(args interface{}, kwargs interface{}) *mock_BIPSAP_Request_Call {
+	return &mock_BIPSAP_Request_Call{Call: _e.mock.On("Request", args, kwargs)}
 }
 
-func (_c *mock_BIPSAP_Request_Call) Run(run func(pdu _PDU)) *mock_BIPSAP_Request_Call {
+func (_c *mock_BIPSAP_Request_Call) Run(run func(args _args, kwargs _kwargs)) *mock_BIPSAP_Request_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -123,22 +125,22 @@ func (_c *mock_BIPSAP_Request_Call) Return(_a0 error) *mock_BIPSAP_Request_Call 
 	return _c
 }
 
-func (_c *mock_BIPSAP_Request_Call) RunAndReturn(run func(_PDU) error) *mock_BIPSAP_Request_Call {
+func (_c *mock_BIPSAP_Request_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_BIPSAP_Request_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// SapConfirmation provides a mock function with given fields: pdu
-func (_m *mock_BIPSAP) SapConfirmation(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// SapConfirmation provides a mock function with given fields: _a0, _a1
+func (_m *mock_BIPSAP) SapConfirmation(_a0 _args, _a1 _kwargs) error {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SapConfirmation")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -152,14 +154,15 @@ type mock_BIPSAP_SapConfirmation_Call struct {
 }
 
 // SapConfirmation is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_BIPSAP_Expecter) SapConfirmation(pdu interface{}) *mock_BIPSAP_SapConfirmation_Call {
-	return &mock_BIPSAP_SapConfirmation_Call{Call: _e.mock.On("SapConfirmation", pdu)}
+//   - _a0 _args
+//   - _a1 _kwargs
+func (_e *mock_BIPSAP_Expecter) SapConfirmation(_a0 interface{}, _a1 interface{}) *mock_BIPSAP_SapConfirmation_Call {
+	return &mock_BIPSAP_SapConfirmation_Call{Call: _e.mock.On("SapConfirmation", _a0, _a1)}
 }
 
-func (_c *mock_BIPSAP_SapConfirmation_Call) Run(run func(pdu _PDU)) *mock_BIPSAP_SapConfirmation_Call {
+func (_c *mock_BIPSAP_SapConfirmation_Call) Run(run func(_a0 _args, _a1 _kwargs)) *mock_BIPSAP_SapConfirmation_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -169,22 +172,22 @@ func (_c *mock_BIPSAP_SapConfirmation_Call) Return(_a0 error) *mock_BIPSAP_SapCo
 	return _c
 }
 
-func (_c *mock_BIPSAP_SapConfirmation_Call) RunAndReturn(run func(_PDU) error) *mock_BIPSAP_SapConfirmation_Call {
+func (_c *mock_BIPSAP_SapConfirmation_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_BIPSAP_SapConfirmation_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// SapIndication provides a mock function with given fields: pdu
-func (_m *mock_BIPSAP) SapIndication(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// SapIndication provides a mock function with given fields: _a0, _a1
+func (_m *mock_BIPSAP) SapIndication(_a0 _args, _a1 _kwargs) error {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SapIndication")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -198,14 +201,15 @@ type mock_BIPSAP_SapIndication_Call struct {
 }
 
 // SapIndication is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_BIPSAP_Expecter) SapIndication(pdu interface{}) *mock_BIPSAP_SapIndication_Call {
-	return &mock_BIPSAP_SapIndication_Call{Call: _e.mock.On("SapIndication", pdu)}
+//   - _a0 _args
+//   - _a1 _kwargs
+func (_e *mock_BIPSAP_Expecter) SapIndication(_a0 interface{}, _a1 interface{}) *mock_BIPSAP_SapIndication_Call {
+	return &mock_BIPSAP_SapIndication_Call{Call: _e.mock.On("SapIndication", _a0, _a1)}
 }
 
-func (_c *mock_BIPSAP_SapIndication_Call) Run(run func(pdu _PDU)) *mock_BIPSAP_SapIndication_Call {
+func (_c *mock_BIPSAP_SapIndication_Call) Run(run func(_a0 _args, _a1 _kwargs)) *mock_BIPSAP_SapIndication_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -215,22 +219,22 @@ func (_c *mock_BIPSAP_SapIndication_Call) Return(_a0 error) *mock_BIPSAP_SapIndi
 	return _c
 }
 
-func (_c *mock_BIPSAP_SapIndication_Call) RunAndReturn(run func(_PDU) error) *mock_BIPSAP_SapIndication_Call {
+func (_c *mock_BIPSAP_SapIndication_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_BIPSAP_SapIndication_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// SapRequest provides a mock function with given fields: pdu
-func (_m *mock_BIPSAP) SapRequest(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// SapRequest provides a mock function with given fields: _a0, _a1
+func (_m *mock_BIPSAP) SapRequest(_a0 _args, _a1 _kwargs) error {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SapRequest")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -244,14 +248,15 @@ type mock_BIPSAP_SapRequest_Call struct {
 }
 
 // SapRequest is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_BIPSAP_Expecter) SapRequest(pdu interface{}) *mock_BIPSAP_SapRequest_Call {
-	return &mock_BIPSAP_SapRequest_Call{Call: _e.mock.On("SapRequest", pdu)}
+//   - _a0 _args
+//   - _a1 _kwargs
+func (_e *mock_BIPSAP_Expecter) SapRequest(_a0 interface{}, _a1 interface{}) *mock_BIPSAP_SapRequest_Call {
+	return &mock_BIPSAP_SapRequest_Call{Call: _e.mock.On("SapRequest", _a0, _a1)}
 }
 
-func (_c *mock_BIPSAP_SapRequest_Call) Run(run func(pdu _PDU)) *mock_BIPSAP_SapRequest_Call {
+func (_c *mock_BIPSAP_SapRequest_Call) Run(run func(_a0 _args, _a1 _kwargs)) *mock_BIPSAP_SapRequest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -261,22 +266,22 @@ func (_c *mock_BIPSAP_SapRequest_Call) Return(_a0 error) *mock_BIPSAP_SapRequest
 	return _c
 }
 
-func (_c *mock_BIPSAP_SapRequest_Call) RunAndReturn(run func(_PDU) error) *mock_BIPSAP_SapRequest_Call {
+func (_c *mock_BIPSAP_SapRequest_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_BIPSAP_SapRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// SapResponse provides a mock function with given fields: pdu
-func (_m *mock_BIPSAP) SapResponse(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// SapResponse provides a mock function with given fields: _a0, _a1
+func (_m *mock_BIPSAP) SapResponse(_a0 _args, _a1 _kwargs) error {
+	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SapResponse")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -290,14 +295,15 @@ type mock_BIPSAP_SapResponse_Call struct {
 }
 
 // SapResponse is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_BIPSAP_Expecter) SapResponse(pdu interface{}) *mock_BIPSAP_SapResponse_Call {
-	return &mock_BIPSAP_SapResponse_Call{Call: _e.mock.On("SapResponse", pdu)}
+//   - _a0 _args
+//   - _a1 _kwargs
+func (_e *mock_BIPSAP_Expecter) SapResponse(_a0 interface{}, _a1 interface{}) *mock_BIPSAP_SapResponse_Call {
+	return &mock_BIPSAP_SapResponse_Call{Call: _e.mock.On("SapResponse", _a0, _a1)}
 }
 
-func (_c *mock_BIPSAP_SapResponse_Call) Run(run func(pdu _PDU)) *mock_BIPSAP_SapResponse_Call {
+func (_c *mock_BIPSAP_SapResponse_Call) Run(run func(_a0 _args, _a1 _kwargs)) *mock_BIPSAP_SapResponse_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -307,7 +313,7 @@ func (_c *mock_BIPSAP_SapResponse_Call) Return(_a0 error) *mock_BIPSAP_SapRespon
 	return _c
 }
 
-func (_c *mock_BIPSAP_SapResponse_Call) RunAndReturn(run func(_PDU) error) *mock_BIPSAP_SapResponse_Call {
+func (_c *mock_BIPSAP_SapResponse_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_BIPSAP_SapResponse_Call {
 	_c.Call.Return(run)
 	return _c
 }

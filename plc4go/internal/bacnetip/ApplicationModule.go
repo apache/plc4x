@@ -375,8 +375,9 @@ func (a *Application) GetServicesSupported() []string {
 	return servicesSupported
 }
 
-func (a *Application) Request(apdu _PDU) error {
-	a.log.Debug().Stringer("apdu", apdu).Msg("Request")
+func (a *Application) Request(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
+	apdu := args._0PDU()
 
 	// double-check the input is the right kind of APDU
 	switch apdu.GetMessage().(type) {
@@ -384,11 +385,12 @@ func (a *Application) Request(apdu _PDU) error {
 	default:
 		return errors.New("APDU expected")
 	}
-	return a.ApplicationServiceElement.Request(apdu)
+	return a.ApplicationServiceElement.Request(args, kwargs)
 }
 
-func (a *Application) Indication(apdu _PDU) error {
-	a.log.Debug().Stringer("apdu", apdu).Msg("Indication")
+func (a *Application) Indication(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
+	apdu := args._0PDU()
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
@@ -409,7 +411,7 @@ func (a *Application) Indication(apdu _PDU) error {
 	if err := helperFn(apdu); err != nil {
 		a.log.Debug().Err(err).Msg("err result")
 		// TODO: do proper mapping
-		if err := a.Response(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))); err != nil {
+		if err := a.Response(_n_args(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
 			return err
 		}
 	}
@@ -510,7 +512,7 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 	a.log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
-	if err := a.Application.Request(apdu); err != nil {
+	if err := a.Application.Request(_n_args(apdu), noKwargs); err != nil {
 		a.log.Error().Stack().Err(err).Msg("Uh oh")
 		return
 	}
@@ -524,8 +526,9 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 	}
 }
 
-func (a *ApplicationIOController) Request(apdu _PDU) error {
-	a.log.Debug().Stringer("apdu", apdu).Msg("Request")
+func (a *ApplicationIOController) Request(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
+	apdu := args._0PDU()
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); !ok {
@@ -533,11 +536,12 @@ func (a *ApplicationIOController) Request(apdu _PDU) error {
 	}
 
 	// send it downstream
-	return a.Application.Request(apdu)
+	return a.Application.Request(args, kwargs)
 }
 
-func (a *ApplicationIOController) Confirmation(apdu _PDU) error {
-	a.log.Debug().Stringer("apdu", apdu).Msg("Confirmation")
+func (a *ApplicationIOController) Confirmation(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Confirmation")
+	apdu := args._0PDU()
 
 	// this is an ack, error, reject or abort
 	return a._AppComplete(apdu.GetPDUSource(), apdu)

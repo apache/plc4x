@@ -36,17 +36,17 @@ func (_m *mock_Server) EXPECT() *mock_Server_Expecter {
 	return &mock_Server_Expecter{mock: &_m.Mock}
 }
 
-// Indication provides a mock function with given fields: pdu
-func (_m *mock_Server) Indication(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// Indication provides a mock function with given fields: args, kwargs
+func (_m *mock_Server) Indication(args _args, kwargs _kwargs) error {
+	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Indication")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -60,14 +60,15 @@ type mock_Server_Indication_Call struct {
 }
 
 // Indication is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_Server_Expecter) Indication(pdu interface{}) *mock_Server_Indication_Call {
-	return &mock_Server_Indication_Call{Call: _e.mock.On("Indication", pdu)}
+//   - args _args
+//   - kwargs _kwargs
+func (_e *mock_Server_Expecter) Indication(args interface{}, kwargs interface{}) *mock_Server_Indication_Call {
+	return &mock_Server_Indication_Call{Call: _e.mock.On("Indication", args, kwargs)}
 }
 
-func (_c *mock_Server_Indication_Call) Run(run func(pdu _PDU)) *mock_Server_Indication_Call {
+func (_c *mock_Server_Indication_Call) Run(run func(args _args, kwargs _kwargs)) *mock_Server_Indication_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -77,22 +78,22 @@ func (_c *mock_Server_Indication_Call) Return(_a0 error) *mock_Server_Indication
 	return _c
 }
 
-func (_c *mock_Server_Indication_Call) RunAndReturn(run func(_PDU) error) *mock_Server_Indication_Call {
+func (_c *mock_Server_Indication_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_Server_Indication_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Response provides a mock function with given fields: pdu
-func (_m *mock_Server) Response(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// Response provides a mock function with given fields: args, kwargs
+func (_m *mock_Server) Response(args _args, kwargs _kwargs) error {
+	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Response")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -106,14 +107,15 @@ type mock_Server_Response_Call struct {
 }
 
 // Response is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_Server_Expecter) Response(pdu interface{}) *mock_Server_Response_Call {
-	return &mock_Server_Response_Call{Call: _e.mock.On("Response", pdu)}
+//   - args _args
+//   - kwargs _kwargs
+func (_e *mock_Server_Expecter) Response(args interface{}, kwargs interface{}) *mock_Server_Response_Call {
+	return &mock_Server_Response_Call{Call: _e.mock.On("Response", args, kwargs)}
 }
 
-func (_c *mock_Server_Response_Call) Run(run func(pdu _PDU)) *mock_Server_Response_Call {
+func (_c *mock_Server_Response_Call) Run(run func(args _args, kwargs _kwargs)) *mock_Server_Response_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -123,7 +125,7 @@ func (_c *mock_Server_Response_Call) Return(_a0 error) *mock_Server_Response_Cal
 	return _c
 }
 
-func (_c *mock_Server_Response_Call) RunAndReturn(run func(_PDU) error) *mock_Server_Response_Call {
+func (_c *mock_Server_Response_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_Server_Response_Call {
 	_c.Call.Return(run)
 	return _c
 }

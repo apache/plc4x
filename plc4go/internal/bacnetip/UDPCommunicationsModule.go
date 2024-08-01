@@ -74,8 +74,9 @@ func (a *UDPActor) idleTimeout() error {
 	return nil
 }
 
-func (a *UDPActor) Indication(pdu _PDU) error {
-	a.log.Debug().Stringer("pdu", pdu).Msg("Indication")
+func (a *UDPActor) Indication(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
+	pdu := args._0PDU()
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -88,8 +89,8 @@ func (a *UDPActor) Indication(pdu _PDU) error {
 	return nil
 }
 
-func (a *UDPActor) Response(pdu _PDU) error {
-	a.log.Debug().Stringer("pdu", pdu).Msg("Response")
+func (a *UDPActor) Response(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -98,14 +99,14 @@ func (a *UDPActor) Response(pdu _PDU) error {
 	}
 
 	// process this as a response from the director
-	return a.director.Response(pdu)
+	return a.director.Response(args, kwargs)
 }
 
 func (a *UDPActor) HandleError(err error) {
 	a.log.Debug().Err(err).Msg("HandleError")
 
 	if err != nil {
-		a.director.ActorError(err)
+		a.director.ActorError(a, err)
 	}
 }
 
@@ -219,8 +220,9 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 	// tell the ASE there is a new client
 	if d.serviceElement != nil {
-		// TODO: not sure how to realize that
-		//d.SapRequest(actor)
+		if err := d.SapRequest(noArgs, _n_kwn_args(kwAddActor, actor)); err != nil {
+			d.log.Error().Err(err).Msg("Error in add actor")
+		}
 	}
 }
 
@@ -232,8 +234,9 @@ func (d *UDPDirector) DelActor(actor *UDPActor) {
 
 	// tell the ASE the client has gone away
 	if d.serviceElement != nil {
-		// TODO: not sure how to realize that
-		//d.SapRequest(actor)
+		if err := d.SapRequest(noArgs, _n_kwn_args(kwDelActor, actor)); err != nil {
+			d.log.Error().Err(err).Msg("Error in del actor")
+		}
 	}
 }
 
@@ -241,11 +244,12 @@ func (d *UDPDirector) GetActor(address Address) *UDPActor {
 	return d.peers[address.String()]
 }
 
-func (d *UDPDirector) ActorError(err error) {
+func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
 	// tell the ASE the actor had an error
 	if d.serviceElement != nil {
-		// TODO: not sure how to realize that
-		//d.SapRequest(actor, err)
+		if err := d.SapRequest(noArgs, _n_kwn_args(kwActorError, actor, kwError, err)); err != nil {
+			d.log.Error().Err(err).Msg("Error in actor error")
+		}
 	}
 }
 
@@ -300,8 +304,9 @@ func (d *UDPDirector) handleError(err error) {
 }
 
 // Indication Client requests are queued for delivery.
-func (d *UDPDirector) Indication(pdu _PDU) error {
-	d.log.Debug().Stringer("pdu", pdu).Msg("Indication")
+func (d *UDPDirector) Indication(args _args, kwargs _kwargs) error {
+	d.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
+	pdu := args._0PDU()
 
 	// get the destination
 	addr := pdu.GetPDUDestination()
@@ -313,7 +318,7 @@ func (d *UDPDirector) Indication(pdu _PDU) error {
 	}
 
 	// send the message
-	return peer.Indication(pdu)
+	return peer.Indication(args, kwargs)
 }
 
 // _response Incoming datagrams are routed through an actor.
@@ -330,5 +335,5 @@ func (d *UDPDirector) _response(pdu _PDU) error {
 	}
 
 	// send the message
-	return peer.Response(pdu)
+	return peer.Response(_n_args(pdu), noKwargs)
 }

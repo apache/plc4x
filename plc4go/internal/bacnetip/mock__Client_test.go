@@ -36,17 +36,17 @@ func (_m *mock_Client) EXPECT() *mock_Client_Expecter {
 	return &mock_Client_Expecter{mock: &_m.Mock}
 }
 
-// Confirmation provides a mock function with given fields: pdu
-func (_m *mock_Client) Confirmation(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// Confirmation provides a mock function with given fields: args, kwargs
+func (_m *mock_Client) Confirmation(args _args, kwargs _kwargs) error {
+	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Confirmation")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -60,14 +60,15 @@ type mock_Client_Confirmation_Call struct {
 }
 
 // Confirmation is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_Client_Expecter) Confirmation(pdu interface{}) *mock_Client_Confirmation_Call {
-	return &mock_Client_Confirmation_Call{Call: _e.mock.On("Confirmation", pdu)}
+//   - args _args
+//   - kwargs _kwargs
+func (_e *mock_Client_Expecter) Confirmation(args interface{}, kwargs interface{}) *mock_Client_Confirmation_Call {
+	return &mock_Client_Confirmation_Call{Call: _e.mock.On("Confirmation", args, kwargs)}
 }
 
-func (_c *mock_Client_Confirmation_Call) Run(run func(pdu _PDU)) *mock_Client_Confirmation_Call {
+func (_c *mock_Client_Confirmation_Call) Run(run func(args _args, kwargs _kwargs)) *mock_Client_Confirmation_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -77,22 +78,22 @@ func (_c *mock_Client_Confirmation_Call) Return(_a0 error) *mock_Client_Confirma
 	return _c
 }
 
-func (_c *mock_Client_Confirmation_Call) RunAndReturn(run func(_PDU) error) *mock_Client_Confirmation_Call {
+func (_c *mock_Client_Confirmation_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_Client_Confirmation_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Request provides a mock function with given fields: pdu
-func (_m *mock_Client) Request(pdu _PDU) error {
-	ret := _m.Called(pdu)
+// Request provides a mock function with given fields: args, kwargs
+func (_m *mock_Client) Request(args _args, kwargs _kwargs) error {
+	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Request")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_PDU) error); ok {
-		r0 = rf(pdu)
+	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -106,14 +107,15 @@ type mock_Client_Request_Call struct {
 }
 
 // Request is a helper method to define mock.On call
-//   - pdu _PDU
-func (_e *mock_Client_Expecter) Request(pdu interface{}) *mock_Client_Request_Call {
-	return &mock_Client_Request_Call{Call: _e.mock.On("Request", pdu)}
+//   - args _args
+//   - kwargs _kwargs
+func (_e *mock_Client_Expecter) Request(args interface{}, kwargs interface{}) *mock_Client_Request_Call {
+	return &mock_Client_Request_Call{Call: _e.mock.On("Request", args, kwargs)}
 }
 
-func (_c *mock_Client_Request_Call) Run(run func(pdu _PDU)) *mock_Client_Request_Call {
+func (_c *mock_Client_Request_Call) Run(run func(args _args, kwargs _kwargs)) *mock_Client_Request_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(_args), args[1].(_kwargs))
 	})
 	return _c
 }
@@ -123,7 +125,7 @@ func (_c *mock_Client_Request_Call) Return(_a0 error) *mock_Client_Request_Call 
 	return _c
 }
 
-func (_c *mock_Client_Request_Call) RunAndReturn(run func(_PDU) error) *mock_Client_Request_Call {
+func (_c *mock_Client_Request_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_Client_Request_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -57,8 +57,8 @@ func (p *_PCI) String() string {
 
 // _Client is an interface used for documentation
 type _Client interface {
-	Request(pdu _PDU) error
-	Confirmation(pdu _PDU) error
+	Request(args _args, kwargs _kwargs) error
+	Confirmation(args _args, kwargs _kwargs) error
 	_setClientPeer(server _Server)
 	getClientId() *int
 }
@@ -97,16 +97,16 @@ func NewClient(localLog zerolog.Logger, cid *int, rootStruct _Client) (*Client, 
 	return c, nil
 }
 
-func (c *Client) Request(pdu _PDU) error {
-	c.log.Debug().Stringer("pdu", pdu).Msg("Request")
+func (c *Client) Request(args _args, kwargs _kwargs) error {
+	c.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
 
 	if c.clientPeer == nil {
 		return errors.New("unbound client")
 	}
-	return c.clientPeer.Indication(pdu)
+	return c.clientPeer.Indication(args, kwargs)
 }
 
-func (c *Client) Confirmation(_PDU) error {
+func (c *Client) Confirmation(args _args, kwargs _kwargs) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -128,8 +128,8 @@ func (c *Client) String() string {
 
 // _Server is an interface used for documentation
 type _Server interface {
-	Indication(pdu _PDU) error
-	Response(pdu _PDU) error
+	Indication(args _args, kwargs _kwargs) error
+	Response(args _args, kwargs _kwargs) error
 	_setServerPeer(serverPeer _Client)
 	getServerId() *int
 }
@@ -168,17 +168,17 @@ func NewServer(localLog zerolog.Logger, sid *int, rootStruct _Server) (*Server, 
 	return s, nil
 }
 
-func (s *Server) Indication(_PDU) error {
+func (s *Server) Indication(_args, _kwargs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *Server) Response(pdu _PDU) error {
-	s.log.Debug().Stringer("pdu", pdu).Msg("Response")
+func (s *Server) Response(args _args, kwargs _kwargs) error {
+	s.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
 
 	if s.serverPeer == nil {
 		return errors.New("unbound server")
 	}
-	return s.serverPeer.Confirmation(pdu)
+	return s.serverPeer.Confirmation(args, kwargs)
 }
 
 func (s *Server) _setServerPeer(serverPeer _Client) {
@@ -197,12 +197,12 @@ func (s *Server) String() string {
 	return fmt.Sprintf("Server(cid:%d)%s", s.serverID, serverPeer)
 }
 
-// _ServiceAccessPoint is a interface used for documentation
+// _ServiceAccessPoint is an interface used for documentation
 type _ServiceAccessPoint interface {
-	SapConfirmation(pdu _PDU) error
-	SapRequest(pdu _PDU) error
-	SapIndication(pdu _PDU) error
-	SapResponse(pdu _PDU) error
+	SapConfirmation(_args, _kwargs) error
+	SapRequest(_args, _kwargs) error
+	SapIndication(_args, _kwargs) error
+	SapResponse(_args, _kwargs) error
 	_setServiceElement(serviceElement _ApplicationServiceElement)
 }
 
@@ -238,29 +238,29 @@ func NewServiceAccessPoint(localLog zerolog.Logger, sapID *int, rootStruct _Serv
 	return s, nil
 }
 
-func (s *ServiceAccessPoint) SapRequest(pdu _PDU) error {
-	s.log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapRequest")
+func (s *ServiceAccessPoint) SapRequest(args _args, kwargs _kwargs) error {
+	s.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Indication(pdu)
+	return s.serviceElement.Indication(args, kwargs)
 }
 
-func (s *ServiceAccessPoint) SapIndication(_PDU) error {
+func (s *ServiceAccessPoint) SapIndication(_args, _kwargs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *ServiceAccessPoint) SapResponse(pdu _PDU) error {
-	s.log.Debug().Stringer("pdu", pdu).Interface("serviceID", s.serviceID).Msg("SapResponse")
+func (s *ServiceAccessPoint) SapResponse(args _args, kwargs _kwargs) error {
+	s.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
 	}
-	return s.serviceElement.Confirmation(pdu)
+	return s.serviceElement.Confirmation(args, kwargs)
 }
 
-func (s *ServiceAccessPoint) SapConfirmation(_PDU) error {
+func (s *ServiceAccessPoint) SapConfirmation(_args, _kwargs) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -268,12 +268,12 @@ func (s *ServiceAccessPoint) _setServiceElement(serviceElement _ApplicationServi
 	s.serviceElement = serviceElement
 }
 
-// _ApplicationServiceElement is a interface used for documentation
+// _ApplicationServiceElement is an interface used for documentation
 type _ApplicationServiceElement interface {
-	Request(pdu _PDU) error
-	Indication(pdu _PDU) error
-	Response(pdu _PDU) error
-	Confirmation(pdu _PDU) error
+	Request(args _args, kwargs _kwargs) error
+	Indication(args _args, kwargs _kwargs) error
+	Response(args _args, kwargs _kwargs) error
+	Confirmation(args _args, kwargs _kwargs) error
 	_setElementService(elementService _ServiceAccessPoint)
 }
 
@@ -310,31 +310,31 @@ func NewApplicationServiceElement(localLog zerolog.Logger, aseID *int, rootStruc
 	return a, nil
 }
 
-func (a *ApplicationServiceElement) Request(pdu _PDU) error {
-	a.log.Debug().Stringer("pdu", pdu).Msg("Request")
+func (a *ApplicationServiceElement) Request(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
 	}
 
-	return a.elementService.SapIndication(pdu)
+	return a.elementService.SapIndication(args, kwargs)
 }
 
-func (a *ApplicationServiceElement) Indication(_PDU) error {
+func (a *ApplicationServiceElement) Indication(_args, _kwargs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (a *ApplicationServiceElement) Response(pdu _PDU) error {
-	a.log.Debug().Stringer("pdu", pdu).Msg("Response")
+func (a *ApplicationServiceElement) Response(args _args, kwargs _kwargs) error {
+	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
 	}
 
-	return a.elementService.SapConfirmation(pdu)
+	return a.elementService.SapConfirmation(args, kwargs)
 }
 
-func (a *ApplicationServiceElement) Confirmation(_PDU) error {
+func (a *ApplicationServiceElement) Confirmation(_args, _kwargs) error {
 	panic("this should be implemented by outer struct")
 }
 
