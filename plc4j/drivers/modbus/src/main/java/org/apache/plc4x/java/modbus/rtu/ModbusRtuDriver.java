@@ -158,6 +158,12 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
                 } catch (ParseException e) {
                     return -1;
                 }
+                // If we're getting this error, manually compact the buffer.
+                // Hopefully now there will be enough space for another attempt.
+                catch (ArrayIndexOutOfBoundsException e) {
+                    byteBuf.discardReadBytes();
+                    return -1;
+                }
             }
             return -1;
         }
