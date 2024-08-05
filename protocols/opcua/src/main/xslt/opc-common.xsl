@@ -141,8 +141,8 @@
 ]
     </xsl:template>
 
-    <xsl:template match="opc:StructuredType[starts-with(@BaseType, 'tns:')]">
-        <xsl:message>[INFO] Parsing Structured Datatype - <xsl:value-of select="@Name"/></xsl:message>
+    <xsl:template match="opc:StructuredType[not (@BaseType)]">
+        <xsl:message>[INFO] Parsing Structured Datatype - top level - <xsl:value-of select="@Name"/></xsl:message>
         <xsl:variable name="objectTypeId">
             <xsl:call-template name="clean-datatype-string">
                 <xsl:with-param name="text" select="@Name"/>
@@ -222,7 +222,8 @@
         </xsl:variable>
         <!-- Depending on what kind of mspec variable it is, we have to include different arguments -->
         <xsl:choose>
-            <xsl:when test="@LengthField">
+            <xsl:when test="@LengthField">[implicit int 32 <xsl:value-of select="$lowerCaseLengthField"/> 'COUNT(<xsl:value-of select="$lowerCaseName" />)']<xsl:text>
+            </xsl:text>
                 <xsl:choose>
                     <xsl:when test="$dataType = 'ExtensionObjectDefinition'">
                         <xsl:variable name="browseName" select="substring-after(@TypeName,':')"/>
@@ -257,7 +258,12 @@
             </xsl:when>
             <xsl:when test="$dataType = 'ExtensionObject'">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/>('true')<xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/>]
             </xsl:when>
-            <xsl:otherwise>[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/><xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/>]
+            <xsl:otherwise>
+                <xsl:choose>
+                    <xsl:when test="$mspecType != ''">[<xsl:value-of select="$mspecType"/><xsl:text> </xsl:text><xsl:value-of select="$dataType"/><xsl:text> </xsl:text><xsl:value-of select="$lowerCaseName"/>]<xsl:text>
+            </xsl:text>
+                    </xsl:when>
+                </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -268,6 +274,7 @@
         <xsl:param name="name"/>
         <xsl:param name="switchField"/>
         <xsl:choose>
+            <xsl:when test="starts-with($name, 'noOf')"></xsl:when><!-- All noOfXyz (names lowercased by caller) fields in OPC UA are implicit array sizes -->
             <xsl:when test="starts-with($name, 'reserved')">reserved</xsl:when>
             <xsl:when test="$switchField != ''">optional</xsl:when>
             <xsl:otherwise>simple</xsl:otherwise>

@@ -230,28 +230,15 @@
         ['"0"' NullExtension
         ]
 
-        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[(@BaseType = 'ua:ExtensionObject') and not(@Name = 'UserIdentityToken') and not(@Name = 'PublishedDataSetDataType') and not(@Name = 'DataSetReaderDataType') and not(@Name = 'PubSubConfigurationValueDataType') and not(@Name = 'PortableNodeId')]">
+        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:') and not (@BaseType = 'tns:UserIdentityToken'))) and
+            not(@Name = 'UserIdentityToken') and
+            not(@Name = 'PublishedDataSetDataType') and
+            not(@Name = 'DataSetReaderDataType') and
+            not(@Name = 'PubSubConfigurationValueDataType') and
+            not(@Name = 'PortableNodeId')]">
             <xsl:variable name="extensionName" select="@Name"/>
             <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName=$extensionName]"/>
         </xsl:for-each>
-
-        ['"811"' DataChangeNotification
-            [implicit int 32 notificationLength 'lengthInBytes']
-            [simple int 32 noOfMonitoredItems]
-            [array ExtensionObjectDefinition('"808"')  monitoredItems count 'noOfMonitoredItems']
-            [simple int 32 noOfDiagnosticInfos]
-            [array DiagnosticInfo  diagnosticInfos count 'noOfDiagnosticInfos']
-        ]
-        ['"916"' EventNotificationList
-            [implicit int 32 notificationLength 'lengthInBytes']
-            [simple int 32 noOfEvents]
-            [array ExtensionObjectDefinition('"919"')  events count 'noOfEvents']
-        ]
-        ['"820"' StatusChangeNotification
-            [implicit int 32 notificationLength 'lengthInBytes']
-            [simple StatusCode status]
-            [simple DiagnosticInfo diagnosticInfo]
-        ]
 
         ['"316"' UserIdentityToken
             [implicit int 32 policyLength 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
@@ -456,6 +443,9 @@
 
 // StructuredTypes
 <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[(@Name != 'ExtensionObject') and (@Name != 'Variant') and (@Name != 'NodeId') and (@Name != 'ExpandedNodeId') and not(@BaseType)]"/>
+
+// StructuredTypes extensions
+<!--<xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[(@Name != 'ExtensionObject') and (@Name != 'Variant') and (@Name != 'NodeId') and (@Name != 'ExpandedNodeId') and (@BaseType != 'ua:ExtensionObject')]"/>-->
 
 // EnumeratedTypes
 <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType"/>

@@ -28,6 +28,7 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
@@ -113,12 +114,29 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     monitoringMode = MonitoringMode.monitoringModeReporting;
             }
 
-            long clientHandle = clientHandles.getAndIncrement();
+            ExtensionObject eventFilter = OpcuaProtocolLogic.NULL_EXTENSION_OBJECT;
+            if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
+                FilterOperand filterOperand = new FilterOperand();
+                EventFilter eventFilter1 = new EventFilter(
+                    0,
+                    Arrays.asList(filterOperand),
+                    new NullExtension()
+                );
+                ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
+                    new NodeIdFourByte((short) 0, Integer.parseInt(eventFilter.getIdentifier())),
+                    null, null
+                );
+                eventFilter = new ExtensionObject(expandedNodeId,
+                    new ExtensionObjectEncodingMask(false, false, true),
+                    eventFilter1
+                );
+            }
 
+            long clientHandle = clientHandles.getAndIncrement();
             MonitoringParameters parameters = new MonitoringParameters(
                 clientHandle,
                 (double) cycleTime,     // sampling interval
-                OpcuaProtocolLogic.NULL_EXTENSION_OBJECT,       // filter, null means use default
+                eventFilter,       // filter, null means use default
                 1L,   // queue size
                 true        // discard oldest
             );
@@ -206,6 +224,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                                 .filter(extensionObjectDefinition -> extensionObjectDefinition instanceof MonitoredItemNotification)
                                 .map(extensionObjectDefinition -> (MonitoredItemNotification) extensionObjectDefinition)
                                 .toArray(MonitoredItemNotification[]::new));
+                        } else if (notification instanceof NotificationData) {
+                            NotificationData data = (NotificationData) notification;
+
                         } else {
                             LOGGER.warn("Unsupported Notification type");
                         }
