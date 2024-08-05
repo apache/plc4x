@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class HistoryReadResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "640";
+  public Integer getExtensionId() {
+    return (int) 640;
   }
 
   // Properties.
@@ -110,7 +110,7 @@ public class HistoryReadResult extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("HistoryReadResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

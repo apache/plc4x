@@ -38,38 +38,31 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RegisterServer2Request extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12195";
+  public Integer getExtensionId() {
+    return (int) 12195;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final ExtensionObjectDefinition server;
-  protected final int noOfDiscoveryConfiguration;
+  protected final RequestHeader requestHeader;
+  protected final RegisteredServer server;
   protected final List<ExtensionObject> discoveryConfiguration;
 
   public RegisterServer2Request(
-      ExtensionObjectDefinition requestHeader,
-      ExtensionObjectDefinition server,
-      int noOfDiscoveryConfiguration,
+      RequestHeader requestHeader,
+      RegisteredServer server,
       List<ExtensionObject> discoveryConfiguration) {
     super();
     this.requestHeader = requestHeader;
     this.server = server;
-    this.noOfDiscoveryConfiguration = noOfDiscoveryConfiguration;
     this.discoveryConfiguration = discoveryConfiguration;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public ExtensionObjectDefinition getServer() {
+  public RegisteredServer getServer() {
     return server;
-  }
-
-  public int getNoOfDiscoveryConfiguration() {
-    return noOfDiscoveryConfiguration;
   }
 
   public List<ExtensionObject> getDiscoveryConfiguration() {
@@ -89,8 +82,14 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     // Simple Field (server)
     writeSimpleField("server", server, writeComplex(writeBuffer));
 
-    // Simple Field (noOfDiscoveryConfiguration)
-    writeSimpleField(
+    // Implicit Field (noOfDiscoveryConfiguration) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfDiscoveryConfiguration =
+        (int)
+            ((((getDiscoveryConfiguration()) == (null))
+                ? -(1)
+                : COUNT(getDiscoveryConfiguration())));
+    writeImplicitField(
         "noOfDiscoveryConfiguration", noOfDiscoveryConfiguration, writeSignedInt(writeBuffer, 32));
 
     // Array Field (discoveryConfiguration)
@@ -116,7 +115,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     // Simple field (server)
     lengthInBits += server.getLengthInBits();
 
-    // Simple field (noOfDiscoveryConfiguration)
+    // Implicit Field (noOfDiscoveryConfiguration)
     lengthInBits += 32;
 
     // Array field
@@ -132,27 +131,30 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RegisterServer2Request");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    ExtensionObjectDefinition server =
+    RegisteredServer server =
         readSimpleField(
             "server",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("434")),
+                () ->
+                    (RegisteredServer)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (434)),
                 readBuffer));
 
     int noOfDiscoveryConfiguration =
-        readSimpleField("noOfDiscoveryConfiguration", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfDiscoveryConfiguration", readSignedInt(readBuffer, 32));
 
     List<ExtensionObject> discoveryConfiguration =
         readCountArrayField(
@@ -163,32 +165,27 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("RegisterServer2Request");
     // Create the instance
-    return new RegisterServer2RequestBuilderImpl(
-        requestHeader, server, noOfDiscoveryConfiguration, discoveryConfiguration);
+    return new RegisterServer2RequestBuilderImpl(requestHeader, server, discoveryConfiguration);
   }
 
   public static class RegisterServer2RequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final ExtensionObjectDefinition server;
-    private final int noOfDiscoveryConfiguration;
+    private final RequestHeader requestHeader;
+    private final RegisteredServer server;
     private final List<ExtensionObject> discoveryConfiguration;
 
     public RegisterServer2RequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        ExtensionObjectDefinition server,
-        int noOfDiscoveryConfiguration,
+        RequestHeader requestHeader,
+        RegisteredServer server,
         List<ExtensionObject> discoveryConfiguration) {
       this.requestHeader = requestHeader;
       this.server = server;
-      this.noOfDiscoveryConfiguration = noOfDiscoveryConfiguration;
       this.discoveryConfiguration = discoveryConfiguration;
     }
 
     public RegisterServer2Request build() {
       RegisterServer2Request registerServer2Request =
-          new RegisterServer2Request(
-              requestHeader, server, noOfDiscoveryConfiguration, discoveryConfiguration);
+          new RegisterServer2Request(requestHeader, server, discoveryConfiguration);
       return registerServer2Request;
     }
   }
@@ -204,7 +201,6 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     RegisterServer2Request that = (RegisterServer2Request) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getServer() == that.getServer())
-        && (getNoOfDiscoveryConfiguration() == that.getNoOfDiscoveryConfiguration())
         && (getDiscoveryConfiguration() == that.getDiscoveryConfiguration())
         && super.equals(that)
         && true;
@@ -213,11 +209,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getServer(),
-        getNoOfDiscoveryConfiguration(),
-        getDiscoveryConfiguration());
+        super.hashCode(), getRequestHeader(), getServer(), getDiscoveryConfiguration());
   }
 
   @Override

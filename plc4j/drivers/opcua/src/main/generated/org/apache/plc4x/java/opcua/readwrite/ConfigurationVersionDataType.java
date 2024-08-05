@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ConfigurationVersionDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "14595";
+  public Integer getExtensionId() {
+    return (int) 14595;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ConfigurationVersionDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

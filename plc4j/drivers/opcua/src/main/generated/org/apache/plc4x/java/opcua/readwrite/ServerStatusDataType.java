@@ -38,15 +38,15 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ServerStatusDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "864";
+  public Integer getExtensionId() {
+    return (int) 864;
   }
 
   // Properties.
   protected final long startTime;
   protected final long currentTime;
   protected final ServerState state;
-  protected final ExtensionObjectDefinition buildInfo;
+  protected final BuildInfo buildInfo;
   protected final long secondsTillShutdown;
   protected final LocalizedText shutdownReason;
 
@@ -54,7 +54,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
       long startTime,
       long currentTime,
       ServerState state,
-      ExtensionObjectDefinition buildInfo,
+      BuildInfo buildInfo,
       long secondsTillShutdown,
       LocalizedText shutdownReason) {
     super();
@@ -78,7 +78,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     return state;
   }
 
-  public ExtensionObjectDefinition getBuildInfo() {
+  public BuildInfo getBuildInfo() {
     return buildInfo;
   }
 
@@ -156,7 +156,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ServerStatusDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -171,11 +171,11 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
             "ServerState",
             readEnum(ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    ExtensionObjectDefinition buildInfo =
+    BuildInfo buildInfo =
         readSimpleField(
             "buildInfo",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("340")),
+                () -> (BuildInfo) ExtensionObjectDefinition.staticParse(readBuffer, (int) (340)),
                 readBuffer));
 
     long secondsTillShutdown =
@@ -196,7 +196,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     private final long startTime;
     private final long currentTime;
     private final ServerState state;
-    private final ExtensionObjectDefinition buildInfo;
+    private final BuildInfo buildInfo;
     private final long secondsTillShutdown;
     private final LocalizedText shutdownReason;
 
@@ -204,7 +204,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
         long startTime,
         long currentTime,
         ServerState state,
-        ExtensionObjectDefinition buildInfo,
+        BuildInfo buildInfo,
         long secondsTillShutdown,
         LocalizedText shutdownReason) {
       this.startTime = startTime;

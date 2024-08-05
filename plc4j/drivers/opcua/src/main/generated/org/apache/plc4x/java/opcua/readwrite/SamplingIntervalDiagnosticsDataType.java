@@ -39,8 +39,8 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
     implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "858";
+  public Integer getExtensionId() {
+    return (int) 858;
   }
 
   // Properties.
@@ -130,7 +130,7 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SamplingIntervalDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

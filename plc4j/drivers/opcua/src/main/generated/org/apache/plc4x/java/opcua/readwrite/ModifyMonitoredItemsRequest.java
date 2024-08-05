@@ -38,32 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "763";
+  public Integer getExtensionId() {
+    return (int) 763;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final long subscriptionId;
   protected final TimestampsToReturn timestampsToReturn;
-  protected final int noOfItemsToModify;
-  protected final List<ExtensionObjectDefinition> itemsToModify;
+  protected final List<MonitoredItemModifyRequest> itemsToModify;
 
   public ModifyMonitoredItemsRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       long subscriptionId,
       TimestampsToReturn timestampsToReturn,
-      int noOfItemsToModify,
-      List<ExtensionObjectDefinition> itemsToModify) {
+      List<MonitoredItemModifyRequest> itemsToModify) {
     super();
     this.requestHeader = requestHeader;
     this.subscriptionId = subscriptionId;
     this.timestampsToReturn = timestampsToReturn;
-    this.noOfItemsToModify = noOfItemsToModify;
     this.itemsToModify = itemsToModify;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -75,11 +72,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return timestampsToReturn;
   }
 
-  public int getNoOfItemsToModify() {
-    return noOfItemsToModify;
-  }
-
-  public List<ExtensionObjectDefinition> getItemsToModify() {
+  public List<MonitoredItemModifyRequest> getItemsToModify() {
     return itemsToModify;
   }
 
@@ -106,8 +99,11 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));
 
-    // Simple Field (noOfItemsToModify)
-    writeSimpleField("noOfItemsToModify", noOfItemsToModify, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfItemsToModify) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfItemsToModify =
+        (int) ((((getItemsToModify()) == (null)) ? -(1) : COUNT(getItemsToModify())));
+    writeImplicitField("noOfItemsToModify", noOfItemsToModify, writeSignedInt(writeBuffer, 32));
 
     // Array Field (itemsToModify)
     writeComplexTypeArrayField("itemsToModify", itemsToModify, writeBuffer);
@@ -135,13 +131,13 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     // Simple field (timestampsToReturn)
     lengthInBits += 32;
 
-    // Simple field (noOfItemsToModify)
+    // Implicit Field (noOfItemsToModify)
     lengthInBits += 32;
 
     // Array field
     if (itemsToModify != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : itemsToModify) {
+      for (MonitoredItemModifyRequest element : itemsToModify) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= itemsToModify.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -151,16 +147,17 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ModifyMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
@@ -171,47 +168,46 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
             "TimestampsToReturn",
             readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
-    int noOfItemsToModify = readSimpleField("noOfItemsToModify", readSignedInt(readBuffer, 32));
+    int noOfItemsToModify = readImplicitField("noOfItemsToModify", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> itemsToModify =
+    List<MonitoredItemModifyRequest> itemsToModify =
         readCountArrayField(
             "itemsToModify",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("757")),
+                () ->
+                    (MonitoredItemModifyRequest)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (757)),
                 readBuffer),
             noOfItemsToModify);
 
     readBuffer.closeContext("ModifyMonitoredItemsRequest");
     // Create the instance
     return new ModifyMonitoredItemsRequestBuilderImpl(
-        requestHeader, subscriptionId, timestampsToReturn, noOfItemsToModify, itemsToModify);
+        requestHeader, subscriptionId, timestampsToReturn, itemsToModify);
   }
 
   public static class ModifyMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final long subscriptionId;
     private final TimestampsToReturn timestampsToReturn;
-    private final int noOfItemsToModify;
-    private final List<ExtensionObjectDefinition> itemsToModify;
+    private final List<MonitoredItemModifyRequest> itemsToModify;
 
     public ModifyMonitoredItemsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         long subscriptionId,
         TimestampsToReturn timestampsToReturn,
-        int noOfItemsToModify,
-        List<ExtensionObjectDefinition> itemsToModify) {
+        List<MonitoredItemModifyRequest> itemsToModify) {
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.timestampsToReturn = timestampsToReturn;
-      this.noOfItemsToModify = noOfItemsToModify;
       this.itemsToModify = itemsToModify;
     }
 
     public ModifyMonitoredItemsRequest build() {
       ModifyMonitoredItemsRequest modifyMonitoredItemsRequest =
           new ModifyMonitoredItemsRequest(
-              requestHeader, subscriptionId, timestampsToReturn, noOfItemsToModify, itemsToModify);
+              requestHeader, subscriptionId, timestampsToReturn, itemsToModify);
       return modifyMonitoredItemsRequest;
     }
   }
@@ -228,7 +224,6 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return (getRequestHeader() == that.getRequestHeader())
         && (getSubscriptionId() == that.getSubscriptionId())
         && (getTimestampsToReturn() == that.getTimestampsToReturn())
-        && (getNoOfItemsToModify() == that.getNoOfItemsToModify())
         && (getItemsToModify() == that.getItemsToModify())
         && super.equals(that)
         && true;
@@ -241,7 +236,6 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
         getRequestHeader(),
         getSubscriptionId(),
         getTimestampsToReturn(),
-        getNoOfItemsToModify(),
         getItemsToModify());
   }
 

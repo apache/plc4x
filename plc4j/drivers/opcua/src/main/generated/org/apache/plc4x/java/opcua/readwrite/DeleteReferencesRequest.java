@@ -38,34 +38,26 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteReferencesRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "506";
+  public Integer getExtensionId() {
+    return (int) 506;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfReferencesToDelete;
-  protected final List<ExtensionObjectDefinition> referencesToDelete;
+  protected final RequestHeader requestHeader;
+  protected final List<DeleteReferencesItem> referencesToDelete;
 
   public DeleteReferencesRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfReferencesToDelete,
-      List<ExtensionObjectDefinition> referencesToDelete) {
+      RequestHeader requestHeader, List<DeleteReferencesItem> referencesToDelete) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfReferencesToDelete = noOfReferencesToDelete;
     this.referencesToDelete = referencesToDelete;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfReferencesToDelete() {
-    return noOfReferencesToDelete;
-  }
-
-  public List<ExtensionObjectDefinition> getReferencesToDelete() {
+  public List<DeleteReferencesItem> getReferencesToDelete() {
     return referencesToDelete;
   }
 
@@ -79,8 +71,11 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfReferencesToDelete)
-    writeSimpleField(
+    // Implicit Field (noOfReferencesToDelete) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfReferencesToDelete =
+        (int) ((((getReferencesToDelete()) == (null)) ? -(1) : COUNT(getReferencesToDelete())));
+    writeImplicitField(
         "noOfReferencesToDelete", noOfReferencesToDelete, writeSignedInt(writeBuffer, 32));
 
     // Array Field (referencesToDelete)
@@ -103,13 +98,13 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfReferencesToDelete)
+    // Implicit Field (noOfReferencesToDelete)
     lengthInBits += 32;
 
     // Array field
     if (referencesToDelete != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : referencesToDelete) {
+      for (DeleteReferencesItem element : referencesToDelete) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= referencesToDelete.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -119,53 +114,51 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteReferencesRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     int noOfReferencesToDelete =
-        readSimpleField("noOfReferencesToDelete", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfReferencesToDelete", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> referencesToDelete =
+    List<DeleteReferencesItem> referencesToDelete =
         readCountArrayField(
             "referencesToDelete",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("387")),
+                () ->
+                    (DeleteReferencesItem)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (387)),
                 readBuffer),
             noOfReferencesToDelete);
 
     readBuffer.closeContext("DeleteReferencesRequest");
     // Create the instance
-    return new DeleteReferencesRequestBuilderImpl(
-        requestHeader, noOfReferencesToDelete, referencesToDelete);
+    return new DeleteReferencesRequestBuilderImpl(requestHeader, referencesToDelete);
   }
 
   public static class DeleteReferencesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfReferencesToDelete;
-    private final List<ExtensionObjectDefinition> referencesToDelete;
+    private final RequestHeader requestHeader;
+    private final List<DeleteReferencesItem> referencesToDelete;
 
     public DeleteReferencesRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfReferencesToDelete,
-        List<ExtensionObjectDefinition> referencesToDelete) {
+        RequestHeader requestHeader, List<DeleteReferencesItem> referencesToDelete) {
       this.requestHeader = requestHeader;
-      this.noOfReferencesToDelete = noOfReferencesToDelete;
       this.referencesToDelete = referencesToDelete;
     }
 
     public DeleteReferencesRequest build() {
       DeleteReferencesRequest deleteReferencesRequest =
-          new DeleteReferencesRequest(requestHeader, noOfReferencesToDelete, referencesToDelete);
+          new DeleteReferencesRequest(requestHeader, referencesToDelete);
       return deleteReferencesRequest;
     }
   }
@@ -180,7 +173,6 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     }
     DeleteReferencesRequest that = (DeleteReferencesRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfReferencesToDelete() == that.getNoOfReferencesToDelete())
         && (getReferencesToDelete() == that.getReferencesToDelete())
         && super.equals(that)
         && true;
@@ -188,8 +180,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfReferencesToDelete(), getReferencesToDelete());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getReferencesToDelete());
   }
 
   @Override

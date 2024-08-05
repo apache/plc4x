@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RolePermissionType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "98";
+  public Integer getExtensionId() {
+    return (int) 98;
   }
 
   // Properties.
@@ -102,7 +102,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RolePermissionType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

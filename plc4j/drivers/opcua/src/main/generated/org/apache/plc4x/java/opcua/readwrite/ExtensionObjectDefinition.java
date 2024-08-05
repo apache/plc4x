@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class ExtensionObjectDefinition implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract String getIdentifier();
+  public abstract Integer getExtensionId();
 
   public ExtensionObjectDefinition() {
     super();
@@ -74,7 +74,7 @@ public abstract class ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ExtensionObjectDefinition staticParse(ReadBuffer readBuffer, String identifier)
+  public static ExtensionObjectDefinition staticParse(ReadBuffer readBuffer, Integer extensionId)
       throws ParseException {
     readBuffer.pullContext("ExtensionObjectDefinition");
     PositionAware positionAware = readBuffer;
@@ -82,740 +82,1031 @@ public abstract class ExtensionObjectDefinition implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ExtensionObjectDefinitionBuilder builder = null;
-    if (EvaluationHelper.equals(identifier, (String) "0")) {
-      builder = NullExtension.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12758")) {
-      builder = Union.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "14535")) {
-      builder = KeyValuePair.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "16315")) {
+    if (EvaluationHelper.equals(extensionId, (int) 0)) {
+      builder = NullExtension.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12758)) {
+      builder = Union.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14535)) {
+      builder = KeyValuePair.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 16315)) {
       builder =
           AdditionalParametersType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "17550")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 17550)) {
       builder =
-          EphemeralKeyType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15530")) {
-      builder = EndpointType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32423")) {
+          EphemeralKeyType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15530)) {
+      builder = EndpointType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32423)) {
       builder =
-          BitFieldDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "18808")) {
-      builder = RationalNumber.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "18809")) {
-      builder = OpcuaVector.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "18811")) {
+          BitFieldDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18808)) {
+      builder = RationalNumber.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18809)) {
+      builder = OpcuaVector.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18811)) {
       builder =
-          CartesianCoordinates.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "18813")) {
-      builder = Orientation.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "18815")) {
-      builder = Frame.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15636")) {
+          CartesianCoordinates.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18813)) {
+      builder = Orientation.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 18815)) {
+      builder = Frame.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15636)) {
       builder =
           IdentityMappingRuleType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "23500")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23500)) {
       builder =
-          CurrencyUnitType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32436")) {
+          CurrencyUnitType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32436)) {
       builder =
-          AnnotationDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32437")) {
+          AnnotationDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32437)) {
       builder =
           LinearConversionDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32440")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32440)) {
       builder =
-          QuantityDimension.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12556")) {
+          QuantityDimension.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12556)) {
       builder =
-          TrustListDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32287")) {
+          TrustListDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32287)) {
       builder =
-          TransactionErrorType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15536")) {
+          TransactionErrorType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15536)) {
       builder =
-          DataTypeSchemaHeader.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "14527")) {
+          DataTypeSchemaHeader.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14527)) {
       builder =
-          DataTypeDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24107")) {
+          DataTypeDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15489)) {
       builder =
-          PortableQualifiedName.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24109")) {
+          StructureDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15490)) {
+      builder =
+          EnumDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15007)) {
+      builder =
+          SimpleTypeDescription.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15008)) {
+      builder =
+          UABinaryFileDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24107)) {
+      builder =
+          PortableQualifiedName.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24108)) {
+      builder = PortableNodeId.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24109)) {
       builder =
           UnsignedRationalNumber.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "14526")) {
-      builder = FieldMetaData.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "14595")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14525)) {
+      builder =
+          DataSetMetaDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14526)) {
+      builder = FieldMetaData.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14595)) {
       builder =
           ConfigurationVersionDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15582")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15580)) {
+      builder =
+          PublishedDataSetDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15582)) {
       builder =
           PublishedDataSetSourceDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "14275")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14275)) {
       builder =
           PublishedVariableDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15599")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15583)) {
       builder =
-          DataSetWriterDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15600")) {
+          PublishedDataItemsDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15584)) {
+      builder =
+          PublishedEventsDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 25271)) {
+      builder =
+          PublishedDataSetCustomSourceDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15599)) {
+      builder =
+          DataSetWriterDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15600)) {
       builder =
           DataSetWriterTransportDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15607")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15607)) {
       builder =
           DataSetWriterMessageDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15611")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15611)) {
       builder =
-          PubSubGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15613")) {
+          PubSubGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15482)) {
+      builder =
+          WriterGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15613)) {
       builder =
           WriterGroupTransportDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15618")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15618)) {
       builder =
           WriterGroupMessageDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15619")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15619)) {
       builder =
           PubSubConnectionDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15620")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15620)) {
       builder =
           ConnectionTransportDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15504")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15504)) {
       builder =
           NetworkAddressDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15623")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15512)) {
+      builder =
+          NetworkAddressUrlDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15522)) {
+      builder =
+          ReaderGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15623)) {
       builder =
           ReaderGroupTransportDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15624")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15624)) {
       builder =
           ReaderGroupMessageDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15630")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15625)) {
+      builder =
+          DataSetReaderDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15630)) {
       builder =
           DataSetReaderTransportDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15631")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15631)) {
       builder =
           DataSetReaderMessageDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15632")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15632)) {
       builder =
           SubscribedDataSetDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "14746")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15633)) {
       builder =
-          FieldTargetDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15532")) {
+          TargetVariablesDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 14746)) {
+      builder =
+          FieldTargetDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15637)) {
+      builder =
+          SubscribedDataSetMirrorDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15532)) {
       builder =
           PubSubConfigurationDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "23603")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23601)) {
       builder =
-          SecurityGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "25272")) {
+          StandaloneSubscribedDataSetRefDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23602)) {
+      builder =
+          StandaloneSubscribedDataSetDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23603)) {
+      builder =
+          SecurityGroupDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 25272)) {
       builder =
           PubSubKeyPushTargetDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "23605")) {
-      builder = QosDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "25521")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23604)) {
+      builder =
+          PubSubConfiguration2DataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15647)) {
+      builder =
+          UadpWriterGroupMessageDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15654)) {
+      builder =
+          UadpDataSetWriterMessageDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15655)) {
+      builder =
+          UadpDataSetReaderMessageDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15659)) {
+      builder =
+          JsonWriterGroupMessageDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15666)) {
+      builder =
+          JsonDataSetWriterMessageDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15667)) {
+      builder =
+          JsonDataSetReaderMessageDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23605)) {
+      builder = QosDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23606)) {
+      builder =
+          TransmitQosDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23607)) {
+      builder =
+          TransmitQosPriorityDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23610)) {
+      builder =
+          ReceiveQosDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23611)) {
+      builder =
+          ReceiveQosPriorityDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 17469)) {
+      builder =
+          DatagramConnectionTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23614)) {
+      builder =
+          DatagramConnectionTransport2DataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15534)) {
+      builder =
+          DatagramWriterGroupTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23615)) {
+      builder =
+          DatagramWriterGroupTransport2DataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23616)) {
+      builder =
+          DatagramDataSetReaderTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15009)) {
+      builder =
+          BrokerConnectionTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15669)) {
+      builder =
+          BrokerWriterGroupTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15671)) {
+      builder =
+          BrokerDataSetWriterTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15672)) {
+      builder =
+          BrokerDataSetReaderTransportDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 25521)) {
       builder =
           PubSubConfigurationRefDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "23470")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 25522)) {
       builder =
-          AliasNameDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24283")) {
+          PubSubConfigurationValueDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23470)) {
+      builder =
+          AliasNameDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24283)) {
       builder =
           UserManagementDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "25222")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 25222)) {
       builder =
           PriorityMappingEntryType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32661")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32661)) {
       builder =
           ReferenceDescriptionDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "32662")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32662)) {
       builder =
           ReferenceListEntryDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "98")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 98)) {
       builder =
-          RolePermissionType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "99")) {
+          RolePermissionType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 99)) {
       builder =
-          DataTypeDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "103")) {
-      builder = StructureField.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "298")) {
-      builder = Argument.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "7596")) {
-      builder = EnumValueType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12757")) {
-      builder = OptionSet.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "8914")) {
+          DataTypeDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 103)) {
+      builder = StructureField.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 101)) {
       builder =
-          TimeZoneDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "310")) {
+          StructureDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 102)) {
+      builder = EnumDefinition.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 298)) {
+      builder = Argument.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 7596)) {
+      builder = EnumValueType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 104)) {
+      builder = EnumField.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12757)) {
+      builder = OptionSet.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 8914)) {
+      builder =
+          TimeZoneDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 310)) {
       builder =
           ApplicationDescription.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "391")) {
-      builder = RequestHeader.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "394")) {
-      builder = ResponseHeader.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "397")) {
-      builder = ServiceFault.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "15903")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 391)) {
+      builder = RequestHeader.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 394)) {
+      builder = ResponseHeader.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 397)) {
+      builder = ServiceFault.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 15903)) {
       builder =
           SessionlessInvokeRequestType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "21001")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 21001)) {
       builder =
           SessionlessInvokeResponseType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "422")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 422)) {
       builder =
-          FindServersRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "425")) {
+          FindServersRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 425)) {
       builder =
-          FindServersResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12191")) {
-      builder = ServerOnNetwork.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12192")) {
+          FindServersResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12191)) {
+      builder =
+          ServerOnNetwork.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12192)) {
       builder =
           FindServersOnNetworkRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12193")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12193)) {
       builder =
           FindServersOnNetworkResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "306")) {
-      builder = UserTokenPolicy.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "314")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 306)) {
       builder =
-          EndpointDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "428")) {
+          UserTokenPolicy.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 314)) {
       builder =
-          GetEndpointsRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "431")) {
+          EndpointDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 428)) {
       builder =
-          GetEndpointsResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "434")) {
+          GetEndpointsRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 431)) {
       builder =
-          RegisteredServer.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "437")) {
+          GetEndpointsResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 434)) {
       builder =
-          RegisterServerRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "440")) {
+          RegisteredServer.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 437)) {
+      builder =
+          RegisterServerRequest.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 440)) {
       builder =
           RegisterServerResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12892")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12892)) {
       builder =
           DiscoveryConfiguration.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12195")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12893)) {
+      builder =
+          MdnsDiscoveryConfiguration.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12195)) {
       builder =
           RegisterServer2Request.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12196")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12196)) {
       builder =
           RegisterServer2Response.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "443")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 443)) {
       builder =
-          ChannelSecurityToken.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "446")) {
+          ChannelSecurityToken.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 446)) {
       builder =
           OpenSecureChannelRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "449")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 449)) {
       builder =
           OpenSecureChannelResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "452")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 452)) {
       builder =
           CloseSecureChannelRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "455")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 455)) {
       builder =
           CloseSecureChannelResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "346")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 346)) {
       builder =
           SignedSoftwareCertificate.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "458")) {
-      builder = SignatureData.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "461")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 458)) {
+      builder = SignatureData.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 461)) {
       builder =
-          CreateSessionRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "464")) {
+          CreateSessionRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 464)) {
       builder =
-          CreateSessionResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "467")) {
+          CreateSessionResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 318)) {
+      builder =
+          UserIdentityToken.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 321)) {
+      builder =
+          AnonymousIdentityToken.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 324)) {
+      builder =
+          UserNameIdentityToken.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 327)) {
+      builder =
+          X509IdentityToken.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 940)) {
+      builder =
+          IssuedIdentityToken.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 467)) {
       builder =
           ActivateSessionRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "470")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 470)) {
       builder =
           ActivateSessionResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "473")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 473)) {
       builder =
-          CloseSessionRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "476")) {
+          CloseSessionRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 476)) {
       builder =
-          CloseSessionResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "479")) {
-      builder = CancelRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "482")) {
-      builder = CancelResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "351")) {
-      builder = NodeAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "17608")) {
+          CloseSessionResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 479)) {
+      builder = CancelRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 482)) {
+      builder = CancelResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 351)) {
+      builder = NodeAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 354)) {
       builder =
-          GenericAttributeValue.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "378")) {
-      builder = AddNodesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "485")) {
-      builder = AddNodesResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "488")) {
-      builder = AddNodesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "491")) {
+          ObjectAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 357)) {
       builder =
-          AddNodesResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "381")) {
+          VariableAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 360)) {
       builder =
-          AddReferencesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "494")) {
+          MethodAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 363)) {
       builder =
-          AddReferencesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "497")) {
+          ObjectTypeAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 366)) {
       builder =
-          AddReferencesResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "384")) {
-      builder = DeleteNodesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "500")) {
+          VariableTypeAttributes.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 369)) {
       builder =
-          DeleteNodesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "503")) {
+          ReferenceTypeAttributes.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 372)) {
       builder =
-          DeleteNodesResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "387")) {
+          DataTypeAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 375)) {
+      builder = ViewAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 17608)) {
       builder =
-          DeleteReferencesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "506")) {
+          GenericAttributeValue.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 17609)) {
+      builder =
+          GenericAttributes.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 378)) {
+      builder = AddNodesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 485)) {
+      builder = AddNodesResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 488)) {
+      builder =
+          AddNodesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 491)) {
+      builder =
+          AddNodesResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 381)) {
+      builder =
+          AddReferencesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 494)) {
+      builder =
+          AddReferencesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 497)) {
+      builder =
+          AddReferencesResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 384)) {
+      builder =
+          DeleteNodesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 500)) {
+      builder =
+          DeleteNodesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 503)) {
+      builder =
+          DeleteNodesResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 387)) {
+      builder =
+          DeleteReferencesItem.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 506)) {
       builder =
           DeleteReferencesRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "509")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 509)) {
       builder =
           DeleteReferencesResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "513")) {
-      builder = ViewDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "516")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 513)) {
       builder =
-          BrowseDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "520")) {
+          ViewDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 516)) {
       builder =
-          ReferenceDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "524")) {
-      builder = BrowseResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "527")) {
-      builder = BrowseRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "530")) {
-      builder = BrowseResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "533")) {
+          BrowseDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 520)) {
       builder =
-          BrowseNextRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "536")) {
+          ReferenceDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 524)) {
+      builder = BrowseResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 527)) {
+      builder = BrowseRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 530)) {
+      builder = BrowseResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 533)) {
       builder =
-          BrowseNextResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "539")) {
+          BrowseNextRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 536)) {
       builder =
-          RelativePathElement.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "542")) {
-      builder = RelativePath.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "545")) {
-      builder = BrowsePath.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "548")) {
+          BrowseNextResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 539)) {
       builder =
-          BrowsePathTarget.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "551")) {
+          RelativePathElement.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 542)) {
+      builder = RelativePath.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 545)) {
+      builder = BrowsePath.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 548)) {
       builder =
-          BrowsePathResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "554")) {
+          BrowsePathTarget.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 551)) {
+      builder =
+          BrowsePathResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 554)) {
       builder =
           TranslateBrowsePathsToNodeIdsRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "557")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 557)) {
       builder =
           TranslateBrowsePathsToNodeIdsResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "560")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 560)) {
       builder =
-          RegisterNodesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "563")) {
+          RegisterNodesRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 563)) {
       builder =
-          RegisterNodesResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "566")) {
+          RegisterNodesResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 566)) {
       builder =
           UnregisterNodesRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "569")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 569)) {
       builder =
           UnregisterNodesResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "333")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 333)) {
       builder =
-          EndpointConfiguration.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "572")) {
+          EndpointConfiguration.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 572)) {
       builder =
-          QueryDataDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "575")) {
+          QueryDataDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 575)) {
       builder =
-          NodeTypeDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "579")) {
-      builder = QueryDataSet.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "582")) {
-      builder = NodeReference.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "585")) {
+          NodeTypeDescription.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 579)) {
+      builder = QueryDataSet.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 582)) {
+      builder = NodeReference.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 585)) {
       builder =
-          ContentFilterElement.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "588")) {
-      builder = ContentFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "591")) {
-      builder = FilterOperand.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "606")) {
+          ContentFilterElement.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 588)) {
+      builder = ContentFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 591)) {
+      builder = FilterOperand.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 594)) {
+      builder = ElementOperand.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 597)) {
+      builder = LiteralOperand.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 600)) {
+      builder =
+          AttributeOperand.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 603)) {
+      builder =
+          SimpleAttributeOperand.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 606)) {
       builder =
           ContentFilterElementResult.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "609")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 609)) {
       builder =
-          ContentFilterResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "612")) {
-      builder = ParsingResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "615")) {
+          ContentFilterResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 612)) {
+      builder = ParsingResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 615)) {
       builder =
-          QueryFirstRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "618")) {
+          QueryFirstRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 618)) {
       builder =
-          QueryFirstResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "621")) {
+          QueryFirstResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 621)) {
       builder =
-          QueryNextRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "624")) {
+          QueryNextRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 624)) {
       builder =
-          QueryNextResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "628")) {
-      builder = ReadValueId.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "631")) {
-      builder = ReadRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "634")) {
-      builder = ReadResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "637")) {
+          QueryNextResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 628)) {
+      builder = ReadValueId.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 631)) {
+      builder = ReadRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 634)) {
+      builder = ReadResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 637)) {
       builder =
-          HistoryReadValueId.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "640")) {
+          HistoryReadValueId.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 640)) {
       builder =
-          HistoryReadResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "643")) {
+          HistoryReadResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 643)) {
       builder =
-          HistoryReadDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "658")) {
-      builder = HistoryData.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "11218")) {
+          HistoryReadDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 646)) {
       builder =
-          ModificationInfo.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "661")) {
-      builder = HistoryEvent.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "664")) {
+          ReadEventDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32801)) {
       builder =
-          HistoryReadRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "667")) {
+          ReadEventDetails2.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 649)) {
       builder =
-          HistoryReadResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "670")) {
-      builder = WriteValue.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "673")) {
-      builder = WriteRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "676")) {
-      builder = WriteResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "679")) {
+          ReadRawModifiedDetails.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 652)) {
       builder =
-          HistoryUpdateDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "697")) {
+          ReadProcessedDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 655)) {
       builder =
-          HistoryUpdateResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "700")) {
+          ReadAtTimeDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 23499)) {
       builder =
-          HistoryUpdateRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "703")) {
+          ReadAnnotationDataDetails.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 658)) {
+      builder = HistoryData.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 11218)) {
       builder =
-          HistoryUpdateResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "706")) {
+          ModificationInfo.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 11219)) {
       builder =
-          CallMethodRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "709")) {
+          HistoryModifiedData.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 661)) {
+      builder = HistoryEvent.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 32826)) {
       builder =
-          CallMethodResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "712")) {
-      builder = CallRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "715")) {
-      builder = CallResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "721")) {
+          HistoryModifiedEvent.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 664)) {
       builder =
-          MonitoringFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "950")) {
+          HistoryReadRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 667)) {
+      builder =
+          HistoryReadResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 670)) {
+      builder = WriteValue.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 673)) {
+      builder = WriteRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 676)) {
+      builder = WriteResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 679)) {
+      builder =
+          HistoryUpdateDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 682)) {
+      builder =
+          UpdateDataDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 11297)) {
+      builder =
+          UpdateStructureDataDetails.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 685)) {
+      builder =
+          UpdateEventDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 688)) {
+      builder =
+          DeleteRawModifiedDetails.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 691)) {
+      builder =
+          DeleteAtTimeDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 694)) {
+      builder =
+          DeleteEventDetails.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 697)) {
+      builder =
+          HistoryUpdateResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 700)) {
+      builder =
+          HistoryUpdateRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 703)) {
+      builder =
+          HistoryUpdateResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 706)) {
+      builder =
+          CallMethodRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 709)) {
+      builder =
+          CallMethodResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 712)) {
+      builder = CallRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 715)) {
+      builder = CallResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 721)) {
+      builder =
+          MonitoringFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 724)) {
+      builder =
+          DataChangeFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 727)) {
+      builder = EventFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 950)) {
       builder =
           AggregateConfiguration.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "733")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 730)) {
+      builder =
+          AggregateFilter.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 733)) {
       builder =
           MonitoringFilterResult.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "742")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 736)) {
       builder =
-          MonitoringParameters.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "745")) {
+          EventFilterResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 739)) {
+      builder =
+          AggregateFilterResult.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 742)) {
+      builder =
+          MonitoringParameters.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 745)) {
       builder =
           MonitoredItemCreateRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "748")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 748)) {
       builder =
           MonitoredItemCreateResult.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "751")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 751)) {
       builder =
           CreateMonitoredItemsRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "754")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 754)) {
       builder =
           CreateMonitoredItemsResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "757")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 757)) {
       builder =
           MonitoredItemModifyRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "760")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 760)) {
       builder =
           MonitoredItemModifyResult.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "763")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 763)) {
       builder =
           ModifyMonitoredItemsRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "766")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 766)) {
       builder =
           ModifyMonitoredItemsResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "769")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 769)) {
       builder =
           SetMonitoringModeRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "772")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 772)) {
       builder =
           SetMonitoringModeResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "775")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 775)) {
       builder =
-          SetTriggeringRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "778")) {
+          SetTriggeringRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 778)) {
       builder =
-          SetTriggeringResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "781")) {
+          SetTriggeringResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 781)) {
       builder =
           DeleteMonitoredItemsRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "784")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 784)) {
       builder =
           DeleteMonitoredItemsResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "787")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 787)) {
       builder =
           CreateSubscriptionRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "790")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 790)) {
       builder =
           CreateSubscriptionResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "793")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 793)) {
       builder =
           ModifySubscriptionRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "796")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 796)) {
       builder =
           ModifySubscriptionResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "799")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 799)) {
       builder =
           SetPublishingModeRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "802")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 802)) {
       builder =
           SetPublishingModeResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "805")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 805)) {
       builder =
-          NotificationMessage.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "947")) {
+          NotificationMessage.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 947)) {
       builder =
-          NotificationData.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "808")) {
-      builder =
-          MonitoredItemNotification.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "919")) {
-      builder = EventFieldList.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "922")) {
-      builder =
-          HistoryEventFieldList.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "823")) {
-      builder =
-          SubscriptionAcknowledgement.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "826")) {
-      builder = PublishRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "829")) {
-      builder = PublishResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "832")) {
-      builder =
-          RepublishRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "835")) {
-      builder =
-          RepublishResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "838")) {
-      builder = TransferResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "841")) {
-      builder =
-          TransferSubscriptionsRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "844")) {
-      builder =
-          TransferSubscriptionsResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "847")) {
-      builder =
-          DeleteSubscriptionsRequest.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "850")) {
-      builder =
-          DeleteSubscriptionsResponse.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "340")) {
-      builder = BuildInfo.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "855")) {
-      builder =
-          RedundantServerDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "11945")) {
-      builder =
-          EndpointUrlListDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "11946")) {
-      builder =
-          NetworkGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "858")) {
-      builder =
-          SamplingIntervalDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "861")) {
-      builder =
-          ServerDiagnosticsSummaryDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "864")) {
-      builder =
-          ServerStatusDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "867")) {
-      builder =
-          SessionDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "870")) {
-      builder =
-          SessionSecurityDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "873")) {
-      builder =
-          ServiceCounterDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "301")) {
-      builder = StatusResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "876")) {
-      builder =
-          SubscriptionDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "879")) {
-      builder =
-          ModelChangeStructureDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "899")) {
-      builder =
-          SemanticChangeStructureDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "886")) {
-      builder = Range.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "889")) {
-      builder = EUInformation.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12173")) {
-      builder =
-          ComplexNumberType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12174")) {
-      builder =
-          DoubleComplexNumberType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12081")) {
-      builder = AxisInformation.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "12082")) {
-      builder = XVType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "896")) {
-      builder =
-          ProgramDiagnosticDataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24035")) {
-      builder =
-          ProgramDiagnostic2DataType.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "893")) {
-      builder = Annotation.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "811")) {
+          NotificationData.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 811)) {
       builder =
           DataChangeNotification.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "916")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 808)) {
       builder =
-          EventNotificationList.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "820")) {
+          MonitoredItemNotification.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 916)) {
+      builder =
+          EventNotificationList.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 919)) {
+      builder = EventFieldList.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 922)) {
+      builder =
+          HistoryEventFieldList.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 820)) {
       builder =
           StatusChangeNotification.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "316")) {
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 823)) {
       builder =
-          UserIdentityToken.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
+          SubscriptionAcknowledgement.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 826)) {
+      builder = PublishRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 829)) {
+      builder =
+          PublishResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 832)) {
+      builder =
+          RepublishRequest.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 835)) {
+      builder =
+          RepublishResponse.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 838)) {
+      builder = TransferResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 841)) {
+      builder =
+          TransferSubscriptionsRequest.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 844)) {
+      builder =
+          TransferSubscriptionsResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 847)) {
+      builder =
+          DeleteSubscriptionsRequest.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 850)) {
+      builder =
+          DeleteSubscriptionsResponse.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 340)) {
+      builder = BuildInfo.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 855)) {
+      builder =
+          RedundantServerDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 11945)) {
+      builder =
+          EndpointUrlListDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 11946)) {
+      builder =
+          NetworkGroupDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 858)) {
+      builder =
+          SamplingIntervalDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 861)) {
+      builder =
+          ServerDiagnosticsSummaryDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 864)) {
+      builder =
+          ServerStatusDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 867)) {
+      builder =
+          SessionDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 870)) {
+      builder =
+          SessionSecurityDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 873)) {
+      builder =
+          ServiceCounterDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 301)) {
+      builder = StatusResult.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 876)) {
+      builder =
+          SubscriptionDiagnosticsDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 879)) {
+      builder =
+          ModelChangeStructureDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 899)) {
+      builder =
+          SemanticChangeStructureDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 886)) {
+      builder = Range.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 889)) {
+      builder = EUInformation.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12173)) {
+      builder =
+          ComplexNumberType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12174)) {
+      builder =
+          DoubleComplexNumberType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12081)) {
+      builder =
+          AxisInformation.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 12082)) {
+      builder = XVType.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 896)) {
+      builder =
+          ProgramDiagnosticDataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 24035)) {
+      builder =
+          ProgramDiagnostic2DataType.staticParseExtensionObjectDefinitionBuilder(
+              readBuffer, extensionId);
+    } else if (EvaluationHelper.equals(extensionId, (int) 893)) {
+      builder = Annotation.staticParseExtensionObjectDefinitionBuilder(readBuffer, extensionId);
     }
     if (builder == null) {
       throw new ParseException(
           "Unsupported case for discriminated type"
               + " parameters ["
-              + "identifier="
-              + identifier
+              + "extensionId="
+              + extensionId
               + "]");
     }
 

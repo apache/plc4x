@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ServiceCounterDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "873";
+  public Integer getExtensionId() {
+    return (int) 873;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ServiceCounterDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

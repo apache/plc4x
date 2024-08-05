@@ -38,26 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class RepublishResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "835";
+  public Integer getExtensionId() {
+    return (int) 835;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final ExtensionObjectDefinition notificationMessage;
+  protected final ResponseHeader responseHeader;
+  protected final NotificationMessage notificationMessage;
 
-  public RepublishResponse(
-      ExtensionObjectDefinition responseHeader, ExtensionObjectDefinition notificationMessage) {
+  public RepublishResponse(ResponseHeader responseHeader, NotificationMessage notificationMessage) {
     super();
     this.responseHeader = responseHeader;
     this.notificationMessage = notificationMessage;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
-  public ExtensionObjectDefinition getNotificationMessage() {
+  public NotificationMessage getNotificationMessage() {
     return notificationMessage;
   }
 
@@ -98,23 +97,26 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("RepublishResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    ExtensionObjectDefinition notificationMessage =
+    NotificationMessage notificationMessage =
         readSimpleField(
             "notificationMessage",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("805")),
+                () ->
+                    (NotificationMessage)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (805)),
                 readBuffer));
 
     readBuffer.closeContext("RepublishResponse");
@@ -124,11 +126,11 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
 
   public static class RepublishResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final ExtensionObjectDefinition notificationMessage;
+    private final ResponseHeader responseHeader;
+    private final NotificationMessage notificationMessage;
 
     public RepublishResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader, ExtensionObjectDefinition notificationMessage) {
+        ResponseHeader responseHeader, NotificationMessage notificationMessage) {
       this.responseHeader = responseHeader;
       this.notificationMessage = notificationMessage;
     }

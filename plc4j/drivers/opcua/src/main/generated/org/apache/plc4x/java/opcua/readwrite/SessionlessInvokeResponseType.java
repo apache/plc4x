@@ -38,41 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SessionlessInvokeResponseType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "21001";
+  public Integer getExtensionId() {
+    return (int) 21001;
   }
 
   // Properties.
-  protected final int noOfNamespaceUris;
   protected final List<PascalString> namespaceUris;
-  protected final int noOfServerUris;
   protected final List<PascalString> serverUris;
   protected final long serviceId;
 
   public SessionlessInvokeResponseType(
-      int noOfNamespaceUris,
-      List<PascalString> namespaceUris,
-      int noOfServerUris,
-      List<PascalString> serverUris,
-      long serviceId) {
+      List<PascalString> namespaceUris, List<PascalString> serverUris, long serviceId) {
     super();
-    this.noOfNamespaceUris = noOfNamespaceUris;
     this.namespaceUris = namespaceUris;
-    this.noOfServerUris = noOfServerUris;
     this.serverUris = serverUris;
     this.serviceId = serviceId;
   }
 
-  public int getNoOfNamespaceUris() {
-    return noOfNamespaceUris;
-  }
-
   public List<PascalString> getNamespaceUris() {
     return namespaceUris;
-  }
-
-  public int getNoOfServerUris() {
-    return noOfServerUris;
   }
 
   public List<PascalString> getServerUris() {
@@ -90,14 +74,19 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("SessionlessInvokeResponseType");
 
-    // Simple Field (noOfNamespaceUris)
-    writeSimpleField("noOfNamespaceUris", noOfNamespaceUris, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNamespaceUris) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNamespaceUris =
+        (int) ((((getNamespaceUris()) == (null)) ? -(1) : COUNT(getNamespaceUris())));
+    writeImplicitField("noOfNamespaceUris", noOfNamespaceUris, writeSignedInt(writeBuffer, 32));
 
     // Array Field (namespaceUris)
     writeComplexTypeArrayField("namespaceUris", namespaceUris, writeBuffer);
 
-    // Simple Field (noOfServerUris)
-    writeSimpleField("noOfServerUris", noOfServerUris, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServerUris) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServerUris = (int) ((((getServerUris()) == (null)) ? -(1) : COUNT(getServerUris())));
+    writeImplicitField("noOfServerUris", noOfServerUris, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverUris)
     writeComplexTypeArrayField("serverUris", serverUris, writeBuffer);
@@ -119,7 +108,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
     SessionlessInvokeResponseType _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfNamespaceUris)
+    // Implicit Field (noOfNamespaceUris)
     lengthInBits += 32;
 
     // Array field
@@ -131,7 +120,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
       }
     }
 
-    // Simple field (noOfServerUris)
+    // Implicit Field (noOfServerUris)
     lengthInBits += 32;
 
     // Array field
@@ -150,12 +139,12 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SessionlessInvokeResponseType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfNamespaceUris = readSimpleField("noOfNamespaceUris", readSignedInt(readBuffer, 32));
+    int noOfNamespaceUris = readImplicitField("noOfNamespaceUris", readSignedInt(readBuffer, 32));
 
     List<PascalString> namespaceUris =
         readCountArrayField(
@@ -163,7 +152,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
             readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfNamespaceUris);
 
-    int noOfServerUris = readSimpleField("noOfServerUris", readSignedInt(readBuffer, 32));
+    int noOfServerUris = readImplicitField("noOfServerUris", readSignedInt(readBuffer, 32));
 
     List<PascalString> serverUris =
         readCountArrayField(
@@ -175,35 +164,25 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
 
     readBuffer.closeContext("SessionlessInvokeResponseType");
     // Create the instance
-    return new SessionlessInvokeResponseTypeBuilderImpl(
-        noOfNamespaceUris, namespaceUris, noOfServerUris, serverUris, serviceId);
+    return new SessionlessInvokeResponseTypeBuilderImpl(namespaceUris, serverUris, serviceId);
   }
 
   public static class SessionlessInvokeResponseTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfNamespaceUris;
     private final List<PascalString> namespaceUris;
-    private final int noOfServerUris;
     private final List<PascalString> serverUris;
     private final long serviceId;
 
     public SessionlessInvokeResponseTypeBuilderImpl(
-        int noOfNamespaceUris,
-        List<PascalString> namespaceUris,
-        int noOfServerUris,
-        List<PascalString> serverUris,
-        long serviceId) {
-      this.noOfNamespaceUris = noOfNamespaceUris;
+        List<PascalString> namespaceUris, List<PascalString> serverUris, long serviceId) {
       this.namespaceUris = namespaceUris;
-      this.noOfServerUris = noOfServerUris;
       this.serverUris = serverUris;
       this.serviceId = serviceId;
     }
 
     public SessionlessInvokeResponseType build() {
       SessionlessInvokeResponseType sessionlessInvokeResponseType =
-          new SessionlessInvokeResponseType(
-              noOfNamespaceUris, namespaceUris, noOfServerUris, serverUris, serviceId);
+          new SessionlessInvokeResponseType(namespaceUris, serverUris, serviceId);
       return sessionlessInvokeResponseType;
     }
   }
@@ -217,9 +196,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
       return false;
     }
     SessionlessInvokeResponseType that = (SessionlessInvokeResponseType) o;
-    return (getNoOfNamespaceUris() == that.getNoOfNamespaceUris())
-        && (getNamespaceUris() == that.getNamespaceUris())
-        && (getNoOfServerUris() == that.getNoOfServerUris())
+    return (getNamespaceUris() == that.getNamespaceUris())
         && (getServerUris() == that.getServerUris())
         && (getServiceId() == that.getServiceId())
         && super.equals(that)
@@ -228,13 +205,7 @@ public class SessionlessInvokeResponseType extends ExtensionObjectDefinition imp
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getNoOfNamespaceUris(),
-        getNamespaceUris(),
-        getNoOfServerUris(),
-        getServerUris(),
-        getServiceId());
+    return Objects.hash(super.hashCode(), getNamespaceUris(), getServerUris(), getServiceId());
   }
 
   @Override

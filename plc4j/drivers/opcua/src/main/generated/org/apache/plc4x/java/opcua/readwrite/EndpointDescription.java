@@ -38,29 +38,27 @@ import org.apache.plc4x.java.spi.generation.*;
 public class EndpointDescription extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "314";
+  public Integer getExtensionId() {
+    return (int) 314;
   }
 
   // Properties.
   protected final PascalString endpointUrl;
-  protected final ExtensionObjectDefinition server;
+  protected final ApplicationDescription server;
   protected final PascalByteString serverCertificate;
   protected final MessageSecurityMode securityMode;
   protected final PascalString securityPolicyUri;
-  protected final int noOfUserIdentityTokens;
-  protected final List<ExtensionObjectDefinition> userIdentityTokens;
+  protected final List<UserTokenPolicy> userIdentityTokens;
   protected final PascalString transportProfileUri;
   protected final short securityLevel;
 
   public EndpointDescription(
       PascalString endpointUrl,
-      ExtensionObjectDefinition server,
+      ApplicationDescription server,
       PascalByteString serverCertificate,
       MessageSecurityMode securityMode,
       PascalString securityPolicyUri,
-      int noOfUserIdentityTokens,
-      List<ExtensionObjectDefinition> userIdentityTokens,
+      List<UserTokenPolicy> userIdentityTokens,
       PascalString transportProfileUri,
       short securityLevel) {
     super();
@@ -69,7 +67,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     this.serverCertificate = serverCertificate;
     this.securityMode = securityMode;
     this.securityPolicyUri = securityPolicyUri;
-    this.noOfUserIdentityTokens = noOfUserIdentityTokens;
     this.userIdentityTokens = userIdentityTokens;
     this.transportProfileUri = transportProfileUri;
     this.securityLevel = securityLevel;
@@ -79,7 +76,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     return endpointUrl;
   }
 
-  public ExtensionObjectDefinition getServer() {
+  public ApplicationDescription getServer() {
     return server;
   }
 
@@ -95,11 +92,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     return securityPolicyUri;
   }
 
-  public int getNoOfUserIdentityTokens() {
-    return noOfUserIdentityTokens;
-  }
-
-  public List<ExtensionObjectDefinition> getUserIdentityTokens() {
+  public List<UserTokenPolicy> getUserIdentityTokens() {
     return userIdentityTokens;
   }
 
@@ -140,8 +133,11 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     // Simple Field (securityPolicyUri)
     writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
-    // Simple Field (noOfUserIdentityTokens)
-    writeSimpleField(
+    // Implicit Field (noOfUserIdentityTokens) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfUserIdentityTokens =
+        (int) ((((getUserIdentityTokens()) == (null)) ? -(1) : COUNT(getUserIdentityTokens())));
+    writeImplicitField(
         "noOfUserIdentityTokens", noOfUserIdentityTokens, writeSignedInt(writeBuffer, 32));
 
     // Array Field (userIdentityTokens)
@@ -182,13 +178,13 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     // Simple field (securityPolicyUri)
     lengthInBits += securityPolicyUri.getLengthInBits();
 
-    // Simple field (noOfUserIdentityTokens)
+    // Implicit Field (noOfUserIdentityTokens)
     lengthInBits += 32;
 
     // Array field
     if (userIdentityTokens != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : userIdentityTokens) {
+      for (UserTokenPolicy element : userIdentityTokens) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= userIdentityTokens.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -204,7 +200,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("EndpointDescription");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -213,11 +209,13 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         readSimpleField(
             "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    ExtensionObjectDefinition server =
+    ApplicationDescription server =
         readSimpleField(
             "server",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
+                () ->
+                    (ApplicationDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (310)),
                 readBuffer));
 
     PascalByteString serverCertificate =
@@ -237,13 +235,15 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
             readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfUserIdentityTokens =
-        readSimpleField("noOfUserIdentityTokens", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfUserIdentityTokens", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> userIdentityTokens =
+    List<UserTokenPolicy> userIdentityTokens =
         readCountArrayField(
             "userIdentityTokens",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("306")),
+                () ->
+                    (UserTokenPolicy)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (306)),
                 readBuffer),
             noOfUserIdentityTokens);
 
@@ -262,7 +262,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         serverCertificate,
         securityMode,
         securityPolicyUri,
-        noOfUserIdentityTokens,
         userIdentityTokens,
         transportProfileUri,
         securityLevel);
@@ -271,23 +270,21 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
   public static class EndpointDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString endpointUrl;
-    private final ExtensionObjectDefinition server;
+    private final ApplicationDescription server;
     private final PascalByteString serverCertificate;
     private final MessageSecurityMode securityMode;
     private final PascalString securityPolicyUri;
-    private final int noOfUserIdentityTokens;
-    private final List<ExtensionObjectDefinition> userIdentityTokens;
+    private final List<UserTokenPolicy> userIdentityTokens;
     private final PascalString transportProfileUri;
     private final short securityLevel;
 
     public EndpointDescriptionBuilderImpl(
         PascalString endpointUrl,
-        ExtensionObjectDefinition server,
+        ApplicationDescription server,
         PascalByteString serverCertificate,
         MessageSecurityMode securityMode,
         PascalString securityPolicyUri,
-        int noOfUserIdentityTokens,
-        List<ExtensionObjectDefinition> userIdentityTokens,
+        List<UserTokenPolicy> userIdentityTokens,
         PascalString transportProfileUri,
         short securityLevel) {
       this.endpointUrl = endpointUrl;
@@ -295,7 +292,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
       this.serverCertificate = serverCertificate;
       this.securityMode = securityMode;
       this.securityPolicyUri = securityPolicyUri;
-      this.noOfUserIdentityTokens = noOfUserIdentityTokens;
       this.userIdentityTokens = userIdentityTokens;
       this.transportProfileUri = transportProfileUri;
       this.securityLevel = securityLevel;
@@ -309,7 +305,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
               serverCertificate,
               securityMode,
               securityPolicyUri,
-              noOfUserIdentityTokens,
               userIdentityTokens,
               transportProfileUri,
               securityLevel);
@@ -331,7 +326,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         && (getServerCertificate() == that.getServerCertificate())
         && (getSecurityMode() == that.getSecurityMode())
         && (getSecurityPolicyUri() == that.getSecurityPolicyUri())
-        && (getNoOfUserIdentityTokens() == that.getNoOfUserIdentityTokens())
         && (getUserIdentityTokens() == that.getUserIdentityTokens())
         && (getTransportProfileUri() == that.getTransportProfileUri())
         && (getSecurityLevel() == that.getSecurityLevel())
@@ -348,7 +342,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         getServerCertificate(),
         getSecurityMode(),
         getSecurityPolicyUri(),
-        getNoOfUserIdentityTokens(),
         getUserIdentityTokens(),
         getTransportProfileUri(),
         getSecurityLevel());

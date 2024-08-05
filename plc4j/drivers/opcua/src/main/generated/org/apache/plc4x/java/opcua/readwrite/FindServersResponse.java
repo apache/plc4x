@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class FindServersResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "425";
+  public Integer getExtensionId() {
+    return (int) 425;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfServers;
-  protected final List<ExtensionObjectDefinition> servers;
+  protected final ResponseHeader responseHeader;
+  protected final List<ApplicationDescription> servers;
 
-  public FindServersResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfServers,
-      List<ExtensionObjectDefinition> servers) {
+  public FindServersResponse(ResponseHeader responseHeader, List<ApplicationDescription> servers) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfServers = noOfServers;
     this.servers = servers;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
-  public int getNoOfServers() {
-    return noOfServers;
-  }
-
-  public List<ExtensionObjectDefinition> getServers() {
+  public List<ApplicationDescription> getServers() {
     return servers;
   }
 
@@ -79,8 +70,10 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfServers)
-    writeSimpleField("noOfServers", noOfServers, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServers) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServers = (int) ((((getServers()) == (null)) ? -(1) : COUNT(getServers())));
+    writeImplicitField("noOfServers", noOfServers, writeSignedInt(writeBuffer, 32));
 
     // Array Field (servers)
     writeComplexTypeArrayField("servers", servers, writeBuffer);
@@ -102,13 +95,13 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfServers)
+    // Implicit Field (noOfServers)
     lengthInBits += 32;
 
     // Array field
     if (servers != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : servers) {
+      for (ApplicationDescription element : servers) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= servers.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,51 +111,49 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("FindServersResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfServers = readSimpleField("noOfServers", readSignedInt(readBuffer, 32));
+    int noOfServers = readImplicitField("noOfServers", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> servers =
+    List<ApplicationDescription> servers =
         readCountArrayField(
             "servers",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
+                () ->
+                    (ApplicationDescription)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (310)),
                 readBuffer),
             noOfServers);
 
     readBuffer.closeContext("FindServersResponse");
     // Create the instance
-    return new FindServersResponseBuilderImpl(responseHeader, noOfServers, servers);
+    return new FindServersResponseBuilderImpl(responseHeader, servers);
   }
 
   public static class FindServersResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfServers;
-    private final List<ExtensionObjectDefinition> servers;
+    private final ResponseHeader responseHeader;
+    private final List<ApplicationDescription> servers;
 
     public FindServersResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfServers,
-        List<ExtensionObjectDefinition> servers) {
+        ResponseHeader responseHeader, List<ApplicationDescription> servers) {
       this.responseHeader = responseHeader;
-      this.noOfServers = noOfServers;
       this.servers = servers;
     }
 
     public FindServersResponse build() {
-      FindServersResponse findServersResponse =
-          new FindServersResponse(responseHeader, noOfServers, servers);
+      FindServersResponse findServersResponse = new FindServersResponse(responseHeader, servers);
       return findServersResponse;
     }
   }
@@ -177,7 +168,6 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     }
     FindServersResponse that = (FindServersResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfServers() == that.getNoOfServers())
         && (getServers() == that.getServers())
         && super.equals(that)
         && true;
@@ -185,7 +175,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getResponseHeader(), getNoOfServers(), getServers());
+    return Objects.hash(super.hashCode(), getResponseHeader(), getServers());
   }
 
   @Override

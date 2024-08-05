@@ -135,6 +135,29 @@ public class OpcuaSubscriptionHandleTest {
         subscriptionHandle.stopSubscriber();
     }
 
+    @Test
+    public void subscribeEvent() throws Exception {
+        // Create Subscription
+        PlcSubscriptionRequest.Builder builder = opcuaConnection.subscriptionRequestBuilder();
+        builder.addEventTagAddress("ev1", "ns=0;i=2253");
+        PlcSubscriptionRequest request = builder.build();
+
+        // Get result of creating subscription
+        PlcSubscriptionResponse response = request.execute().get(1000, TimeUnit.MILLISECONDS);
+        final OpcuaSubscriptionHandle subscriptionHandle = (OpcuaSubscriptionHandle) response.getSubscriptionHandle("ev1");
+
+        // Create handler for returned value
+        subscriptionHandle.register(plcSubscriptionEvent -> {
+            System.out.println("Subscription handle " + plcSubscriptionEvent);
+            assert plcSubscriptionEvent.getResponseCode("ev1").equals(PlcResponseCode.OK);
+        });
+
+        //Wait for value to be returned from server
+        Thread.sleep(1200);
+
+        subscriptionHandle.stopSubscriber();
+    }
+
     // ! If this test fails, see comment at the top of the class before investigating.
     @Test
     public void subscribeMultiple() throws Exception {

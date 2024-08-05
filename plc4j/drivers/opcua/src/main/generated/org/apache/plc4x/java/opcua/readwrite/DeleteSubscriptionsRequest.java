@@ -38,31 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "847";
+  public Integer getExtensionId() {
+    return (int) 847;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfSubscriptionIds;
+  protected final RequestHeader requestHeader;
   protected final List<Long> subscriptionIds;
 
-  public DeleteSubscriptionsRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfSubscriptionIds,
-      List<Long> subscriptionIds) {
+  public DeleteSubscriptionsRequest(RequestHeader requestHeader, List<Long> subscriptionIds) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfSubscriptionIds = noOfSubscriptionIds;
     this.subscriptionIds = subscriptionIds;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
-  }
-
-  public int getNoOfSubscriptionIds() {
-    return noOfSubscriptionIds;
   }
 
   public List<Long> getSubscriptionIds() {
@@ -79,8 +70,11 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfSubscriptionIds)
-    writeSimpleField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfSubscriptionIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfSubscriptionIds =
+        (int) ((((getSubscriptionIds()) == (null)) ? -(1) : COUNT(getSubscriptionIds())));
+    writeImplicitField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (subscriptionIds)
     writeSimpleTypeArrayField(
@@ -103,7 +97,7 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfSubscriptionIds)
+    // Implicit Field (noOfSubscriptionIds)
     lengthInBits += 32;
 
     // Array field
@@ -115,19 +109,21 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("DeleteSubscriptionsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfSubscriptionIds = readSimpleField("noOfSubscriptionIds", readSignedInt(readBuffer, 32));
+    int noOfSubscriptionIds =
+        readImplicitField("noOfSubscriptionIds", readSignedInt(readBuffer, 32));
 
     List<Long> subscriptionIds =
         readCountArrayField(
@@ -135,28 +131,23 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("DeleteSubscriptionsRequest");
     // Create the instance
-    return new DeleteSubscriptionsRequestBuilderImpl(
-        requestHeader, noOfSubscriptionIds, subscriptionIds);
+    return new DeleteSubscriptionsRequestBuilderImpl(requestHeader, subscriptionIds);
   }
 
   public static class DeleteSubscriptionsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfSubscriptionIds;
+    private final RequestHeader requestHeader;
     private final List<Long> subscriptionIds;
 
     public DeleteSubscriptionsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfSubscriptionIds,
-        List<Long> subscriptionIds) {
+        RequestHeader requestHeader, List<Long> subscriptionIds) {
       this.requestHeader = requestHeader;
-      this.noOfSubscriptionIds = noOfSubscriptionIds;
       this.subscriptionIds = subscriptionIds;
     }
 
     public DeleteSubscriptionsRequest build() {
       DeleteSubscriptionsRequest deleteSubscriptionsRequest =
-          new DeleteSubscriptionsRequest(requestHeader, noOfSubscriptionIds, subscriptionIds);
+          new DeleteSubscriptionsRequest(requestHeader, subscriptionIds);
       return deleteSubscriptionsRequest;
     }
   }
@@ -171,7 +162,6 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
     }
     DeleteSubscriptionsRequest that = (DeleteSubscriptionsRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfSubscriptionIds() == that.getNoOfSubscriptionIds())
         && (getSubscriptionIds() == that.getSubscriptionIds())
         && super.equals(that)
         && true;
@@ -179,8 +169,7 @@ public class DeleteSubscriptionsRequest extends ExtensionObjectDefinition implem
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfSubscriptionIds(), getSubscriptionIds());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getSubscriptionIds());
   }
 
   @Override

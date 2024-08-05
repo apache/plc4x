@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SubscriptionAcknowledgement extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "823";
+  public Integer getExtensionId() {
+    return (int) 823;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SubscriptionAcknowledgement");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

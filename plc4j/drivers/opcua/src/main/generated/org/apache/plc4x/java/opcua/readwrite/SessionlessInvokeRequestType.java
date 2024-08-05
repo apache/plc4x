@@ -38,36 +38,27 @@ import org.apache.plc4x.java.spi.generation.*;
 public class SessionlessInvokeRequestType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "15903";
+  public Integer getExtensionId() {
+    return (int) 15903;
   }
 
   // Properties.
   protected final long urisVersion;
-  protected final int noOfNamespaceUris;
   protected final List<PascalString> namespaceUris;
-  protected final int noOfServerUris;
   protected final List<PascalString> serverUris;
-  protected final int noOfLocaleIds;
   protected final List<PascalString> localeIds;
   protected final long serviceId;
 
   public SessionlessInvokeRequestType(
       long urisVersion,
-      int noOfNamespaceUris,
       List<PascalString> namespaceUris,
-      int noOfServerUris,
       List<PascalString> serverUris,
-      int noOfLocaleIds,
       List<PascalString> localeIds,
       long serviceId) {
     super();
     this.urisVersion = urisVersion;
-    this.noOfNamespaceUris = noOfNamespaceUris;
     this.namespaceUris = namespaceUris;
-    this.noOfServerUris = noOfServerUris;
     this.serverUris = serverUris;
-    this.noOfLocaleIds = noOfLocaleIds;
     this.localeIds = localeIds;
     this.serviceId = serviceId;
   }
@@ -76,24 +67,12 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     return urisVersion;
   }
 
-  public int getNoOfNamespaceUris() {
-    return noOfNamespaceUris;
-  }
-
   public List<PascalString> getNamespaceUris() {
     return namespaceUris;
   }
 
-  public int getNoOfServerUris() {
-    return noOfServerUris;
-  }
-
   public List<PascalString> getServerUris() {
     return serverUris;
-  }
-
-  public int getNoOfLocaleIds() {
-    return noOfLocaleIds;
   }
 
   public List<PascalString> getLocaleIds() {
@@ -114,20 +93,27 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     // Simple Field (urisVersion)
     writeSimpleField("urisVersion", urisVersion, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (noOfNamespaceUris)
-    writeSimpleField("noOfNamespaceUris", noOfNamespaceUris, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNamespaceUris) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNamespaceUris =
+        (int) ((((getNamespaceUris()) == (null)) ? -(1) : COUNT(getNamespaceUris())));
+    writeImplicitField("noOfNamespaceUris", noOfNamespaceUris, writeSignedInt(writeBuffer, 32));
 
     // Array Field (namespaceUris)
     writeComplexTypeArrayField("namespaceUris", namespaceUris, writeBuffer);
 
-    // Simple Field (noOfServerUris)
-    writeSimpleField("noOfServerUris", noOfServerUris, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfServerUris) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfServerUris = (int) ((((getServerUris()) == (null)) ? -(1) : COUNT(getServerUris())));
+    writeImplicitField("noOfServerUris", noOfServerUris, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverUris)
     writeComplexTypeArrayField("serverUris", serverUris, writeBuffer);
 
-    // Simple Field (noOfLocaleIds)
-    writeSimpleField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLocaleIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLocaleIds = (int) ((((getLocaleIds()) == (null)) ? -(1) : COUNT(getLocaleIds())));
+    writeImplicitField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (localeIds)
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
@@ -152,7 +138,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     // Simple field (urisVersion)
     lengthInBits += 32;
 
-    // Simple field (noOfNamespaceUris)
+    // Implicit Field (noOfNamespaceUris)
     lengthInBits += 32;
 
     // Array field
@@ -164,7 +150,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
       }
     }
 
-    // Simple field (noOfServerUris)
+    // Implicit Field (noOfServerUris)
     lengthInBits += 32;
 
     // Array field
@@ -176,7 +162,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
       }
     }
 
-    // Simple field (noOfLocaleIds)
+    // Implicit Field (noOfLocaleIds)
     lengthInBits += 32;
 
     // Array field
@@ -195,14 +181,14 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("SessionlessInvokeRequestType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long urisVersion = readSimpleField("urisVersion", readUnsignedLong(readBuffer, 32));
 
-    int noOfNamespaceUris = readSimpleField("noOfNamespaceUris", readSignedInt(readBuffer, 32));
+    int noOfNamespaceUris = readImplicitField("noOfNamespaceUris", readSignedInt(readBuffer, 32));
 
     List<PascalString> namespaceUris =
         readCountArrayField(
@@ -210,7 +196,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
             readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfNamespaceUris);
 
-    int noOfServerUris = readSimpleField("noOfServerUris", readSignedInt(readBuffer, 32));
+    int noOfServerUris = readImplicitField("noOfServerUris", readSignedInt(readBuffer, 32));
 
     List<PascalString> serverUris =
         readCountArrayField(
@@ -218,7 +204,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
             readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfServerUris);
 
-    int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
+    int noOfLocaleIds = readImplicitField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
@@ -231,42 +217,26 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     readBuffer.closeContext("SessionlessInvokeRequestType");
     // Create the instance
     return new SessionlessInvokeRequestTypeBuilderImpl(
-        urisVersion,
-        noOfNamespaceUris,
-        namespaceUris,
-        noOfServerUris,
-        serverUris,
-        noOfLocaleIds,
-        localeIds,
-        serviceId);
+        urisVersion, namespaceUris, serverUris, localeIds, serviceId);
   }
 
   public static class SessionlessInvokeRequestTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long urisVersion;
-    private final int noOfNamespaceUris;
     private final List<PascalString> namespaceUris;
-    private final int noOfServerUris;
     private final List<PascalString> serverUris;
-    private final int noOfLocaleIds;
     private final List<PascalString> localeIds;
     private final long serviceId;
 
     public SessionlessInvokeRequestTypeBuilderImpl(
         long urisVersion,
-        int noOfNamespaceUris,
         List<PascalString> namespaceUris,
-        int noOfServerUris,
         List<PascalString> serverUris,
-        int noOfLocaleIds,
         List<PascalString> localeIds,
         long serviceId) {
       this.urisVersion = urisVersion;
-      this.noOfNamespaceUris = noOfNamespaceUris;
       this.namespaceUris = namespaceUris;
-      this.noOfServerUris = noOfServerUris;
       this.serverUris = serverUris;
-      this.noOfLocaleIds = noOfLocaleIds;
       this.localeIds = localeIds;
       this.serviceId = serviceId;
     }
@@ -274,14 +244,7 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     public SessionlessInvokeRequestType build() {
       SessionlessInvokeRequestType sessionlessInvokeRequestType =
           new SessionlessInvokeRequestType(
-              urisVersion,
-              noOfNamespaceUris,
-              namespaceUris,
-              noOfServerUris,
-              serverUris,
-              noOfLocaleIds,
-              localeIds,
-              serviceId);
+              urisVersion, namespaceUris, serverUris, localeIds, serviceId);
       return sessionlessInvokeRequestType;
     }
   }
@@ -296,11 +259,8 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     }
     SessionlessInvokeRequestType that = (SessionlessInvokeRequestType) o;
     return (getUrisVersion() == that.getUrisVersion())
-        && (getNoOfNamespaceUris() == that.getNoOfNamespaceUris())
         && (getNamespaceUris() == that.getNamespaceUris())
-        && (getNoOfServerUris() == that.getNoOfServerUris())
         && (getServerUris() == that.getServerUris())
-        && (getNoOfLocaleIds() == that.getNoOfLocaleIds())
         && (getLocaleIds() == that.getLocaleIds())
         && (getServiceId() == that.getServiceId())
         && super.equals(that)
@@ -312,11 +272,8 @@ public class SessionlessInvokeRequestType extends ExtensionObjectDefinition impl
     return Objects.hash(
         super.hashCode(),
         getUrisVersion(),
-        getNoOfNamespaceUris(),
         getNamespaceUris(),
-        getNoOfServerUris(),
         getServerUris(),
-        getNoOfLocaleIds(),
         getLocaleIds(),
         getServiceId());
   }

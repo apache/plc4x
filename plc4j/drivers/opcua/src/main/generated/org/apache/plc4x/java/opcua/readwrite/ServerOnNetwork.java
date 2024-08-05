@@ -38,28 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ServerOnNetwork extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "12191";
+  public Integer getExtensionId() {
+    return (int) 12191;
   }
 
   // Properties.
   protected final long recordId;
   protected final PascalString serverName;
   protected final PascalString discoveryUrl;
-  protected final int noOfServerCapabilities;
   protected final List<PascalString> serverCapabilities;
 
   public ServerOnNetwork(
       long recordId,
       PascalString serverName,
       PascalString discoveryUrl,
-      int noOfServerCapabilities,
       List<PascalString> serverCapabilities) {
     super();
     this.recordId = recordId;
     this.serverName = serverName;
     this.discoveryUrl = discoveryUrl;
-    this.noOfServerCapabilities = noOfServerCapabilities;
     this.serverCapabilities = serverCapabilities;
   }
 
@@ -73,10 +70,6 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
 
   public PascalString getDiscoveryUrl() {
     return discoveryUrl;
-  }
-
-  public int getNoOfServerCapabilities() {
-    return noOfServerCapabilities;
   }
 
   public List<PascalString> getServerCapabilities() {
@@ -99,8 +92,11 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     // Simple Field (discoveryUrl)
     writeSimpleField("discoveryUrl", discoveryUrl, writeComplex(writeBuffer));
 
-    // Simple Field (noOfServerCapabilities)
-    writeSimpleField(
+    // Implicit Field (noOfServerCapabilities) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfServerCapabilities =
+        (int) ((((getServerCapabilities()) == (null)) ? -(1) : COUNT(getServerCapabilities())));
+    writeImplicitField(
         "noOfServerCapabilities", noOfServerCapabilities, writeSignedInt(writeBuffer, 32));
 
     // Array Field (serverCapabilities)
@@ -129,7 +125,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     // Simple field (discoveryUrl)
     lengthInBits += discoveryUrl.getLengthInBits();
 
-    // Simple field (noOfServerCapabilities)
+    // Implicit Field (noOfServerCapabilities)
     lengthInBits += 32;
 
     // Array field
@@ -145,7 +141,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ServerOnNetwork");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -161,7 +157,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
             "discoveryUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfServerCapabilities =
-        readSimpleField("noOfServerCapabilities", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfServerCapabilities", readSignedInt(readBuffer, 32));
 
     List<PascalString> serverCapabilities =
         readCountArrayField(
@@ -171,8 +167,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("ServerOnNetwork");
     // Create the instance
-    return new ServerOnNetworkBuilderImpl(
-        recordId, serverName, discoveryUrl, noOfServerCapabilities, serverCapabilities);
+    return new ServerOnNetworkBuilderImpl(recordId, serverName, discoveryUrl, serverCapabilities);
   }
 
   public static class ServerOnNetworkBuilderImpl
@@ -180,26 +175,22 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     private final long recordId;
     private final PascalString serverName;
     private final PascalString discoveryUrl;
-    private final int noOfServerCapabilities;
     private final List<PascalString> serverCapabilities;
 
     public ServerOnNetworkBuilderImpl(
         long recordId,
         PascalString serverName,
         PascalString discoveryUrl,
-        int noOfServerCapabilities,
         List<PascalString> serverCapabilities) {
       this.recordId = recordId;
       this.serverName = serverName;
       this.discoveryUrl = discoveryUrl;
-      this.noOfServerCapabilities = noOfServerCapabilities;
       this.serverCapabilities = serverCapabilities;
     }
 
     public ServerOnNetwork build() {
       ServerOnNetwork serverOnNetwork =
-          new ServerOnNetwork(
-              recordId, serverName, discoveryUrl, noOfServerCapabilities, serverCapabilities);
+          new ServerOnNetwork(recordId, serverName, discoveryUrl, serverCapabilities);
       return serverOnNetwork;
     }
   }
@@ -216,7 +207,6 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     return (getRecordId() == that.getRecordId())
         && (getServerName() == that.getServerName())
         && (getDiscoveryUrl() == that.getDiscoveryUrl())
-        && (getNoOfServerCapabilities() == that.getNoOfServerCapabilities())
         && (getServerCapabilities() == that.getServerCapabilities())
         && super.equals(that)
         && true;
@@ -229,7 +219,6 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
         getRecordId(),
         getServerName(),
         getDiscoveryUrl(),
-        getNoOfServerCapabilities(),
         getServerCapabilities());
   }
 

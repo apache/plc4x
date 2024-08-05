@@ -38,25 +38,20 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "579";
+  public Integer getExtensionId() {
+    return (int) 579;
   }
 
   // Properties.
   protected final ExpandedNodeId nodeId;
   protected final ExpandedNodeId typeDefinitionNode;
-  protected final int noOfValues;
   protected final List<Variant> values;
 
   public QueryDataSet(
-      ExpandedNodeId nodeId,
-      ExpandedNodeId typeDefinitionNode,
-      int noOfValues,
-      List<Variant> values) {
+      ExpandedNodeId nodeId, ExpandedNodeId typeDefinitionNode, List<Variant> values) {
     super();
     this.nodeId = nodeId;
     this.typeDefinitionNode = typeDefinitionNode;
-    this.noOfValues = noOfValues;
     this.values = values;
   }
 
@@ -66,10 +61,6 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
   public ExpandedNodeId getTypeDefinitionNode() {
     return typeDefinitionNode;
-  }
-
-  public int getNoOfValues() {
-    return noOfValues;
   }
 
   public List<Variant> getValues() {
@@ -89,8 +80,10 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     // Simple Field (typeDefinitionNode)
     writeSimpleField("typeDefinitionNode", typeDefinitionNode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfValues)
-    writeSimpleField("noOfValues", noOfValues, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfValues) (Used for parsing, but its value is not stored as it's implicitly
+    // given by the objects content)
+    int noOfValues = (int) ((((getValues()) == (null)) ? -(1) : COUNT(getValues())));
+    writeImplicitField("noOfValues", noOfValues, writeSignedInt(writeBuffer, 32));
 
     // Array Field (values)
     writeComplexTypeArrayField("values", values, writeBuffer);
@@ -115,7 +108,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     // Simple field (typeDefinitionNode)
     lengthInBits += typeDefinitionNode.getLengthInBits();
 
-    // Simple field (noOfValues)
+    // Implicit Field (noOfValues)
     lengthInBits += 32;
 
     // Array field
@@ -131,7 +124,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QueryDataSet");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -145,7 +138,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
             "typeDefinitionNode",
             readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
-    int noOfValues = readSimpleField("noOfValues", readSignedInt(readBuffer, 32));
+    int noOfValues = readImplicitField("noOfValues", readSignedInt(readBuffer, 32));
 
     List<Variant> values =
         readCountArrayField(
@@ -153,29 +146,24 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("QueryDataSet");
     // Create the instance
-    return new QueryDataSetBuilderImpl(nodeId, typeDefinitionNode, noOfValues, values);
+    return new QueryDataSetBuilderImpl(nodeId, typeDefinitionNode, values);
   }
 
   public static class QueryDataSetBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId nodeId;
     private final ExpandedNodeId typeDefinitionNode;
-    private final int noOfValues;
     private final List<Variant> values;
 
     public QueryDataSetBuilderImpl(
-        ExpandedNodeId nodeId,
-        ExpandedNodeId typeDefinitionNode,
-        int noOfValues,
-        List<Variant> values) {
+        ExpandedNodeId nodeId, ExpandedNodeId typeDefinitionNode, List<Variant> values) {
       this.nodeId = nodeId;
       this.typeDefinitionNode = typeDefinitionNode;
-      this.noOfValues = noOfValues;
       this.values = values;
     }
 
     public QueryDataSet build() {
-      QueryDataSet queryDataSet = new QueryDataSet(nodeId, typeDefinitionNode, noOfValues, values);
+      QueryDataSet queryDataSet = new QueryDataSet(nodeId, typeDefinitionNode, values);
       return queryDataSet;
     }
   }
@@ -191,7 +179,6 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     QueryDataSet that = (QueryDataSet) o;
     return (getNodeId() == that.getNodeId())
         && (getTypeDefinitionNode() == that.getTypeDefinitionNode())
-        && (getNoOfValues() == that.getNoOfValues())
         && (getValues() == that.getValues())
         && super.equals(that)
         && true;
@@ -199,8 +186,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getNodeId(), getTypeDefinitionNode(), getNoOfValues(), getValues());
+    return Objects.hash(super.hashCode(), getNodeId(), getTypeDefinitionNode(), getValues());
   }
 
   @Override

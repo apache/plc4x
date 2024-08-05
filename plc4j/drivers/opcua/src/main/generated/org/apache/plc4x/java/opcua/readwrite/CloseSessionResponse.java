@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CloseSessionResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "476";
+  public Integer getExtensionId() {
+    return (int) 476;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
 
-  public CloseSessionResponse(ExtensionObjectDefinition responseHeader) {
+  public CloseSessionResponse(ResponseHeader responseHeader) {
     super();
     this.responseHeader = responseHeader;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -85,16 +85,17 @@ public class CloseSessionResponse extends ExtensionObjectDefinition implements M
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CloseSessionResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     readBuffer.closeContext("CloseSessionResponse");
@@ -104,9 +105,9 @@ public class CloseSessionResponse extends ExtensionObjectDefinition implements M
 
   public static class CloseSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
 
-    public CloseSessionResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
+    public CloseSessionResponseBuilderImpl(ResponseHeader responseHeader) {
       this.responseHeader = responseHeader;
     }
 

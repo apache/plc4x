@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class BrowsePathTarget extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "548";
+  public Integer getExtensionId() {
+    return (int) 548;
   }
 
   // Properties.
@@ -97,7 +97,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("BrowsePathTarget");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

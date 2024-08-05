@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Frame extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "18815";
+  public Integer getExtensionId() {
+    return (int) 18815;
   }
 
   public Frame() {
@@ -71,7 +71,7 @@ public class Frame extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("Frame");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

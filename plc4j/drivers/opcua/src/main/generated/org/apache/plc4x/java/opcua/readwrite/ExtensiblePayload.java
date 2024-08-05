@@ -43,14 +43,14 @@ public class ExtensiblePayload extends Payload implements Message {
   }
 
   // Properties.
-  protected final ExtensionObject payload;
+  protected final RootExtensionObject payload;
 
-  public ExtensiblePayload(SequenceHeader sequenceHeader, ExtensionObject payload) {
+  public ExtensiblePayload(SequenceHeader sequenceHeader, RootExtensionObject payload) {
     super(sequenceHeader);
     this.payload = payload;
   }
 
-  public ExtensionObject getPayload() {
+  public RootExtensionObject getPayload() {
     return payload;
   }
 
@@ -89,11 +89,14 @@ public class ExtensiblePayload extends Payload implements Message {
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObject payload =
+    RootExtensionObject payload =
         readSimpleField(
             "payload",
             readComplex(
-                () -> ExtensionObject.staticParse(readBuffer, (boolean) (false)), readBuffer));
+                () ->
+                    (RootExtensionObject)
+                        ExtensionObject.staticParse(readBuffer, (boolean) (false)),
+                readBuffer));
 
     readBuffer.closeContext("ExtensiblePayload");
     // Create the instance
@@ -101,9 +104,9 @@ public class ExtensiblePayload extends Payload implements Message {
   }
 
   public static class ExtensiblePayloadBuilderImpl implements Payload.PayloadBuilder {
-    private final ExtensionObject payload;
+    private final RootExtensionObject payload;
 
-    public ExtensiblePayloadBuilderImpl(ExtensionObject payload) {
+    public ExtensiblePayloadBuilderImpl(RootExtensionObject payload) {
       this.payload = payload;
     }
 

@@ -38,28 +38,22 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ContentFilterElementResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "606";
+  public Integer getExtensionId() {
+    return (int) 606;
   }
 
   // Properties.
   protected final StatusCode statusCode;
-  protected final int noOfOperandStatusCodes;
   protected final List<StatusCode> operandStatusCodes;
-  protected final int noOfOperandDiagnosticInfos;
   protected final List<DiagnosticInfo> operandDiagnosticInfos;
 
   public ContentFilterElementResult(
       StatusCode statusCode,
-      int noOfOperandStatusCodes,
       List<StatusCode> operandStatusCodes,
-      int noOfOperandDiagnosticInfos,
       List<DiagnosticInfo> operandDiagnosticInfos) {
     super();
     this.statusCode = statusCode;
-    this.noOfOperandStatusCodes = noOfOperandStatusCodes;
     this.operandStatusCodes = operandStatusCodes;
-    this.noOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos;
     this.operandDiagnosticInfos = operandDiagnosticInfos;
   }
 
@@ -67,16 +61,8 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     return statusCode;
   }
 
-  public int getNoOfOperandStatusCodes() {
-    return noOfOperandStatusCodes;
-  }
-
   public List<StatusCode> getOperandStatusCodes() {
     return operandStatusCodes;
-  }
-
-  public int getNoOfOperandDiagnosticInfos() {
-    return noOfOperandDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getOperandDiagnosticInfos() {
@@ -93,15 +79,24 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     // Simple Field (statusCode)
     writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
-    // Simple Field (noOfOperandStatusCodes)
-    writeSimpleField(
+    // Implicit Field (noOfOperandStatusCodes) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfOperandStatusCodes =
+        (int) ((((getOperandStatusCodes()) == (null)) ? -(1) : COUNT(getOperandStatusCodes())));
+    writeImplicitField(
         "noOfOperandStatusCodes", noOfOperandStatusCodes, writeSignedInt(writeBuffer, 32));
 
     // Array Field (operandStatusCodes)
     writeComplexTypeArrayField("operandStatusCodes", operandStatusCodes, writeBuffer);
 
-    // Simple Field (noOfOperandDiagnosticInfos)
-    writeSimpleField(
+    // Implicit Field (noOfOperandDiagnosticInfos) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfOperandDiagnosticInfos =
+        (int)
+            ((((getOperandDiagnosticInfos()) == (null))
+                ? -(1)
+                : COUNT(getOperandDiagnosticInfos())));
+    writeImplicitField(
         "noOfOperandDiagnosticInfos", noOfOperandDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (operandDiagnosticInfos)
@@ -124,7 +119,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
 
-    // Simple field (noOfOperandStatusCodes)
+    // Implicit Field (noOfOperandStatusCodes)
     lengthInBits += 32;
 
     // Array field
@@ -136,7 +131,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
       }
     }
 
-    // Simple field (noOfOperandDiagnosticInfos)
+    // Implicit Field (noOfOperandDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -152,7 +147,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ContentFilterElementResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -162,7 +157,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
             "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfOperandStatusCodes =
-        readSimpleField("noOfOperandStatusCodes", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfOperandStatusCodes", readSignedInt(readBuffer, 32));
 
     List<StatusCode> operandStatusCodes =
         readCountArrayField(
@@ -171,7 +166,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
             noOfOperandStatusCodes);
 
     int noOfOperandDiagnosticInfos =
-        readSimpleField("noOfOperandDiagnosticInfos", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfOperandDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> operandDiagnosticInfos =
         readCountArrayField(
@@ -182,42 +177,27 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     readBuffer.closeContext("ContentFilterElementResult");
     // Create the instance
     return new ContentFilterElementResultBuilderImpl(
-        statusCode,
-        noOfOperandStatusCodes,
-        operandStatusCodes,
-        noOfOperandDiagnosticInfos,
-        operandDiagnosticInfos);
+        statusCode, operandStatusCodes, operandDiagnosticInfos);
   }
 
   public static class ContentFilterElementResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
-    private final int noOfOperandStatusCodes;
     private final List<StatusCode> operandStatusCodes;
-    private final int noOfOperandDiagnosticInfos;
     private final List<DiagnosticInfo> operandDiagnosticInfos;
 
     public ContentFilterElementResultBuilderImpl(
         StatusCode statusCode,
-        int noOfOperandStatusCodes,
         List<StatusCode> operandStatusCodes,
-        int noOfOperandDiagnosticInfos,
         List<DiagnosticInfo> operandDiagnosticInfos) {
       this.statusCode = statusCode;
-      this.noOfOperandStatusCodes = noOfOperandStatusCodes;
       this.operandStatusCodes = operandStatusCodes;
-      this.noOfOperandDiagnosticInfos = noOfOperandDiagnosticInfos;
       this.operandDiagnosticInfos = operandDiagnosticInfos;
     }
 
     public ContentFilterElementResult build() {
       ContentFilterElementResult contentFilterElementResult =
-          new ContentFilterElementResult(
-              statusCode,
-              noOfOperandStatusCodes,
-              operandStatusCodes,
-              noOfOperandDiagnosticInfos,
-              operandDiagnosticInfos);
+          new ContentFilterElementResult(statusCode, operandStatusCodes, operandDiagnosticInfos);
       return contentFilterElementResult;
     }
   }
@@ -232,9 +212,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     }
     ContentFilterElementResult that = (ContentFilterElementResult) o;
     return (getStatusCode() == that.getStatusCode())
-        && (getNoOfOperandStatusCodes() == that.getNoOfOperandStatusCodes())
         && (getOperandStatusCodes() == that.getOperandStatusCodes())
-        && (getNoOfOperandDiagnosticInfos() == that.getNoOfOperandDiagnosticInfos())
         && (getOperandDiagnosticInfos() == that.getOperandDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -243,12 +221,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getStatusCode(),
-        getNoOfOperandStatusCodes(),
-        getOperandStatusCodes(),
-        getNoOfOperandDiagnosticInfos(),
-        getOperandDiagnosticInfos());
+        super.hashCode(), getStatusCode(), getOperandStatusCodes(), getOperandDiagnosticInfos());
   }
 
   @Override

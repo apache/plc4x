@@ -38,35 +38,29 @@ import org.apache.plc4x.java.spi.generation.*;
 public class GetEndpointsRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "428";
+  public Integer getExtensionId() {
+    return (int) 428;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
+  protected final RequestHeader requestHeader;
   protected final PascalString endpointUrl;
-  protected final int noOfLocaleIds;
   protected final List<PascalString> localeIds;
-  protected final int noOfProfileUris;
   protected final List<PascalString> profileUris;
 
   public GetEndpointsRequest(
-      ExtensionObjectDefinition requestHeader,
+      RequestHeader requestHeader,
       PascalString endpointUrl,
-      int noOfLocaleIds,
       List<PascalString> localeIds,
-      int noOfProfileUris,
       List<PascalString> profileUris) {
     super();
     this.requestHeader = requestHeader;
     this.endpointUrl = endpointUrl;
-    this.noOfLocaleIds = noOfLocaleIds;
     this.localeIds = localeIds;
-    this.noOfProfileUris = noOfProfileUris;
     this.profileUris = profileUris;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
@@ -74,16 +68,8 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     return endpointUrl;
   }
 
-  public int getNoOfLocaleIds() {
-    return noOfLocaleIds;
-  }
-
   public List<PascalString> getLocaleIds() {
     return localeIds;
-  }
-
-  public int getNoOfProfileUris() {
-    return noOfProfileUris;
   }
 
   public List<PascalString> getProfileUris() {
@@ -103,14 +89,18 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     // Simple Field (endpointUrl)
     writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
-    // Simple Field (noOfLocaleIds)
-    writeSimpleField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfLocaleIds) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfLocaleIds = (int) ((((getLocaleIds()) == (null)) ? -(1) : COUNT(getLocaleIds())));
+    writeImplicitField("noOfLocaleIds", noOfLocaleIds, writeSignedInt(writeBuffer, 32));
 
     // Array Field (localeIds)
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
 
-    // Simple Field (noOfProfileUris)
-    writeSimpleField("noOfProfileUris", noOfProfileUris, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfProfileUris) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfProfileUris = (int) ((((getProfileUris()) == (null)) ? -(1) : COUNT(getProfileUris())));
+    writeImplicitField("noOfProfileUris", noOfProfileUris, writeSignedInt(writeBuffer, 32));
 
     // Array Field (profileUris)
     writeComplexTypeArrayField("profileUris", profileUris, writeBuffer);
@@ -135,7 +125,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     // Simple field (endpointUrl)
     lengthInBits += endpointUrl.getLengthInBits();
 
-    // Simple field (noOfLocaleIds)
+    // Implicit Field (noOfLocaleIds)
     lengthInBits += 32;
 
     // Array field
@@ -147,7 +137,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
       }
     }
 
-    // Simple field (noOfProfileUris)
+    // Implicit Field (noOfProfileUris)
     lengthInBits += 32;
 
     // Array field
@@ -163,23 +153,24 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("GetEndpointsRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
     PascalString endpointUrl =
         readSimpleField(
             "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
-    int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
+    int noOfLocaleIds = readImplicitField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
@@ -187,7 +178,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
             readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfLocaleIds);
 
-    int noOfProfileUris = readSimpleField("noOfProfileUris", readSignedInt(readBuffer, 32));
+    int noOfProfileUris = readImplicitField("noOfProfileUris", readSignedInt(readBuffer, 32));
 
     List<PascalString> profileUris =
         readCountArrayField(
@@ -197,38 +188,30 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("GetEndpointsRequest");
     // Create the instance
-    return new GetEndpointsRequestBuilderImpl(
-        requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfProfileUris, profileUris);
+    return new GetEndpointsRequestBuilderImpl(requestHeader, endpointUrl, localeIds, profileUris);
   }
 
   public static class GetEndpointsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
+    private final RequestHeader requestHeader;
     private final PascalString endpointUrl;
-    private final int noOfLocaleIds;
     private final List<PascalString> localeIds;
-    private final int noOfProfileUris;
     private final List<PascalString> profileUris;
 
     public GetEndpointsRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
+        RequestHeader requestHeader,
         PascalString endpointUrl,
-        int noOfLocaleIds,
         List<PascalString> localeIds,
-        int noOfProfileUris,
         List<PascalString> profileUris) {
       this.requestHeader = requestHeader;
       this.endpointUrl = endpointUrl;
-      this.noOfLocaleIds = noOfLocaleIds;
       this.localeIds = localeIds;
-      this.noOfProfileUris = noOfProfileUris;
       this.profileUris = profileUris;
     }
 
     public GetEndpointsRequest build() {
       GetEndpointsRequest getEndpointsRequest =
-          new GetEndpointsRequest(
-              requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfProfileUris, profileUris);
+          new GetEndpointsRequest(requestHeader, endpointUrl, localeIds, profileUris);
       return getEndpointsRequest;
     }
   }
@@ -244,9 +227,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     GetEndpointsRequest that = (GetEndpointsRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
         && (getEndpointUrl() == that.getEndpointUrl())
-        && (getNoOfLocaleIds() == that.getNoOfLocaleIds())
         && (getLocaleIds() == that.getLocaleIds())
-        && (getNoOfProfileUris() == that.getNoOfProfileUris())
         && (getProfileUris() == that.getProfileUris())
         && super.equals(that)
         && true;
@@ -255,13 +236,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(),
-        getRequestHeader(),
-        getEndpointUrl(),
-        getNoOfLocaleIds(),
-        getLocaleIds(),
-        getNoOfProfileUris(),
-        getProfileUris());
+        super.hashCode(), getRequestHeader(), getEndpointUrl(), getLocaleIds(), getProfileUris());
   }
 
   @Override

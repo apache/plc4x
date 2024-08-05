@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class PubSubConfigurationRefDataType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "25521";
+  public Integer getExtensionId() {
+    return (int) 25521;
   }
 
   // Properties.
@@ -132,7 +132,7 @@ public class PubSubConfigurationRefDataType extends ExtensionObjectDefinition im
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("PubSubConfigurationRefDataType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

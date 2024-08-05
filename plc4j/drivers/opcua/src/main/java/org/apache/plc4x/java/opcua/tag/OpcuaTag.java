@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.opcua.tag;
 
+import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedDataTypeException;
@@ -26,6 +27,7 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.types.PlcValueType;
+import org.apache.plc4x.java.opcua.readwrite.AttributeId;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaDataType;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaIdentifierType;
 
@@ -35,10 +37,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.spi.tag.TagConfigParser;
 
 public class OpcuaTag implements PlcSubscriptionTag {
 
-    public static final Pattern ADDRESS_PATTERN = Pattern.compile("^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>[^;]+)?(;(?<datatype>[a-zA-Z_]+))?$");
+    private static final String OPC_UTA_TAG_ADDRESS = "^ns=(?<namespace>\\d+);(?<identifierType>[isgb])=(?<identifier>[^;]+)?(;a=(?<attributeId>[^;]+))?(;(?<datatype>[a-zA-Z_]+))?";
+    public static final Pattern ADDRESS_PATTERN = Pattern.compile(OPC_UTA_TAG_ADDRESS + TagConfigParser.TAG_CONFIG_PATTERN + "$");
 
     private final OpcuaIdentifierType identifierType;
 
@@ -46,16 +50,22 @@ public class OpcuaTag implements PlcSubscriptionTag {
 
     private final String identifier;
 
+    private final AttributeId attributeId;
+
     private final OpcuaDataType dataType;
 
-    private OpcuaTag(Integer namespace, String identifier, OpcuaIdentifierType identifierType, OpcuaDataType dataType) {
+    private final Map<String, String> config;
+
+    private OpcuaTag(Integer namespace, String identifier, OpcuaIdentifierType identifierType, AttributeId attributeId, OpcuaDataType dataType, Map<String, String> config) {
         this.identifier = Objects.requireNonNull(identifier);
         this.identifierType = Objects.requireNonNull(identifierType);
         this.namespace = namespace != null ? namespace : 0;
         if (this.namespace < 0) {
             throw new IllegalArgumentException("namespace must be greater then zero. Was " + this.namespace);
         }
+        this.attributeId = attributeId;
         this.dataType = dataType;
+        this.config = config;
     }
 
     public static OpcuaTag of(String address) {
@@ -77,12 +87,21 @@ public class OpcuaTag implements PlcSubscriptionTag {
         }
         OpcuaDataType dataType = OpcuaDataType.valueOf(dataTypeString);
 
-        return new OpcuaTag(namespace, identifier, identifierType, dataType);
+        String attributeElement = matcher.group("attributeId");
+        AttributeId attributeId = AttributeId.Value;
+        if (attributeElement != null) {
+            if (attributeElement.matches("\\d+")) {
+                attributeId = AttributeId.enumForValue(Long.parseLong(attributeElement));
+            } else {
+                attributeId = AttributeId.valueOf(attributeElement);
+            }
+        }
+        return new OpcuaTag(namespace, identifier, identifierType, attributeId, dataType, TagConfigParser.parse(address));
     }
 
     @Override
     public PlcTag getTag() {
-        return new OpcuaTag(namespace, identifier, identifierType, dataType);
+        return new OpcuaTag(namespace, identifier, identifierType, attributeId, dataType, config);
     }
 
     public static boolean matches(String address) {
@@ -105,9 +124,20 @@ public class OpcuaTag implements PlcSubscriptionTag {
         return dataType;
     }
 
+    public AttributeId getAttributeId() {
+        return attributeId;
+    }
+
+    public Map<String, String> getConfig() {
+        return config;
+    }
+
     @Override
     public String getAddressString() {
         String address = String.format("ns=%d;%s=%s", namespace, identifierType.getValue(), identifier);
+        if (attributeId != AttributeId.Value) {
+            address += ";a=" + attributeId.name();
+        }
         if (dataType != null) {
             address += ";" + dataType.name();
         }
@@ -133,20 +163,26 @@ public class OpcuaTag implements PlcSubscriptionTag {
             return false;
         }
         OpcuaTag that = (OpcuaTag) o;
-        return namespace == that.namespace && identifier.equals(that.identifier) && identifierType == that.identifierType;
+        return namespace == that.namespace &&
+            identifier.equals(that.identifier) &&
+            identifierType == that.identifierType &&
+            attributeId == that.attributeId &&
+            config.equals(that.config);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(namespace);
+        return Objects.hash(namespace, identifier, identifierType, attributeId, config);
     }
 
     @Override
     public String toString() {
         return "OpcuaTag{" +
-            "namespace=" + namespace +
-            "identifierType=" + identifierType.getValue() +
-            "identifier=" + identifier +
+            " namespace=" + namespace +
+            " identifierType=" + identifierType.getValue() +
+            " identifier=" + identifier +
+            " attributeId=" + attributeId.name() +
+            " config=" + config +
             '}';
     }
 

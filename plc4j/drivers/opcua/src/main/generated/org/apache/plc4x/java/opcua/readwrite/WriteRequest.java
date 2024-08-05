@@ -38,34 +38,25 @@ import org.apache.plc4x.java.spi.generation.*;
 public class WriteRequest extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "673";
+  public Integer getExtensionId() {
+    return (int) 673;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition requestHeader;
-  protected final int noOfNodesToWrite;
-  protected final List<ExtensionObjectDefinition> nodesToWrite;
+  protected final RequestHeader requestHeader;
+  protected final List<WriteValue> nodesToWrite;
 
-  public WriteRequest(
-      ExtensionObjectDefinition requestHeader,
-      int noOfNodesToWrite,
-      List<ExtensionObjectDefinition> nodesToWrite) {
+  public WriteRequest(RequestHeader requestHeader, List<WriteValue> nodesToWrite) {
     super();
     this.requestHeader = requestHeader;
-    this.noOfNodesToWrite = noOfNodesToWrite;
     this.nodesToWrite = nodesToWrite;
   }
 
-  public ExtensionObjectDefinition getRequestHeader() {
+  public RequestHeader getRequestHeader() {
     return requestHeader;
   }
 
-  public int getNoOfNodesToWrite() {
-    return noOfNodesToWrite;
-  }
-
-  public List<ExtensionObjectDefinition> getNodesToWrite() {
+  public List<WriteValue> getNodesToWrite() {
     return nodesToWrite;
   }
 
@@ -79,8 +70,11 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     // Simple Field (requestHeader)
     writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfNodesToWrite)
-    writeSimpleField("noOfNodesToWrite", noOfNodesToWrite, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfNodesToWrite) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfNodesToWrite =
+        (int) ((((getNodesToWrite()) == (null)) ? -(1) : COUNT(getNodesToWrite())));
+    writeImplicitField("noOfNodesToWrite", noOfNodesToWrite, writeSignedInt(writeBuffer, 32));
 
     // Array Field (nodesToWrite)
     writeComplexTypeArrayField("nodesToWrite", nodesToWrite, writeBuffer);
@@ -102,13 +96,13 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
 
-    // Simple field (noOfNodesToWrite)
+    // Implicit Field (noOfNodesToWrite)
     lengthInBits += 32;
 
     // Array field
     if (nodesToWrite != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : nodesToWrite) {
+      for (WriteValue element : nodesToWrite) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToWrite.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -118,50 +112,46 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("WriteRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition requestHeader =
+    RequestHeader requestHeader =
         readSimpleField(
             "requestHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
+                () ->
+                    (RequestHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (391)),
                 readBuffer));
 
-    int noOfNodesToWrite = readSimpleField("noOfNodesToWrite", readSignedInt(readBuffer, 32));
+    int noOfNodesToWrite = readImplicitField("noOfNodesToWrite", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> nodesToWrite =
+    List<WriteValue> nodesToWrite =
         readCountArrayField(
             "nodesToWrite",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("670")),
+                () -> (WriteValue) ExtensionObjectDefinition.staticParse(readBuffer, (int) (670)),
                 readBuffer),
             noOfNodesToWrite);
 
     readBuffer.closeContext("WriteRequest");
     // Create the instance
-    return new WriteRequestBuilderImpl(requestHeader, noOfNodesToWrite, nodesToWrite);
+    return new WriteRequestBuilderImpl(requestHeader, nodesToWrite);
   }
 
   public static class WriteRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition requestHeader;
-    private final int noOfNodesToWrite;
-    private final List<ExtensionObjectDefinition> nodesToWrite;
+    private final RequestHeader requestHeader;
+    private final List<WriteValue> nodesToWrite;
 
-    public WriteRequestBuilderImpl(
-        ExtensionObjectDefinition requestHeader,
-        int noOfNodesToWrite,
-        List<ExtensionObjectDefinition> nodesToWrite) {
+    public WriteRequestBuilderImpl(RequestHeader requestHeader, List<WriteValue> nodesToWrite) {
       this.requestHeader = requestHeader;
-      this.noOfNodesToWrite = noOfNodesToWrite;
       this.nodesToWrite = nodesToWrite;
     }
 
     public WriteRequest build() {
-      WriteRequest writeRequest = new WriteRequest(requestHeader, noOfNodesToWrite, nodesToWrite);
+      WriteRequest writeRequest = new WriteRequest(requestHeader, nodesToWrite);
       return writeRequest;
     }
   }
@@ -176,7 +166,6 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     }
     WriteRequest that = (WriteRequest) o;
     return (getRequestHeader() == that.getRequestHeader())
-        && (getNoOfNodesToWrite() == that.getNoOfNodesToWrite())
         && (getNodesToWrite() == that.getNodesToWrite())
         && super.equals(that)
         && true;
@@ -184,8 +173,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getRequestHeader(), getNoOfNodesToWrite(), getNodesToWrite());
+    return Objects.hash(super.hashCode(), getRequestHeader(), getNodesToWrite());
   }
 
   @Override

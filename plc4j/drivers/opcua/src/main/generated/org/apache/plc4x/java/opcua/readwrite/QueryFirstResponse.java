@@ -38,52 +38,39 @@ import org.apache.plc4x.java.spi.generation.*;
 public class QueryFirstResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "618";
+  public Integer getExtensionId() {
+    return (int) 618;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
-  protected final int noOfQueryDataSets;
-  protected final List<ExtensionObjectDefinition> queryDataSets;
+  protected final ResponseHeader responseHeader;
+  protected final List<QueryDataSet> queryDataSets;
   protected final PascalByteString continuationPoint;
-  protected final int noOfParsingResults;
-  protected final List<ExtensionObjectDefinition> parsingResults;
-  protected final int noOfDiagnosticInfos;
+  protected final List<ParsingResult> parsingResults;
   protected final List<DiagnosticInfo> diagnosticInfos;
-  protected final ExtensionObjectDefinition filterResult;
+  protected final ContentFilterResult filterResult;
 
   public QueryFirstResponse(
-      ExtensionObjectDefinition responseHeader,
-      int noOfQueryDataSets,
-      List<ExtensionObjectDefinition> queryDataSets,
+      ResponseHeader responseHeader,
+      List<QueryDataSet> queryDataSets,
       PascalByteString continuationPoint,
-      int noOfParsingResults,
-      List<ExtensionObjectDefinition> parsingResults,
-      int noOfDiagnosticInfos,
+      List<ParsingResult> parsingResults,
       List<DiagnosticInfo> diagnosticInfos,
-      ExtensionObjectDefinition filterResult) {
+      ContentFilterResult filterResult) {
     super();
     this.responseHeader = responseHeader;
-    this.noOfQueryDataSets = noOfQueryDataSets;
     this.queryDataSets = queryDataSets;
     this.continuationPoint = continuationPoint;
-    this.noOfParsingResults = noOfParsingResults;
     this.parsingResults = parsingResults;
-    this.noOfDiagnosticInfos = noOfDiagnosticInfos;
     this.diagnosticInfos = diagnosticInfos;
     this.filterResult = filterResult;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
-  public int getNoOfQueryDataSets() {
-    return noOfQueryDataSets;
-  }
-
-  public List<ExtensionObjectDefinition> getQueryDataSets() {
+  public List<QueryDataSet> getQueryDataSets() {
     return queryDataSets;
   }
 
@@ -91,23 +78,15 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     return continuationPoint;
   }
 
-  public int getNoOfParsingResults() {
-    return noOfParsingResults;
-  }
-
-  public List<ExtensionObjectDefinition> getParsingResults() {
+  public List<ParsingResult> getParsingResults() {
     return parsingResults;
-  }
-
-  public int getNoOfDiagnosticInfos() {
-    return noOfDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getDiagnosticInfos() {
     return diagnosticInfos;
   }
 
-  public ExtensionObjectDefinition getFilterResult() {
+  public ContentFilterResult getFilterResult() {
     return filterResult;
   }
 
@@ -121,8 +100,11 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     // Simple Field (responseHeader)
     writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
-    // Simple Field (noOfQueryDataSets)
-    writeSimpleField("noOfQueryDataSets", noOfQueryDataSets, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfQueryDataSets) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfQueryDataSets =
+        (int) ((((getQueryDataSets()) == (null)) ? -(1) : COUNT(getQueryDataSets())));
+    writeImplicitField("noOfQueryDataSets", noOfQueryDataSets, writeSignedInt(writeBuffer, 32));
 
     // Array Field (queryDataSets)
     writeComplexTypeArrayField("queryDataSets", queryDataSets, writeBuffer);
@@ -130,14 +112,20 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     // Simple Field (continuationPoint)
     writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
-    // Simple Field (noOfParsingResults)
-    writeSimpleField("noOfParsingResults", noOfParsingResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfParsingResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfParsingResults =
+        (int) ((((getParsingResults()) == (null)) ? -(1) : COUNT(getParsingResults())));
+    writeImplicitField("noOfParsingResults", noOfParsingResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (parsingResults)
     writeComplexTypeArrayField("parsingResults", parsingResults, writeBuffer);
 
-    // Simple Field (noOfDiagnosticInfos)
-    writeSimpleField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfDiagnosticInfos) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfDiagnosticInfos =
+        (int) ((((getDiagnosticInfos()) == (null)) ? -(1) : COUNT(getDiagnosticInfos())));
+    writeImplicitField("noOfDiagnosticInfos", noOfDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (diagnosticInfos)
     writeComplexTypeArrayField("diagnosticInfos", diagnosticInfos, writeBuffer);
@@ -162,13 +150,13 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
 
-    // Simple field (noOfQueryDataSets)
+    // Implicit Field (noOfQueryDataSets)
     lengthInBits += 32;
 
     // Array field
     if (queryDataSets != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : queryDataSets) {
+      for (QueryDataSet element : queryDataSets) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= queryDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
@@ -177,19 +165,19 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     // Simple field (continuationPoint)
     lengthInBits += continuationPoint.getLengthInBits();
 
-    // Simple field (noOfParsingResults)
+    // Implicit Field (noOfParsingResults)
     lengthInBits += 32;
 
     // Array field
     if (parsingResults != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : parsingResults) {
+      for (ParsingResult element : parsingResults) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= parsingResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfDiagnosticInfos)
+    // Implicit Field (noOfDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -208,25 +196,26 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("QueryFirstResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
-    int noOfQueryDataSets = readSimpleField("noOfQueryDataSets", readSignedInt(readBuffer, 32));
+    int noOfQueryDataSets = readImplicitField("noOfQueryDataSets", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> queryDataSets =
+    List<QueryDataSet> queryDataSets =
         readCountArrayField(
             "queryDataSets",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("579")),
+                () -> (QueryDataSet) ExtensionObjectDefinition.staticParse(readBuffer, (int) (579)),
                 readBuffer),
             noOfQueryDataSets);
 
@@ -235,17 +224,19 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
             "continuationPoint",
             readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
-    int noOfParsingResults = readSimpleField("noOfParsingResults", readSignedInt(readBuffer, 32));
+    int noOfParsingResults = readImplicitField("noOfParsingResults", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> parsingResults =
+    List<ParsingResult> parsingResults =
         readCountArrayField(
             "parsingResults",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("612")),
+                () ->
+                    (ParsingResult) ExtensionObjectDefinition.staticParse(readBuffer, (int) (612)),
                 readBuffer),
             noOfParsingResults);
 
-    int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
+    int noOfDiagnosticInfos =
+        readImplicitField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
@@ -253,56 +244,46 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
             readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
-    ExtensionObjectDefinition filterResult =
+    ContentFilterResult filterResult =
         readSimpleField(
             "filterResult",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("609")),
+                () ->
+                    (ContentFilterResult)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (609)),
                 readBuffer));
 
     readBuffer.closeContext("QueryFirstResponse");
     // Create the instance
     return new QueryFirstResponseBuilderImpl(
         responseHeader,
-        noOfQueryDataSets,
         queryDataSets,
         continuationPoint,
-        noOfParsingResults,
         parsingResults,
-        noOfDiagnosticInfos,
         diagnosticInfos,
         filterResult);
   }
 
   public static class QueryFirstResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
-    private final int noOfQueryDataSets;
-    private final List<ExtensionObjectDefinition> queryDataSets;
+    private final ResponseHeader responseHeader;
+    private final List<QueryDataSet> queryDataSets;
     private final PascalByteString continuationPoint;
-    private final int noOfParsingResults;
-    private final List<ExtensionObjectDefinition> parsingResults;
-    private final int noOfDiagnosticInfos;
+    private final List<ParsingResult> parsingResults;
     private final List<DiagnosticInfo> diagnosticInfos;
-    private final ExtensionObjectDefinition filterResult;
+    private final ContentFilterResult filterResult;
 
     public QueryFirstResponseBuilderImpl(
-        ExtensionObjectDefinition responseHeader,
-        int noOfQueryDataSets,
-        List<ExtensionObjectDefinition> queryDataSets,
+        ResponseHeader responseHeader,
+        List<QueryDataSet> queryDataSets,
         PascalByteString continuationPoint,
-        int noOfParsingResults,
-        List<ExtensionObjectDefinition> parsingResults,
-        int noOfDiagnosticInfos,
+        List<ParsingResult> parsingResults,
         List<DiagnosticInfo> diagnosticInfos,
-        ExtensionObjectDefinition filterResult) {
+        ContentFilterResult filterResult) {
       this.responseHeader = responseHeader;
-      this.noOfQueryDataSets = noOfQueryDataSets;
       this.queryDataSets = queryDataSets;
       this.continuationPoint = continuationPoint;
-      this.noOfParsingResults = noOfParsingResults;
       this.parsingResults = parsingResults;
-      this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
       this.filterResult = filterResult;
     }
@@ -311,12 +292,9 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
       QueryFirstResponse queryFirstResponse =
           new QueryFirstResponse(
               responseHeader,
-              noOfQueryDataSets,
               queryDataSets,
               continuationPoint,
-              noOfParsingResults,
               parsingResults,
-              noOfDiagnosticInfos,
               diagnosticInfos,
               filterResult);
       return queryFirstResponse;
@@ -333,12 +311,9 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     }
     QueryFirstResponse that = (QueryFirstResponse) o;
     return (getResponseHeader() == that.getResponseHeader())
-        && (getNoOfQueryDataSets() == that.getNoOfQueryDataSets())
         && (getQueryDataSets() == that.getQueryDataSets())
         && (getContinuationPoint() == that.getContinuationPoint())
-        && (getNoOfParsingResults() == that.getNoOfParsingResults())
         && (getParsingResults() == that.getParsingResults())
-        && (getNoOfDiagnosticInfos() == that.getNoOfDiagnosticInfos())
         && (getDiagnosticInfos() == that.getDiagnosticInfos())
         && (getFilterResult() == that.getFilterResult())
         && super.equals(that)
@@ -350,12 +325,9 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     return Objects.hash(
         super.hashCode(),
         getResponseHeader(),
-        getNoOfQueryDataSets(),
         getQueryDataSets(),
         getContinuationPoint(),
-        getNoOfParsingResults(),
         getParsingResults(),
-        getNoOfDiagnosticInfos(),
         getDiagnosticInfos(),
         getFilterResult());
   }

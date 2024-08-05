@@ -41,6 +41,9 @@ public class FieldReaderArray<T> implements FieldCommons {
         if (count > Integer.MAX_VALUE) {
             throw new ParseException("Array count of " + count + " exceeds the maximum allowed count of " + Integer.MAX_VALUE);
         }
+        if (count < 0) {
+            return null;
+        }
         // Ensure we have the render as list argument present
         readerArgs = ArrayUtils.add(readerArgs, WithReaderWriterArgs.WithRenderAsList(true));
         dataReader.pullContext(logicalName, readerArgs);

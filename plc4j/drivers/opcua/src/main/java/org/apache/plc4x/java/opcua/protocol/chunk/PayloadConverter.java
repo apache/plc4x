@@ -25,6 +25,7 @@ import org.apache.plc4x.java.opcua.readwrite.ExtensiblePayload;
 import org.apache.plc4x.java.opcua.readwrite.ExtensionObject;
 import org.apache.plc4x.java.opcua.readwrite.MessagePDU;
 import org.apache.plc4x.java.opcua.readwrite.Payload;
+import org.apache.plc4x.java.opcua.readwrite.RootExtensionObject;
 import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.generation.ParseException;
@@ -56,7 +57,7 @@ public class PayloadConverter {
         byte[] payload = binary.getPayload();
 
         ReadBufferByteBased buffer = new ReadBufferByteBased(payload, ByteOrder.LITTLE_ENDIAN);
-        ExtensionObject extensionObject = ExtensionObject.staticParse(buffer, false);
+        RootExtensionObject extensionObject = (RootExtensionObject) RootExtensionObject.staticParse(buffer, false);
 
         return new ExtensiblePayload(binary.getSequenceHeader(), extensionObject);
     }

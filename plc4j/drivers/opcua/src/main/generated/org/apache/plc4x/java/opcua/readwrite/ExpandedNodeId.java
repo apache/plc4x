@@ -78,10 +78,6 @@ public class ExpandedNodeId implements Message {
     return serverIndex;
   }
 
-  public String getIdentifier() {
-    return String.valueOf(getNodeId().getIdentifier());
-  }
-
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -95,10 +91,6 @@ public class ExpandedNodeId implements Message {
 
     // Simple Field (nodeId)
     writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
-
-    // Virtual field (doesn't actually serialize anything, just makes the value available)
-    String identifier = getIdentifier();
-    writeBuffer.writeVirtual("identifier", identifier);
 
     // Optional Field (namespaceURI) (Can be skipped, if the value is null)
     writeOptionalField("namespaceURI", namespaceURI, writeComplex(writeBuffer));
@@ -129,8 +121,6 @@ public class ExpandedNodeId implements Message {
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
 
-    // A virtual field doesn't have any in- or output.
-
     // Optional Field (namespaceURI)
     if (namespaceURI != null) {
       lengthInBits += namespaceURI.getLengthInBits();
@@ -157,7 +147,6 @@ public class ExpandedNodeId implements Message {
     NodeIdTypeDefinition nodeId =
         readSimpleField(
             "nodeId", readComplex(() -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
-    String identifier = readVirtualField("identifier", String.class, nodeId.getIdentifier());
 
     PascalString namespaceURI =
         readOptionalField(

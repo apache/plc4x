@@ -38,38 +38,24 @@ import org.apache.plc4x.java.spi.generation.*;
 public class ContentFilterResult extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "609";
+  public Integer getExtensionId() {
+    return (int) 609;
   }
 
   // Properties.
-  protected final int noOfElementResults;
-  protected final List<ExtensionObjectDefinition> elementResults;
-  protected final int noOfElementDiagnosticInfos;
+  protected final List<ContentFilterElementResult> elementResults;
   protected final List<DiagnosticInfo> elementDiagnosticInfos;
 
   public ContentFilterResult(
-      int noOfElementResults,
-      List<ExtensionObjectDefinition> elementResults,
-      int noOfElementDiagnosticInfos,
+      List<ContentFilterElementResult> elementResults,
       List<DiagnosticInfo> elementDiagnosticInfos) {
     super();
-    this.noOfElementResults = noOfElementResults;
     this.elementResults = elementResults;
-    this.noOfElementDiagnosticInfos = noOfElementDiagnosticInfos;
     this.elementDiagnosticInfos = elementDiagnosticInfos;
   }
 
-  public int getNoOfElementResults() {
-    return noOfElementResults;
-  }
-
-  public List<ExtensionObjectDefinition> getElementResults() {
+  public List<ContentFilterElementResult> getElementResults() {
     return elementResults;
-  }
-
-  public int getNoOfElementDiagnosticInfos() {
-    return noOfElementDiagnosticInfos;
   }
 
   public List<DiagnosticInfo> getElementDiagnosticInfos() {
@@ -83,14 +69,23 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     writeBuffer.pushContext("ContentFilterResult");
 
-    // Simple Field (noOfElementResults)
-    writeSimpleField("noOfElementResults", noOfElementResults, writeSignedInt(writeBuffer, 32));
+    // Implicit Field (noOfElementResults) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int noOfElementResults =
+        (int) ((((getElementResults()) == (null)) ? -(1) : COUNT(getElementResults())));
+    writeImplicitField("noOfElementResults", noOfElementResults, writeSignedInt(writeBuffer, 32));
 
     // Array Field (elementResults)
     writeComplexTypeArrayField("elementResults", elementResults, writeBuffer);
 
-    // Simple Field (noOfElementDiagnosticInfos)
-    writeSimpleField(
+    // Implicit Field (noOfElementDiagnosticInfos) (Used for parsing, but its value is not stored as
+    // it's implicitly given by the objects content)
+    int noOfElementDiagnosticInfos =
+        (int)
+            ((((getElementDiagnosticInfos()) == (null))
+                ? -(1)
+                : COUNT(getElementDiagnosticInfos())));
+    writeImplicitField(
         "noOfElementDiagnosticInfos", noOfElementDiagnosticInfos, writeSignedInt(writeBuffer, 32));
 
     // Array Field (elementDiagnosticInfos)
@@ -110,19 +105,19 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     ContentFilterResult _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (noOfElementResults)
+    // Implicit Field (noOfElementResults)
     lengthInBits += 32;
 
     // Array field
     if (elementResults != null) {
       int i = 0;
-      for (ExtensionObjectDefinition element : elementResults) {
+      for (ContentFilterElementResult element : elementResults) {
         ThreadLocalHelper.lastItemThreadLocal.set(++i >= elementResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
 
-    // Simple field (noOfElementDiagnosticInfos)
+    // Implicit Field (noOfElementDiagnosticInfos)
     lengthInBits += 32;
 
     // Array field
@@ -138,23 +133,25 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("ContentFilterResult");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int noOfElementResults = readSimpleField("noOfElementResults", readSignedInt(readBuffer, 32));
+    int noOfElementResults = readImplicitField("noOfElementResults", readSignedInt(readBuffer, 32));
 
-    List<ExtensionObjectDefinition> elementResults =
+    List<ContentFilterElementResult> elementResults =
         readCountArrayField(
             "elementResults",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("606")),
+                () ->
+                    (ContentFilterElementResult)
+                        ExtensionObjectDefinition.staticParse(readBuffer, (int) (606)),
                 readBuffer),
             noOfElementResults);
 
     int noOfElementDiagnosticInfos =
-        readSimpleField("noOfElementDiagnosticInfos", readSignedInt(readBuffer, 32));
+        readImplicitField("noOfElementDiagnosticInfos", readSignedInt(readBuffer, 32));
 
     List<DiagnosticInfo> elementDiagnosticInfos =
         readCountArrayField(
@@ -164,35 +161,24 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("ContentFilterResult");
     // Create the instance
-    return new ContentFilterResultBuilderImpl(
-        noOfElementResults, elementResults, noOfElementDiagnosticInfos, elementDiagnosticInfos);
+    return new ContentFilterResultBuilderImpl(elementResults, elementDiagnosticInfos);
   }
 
   public static class ContentFilterResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final int noOfElementResults;
-    private final List<ExtensionObjectDefinition> elementResults;
-    private final int noOfElementDiagnosticInfos;
+    private final List<ContentFilterElementResult> elementResults;
     private final List<DiagnosticInfo> elementDiagnosticInfos;
 
     public ContentFilterResultBuilderImpl(
-        int noOfElementResults,
-        List<ExtensionObjectDefinition> elementResults,
-        int noOfElementDiagnosticInfos,
+        List<ContentFilterElementResult> elementResults,
         List<DiagnosticInfo> elementDiagnosticInfos) {
-      this.noOfElementResults = noOfElementResults;
       this.elementResults = elementResults;
-      this.noOfElementDiagnosticInfos = noOfElementDiagnosticInfos;
       this.elementDiagnosticInfos = elementDiagnosticInfos;
     }
 
     public ContentFilterResult build() {
       ContentFilterResult contentFilterResult =
-          new ContentFilterResult(
-              noOfElementResults,
-              elementResults,
-              noOfElementDiagnosticInfos,
-              elementDiagnosticInfos);
+          new ContentFilterResult(elementResults, elementDiagnosticInfos);
       return contentFilterResult;
     }
   }
@@ -206,9 +192,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
       return false;
     }
     ContentFilterResult that = (ContentFilterResult) o;
-    return (getNoOfElementResults() == that.getNoOfElementResults())
-        && (getElementResults() == that.getElementResults())
-        && (getNoOfElementDiagnosticInfos() == that.getNoOfElementDiagnosticInfos())
+    return (getElementResults() == that.getElementResults())
         && (getElementDiagnosticInfos() == that.getElementDiagnosticInfos())
         && super.equals(that)
         && true;
@@ -216,12 +200,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(),
-        getNoOfElementResults(),
-        getElementResults(),
-        getNoOfElementDiagnosticInfos(),
-        getElementDiagnosticInfos());
+    return Objects.hash(super.hashCode(), getElementResults(), getElementDiagnosticInfos());
   }
 
   @Override

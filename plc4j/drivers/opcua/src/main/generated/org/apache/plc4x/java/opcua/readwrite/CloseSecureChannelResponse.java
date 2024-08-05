@@ -38,19 +38,19 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CloseSecureChannelResponse extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "455";
+  public Integer getExtensionId() {
+    return (int) 455;
   }
 
   // Properties.
-  protected final ExtensionObjectDefinition responseHeader;
+  protected final ResponseHeader responseHeader;
 
-  public CloseSecureChannelResponse(ExtensionObjectDefinition responseHeader) {
+  public CloseSecureChannelResponse(ResponseHeader responseHeader) {
     super();
     this.responseHeader = responseHeader;
   }
 
-  public ExtensionObjectDefinition getResponseHeader() {
+  public ResponseHeader getResponseHeader() {
     return responseHeader;
   }
 
@@ -85,16 +85,17 @@ public class CloseSecureChannelResponse extends ExtensionObjectDefinition implem
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CloseSecureChannelResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    ExtensionObjectDefinition responseHeader =
+    ResponseHeader responseHeader =
         readSimpleField(
             "responseHeader",
             readComplex(
-                () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
+                () ->
+                    (ResponseHeader) ExtensionObjectDefinition.staticParse(readBuffer, (int) (394)),
                 readBuffer));
 
     readBuffer.closeContext("CloseSecureChannelResponse");
@@ -104,9 +105,9 @@ public class CloseSecureChannelResponse extends ExtensionObjectDefinition implem
 
   public static class CloseSecureChannelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
-    private final ExtensionObjectDefinition responseHeader;
+    private final ResponseHeader responseHeader;
 
-    public CloseSecureChannelResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
+    public CloseSecureChannelResponseBuilderImpl(ResponseHeader responseHeader) {
       this.responseHeader = responseHeader;
     }
 

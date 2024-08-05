@@ -38,8 +38,8 @@ import org.apache.plc4x.java.spi.generation.*;
 public class CurrencyUnitType extends ExtensionObjectDefinition implements Message {
 
   // Accessors for discriminator values.
-  public String getIdentifier() {
-    return (String) "23500";
+  public Integer getExtensionId() {
+    return (int) 23500;
   }
 
   // Properties.
@@ -122,7 +122,7 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
   }
 
   public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
-      ReadBuffer readBuffer, String identifier) throws ParseException {
+      ReadBuffer readBuffer, Integer extensionId) throws ParseException {
     readBuffer.pullContext("CurrencyUnitType");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
