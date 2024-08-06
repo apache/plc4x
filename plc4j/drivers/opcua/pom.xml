@@ -70,6 +70,23 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-milo-dependencies</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <includeArtifactIds>server-examples</includeArtifactIds>
+              <outputDirectory>${project.build.directory}/milo-testcontainer</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -184,6 +201,30 @@
       <version>0.13.0-SNAPSHOT</version>
       <classifier>tests</classifier>
       <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.docker-java</groupId>
+      <artifactId>docker-java-api</artifactId>
+      <version>3.4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>1.20.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>1.20.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.tools</groupId>
+      <artifactId>jib-core</artifactId>
+      <version>0.22.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
