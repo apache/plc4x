@@ -47,7 +47,7 @@ pyproject_hooks==1.1.0
 pytest==8.3.2
 pytest-asyncio==0.23.8
 pytest-mock==3.14.0
-PyYAML==6.0.1
+PyYAML==6.0.2
 requires==0.10.5
 typing_extensions==4.12.2
 virtualenv==20.26.3
