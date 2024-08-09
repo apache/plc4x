@@ -24,8 +24,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.apache.plc4x.java.api.messages.PlcMetadataKeys;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.metadata.Metadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -260,17 +262,22 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * @param values - array of data values to be sent to the client.
      */
     private void onSubscriptionValue(MonitoredItemNotification[] values) {
-        LinkedHashSet<String> tagNameList = new LinkedHashSet<>();
+        long receiveTs = System.currentTimeMillis();
+        Metadata responseMetadata = new Metadata.Builder()
+            .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, receiveTs)
+            .build();
+
         List<DataValue> dataValues = new ArrayList<>(values.length);
         Map<String, PlcTag> tagMap = new LinkedHashMap<>();
         for (MonitoredItemNotification value : values) {
             String tagName = tagNames.get((int) value.getClientHandle() - 1);
-            tagNameList.add(tagName);
             tagMap.put(tagName, subscriptionRequest.getTag(tagName).getTag());
             dataValues.add(value.getValue());
         }
-        Map<String, PlcResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagNameList, tagMap, dataValues);
-        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), tags);
+
+        Map<String, Metadata> metadata = new HashMap<>();
+        Map<String, PlcResponseItem<PlcValue>> tags = plcSubscriber.readResponse(tagMap, dataValues, metadata, responseMetadata);
+        final PlcSubscriptionEvent event = new DefaultPlcSubscriptionEvent(Instant.now(), tags, metadata);
 
         consumers.forEach(plcSubscriptionEventConsumer -> plcSubscriptionEventConsumer.accept(event));
     }

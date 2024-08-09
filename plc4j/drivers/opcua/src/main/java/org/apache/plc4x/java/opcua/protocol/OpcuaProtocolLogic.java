@@ -26,18 +26,22 @@ import org.apache.plc4x.java.api.authentication.PlcAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
+import org.apache.plc4x.java.api.metadata.Metadata;
+import org.apache.plc4x.java.api.metadata.time.TimeSource;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.opcua.OpcMetadataKeys;
 import org.apache.plc4x.java.opcua.config.OpcuaConfiguration;
 import org.apache.plc4x.java.opcua.context.Conversation;
 import org.apache.plc4x.java.opcua.context.OpcuaDriverContext;
 import org.apache.plc4x.java.opcua.context.SecureChannel;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.opcua.tag.OpcuaPlcTagHandler;
+import org.apache.plc4x.java.opcua.tag.OpcuaQualityStatus;
 import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
@@ -210,7 +214,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
 
         List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
         Iterator<String> iterator = request.getTagNames().iterator();
-        Map<String, PlcTag> tagMap = new HashMap<>();
+        Map<String, PlcTag> tagMap = new LinkedHashMap<>();
         for (int i = 0; i < request.getTagNames().size(); i++) {
             String tagName = iterator.next();
             // TODO: We need to check that the tag-return-code is OK as it could also be INVALID_TAG
@@ -237,7 +241,13 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         transaction.submit(() -> {
             conversation.submit(opcuaReadRequest, ReadResponse.class).whenComplete((response, error) -> bridge(transaction, future, response, error));
         });
-        return future.thenApply(response -> new DefaultPlcReadResponse(request, readResponse(request.getTagNames(), tagMap, response.getResults())));
+        return future.thenApply(response -> {
+            Metadata responseMetadata = new Metadata.Builder()
+                .put(PlcMetadataKeys.RECEIVE_TIMESTAMP, System.currentTimeMillis())
+                .build();
+            Map<String, Metadata> metadata = new LinkedHashMap<>();
+            return new DefaultPlcReadResponse(request, readResponse(tagMap, response.getResults(), metadata, responseMetadata), metadata);
+        });
     }
 
     static NodeId generateNodeId(OpcuaTag tag) {
@@ -262,15 +272,16 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         return nodeId;
     }
 
-    public Map<String, PlcResponseItem<PlcValue>> readResponse(LinkedHashSet<String> tagNames, Map<String, PlcTag> tagMap, List<DataValue> results) {
+    public Map<String, PlcResponseItem<PlcValue>> readResponse(Map<String, PlcTag> tagMap, List<DataValue> results, Map<String, Metadata> metadata, Metadata responseMetadata) {
         PlcResponseCode responseCode = null; // initialize variable
         Map<String, PlcResponseItem<PlcValue>> response = new HashMap<>();
-        int count = 0;
-        for (String tagName : tagNames) {
+        int index = 0;
+        for (String tagName : tagMap.keySet()) {
             PlcTag tag = tagMap.get(tagName);
             PlcValue value = null;
-            if (results.get(count).getValueSpecified()) {
-                Variant variant = results.get(count).getValue();
+            DataValue dataValue = results.get(index++);
+            if (dataValue.getValueSpecified()) {
+                Variant variant = dataValue.getValue();
                 LOGGER.trace("Response of type {}", variant.getClass().toString());
                 if (variant instanceof VariantBoolean) {
                     byte[] array = ((VariantBoolean) variant).getValue();
@@ -423,12 +434,20 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     responseCode = PlcResponseCode.OK;
                 }
             } else {
-                StatusCode statusCode = results.get(count).getStatusCode();
+                StatusCode statusCode = dataValue.getStatusCode();
                 responseCode = mapOpcStatusCode(statusCode.getStatusCode(), PlcResponseCode.UNSUPPORTED);
-                LOGGER.error("Error while reading value from OPC UA server error code: {}", results.get(count).getStatusCode().toString());
+                LOGGER.error("Error while reading value from OPC UA server error code:- " + dataValue.getStatusCode().toString());
             }
-            count++;
+
+            Metadata tagMetadata = new Metadata.Builder(responseMetadata)
+                .put(OpcMetadataKeys.QUALITY, new OpcuaQualityStatus(dataValue.getStatusCode()))
+                .put(OpcMetadataKeys.SERVER_TIMESTAMP, dataValue.getServerTimestamp())
+                .put(OpcMetadataKeys.SOURCE_TIMESTAMP, dataValue.getSourceTimestamp())
+                .put(PlcMetadataKeys.TIMESTAMP, dataValue.getServerTimestamp())
+                .put(PlcMetadataKeys.TIMESTAMP_SOURCE, TimeSource.SOFTWARE)
+                .build();
             response.put(tagName, new DefaultPlcResponseItem<>(responseCode, value));
+            metadata.put(tagName, tagMetadata);
         }
         return response;
     }

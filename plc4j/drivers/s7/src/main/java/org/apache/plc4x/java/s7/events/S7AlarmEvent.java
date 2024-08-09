@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.s7.events;
 
+import java.util.Collections;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class S7AlarmEvent implements S7Event {
+public class S7AlarmEvent extends S7EventBase {
 
 
     public enum Fields {
@@ -130,170 +131,17 @@ public class S7AlarmEvent implements S7Event {
 
     }
 
-    private final Instant timeStamp;
     private final Map<String, Object> map;
 
-    public S7AlarmEvent(Object obj) {
-        this.map = new HashMap<>();
-        if (obj instanceof S7PayloadAlarmAckInd) {
-            AlarmMessageAckPushType msg = ((S7PayloadAlarmAckInd) obj).getAlarmMessage();
-            DateAndTime dt = msg.getTimeStamp();
-            int year = (dt.getYear() >= 90) ? dt.getYear() + 1900 : dt.getYear() + 2000;
-            LocalDateTime ldt = LocalDateTime.of(year,
-                dt.getMonth(),
-                dt.getDay(),
-                dt.getHour(),
-                dt.getMinutes(),
-                dt.getSeconds(),
-                dt.getMsec() * 1000000);
-            this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
-            map.put(S7SysEvent.Fields.TIMESTAMP.name(), this.timeStamp);
-
-            List<AlarmMessageAckObjectPushType> items = msg.getMessageObjects();
-            for (AlarmMessageAckObjectPushType item : items) {
-                map.put(Fields.EVENT_ID.name(), item.getEventId());
-                map.put(Fields.TYPE.name(), "ALARMACK_IND");
-                map.put(Fields.ASSOCIATED_VALUES.name(), item.getNumberOfValues());
-
-                map.put(Fields.SIG_1_DATA_GOING.name(), item.getAckStateGoing().getSIG_1());
-                map.put(Fields.SIG_2_DATA_GOING.name(), item.getAckStateGoing().getSIG_2());
-                map.put(Fields.SIG_3_DATA_GOING.name(), item.getAckStateGoing().getSIG_3());
-                map.put(Fields.SIG_4_DATA_GOING.name(), item.getAckStateGoing().getSIG_4());
-                map.put(Fields.SIG_5_DATA_GOING.name(), item.getAckStateGoing().getSIG_5());
-                map.put(Fields.SIG_6_DATA_GOING.name(), item.getAckStateGoing().getSIG_6());
-                map.put(Fields.SIG_7_DATA_GOING.name(), item.getAckStateGoing().getSIG_7());
-                map.put(Fields.SIG_8_DATA_GOING.name(), item.getAckStateGoing().getSIG_8());
-
-                map.put(Fields.SIG_1_DATA_COMING.name(), item.getAckStateComing().getSIG_1());
-                map.put(Fields.SIG_2_DATA_COMING.name(), item.getAckStateComing().getSIG_2());
-                map.put(Fields.SIG_3_DATA_COMING.name(), item.getAckStateComing().getSIG_3());
-                map.put(Fields.SIG_4_DATA_COMING.name(), item.getAckStateComing().getSIG_4());
-                map.put(Fields.SIG_5_DATA_COMING.name(), item.getAckStateComing().getSIG_5());
-                map.put(Fields.SIG_6_DATA_COMING.name(), item.getAckStateComing().getSIG_6());
-                map.put(Fields.SIG_7_DATA_COMING.name(), item.getAckStateComing().getSIG_7());
-                map.put(Fields.SIG_8_DATA_COMING.name(), item.getAckStateComing().getSIG_8());
-            }
-
-        } else {
-
-            AlarmMessagePushType msg = null;
-
-            if (obj instanceof S7PayloadAlarm8) {
-                msg = ((S7PayloadAlarm8) obj).getAlarmMessage();
-            } else if (obj instanceof S7PayloadNotify) {
-                msg = ((S7PayloadNotify) obj).getAlarmMessage();
-            } else if (obj instanceof S7PayloadAlarmSQ) {
-                msg = ((S7PayloadAlarmSQ) obj).getAlarmMessage();
-            } else if (obj instanceof S7PayloadAlarmS) {
-                msg = ((S7PayloadAlarmS) obj).getAlarmMessage();
-            } else if (obj instanceof S7PayloadNotify8) {
-                msg = ((S7PayloadNotify8) obj).getAlarmMessage();
-            } else {
-                throw new PlcRuntimeException("Unsupported type: " + obj.getClass().getName());
-            }
-
-            DateAndTime dt = msg.getTimeStamp();
-            int year = (dt.getYear() >= 90) ? dt.getYear() + 1900 : dt.getYear() + 2000;
-            LocalDateTime ldt = LocalDateTime.of(year,
-                dt.getMonth(),
-                dt.getDay(),
-                dt.getHour(),
-                dt.getMinutes(),
-                dt.getSeconds(),
-                dt.getMsec() * 1000000);
-            this.timeStamp = ldt.toInstant(ZoneOffset.UTC);
-            map.put(S7SysEvent.Fields.TIMESTAMP.name(), this.timeStamp);
-
-            List<AlarmMessageObjectPushType> items = msg.getMessageObjects();
-            for (AlarmMessageObjectPushType item : items) {
-                map.put(Fields.EVENT_ID.name(), item.getEventId());
-
-                if (obj instanceof S7PayloadAlarm8)
-                    map.put(Fields.TYPE.name(), "ALARM8");
-                if (obj instanceof S7PayloadNotify)
-                    map.put(Fields.TYPE.name(), "NOTIFY");
-                if (obj instanceof S7PayloadAlarmSQ)
-                    map.put(Fields.TYPE.name(), "ALARMSQ");
-                if (obj instanceof S7PayloadAlarmS)
-                    map.put(Fields.TYPE.name(), "ALARMS");
-                if (obj instanceof S7PayloadNotify8)
-                    map.put(Fields.TYPE.name(), "NOTIFY8");
-
-
-                map.put(Fields.ASSOCIATED_VALUES.name(), item.getNumberOfValues());
-
-
-                map.put(Fields.SIG_1.name(), item.getEventState().getSIG_1());
-                map.put(Fields.SIG_2.name(), item.getEventState().getSIG_2());
-                map.put(Fields.SIG_3.name(), item.getEventState().getSIG_3());
-                map.put(Fields.SIG_4.name(), item.getEventState().getSIG_4());
-                map.put(Fields.SIG_5.name(), item.getEventState().getSIG_5());
-                map.put(Fields.SIG_6.name(), item.getEventState().getSIG_6());
-                map.put(Fields.SIG_7.name(), item.getEventState().getSIG_7());
-                map.put(Fields.SIG_8.name(), item.getEventState().getSIG_8());
-
-
-                map.put(Fields.SIG_1_STATE.name(), item.getLocalState().getSIG_1());
-                map.put(Fields.SIG_2_STATE.name(), item.getLocalState().getSIG_2());
-                map.put(Fields.SIG_3_STATE.name(), item.getLocalState().getSIG_3());
-                map.put(Fields.SIG_4_STATE.name(), item.getLocalState().getSIG_4());
-                map.put(Fields.SIG_5_STATE.name(), item.getLocalState().getSIG_5());
-                map.put(Fields.SIG_6_STATE.name(), item.getLocalState().getSIG_6());
-                map.put(Fields.SIG_7_STATE.name(), item.getLocalState().getSIG_7());
-                map.put(Fields.SIG_8_STATE.name(), item.getLocalState().getSIG_8());
-
-                map.put(Fields.SIG_1_DATA_GOING.name(), item.getAckStateGoing().getSIG_1());
-                map.put(Fields.SIG_2_DATA_GOING.name(), item.getAckStateGoing().getSIG_2());
-                map.put(Fields.SIG_3_DATA_GOING.name(), item.getAckStateGoing().getSIG_3());
-                map.put(Fields.SIG_4_DATA_GOING.name(), item.getAckStateGoing().getSIG_4());
-                map.put(Fields.SIG_5_DATA_GOING.name(), item.getAckStateGoing().getSIG_5());
-                map.put(Fields.SIG_6_DATA_GOING.name(), item.getAckStateGoing().getSIG_6());
-                map.put(Fields.SIG_7_DATA_GOING.name(), item.getAckStateGoing().getSIG_7());
-                map.put(Fields.SIG_8_DATA_GOING.name(), item.getAckStateGoing().getSIG_8());
-
-                map.put(Fields.SIG_1_DATA_COMING.name(), item.getAckStateComing().getSIG_1());
-                map.put(Fields.SIG_2_DATA_COMING.name(), item.getAckStateComing().getSIG_2());
-                map.put(Fields.SIG_3_DATA_COMING.name(), item.getAckStateComing().getSIG_3());
-                map.put(Fields.SIG_4_DATA_COMING.name(), item.getAckStateComing().getSIG_4());
-                map.put(Fields.SIG_5_DATA_COMING.name(), item.getAckStateComing().getSIG_5());
-                map.put(Fields.SIG_6_DATA_COMING.name(), item.getAckStateComing().getSIG_6());
-                map.put(Fields.SIG_7_DATA_COMING.name(), item.getAckStateComing().getSIG_7());
-                map.put(Fields.SIG_8_DATA_COMING.name(), item.getAckStateComing().getSIG_8());
-
-                List<AssociatedValueType> values = item.getAssociatedValues();
-                int i = 1;
-                int j = 0;
-                for (AssociatedValueType value : values) {
-                    map.put("SIG_" + i + "_DATA_STATUS", value.getReturnCode().getValue());
-                    map.put("SIG_" + i + "_DATA_SIZE", value.getTransportSize().getValue());
-                    map.put("SIG_" + i + "_DATA_LENGTH", value.getValueLength());
-                    byte[] data = new byte[value.getData().size()];
-                    j = 0;
-                    for (short s : value.getData()) {
-                        data[j] = (byte) s;
-                        j++;
-                    }
-                    map.put("SIG_" + i + "_DATA", data);
-                    i++;
-                }
-
-            }
-
-        }
-
+    S7AlarmEvent(Instant timestamp, Map<String, Object> obj) {
+        super(timestamp);
+        this.map = obj;
     }
-
-    ;
 
 
     @Override
     public Map<String, Object> getMap() {
         return map;
-    }
-
-    @Override
-    public Instant getTimestamp() {
-        return timeStamp;
     }
 
     @Override
@@ -671,5 +519,160 @@ public class S7AlarmEvent implements S7Event {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public static S7AlarmEvent of(Object obj) {
+        if (obj instanceof S7PayloadAlarmAckInd) {
+            AlarmMessageAckPushType msg = ((S7PayloadAlarmAckInd) obj).getAlarmMessage();
+            DateAndTime dt = msg.getTimeStamp();
+            int year = (dt.getYear() >= 90) ? dt.getYear() + 1900 : dt.getYear() + 2000;
+            LocalDateTime ldt = LocalDateTime.of(year,
+                dt.getMonth(),
+                dt.getDay(),
+                dt.getHour(),
+                dt.getMinutes(),
+                dt.getSeconds(),
+                dt.getMsec() * 1000000);
+            Instant timeStamp = ldt.toInstant(ZoneOffset.UTC);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put(S7SysEvent.Fields.TIMESTAMP.name(), timeStamp);
+
+            List<AlarmMessageAckObjectPushType> items = msg.getMessageObjects();
+            for (AlarmMessageAckObjectPushType item : items) {
+                map.put(Fields.EVENT_ID.name(), item.getEventId());
+                map.put(Fields.TYPE.name(), "ALARMACK_IND");
+                map.put(Fields.ASSOCIATED_VALUES.name(), item.getNumberOfValues());
+
+                map.put(Fields.SIG_1_DATA_GOING.name(), item.getAckStateGoing().getSIG_1());
+                map.put(Fields.SIG_2_DATA_GOING.name(), item.getAckStateGoing().getSIG_2());
+                map.put(Fields.SIG_3_DATA_GOING.name(), item.getAckStateGoing().getSIG_3());
+                map.put(Fields.SIG_4_DATA_GOING.name(), item.getAckStateGoing().getSIG_4());
+                map.put(Fields.SIG_5_DATA_GOING.name(), item.getAckStateGoing().getSIG_5());
+                map.put(Fields.SIG_6_DATA_GOING.name(), item.getAckStateGoing().getSIG_6());
+                map.put(Fields.SIG_7_DATA_GOING.name(), item.getAckStateGoing().getSIG_7());
+                map.put(Fields.SIG_8_DATA_GOING.name(), item.getAckStateGoing().getSIG_8());
+
+                map.put(Fields.SIG_1_DATA_COMING.name(), item.getAckStateComing().getSIG_1());
+                map.put(Fields.SIG_2_DATA_COMING.name(), item.getAckStateComing().getSIG_2());
+                map.put(Fields.SIG_3_DATA_COMING.name(), item.getAckStateComing().getSIG_3());
+                map.put(Fields.SIG_4_DATA_COMING.name(), item.getAckStateComing().getSIG_4());
+                map.put(Fields.SIG_5_DATA_COMING.name(), item.getAckStateComing().getSIG_5());
+                map.put(Fields.SIG_6_DATA_COMING.name(), item.getAckStateComing().getSIG_6());
+                map.put(Fields.SIG_7_DATA_COMING.name(), item.getAckStateComing().getSIG_7());
+                map.put(Fields.SIG_8_DATA_COMING.name(), item.getAckStateComing().getSIG_8());
+            }
+            return new S7AlarmEvent(timeStamp, map);
+        } else {
+
+            AlarmMessagePushType msg = null;
+
+            if (obj instanceof S7PayloadAlarm8) {
+                msg = ((S7PayloadAlarm8) obj).getAlarmMessage();
+            } else if (obj instanceof S7PayloadNotify) {
+                msg = ((S7PayloadNotify) obj).getAlarmMessage();
+            } else if (obj instanceof S7PayloadAlarmSQ) {
+                msg = ((S7PayloadAlarmSQ) obj).getAlarmMessage();
+            } else if (obj instanceof S7PayloadAlarmS) {
+                msg = ((S7PayloadAlarmS) obj).getAlarmMessage();
+            } else if (obj instanceof S7PayloadNotify8) {
+                msg = ((S7PayloadNotify8) obj).getAlarmMessage();
+            } else {
+                throw new PlcRuntimeException("Unsupported type: " + obj.getClass().getName());
+            }
+
+            DateAndTime dt = msg.getTimeStamp();
+            int year = (dt.getYear() >= 90) ? dt.getYear() + 1900 : dt.getYear() + 2000;
+            LocalDateTime ldt = LocalDateTime.of(year,
+                dt.getMonth(),
+                dt.getDay(),
+                dt.getHour(),
+                dt.getMinutes(),
+                dt.getSeconds(),
+                dt.getMsec() * 1000000);
+            Instant timeStamp = ldt.toInstant(ZoneOffset.UTC);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put(S7SysEvent.Fields.TIMESTAMP.name(), timeStamp);
+
+            List<AlarmMessageObjectPushType> items = msg.getMessageObjects();
+            for (AlarmMessageObjectPushType item : items) {
+                map.put(Fields.EVENT_ID.name(), item.getEventId());
+
+                if (obj instanceof S7PayloadAlarm8) {
+                    map.put(Fields.TYPE.name(), "ALARM8");
+                }
+                if (obj instanceof S7PayloadNotify) {
+                    map.put(Fields.TYPE.name(), "NOTIFY");
+                }
+                if (obj instanceof S7PayloadAlarmSQ) {
+                    map.put(Fields.TYPE.name(), "ALARMSQ");
+                }
+                if (obj instanceof S7PayloadAlarmS) {
+                    map.put(Fields.TYPE.name(), "ALARMS");
+                }
+                if (obj instanceof S7PayloadNotify8) {
+                    map.put(Fields.TYPE.name(), "NOTIFY8");
+                }
+
+                map.put(Fields.ASSOCIATED_VALUES.name(), item.getNumberOfValues());
+
+                map.put(Fields.SIG_1.name(), item.getEventState().getSIG_1());
+                map.put(Fields.SIG_2.name(), item.getEventState().getSIG_2());
+                map.put(Fields.SIG_3.name(), item.getEventState().getSIG_3());
+                map.put(Fields.SIG_4.name(), item.getEventState().getSIG_4());
+                map.put(Fields.SIG_5.name(), item.getEventState().getSIG_5());
+                map.put(Fields.SIG_6.name(), item.getEventState().getSIG_6());
+                map.put(Fields.SIG_7.name(), item.getEventState().getSIG_7());
+                map.put(Fields.SIG_8.name(), item.getEventState().getSIG_8());
+
+
+                map.put(Fields.SIG_1_STATE.name(), item.getLocalState().getSIG_1());
+                map.put(Fields.SIG_2_STATE.name(), item.getLocalState().getSIG_2());
+                map.put(Fields.SIG_3_STATE.name(), item.getLocalState().getSIG_3());
+                map.put(Fields.SIG_4_STATE.name(), item.getLocalState().getSIG_4());
+                map.put(Fields.SIG_5_STATE.name(), item.getLocalState().getSIG_5());
+                map.put(Fields.SIG_6_STATE.name(), item.getLocalState().getSIG_6());
+                map.put(Fields.SIG_7_STATE.name(), item.getLocalState().getSIG_7());
+                map.put(Fields.SIG_8_STATE.name(), item.getLocalState().getSIG_8());
+
+                map.put(Fields.SIG_1_DATA_GOING.name(), item.getAckStateGoing().getSIG_1());
+                map.put(Fields.SIG_2_DATA_GOING.name(), item.getAckStateGoing().getSIG_2());
+                map.put(Fields.SIG_3_DATA_GOING.name(), item.getAckStateGoing().getSIG_3());
+                map.put(Fields.SIG_4_DATA_GOING.name(), item.getAckStateGoing().getSIG_4());
+                map.put(Fields.SIG_5_DATA_GOING.name(), item.getAckStateGoing().getSIG_5());
+                map.put(Fields.SIG_6_DATA_GOING.name(), item.getAckStateGoing().getSIG_6());
+                map.put(Fields.SIG_7_DATA_GOING.name(), item.getAckStateGoing().getSIG_7());
+                map.put(Fields.SIG_8_DATA_GOING.name(), item.getAckStateGoing().getSIG_8());
+
+                map.put(Fields.SIG_1_DATA_COMING.name(), item.getAckStateComing().getSIG_1());
+                map.put(Fields.SIG_2_DATA_COMING.name(), item.getAckStateComing().getSIG_2());
+                map.put(Fields.SIG_3_DATA_COMING.name(), item.getAckStateComing().getSIG_3());
+                map.put(Fields.SIG_4_DATA_COMING.name(), item.getAckStateComing().getSIG_4());
+                map.put(Fields.SIG_5_DATA_COMING.name(), item.getAckStateComing().getSIG_5());
+                map.put(Fields.SIG_6_DATA_COMING.name(), item.getAckStateComing().getSIG_6());
+                map.put(Fields.SIG_7_DATA_COMING.name(), item.getAckStateComing().getSIG_7());
+                map.put(Fields.SIG_8_DATA_COMING.name(), item.getAckStateComing().getSIG_8());
+
+                List<AssociatedValueType> values = item.getAssociatedValues();
+                int i = 1;
+                int j = 0;
+                for (AssociatedValueType value : values) {
+                    map.put("SIG_" + i + "_DATA_STATUS", value.getReturnCode().getValue());
+                    map.put("SIG_" + i + "_DATA_SIZE", value.getTransportSize().getValue());
+                    map.put("SIG_" + i + "_DATA_LENGTH", value.getValueLength());
+                    byte[] data = new byte[value.getData().size()];
+                    j = 0;
+                    for (short s : value.getData()) {
+                        data[j] = (byte) s;
+                        j++;
+                    }
+                    map.put("SIG_" + i + "_DATA", data);
+                    i++;
+                }
+            }
+
+            return new S7AlarmEvent(timeStamp, map);
+        }
+
+    }
 
 }
