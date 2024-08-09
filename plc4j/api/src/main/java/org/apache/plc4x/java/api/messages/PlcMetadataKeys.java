@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,32 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.api.messages;
 
-import org.apache.plc4x.java.api.metadata.Metadata;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
-
-import java.util.Collection;
+import org.apache.plc4x.java.api.metadata.Metadata.Key;
+import org.apache.plc4x.java.api.metadata.time.TimeSource;
 
 /**
- * Base type for all response messages sent as response for a prior request
- * from a plc to the plc4x system.
+ * High level definition of common metadata keys which can occur across multiple drivers.
  */
-public interface PlcTagResponse extends PlcResponse {
+public interface PlcMetadataKeys {
 
-    @Override
-    PlcTagRequest getRequest();
+    Key<Long> TIMESTAMP = Key.of("timestamp", Long.class);
+    Key<TimeSource> TIMESTAMP_SOURCE = Key.of("timestamp_source", TimeSource.class);
 
-    Collection<String> getTagNames();
-
-    PlcTag getTag(String name);
-
-    PlcResponseCode getResponseCode(String name);
-
-    /**
-     * Returns tag level metadata information.
-     */
-    Metadata getTagMetadata(String name);
+    Key<Long> RECEIVE_TIMESTAMP = Key.of("receive_timestamp", Long.class);
 
 }

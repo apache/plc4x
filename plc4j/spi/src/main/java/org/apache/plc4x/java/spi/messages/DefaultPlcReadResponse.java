@@ -22,10 +22,11 @@ import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.metadata.Metadata;
+import org.apache.plc4x.java.api.metadata.Metadata.Key;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -46,16 +47,29 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     private final PlcReadRequest request;
     private final Map<String, ResponseItem<PlcValue>> values;
+    private final Map<String, Metadata> metadata;
 
     public DefaultPlcReadResponse(PlcReadRequest request,
                                   Map<String, ResponseItem<PlcValue>> values) {
+        this(request, values, Collections.emptyMap());
+    }
+
+    public DefaultPlcReadResponse(PlcReadRequest request,
+                                  Map<String, ResponseItem<PlcValue>> values,
+                                  Map<String, Metadata> metadata) {
         this.request = request;
         this.values = values;
+        this.metadata = Collections.unmodifiableMap(metadata);
     }
 
     @Override
     public PlcReadRequest getRequest() {
         return request;
+    }
+
+    @Override
+    public Metadata getTagMetadata(String tag) {
+        return metadata.getOrDefault(tag, Metadata.EMPTY);
     }
 
     @Override
