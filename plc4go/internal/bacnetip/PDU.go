@@ -311,13 +311,14 @@ func (a *Address) decodeAddress(addr any) error {
 					a.AddrSubnet = &addrSubnet
 
 					bcast := *a.AddrSubnet | ^(*a.AddrMask)
-					ipReverse := make(net.IP, 4)
-					binary.BigEndian.PutUint32(ipReverse, bcast&uint32(_longMask))
-					a.AddrBroadcastTuple = &AddressTuple[string, uint16]{ipReverse.String(), *a.AddrPort}
+					bcastIpReverse := make(net.IP, 4)
+					binary.BigEndian.PutUint32(bcastIpReverse, bcast&uint32(_longMask))
+					a.AddrBroadcastTuple = &AddressTuple[string, uint16]{bcastIpReverse.String(), *a.AddrPort}
 					a.log.Debug().Stringer("addrBroadcastTuple", a.AddrBroadcastTuple).Msg("addrBroadcastTuple")
+
 					portReverse := make([]byte, 2)
 					binary.BigEndian.PutUint16(portReverse, *a.AddrPort&uint16(_shortMask))
-					a.AddrAddress = append(ipReverse, portReverse...)
+					a.AddrAddress = append(parseAddr.AsSlice(), portReverse...)
 					addrLen := uint8(6)
 					a.AddrLen = &addrLen
 				}
@@ -357,6 +358,24 @@ func (a *Address) decodeAddress(addr any) error {
 
 				return nil
 			}
+
+			if ethernet_re.MatchString(addr) {
+				panic("implement me") // TODO:
+			}
+
+			// TODO: "^\d+$"
+			// TODO: "^\d+:[*]$"
+			// TODO: "^\d+:\d+$"
+			// TODO: "^0x([0-9A-Fa-f][0-9A-Fa-f])+$"
+			// TODO: "^X'([0-9A-Fa-f][0-9A-Fa-f])+'$"
+			// TODO: "^\d+:0x([0-9A-Fa-f][0-9A-Fa-f])+$"
+			// TODO: "^\d+:X'([0-9A-Fa-f][0-9A-Fa-f])+'$"
+
+			if interface_re.MatchString(addr) {
+				panic("implement me") // TODO:
+			}
+
+			return errors.New("unrecognized format")
 		case *AddressTuple[string, uint16]:
 			uaddr, port := addr.Left, addr.Right
 			a.AddrPort = &port

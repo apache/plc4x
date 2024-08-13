@@ -224,7 +224,7 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 	// leave it alone to allow for simulated spoofing
 	pdu := args.Get0PDU()
 	if pduSource := pdu.GetPDUSource(); pduSource == nil {
-		pdu.SetPDUDestination(n.address)
+		pdu.SetPDUSource(n.address)
 	} else if !n.spoofing && !pduSource.Equals(n.address) {
 		return errors.Errorf("spoofing address conflict (pduSource: '%s', nodeAddress: '%s').", pduSource, n.address)
 	}
