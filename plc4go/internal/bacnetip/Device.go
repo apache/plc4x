@@ -30,7 +30,7 @@ import (
 )
 
 type WhoIsIAmServicesRequirements interface {
-	Request(args _args, kwargs _kwargs) error
+	Request(args Args, kwargs KWArgs) error
 }
 
 type WhoIsIAmServices struct {
@@ -89,11 +89,11 @@ func (w *WhoIsIAmServices) WhoIs(lowLimit, highLimit *uint, address *Address) er
 
 	w.log.Debug().Stringer("whoIs", whoIs).Msg("WhoIs")
 
-	return w.Request(_n_args(NewPDU(whoIs, WithPDUDestination(address))), noKwargs)
+	return w.Request(NewArgs(NewPDU(whoIs, WithPDUDestination(address))), NoKWArgs)
 }
 
 // DoWhoIsRequest respond to a Who-Is request.
-func (w *WhoIsIAmServices) DoWhoIsRequest(apdu _PDU) error {
+func (w *WhoIsIAmServices) DoWhoIsRequest(apdu PDU) error {
 	w.log.Debug().Stringer("apdu", apdu).Msg("DoWhoIsRequest")
 
 	// ignore this if there's no local device
@@ -168,7 +168,7 @@ func (w *WhoIsIAmServices) IAm(address *Address) error {
 	}
 	w.log.Debug().Stringer("iAm", iAm).Msg("IAm")
 
-	return w.Request(_n_args(NewPDU(iAm, WithPDUDestination(address))), noKwargs)
+	return w.Request(NewArgs(NewPDU(iAm, WithPDUDestination(address))), NoKWArgs)
 }
 
 // DoIAmRequest responds to an I-Am request.

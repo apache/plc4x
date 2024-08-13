@@ -24,6 +24,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"strconv"
 )
 
 // maps of named clients and servers
@@ -41,24 +42,40 @@ func init() {
 	elementMap = make(map[int]*ApplicationServiceElement)
 }
 
-type _PCI struct {
+type __PCI struct {
 	pduUserData    spi.Message
 	pduSource      *Address
 	pduDestination *Address
 }
 
-func _New_PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address) *_PCI {
-	return &_PCI{pduUserData, pduSource, pduDestination}
+func new__PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address) *__PCI {
+	return &__PCI{pduUserData, pduSource, pduDestination}
 }
 
-func (p *_PCI) String() string {
-	return fmt.Sprintf("pduUserData:\n%s\n, pduSource: %s, pduDestination: %s", p.pduUserData, p.pduSource, p.pduDestination)
+func (p *__PCI) deepCopy() *__PCI {
+	pduUserData := p.pduUserData // those are immutable so no copy needed
+	pduSource := p.pduSource
+	if pduSource != nil {
+		copyPduSource := *pduSource
+		pduSource = &copyPduSource
+	}
+	pduDestination := p.pduDestination
+	if pduDestination != nil {
+		copyPduDestination := *pduDestination
+		pduDestination = &copyPduDestination
+	}
+	return &__PCI{pduUserData, pduSource, pduDestination}
+}
+
+func (p *__PCI) String() string {
+	return fmt.Sprintf("__PCI{pduUserData:%s, pduSource: %s, pduDestination: %s}", p.pduUserData, p.pduSource, p.pduDestination)
 }
 
 // _Client is an interface used for documentation
 type _Client interface {
-	Request(args _args, kwargs _kwargs) error
-	Confirmation(args _args, kwargs _kwargs) error
+	fmt.Stringer
+	Request(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwargs KWArgs) error
 	_setClientPeer(server _Server)
 	getClientId() *int
 }
@@ -89,7 +106,7 @@ func NewClient(localLog zerolog.Logger, cid *int, rootStruct _Client) (*Client, 
 			}
 
 			// Note: we need to pass the rootStruct (which should contain c as delegate) here
-			if err := bind(localLog, rootStruct, server); err != nil {
+			if err := Bind(localLog, rootStruct, server); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -97,16 +114,16 @@ func NewClient(localLog zerolog.Logger, cid *int, rootStruct _Client) (*Client, 
 	return c, nil
 }
 
-func (c *Client) Request(args _args, kwargs _kwargs) error {
-	c.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
+func (c *Client) Request(args Args, kwargs KWArgs) error {
+	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	if c.clientPeer == nil {
-		return errors.New("unbound client")
+		return errors.Errorf("unbound client: %s", c)
 	}
 	return c.clientPeer.Indication(args, kwargs)
 }
 
-func (c *Client) Confirmation(args _args, kwargs _kwargs) error {
+func (c *Client) Confirmation(args Args, kwargs KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -121,15 +138,16 @@ func (c *Client) getClientId() *int {
 func (c *Client) String() string {
 	clientPeer := ""
 	if c.clientPeer != nil {
-		clientPeer = fmt.Sprintf(" clientPeerId: %d", c.clientPeer.getServerId())
+		clientPeer = fmt.Sprintf(", clientPeerId: %d", c.clientPeer.getServerId())
 	}
-	return fmt.Sprintf("Client(cid:%d)%s", c.clientID, clientPeer)
+	return fmt.Sprintf("Client(cid:%d%s)", c.clientID, clientPeer)
 }
 
 // _Server is an interface used for documentation
 type _Server interface {
-	Indication(args _args, kwargs _kwargs) error
-	Response(args _args, kwargs _kwargs) error
+	fmt.Stringer
+	Indication(args Args, kwargs KWArgs) error
+	Response(args Args, kwargs KWArgs) error
 	_setServerPeer(serverPeer _Client)
 	getServerId() *int
 }
@@ -160,7 +178,7 @@ func NewServer(localLog zerolog.Logger, sid *int, rootStruct _Server) (*Server, 
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
-			if err := bind(localLog, client, rootStruct); err != nil {
+			if err := Bind(localLog, client, rootStruct); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -168,12 +186,11 @@ func NewServer(localLog zerolog.Logger, sid *int, rootStruct _Server) (*Server, 
 	return s, nil
 }
 
-func (s *Server) Indication(_args, _kwargs) error {
+func (s *Server) Indication(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
-
-func (s *Server) Response(args _args, kwargs _kwargs) error {
-	s.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
+func (s *Server) Response(args Args, kwargs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	if s.serverPeer == nil {
 		return errors.New("unbound server")
@@ -192,17 +209,17 @@ func (s *Server) getServerId() *int {
 func (s *Server) String() string {
 	serverPeer := ""
 	if s.serverPeer != nil {
-		serverPeer = fmt.Sprintf(" serverPeerId: %d", s.serverPeer.getClientId())
+		serverPeer = fmt.Sprintf(", serverPeerId: %d", s.serverPeer.getClientId())
 	}
-	return fmt.Sprintf("Server(cid:%d)%s", s.serverID, serverPeer)
+	return fmt.Sprintf("Server(cid:%d%s)", s.serverID, serverPeer)
 }
 
 // _ServiceAccessPoint is an interface used for documentation
 type _ServiceAccessPoint interface {
-	SapConfirmation(_args, _kwargs) error
-	SapRequest(_args, _kwargs) error
-	SapIndication(_args, _kwargs) error
-	SapResponse(_args, _kwargs) error
+	SapConfirmation(Args, KWArgs) error
+	SapRequest(Args, KWArgs) error
+	SapIndication(Args, KWArgs) error
+	SapResponse(Args, KWArgs) error
 	_setServiceElement(serviceElement _ApplicationServiceElement)
 }
 
@@ -230,7 +247,7 @@ func NewServiceAccessPoint(localLog zerolog.Logger, sapID *int, rootStruct _Serv
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
-			if err := bind(localLog, element, rootStruct); err != nil {
+			if err := Bind(localLog, element, rootStruct); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -238,8 +255,16 @@ func NewServiceAccessPoint(localLog zerolog.Logger, sapID *int, rootStruct _Serv
 	return s, nil
 }
 
-func (s *ServiceAccessPoint) SapRequest(args _args, kwargs _kwargs) error {
-	s.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
+func (s *ServiceAccessPoint) String() string {
+	serviceID := "-"
+	if s.serviceID != nil {
+		serviceID = strconv.Itoa(*s.serviceID)
+	}
+	return fmt.Sprintf("ServiceAccessPoint(serviceID:%v, serviceElement: %s)", serviceID, s.serviceElement)
+}
+
+func (s *ServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
@@ -247,12 +272,12 @@ func (s *ServiceAccessPoint) SapRequest(args _args, kwargs _kwargs) error {
 	return s.serviceElement.Indication(args, kwargs)
 }
 
-func (s *ServiceAccessPoint) SapIndication(_args, _kwargs) error {
+func (s *ServiceAccessPoint) SapIndication(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *ServiceAccessPoint) SapResponse(args _args, kwargs _kwargs) error {
-	s.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
+func (s *ServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
+	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
 		return errors.New("unbound service access point")
@@ -260,7 +285,7 @@ func (s *ServiceAccessPoint) SapResponse(args _args, kwargs _kwargs) error {
 	return s.serviceElement.Confirmation(args, kwargs)
 }
 
-func (s *ServiceAccessPoint) SapConfirmation(_args, _kwargs) error {
+func (s *ServiceAccessPoint) SapConfirmation(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -270,10 +295,11 @@ func (s *ServiceAccessPoint) _setServiceElement(serviceElement _ApplicationServi
 
 // _ApplicationServiceElement is an interface used for documentation
 type _ApplicationServiceElement interface {
-	Request(args _args, kwargs _kwargs) error
-	Indication(args _args, kwargs _kwargs) error
-	Response(args _args, kwargs _kwargs) error
-	Confirmation(args _args, kwargs _kwargs) error
+	fmt.Stringer
+	Request(args Args, kwargs KWArgs) error
+	Indication(args Args, kwargs KWArgs) error
+	Response(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwargs KWArgs) error
 	_setElementService(elementService _ServiceAccessPoint)
 }
 
@@ -302,7 +328,7 @@ func NewApplicationServiceElement(localLog zerolog.Logger, aseID *int, rootStruc
 			}
 
 			// Note: we need to pass the rootStruct (which should contain a as delegate) here
-			if err := bind(localLog, rootStruct, service); err != nil {
+			if err := Bind(localLog, rootStruct, service); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -310,8 +336,8 @@ func NewApplicationServiceElement(localLog zerolog.Logger, aseID *int, rootStruc
 	return a, nil
 }
 
-func (a *ApplicationServiceElement) Request(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
+func (a *ApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
@@ -320,12 +346,12 @@ func (a *ApplicationServiceElement) Request(args _args, kwargs _kwargs) error {
 	return a.elementService.SapIndication(args, kwargs)
 }
 
-func (a *ApplicationServiceElement) Indication(_args, _kwargs) error {
+func (a *ApplicationServiceElement) Indication(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (a *ApplicationServiceElement) Response(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
+func (a *ApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	if a.elementService == nil {
 		return errors.New("unbound application service element")
@@ -334,7 +360,7 @@ func (a *ApplicationServiceElement) Response(args _args, kwargs _kwargs) error {
 	return a.elementService.SapConfirmation(args, kwargs)
 }
 
-func (a *ApplicationServiceElement) Confirmation(_args, _kwargs) error {
+func (a *ApplicationServiceElement) Confirmation(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
@@ -342,8 +368,8 @@ func (a *ApplicationServiceElement) _setElementService(elementService _ServiceAc
 	a.elementService = elementService
 }
 
-// bind a list of clients and servers together, top down
-func bind(localLog zerolog.Logger, args ...any) error {
+// Bind a list of clients and servers together, top down
+func Bind(localLog zerolog.Logger, args ...any) error {
 	// generic bind is pairs of names
 	if len(args) == 0 {
 		// find unbound clients and bind them
@@ -362,7 +388,7 @@ func bind(localLog zerolog.Logger, args ...any) error {
 				return errors.Errorf("server already bound %d", cid)
 			}
 
-			if err := bind(localLog, client, server); err != nil {
+			if err := Bind(localLog, client, server); err != nil {
 				return errors.Wrap(err, "error binding")
 			}
 		}
@@ -396,7 +422,7 @@ func bind(localLog zerolog.Logger, args ...any) error {
 				return errors.Errorf("element already bound %d", eid)
 			}
 
-			if err := bind(localLog, element, service); err != nil {
+			if err := Bind(localLog, element, service); err != nil {
 				return errors.Wrap(err, "error binding")
 			}
 		}
@@ -418,9 +444,11 @@ func bind(localLog zerolog.Logger, args ...any) error {
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
 		client := args[i]
-		localLog.Debug().Interface("client", client).Msg("client")
+		clientStringer, _ := client.(fmt.Stringer)
+		localLog.Debug().Stringer("client", clientStringer).Msg("client pair element")
 		server := args[i+1]
-		localLog.Debug().Interface("server", server).Msg("server")
+		serverStringer, _ := server.(fmt.Stringer)
+		localLog.Debug().Stringer("server", serverStringer).Msg("server pair element")
 
 		// make sure we're binding clients and servers
 		clientCast, okClient := client.(_Client)
@@ -428,13 +456,15 @@ func bind(localLog zerolog.Logger, args ...any) error {
 		elementServiceCast, okElementService := client.(_ApplicationServiceElement)
 		serviceAccessPointCast, okServiceAccessPoint := server.(_ServiceAccessPoint)
 		if okClient && okServer {
+			localLog.Trace().Msg("linking client-server")
 			clientCast._setClientPeer(serverCast)
 			serverCast._setServerPeer(clientCast)
 		} else if okElementService && okServiceAccessPoint { // we could be binding application clients and servers
+			localLog.Trace().Msg("linking service-elements")
 			elementServiceCast._setElementService(serviceAccessPointCast)
 			serviceAccessPointCast._setServiceElement(elementServiceCast)
 		} else {
-			return errors.New("bind() requires a client and a server")
+			return errors.New("Bind() requires a client and a server")
 		}
 	}
 	localLog.Debug().Msg("bound")

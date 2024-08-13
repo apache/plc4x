@@ -329,19 +329,19 @@ func (_c *mock_IOCB_getPriority_Call) RunAndReturn(run func() int) *mock_IOCB_ge
 }
 
 // getRequest provides a mock function with given fields:
-func (_m *mock_IOCB) getRequest() _PDU {
+func (_m *mock_IOCB) getRequest() PDU {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for getRequest")
 	}
 
-	var r0 _PDU
-	if rf, ok := ret.Get(0).(func() _PDU); ok {
+	var r0 PDU
+	if rf, ok := ret.Get(0).(func() PDU); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(_PDU)
+			r0 = ret.Get(0).(PDU)
 		}
 	}
 
@@ -365,12 +365,12 @@ func (_c *mock_IOCB_getRequest_Call) Run(run func()) *mock_IOCB_getRequest_Call 
 	return _c
 }
 
-func (_c *mock_IOCB_getRequest_Call) Return(_a0 _PDU) *mock_IOCB_getRequest_Call {
+func (_c *mock_IOCB_getRequest_Call) Return(_a0 PDU) *mock_IOCB_getRequest_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *mock_IOCB_getRequest_Call) RunAndReturn(run func() _PDU) *mock_IOCB_getRequest_Call {
+func (_c *mock_IOCB_getRequest_Call) RunAndReturn(run func() PDU) *mock_IOCB_getRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -442,7 +442,7 @@ func (_c *mock_IOCB_setIOError_Call) RunAndReturn(run func(error)) *mock_IOCB_se
 }
 
 // setIOResponse provides a mock function with given fields: msg
-func (_m *mock_IOCB) setIOResponse(msg _PDU) {
+func (_m *mock_IOCB) setIOResponse(msg PDU) {
 	_m.Called(msg)
 }
 
@@ -452,14 +452,14 @@ type mock_IOCB_setIOResponse_Call struct {
 }
 
 // setIOResponse is a helper method to define mock.On call
-//   - msg _PDU
+//   - msg PDU
 func (_e *mock_IOCB_Expecter) setIOResponse(msg interface{}) *mock_IOCB_setIOResponse_Call {
 	return &mock_IOCB_setIOResponse_Call{Call: _e.mock.On("setIOResponse", msg)}
 }
 
-func (_c *mock_IOCB_setIOResponse_Call) Run(run func(msg _PDU)) *mock_IOCB_setIOResponse_Call {
+func (_c *mock_IOCB_setIOResponse_Call) Run(run func(msg PDU)) *mock_IOCB_setIOResponse_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_PDU))
+		run(args[0].(PDU))
 	})
 	return _c
 }
@@ -469,7 +469,7 @@ func (_c *mock_IOCB_setIOResponse_Call) Return() *mock_IOCB_setIOResponse_Call {
 	return _c
 }
 
-func (_c *mock_IOCB_setIOResponse_Call) RunAndReturn(run func(_PDU)) *mock_IOCB_setIOResponse_Call {
+func (_c *mock_IOCB_setIOResponse_Call) RunAndReturn(run func(PDU)) *mock_IOCB_setIOResponse_Call {
 	_c.Call.Return(run)
 	return _c
 }

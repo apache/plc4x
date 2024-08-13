@@ -21,27 +21,37 @@ package bacnetip
 
 import (
 	"math"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
 var running bool
 var spin = 10 * time.Millisecond
 var sleepTime = 0 * time.Nanosecond
-var deferredFunctions []func() error
+var DeferredFunctions []func() error
 
 var ErrorCallback func(err error)
 
 func init() {
 	running = true
 	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+		<-c
+		running = false
+	}()
+	go func() {
 		for running {
 			// get the next task
-			task, delta := _taskManager.getNextTask()
+			task, delta := _taskManager.GetNextTask()
 			if task != nil {
-				_taskManager.processTask(task)
+				_taskManager.ProcessTask(task)
 			}
 
-			// if delta is None, there are no tasks, default to spinning
+			// if delta is None, there are no Tasks, default to spinning
 			if delta == 0 {
 				delta = spin
 			}
@@ -56,7 +66,7 @@ func init() {
 			delta = time.Duration(math.Min(float64(delta), float64(spin)))
 
 			// if there are deferred functions, use a small delta
-			if len(deferredFunctions) > 0 {
+			if len(DeferredFunctions) > 0 {
 				delta = time.Duration(math.Min(float64(delta), float64(1*time.Millisecond)))
 			}
 
@@ -64,9 +74,9 @@ func init() {
 			time.Sleep(delta)
 
 			// check for deferred functions
-			fnlist := deferredFunctions
+			fnlist := DeferredFunctions
 			// empty list
-			deferredFunctions = nil
+			DeferredFunctions = nil
 			for _, fn := range fnlist {
 				if err := fn(); err != nil {
 					if ErrorCallback != nil {
@@ -78,9 +88,13 @@ func init() {
 	}()
 }
 
+func RunOnce() {
+	// TODO: implement me
+}
+
 func Deferred(fn func() error) {
 	// append it to the list
-	deferredFunctions = append(deferredFunctions, fn)
+	DeferredFunctions = append(DeferredFunctions, fn)
 
 	// trigger the task manager event
 	// TODO: there is no trigger

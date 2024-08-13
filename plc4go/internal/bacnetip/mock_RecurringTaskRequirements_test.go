@@ -36,12 +36,12 @@ func (_m *MockRecurringTaskRequirements) EXPECT() *MockRecurringTaskRequirements
 	return &MockRecurringTaskRequirements_Expecter{mock: &_m.Mock}
 }
 
-// processTask provides a mock function with given fields:
-func (_m *MockRecurringTaskRequirements) processTask() error {
+// ProcessTask provides a mock function with given fields:
+func (_m *MockRecurringTaskRequirements) ProcessTask() error {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for processTask")
+		panic("no return value specified for ProcessTask")
 	}
 
 	var r0 error
@@ -54,29 +54,29 @@ func (_m *MockRecurringTaskRequirements) processTask() error {
 	return r0
 }
 
-// MockRecurringTaskRequirements_processTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'processTask'
-type MockRecurringTaskRequirements_processTask_Call struct {
+// MockRecurringTaskRequirements_ProcessTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ProcessTask'
+type MockRecurringTaskRequirements_ProcessTask_Call struct {
 	*mock.Call
 }
 
-// processTask is a helper method to define mock.On call
-func (_e *MockRecurringTaskRequirements_Expecter) processTask() *MockRecurringTaskRequirements_processTask_Call {
-	return &MockRecurringTaskRequirements_processTask_Call{Call: _e.mock.On("processTask")}
+// ProcessTask is a helper method to define mock.On call
+func (_e *MockRecurringTaskRequirements_Expecter) ProcessTask() *MockRecurringTaskRequirements_ProcessTask_Call {
+	return &MockRecurringTaskRequirements_ProcessTask_Call{Call: _e.mock.On("ProcessTask")}
 }
 
-func (_c *MockRecurringTaskRequirements_processTask_Call) Run(run func()) *MockRecurringTaskRequirements_processTask_Call {
+func (_c *MockRecurringTaskRequirements_ProcessTask_Call) Run(run func()) *MockRecurringTaskRequirements_ProcessTask_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run()
 	})
 	return _c
 }
 
-func (_c *MockRecurringTaskRequirements_processTask_Call) Return(_a0 error) *MockRecurringTaskRequirements_processTask_Call {
+func (_c *MockRecurringTaskRequirements_ProcessTask_Call) Return(_a0 error) *MockRecurringTaskRequirements_ProcessTask_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockRecurringTaskRequirements_processTask_Call) RunAndReturn(run func() error) *MockRecurringTaskRequirements_processTask_Call {
+func (_c *MockRecurringTaskRequirements_ProcessTask_Call) RunAndReturn(run func() error) *MockRecurringTaskRequirements_ProcessTask_Call {
 	_c.Call.Return(run)
 	return _c
 }

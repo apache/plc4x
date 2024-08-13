@@ -40,7 +40,7 @@ func (_m *MockSSMSAPRequirements) EXPECT() *MockSSMSAPRequirements_Expecter {
 }
 
 // Confirmation provides a mock function with given fields: args, kwargs
-func (_m *MockSSMSAPRequirements) Confirmation(args _args, kwargs _kwargs) error {
+func (_m *MockSSMSAPRequirements) Confirmation(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -48,7 +48,7 @@ func (_m *MockSSMSAPRequirements) Confirmation(args _args, kwargs _kwargs) error
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -63,15 +63,15 @@ type MockSSMSAPRequirements_Confirmation_Call struct {
 }
 
 // Confirmation is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *MockSSMSAPRequirements_Expecter) Confirmation(args interface{}, kwargs interface{}) *MockSSMSAPRequirements_Confirmation_Call {
 	return &MockSSMSAPRequirements_Confirmation_Call{Call: _e.mock.On("Confirmation", args, kwargs)}
 }
 
-func (_c *MockSSMSAPRequirements_Confirmation_Call) Run(run func(args _args, kwargs _kwargs)) *MockSSMSAPRequirements_Confirmation_Call {
+func (_c *MockSSMSAPRequirements_Confirmation_Call) Run(run func(args Args, kwargs KWArgs)) *MockSSMSAPRequirements_Confirmation_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -81,7 +81,7 @@ func (_c *MockSSMSAPRequirements_Confirmation_Call) Return(_a0 error) *MockSSMSA
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements_Confirmation_Call) RunAndReturn(run func(_args, _kwargs) error) *MockSSMSAPRequirements_Confirmation_Call {
+func (_c *MockSSMSAPRequirements_Confirmation_Call) RunAndReturn(run func(Args, KWArgs) error) *MockSSMSAPRequirements_Confirmation_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -656,7 +656,7 @@ func (_c *MockSSMSAPRequirements_RemoveServerTransaction_Call) RunAndReturn(run 
 }
 
 // Request provides a mock function with given fields: args, kwargs
-func (_m *MockSSMSAPRequirements) Request(args _args, kwargs _kwargs) error {
+func (_m *MockSSMSAPRequirements) Request(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -664,7 +664,7 @@ func (_m *MockSSMSAPRequirements) Request(args _args, kwargs _kwargs) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -679,15 +679,15 @@ type MockSSMSAPRequirements_Request_Call struct {
 }
 
 // Request is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *MockSSMSAPRequirements_Expecter) Request(args interface{}, kwargs interface{}) *MockSSMSAPRequirements_Request_Call {
 	return &MockSSMSAPRequirements_Request_Call{Call: _e.mock.On("Request", args, kwargs)}
 }
 
-func (_c *MockSSMSAPRequirements_Request_Call) Run(run func(args _args, kwargs _kwargs)) *MockSSMSAPRequirements_Request_Call {
+func (_c *MockSSMSAPRequirements_Request_Call) Run(run func(args Args, kwargs KWArgs)) *MockSSMSAPRequirements_Request_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -697,13 +697,13 @@ func (_c *MockSSMSAPRequirements_Request_Call) Return(_a0 error) *MockSSMSAPRequ
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements_Request_Call) RunAndReturn(run func(_args, _kwargs) error) *MockSSMSAPRequirements_Request_Call {
+func (_c *MockSSMSAPRequirements_Request_Call) RunAndReturn(run func(Args, KWArgs) error) *MockSSMSAPRequirements_Request_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SapConfirmation provides a mock function with given fields: _a0, _a1
-func (_m *MockSSMSAPRequirements) SapConfirmation(_a0 _args, _a1 _kwargs) error {
+func (_m *MockSSMSAPRequirements) SapConfirmation(_a0 Args, _a1 KWArgs) error {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
@@ -711,7 +711,7 @@ func (_m *MockSSMSAPRequirements) SapConfirmation(_a0 _args, _a1 _kwargs) error 
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
@@ -726,15 +726,15 @@ type MockSSMSAPRequirements_SapConfirmation_Call struct {
 }
 
 // SapConfirmation is a helper method to define mock.On call
-//   - _a0 _args
-//   - _a1 _kwargs
+//   - _a0 Args
+//   - _a1 KWArgs
 func (_e *MockSSMSAPRequirements_Expecter) SapConfirmation(_a0 interface{}, _a1 interface{}) *MockSSMSAPRequirements_SapConfirmation_Call {
 	return &MockSSMSAPRequirements_SapConfirmation_Call{Call: _e.mock.On("SapConfirmation", _a0, _a1)}
 }
 
-func (_c *MockSSMSAPRequirements_SapConfirmation_Call) Run(run func(_a0 _args, _a1 _kwargs)) *MockSSMSAPRequirements_SapConfirmation_Call {
+func (_c *MockSSMSAPRequirements_SapConfirmation_Call) Run(run func(_a0 Args, _a1 KWArgs)) *MockSSMSAPRequirements_SapConfirmation_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -744,13 +744,13 @@ func (_c *MockSSMSAPRequirements_SapConfirmation_Call) Return(_a0 error) *MockSS
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements_SapConfirmation_Call) RunAndReturn(run func(_args, _kwargs) error) *MockSSMSAPRequirements_SapConfirmation_Call {
+func (_c *MockSSMSAPRequirements_SapConfirmation_Call) RunAndReturn(run func(Args, KWArgs) error) *MockSSMSAPRequirements_SapConfirmation_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SapIndication provides a mock function with given fields: _a0, _a1
-func (_m *MockSSMSAPRequirements) SapIndication(_a0 _args, _a1 _kwargs) error {
+func (_m *MockSSMSAPRequirements) SapIndication(_a0 Args, _a1 KWArgs) error {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
@@ -758,7 +758,7 @@ func (_m *MockSSMSAPRequirements) SapIndication(_a0 _args, _a1 _kwargs) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
@@ -773,15 +773,15 @@ type MockSSMSAPRequirements_SapIndication_Call struct {
 }
 
 // SapIndication is a helper method to define mock.On call
-//   - _a0 _args
-//   - _a1 _kwargs
+//   - _a0 Args
+//   - _a1 KWArgs
 func (_e *MockSSMSAPRequirements_Expecter) SapIndication(_a0 interface{}, _a1 interface{}) *MockSSMSAPRequirements_SapIndication_Call {
 	return &MockSSMSAPRequirements_SapIndication_Call{Call: _e.mock.On("SapIndication", _a0, _a1)}
 }
 
-func (_c *MockSSMSAPRequirements_SapIndication_Call) Run(run func(_a0 _args, _a1 _kwargs)) *MockSSMSAPRequirements_SapIndication_Call {
+func (_c *MockSSMSAPRequirements_SapIndication_Call) Run(run func(_a0 Args, _a1 KWArgs)) *MockSSMSAPRequirements_SapIndication_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -791,13 +791,13 @@ func (_c *MockSSMSAPRequirements_SapIndication_Call) Return(_a0 error) *MockSSMS
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements_SapIndication_Call) RunAndReturn(run func(_args, _kwargs) error) *MockSSMSAPRequirements_SapIndication_Call {
+func (_c *MockSSMSAPRequirements_SapIndication_Call) RunAndReturn(run func(Args, KWArgs) error) *MockSSMSAPRequirements_SapIndication_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SapRequest provides a mock function with given fields: _a0, _a1
-func (_m *MockSSMSAPRequirements) SapRequest(_a0 _args, _a1 _kwargs) error {
+func (_m *MockSSMSAPRequirements) SapRequest(_a0 Args, _a1 KWArgs) error {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
@@ -805,7 +805,7 @@ func (_m *MockSSMSAPRequirements) SapRequest(_a0 _args, _a1 _kwargs) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
@@ -820,15 +820,15 @@ type MockSSMSAPRequirements_SapRequest_Call struct {
 }
 
 // SapRequest is a helper method to define mock.On call
-//   - _a0 _args
-//   - _a1 _kwargs
+//   - _a0 Args
+//   - _a1 KWArgs
 func (_e *MockSSMSAPRequirements_Expecter) SapRequest(_a0 interface{}, _a1 interface{}) *MockSSMSAPRequirements_SapRequest_Call {
 	return &MockSSMSAPRequirements_SapRequest_Call{Call: _e.mock.On("SapRequest", _a0, _a1)}
 }
 
-func (_c *MockSSMSAPRequirements_SapRequest_Call) Run(run func(_a0 _args, _a1 _kwargs)) *MockSSMSAPRequirements_SapRequest_Call {
+func (_c *MockSSMSAPRequirements_SapRequest_Call) Run(run func(_a0 Args, _a1 KWArgs)) *MockSSMSAPRequirements_SapRequest_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -838,13 +838,13 @@ func (_c *MockSSMSAPRequirements_SapRequest_Call) Return(_a0 error) *MockSSMSAPR
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements_SapRequest_Call) RunAndReturn(run func(_args, _kwargs) error) *MockSSMSAPRequirements_SapRequest_Call {
+func (_c *MockSSMSAPRequirements_SapRequest_Call) RunAndReturn(run func(Args, KWArgs) error) *MockSSMSAPRequirements_SapRequest_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SapResponse provides a mock function with given fields: _a0, _a1
-func (_m *MockSSMSAPRequirements) SapResponse(_a0 _args, _a1 _kwargs) error {
+func (_m *MockSSMSAPRequirements) SapResponse(_a0 Args, _a1 KWArgs) error {
 	ret := _m.Called(_a0, _a1)
 
 	if len(ret) == 0 {
@@ -852,7 +852,7 @@ func (_m *MockSSMSAPRequirements) SapResponse(_a0 _args, _a1 _kwargs) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Error(0)
@@ -867,15 +867,15 @@ type MockSSMSAPRequirements_SapResponse_Call struct {
 }
 
 // SapResponse is a helper method to define mock.On call
-//   - _a0 _args
-//   - _a1 _kwargs
+//   - _a0 Args
+//   - _a1 KWArgs
 func (_e *MockSSMSAPRequirements_Expecter) SapResponse(_a0 interface{}, _a1 interface{}) *MockSSMSAPRequirements_SapResponse_Call {
 	return &MockSSMSAPRequirements_SapResponse_Call{Call: _e.mock.On("SapResponse", _a0, _a1)}
 }
 
-func (_c *MockSSMSAPRequirements_SapResponse_Call) Run(run func(_a0 _args, _a1 _kwargs)) *MockSSMSAPRequirements_SapResponse_Call {
+func (_c *MockSSMSAPRequirements_SapResponse_Call) Run(run func(_a0 Args, _a1 KWArgs)) *MockSSMSAPRequirements_SapResponse_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -885,7 +885,52 @@ func (_c *MockSSMSAPRequirements_SapResponse_Call) Return(_a0 error) *MockSSMSAP
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements_SapResponse_Call) RunAndReturn(run func(_args, _kwargs) error) *MockSSMSAPRequirements_SapResponse_Call {
+func (_c *MockSSMSAPRequirements_SapResponse_Call) RunAndReturn(run func(Args, KWArgs) error) *MockSSMSAPRequirements_SapResponse_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// String provides a mock function with given fields:
+func (_m *MockSSMSAPRequirements) String() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for String")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockSSMSAPRequirements_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockSSMSAPRequirements_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockSSMSAPRequirements_Expecter) String() *MockSSMSAPRequirements_String_Call {
+	return &MockSSMSAPRequirements_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockSSMSAPRequirements_String_Call) Run(run func()) *MockSSMSAPRequirements_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockSSMSAPRequirements_String_Call) Return(_a0 string) *MockSSMSAPRequirements_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockSSMSAPRequirements_String_Call) RunAndReturn(run func() string) *MockSSMSAPRequirements_String_Call {
 	_c.Call.Return(run)
 	return _c
 }

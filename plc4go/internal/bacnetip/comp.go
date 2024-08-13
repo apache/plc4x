@@ -21,35 +21,35 @@ package bacnetip
 
 import "fmt"
 
-type _args []any
+type Args []any
 
-var noArgs = _n_args()
+var NoArgs = NewArgs()
 
-func _n_args(args ...any) _args {
+func NewArgs(args ...any) Args {
 	return args
 }
 
-func (a _args) _0PDU() _PDU {
-	return a[0].(_PDU)
+func (a Args) Get0PDU() PDU {
+	return a[0].(PDU)
 }
 
-func (a _args) _1PDU() _PDU {
-	return a[1].(_PDU)
+func (a Args) Get1PDU() PDU {
+	return a[1].(PDU)
 }
 
-func (a _args) _0NetworkAdapter() *NetworkAdapter {
+func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
 
-func (a _args) _0MultiplexClient() *_MultiplexClient {
+func (a Args) Get0MultiplexClient() *_MultiplexClient {
 	return a[0].(*_MultiplexClient)
 }
 
-func (a _args) _0MultiplexServer() *_MultiplexServer {
+func (a Args) Get0MultiplexServer() *_MultiplexServer {
 	return a[0].(*_MultiplexServer)
 }
 
-func (a _args) String() string {
+func (a Args) String() string {
 	r := ""
 	for i, ea := range a {
 		r += fmt.Sprintf("%d: %v, ", i, ea)
@@ -60,15 +60,15 @@ func (a _args) String() string {
 	return r
 }
 
-type _kwargs map[knownKey]any
+type KWArgs map[knownKey]any
 
-var noKwargs = _n_kwn_args()
+var NoKWArgs = NewKWArgs()
 
-func _n_kwn_args(kw ...any) _kwargs {
+func NewKWArgs(kw ...any) KWArgs {
 	if len(kw)%2 != 0 {
-		panic("_kwargs must have an even number of arguments")
+		panic("KWArgs must have an even number of arguments")
 	}
-	r := make(_kwargs)
+	r := make(KWArgs)
 	for i := 0; i < len(kw)-1; i += 2 {
 		key, ok := kw[i].(knownKey)
 		if !ok {
@@ -78,7 +78,7 @@ func _n_kwn_args(kw ...any) _kwargs {
 	}
 	return r
 }
-func (k _kwargs) String() string {
+func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
 		r += fmt.Sprintf("%s=%v, ", kk, ea)

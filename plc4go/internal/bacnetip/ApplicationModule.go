@@ -215,7 +215,7 @@ type Application struct {
 	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]any
-	helpers          map[string]func(pdu _PDU) error
+	helpers          map[string]func(pdu PDU) error
 
 	_startupDisabled bool
 
@@ -273,6 +273,10 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, dev
 		}
 	}
 	return a, nil
+}
+
+func (a *Application) String() string {
+	return fmt.Sprintf("Application(TBD...)") // TODO: fill some info here
 }
 
 // AddObject adds an object to the local collection
@@ -375,9 +379,9 @@ func (a *Application) GetServicesSupported() []string {
 	return servicesSupported
 }
 
-func (a *Application) Request(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
-	apdu := args._0PDU()
+func (a *Application) Request(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+	apdu := args.Get0PDU()
 
 	// double-check the input is the right kind of APDU
 	switch apdu.GetMessage().(type) {
@@ -388,9 +392,9 @@ func (a *Application) Request(args _args, kwargs _kwargs) error {
 	return a.ApplicationServiceElement.Request(args, kwargs)
 }
 
-func (a *Application) Indication(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
-	apdu := args._0PDU()
+func (a *Application) Indication(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	apdu := args.Get0PDU()
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
@@ -411,7 +415,7 @@ func (a *Application) Indication(args _args, kwargs _kwargs) error {
 	if err := helperFn(apdu); err != nil {
 		a.log.Debug().Err(err).Msg("err result")
 		// TODO: do proper mapping
-		if err := a.Response(_n_args(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
+		if err := a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
 			return err
 		}
 	}
@@ -466,7 +470,7 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 	return queue.RequestIO(iocb)
 }
 
-func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) error {
+func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error {
 	a.log.Debug().
 		Stringer("address", address).
 		Stringer("apdu", apdu).
@@ -508,11 +512,11 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) erro
 	return nil
 }
 
-func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
+func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 	a.log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
-	if err := a.Application.Request(_n_args(apdu), noKwargs); err != nil {
+	if err := a.Application.Request(NewArgs(apdu), NoKWArgs); err != nil {
 		a.log.Error().Stack().Err(err).Msg("Uh oh")
 		return
 	}
@@ -526,9 +530,9 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 	}
 }
 
-func (a *ApplicationIOController) Request(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
-	apdu := args._0PDU()
+func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+	apdu := args.Get0PDU()
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); !ok {
@@ -539,9 +543,9 @@ func (a *ApplicationIOController) Request(args _args, kwargs _kwargs) error {
 	return a.Application.Request(args, kwargs)
 }
 
-func (a *ApplicationIOController) Confirmation(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Confirmation")
-	apdu := args._0PDU()
+func (a *ApplicationIOController) Confirmation(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+	apdu := args.Get0PDU()
 
 	// this is an ack, error, reject or abort
 	return a._AppComplete(apdu.GetPDUSource(), apdu)
@@ -606,16 +610,16 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil)
+	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
-	if err := bind(localLog, b.nse, b.nsap); err != nil {
+	if err := Bind(localLog, b.nse, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding network stack")
 	}
 
 	// bind the top layers
-	if err := bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
+	if err := Bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
@@ -634,7 +638,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// bind the bottom layers
-	if err := bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
+	if err := Bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
 		return nil, errors.Wrap(err, "error binding bottom layers")
 	}
 
@@ -711,16 +715,16 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil)
+	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
-	if err := bind(localLog, b.nse, b.nsap); err != nil {
+	if err := Bind(localLog, b.nse, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding network stack")
 	}
 
 	// bind the top layers
-	if err := bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
+	if err := Bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
@@ -739,7 +743,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// bind the bottom layers
-	if err := bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
+	if err := Bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
 		return nil, errors.Wrap(err, "error binding bottom layers")
 	}
 
@@ -774,7 +778,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 		log: localLog,
 	}
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, eID)
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, eID, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -788,7 +792,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	}
 
 	// give the NSAP a generic network layer service element
-	if err := bind(localLog, n, n.nsap); err != nil {
+	if err := Bind(localLog, n, n.nsap); err != nil {
 		return nil, errors.New("error binding network layer")
 	}
 
@@ -815,7 +819,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	}
 
 	// bind the bottom layers
-	if err := bind(localLog, n.bip, n.annexj, n.mux.annexJ); err != nil {
+	if err := Bind(localLog, n.bip, n.annexj, n.mux.annexJ); err != nil {
 		return nil, errors.Wrap(err, "error binding bottom layers")
 	}
 

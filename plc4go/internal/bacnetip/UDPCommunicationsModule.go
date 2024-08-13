@@ -74,9 +74,9 @@ func (a *UDPActor) idleTimeout() error {
 	return nil
 }
 
-func (a *UDPActor) Indication(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
-	pdu := args._0PDU()
+func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	pdu := args.Get0PDU()
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -89,8 +89,8 @@ func (a *UDPActor) Indication(args _args, kwargs _kwargs) error {
 	return nil
 }
 
-func (a *UDPActor) Response(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
+func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	// reschedule the timer
 	if a.timer != nil {
@@ -120,7 +120,7 @@ type UDPDirector struct {
 	udpConn *net.UDPConn
 
 	actorClass func(zerolog.Logger, *UDPDirector, string) *UDPActor
-	request    chan _PDU
+	request    chan PDU
 	peers      map[string]*UDPActor
 	running    bool
 
@@ -180,7 +180,7 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	}()
 
 	// create the request queue
-	d.request = make(chan _PDU)
+	d.request = make(chan PDU)
 	go func() {
 		for d.running {
 			pdu := <-d.request
@@ -212,6 +212,10 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	return d, nil
 }
 
+func (d *UDPDirector) String() string {
+	return fmt.Sprintf("UDPDirector(TBD...)") // TODO: fill some info here
+}
+
 // AddActor adds an actor when a new one is connected
 func (d *UDPDirector) AddActor(actor *UDPActor) {
 	d.log.Debug().Stringer("actor", actor).Msg("AddActor %v")
@@ -220,7 +224,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 	// tell the ASE there is a new client
 	if d.serviceElement != nil {
-		if err := d.SapRequest(noArgs, _n_kwn_args(kwAddActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(kwAddActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in add actor")
 		}
 	}
@@ -234,7 +238,7 @@ func (d *UDPDirector) DelActor(actor *UDPActor) {
 
 	// tell the ASE the client has gone away
 	if d.serviceElement != nil {
-		if err := d.SapRequest(noArgs, _n_kwn_args(kwDelActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(kwDelActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in del actor")
 		}
 	}
@@ -247,7 +251,7 @@ func (d *UDPDirector) GetActor(address Address) *UDPActor {
 func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
 	// tell the ASE the actor had an error
 	if d.serviceElement != nil {
-		if err := d.SapRequest(noArgs, _n_kwn_args(kwActorError, actor, kwError, err)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(kwActorError, actor, kwError, err)); err != nil {
 			d.log.Error().Err(err).Msg("Error in actor error")
 		}
 	}
@@ -291,7 +295,7 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
-	// send the PDU up to the client
+	// send the _PDU up to the client
 	go func() {
 		if err := d._response(pdu); err != nil {
 			d.log.Debug().Err(err).Msg("errored")
@@ -304,9 +308,9 @@ func (d *UDPDirector) handleError(err error) {
 }
 
 // Indication Client requests are queued for delivery.
-func (d *UDPDirector) Indication(args _args, kwargs _kwargs) error {
-	d.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
-	pdu := args._0PDU()
+func (d *UDPDirector) Indication(args Args, kwargs KWArgs) error {
+	d.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	pdu := args.Get0PDU()
 
 	// get the destination
 	addr := pdu.GetPDUDestination()
@@ -322,7 +326,7 @@ func (d *UDPDirector) Indication(args _args, kwargs _kwargs) error {
 }
 
 // _response Incoming datagrams are routed through an actor.
-func (d *UDPDirector) _response(pdu _PDU) error {
+func (d *UDPDirector) _response(pdu PDU) error {
 	d.log.Debug().Stringer("pdu", pdu).Msg("_response")
 
 	// get the destination
@@ -335,5 +339,5 @@ func (d *UDPDirector) _response(pdu _PDU) error {
 	}
 
 	// send the message
-	return peer.Response(_n_args(pdu), noKwargs)
+	return peer.Response(NewArgs(pdu), NoKWArgs)
 }
