@@ -394,6 +394,12 @@ func (b *BIPSimple) String() string {
 func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 	pdu := args.Get0PDU()
+	if pdu == nil {
+		return errors.New("no pdu")
+	}
+	if pdu.GetPDUDestination() == nil {
+		return errors.New("no pdu destination")
+	}
 
 	// check for local stations
 	switch pdu.GetPDUDestination().AddrType {
@@ -557,7 +563,7 @@ func NewBIPForeign(localLog zerolog.Logger, addr *Address, ttl *int, sapID *int,
 	b.bbmdTimeToLive = nil
 
 	// used in tracking active registration timeouts
-	b.registrationTimeoutTask = OneShotFunction(b._registration_expired)
+	b.registrationTimeoutTask = OneShotFunction(b._registration_expired, NoArgs, NoKWArgs)
 
 	// registration provided
 	if addr != nil {
@@ -745,7 +751,7 @@ func (b *BIPForeign) register(addr Address, ttl int) error {
 	// install this task to do registration renewal according to the TTL
 	// and stop tracking any active registration timeouts
 	var taskTime time.Time
-	b.InstallTask(&taskTime, nil)
+	b.InstallTask(InstallTaskOptions{When: &taskTime})
 	b._stop_track_registration()
 	return nil
 }
@@ -776,7 +782,7 @@ func (b *BIPForeign) unregister() {
 	b._stop_track_registration()
 }
 
-// processTask is called when the registration request should be sent to the BBMD.
+// ProcessTask is called when the registration request should be sent to the BBMD.
 func (b *BIPForeign) ProcessTask() error {
 	pdu := NewPDU(readWriteModel.NewBVLCRegisterForeignDevice(uint16(*b.bbmdTimeToLive)), WithPDUDestination(b.bbmdAddress))
 
@@ -787,7 +793,7 @@ func (b *BIPForeign) ProcessTask() error {
 
 	// schedule the next registration renewal
 	var delta = time.Duration(*b.bbmdTimeToLive) * time.Second
-	b.InstallTask(nil, &delta)
+	b.InstallTask(InstallTaskOptions{Delta: &delta})
 	return nil
 }
 
@@ -800,7 +806,7 @@ func (b *BIPForeign) ProcessTask() error {
 // definitely not registered anymore.
 func (b *BIPForeign) _start_track_registration() {
 	var delta = time.Duration(*b.bbmdTimeToLive)*time.Second + (30 * time.Second)
-	b.registrationTimeoutTask.InstallTask(nil, &delta)
+	b.registrationTimeoutTask.InstallTask(InstallTaskOptions{Delta: &delta})
 }
 
 func (b *BIPForeign) _stop_track_registration() {
@@ -808,7 +814,7 @@ func (b *BIPForeign) _stop_track_registration() {
 }
 
 // _registration_expired is called when detecting that foreign device registration has definitely expired.
-func (b *BIPForeign) _registration_expired() error {
+func (b *BIPForeign) _registration_expired(_ Args, _ KWArgs) error {
 	b.registrationStatus = -1 // Unregistered
 	b._stop_track_registration()
 	return nil

@@ -269,7 +269,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, dev
 	if !a._startupDisabled {
 		for _, fn := range a.CapabilityFunctions("startup") {
 			localLog.Debug().Interface("fn", fn).Msg("startup fn")
-			Deferred(fn)
+			Deferred(fn, NoArgs, NoKWArgs)
 		}
 	}
 	return a, nil

@@ -916,7 +916,7 @@ func NewNetworkServiceElement(localLog zerolog.Logger, eid *int, startupDisabled
 
 	// if starting up is enabled defer our startup function
 	if !startupDisabled {
-		Deferred(n.Startup)
+		Deferred(n.Startup, NoArgs, NoKWArgs)
 	}
 	return n, nil
 }
@@ -925,7 +925,7 @@ func (n *NetworkServiceElement) String() string {
 	return fmt.Sprintf("NetworkServiceElement(TBD...)") // TODO: fill some info here
 }
 
-func (n *NetworkServiceElement) Startup() error {
+func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 	n.log.Debug().Msg("Startup")
 
 	// reference the service access point

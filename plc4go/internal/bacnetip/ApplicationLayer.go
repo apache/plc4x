@@ -214,7 +214,7 @@ func (s *SSM) RestartTimer(millis uint) {
 	}
 
 	delta := time.Millisecond * time.Duration(millis)
-	s.InstallTask(nil, &delta)
+	s.InstallTask(InstallTaskOptions{Delta: &delta})
 }
 
 // setState This function is called when the derived class wants to change state

@@ -747,15 +747,15 @@ func (i *IOQController) CompleteIO(iocb _IOCB, msg PDU) error {
 		i.state = IOQControllerStates_CTRL_WAITING
 		stateLog.Debug().Timestamp().Str("name", i.name).Msg("waiting")
 
-		task := FunctionTask(i._waitTrigger)
-		task.InstallTask(nil, &i.waitTime)
+		task := FunctionTask(i._waitTrigger, NoArgs, NoKWArgs)
+		task.InstallTask(InstallTaskOptions{Delta: &i.waitTime})
 	} else {
 		// change our state
 		i.state = IOQControllerStates_CTRL_IDLE
 		stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 		// look for more to do
-		Deferred(i._trigger)
+		Deferred(i._trigger, NoArgs, NoKWArgs)
 	}
 
 	return nil
@@ -784,12 +784,12 @@ func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
 	stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 	// look for more to do
-	Deferred(i._trigger)
+	Deferred(i._trigger, NoArgs, NoKWArgs)
 	return nil
 }
 
 // _trigger Called to launch the next request in the queue
-func (i *IOQController) _trigger() error {
+func (i *IOQController) _trigger(_ Args, _ KWArgs) error {
 	i.log.Debug().Msg("_trigger")
 
 	// if we are busy, do nothing
@@ -821,13 +821,13 @@ func (i *IOQController) _trigger() error {
 
 	// if we're idle, call again
 	if i.state == IOQControllerStates_CTRL_IDLE {
-		Deferred(i._trigger)
+		Deferred(i._trigger, NoArgs, NoKWArgs)
 	}
 	return nil
 }
 
 // _waitTrigger is called to launch the next request in the queue
-func (i *IOQController) _waitTrigger() error {
+func (i *IOQController) _waitTrigger(_ Args, _ KWArgs) error {
 	i.log.Debug().Msg("_waitTrigger")
 
 	// make sure we are waiting
@@ -841,7 +841,7 @@ func (i *IOQController) _waitTrigger() error {
 	stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 	// look for more to do
-	return i._trigger()
+	return i._trigger(NoArgs, NoKWArgs)
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=SieveQueue

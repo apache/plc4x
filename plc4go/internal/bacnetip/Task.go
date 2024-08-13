@@ -27,9 +27,17 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type InstallTaskOptions struct {
+	When     *time.Time
+	Delta    *time.Duration
+	Interval *time.Duration
+	Offset   *time.Duration
+}
+
 type TaskRequirements interface {
+	fmt.Stringer
 	ProcessTask() error
-	InstallTask(when *time.Time, delta *time.Duration)
+	InstallTask(options InstallTaskOptions)
 	GetTaskTime() *time.Time
 	GetIsScheduled() bool
 	SetIsScheduled(isScheduled bool)
@@ -45,7 +53,9 @@ func NewTask(taskRequirements TaskRequirements) *Task {
 	return &Task{taskRequirements: taskRequirements}
 }
 
-func (t *Task) InstallTask(when *time.Time, delta *time.Duration) {
+func (t *Task) InstallTask(options InstallTaskOptions) {
+	when := options.When
+	delta := options.Delta
 	// check for delta from now
 	if when == nil && delta != nil {
 		_when := _taskManager.GetTime().Add(*delta)
@@ -130,23 +140,25 @@ func (r *OneShotDeleteTask) IsOneShotDeleteTask() bool {
 
 type OneShotFunctionTask struct {
 	*OneShotDeleteTask
-	fn func() error
+	fn     func(args Args, kwargs KWArgs) error
+	args   Args
+	kwargs KWArgs
 }
 
 func (m *OneShotFunctionTask) ProcessTask() error {
-	return m.fn()
+	return m.fn(m.args, m.kwargs)
 }
 
-func OneShotFunction(fn func() error) *OneShotFunctionTask {
-	task := &OneShotFunctionTask{fn: fn}
+func OneShotFunction(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *OneShotFunctionTask {
+	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	var delta time.Duration = 0
-	task.InstallTask(nil, &delta)
+	task.InstallTask(InstallTaskOptions{Delta: &delta})
 	return task
 }
 
-func FunctionTask(fn func() error) *OneShotFunctionTask {
-	task := &OneShotFunctionTask{fn: fn}
+func FunctionTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *OneShotFunctionTask {
+	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
 	return task
 }
@@ -156,15 +168,38 @@ type RecurringTaskRequirements interface {
 }
 
 type RecurringTask struct {
-	*Task
 	RecurringTaskRequirements
+	*Task
+
 	taskInterval       *time.Duration
 	taskIntervalOffset *time.Duration
+
+	log zerolog.Logger
 }
 
 func NewRecurringTask(localLog zerolog.Logger, recurringTaskRequirements RecurringTaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
-	r := &RecurringTask{RecurringTaskRequirements: recurringTaskRequirements}
+	r := &RecurringTask{
+		RecurringTaskRequirements: recurringTaskRequirements,
+		log:                       localLog,
+	}
 	r.Task = NewTask(r)
+
+	// save the interval, but do not automatically install
+	r.taskInterval = interval
+	r.taskIntervalOffset = offset
+	return r
+}
+
+func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
+	interval := options.Interval
+	offset := options.Offset
+	if r.taskInterval == nil {
+		panic("interval unset, use ctor or install_task parameter")
+	}
+	if *r.taskInterval <= 0.0 {
+		panic("interval must be greater than zero")
+	}
+
 	// set the interval if it hasn't already been set
 	if interval != nil {
 		r.taskInterval = interval
@@ -176,34 +211,37 @@ func NewRecurringTask(localLog zerolog.Logger, recurringTaskRequirements Recurri
 	if r.taskInterval == nil {
 		panic("interval unset, use ctor or install_task parameter")
 	}
-	if *r.taskInterval <= 0.0 {
+	if *r.taskInterval <= 0 {
 		panic("interval must be greater than zero")
 	}
 
-	// get ready for the next interval plus a jitter
-	now := _taskManager.GetTime().Add(10 + time.Nanosecond)
-
-	if r.taskIntervalOffset != nil {
-		_offset := *r.taskIntervalOffset
-		offset = &_offset
+	// if there is no task manager, postpone the install
+	if _taskManager == nil {
+		r.log.Trace().Msg("No task manager")
+		_unscheduledTasks = append(_unscheduledTasks, r)
 	} else {
-		_offset := time.Duration(0)
-		offset = &_offset
+		// get ready for the next interval plus a jitter
+		now := _taskManager.GetTime().Add(10 + time.Nanosecond)
+
+		interval := *r.taskInterval
+		offset := 0 * time.Nanosecond
+		if r.taskIntervalOffset != nil {
+			offset = *r.taskIntervalOffset
+		}
+		r.log.Debug().
+			Time("now", now).
+			Dur("interval", interval).
+			Dur("offset", offset).
+			Msg("Now, interval, offset:")
+
+		// compute the time
+		_taskTime := now.Add(-offset).Add(interval).Add(-(time.Duration(now.Add(-offset).Nanosecond() % int(interval)))).Add(offset)
+		r.taskTime = &_taskTime
+		r.log.Debug().Time("taskTime", _taskTime).Msg("task time")
+
+		// install it
+		_taskManager.InstallTask(r)
 	}
-	localLog.Debug().
-		Interface("now", now).
-		Interface("interval", interval).
-		Interface("offset", offset).
-		Msg("Now, interval, offset:")
-
-	// compute the time
-	_taskTime := now.Add(-*offset).Add(*interval) // TODO: check why upstream is doing the modulo operation (missing code here)
-	r.taskTime = &_taskTime
-
-	// install it
-	_taskManager.InstallTask(r)
-
-	return r
 }
 
 func (r *RecurringTask) IsRecurringTask() bool {
@@ -229,29 +267,66 @@ func RecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn 
 	return newRecurringFunctionTask(localLog, interval, fn).RecurringTask
 }
 
-var _taskManager = TaskManager{}
+var _taskManager TaskManager
+var _taskManagerMutex sync.Mutex
+var _unscheduledTasks []any //TODO: check method clash in install task
 
-type TaskManager struct {
+type TaskManager interface {
+	GetTime() time.Time
+	InstallTask(task TaskRequirements)
+	SuspendTask(task TaskRequirements)
+	ResumeTask(task TaskRequirements)
+	GetNextTask() (TaskRequirements, *time.Duration)
+	ProcessTask(task TaskRequirements)
+	GetTasks() []TaskRequirements
+	PopTask() TaskRequirements
+	ClearTasks()
+}
+
+type taskManager struct {
 	sync.Mutex
-	Tasks []TaskRequirements
+
+	tasks []TaskRequirements
 
 	log zerolog.Logger
 }
 
-func NewTaskManager(localLog zerolog.Logger) *TaskManager {
-	return &TaskManager{
+func NewTaskManager(localLog zerolog.Logger) TaskManager {
+	_taskManagerMutex.Lock()
+	defer _taskManagerMutex.Unlock()
+	if _taskManager != nil {
+		return _taskManager
+	}
+	t := &taskManager{
 		log: localLog,
 	}
+
+	// TODO: trigger
+
+	// TODO: counter
+
+	// TODO: unscheduled tasks
+
+	_taskManager = t
+	return t
 }
 
-func (m *TaskManager) GetTime() time.Time {
+func OverwriteTaskManager(manager TaskManager) {
+	_taskManager = manager
+}
+
+func (m *taskManager) GetTime() time.Time {
 	return time.Now()
 }
 
-func (m *TaskManager) InstallTask(task TaskRequirements) {
+func (m *taskManager) ClearTasks() {
+	m.tasks = nil
+}
+
+func (m *taskManager) InstallTask(task TaskRequirements) {
+	m.log.Debug().Stringer("task", task).Msg("InstallTask")
 	m.Lock()
 	defer m.Unlock()
-	m.log.Debug().Interface("task", task).Msg("InstallTask")
 
 	// if the taskTime is None is hasn't been computed correctly
 	if task.GetTaskTime() == nil {
@@ -260,23 +335,25 @@ func (m *TaskManager) InstallTask(task TaskRequirements) {
 
 	// if this is already installed, suspend it
 	if task.GetIsScheduled() {
+		m.Unlock()
 		m.SuspendTask(task)
+		m.Lock()
 	}
 
 	// save this in the task list
 	// TODO: we might need to insert it at the right place
-	m.Tasks = append(m.Tasks, task)
+	m.tasks = append(m.tasks, task)
 
 	task.SetIsScheduled(true)
 }
 
-func (m *TaskManager) SuspendTask(task TaskRequirements) {
-	m.log.Debug().Interface("task", task).Msg("SuspendTask ")
+func (m *taskManager) SuspendTask(task TaskRequirements) {
+	m.log.Debug().Stringer("task", task).Msg("SuspendTask ")
 	m.Lock()
 	defer m.Unlock()
 
 	iToDelete := -1
-	for i, _task := range m.Tasks {
+	for i, _task := range m.tasks {
 		if _task == task {
 			m.log.Debug().Msg("task found")
 			iToDelete = i
@@ -285,14 +362,14 @@ func (m *TaskManager) SuspendTask(task TaskRequirements) {
 		}
 	}
 	if iToDelete > 0 {
-		m.Tasks = append(m.Tasks[:iToDelete], m.Tasks[iToDelete+1:]...)
+		m.tasks = append(m.tasks[:iToDelete], m.tasks[iToDelete+1:]...)
 	} else {
 		m.log.Debug().Msg("task not found")
 	}
 }
 
-func (m *TaskManager) ResumeTask(task TaskRequirements) {
-	m.log.Debug().Interface("task", task).Msg("ResumeTask")
+func (m *taskManager) ResumeTask(task TaskRequirements) {
+	m.log.Debug().Stringer("task", task).Msg("ResumeTask")
 	m.Lock()
 	defer m.Unlock()
 
@@ -300,33 +377,35 @@ func (m *TaskManager) ResumeTask(task TaskRequirements) {
 	m.InstallTask(task)
 }
 
-func (m *TaskManager) GetNextTask() (TaskRequirements, time.Duration) {
-	//log.Trace().Msg("GetNextTask")
+func (m *taskManager) GetNextTask() (TaskRequirements, *time.Duration) {
+	m.log.Trace().Msg("GetNextTask")
 	m.Lock()
 	defer m.Unlock()
 
 	now := time.Now()
 
 	var task TaskRequirements
-	var delta time.Duration
+	var delta *time.Duration
 
-	if len(m.Tasks) > 0 {
-		nextTask := m.Tasks[0]
+	if len(m.tasks) > 0 {
+		nextTask := m.tasks[0]
 		when := nextTask.GetTaskTime()
 		if when.Before(now) {
 			// pull it off the list and mark that it's no longer scheduled
-			m.Tasks = m.Tasks[1:] // TODO: guard against empty list
+			m.tasks = m.tasks[1:] // TODO: guard against empty list
 			task = nextTask
 			task.SetIsScheduled(false)
 
-			if len(m.Tasks) > 0 {
-				nextTask = m.Tasks[0]
+			if len(m.tasks) > 0 {
+				nextTask = m.tasks[0]
 				when = nextTask.GetTaskTime()
 				// peek at the next task, return how long to wait
-				delta = when.Sub(now) // TODO: avoid negative
+				newDelta := when.Sub(now) // TODO: avoid negative
+				delta = &newDelta
 			}
 		} else {
-			delta = when.Sub(now)
+			newDelta := when.Sub(now)
+			delta = &newDelta
 		}
 	}
 
@@ -334,8 +413,8 @@ func (m *TaskManager) GetNextTask() (TaskRequirements, time.Duration) {
 	return task, delta
 }
 
-func (m *TaskManager) ProcessTask(task TaskRequirements) {
-	m.log.Debug().Interface("task", task).Msg("ProcessTask")
+func (m *taskManager) ProcessTask(task TaskRequirements) {
+	m.log.Debug().Stringer("task", task).Msg("ProcessTask")
 
 	// process the task
 	if err := task.ProcessTask(); err != nil {
@@ -344,8 +423,21 @@ func (m *TaskManager) ProcessTask(task TaskRequirements) {
 
 	switch task.(type) {
 	case interface{ IsRecurringTask() bool }:
-		task.InstallTask(nil, nil)
+		task.InstallTask(InstallTaskOptions{})
 	case interface{ IsOneShotDeleteTask() bool }:
 		// TODO: Delete? How?
 	}
+}
+
+func (m *taskManager) GetTasks() []TaskRequirements {
+	return m.tasks
+}
+
+func (m *taskManager) PopTask() TaskRequirements {
+	m.log.Trace().Msg("pop task")
+	m.Lock()
+	defer m.Unlock()
+	task := m.tasks[0]
+	m.tasks = m.tasks[1:]
+	return task
 }
