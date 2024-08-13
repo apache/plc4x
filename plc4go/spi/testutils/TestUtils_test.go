@@ -76,6 +76,7 @@ func TestProduceTestingLogger_BetterStackrendering(t *testing.T) {
 		return errors.Wrap(f2(), "c error")
 	}
 	got.Error().Err(f3()).Msg("multiline error")
+	got.Error().Err(nil).Msg("empty error")
 }
 
 func TestProduceTestingLogger_ASerializableLog(t *testing.T) {

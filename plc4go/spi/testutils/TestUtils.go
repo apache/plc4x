@@ -234,9 +234,16 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 	}
 	stackSetter.Do(func() {
 		zerolog.ErrorStackMarshaler = func(err error) interface{} {
+			if err == nil {
+				return nil
+			}
 			var r strings.Builder
-			stack := pkgerrors.MarshalStack(err).([]map[string]string)
-			for _, entry := range stack {
+			stack := pkgerrors.MarshalStack(err)
+			if stack == nil {
+				return nil
+			}
+			stackMap := stack.([]map[string]string)
+			for _, entry := range stackMap {
 				stackSourceFileName := entry[pkgerrors.StackSourceFileName]
 				stackSourceLineName := entry[pkgerrors.StackSourceLineName]
 				stackSourceFunctionName := entry[pkgerrors.StackSourceFunctionName]
