@@ -233,7 +233,17 @@ func ProduceTestingLogger(t TestingLog) zerolog.Logger {
 		logger = logger.With().Timestamp().Logger()
 	}
 	stackSetter.Do(func() {
-		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+		zerolog.ErrorStackMarshaler = func(err error) interface{} {
+			var r strings.Builder
+			stack := pkgerrors.MarshalStack(err).([]map[string]string)
+			for _, entry := range stack {
+				stackSourceFileName := entry[pkgerrors.StackSourceFileName]
+				stackSourceLineName := entry[pkgerrors.StackSourceLineName]
+				stackSourceFunctionName := entry[pkgerrors.StackSourceFunctionName]
+				r.WriteString(fmt.Sprintf("\tat %v (%v:%v)\n", stackSourceFunctionName, stackSourceFileName, stackSourceLineName))
+			}
+			return r.String()
+		}
 	})
 	logger = logger.With().Stack().Logger()
 	return logger

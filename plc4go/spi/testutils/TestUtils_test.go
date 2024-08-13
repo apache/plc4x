@@ -22,6 +22,7 @@ package testutils
 import (
 	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -61,6 +62,20 @@ func (A *ASerializable) String() string {
 	wbbb := utils.NewWriteBufferBoxBased()
 	_ = A.SerializeWithWriteBuffer(nil, wbbb)
 	return wbbb.GetBox().String()
+}
+
+func TestProduceTestingLogger_BetterStackrendering(t *testing.T) {
+	got := ProduceTestingLogger(t)
+	f1 := func() error {
+		return errors.New("a error")
+	}
+	f2 := func() error {
+		return errors.Wrap(f1(), "b error")
+	}
+	f3 := func() error {
+		return errors.Wrap(f2(), "c error")
+	}
+	got.Error().Err(f3()).Msg("multiline error")
 }
 
 func TestProduceTestingLogger_ASerializableLog(t *testing.T) {
