@@ -22,6 +22,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import org.apache.plc4x.java.spi.ConversationContext.ContextHandler;
+import org.apache.plc4x.java.spi.ConversationContext.SendRequestContext;
 import org.apache.plc4x.java.spi.events.ConnectEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,13 +82,10 @@ class Plc4xNettyWrapperTest {
 
     @Test // see PLC4X-207 / PLC4X-257
     void conversationTimeoutTest() throws Exception {
-        ConversationContext.ContextHandler handler = conversationContext.sendRequest(new Date())
-            .expectResponse(Date.class, Duration.ofMillis(500))
-            .onTimeout(e -> timeout.set(true))
-            .onError((value, throwable) -> error.set(true))
-            .handle((answer) -> handled.set(true));
+        ConversationContext.ContextHandler handler = wrap(conversationContext.sendRequest(new Date())
+            .expectResponse(Date.class, Duration.ofMillis(500)));
 
-        handler.awaitResponse();
+        handler.await();
 
         verify(true, false, false);
         wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
@@ -96,16 +95,60 @@ class Plc4xNettyWrapperTest {
 
     @Test // see PLC4X-207 / PLC4X-257
     void conversationWithNoTimeoutTest() throws Exception {
-        ConversationContext.ContextHandler handler = conversationContext.sendRequest(new Date())
-            .expectResponse(Date.class, Duration.ofMillis(500))
-            .onTimeout(e -> timeout.set(true))
-            .onError((value, throwable) -> error.set(true))
-            .handle((answer) -> handled.set(true));
+        ConversationContext.ContextHandler handler = wrap(conversationContext.sendRequest(new Date())
+            .expectResponse(Date.class, Duration.ofMillis(500)));
 
         verify(false, false, false);
         wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
-        handler.awaitResponse();
+        handler.await();
         verify(false, false, true);
+    }
+
+    @Test
+    void conversationWithPredicateError() throws Exception {
+        ConversationContext.ContextHandler handler = wrap(conversationContext.sendRequest(new Date())
+            .expectResponse(Date.class, Duration.ofMillis(500))
+            .check(date -> true) // NOOP
+            .unwrap(Date::toInstant)
+            .check(date -> { // BOOM
+                throw new IllegalArgumentException("Yolo");
+            }));
+
+        verify(false, false, false);
+        wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        handler.await();
+        verify(false, true, false);
+    }
+
+    @Test
+    void conversationWithUnwrapError() throws Exception {
+        ConversationContext.ContextHandler handler = wrap(conversationContext.sendRequest(new Date())
+            .expectResponse(Date.class, Duration.ofMillis(500))
+            .check(date -> true) // NOOP
+            .unwrap(Date::toInstant)
+            .check(date -> true) // NOOP
+            .<Long>unwrap(date -> { // BOOM
+                throw new IllegalArgumentException("Blah");
+            }));
+
+        verify(false, false, false);
+        wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        handler.await();
+        verify(false, true, false);
+    }
+
+    @Test
+    void conversationWithHandleError() throws Exception {
+        ConversationContext.ContextHandler handler = handles(conversationContext.sendRequest(new Date())
+            .expectResponse(Date.class, Duration.ofMillis(500)))
+            .handle(date -> {
+                throw new IndexOutOfBoundsException();
+            });
+
+        verify(false, false, false);
+        wrapper.decode(channelHandlerContext, new Date(), new ArrayList<>());
+        handler.await();
+        verify(false, true, false);
     }
 
     void verify(boolean isTimeout, boolean isError, boolean isHandled) {
@@ -115,5 +158,16 @@ class Plc4xNettyWrapperTest {
             .isEqualTo(isError);
         assertThat(handled.get()).describedAs("Expected handled state %b", isHandled)
             .isEqualTo(isHandled);
+    }
+
+    private <T> SendRequestContext<T> handles(SendRequestContext<T> ctx) {
+        return ctx.onTimeout(e -> timeout.set(true))
+            .onError((value, throwable) -> error.set(true));
+    }
+
+    private <T> ContextHandler wrap(SendRequestContext<T> ctx) {
+        return ctx.onTimeout(e -> timeout.set(true))
+            .onError((value, throwable) -> error.set(true))
+            .handle((answer) -> handled.set(true));
     }
 }

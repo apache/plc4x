@@ -149,7 +149,7 @@ public interface ConversationContext<T> {
 
         void cancel();
 
-        void awaitResponse() throws InterruptedException, ExecutionException;
+        void await() throws InterruptedException, ExecutionException;
 
     }
 
