@@ -11,6 +11,9 @@ New Features
   removed from the cache.
 - The CachedPlcConnectionManager now has a close method, which
   shuts down all connections.
+- The CachedPlcConnection now implements the EventPlcConnection
+  interface which forwards listener registrations to the
+  connection.
 
 Incompatible changes
 --------------------
