@@ -452,6 +452,9 @@ func (a *Address) Equals(other any) bool {
 }
 
 func (a *Address) String() string {
+	if a == nil {
+		return "<nil>"
+	}
 	result := ""
 	if a.AddrType == NULL_ADDRESS {
 		result = "Null"

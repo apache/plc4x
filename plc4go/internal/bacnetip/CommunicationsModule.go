@@ -68,7 +68,7 @@ func (p *__PCI) deepCopy() *__PCI {
 }
 
 func (p *__PCI) String() string {
-	return fmt.Sprintf("__PCI{pduUserData:%s, pduSource: %s, pduDestination: %s}", p.pduUserData, p.pduSource, p.pduDestination)
+	return fmt.Sprintf("__PCI{pduUserData:\n%s\n, pduSource: %s, pduDestination: %s}", p.pduUserData, p.pduSource, p.pduDestination)
 }
 
 // _Client is an interface used for documentation
@@ -295,7 +295,6 @@ func (s *ServiceAccessPoint) _setServiceElement(serviceElement _ApplicationServi
 
 // _ApplicationServiceElement is an interface used for documentation
 type _ApplicationServiceElement interface {
-	fmt.Stringer
 	Request(args Args, kwargs KWArgs) error
 	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
@@ -443,18 +442,18 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 
 	// go through the argument pairs
 	for i := 0; i < len(args)-1; i++ {
-		client := args[i]
-		clientStringer, _ := client.(fmt.Stringer)
-		localLog.Debug().Stringer("client", clientStringer).Msg("client pair element")
-		server := args[i+1]
-		serverStringer, _ := server.(fmt.Stringer)
-		localLog.Debug().Stringer("server", serverStringer).Msg("server pair element")
+		left := args[i]
+		leftStringer, _ := left.(fmt.Stringer)
+		localLog.Debug().Stringer("left", leftStringer).Msg("left pair element")
+		right := args[i+1]
+		rightStringer, _ := right.(fmt.Stringer)
+		localLog.Debug().Stringer("right", rightStringer).Msg("right pair element")
 
 		// make sure we're binding clients and servers
-		clientCast, okClient := client.(_Client)
-		serverCast, okServer := server.(_Server)
-		elementServiceCast, okElementService := client.(_ApplicationServiceElement)
-		serviceAccessPointCast, okServiceAccessPoint := server.(_ServiceAccessPoint)
+		clientCast, okClient := left.(_Client)
+		serverCast, okServer := right.(_Server)
+		elementServiceCast, okElementService := left.(_ApplicationServiceElement)
+		serviceAccessPointCast, okServiceAccessPoint := right.(_ServiceAccessPoint)
 		if okClient && okServer {
 			localLog.Trace().Msg("linking client-server")
 			clientCast._setClientPeer(serverCast)

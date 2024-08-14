@@ -303,6 +303,10 @@ func (n *IPNode) bind(lan NodeNetworkReference) { // This is used to preserve th
 	lan.AddNode(n)
 }
 
+func (n *IPNode) String() string {
+	return fmt.Sprintf("IPNode(%v): %s, %v", n.Node, n.addrTuple, n.addrBroadcastTuple)
+}
+
 type IPRouterNode struct {
 	*Client
 

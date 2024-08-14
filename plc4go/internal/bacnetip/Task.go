@@ -44,13 +44,13 @@ type TaskRequirements interface {
 }
 
 type Task struct {
-	taskRequirements TaskRequirements
-	taskTime         *time.Time
-	isScheduled      bool
+	TaskRequirements
+	taskTime    *time.Time
+	isScheduled bool
 }
 
 func NewTask(taskRequirements TaskRequirements) *Task {
-	return &Task{taskRequirements: taskRequirements}
+	return &Task{TaskRequirements: taskRequirements}
 }
 
 func (t *Task) InstallTask(options InstallTaskOptions) {
@@ -73,15 +73,15 @@ func (t *Task) InstallTask(options InstallTaskOptions) {
 	t.taskTime = when
 
 	// pass along to the task manager
-	_taskManager.InstallTask(t.taskRequirements)
+	_taskManager.InstallTask(t.TaskRequirements)
 }
 
 func (t *Task) SuspendTask() {
-	_taskManager.SuspendTask(t.taskRequirements)
+	_taskManager.SuspendTask(t.TaskRequirements)
 }
 
 func (t *Task) Resume() {
-	_taskManager.ResumeTask(t.taskRequirements)
+	_taskManager.ResumeTask(t.TaskRequirements)
 }
 
 func (t *Task) GetTaskTime() *time.Time {
@@ -100,34 +100,30 @@ func (t *Task) String() string {
 	return fmt.Sprintf("Task(taskTime: %v, isScheduled: %v)", t.taskTime, t.isScheduled)
 }
 
-type OneShotTaskRequirements interface {
-	ProcessTask() error
-}
-
 type OneShotTask struct {
 	*Task
-	OneShotTaskRequirements
 }
 
-func NewOneShotTask(oneShotTaskRequirements OneShotTaskRequirements, when *time.Time) *OneShotTask {
-	o := &OneShotTask{
-		OneShotTaskRequirements: oneShotTaskRequirements,
-	}
-	o.Task = NewTask(o)
+func NewOneShotTask(taskRequirements TaskRequirements, when *time.Time) *OneShotTask {
+	o := &OneShotTask{}
+	o.Task = NewTask(taskRequirements)
 	if when != nil {
 		o.taskTime = when
 	}
 	return o
 }
 
-type OneShotDeleteTask struct {
-	*Task
-	OneShotTaskRequirements
+func (t *OneShotTask) String() string {
+	return fmt.Sprintf("OneShotTask(%v)", t.Task)
 }
 
-func NewOneShotDeleteTask(oneShotTaskRequirements OneShotTaskRequirements, when *time.Time) *OneShotDeleteTask {
-	o := &OneShotDeleteTask{OneShotTaskRequirements: oneShotTaskRequirements}
-	o.Task = NewTask(o)
+type OneShotDeleteTask struct {
+	*Task
+}
+
+func NewOneShotDeleteTask(taskRequirements TaskRequirements, when *time.Time) *OneShotDeleteTask {
+	o := &OneShotDeleteTask{}
+	o.Task = NewTask(taskRequirements)
 	if when != nil {
 		o.taskTime = when
 	}
@@ -138,15 +134,15 @@ func (r *OneShotDeleteTask) IsOneShotDeleteTask() bool {
 	return true
 }
 
+func (r *OneShotDeleteTask) String() string {
+	return fmt.Sprintf("OneShotDeleteTask(%v)", r.Task)
+}
+
 type OneShotFunctionTask struct {
 	*OneShotDeleteTask
 	fn     func(args Args, kwargs KWArgs) error
 	args   Args
 	kwargs KWArgs
-}
-
-func (m *OneShotFunctionTask) ProcessTask() error {
-	return m.fn(m.args, m.kwargs)
 }
 
 func OneShotFunction(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *OneShotFunctionTask {
@@ -163,12 +159,15 @@ func FunctionTask(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWA
 	return task
 }
 
-type RecurringTaskRequirements interface {
-	ProcessTask() error
+func (m *OneShotFunctionTask) ProcessTask() error {
+	return m.fn(m.args, m.kwargs)
+}
+
+func (m *OneShotFunctionTask) String() string {
+	return fmt.Sprintf("OneShotFunctionTask(%v, fn: %t, args: %s, kwargs: %s)", m.OneShotDeleteTask, m.fn != nil, m.args, m.kwargs)
 }
 
 type RecurringTask struct {
-	RecurringTaskRequirements
 	*Task
 
 	taskInterval       *time.Duration
@@ -177,12 +176,11 @@ type RecurringTask struct {
 	log zerolog.Logger
 }
 
-func NewRecurringTask(localLog zerolog.Logger, recurringTaskRequirements RecurringTaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
+func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
 	r := &RecurringTask{
-		RecurringTaskRequirements: recurringTaskRequirements,
-		log:                       localLog,
+		log: localLog,
 	}
-	r.Task = NewTask(r)
+	r.Task = NewTask(taskRequirements)
 
 	// save the interval, but do not automatically install
 	r.taskInterval = interval
@@ -235,7 +233,7 @@ func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 			Msg("Now, interval, offset:")
 
 		// compute the time
-		_taskTime := now.Add(-offset).Add(interval).Add(-(time.Duration(now.Add(-offset).Nanosecond() % int(interval)))).Add(offset)
+		_taskTime := now.Add(-offset).Add(interval).Add(-(time.Duration((now.Add(-offset).UnixNano() - time.Time{}.UnixNano()) % int64(interval)))).Add(offset)
 		r.taskTime = &_taskTime
 		r.log.Debug().Time("taskTime", _taskTime).Msg("task time")
 
@@ -248,23 +246,29 @@ func (r *RecurringTask) IsRecurringTask() bool {
 	return true
 }
 
-type recurringFunctionTask struct {
-	*RecurringTask
-	fn func() error
+func (r *RecurringTask) String() string {
+	return fmt.Sprintf("RecurringTask(%v, taskInterval: %v, taskIntervalOffset: %v)", r.Task, r.taskInterval, r.taskIntervalOffset)
 }
 
-func newRecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn func() error) *recurringFunctionTask {
-	r := &recurringFunctionTask{fn: fn}
+type RecurringFunctionTask struct {
+	*RecurringTask
+	fn     func(args Args, kwargs KWArgs) error
+	args   Args
+	kwargs KWArgs
+}
+
+func NewRecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *RecurringFunctionTask {
+	r := &RecurringFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	r.RecurringTask = NewRecurringTask(localLog, r, interval, nil)
 	return r
 }
 
-func (r recurringFunctionTask) ProcessTask() error {
-	return r.fn()
+func (r *RecurringFunctionTask) ProcessTask() error {
+	return r.fn(r.args, r.kwargs)
 }
 
-func RecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn func() error) *RecurringTask {
-	return newRecurringFunctionTask(localLog, interval, fn).RecurringTask
+func (r *RecurringFunctionTask) String() string {
+	return fmt.Sprintf("RecurringFunctionTask(%v, fn: %t, args: %s, kwargs: %s)", r.RecurringTask, r.fn != nil, r.args, r.kwargs)
 }
 
 var _taskManager TaskManager
@@ -317,6 +321,13 @@ func OverwriteTaskManager(manager TaskManager) {
 
 func (m *taskManager) GetTime() time.Time {
 	return time.Now()
+}
+
+func GetTaskManagerTime() time.Time {
+	if _taskManager == nil {
+		return time.Now()
+	}
+	return _taskManager.GetTime()
 }
 
 func (m *taskManager) ClearTasks() {
