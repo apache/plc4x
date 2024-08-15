@@ -219,20 +219,28 @@ type Application struct {
 
 	_startupDisabled bool
 
+	// pass through args
+	argAseID *int
+
 	log zerolog.Logger
 }
 
-func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
-	localLog.Debug().
-		Interface("localDevice", localDevice).
-		Interface("deviceInfoCache", deviceInfoCache).
-		Interface("aseID", aseID).
-		Msg("NewApplication")
+func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*Application)) (*Application, error) {
 	a := &Application{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(a)
+	}
+	localLog.Debug().
+		Interface("localDevice", localDevice).
+		Interface("deviceInfoCache", a.deviceInfoCache).
+		Interface("aseID", a.argAseID).
+		Msg("NewApplication")
 	var err error
-	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, aseID, a)
+	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, a, func(element *ApplicationServiceElement) {
+		element.elementID = a.argAseID
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -254,10 +262,9 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, dev
 	}
 
 	// use the provided cache or make a default one
-	if deviceInfoCache == nil {
-		deviceInfoCache = NewDeviceInfoCache(localLog)
+	if a.deviceInfoCache == nil {
+		a.deviceInfoCache = NewDeviceInfoCache(localLog)
 	}
-	a.deviceInfoCache = deviceInfoCache
 
 	// controllers for managing confirmed requests as a client
 	a.controllers = map[string]any{}
@@ -273,6 +280,22 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, dev
 		}
 	}
 	return a, nil
+}
+
+func WithApplicationAseID(aseID int) func(*Application) {
+	return func(a *Application) {
+		a.argAseID = &aseID
+	}
+}
+
+func WithApplicationDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*Application) {
+	return func(a *Application) {
+		a.deviceInfoCache = deviceInfoCache
+	}
+}
+
+func (a *Application) GetDeviceInfoCache() *DeviceInfoCache {
+	return a.deviceInfoCache
 }
 
 func (a *Application) String() string {
@@ -423,31 +446,53 @@ func (a *Application) Indication(args Args, kwargs KWArgs) error {
 	return nil
 }
 
-// TODO: finish
 type ApplicationIOController struct {
 	*IOController
 	*Application
+
 	queueByAddress map[string]SieveQueue
+
+	// pass through args
+	argDeviceInfoCache *DeviceInfoCache
+	argAseID           *int
 
 	log zerolog.Logger
 }
 
-func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
+func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(controller *ApplicationIOController)) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]SieveQueue),
 		log:            localLog,
+	}
+	for _, opt := range opts {
+		opt(a)
 	}
 	var err error
 	a.IOController, err = NewIOController(localLog, "", a)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	a.Application, err = NewApplication(localLog, localDevice, deviceInfoCache, aseID)
+	a.Application, err = NewApplication(localLog, localDevice, func(application *Application) {
+		application.deviceInfoCache = a.argDeviceInfoCache
+		application.argAseID = a.argAseID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application")
 	}
 	return a, nil
+}
+
+func WithApplicationIOControllerDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*ApplicationIOController) {
+	return func(a *ApplicationIOController) {
+		a.argDeviceInfoCache = deviceInfoCache
+	}
+}
+
+func WithApplicationIOControllerAseID(aseID *int) func(*ApplicationIOController) {
+	return func(a *ApplicationIOController) {
+		a.argAseID = aseID
+	}
 }
 
 func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
@@ -573,7 +618,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 		log: localLog,
 	}
 	var err error
-	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, deviceInfoCache, aseID)
+	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, WithApplicationIOControllerDeviceInfoCache(deviceInfoCache), WithApplicationIOControllerAseID(aseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
@@ -589,13 +634,13 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	b.localAddress = localAddress
 
 	// include a application decoder
-	b.asap, err = NewApplicationServiceAccessPoint(localLog, nil, nil)
+	b.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
 
 	// pass the device object to the state machine access point, so it can know if it should support segmentation
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, deviceInfoCache, nil, nil)
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
@@ -604,7 +649,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	// Note: deviceInfoCache already passed above, so we don't need to do it again here
 
 	// a network service access point will be needed
-	b.nsap, err = NewNetworkServiceAccessPoint(localLog, nil, nil, nil)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -624,11 +669,11 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPSimple(localLog, nil, nil, nil)
+	b.bip, err = NewBIPSimple(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
-	b.annexj, err = NewAnnexJCodec(localLog, nil, nil)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
@@ -643,7 +688,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := b.nsap.bind(b.bip, nil, &b.localAddress); err != nil {
+	if err := b.nsap.Bind(b.bip, nil, &b.localAddress); err != nil {
 		return nil, err
 	}
 
@@ -678,7 +723,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 		log: localLog,
 	}
 	var err error
-	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, deviceInfoCache, aseID)
+	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, WithApplicationIOControllerDeviceInfoCache(deviceInfoCache), WithApplicationIOControllerAseID(aseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
@@ -694,13 +739,13 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	b.localAddress = localAddress
 
 	// include a application decoder
-	b.asap, err = NewApplicationServiceAccessPoint(localLog, nil, nil)
+	b.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
 
 	// pass the device object to the state machine access point, so it can know if it should support segmentation
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, deviceInfoCache, nil, nil)
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
@@ -709,7 +754,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	// Note: deviceInfoCache already passed above, so we don't need to do it again here
 
 	// a network service access point will be needed
-	b.nsap, err = NewNetworkServiceAccessPoint(localLog, nil, nil, nil)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -729,11 +774,11 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL, nil, nil, nil)
+	b.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
-	b.annexj, err = NewAnnexJCodec(localLog, nil, nil)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
@@ -748,7 +793,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := b.nsap.bind(b.bip, nil, &b.localAddress); err != nil {
+	if err := b.nsap.Bind(b.bip, nil, &b.localAddress); err != nil {
 		return nil, err
 	}
 
@@ -786,7 +831,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	n.localAddress = localAddress
 
 	// a network service access point will be needed
-	n.nsap, err = NewNetworkServiceAccessPoint(localLog, nil, nil, nil)
+	n.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
@@ -799,17 +844,17 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	// create a generic BIP stack, bound to the Annex J server
 	// on the UDP multiplexer
 	if bbmdAddress == nil && bbmdTTL == nil {
-		n.bip, err = NewBIPSimple(localLog, nil, nil, nil)
+		n.bip, err = NewBIPSimple(localLog)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPSimple")
 		}
 	} else {
-		n.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL, nil, nil, nil)
+		n.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPForeign")
 		}
 	}
-	n.annexj, err = NewAnnexJCodec(localLog, nil, nil)
+	n.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
@@ -824,7 +869,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := n.nsap.bind(n.bip.(_Server), nil, &n.localAddress); err != nil {
+	if err := n.nsap.Bind(n.bip.(_Server), nil, &n.localAddress); err != nil {
 		return nil, err
 	}
 

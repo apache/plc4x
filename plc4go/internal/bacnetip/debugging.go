@@ -36,3 +36,7 @@ func Xtob(hexString string) ([]byte, error) {
 	}
 	return decodeString, nil
 }
+
+type DebugContents struct {
+	// TODO: implement me
+}

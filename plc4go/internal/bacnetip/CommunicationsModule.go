@@ -88,21 +88,24 @@ type Client struct {
 	log zerolog.Logger
 }
 
-func NewClient(localLog zerolog.Logger, cid *int, rootStruct _Client) (*Client, error) {
+func NewClient(localLog zerolog.Logger, rootStruct _Client, opts ...func(*Client)) (*Client, error) {
 	c := &Client{
-		clientID: cid,
-		log:      localLog,
+		log: localLog,
 	}
-	if cid != nil {
-		if _, ok := clientMap[*cid]; ok {
-			return nil, errors.Errorf("already a client %d", *cid)
+	for _, opt := range opts {
+		opt(c)
+	}
+	if c.clientID != nil {
+		cid := *c.clientID
+		if _, ok := clientMap[cid]; ok {
+			return nil, errors.Errorf("already a client %d", cid)
 		}
-		clientMap[*cid] = c
+		clientMap[cid] = c
 
 		// automatically bind
-		if server, ok := serverMap[*cid]; ok {
+		if server, ok := serverMap[cid]; ok {
 			if server.serverPeer != nil {
-				return nil, errors.Errorf("server %d already bound", *cid)
+				return nil, errors.Errorf("server %d already bound", cid)
 			}
 
 			// Note: we need to pass the rootStruct (which should contain c as delegate) here
@@ -112,6 +115,12 @@ func NewClient(localLog zerolog.Logger, cid *int, rootStruct _Client) (*Client, 
 		}
 	}
 	return c, nil
+}
+
+func WithClientCid(cid int) func(*Client) {
+	return func(c *Client) {
+		c.clientID = &cid
+	}
 }
 
 func (c *Client) Request(args Args, kwargs KWArgs) error {
@@ -160,21 +169,24 @@ type Server struct {
 	log zerolog.Logger
 }
 
-func NewServer(localLog zerolog.Logger, sid *int, rootStruct _Server) (*Server, error) {
+func NewServer(localLog zerolog.Logger, rootStruct _Server, opts ...func(server *Server)) (*Server, error) {
 	s := &Server{
-		serverID: sid,
-		log:      localLog,
+		log: localLog,
 	}
-	if sid != nil {
-		if _, ok := serverMap[*sid]; ok {
-			return nil, errors.Errorf("already a server %d", *sid)
+	for _, opt := range opts {
+		opt(s)
+	}
+	if s.serverID != nil {
+		sid := *s.serverID
+		if _, ok := serverMap[sid]; ok {
+			return nil, errors.Errorf("already a server %d", sid)
 		}
-		serverMap[*sid] = s
+		serverMap[sid] = s
 
 		// automatically bind
-		if client, ok := clientMap[*sid]; ok {
+		if client, ok := clientMap[sid]; ok {
 			if client.clientPeer != nil {
-				return nil, errors.Errorf("client %d already bound", *sid)
+				return nil, errors.Errorf("client %d already bound", sid)
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
@@ -186,9 +198,16 @@ func NewServer(localLog zerolog.Logger, sid *int, rootStruct _Server) (*Server, 
 	return s, nil
 }
 
+func WithServerSID(sid int) func(*Server) {
+	return func(server *Server) {
+		server.serverID = &sid
+	}
+}
+
 func (s *Server) Indication(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
+
 func (s *Server) Response(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
@@ -230,20 +249,24 @@ type ServiceAccessPoint struct {
 	log zerolog.Logger
 }
 
-func NewServiceAccessPoint(localLog zerolog.Logger, sapID *int, rootStruct _ServiceAccessPoint) (*ServiceAccessPoint, error) {
+func NewServiceAccessPoint(localLog zerolog.Logger, rootStruct _ServiceAccessPoint, opts ...func(point *ServiceAccessPoint)) (*ServiceAccessPoint, error) {
 	s := &ServiceAccessPoint{
-		serviceID: sapID,
+		log: localLog,
 	}
-	if sapID != nil {
-		if _, ok := serviceMap[*sapID]; ok {
-			return nil, errors.Errorf("already a server %d", *sapID)
+	for _, opt := range opts {
+		opt(s)
+	}
+	if s.serviceID != nil {
+		sapID := *s.serviceID
+		if _, ok := serviceMap[sapID]; ok {
+			return nil, errors.Errorf("already a server %d", sapID)
 		}
-		serviceMap[*sapID] = s
+		serviceMap[sapID] = s
 
 		// automatically bind
-		if element, ok := elementMap[*sapID]; ok {
+		if element, ok := elementMap[sapID]; ok {
 			if element.elementService != nil {
-				return nil, errors.Errorf("application service element %d already bound", *sapID)
+				return nil, errors.Errorf("application service element %d already bound", sapID)
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
@@ -253,6 +276,12 @@ func NewServiceAccessPoint(localLog zerolog.Logger, sapID *int, rootStruct _Serv
 		}
 	}
 	return s, nil
+}
+
+func WithServiceAccessPointSapID(sapID int) func(*ServiceAccessPoint) {
+	return func(s *ServiceAccessPoint) {
+		s.serviceID = &sapID
+	}
 }
 
 func (s *ServiceAccessPoint) String() string {
@@ -309,21 +338,25 @@ type ApplicationServiceElement struct {
 	log zerolog.Logger
 }
 
-func NewApplicationServiceElement(localLog zerolog.Logger, aseID *int, rootStruct _ApplicationServiceElement) (*ApplicationServiceElement, error) {
+func NewApplicationServiceElement(localLog zerolog.Logger, rootStruct _ApplicationServiceElement, opts ...func(*ApplicationServiceElement)) (*ApplicationServiceElement, error) {
 	a := &ApplicationServiceElement{
-		elementID: aseID,
+		log: localLog,
+	}
+	for _, opt := range opts {
+		opt(a)
 	}
 
-	if aseID != nil {
-		if _, ok := elementMap[*aseID]; ok {
-			return nil, errors.Errorf("already an application service element %d", *aseID)
+	if a.elementID != nil {
+		aseID := *a.elementID
+		if _, ok := elementMap[aseID]; ok {
+			return nil, errors.Errorf("already an application service element %d", aseID)
 		}
-		elementMap[*aseID] = a
+		elementMap[aseID] = a
 
 		// automatically bind
-		if service, ok := serviceMap[*aseID]; ok {
+		if service, ok := serviceMap[aseID]; ok {
 			if service.serviceElement != nil {
-				return nil, errors.Errorf("service access point %d already bound", *aseID)
+				return nil, errors.Errorf("service access point %d already bound", aseID)
 			}
 
 			// Note: we need to pass the rootStruct (which should contain a as delegate) here
@@ -333,6 +366,12 @@ func NewApplicationServiceElement(localLog zerolog.Logger, aseID *int, rootStruc
 		}
 	}
 	return a, nil
+}
+
+func WithApplicationServiceElementAseID(aseID int) func(*ApplicationServiceElement) {
+	return func(s *ApplicationServiceElement) {
+		s.elementID = &aseID
+	}
 }
 
 func (a *ApplicationServiceElement) Request(args Args, kwargs KWArgs) error {

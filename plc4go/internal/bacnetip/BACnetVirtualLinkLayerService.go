@@ -39,7 +39,7 @@ func _New_MultiplexClient(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 		multiplexer: multiplexer,
 	}
 	var err error
-	m.Client, err = NewClient(localLog, nil, m)
+	m.Client, err = NewClient(localLog, m)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -60,7 +60,7 @@ func _New_MultiplexServer(localLog zerolog.Logger, multiplexer *UDPMultiplexer) 
 		multiplexer: multiplexer,
 	}
 	var err error
-	m.Server, err = NewServer(localLog, nil, m)
+	m.Server, err = NewServer(localLog, m)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -132,7 +132,7 @@ func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (
 		Stringer("address", u.address).
 		Stringer("addrTuple", u.addrTuple).
 		Stringer("addrBroadcastTuple", u.addrBroadcastTuple).
-		Bool("route_aware", settings.RouteAware).
+		Bool("route_aware", Settings.RouteAware).
 		Msg("working with")
 
 	// create and bind direct address
@@ -271,28 +271,50 @@ type AnnexJCodec struct {
 	*Client
 	*Server
 
+	// pass through args
+	argCid *int
+	argSid *int
+
 	log zerolog.Logger
 }
 
-func NewAnnexJCodec(localLog zerolog.Logger, cid *int, sid *int) (*AnnexJCodec, error) {
-	localLog.Debug().
-		Interface("cid", cid).
-		Interface("sid", sid).
-		Msg("NewAnnexJCodec")
+func NewAnnexJCodec(localLog zerolog.Logger, opts ...func(*AnnexJCodec)) (*AnnexJCodec, error) {
 	a := &AnnexJCodec{
 		log: localLog,
 	}
-	client, err := NewClient(localLog, cid, a)
+	for _, opt := range opts {
+		opt(a)
+	}
+	localLog.Debug().
+		Interface("cid", a.argCid).
+		Interface("sid", a.argSid).
+		Msg("NewAnnexJCodec")
+	client, err := NewClient(localLog, a, func(client *Client) {
+		client.clientID = a.argSid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	a.Client = client
-	server, err := NewServer(localLog, sid, a)
+	server, err := NewServer(localLog, a, func(server *Server) {
+		server.serverID = a.argSid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
 	a.Server = server
 	return a, nil
+}
+
+func WithAnnexJCodecCid(cid int) func(*AnnexJCodec) {
+	return func(a *AnnexJCodec) {
+		a.argCid = &cid
+	}
+}
+func WithAnnexJCodecSid(sid int) func(*AnnexJCodec) {
+	return func(a *AnnexJCodec) {
+		a.argSid = &sid
+	}
 }
 
 func (b *AnnexJCodec) String() string {
@@ -318,24 +340,38 @@ type BIPSAP struct {
 	*ServiceAccessPoint
 	rootStruct _BIPSAP
 
+	// pass through args
+	argSapID *int
+
 	log zerolog.Logger
 }
 
-func NewBIPSAP(localLog zerolog.Logger, sapID *int, rootStruct _BIPSAP) (*BIPSAP, error) {
-	localLog.Debug().
-		Interface("sapID", sapID).
-		Interface("rootStruct", rootStruct).
-		Msg("NewBIPSAP")
+func NewBIPSAP(localLog zerolog.Logger, rootStruct _BIPSAP, opts ...func(*BIPSAP)) (*BIPSAP, error) {
 	b := &BIPSAP{
 		log: localLog,
 	}
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, sapID, rootStruct)
+	for _, opt := range opts {
+		opt(b)
+	}
+	localLog.Debug().
+		Interface("sapID", b.argSapID).
+		Interface("rootStruct", rootStruct).
+		Msg("NewBIPSAP")
+	serviceAccessPoint, err := NewServiceAccessPoint(localLog, rootStruct, func(point *ServiceAccessPoint) {
+		point.serviceID = b.argSapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating service access point")
 	}
 	b.ServiceAccessPoint = serviceAccessPoint
 	b.rootStruct = rootStruct
 	return b, nil
+}
+
+func WithBIPSAPSapID(sapID int) func(*BIPSAP) {
+	return func(point *BIPSAP) {
+		point.argSapID = &sapID
+	}
 }
 
 func (b *BIPSAP) String() string {
@@ -359,27 +395,43 @@ type BIPSimple struct {
 	*Client
 	*Server
 
+	// pass through args
+	argSapID *int
+	argCid   *int
+	argSid   *int
+
 	log zerolog.Logger
 }
 
-func NewBIPSimple(localLog zerolog.Logger, sapID *int, cid *int, sid *int) (*BIPSimple, error) {
+func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BIPSimple, error) {
+	b := &BIPSimple{
+		log: localLog,
+	}
+	for _, opt := range opts {
+		opt(b)
+	}
 	localLog.Debug().
-		Interface("sapID", sapID).
-		Interface("cid", cid).
-		Interface("sid", sid).
+		Interface("sapID", b.argSapID).
+		Interface("cid", b.argCid).
+		Interface("sid", b.argSid).
 		Msg("NewBIPSimple")
-	b := &BIPSimple{}
-	bipsap, err := NewBIPSAP(localLog, sapID, b)
+	bipsap, err := NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
+		bipsap.argSapID = b.argSapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	client, err := NewClient(localLog, cid, b)
+	client, err := NewClient(localLog, b, func(client *Client) {
+		client.clientID = b.argCid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	b.Client = client
-	server, err := NewServer(localLog, sid, b)
+	server, err := NewServer(localLog, b, func(server *Server) {
+		server.serverID = b.argSid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -519,36 +571,51 @@ type BIPForeign struct {
 	*Client
 	*Server
 	*OneShotTask
+
 	registrationStatus      int
 	bbmdAddress             *Address
 	bbmdTimeToLive          *int
 	registrationTimeoutTask *OneShotFunctionTask
 
+	// pass through args
+	argSapID *int
+	argCid   *int
+	argSid   *int
+
 	log zerolog.Logger
 }
 
-func NewBIPForeign(localLog zerolog.Logger, addr *Address, ttl *int, sapID *int, cid *int, sid *int) (*BIPForeign, error) {
-	localLog.Debug().
-		Stringer("addrs", addr).
-		Interface("ttls", ttl).
-		Interface("sapIDs", sapID).
-		Interface("cids", cid).
-		Interface("sids", sid).
-		Msg("NewBIPForeign")
+func NewBIPForeign(localLog zerolog.Logger, addr *Address, ttl *int, opts ...func(*BIPForeign)) (*BIPForeign, error) {
 	b := &BIPForeign{
 		log: localLog,
 	}
-	bipsap, err := NewBIPSAP(localLog, sapID, b)
+	for _, opt := range opts {
+		opt(b)
+	}
+	localLog.Debug().
+		Stringer("addrs", addr).
+		Interface("ttls", ttl).
+		Interface("sapID", b.argSapID).
+		Interface("cid", b.argCid).
+		Interface("sid", b.argSid).
+		Msg("NewBIPForeign")
+	bipsap, err := NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
+		bipsap.argSapID = b.argSapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	client, err := NewClient(localLog, cid, b)
+	client, err := NewClient(localLog, b, func(client *Client) {
+		client.clientID = b.argCid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	b.Client = client
-	server, err := NewServer(localLog, sid, b)
+	server, err := NewServer(localLog, b, func(server *Server) {
+		server.serverID = b.argSid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}

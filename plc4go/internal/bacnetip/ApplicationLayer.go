@@ -1592,21 +1592,17 @@ type StateMachineAccessPoint struct {
 	dccEnableDisable      readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
 	applicationTimeout    uint
 
+	// pass through arguments
+	argSapID *int
+	argCid   *int
+
 	log zerolog.Logger
 }
 
-func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
-	localLog.Debug().
-		Stringer("localDevice", localDevice).
-		Stringer("deviceInfoCache", deviceInfoCache).
-		Interface("sapID", sapID).
-		Interface("cid", cid).
-		Msg("NewStateMachineAccessPoint")
-
+func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*StateMachineAccessPoint)) (*StateMachineAccessPoint, error) {
 	s := &StateMachineAccessPoint{
 		// save a reference to the device information cache
-		localDevice:     localDevice,
-		deviceInfoCache: deviceInfoCache,
+		localDevice: localDevice,
 
 		// client settings
 		nextInvokeId:       1,
@@ -1635,18 +1631,48 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(s)
+	}
+	localLog.Debug().
+		Stringer("localDevice", localDevice).
+		Stringer("deviceInfoCache", s.deviceInfoCache).
+		Interface("sapID", s.argSapID).
+		Interface("cid", s.argCid).
+		Msg("NewStateMachineAccessPoint")
 	// basic initialization
-	client, err := NewClient(localLog, cid, s)
+	client, err := NewClient(localLog, s, func(client *Client) {
+		client.clientID = s.argCid
+	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "error building client for %d", cid)
+		return nil, errors.Wrapf(err, "error building client for %d", s.argCid)
 	}
 	s.Client = client
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, sapID, s)
+	serviceAccessPoint, err := NewServiceAccessPoint(localLog, s, func(point *ServiceAccessPoint) {
+		point.serviceID = s.argSapID
+	})
 	if err != nil {
-		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", sapID)
+		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", s.argSapID)
 	}
 	s.ServiceAccessPoint = serviceAccessPoint
 	return s, nil
+}
+
+func WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*StateMachineAccessPoint) {
+	return func(s *StateMachineAccessPoint) {
+		s.deviceInfoCache = deviceInfoCache
+	}
+}
+func WithStateMachineAccessPointSapID(sapID int) func(*StateMachineAccessPoint) {
+	return func(s *StateMachineAccessPoint) {
+		s.argSapID = &sapID
+	}
+}
+
+func WithStateMachineAccessPointCid(cid int) func(*StateMachineAccessPoint) {
+	return func(s *StateMachineAccessPoint) {
+		s.argCid = &cid
+	}
 }
 
 func (s *StateMachineAccessPoint) String() string {
@@ -2008,24 +2034,47 @@ type ApplicationServiceAccessPoint struct {
 	*ApplicationServiceElement
 	*ServiceAccessPoint
 
+	// Pass through args
+	argAseID *int
+	argSapID *int
+
 	log zerolog.Logger
 }
 
-func NewApplicationServiceAccessPoint(localLog zerolog.Logger, aseID *int, sapID *int) (*ApplicationServiceAccessPoint, error) {
+func NewApplicationServiceAccessPoint(localLog zerolog.Logger, opts ...func(*ApplicationServiceAccessPoint)) (*ApplicationServiceAccessPoint, error) {
 	a := &ApplicationServiceAccessPoint{
 		log: localLog,
 	}
-	applicationServiceElement, err := NewApplicationServiceElement(localLog, aseID, a)
+	for _, opt := range opts {
+		opt(a)
+	}
+	applicationServiceElement, err := NewApplicationServiceElement(localLog, a, func(ase *ApplicationServiceElement) {
+		ase.elementID = a.argAseID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
 	a.ApplicationServiceElement = applicationServiceElement
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, sapID, a)
+	serviceAccessPoint, err := NewServiceAccessPoint(localLog, a, func(sap *ServiceAccessPoint) {
+		sap.serviceID = a.argSapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
 	a.ServiceAccessPoint = serviceAccessPoint
 	return a, nil
+}
+
+func WithApplicationServiceAccessPointAseID(aseID int) func(*ApplicationServiceAccessPoint) {
+	return func(a *ApplicationServiceAccessPoint) {
+		a.argAseID = &aseID
+	}
+}
+
+func WithApplicationServiceAccessPointSapID(sapID int) func(*ApplicationServiceAccessPoint) {
+	return func(a *ApplicationServiceAccessPoint) {
+		a.argSapID = &sapID
+	}
 }
 
 // TODO: big WIP

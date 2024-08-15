@@ -41,7 +41,8 @@ type NetworkNode interface {
 }
 
 type Network struct {
-	name  string
+	name string
+
 	nodes []NetworkNode
 
 	broadcastAddress *Address
@@ -52,13 +53,37 @@ type Network struct {
 	log zerolog.Logger
 }
 
-func NewNetwork(name string, localLog zerolog.Logger, trafficLogger TrafficLogger, broadcastAddress *Address, dropPercent float32) *Network {
-	return &Network{
-		name:             name,
-		broadcastAddress: broadcastAddress,
-		dropPercent:      dropPercent,
-		trafficLogger:    trafficLogger,
-		log:              localLog,
+func NewNetwork(localLog zerolog.Logger, opts ...func(*Network)) *Network {
+	network := &Network{
+		log: localLog,
+	}
+	for _, opt := range opts {
+		opt(network)
+	}
+	return network
+}
+
+func WithNetworkName(name string) func(*Network) {
+	return func(n *Network) {
+		n.name = name
+	}
+}
+
+func WithNetworkBroadcastAddress(broadcastAddress *Address) func(*Network) {
+	return func(n *Network) {
+		n.broadcastAddress = broadcastAddress
+	}
+}
+
+func WithNetworkDropPercent(dropPercent float32) func(*Network) {
+	return func(n *Network) {
+		n.dropPercent = dropPercent
+	}
+}
+
+func WithNetworkTrafficLogger(trafficLogger TrafficLogger) func(*Network) {
+	return func(n *Network) {
+		n.trafficLogger = trafficLogger
 	}
 }
 
@@ -147,18 +172,27 @@ type Node struct {
 	promiscuous bool
 	spoofing    bool
 
+	// pass through args
+	argSid *int
+
 	log zerolog.Logger
 }
 
-func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, name string, promiscuous bool, spoofing bool, sid *int) (*Node, error) {
+func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, opts ...func(*Node)) (*Node, error) {
 	n := &Node{
-		lan:     nil,
 		address: addr,
-		name:    name,
-		log:     localLog.With().Str("name", name).Logger(),
+		log:     localLog,
+	}
+	for _, opt := range opts {
+		opt(n)
+	}
+	if n.name == "" {
+		n.log = n.log.With().Str("name", n.name).Logger()
 	}
 	var err error
-	n.Server, err = NewServer(localLog, sid, n)
+	n.Server, err = NewServer(localLog, n, func(server *Server) {
+		server.serverID = n.argSid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -168,11 +202,31 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, n
 		n.bind(lan)
 	}
 
-	// might receive all packets and might spoof
-	n.promiscuous = promiscuous
-	n.spoofing = spoofing
-
 	return n, nil
+}
+
+func WithNodeName(name string) func(*Node) {
+	return func(n *Node) {
+		n.name = name
+	}
+}
+
+func WithNodePromiscuous(promiscuous bool) func(*Node) {
+	return func(n *Node) {
+		n.promiscuous = promiscuous
+	}
+}
+
+func WithNodeSpoofing(spoofing bool) func(*Node) {
+	return func(n *Node) {
+		n.spoofing = spoofing
+	}
+}
+
+func WithNodeSid(sid int) func(*Node) {
+	return func(n *Node) {
+		n.argSid = &sid
+	}
 }
 
 func (n *Node) setLan(lan *Network) {
@@ -246,9 +300,9 @@ type IPNetwork struct {
 	*Network
 }
 
-func NewIPNetwork(name string, localLog zerolog.Logger, trafficLogger TrafficLogger, broadcastAddress *Address, dropPercent float32) *IPNetwork {
+func NewIPNetwork(localLog zerolog.Logger, opts ...func(*Network)) *IPNetwork {
 	return &IPNetwork{
-		Network: NewNetwork(name, localLog, trafficLogger, broadcastAddress, dropPercent),
+		Network: NewNetwork(localLog, opts...),
 	}
 }
 
@@ -283,18 +337,18 @@ type IPNode struct {
 	addrBroadcastTuple *AddressTuple[string, uint16]
 }
 
-func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, promiscuous bool, spoofing bool, sid *int) (*IPNode, error) {
+func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...func(*Node)) (*IPNode, error) {
 	i := &IPNode{
 		// save the address information
 		addrTuple:          addr.AddrTuple,
 		addrBroadcastTuple: addr.AddrBroadcastTuple,
 	}
 	var err error
-	i.Node, err = NewNode(localLog, addr, nil, "", promiscuous, spoofing, sid)
+	i.Node, err = NewNode(localLog, addr, nil, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
-	i.bind(lan) // TODO: we bind here otherwise we bind the contained node
+	i.bind(lan) // bind here otherwise we bind the contained node
 	return i, nil
 }
 
@@ -315,21 +369,33 @@ type IPRouterNode struct {
 	node       *IPNode
 	addrMask   *uint32
 	addrSubnet *uint32
+
+	// pass through args
+	argCid *int
+
+	log zerolog.Logger
 }
 
-func NewIPRouterNode(localLog zerolog.Logger, cid *int, router *IPRouter, addr *Address, lan *IPNetwork) (*IPRouterNode, error) {
+func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, lan *IPNetwork, opts ...func(*IPRouterNode)) (*IPRouterNode, error) {
 	i := &IPRouterNode{
 		// save the references to the router for packets and the lan for debugging
 		router: router,
 		lan:    lan,
+
+		log: localLog,
+	}
+	for _, opt := range opts {
+		opt(i)
 	}
 	var err error
-	i.Client, err = NewClient(localLog, cid, i)
+	i.Client, err = NewClient(localLog, i, func(client *Client) {
+		client.clientID = i.argCid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}
 	// make ourselves an IPNode and bind to it
-	i.node, err = NewIPNode(localLog, addr, lan, true, true, nil)
+	i.node, err = NewIPNode(localLog, addr, lan, WithNodePromiscuous(true), WithNodeSpoofing(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building IPNode")
 	}
@@ -341,6 +407,12 @@ func NewIPRouterNode(localLog zerolog.Logger, cid *int, router *IPRouter, addr *
 	i.addrMask = addr.AddrMask
 	i.addrSubnet = addr.AddrSubnet
 	return i, nil
+}
+
+func WithIPRouterNodeCid(cid int) func(*IPRouterNode) {
+	return func(n *IPRouterNode) {
+		n.argCid = &cid
+	}
 }
 
 func (n *IPRouterNode) Confirmation(args Args, kwargs KWArgs) error {
@@ -374,7 +446,7 @@ func NewIPRouter(localLog zerolog.Logger) *IPRouter {
 func (n *IPRouter) AddNetwork(addr *Address, lan *IPNetwork) {
 	n.log.Debug().Stringer("addr", addr).Stringer("lan", lan).Msg("adding network")
 
-	node, err := NewIPRouterNode(n.log, nil, n, addr, lan)
+	node, err := NewIPRouterNode(n.log, n, addr, lan)
 	if err != nil {
 		n.log.Error().Err(err).Msg("error creating IPRouterNode")
 		return

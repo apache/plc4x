@@ -112,10 +112,13 @@ type NetworkAdapter struct {
 	adapterAddr          *Address
 	adapterNetConfigured *int
 
+	// pass through args
+	argCid *int
+
 	log zerolog.Logger
 }
 
-func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, net *uint16, addr *Address, cid *int) (*NetworkAdapter, error) {
+func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, net *uint16, addr *Address, opts ...func(*NetworkAdapter)) (*NetworkAdapter, error) {
 	n := &NetworkAdapter{
 		adapterSAP:  sap,
 		adapterNet:  net,
@@ -123,8 +126,13 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(n)
+	}
 	var err error
-	n.Client, err = NewClient(localLog, cid, n)
+	n.Client, err = NewClient(localLog, n, func(client *Client) {
+		client.clientID = n.argCid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -134,6 +142,12 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 		n.adapterNetConfigured = &state
 	}
 	return n, nil
+}
+
+func WithNetworkAdapterCid(cid int) func(*NetworkAdapter) {
+	return func(na *NetworkAdapter) {
+		na.argCid = &cid
+	}
 }
 
 // Confirmation Decode upstream PDUs and pass them up to the service access point.
@@ -172,19 +186,30 @@ type NetworkServiceAccessPoint struct {
 	pendingNets     map[*uint16][]PDU
 	localAdapter    *NetworkAdapter
 
+	// pass through args
+	argSapID *int
+	argSid   *int
+
 	log zerolog.Logger
 }
 
-func NewNetworkServiceAccessPoint(localLog zerolog.Logger, routerInfoCache *RouterInfoCache, sapID *int, sid *int) (*NetworkServiceAccessPoint, error) {
+func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*NetworkServiceAccessPoint)) (*NetworkServiceAccessPoint, error) {
 	n := &NetworkServiceAccessPoint{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(n)
+	}
 	var err error
-	n.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, sapID, n)
+	n.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, n, func(point *ServiceAccessPoint) {
+		point.serviceID = n.argSapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.Server, err = NewServer(localLog, sid, n)
+	n.Server, err = NewServer(localLog, n, func(server *Server) {
+		server.serverID = n.argSid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -193,10 +218,9 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, routerInfoCache *Rout
 	n.adapters = make(map[*uint16]*NetworkAdapter)
 
 	// use the provided cache or make a default one
-	if routerInfoCache == nil {
-		routerInfoCache = NewRouterInfoCache(localLog)
+	if n.routerInfoCache == nil {
+		n.routerInfoCache = NewRouterInfoCache(localLog)
 	}
-	n.routerInfoCache = routerInfoCache
 
 	// map to a list of application layer packets waiting for a path
 	n.pendingNets = make(map[*uint16][]PDU)
@@ -204,12 +228,30 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, routerInfoCache *Rout
 	return n, nil
 }
 
+func WithNetworkServiceAccessPointRouterInfoCache(routerInfoCache *RouterInfoCache) func(*NetworkServiceAccessPoint) {
+	return func(n *NetworkServiceAccessPoint) {
+		n.routerInfoCache = routerInfoCache
+	}
+}
+
+func WithNetworkServiceAccessPointRouterSapID(sapID int) func(*NetworkServiceAccessPoint) {
+	return func(n *NetworkServiceAccessPoint) {
+		n.argSapID = &sapID
+	}
+}
+
+func WithNetworkServiceAccessPointRouterSID(sid int) func(*NetworkServiceAccessPoint) {
+	return func(n *NetworkServiceAccessPoint) {
+		n.argSid = &sid
+	}
+}
+
 func (n *NetworkServiceAccessPoint) String() string {
 	return fmt.Sprintf("NetworkServiceAccessPoint(TBD...)") // TODO: fill some info here
 }
 
 /*
-bind creates a network adapter object and bind.
+Bind creates a network adapter object and bind.
 
 	bind(s, None, None)
 	    Called for simple applications, local network unknown, no specific
@@ -226,7 +268,7 @@ bind creates a network adapter object and bind.
 	    Called for applications or routers, bind to the network, send up
 	    APDUs with a metching address.
 */
-func (n *NetworkServiceAccessPoint) bind(server _Server, net *uint16, address *Address) error {
+func (n *NetworkServiceAccessPoint) Bind(server _Server, net *uint16, address *Address) error {
 	n.log.Debug().
 		Interface("server", server).
 		Interface("net", net).
@@ -238,7 +280,7 @@ func (n *NetworkServiceAccessPoint) bind(server _Server, net *uint16, address *A
 		return errors.Errorf("Allready bound: %v", net)
 	}
 	// create an adapter object, add it to our map
-	adapter, err := NewNetworkAdapter(n.log, n, net, address, nil)
+	adapter, err := NewNetworkAdapter(n.log, n, net, address)
 	if err != nil {
 		return errors.Wrap(err, "error creating adapter")
 	}
@@ -327,7 +369,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	hopCount := uint8(0xff)
 
 	// if this is route aware, use it for the destination
-	if settings.RouteAware && pduDestination.AddrRoute != nil {
+	if Settings.RouteAware && pduDestination.AddrRoute != nil {
 		// always a local station for now, in theory this could also be
 		// a local broadcast address, remote station, or remote broadcast
 		// but that is not supported by the patterns
@@ -639,7 +681,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 			} else {
 				apdu.pduSource = sourceAddress
 			}
-			if settings.RouteAware {
+			if Settings.RouteAware {
 				apdu.pduSource.AddrRoute = pdu.GetPDUSource()
 			}
 
@@ -657,7 +699,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 			// combine the source address
 			if npdu.GetControl().GetSourceSpecified() {
 				apdu.pduSource = sourceAddress
-				if settings.RouteAware {
+				if Settings.RouteAware {
 					n.log.Debug().Msg("adding route")
 					apdu.pduSource = pdu.GetPDUSource()
 				}
@@ -906,7 +948,9 @@ func NewNetworkServiceElement(localLog zerolog.Logger, eid *int, startupDisabled
 		log: localLog,
 	}
 	var err error
-	n.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, eid, n)
+	n.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, n, func(element *ApplicationServiceElement) {
+		element.elementID = eid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}

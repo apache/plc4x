@@ -17,35 +17,8 @@
  * under the License.
  */
 
-package bacnetip
+package service
 
-// TODO: implement
-type Capability struct {
-}
-
-func NewCapability() *Capability {
-	return &Capability{}
-}
-
-// TODO: implement
-type Collector struct {
-}
-
-func NewCollector() *Collector {
-	return &Collector{}
-}
-
-func (c *Collector) searchCapability() {
-	// TODO: implement
-	return
-}
-
-func (c *Collector) CapabilityFunctions(fn string) []func(args Args, kwargs KWArgs) error {
-	// TODO: implement
-	return nil
-}
-
-func (c *Collector) AddCapability(cls any) {
-	// TODO: implement
-	return
+type DetectionAlgorithm struct {
+	//TODO: implement me
 }

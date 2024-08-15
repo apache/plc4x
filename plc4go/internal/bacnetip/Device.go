@@ -182,11 +182,16 @@ func ObjectIdentifierStringToTuple(objectIdentifier string) (objectType uint16, 
 	if len(split) != 2 {
 		panic("broken object identifier")
 	}
-	parsedObjectType, err := strconv.Atoi(split[0])
-	if err != nil {
-		panic(err)
+	bacnetObjectType, ok := model.BACnetObjectTypeByName(strings.ToUpper(split[0]))
+	if ok {
+		objectType = uint16(bacnetObjectType)
+	} else {
+		parsedObjectType, err := strconv.Atoi(split[0])
+		if err != nil {
+			panic(err)
+		}
+		objectType = uint16(parsedObjectType)
 	}
-	objectType = uint16(parsedObjectType)
 	parsedInstance, err := strconv.Atoi(split[1])
 	if err != nil {
 		panic(err)

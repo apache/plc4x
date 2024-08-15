@@ -180,12 +180,16 @@ func (a *Address) decodeAddress(addr any) error {
 			port := uint16(udpAddr.Port)
 			a.AddrPort = &port
 			addr.String()
-		case int:
+		case int, int32, int64, uint, uint32, uint64:
+			iaddr, err := strconv.ParseInt(fmt.Sprintf("%v", addr), 10, 64) // TODO: bit ugly but better than repeating all of it
+			if err != nil {
+				panic(err)
+			}
 			a.log.Debug().Msg("int")
-			if addr < 0 || addr > 255 {
+			if iaddr < 0 || iaddr > 255 {
 				return errors.New("address out of range")
 			}
-			a.AddrAddress = []byte{byte(addr)}
+			a.AddrAddress = []byte{byte(iaddr)}
 			length := uint8(1)
 			a.AddrLen = &length
 		case []byte:
@@ -323,14 +327,17 @@ func (a *Address) decodeAddress(addr any) error {
 					a.AddrLen = &addrLen
 				}
 
-				if !settings.RouteAware && (routeAddr != "" || routeIpAddr != "") {
+				if !Settings.RouteAware && (routeAddr != "" || routeIpAddr != "") {
 					a.log.Warn().Msgf("route provided but not route aware: %v", addr)
 				}
 
 				if routeAddr != "" {
 					if strings.HasPrefix(routeAddr, "0x") {
-						var err error
-						a.AddrRoute, err = NewAddress(a.log, routeAddr[2:])
+						xtob, err := Xtob(routeAddr[2:])
+						if err != nil {
+							return errors.Wrap(err, "can't parse route addr")
+						}
+						a.AddrRoute, err = NewAddress(a.log, xtob)
 						if err != nil {
 							return errors.Wrap(err, "can't parse route")
 						}
@@ -350,7 +357,8 @@ func (a *Address) decodeAddress(addr any) error {
 						routeIpPort = "47808"
 					}
 					var err error
-					a.AddrRoute, err = NewAddress(a.log, routeIpAddr, routeIpPort)
+					tuple := &AddressTuple[string, string]{routeIpAddr, routeIpPort}
+					a.AddrRoute, err = NewAddress(a.log, tuple)
 					if err != nil {
 						return errors.Wrap(err, "can't create route")
 					}
@@ -360,25 +368,207 @@ func (a *Address) decodeAddress(addr any) error {
 			}
 
 			if ethernet_re.MatchString(addr) {
-				panic("implement me") // TODO:
+				a.log.Trace().Msg("ethernet")
+				var err error
+				a.AddrAddress, err = Xtob(addr)
+				if err != nil {
+					return errors.Wrap(err, "can't parse address")
+				}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
 			}
 
-			// TODO: "^\d+$"
-			// TODO: "^\d+:[*]$"
-			// TODO: "^\d+:\d+$"
-			// TODO: "^0x([0-9A-Fa-f][0-9A-Fa-f])+$"
-			// TODO: "^X'([0-9A-Fa-f][0-9A-Fa-f])+'$"
-			// TODO: "^\d+:0x([0-9A-Fa-f][0-9A-Fa-f])+$"
-			// TODO: "^\d+:X'([0-9A-Fa-f][0-9A-Fa-f])+'$"
+			intR := regexp.MustCompile(`^\d+$`)
+			if intR.MatchString(addr) {
+				a.log.Trace().Msg("int")
+
+				parseUint, err := strconv.ParseUint(addr, 10, 8)
+				if err != nil {
+					return errors.Wrap(err, "can't parse int")
+				}
+				a.AddrAddress = []byte{byte(parseUint)}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
+			}
+
+			remoteBroadcast := regexp.MustCompile(`^\d+:[*]$`)
+			if remoteBroadcast.MatchString(addr) {
+				a.log.Trace().Msg("remote broadcast")
+
+				parseUint, err := strconv.ParseUint(addr[:len(addr)-2], 10, 16)
+				if err != nil {
+					return errors.Wrap(err, "can't parse int")
+				}
+
+				a.AddrType = REMOTE_BROADCAST_ADDRESS
+				addrNet := uint16(parseUint)
+				a.AddrNet = &addrNet
+				a.AddrAddress = nil
+				a.AddrLen = nil
+				return nil
+			}
+
+			remoteStation := regexp.MustCompile(`^\d+:[*]$`)
+			if remoteStation.MatchString(addr) {
+				a.log.Trace().Msg("remote station")
+
+				split := strings.Split(addr, ":")
+				_net, _addr := split[0], split[1]
+				parseNetUint, err := strconv.ParseUint(_net, 10, 16)
+				if err != nil {
+					return errors.Wrap(err, "can't parse int")
+				}
+				parseAddrUint, err := strconv.ParseUint(_addr, 10, 8)
+				if err != nil {
+					return errors.Wrap(err, "can't parse int")
+				}
+
+				a.AddrType = REMOTE_STATION_ADDRESS
+				addrNet := uint16(parseNetUint)
+				a.AddrNet = &addrNet
+				a.AddrAddress = []byte{byte(parseAddrUint)}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
+			}
+
+			modernHexString := regexp.MustCompile(`^0x([0-9A-Fa-f][0-9A-Fa-f])+$`)
+			if modernHexString.MatchString(addr) {
+				a.log.Trace().Msg("modern hex string")
+
+				var err error
+				a.AddrAddress, err = Xtob(addr[2:])
+				if err != nil {
+					return errors.Wrap(err, "can't parse address")
+				}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
+			}
+
+			oldSchoolHexString := regexp.MustCompile(`^X'([0-9A-Fa-f][0-9A-Fa-f])+'$`)
+			if oldSchoolHexString.MatchString(addr) {
+				a.log.Trace().Msg("modern hex string")
+
+				var err error
+				a.AddrAddress, err = Xtob(addr[2 : len(addr)-1])
+				if err != nil {
+					return errors.Wrap(err, "can't parse address")
+				}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
+			}
+
+			remoteStationWithModernHexString := regexp.MustCompile(`^\d+:0x([0-9A-Fa-f][0-9A-Fa-f])+$`)
+			if remoteStationWithModernHexString.MatchString(addr) {
+				a.log.Trace().Msg("remote station with modern hex string")
+
+				split := strings.Split(addr, ":")
+				_net, _addr := split[0], split[1]
+				parseNetUint, err := strconv.ParseUint(_net, 10, 16)
+				if err != nil {
+					return errors.Wrap(err, "can't parse int")
+				}
+
+				a.AddrType = REMOTE_STATION_ADDRESS
+				addrNet := uint16(parseNetUint)
+				a.AddrNet = &addrNet
+				a.AddrAddress, err = Xtob(_addr[2:])
+				if err != nil {
+					return errors.Wrap(err, "can't parse addr")
+				}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
+			}
+
+			remoteStationWithOldHexString := regexp.MustCompile(`^\d+:X'([0-9A-Fa-f][0-9A-Fa-f])+'$`)
+			if remoteStationWithOldHexString.MatchString(addr) {
+				a.log.Trace().Msg("remote station with modern hex string")
+
+				split := strings.Split(addr, ":")
+				_net, _addr := split[0], split[1]
+				parseNetUint, err := strconv.ParseUint(_net, 10, 16)
+				if err != nil {
+					return errors.Wrap(err, "can't parse int")
+				}
+
+				a.AddrType = REMOTE_STATION_ADDRESS
+				addrNet := uint16(parseNetUint)
+				a.AddrNet = &addrNet
+				a.AddrAddress, err = Xtob(_addr[2 : len(_addr)-1])
+				if err != nil {
+					return errors.Wrap(err, "can't parse addr")
+				}
+				addrLen := uint8(len(a.AddrAddress))
+				a.AddrLen = &addrLen
+				return nil
+			}
 
 			if interface_re.MatchString(addr) {
-				panic("implement me") // TODO:
+				a.log.Trace().Msg("interface name with optional port")
+
+				groups := interface_re.FindStringSubmatch(addr)
+				_interface := groups[1]
+				_port := groups[2]
+				if _port != "" {
+					parseUint, err := strconv.ParseUint(_port, 10, 16)
+					if err != nil {
+						return errors.Wrap(err, "can't parse port")
+					}
+					port := uint16(parseUint)
+					a.AddrPort = &port
+				} else {
+					port := uint16(47808)
+					a.AddrPort = &port
+				}
+
+				_ = _interface
+				_ = _port
+				panic("implement me")
+				return nil
 			}
 
 			return errors.New("unrecognized format")
 		case *AddressTuple[string, uint16]:
 			uaddr, port := addr.Left, addr.Right
 			a.AddrPort = &port
+
+			var addrstr []byte
+			if uaddr == "" {
+				// when ('', n) is passed it is the local host address, but that could be more than one on a multi homed machine,
+				//                    the empty string # means "any".
+				addrstr = make([]byte, 4)
+			} else {
+				addrstr = net.ParseIP(uaddr).To4()
+			}
+			a.AddrTuple = &AddressTuple[string, uint16]{uaddr, *a.AddrPort}
+			a.log.Debug().Hex("addrstr", addrstr).Msg("addrstr:")
+
+			ip := ipv4ToUint32(addrstr)
+			a.AddrIP = &ip
+			mask := uint32(0xFFFFFFFF)
+			a.AddrMask = &mask
+			host := uint32(0)
+			a.AddrHost = &host
+			subnet := uint32(0)
+			a.AddrSubnet = &subnet
+			a.AddrBroadcastTuple = a.AddrTuple
+
+			a.AddrAddress = append(addrstr, uint16ToPort(*a.AddrPort)...)
+			length := uint8(6)
+			a.AddrLen = &length
+		case *AddressTuple[string, string]:
+			uaddr, port := addr.Left, addr.Right
+			portParse, err := strconv.ParseUint(port, 10, 16)
+			if err != nil {
+				return errors.Wrap(err, "can't parse port")
+			}
+			portInt := uint16(portParse)
+			a.AddrPort = &portInt
 
 			var addrstr []byte
 			if uaddr == "" {
@@ -470,7 +660,7 @@ func (a *Address) String() string {
 				for i, address := range a.AddrAddress[0:4] {
 					octests[i] = fmt.Sprintf("%d", address)
 				}
-				result += fmt.Sprintf("%v:%v", strings.Join(octests, "."), port)
+				result += fmt.Sprintf("%v", strings.Join(octests, "."))
 				if port != 47808 {
 					result += fmt.Sprintf(":%v", port)
 				}
@@ -479,9 +669,9 @@ func (a *Address) String() string {
 			}
 		}
 	} else if a.AddrType == REMOTE_BROADCAST_ADDRESS {
-		result = fmt.Sprintf("%d", *a.AddrNet)
+		result = fmt.Sprintf("%d:*", *a.AddrNet)
 	} else if a.AddrType == REMOTE_STATION_ADDRESS {
-		result = fmt.Sprintf("%d", *a.AddrNet)
+		result = fmt.Sprintf("%d:", *a.AddrNet)
 		if a.AddrLen != nil && *a.AddrLen == 1 {
 			result += fmt.Sprintf("%v", a.AddrAddress[0])
 		} else {
@@ -491,7 +681,7 @@ func (a *Address) String() string {
 				for i, address := range a.AddrAddress[0:4] {
 					octests[i] = fmt.Sprintf("%d", address)
 				}
-				result += fmt.Sprintf("%v:%v", strings.Join(octests, "."), port)
+				result += fmt.Sprintf("%v", strings.Join(octests, "."))
 				if port != 47808 {
 					result += fmt.Sprintf(":%v", port)
 				}
@@ -506,7 +696,7 @@ func (a *Address) String() string {
 	}
 
 	if a.AddrRoute != nil {
-		result += fmt.Sprintf("@%v", *a.AddrRoute)
+		result += fmt.Sprintf("@%s", a.AddrRoute)
 	}
 	return result
 }
@@ -643,10 +833,10 @@ func NewLocalBroadcast(route *Address) *Address {
 	return l
 }
 
-func NewRemoteBroadcast(net *uint16, route *Address) *Address {
+func NewRemoteBroadcast(net uint16, route *Address) *Address {
 	r := &Address{}
 	r.AddrType = REMOTE_BROADCAST_ADDRESS
-	r.AddrNet = net
+	r.AddrNet = &net
 	r.AddrRoute = route
 	return r
 }

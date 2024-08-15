@@ -131,11 +131,15 @@ type UDPDirector struct {
 func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
 	d := &UDPDirector{}
 	var err error
-	d.Server, err = NewServer(localLog, sid, d)
+	d.Server, err = NewServer(localLog, d, func(server *Server) {
+		server.serverID = sid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, sapID, d)
+	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, d, func(point *ServiceAccessPoint) {
+		point.serviceID = sapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
