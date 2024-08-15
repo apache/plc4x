@@ -705,7 +705,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     newSegment = new LogicalSegment(new MemberID((byte) 0x00, Short.parseShort(identifier)));
                     segments.add(newSegment);
                 } else {
-                    newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (short) 0));
+                    newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (identifier.length() % 2 == 0) ? null : (short) 0));
                     segments.add(newSegment);
                 }
             } else {
