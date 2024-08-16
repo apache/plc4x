@@ -22,8 +22,12 @@ package bacnetip
 import (
 	"bytes"
 	"cmp"
+	"encoding/binary"
 	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
@@ -256,8 +260,76 @@ type CommonMath struct {
 	// TODO: implement me
 }
 
+// TODO: finish
 type Null struct {
-	// TODO: implement me
+	*Atomic[int]
+}
+
+func NewNull(arg Arg) (*Null, error) {
+	b := &Null{}
+	b.Atomic = NewAtomic[int](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Null:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Null) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, b.value, []byte{}))
+}
+
+func (b *Null) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_NULL) {
+		return errors.New("Null application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Null) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Null) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Null(%s)", value)
 }
 
 type Boolean struct {
@@ -267,7 +339,6 @@ type Boolean struct {
 func NewBoolean(arg Arg) (*Boolean, error) {
 	b := &Boolean{}
 	b.Atomic = NewAtomic[int](b)
-	b.value = 0 // atomic doesn't like bool
 
 	if arg == nil {
 		return b, nil
@@ -339,6 +410,595 @@ func (b *Boolean) String() string {
 		value = "True"
 	}
 	return fmt.Sprintf("Boolean(%s)", value)
+}
+
+// TODO: finish
+type Unsigned struct {
+	*Atomic[uint]
+	*CommonMath
+}
+
+func NewUnsigned(arg Arg) (*Unsigned, error) {
+	b := &Unsigned{}
+	b.Atomic = NewAtomic[uint](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Unsigned:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Unsigned) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+}
+
+func (b *Unsigned) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+		return errors.New("Unsigned application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Unsigned) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Unsigned) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Unsigned(%s)", value)
+}
+
+// TODO: finish
+type Unsigned8 struct {
+	*Atomic[uint8]
+}
+
+func NewUnsigned8(arg Arg) (*Unsigned8, error) {
+	b := &Unsigned8{}
+	b.Atomic = NewAtomic[uint8](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Unsigned8:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Unsigned8) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+}
+
+func (b *Unsigned8) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+		return errors.New("Unsigned8 application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Unsigned8) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Unsigned8) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Unsigned8(%s)", value)
+}
+
+// TODO: finish
+type Unsigned16 struct {
+	*Atomic[uint16]
+}
+
+func NewUnsigned16(arg Arg) (*Unsigned16, error) {
+	b := &Unsigned16{}
+	b.Atomic = NewAtomic[uint16](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Unsigned16:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Unsigned16) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+}
+
+func (b *Unsigned16) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+		return errors.New("Unsigned16 application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Unsigned16) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Unsigned16) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Unsigned16(%s)", value)
+}
+
+// TODO: finish
+type Integer struct {
+	*Atomic[int]
+	*CommonMath
+}
+
+func NewInteger(arg Arg) (*Integer, error) {
+	b := &Integer{}
+	b.Atomic = NewAtomic[int](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Integer:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Integer) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+}
+
+func (b *Integer) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+		return errors.New("Integer application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Integer) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Integer) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Integer(%s)", value)
+}
+
+// TODO: finish
+type Real struct {
+	*Atomic[float32]
+	*CommonMath
+}
+
+func NewReal(arg Arg) (*Real, error) {
+	b := &Real{}
+	b.Atomic = NewAtomic[float32](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Real:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Real) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, b.value, []byte{}))
+}
+
+func (b *Real) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_REAL) {
+		return errors.New("Real application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Real) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Real) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Real(%s)", value)
+}
+
+// TODO: finish
+type Double struct {
+	*Atomic[float64]
+	*CommonMath
+}
+
+func NewDouble(arg Arg) (*Double, error) {
+	b := &Double{}
+	b.Atomic = NewAtomic[float64](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Double:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Double) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, b.value, []byte{}))
+}
+
+func (b *Double) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_DOUBLE) {
+		return errors.New("Double application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Double) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *Double) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Double(%s)", value)
+}
+
+// TODO: finish
+type OctetString struct {
+	*Atomic[string]
+	*CommonMath
+}
+
+func NewOctetString(arg Arg) (*OctetString, error) {
+	b := &OctetString{}
+	b.Atomic = NewAtomic[string](b)
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = "1"
+		}
+	case *OctetString:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = "1"
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *OctetString) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, b.value, []byte{}))
+}
+
+func (b *OctetString) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_OCTET_STRING) {
+		return errors.New("OctetString application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = "1"
+	}
+	return nil
+}
+
+func (b *OctetString) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (b *OctetString) String() string {
+	value := "False"
+	if b.value == "1" {
+		value = "True"
+	}
+	return fmt.Sprintf("OctetString(%s)", value)
+}
+
+type CharacterString struct {
+	*Atomic[string]
+	*CommonMath
+
+	strEncoding byte
+	strValue    []byte
+}
+
+func NewCharacterString(arg Arg) (*CharacterString, error) {
+	c := &CharacterString{}
+	c.Atomic = NewAtomic[string](c)
+
+	if arg == nil {
+		return c, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := c.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return c, nil
+	case string:
+		c.value = arg
+		c.strValue = []byte(c.value)
+	case *CharacterString:
+		c.value = arg.value
+		c.strEncoding = arg.strEncoding
+		c.strValue = arg.strValue
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return c, nil
+}
+
+func (c *CharacterString) Encode(tag *Tag) {
+	tag.setAppData(uint(model.BACnetDataType_CHARACTER_STRING), append([]byte{c.strEncoding}, c.strValue...))
+}
+
+func (c *CharacterString) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_CHARACTER_STRING) {
+		return errors.New("CharacterString application tag required")
+	}
+	if len(tag.tagData) == 0 {
+		return errors.New("invalid tag length")
+	}
+
+	tagData := tag.tagData
+
+	// extract the data
+	c.strEncoding = tagData[0]
+	c.strValue = tagData[1:]
+
+	// normalize the value
+	switch c.strEncoding {
+	case 0:
+		c.value = string(c.strValue)
+	case 3: //utf_32be
+		panic("implement me") // TODO: implement me
+	case 4: //utf_16be
+		panic("implement me") // TODO: implement me
+	case 5: //latin_1
+		panic("implement me") // TODO: implement me
+	default:
+		c.value = fmt.Sprintf("### unknown encoding: %d ###", c.strEncoding)
+	}
+
+	return nil
+}
+
+func (c *CharacterString) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (c *CharacterString) String() string {
+	return fmt.Sprintf("CharacterString(%d,X'%s')", c.strEncoding, Btox(c.strValue))
 }
 
 // BitStringExtension can be used to inherit from BitString
@@ -494,4 +1154,409 @@ func (b *BitString) String() string {
 
 	// bundle it together
 	return fmt.Sprintf("BitString(%v)", strings.Join(valueList, ","))
+}
+
+// TODO: implement me
+type Enumerated struct {
+	*Atomic[int] // TODO: implement properly
+
+	Value []bool
+}
+
+func NewEnumerated(arg ...any) (*Enumerated, error) {
+	panic("not implemented")
+}
+
+func (b *Enumerated) Decode(tag *Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(TagEnumeratedAppTag) {
+		return errors.New("bit string application tag required")
+	}
+	if len(tag.GetTagData()) == 0 {
+		return errors.New("invalid tag length")
+	}
+	// extract the number of unused bits
+	unused := tag.tagData[0]
+
+	// extract the data
+	data := make([]bool, 0)
+	for _, x := range tag.tagData[1:] {
+		for i := range 8 {
+			if (x & (1 << (7 - i))) != 0 {
+				data = append(data, true)
+			} else {
+				data = append(data, false)
+			}
+		}
+	}
+
+	// trim off the unused bits
+	if unused != 0 && unused != 8 {
+		b.Value = data[:len(data)-int(unused)]
+	} else {
+		b.Value = data
+	}
+	return nil
+}
+
+func (b *Enumerated) Encode(tag *Tag) {
+	used := len(b.Value) % 8
+	unused := 8 - used
+	if unused == 8 {
+		unused = 0
+	}
+
+	// start with the number of unused bits
+	data := []byte{byte(unused)}
+
+	// build and append each packed octet
+	bits := append(b.Value, make([]bool, unused)...)
+	for i := range len(bits) / 8 {
+		i = i * 8
+		x := byte(0)
+		for j := range 8 {
+			bit := bits[i+j]
+			bitValue := byte(0)
+			if bit {
+				bitValue = 1
+			}
+			x |= bitValue << (7 - j)
+		}
+		data = append(data, x)
+	}
+
+	tag.setAppData(uint(model.BACnetDataType_BIT_STRING), data)
+}
+
+func (b *Enumerated) String() string {
+	// flip the bit names
+	bitNames := map[int]string{}
+
+	// build a list of values and/or names
+	var valueList []string
+	for index, value := range b.Value {
+		if name, ok := bitNames[index]; ok {
+			if value == true {
+				valueList = append(valueList, name)
+			} else {
+				valueList = append(valueList, "!"+name)
+			}
+		} else {
+			if value {
+				valueList = append(valueList, "1")
+			} else {
+				valueList = append(valueList, "0")
+			}
+		}
+	}
+
+	// bundle it together
+	return fmt.Sprintf("Enumerated(%v)", strings.Join(valueList, ","))
+}
+
+const _mm = `(?P<month>0?[1-9]|1[0-4]|odd|even|255|[*])`
+const _dd = `(?P<day>[0-3]?\d|last|odd|even|255|[*])`
+const _yy = `(?P<year>\d{2}|255|[*])`
+const _yyyy = `(?P<year>\d{4}|255|[*])`
+const _dow = `(?P<dow>[1-7]|mon|tue|wed|thu|fri|sat|sun|255|[*])`
+
+var _special_mon = map[string]int{"*": 255, "odd": 13, "even": 14, "": 255}
+var _special_mon_inv = map[int]string{255: "*", 13: "odd", 14: "even"}
+
+var _special_day = map[string]int{"*": 255, "last": 32, "odd": 33, "even": 34, "": 255}
+var _special_day_inv = map[int]string{255: "*", 32: "last", 33: "odd", 34: "even"}
+
+var _special_dow = map[string]int{"*": 255, "mon": 1, "tue": 2, "wed": 3, "thu": 4, "fri": 5, "sat": 6, "sun": 7}
+var _special_dow_inv = map[int]string{255: "*", 1: "mon", 2: "tue", 3: "wed", 4: "thu", 5: "fri", 6: "sat", 7: "sun"}
+
+// Create a composite pattern and compile it.
+func _merge(args ...string) *regexp.Regexp {
+	return regexp.MustCompile(`^` + strings.Join(args, `[/-]`) + `(?:\s+` + _dow + `)?$`)
+}
+
+// make a list of compiled patterns
+var _date_patterns = []*regexp.Regexp{
+	_merge(_yyyy, _mm, _dd),
+	_merge(_mm, _dd, _yyyy),
+	_merge(_dd, _mm, _yyyy),
+	_merge(_yy, _mm, _dd),
+	_merge(_mm, _dd, _yy),
+	_merge(_dd, _mm, _yy),
+}
+
+type DateTuple struct {
+	Year      int
+	Month     int
+	Day       int
+	DayOfWeek int
+}
+
+type Date struct {
+	*Atomic[int64]
+
+	year      int
+	month     int
+	day       int
+	dayOfWeek int
+}
+
+func NewDate(arg Arg, args Args) (*Date, error) {
+	d := &Date{}
+	d.Atomic = NewAtomic[int64](d)
+	year := 255
+	if len(args) > 0 {
+		year = args[0].(int)
+	}
+	if year >= 1900 {
+		year = year - 1900
+	}
+	d.year = year
+	month := 0xff
+	if len(args) > 1 {
+		month = args[1].(int)
+	}
+	d.month = month
+	day := 0xff
+	if len(args) > 2 {
+		day = args[2].(int)
+	}
+	d.day = day
+	dayOfWeek := 0xff
+	if len(args) > 3 {
+		dayOfWeek = args[3].(int)
+	}
+	d.dayOfWeek = dayOfWeek
+
+	if arg == nil {
+		return d, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := d.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return d, nil
+	case DateTuple:
+		d.year, d.month, d.day, d.dayOfWeek = arg.Year, arg.Month, arg.Day, arg.DayOfWeek
+		var tempTime time.Time
+		tempTime.AddDate(d.year, d.month, d.day)
+		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+	case string:
+		// lower case everything
+		arg = strings.ToLower(arg)
+
+		// make a list of the contents from matching patterns
+		matches := [][]string{}
+		for _, p := range _date_patterns {
+			if p.MatchString(arg) {
+				groups := combined_pattern.FindStringSubmatch(arg)
+				matches = append(matches, groups[1:])
+			}
+		}
+		if len(matches) == 0 {
+			return nil, errors.New("unmatched")
+		}
+
+		var match []string
+		if len(matches) == 1 {
+			match = matches[0]
+		} else {
+			// check to see if they really are the same
+			panic("what to do here")
+		}
+
+		// extract the year and normalize
+		matchedYear := match[0]
+		if matchedYear == "*" || matchedYear == "" {
+			year = 0xff
+		} else {
+			yearParse, err := strconv.ParseInt(matchedYear, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing year")
+			}
+			year = int(yearParse)
+			if year == 0xff {
+				return d, nil
+			}
+			if year < 35 {
+				year += 2000
+			} else if year < 100 {
+				year += 1900
+			} else if year < 1900 {
+				return nil, errors.New("invalid year")
+			}
+		}
+
+		// extract the month and normalize
+		matchedmonth := match[0]
+		if specialMonth, ok := _special_mon[matchedmonth]; ok {
+			month = specialMonth
+		} else {
+			monthParse, err := strconv.ParseInt(matchedmonth, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing month")
+			}
+			month = int(monthParse)
+			if month == 0xff {
+				return d, nil
+			}
+			if month == 0 || month > 14 {
+				return nil, errors.New("invalid month")
+			}
+		}
+
+		// extract the day and normalize
+		matchedday := match[0]
+		if specialday, ok := _special_day[matchedday]; ok {
+			day = specialday
+		} else {
+			dayParse, err := strconv.ParseInt(matchedday, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing day")
+			}
+			day = int(dayParse)
+			if day == 0xff {
+				return d, nil
+			}
+			if day == 0 || day > 34 {
+				return nil, errors.New("invalid day")
+			}
+		}
+
+		// extract the dayOfWeek and normalize
+		matcheddayOfWeek := match[0]
+		if specialdayOfWeek, ok := _special_dow[matcheddayOfWeek]; ok {
+			dayOfWeek = specialdayOfWeek
+		} else if matcheddayOfWeek == "" {
+			return d, nil
+		} else {
+			dayOfWeekParse, err := strconv.ParseInt(matcheddayOfWeek, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing dayOfWeek")
+			}
+			dayOfWeek = int(dayOfWeekParse)
+			if dayOfWeek == 0xff {
+				return d, nil
+			}
+			if dayOfWeek > 7 {
+				return nil, errors.New("invalid dayOfWeek")
+			}
+		}
+
+		// year becomes the correct octet
+		if year != 0xff {
+			year -= 1900
+		}
+
+		// save the value
+		d.year = year
+		d.month = month
+		d.day = day
+		d.dayOfWeek = dayOfWeek
+
+		var tempTime time.Time
+		tempTime.AddDate(year, month, day)
+		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+
+		// calculate the day of the week
+		if dayOfWeek == 0 {
+			d.calcDayOfWeek()
+		}
+	case *Date:
+		d.value = arg.value
+		d.year = arg.year
+		d.month = arg.month
+		d.day = arg.day
+		d.dayOfWeek = arg.dayOfWeek
+	case float32:
+		d.now(arg)
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return d, nil
+}
+
+func (d *Date) GetTupleValue() (year int, month int, day int, dayOfWeek int) {
+	return d.year, d.month, d.day, d.dayOfWeek
+}
+
+func (d *Date) calcDayOfWeek() {
+	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
+
+	// assume the worst
+	dayOfWeek = 255
+
+	// check for special values
+	if year == 255 {
+		return
+	} else if _, ok := _special_mon_inv[month]; ok {
+		return
+	} else if _, ok := _special_day_inv[month]; ok {
+		return
+	} else {
+		var today time.Time
+		today = time.Date(year+1900, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+		panic(today) // TODO: implement me
+	}
+
+	// put it back together
+	d.year = year
+	d.month = month
+	d.day = day
+	d.dayOfWeek = dayOfWeek
+}
+
+func (d *Date) now(arg float32) {
+	panic("implement me") // TODO
+}
+
+func (d *Date) Encode(tag *Tag) {
+	var b []byte
+	binary.BigEndian.AppendUint64(b, uint64(d.value))
+	tag.setAppData(uint(model.BACnetDataType_DATE), b)
+}
+
+func (d *Date) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_DATE) {
+		return errors.New("Date application tag required")
+	}
+	if len(tag.tagData) != 4 {
+		return errors.New("invalid tag length")
+	}
+
+	arg := tag.tagData
+	year, month, day, dayOfWeek := arg[0], arg[1], arg[2], arg[3]
+	var tempTime time.Time
+	tempTime.AddDate(int(year), int(month), int(day))
+	d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+	d.year, d.month, d.day, d.dayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
+	return nil
+}
+
+func (d *Date) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (d *Date) String() string {
+	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
+	yearStr := "*"
+	if year != 255 {
+		yearStr = strconv.Itoa(year + 1900)
+	}
+	monthStr := strconv.Itoa(month)
+	if ms, ok := _special_mon_inv[month]; ok {
+		monthStr = ms
+	}
+	dayStr := strconv.Itoa(day)
+	if ms, ok := _special_day_inv[day]; ok {
+		dayStr = ms
+	}
+	dowStr := strconv.Itoa(dayOfWeek)
+	if ms, ok := _special_dow_inv[dayOfWeek]; ok {
+		dowStr = ms
+	}
+
+	return fmt.Sprintf("Date(%s-%s-%s %s)", yearStr, monthStr, dayStr, dowStr)
 }

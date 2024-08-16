@@ -19,4 +19,123 @@
 
 package test_primitive_data
 
-// TODO: implement me
+import (
+	"testing"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func Date(arg ...any) *bacnetip.Date {
+	if len(arg) == 0 {
+		Date, err := bacnetip.NewDate(nil, nil)
+		if err != nil {
+			panic(err)
+		}
+		return Date
+	}
+	Date, err := bacnetip.NewDate(arg[0], nil)
+	if err != nil {
+		panic(err)
+	}
+	return Date
+}
+
+// Convert a hex string to a character_string application tag.
+func DateTag(x string) *bacnetip.Tag {
+	b := xtob(x)
+	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, len(b), b)
+	return tag
+}
+
+// Encode a Date object into a tag.
+func DateEncode(obj *bacnetip.Date) *bacnetip.Tag {
+	tag := Tag()
+	obj.Encode(tag)
+	return tag
+}
+
+// Decode a Date application tag into a Date.
+func DateDecode(tag *bacnetip.Tag) *bacnetip.Date {
+	obj := Date(tag)
+
+	return obj
+}
+
+// Pass the value to Date, construct a tag from the hex string,
+//
+//	and compare results of encode and decoding each other.
+func DateEndec(t *testing.T, v string, x string) {
+	tag := DateTag(x)
+
+	obj := Date(v)
+
+	assert.Equal(t, tag, DateEncode(obj))
+	assert.Equal(t, obj, DateDecode(tag))
+}
+
+func TestDate(t *testing.T) {
+	obj := Date()
+	assert.Equal(t, int64(0), obj.GetValue())
+	year, month, day, week := obj.GetTupleValue()
+	assert.Equal(t, []any{0xff, 0xff, 0xff, 0xff}, []any{year, month, day, week})
+
+	assert.Panics(t, func() {
+		Date("some string")
+	})
+}
+
+func TestDateTuple(t *testing.T) {
+	obj := Date(bacnetip.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
+	year, month, day, week := obj.GetTupleValue()
+	assert.Equal(t, []any{1, 2, 3, 4}, []any{year, month, day, week})
+	assert.Equal(t, "Date(1901-2-3 thu)", obj.String())
+}
+
+func TestDateTag(t *testing.T) {
+	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, 4, xtob("01020304"))
+	obj := Date(tag)
+	year, month, day, week := obj.GetTupleValue()
+	assert.Equal(t, []any{1, 2, 3, 4}, []any{year, month, day, week})
+
+	tag = Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0, xtob(""))
+	assert.Panics(t, func() {
+		Date(tag)
+	})
+
+	tag = Tag(model.TagClass_CONTEXT_SPECIFIC_TAGS, 0, 1, xtob("ff"))
+	assert.Panics(t, func() {
+		Date(tag)
+	})
+
+	tag = Tag(bacnetip.TagOpeningTagClass, 0)
+	assert.Panics(t, func() {
+		Date(tag)
+	})
+}
+
+func TestDateCopy(t *testing.T) {
+	obj1 := Date(bacnetip.DateTuple{Year: 1, Month: 2, Day: 3, DayOfWeek: 4})
+	obj2 := Date(obj1)
+	assert.Equal(t, obj1, obj2)
+}
+
+func TestDateNow(t *testing.T) {
+	// TODO: upstream doesn't tests this either
+}
+
+func TestDateEndec(t *testing.T) {
+	assert.Panics(t, func() {
+		Date(DateTag(""))
+	})
+}
+
+func TestDateArgs(t *testing.T) {
+	tag := Tag()
+	date := Date(nil, 2023, 2, 10)
+	date1 := Date(nil, 123, 2, 10)
+	assert.Equal(t, date, date1)
+	date.Encode(tag)
+}
