@@ -878,285 +878,287 @@ public enum KnxDatapointType {
       (long) 277L, (int) 610, (String) "load type detection", KnxDatapointMainType.DPT_1_BYTE),
   DPT_Converter_Test_Control(
       (long) 278L, (int) 611, (String) "converter test control", KnxDatapointMainType.DPT_1_BYTE),
+  DPT_Converter_Control(
+      (long) 279L, (int) 612, (String) "converter control", KnxDatapointMainType.DPT_1_BYTE),
   DPT_SABExcept_Behaviour(
-      (long) 279L, (int) 801, (String) "SAB except behavior", KnxDatapointMainType.DPT_1_BYTE),
+      (long) 280L, (int) 801, (String) "SAB except behavior", KnxDatapointMainType.DPT_1_BYTE),
   DPT_SABBehaviour_Lock_Unlock(
-      (long) 280L,
+      (long) 281L,
       (int) 802,
       (String) "SAB behavior on lock/unlock",
       KnxDatapointMainType.DPT_1_BYTE),
-  DPT_SSSBMode((long) 281L, (int) 803, (String) "SSSB mode", KnxDatapointMainType.DPT_1_BYTE),
+  DPT_SSSBMode((long) 282L, (int) 803, (String) "SSSB mode", KnxDatapointMainType.DPT_1_BYTE),
   DPT_BlindsControlMode(
-      (long) 282L, (int) 804, (String) "blinds control mode", KnxDatapointMainType.DPT_1_BYTE),
+      (long) 283L, (int) 804, (String) "blinds control mode", KnxDatapointMainType.DPT_1_BYTE),
   DPT_CommMode(
-      (long) 283L, (int) 1000, (String) "communication mode", KnxDatapointMainType.DPT_1_BYTE),
+      (long) 284L, (int) 1000, (String) "communication mode", KnxDatapointMainType.DPT_1_BYTE),
   DPT_AddInfoTypes(
-      (long) 284L,
+      (long) 285L,
       (int) 1001,
       (String) "additional information type",
       KnxDatapointMainType.DPT_1_BYTE),
   DPT_RF_ModeSelect(
-      (long) 285L, (int) 1002, (String) "RF mode selection", KnxDatapointMainType.DPT_1_BYTE),
+      (long) 286L, (int) 1002, (String) "RF mode selection", KnxDatapointMainType.DPT_1_BYTE),
   DPT_RF_FilterSelect(
-      (long) 286L,
+      (long) 287L,
       (int) 1003,
       (String) "RF filter mode selection",
       KnxDatapointMainType.DPT_1_BYTE),
   DPT_StatusGen(
-      (long) 287L, (int) 1, (String) "general status", KnxDatapointMainType.DPT_8_BIT_SET),
+      (long) 288L, (int) 1, (String) "general status", KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_Device_Control(
-      (long) 288L, (int) 2, (String) "device control", KnxDatapointMainType.DPT_8_BIT_SET),
+      (long) 289L, (int) 2, (String) "device control", KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_ForceSign(
-      (long) 289L, (int) 100, (String) "forcing signal", KnxDatapointMainType.DPT_8_BIT_SET),
+      (long) 290L, (int) 100, (String) "forcing signal", KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_ForceSignCool(
-      (long) 290L, (int) 101, (String) "forcing signal cool", KnxDatapointMainType.DPT_8_BIT_SET),
+      (long) 291L, (int) 101, (String) "forcing signal cool", KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_StatusRHC(
-      (long) 291L,
+      (long) 292L,
       (int) 102,
       (String) "room heating controller status",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_StatusSDHWC(
-      (long) 292L,
+      (long) 293L,
       (int) 103,
       (String) "solar DHW controller status",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_FuelTypeSet(
-      (long) 293L, (int) 104, (String) "fuel type set", KnxDatapointMainType.DPT_8_BIT_SET),
+      (long) 294L, (int) 104, (String) "fuel type set", KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_StatusRCC(
-      (long) 294L,
+      (long) 295L,
       (int) 105,
       (String) "room cooling controller status",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_StatusAHU(
-      (long) 295L,
+      (long) 296L,
       (int) 106,
       (String) "ventilation controller status",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_CombinedStatus_RTSM(
-      (long) 296L, (int) 107, (String) "combined status RTSM", KnxDatapointMainType.DPT_8_BIT_SET),
+      (long) 297L, (int) 107, (String) "combined status RTSM", KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_LightActuatorErrorInfo(
-      (long) 297L,
+      (long) 298L,
       (int) 601,
       (String) "lighting actuator error information",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_RF_ModeInfo(
-      (long) 298L,
+      (long) 299L,
       (int) 1000,
       (String) "RF communication mode info",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_RF_FilterInfo(
-      (long) 299L,
+      (long) 300L,
       (int) 1001,
       (String) "cEMI server supported RF filtering modes",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_Channel_Activation_8(
-      (long) 300L,
+      (long) 301L,
       (int) 1010,
       (String) "channel activation for 8 channels",
       KnxDatapointMainType.DPT_8_BIT_SET),
   DPT_StatusDHWC(
-      (long) 301L,
+      (long) 302L,
       (int) 100,
       (String) "DHW controller status",
       KnxDatapointMainType.DPT_16_BIT_SET),
   DPT_StatusRHCC(
-      (long) 302L, (int) 101, (String) "RHCC status", KnxDatapointMainType.DPT_16_BIT_SET),
+      (long) 303L, (int) 101, (String) "RHCC status", KnxDatapointMainType.DPT_16_BIT_SET),
   DPT_CombinedStatus_HVA(
-      (long) 303L, (int) 102, (String) "combined status HVA", KnxDatapointMainType.DPT_16_BIT_SET),
+      (long) 304L, (int) 102, (String) "combined status HVA", KnxDatapointMainType.DPT_16_BIT_SET),
   DPT_CombinedStatus_RTC(
-      (long) 304L, (int) 103, (String) "combined status RTC", KnxDatapointMainType.DPT_16_BIT_SET),
-  DPT_Media((long) 305L, (int) 1000, (String) "media", KnxDatapointMainType.DPT_16_BIT_SET),
+      (long) 305L, (int) 103, (String) "combined status RTC", KnxDatapointMainType.DPT_16_BIT_SET),
+  DPT_Media((long) 306L, (int) 1000, (String) "media", KnxDatapointMainType.DPT_16_BIT_SET),
   DPT_Channel_Activation_16(
-      (long) 306L,
+      (long) 307L,
       (int) 1010,
       (String) "channel activation for 16 channels",
       KnxDatapointMainType.DPT_16_BIT_SET),
   DPT_OnOffAction(
-      (long) 307L, (int) 1, (String) "on/off action", KnxDatapointMainType.DPT_2_BIT_SET),
+      (long) 308L, (int) 1, (String) "on/off action", KnxDatapointMainType.DPT_2_BIT_SET),
   DPT_Alarm_Reaction(
-      (long) 308L, (int) 2, (String) "alarm reaction", KnxDatapointMainType.DPT_2_BIT_SET),
+      (long) 309L, (int) 2, (String) "alarm reaction", KnxDatapointMainType.DPT_2_BIT_SET),
   DPT_UpDown_Action(
-      (long) 309L, (int) 3, (String) "up/down action", KnxDatapointMainType.DPT_2_BIT_SET),
+      (long) 310L, (int) 3, (String) "up/down action", KnxDatapointMainType.DPT_2_BIT_SET),
   DPT_HVAC_PB_Action(
-      (long) 310L,
+      (long) 311L,
       (int) 102,
       (String) "HVAC push button action",
       KnxDatapointMainType.DPT_2_BIT_SET),
   DPT_DoubleNibble(
-      (long) 311L,
+      (long) 312L,
       (int) 1000,
       (String) "busy/nak repetitions",
       KnxDatapointMainType.DPT_2_NIBBLE_SET),
   DPT_SceneInfo(
-      (long) 312L, (int) 1, (String) "scene information", KnxDatapointMainType.DPT_8_BIT_SET_2),
+      (long) 313L, (int) 1, (String) "scene information", KnxDatapointMainType.DPT_8_BIT_SET_2),
   DPT_CombinedInfoOnOff(
-      (long) 313L,
+      (long) 314L,
       (int) 1,
       (String) "bit-combined info on/off",
       KnxDatapointMainType.DPT_32_BIT_SET),
   DPT_ActiveEnergy_V64(
-      (long) 314L,
+      (long) 315L,
       (int) 10,
       (String) "active energy (Wh)",
       KnxDatapointMainType.DPT_ELECTRICAL_ENERGY),
   DPT_ApparantEnergy_V64(
-      (long) 315L,
+      (long) 316L,
       (int) 11,
       (String) "apparant energy (VAh)",
       KnxDatapointMainType.DPT_ELECTRICAL_ENERGY),
   DPT_ReactiveEnergy_V64(
-      (long) 316L,
+      (long) 317L,
       (int) 12,
       (String) "reactive energy (VARh)",
       KnxDatapointMainType.DPT_ELECTRICAL_ENERGY),
   DPT_Channel_Activation_24(
-      (long) 317L,
+      (long) 318L,
       (int) 1010,
       (String) "activation state 0..23",
       KnxDatapointMainType.DPT_24_TIMES_CHANNEL_ACTIVATION),
   DPT_HVACModeNext(
-      (long) 318L,
+      (long) 319L,
       (int) 100,
       (String) "time delay & HVAC mode",
       KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM),
   DPT_DHWModeNext(
-      (long) 319L,
+      (long) 320L,
       (int) 102,
       (String) "time delay & DHW mode",
       KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM),
   DPT_OccModeNext(
-      (long) 320L,
+      (long) 321L,
       (int) 104,
       (String) "time delay & occupancy mode",
       KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM),
   DPT_BuildingModeNext(
-      (long) 321L,
+      (long) 322L,
       (int) 105,
       (String) "time delay & building mode",
       KnxDatapointMainType.DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM),
   DPT_StatusLightingActuator(
-      (long) 322L,
+      (long) 323L,
       (int) 600,
       (String) "Status Lighting Actuator",
       KnxDatapointMainType.DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM),
   DPT_Version(
-      (long) 323L,
+      (long) 324L,
       (int) 1,
       (String) "DPT version",
       KnxDatapointMainType.DPT_DATAPOINT_TYPE_VERSION),
-  DPT_AlarmInfo((long) 324L, (int) 1, (String) "alarm info", KnxDatapointMainType.DPT_ALARM_INFO),
+  DPT_AlarmInfo((long) 325L, (int) 1, (String) "alarm info", KnxDatapointMainType.DPT_ALARM_INFO),
   DPT_TempRoomSetpSetF16_3(
-      (long) 325L,
+      (long) 326L,
       (int) 100,
       (String) "room temperature setpoint",
       KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE),
   DPT_TempRoomSetpSetShiftF16_3(
-      (long) 326L,
+      (long) 327L,
       (int) 101,
       (String) "room temperature setpoint shift",
       KnxDatapointMainType.DPT_3X_2_BYTE_FLOAT_VALUE),
   DPT_Scaling_Speed(
-      (long) 327L, (int) 1, (String) "scaling speed", KnxDatapointMainType.DPT_SCALING_SPEED),
+      (long) 328L, (int) 1, (String) "scaling speed", KnxDatapointMainType.DPT_SCALING_SPEED),
   DPT_Scaling_Step_Time(
-      (long) 328L, (int) 2, (String) "scaling step time", KnxDatapointMainType.DPT_SCALING_SPEED),
+      (long) 329L, (int) 2, (String) "scaling step time", KnxDatapointMainType.DPT_SCALING_SPEED),
   DPT_MeteringValue(
-      (long) 329L,
+      (long) 330L,
       (int) 1,
       (String) "metering value (value,encoding,cmd)",
       KnxDatapointMainType.DPT_4_1_1_BYTE_COMBINED_INFORMATION),
   DPT_MBus_Address(
-      (long) 330L, (int) 1000, (String) "MBus address", KnxDatapointMainType.DPT_MBUS_ADDRESS),
+      (long) 331L, (int) 1000, (String) "MBus address", KnxDatapointMainType.DPT_MBUS_ADDRESS),
   DPT_Colour_RGB(
-      (long) 331L,
+      (long) 332L,
       (int) 600,
       (String) "RGB value 3x(0..255)",
       KnxDatapointMainType.DPT_3_BYTE_COLOUR_RGB),
   DPT_LanguageCodeAlpha2_ASCII(
-      (long) 332L,
+      (long) 333L,
       (int) 1,
       (String) "language code (ASCII)",
       KnxDatapointMainType.DPT_LANGUAGE_CODE_ISO_639_1),
   DPT_Tariff_ActiveEnergy(
-      (long) 333L,
+      (long) 334L,
       (int) 1,
       (String) "electrical energy with tariff",
       KnxDatapointMainType.DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY),
   DPT_Prioritised_Mode_Control(
-      (long) 334L,
+      (long) 335L,
       (int) 1,
       (String) "priority control",
       KnxDatapointMainType.DPT_PRIORITISED_MODE_CONTROL),
   DPT_DALI_Control_Gear_Diagnostic(
-      (long) 335L,
+      (long) 336L,
       (int) 600,
       (String) "diagnostic value",
       KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_16_BIT),
   DPT_DALI_Diagnostics(
-      (long) 336L,
+      (long) 337L,
       (int) 600,
       (String) "diagnostic value",
       KnxDatapointMainType.DPT_CONFIGURATION_DIAGNOSTICS_8_BIT),
   DPT_CombinedPosition(
-      (long) 337L, (int) 800, (String) "combined position", KnxDatapointMainType.DPT_POSITIONS),
+      (long) 338L, (int) 800, (String) "combined position", KnxDatapointMainType.DPT_POSITIONS),
   DPT_StatusSAB(
-      (long) 338L,
+      (long) 339L,
       (int) 800,
       (String) "status sunblind & shutter actuator",
       KnxDatapointMainType.DPT_STATUS_32_BIT),
   DPT_Colour_xyY(
-      (long) 339L, (int) 600, (String) "colour xyY", KnxDatapointMainType.DPT_STATUS_48_BIT),
+      (long) 340L, (int) 600, (String) "colour xyY", KnxDatapointMainType.DPT_STATUS_48_BIT),
   DPT_Converter_Status(
-      (long) 340L,
+      (long) 341L,
       (int) 600,
       (String) "DALI converter status",
       KnxDatapointMainType.DPT_CONVERTER_STATUS),
   DPT_Converter_Test_Result(
-      (long) 341L,
+      (long) 342L,
       (int) 600,
       (String) "DALI converter test result",
       KnxDatapointMainType.DPT_CONVERTER_TEST_RESULT),
   DPT_Battery_Info(
-      (long) 342L,
+      (long) 343L,
       (int) 600,
       (String) "Battery Information",
       KnxDatapointMainType.DPT_BATTERY_INFORMATION),
   DPT_Brightness_Colour_Temperature_Transition(
-      (long) 343L,
+      (long) 344L,
       (int) 600,
       (String) "brightness colour temperature transition",
       KnxDatapointMainType.DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION),
   DPT_Brightness_Colour_Temperature_Control(
-      (long) 344L,
+      (long) 345L,
       (int) 600,
       (String) "brightness colour temperature control",
       KnxDatapointMainType.DPT_STATUS_24_BIT),
   DPT_Colour_RGBW(
-      (long) 345L,
+      (long) 346L,
       (int) 600,
       (String) "RGBW value 4x(0..100%)",
       KnxDatapointMainType.DPT_COLOUR_RGBW),
   DPT_Relative_Control_RGBW(
-      (long) 346L,
+      (long) 347L,
       (int) 600,
       (String) "RGBW relative control",
       KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGBW),
   DPT_Relative_Control_RGB(
-      (long) 347L,
+      (long) 348L,
       (int) 600,
       (String) "RGB relative control",
       KnxDatapointMainType.DPT_RELATIVE_CONTROL_RGB),
   DPT_GeographicalLocation(
-      (long) 348L,
+      (long) 349L,
       (int) 1,
       (String) "geographical location (longitude and latitude) expressed in degrees",
       KnxDatapointMainType.DPT_F32F32),
   DPT_TempRoomSetpSetF16_4(
-      (long) 349L,
+      (long) 350L,
       (int) 100,
       (String) "Temperature setpoint setting for 4 HVAC Modes",
       KnxDatapointMainType.DPT_F16F16F16F16),
   DPT_TempRoomSetpSetShiftF16_4(
-      (long) 350L,
+      (long) 351L,
       (int) 101,
       (String) "Temperature setpoint shift setting for 4 HVAC Modes",
       KnxDatapointMainType.DPT_F16F16F16F16);

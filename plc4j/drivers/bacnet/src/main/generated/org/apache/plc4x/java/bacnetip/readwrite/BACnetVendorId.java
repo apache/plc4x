@@ -1700,6 +1700,19 @@ public enum BACnetVendorId {
   HORTENLOT_JIANGSU_CO_LTD((int) 1478, (int) 1478, (String) "Horten lot (Jiangsu) Co., Ltd."),
   PAXTON_CONTROLS_CORP((int) 1479, (int) 1479, (String) "Paxton Controls Corp."),
   FELL_TECHNOLOGYAS((int) 1480, (int) 1480, (String) "Fell Technology AS"),
+  SHLOK_INFORMATION_SYSTEMS_INDIA_PRIVATE_LIMITED(
+      (int) 1481, (int) 1481, (String) "SHLOK Information Systems India Private Limited"),
+  MICROGROPLC_LTD((int) 1482, (int) 1482, (String) "Microgro PLC Ltd."),
+  CLOUDER_OY((int) 1483, (int) 1483, (String) "Clouder Oy"),
+  GEBUDE_AUTOMATISIERUNG_GMBH((int) 1484, (int) 1484, (String) "Gebäude Automatisierung GmbH"),
+  SOLVIMUS_GMBH((int) 1485, (int) 1485, (String) "solvimus GmbH"),
+  GUANG_ZHOU_WANGKONG_LTD((int) 1486, (int) 1486, (String) "GuangZhou Wangkong Ltd."),
+  SAFE_SQUARE_GMBH((int) 1487, (int) 1487, (String) "SafeSquare GmbH"),
+  HEKLATECHAB((int) 1488, (int) 1488, (String) "Heklatech AB"),
+  SILVAIR((int) 1489, (int) 1489, (String) "Silvair"),
+  ADVECO((int) 1490, (int) 1490, (String) "Adveco"),
+  EURA_DRIVES_ELECTRIC_CO_LTD((int) 1491, (int) 1491, (String) "Eura Drives Electric Co., Ltd."),
+  CALEB_CONTROLS((int) 1492, (int) 1492, (String) "Caleb Controls"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

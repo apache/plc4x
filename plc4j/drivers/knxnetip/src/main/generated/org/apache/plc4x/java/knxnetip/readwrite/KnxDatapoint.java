@@ -2157,6 +2157,13 @@ public class KnxDatapoint {
       short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
       return new PlcUSINT(value);
     } else if (EvaluationHelper.equals(
+        datapointType, KnxDatapointType.DPT_Converter_Control)) { // USINT
+      Short reservedField0 =
+          readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+
+      short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
+      return new PlcUSINT(value);
+    } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_SABExcept_Behaviour)) { // USINT
       Short reservedField0 =
           readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -6046,6 +6053,13 @@ public class KnxDatapoint {
       // Simple field (value)
       lengthInBits += 8;
     } else if (EvaluationHelper.equals(
+        datapointType, KnxDatapointType.DPT_Converter_Control)) { // USINT
+      // Reserved Field (reserved)
+      lengthInBits += 8;
+
+      // Simple field (value)
+      lengthInBits += 8;
+    } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_SABExcept_Behaviour)) { // USINT
       // Reserved Field (reserved)
       lengthInBits += 8;
@@ -9460,6 +9474,13 @@ public class KnxDatapoint {
       writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Converter_Test_Control)) { // USINT
+      // Reserved Field (reserved)
+      writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+
+      // Simple Field (value)
+      writeSimpleField("value", (short) _value.getShort(), writeUnsignedShort(writeBuffer, 8));
+    } else if (EvaluationHelper.equals(
+        datapointType, KnxDatapointType.DPT_Converter_Control)) { // USINT
       // Reserved Field (reserved)
       writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 

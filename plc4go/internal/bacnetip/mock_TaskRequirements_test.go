@@ -132,9 +132,9 @@ func (_c *MockTaskRequirements_GetTaskTime_Call) RunAndReturn(run func() *time.T
 	return _c
 }
 
-// InstallTask provides a mock function with given fields: when, delta
-func (_m *MockTaskRequirements) InstallTask(when *time.Time, delta *time.Duration) {
-	_m.Called(when, delta)
+// InstallTask provides a mock function with given fields: options
+func (_m *MockTaskRequirements) InstallTask(options InstallTaskOptions) {
+	_m.Called(options)
 }
 
 // MockTaskRequirements_InstallTask_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'InstallTask'
@@ -143,15 +143,14 @@ type MockTaskRequirements_InstallTask_Call struct {
 }
 
 // InstallTask is a helper method to define mock.On call
-//   - when *time.Time
-//   - delta *time.Duration
-func (_e *MockTaskRequirements_Expecter) InstallTask(when interface{}, delta interface{}) *MockTaskRequirements_InstallTask_Call {
-	return &MockTaskRequirements_InstallTask_Call{Call: _e.mock.On("InstallTask", when, delta)}
+//   - options InstallTaskOptions
+func (_e *MockTaskRequirements_Expecter) InstallTask(options interface{}) *MockTaskRequirements_InstallTask_Call {
+	return &MockTaskRequirements_InstallTask_Call{Call: _e.mock.On("InstallTask", options)}
 }
 
-func (_c *MockTaskRequirements_InstallTask_Call) Run(run func(when *time.Time, delta *time.Duration)) *MockTaskRequirements_InstallTask_Call {
+func (_c *MockTaskRequirements_InstallTask_Call) Run(run func(options InstallTaskOptions)) *MockTaskRequirements_InstallTask_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*time.Time), args[1].(*time.Duration))
+		run(args[0].(InstallTaskOptions))
 	})
 	return _c
 }
@@ -161,7 +160,7 @@ func (_c *MockTaskRequirements_InstallTask_Call) Return() *MockTaskRequirements_
 	return _c
 }
 
-func (_c *MockTaskRequirements_InstallTask_Call) RunAndReturn(run func(*time.Time, *time.Duration)) *MockTaskRequirements_InstallTask_Call {
+func (_c *MockTaskRequirements_InstallTask_Call) RunAndReturn(run func(InstallTaskOptions)) *MockTaskRequirements_InstallTask_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -240,6 +239,51 @@ func (_c *MockTaskRequirements_SetIsScheduled_Call) Return() *MockTaskRequiremen
 }
 
 func (_c *MockTaskRequirements_SetIsScheduled_Call) RunAndReturn(run func(bool)) *MockTaskRequirements_SetIsScheduled_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// String provides a mock function with given fields:
+func (_m *MockTaskRequirements) String() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for String")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockTaskRequirements_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockTaskRequirements_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockTaskRequirements_Expecter) String() *MockTaskRequirements_String_Call {
+	return &MockTaskRequirements_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockTaskRequirements_String_Call) Run(run func()) *MockTaskRequirements_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockTaskRequirements_String_Call) Return(_a0 string) *MockTaskRequirements_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockTaskRequirements_String_Call) RunAndReturn(run func() string) *MockTaskRequirements_String_Call {
 	_c.Call.Return(run)
 	return _c
 }
