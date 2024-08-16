@@ -21,6 +21,8 @@ package bacnetip
 
 import "fmt"
 
+type Arg any
+
 type Args []any
 
 var NoArgs = NewArgs()

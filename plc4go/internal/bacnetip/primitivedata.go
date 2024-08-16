@@ -21,10 +21,13 @@ package bacnetip
 
 import (
 	"bytes"
+	"cmp"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/pkg/errors"
 	"strings"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	"github.com/pkg/errors"
 )
 
 const (
@@ -36,34 +39,34 @@ const (
 	TagClosingTagClass = 3
 
 	// Deprecated: use  model.BACnetDataType_NULL
-	Tag_nullAppTag = model.BACnetDataType_NULL
+	TagNullAppTag = model.BACnetDataType_NULL
 	// Deprecated: use  model.BACnetDataType_BOOLEAN
-	Tag_booleanAppTag = model.BACnetDataType_BOOLEAN
+	TagBooleanAppTag = model.BACnetDataType_BOOLEAN
 	// Deprecated: use  model.BACnetDataType_UNSIGNED_INTEGER
-	Tag_unsignedAppTag = model.BACnetDataType_UNSIGNED_INTEGER
+	TagUnsignedAppTag = model.BACnetDataType_UNSIGNED_INTEGER
 	// Deprecated: use  model.BACnetDataType_SIGNED_INTEGER
-	Tag_integerAppTag = model.BACnetDataType_SIGNED_INTEGER
+	TagIntegerAppTag = model.BACnetDataType_SIGNED_INTEGER
 	// Deprecated: use  model.BACnetDataType_REAL
-	Tag_realAppTag = model.BACnetDataType_REAL
+	TagRealAppTag = model.BACnetDataType_REAL
 	// Deprecated: use  model.BACnetDataType_DOUBLE
-	Tag_doubleAppTag = model.BACnetDataType_DOUBLE
+	TagDoubleAppTag = model.BACnetDataType_DOUBLE
 	// Deprecated: use  model.BACnetDataType_OCTET_STRING
-	Tag_octetStringAppTag = model.BACnetDataType_OCTET_STRING
+	TagOctetStringAppTag = model.BACnetDataType_OCTET_STRING
 	// Deprecated: use  model.BACnetDataType_CHARACTER_STRING
-	Tag_characterStringAppTag = model.BACnetDataType_CHARACTER_STRING
+	TagCharacterStringAppTag = model.BACnetDataType_CHARACTER_STRING
 	// Deprecated: use  model.BACnetDataType_BIT_STRING
-	Tag_bitStringAppTag = model.BACnetDataType_BIT_STRING
+	TagBitStringAppTag = model.BACnetDataType_BIT_STRING
 	// Deprecated: use  model.BACnetDataType_ENUMERATED
-	Tag_enumeratedAppTag = model.BACnetDataType_ENUMERATED
+	TagEnumeratedAppTag = model.BACnetDataType_ENUMERATED
 	// Deprecated: use  model.BACnetDataType_DATE
-	Tag_dateAppTag = model.BACnetDataType_DATE
+	TagDateAppTag = model.BACnetDataType_DATE
 	// Deprecated: use  model.BACnetDataType_TIME
-	Tag_timeAppTag = model.BACnetDataType_TIME
+	TagTimeAppTag = model.BACnetDataType_TIME
 	// Deprecated: use  model.BACnetDataType_BACNET_OBJECT_IDENTIFIER
-	Tag_objectIdentifierAppTag = model.BACnetDataType_BACNET_OBJECT_IDENTIFIER
-	Tag_reservedAppTag13       = 13
-	Tag_reservedAppTag14       = 14
-	Tag_reservedAppTag15       = 15
+	TagObjectIdentifierAppTag = model.BACnetDataType_BACNET_OBJECT_IDENTIFIER
+	TagReservedAppTag13       = 13
+	TagReservedAppTag14       = 14
+	TagReservedAppTag15       = 15
 )
 
 type Tag struct {
@@ -93,12 +96,25 @@ func (t *Tag) decode(arg any) {
 }
 
 func (t *Tag) set(args Args) {
-	t.tagClass = args[0].(model.TagClass)
+	switch arg0 := args[0].(type) {
+	case model.TagClass:
+		t.tagClass = arg0
+	case uint:
+		t.tagClass = model.TagClass(arg0)
+	case int:
+		t.tagClass = model.TagClass(arg0)
+	default:
+		panic("oh no")
+	}
 	switch arg1 := args[1].(type) {
 	case model.BACnetDataType:
 		t.tagNumber = uint(arg1)
 	case uint:
 		t.tagNumber = arg1
+	case int:
+		t.tagNumber = uint(arg1)
+	default:
+		panic("oh no")
 	}
 	if len(args) == 2 {
 		return
@@ -148,10 +164,181 @@ func (t *Tag) Equals(other any) bool {
 
 type ApplicationTag struct {
 	model.BACnetApplicationTag
+	// TODO: implement me
 }
 
 type ContextTag struct {
 	model.BACnetContextTag
+	// TODO: implement me
+}
+
+type OpeningTag struct {
+	// TODO: implement me
+}
+
+type ClosingTag struct {
+	// TODO: implement me
+}
+
+type TagList struct {
+	// TODO: implement me
+}
+
+type ComparableAndOrdered interface {
+	comparable
+	cmp.Ordered
+}
+
+// AtomicContract provides a set of functions which can be overwritten by a sub struct
+type AtomicContract[T ComparableAndOrdered] interface {
+	Compare(other any) int
+	LowerThan(other any) bool
+	Equals(other any) bool
+	GetValue() T
+}
+
+// AtomicRequirements provides a set of functions which must be overwritten by a sub struct
+type AtomicRequirements interface {
+	IsValid(arg any) bool
+}
+
+// Atomic is an abstract struct
+type Atomic[T ComparableAndOrdered] struct {
+	AtomicContract[T]
+	atomicRequirements AtomicRequirements
+
+	value T
+}
+
+func NewAtomic[T ComparableAndOrdered](subStruct interface {
+	AtomicContract[T]
+	AtomicRequirements
+}) *Atomic[T] {
+	return &Atomic[T]{
+		AtomicContract:     subStruct,
+		atomicRequirements: subStruct,
+	}
+}
+
+func (a *Atomic[T]) Compare(other any) int {
+	otherValue := other.(AtomicContract[T]).GetValue()
+	// now compare the values
+	if a.value < otherValue {
+		return -1
+	} else if a.value > otherValue {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func (a *Atomic[T]) LowerThan(other any) bool {
+	otherValue := other.(AtomicContract[T]).GetValue()
+	// now compare the values
+	return a.value < otherValue
+}
+
+func (a *Atomic[T]) Equals(other any) bool {
+	otherValue := other.(AtomicContract[T]).GetValue()
+	// now compare the values
+	return a.value == otherValue
+}
+
+func (a *Atomic[T]) GetValue() T {
+	return a.value
+}
+
+func (a *Atomic[T]) Coerce(arg any) T {
+	return arg.(AtomicContract[T]).GetValue()
+}
+
+type CommonMath struct {
+	// TODO: implement me
+}
+
+type Null struct {
+	// TODO: implement me
+}
+
+type Boolean struct {
+	*Atomic[int] //Note we need int as bool can't be used
+}
+
+func NewBoolean(arg Arg) (*Boolean, error) {
+	b := &Boolean{}
+	b.Atomic = NewAtomic[int](b)
+	b.value = 0 // atomic doesn't like bool
+
+	if arg == nil {
+		return b, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := b.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return b, nil
+	case bool:
+		if arg {
+			b.value = 1
+		}
+	case *Boolean:
+		b.value = arg.value
+	case string:
+		switch arg {
+		case "True", "true":
+			b.value = 1
+		case "False", "false":
+		default:
+			return nil, errors.Errorf("invalid string: %s", arg)
+		}
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return b, nil
+}
+
+func (b *Boolean) Encode(tag *Tag) {
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, b.value, []byte{}))
+}
+
+func (b *Boolean) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_BOOLEAN) {
+		return errors.New("boolean application tag required")
+	}
+	if tag.tagLVT > 1 {
+		return errors.New("invalid tag value")
+	}
+
+	// get the data
+	if tag.tagLVT == 1 {
+		b.value = 1
+	}
+	return nil
+}
+
+func (b *Boolean) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+// GetValue gives an int value because bool can't be used in constraint. A convenience method GetBoolValue exists.
+func (b *Boolean) GetValue() int {
+	return b.Atomic.GetValue()
+}
+
+func (b *Boolean) GetBoolValue() bool {
+	return b.GetValue() == 1
+}
+
+func (b *Boolean) String() string {
+	value := "False"
+	if b.value == 1 {
+		value = "True"
+	}
+	return fmt.Sprintf("Boolean(%s)", value)
 }
 
 // BitStringExtension can be used to inherit from BitString
@@ -162,6 +349,8 @@ type BitStringExtension interface {
 }
 
 type BitString struct {
+	*Atomic[int] // TODO: implement properly
+
 	bitStringExtension BitStringExtension
 	Value              []bool
 }
@@ -217,7 +406,7 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 }
 
 func (b *BitString) Decode(tag *Tag) error {
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(Tag_bitStringAppTag) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(TagBitStringAppTag) {
 		return errors.New("bit string application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {

@@ -75,28 +75,12 @@ func (s *sampleBitString) String() string {
 	return s.BitString.String()
 }
 
-func Tag(args ...any) *bacnetip.Tag {
-	tag, err := bacnetip.NewTag(args)
-	if err != nil {
-		panic(err)
-	}
-	return tag
-}
-
-func xtob(hexString string) []byte {
-	bytes, err := bacnetip.Xtob(hexString)
-	if err != nil {
-		panic(err)
-	}
-	return bytes
-}
-
 // Convert a hex string to a bit_string application tag.
 func bitStringTag(t *testing.T, x string) *bacnetip.Tag {
 	t.Helper()
 	b, err := bacnetip.Xtob(x)
 	require.NoError(t, err)
-	tag, err := bacnetip.NewTag(bacnetip.NewArgs(model.TagClass_APPLICATION_TAGS, bacnetip.Tag_bitStringAppTag, len(b), b))
+	tag, err := bacnetip.NewTag(bacnetip.NewArgs(model.TagClass_APPLICATION_TAGS, bacnetip.TagBitStringAppTag, len(b), b))
 	require.NoError(t, err)
 	return tag
 }
@@ -163,15 +147,15 @@ func TestBitStringSample(t *testing.T) {
 }
 
 func TestBitStringTag(t *testing.T) {
-	tag := Tag(bacnetip.TagApplicationTagClass, bacnetip.Tag_bitStringAppTag, 1, xtob("08"))
+	tag := Tag(bacnetip.TagApplicationTagClass, bacnetip.TagBitStringAppTag, 1, xtob("08"))
 	obj := BitString(tag)
 	assert.Len(t, obj.Value, 0)
 
-	tag = Tag(bacnetip.TagApplicationTagClass, bacnetip.Tag_bitStringAppTag, 1, xtob("0102"))
+	tag = Tag(bacnetip.TagApplicationTagClass, bacnetip.TagBitStringAppTag, 1, xtob("0102"))
 	obj = BitString(tag)
 	assert.Equal(t, []bool{false, false, false, false, false, false, true}, obj.Value)
 
-	tag = Tag(bacnetip.TagApplicationTagClass, bacnetip.Tag_bitStringAppTag, 1, xtob(""))
+	tag = Tag(bacnetip.TagApplicationTagClass, bacnetip.TagBitStringAppTag, 1, xtob(""))
 	assert.Panics(t, func() {
 		BitString(tag)
 	})
