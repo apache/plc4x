@@ -776,7 +776,6 @@ func (b *Real) String() string {
 	return fmt.Sprintf("Real(%s)", value)
 }
 
-// TODO: finish
 type Double struct {
 	*Atomic[float64]
 	*CommonMath
@@ -1147,101 +1146,209 @@ func (b *BitString) String() string {
 	return fmt.Sprintf("BitString(%v)", strings.Join(valueList, ","))
 }
 
-// TODO: implement me
+func expandEnumerations(e EnumeratedContract) {
+	xlateTable := e.GetXlateTable()
+
+	for name, value := range e.GetEnumerations() {
+		// save the result
+		xlateTable[name] = value
+		xlateTable[value] = name
+	}
+}
+
+// EnumeratedContract provides a set of functions which can be overwritten by a sub struct
+type EnumeratedContract interface {
+	GetEnumerations() map[string]uint64
+	GetXlateTable() map[any]any
+	// SetEnumerated is required because we do more stuff in the constructor and can't wait for the substruct to finish that
+	SetEnumerated(enumerated *Enumerated)
+}
+
 type Enumerated struct {
-	*Atomic[int] // TODO: implement properly
+	*Atomic[uint64]
+	EnumeratedContract
 
-	Value []bool
+	_enumerations map[string]uint64
+	_xlateTable   map[any]any
+
+	valueString string
 }
 
-func NewEnumerated(arg ...any) (*Enumerated, error) {
-	panic("not implemented")
+func NewEnumerated(args ...any) (*Enumerated, error) {
+	e := &Enumerated{}
+	e.EnumeratedContract = e
+	e.Atomic = NewAtomic[uint64](e)
+
+	if args == nil {
+		return e, nil
+	}
+	var arg any
+	switch len(args) {
+	case 1:
+		arg = args[0]
+	case 2:
+		var ok bool
+		e.EnumeratedContract, ok = args[0].(EnumeratedContract)
+		if !ok {
+			return nil, errors.Errorf("%T must be implement EnumeratedContract", args[0])
+		}
+		e.EnumeratedContract.SetEnumerated(e)
+		arg = args[1]
+	default:
+		return nil, errors.New("invalid argument")
+	}
+	if len(e.EnumeratedContract.GetXlateTable()) == 0 {
+		expandEnumerations(e.EnumeratedContract)
+	}
+
+	switch arg := arg.(type) {
+	case *Tag:
+		err := e.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return e, nil
+	case uint:
+		e.value = uint64(arg)
+	case int:
+		if arg < 0 {
+			return nil, errors.New("arg must be positive")
+		}
+		e.value = uint64(arg)
+	case uint64:
+		e.value = arg
+
+		// convert it to a string if you can
+		e.valueString, _ = e.EnumeratedContract.GetXlateTable()[arg].(string)
+	case string:
+		var ok bool
+		var value any
+		value, ok = e.EnumeratedContract.GetXlateTable()[arg]
+		if !ok {
+			return nil, errors.Errorf("undefined enumeration %s", arg)
+		}
+		e.value = value.(uint64)
+		e.valueString = arg
+	case *Enumerated:
+		e.value = arg.value
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return e, nil
 }
 
-func (b *Enumerated) Decode(tag *Tag) error {
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(TagEnumeratedAppTag) {
+func (e *Enumerated) GetEnumerations() map[string]uint64 {
+	if e._enumerations == nil {
+		e._enumerations = make(map[string]uint64)
+	}
+	return e._enumerations
+}
+
+func (e *Enumerated) GetXlateTable() map[any]any {
+	if e._xlateTable == nil {
+		e._xlateTable = make(map[any]any)
+	}
+	return e._xlateTable
+}
+
+func (e *Enumerated) SetEnumerated(_ *Enumerated) {
+	panic("must be implemented by substruct")
+}
+
+func (e *Enumerated) GetItem(item any) any {
+	return e.EnumeratedContract.GetXlateTable()[item]
+}
+
+func (e *Enumerated) GetLong() uint64 {
+	if mappedValue, ok := e.EnumeratedContract.GetXlateTable()[e.valueString]; ok {
+		return mappedValue.(uint64)
+	}
+	return e.value
+}
+
+func (e *Enumerated) Keylist() []string {
+	var result []string
+	for key := range e.EnumeratedContract.GetEnumerations() {
+		result = append(result, key)
+	}
+	return result
+}
+
+func (e *Enumerated) Compare(other any) int {
+	otherEnumerated, ok := other.(Enumerated)
+	if !ok {
+		return -1
+	}
+
+	// get the numeric version
+	a := e.GetLong()
+	b := otherEnumerated.GetLong()
+
+	// now compare the values
+	if a < b {
+		return -1
+	} else if a > b {
+		return 1
+	} else {
+		return 0
+	}
+}
+
+func (e *Enumerated) Decode(tag *Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_ENUMERATED) {
 		return errors.New("bit string application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {
 		return errors.New("invalid tag length")
 	}
-	// extract the number of unused bits
-	unused := tag.tagData[0]
 
-	// extract the data
-	data := make([]bool, 0)
-	for _, x := range tag.tagData[1:] {
-		for i := range 8 {
-			if (x & (1 << (7 - i))) != 0 {
-				data = append(data, true)
-			} else {
-				data = append(data, false)
-			}
-		}
+	data := tag.tagData
+	if len(data) < 8 {
+		data = append(make([]byte, 8-len(data)), data...)
+	}
+	// get the data
+	rslt := binary.BigEndian.Uint64(data)
+
+	if mappedValue, ok := e.EnumeratedContract.GetXlateTable()[rslt]; ok {
+		e.valueString = mappedValue.(string)
 	}
 
-	// trim off the unused bits
-	if unused != 0 && unused != 8 {
-		b.Value = data[:len(data)-int(unused)]
-	} else {
-		b.Value = data
-	}
+	// save the result
+	e.value = rslt
 	return nil
 }
 
-func (b *Enumerated) Encode(tag *Tag) {
-	used := len(b.Value) % 8
-	unused := 8 - used
-	if unused == 8 {
-		unused = 0
+func (e *Enumerated) Encode(tag *Tag) {
+	value := e.value
+	if mappedValue, ok := e.EnumeratedContract.GetXlateTable()[e.valueString]; ok {
+		value = mappedValue.(uint64)
 	}
 
-	// start with the number of unused bits
-	data := []byte{byte(unused)}
+	data := make([]byte, 8)
+	// rip apart the number
+	binary.BigEndian.PutUint64(data, value)
 
-	// build and append each packed octet
-	bits := append(b.Value, make([]bool, unused)...)
-	for i := range len(bits) / 8 {
-		i = i * 8
-		x := byte(0)
-		for j := range 8 {
-			bit := bits[i+j]
-			bitValue := byte(0)
-			if bit {
-				bitValue = 1
-			}
-			x |= bitValue << (7 - j)
-		}
-		data = append(data, x)
+	// reduce the value to the smallest number of octets
+	for len(data) > 1 && data[0] == 0 {
+		data = data[1:]
 	}
 
-	tag.setAppData(uint(model.BACnetDataType_BIT_STRING), data)
+	// encode the tag
+	tag.setAppData(uint(model.BACnetDataType_ENUMERATED), data)
 }
 
-func (b *Enumerated) String() string {
-	// flip the bit names
-	bitNames := map[int]string{}
+func (e *Enumerated) IsValid(arg any) bool {
+	_, ok := arg.(uint64)
+	return ok
+}
 
-	// build a list of values and/or names
-	var valueList []string
-	for index, value := range b.Value {
-		if name, ok := bitNames[index]; ok {
-			if value == true {
-				valueList = append(valueList, name)
-			} else {
-				valueList = append(valueList, "!"+name)
-			}
-		} else {
-			if value {
-				valueList = append(valueList, "1")
-			} else {
-				valueList = append(valueList, "0")
-			}
-		}
+func (e *Enumerated) String() string {
+	value := strconv.Itoa(int(e.value))
+	if e.valueString != "" {
+		value = e.valueString
 	}
-
-	// bundle it together
-	return fmt.Sprintf("Enumerated(%v)", strings.Join(valueList, ","))
+	return fmt.Sprintf("Enumerated(%s)", value)
 }
 
 const _mm = `(?P<month>0?[1-9]|1[0-4]|odd|even|255|[*])`
