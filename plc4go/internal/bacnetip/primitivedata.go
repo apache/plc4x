@@ -24,6 +24,7 @@ import (
 	"cmp"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -795,20 +796,14 @@ func NewDouble(arg Arg) (*Double, error) {
 			return nil, errors.Wrap(err, "error decoding")
 		}
 		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
-		}
+	case float32:
+		b.value = float64(arg)
+	case float64:
+		b.value = arg
+	case int:
+		b.value = float64(arg)
 	case *Double:
 		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
@@ -816,36 +811,32 @@ func NewDouble(arg Arg) (*Double, error) {
 	return b, nil
 }
 
-func (b *Double) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, b.value, []byte{}))
+func (d *Double) Encode(tag *Tag) {
+	var _b = make([]byte, 8)
+	binary.BigEndian.PutUint64(_b, math.Float64bits(d.value))
+	tag.setAppData(uint(model.BACnetDataType_DOUBLE), _b)
 }
 
-func (b *Double) Decode(tag *Tag) error {
+func (d *Double) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_DOUBLE) {
 		return errors.New("Double application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
+	if len(tag.tagData) != 8 {
+		return errors.New("invalid tag length")
 	}
 
-	// get the data
-	if tag.tagLVT == 1 {
-		b.value = 1
-	}
+	// extract the data
+	d.value = math.Float64frombits(binary.BigEndian.Uint64(tag.tagData))
 	return nil
 }
 
-func (b *Double) IsValid(arg any) bool {
-	_, ok := arg.(bool)
+func (d *Double) IsValid(arg any) bool {
+	_, ok := arg.(float64)
 	return ok
 }
 
-func (b *Double) String() string {
-	value := "False"
-	if b.value == 1 {
-		value = "True"
-	}
-	return fmt.Sprintf("Double(%s)", value)
+func (d *Double) String() string {
+	return fmt.Sprintf("Double(%g)", d.value)
 }
 
 // TODO: finish
