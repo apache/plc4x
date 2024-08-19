@@ -1690,50 +1690,39 @@ func (d *Date) String() string {
 	return fmt.Sprintf("Date(%s-%s-%s %s)", yearStr, monthStr, dayStr, dowStr)
 }
 
-// TODO: finish me
 type TimeTuple struct {
-	Year      int
-	Month     int
-	Day       int
-	DayOfWeek int
+	Hour      int
+	Minute    int
+	Second    int
+	Hundredth int
 }
 
-// TODO: finish me
 type Time struct {
-	*Atomic[int64]
-
-	year      int
-	month     int
-	day       int
-	dayOfWeek int
+	value TimeTuple
 }
 
 func NewTime(arg Arg, args Args) (*Time, error) {
 	d := &Time{}
-	d.Atomic = NewAtomic[int64](d)
-	year := 255
+	hour := 255
 	if len(args) > 0 {
-		year = args[0].(int)
+		hour = args[0].(int)
 	}
-	if year >= 1900 {
-		year = year - 1900
-	}
-	d.year = year
-	month := 0xff
+	d.value.Hour = hour
+	minute := 0xff
 	if len(args) > 1 {
-		month = args[1].(int)
+		minute = args[1].(int)
 	}
-	d.month = month
-	day := 0xff
+	d.value.Minute = minute
+	second := 0xff
 	if len(args) > 2 {
-		day = args[2].(int)
+		second = args[2].(int)
 	}
-	d.day = day
-	dayOfWeek := 0xff
+	d.value.Second = second
+	hundredth := 0xff
 	if len(args) > 3 {
-		dayOfWeek = args[3].(int)
+		hundredth = args[3].(int)
 	}
-	d.dayOfWeek = dayOfWeek
+	d.value.Hundredth = hundredth
 
 	if arg == nil {
 		return d, nil
