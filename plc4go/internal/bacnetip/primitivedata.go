@@ -1189,8 +1189,7 @@ type Enumerated struct {
 	*Atomic[uint64]
 	EnumeratedContract
 
-	_enumerations map[string]uint64
-	_xlateTable   map[any]any
+	_xlateTable map[any]any
 
 	valueString string
 }
@@ -1231,16 +1230,22 @@ func NewEnumerated(args ...any) (*Enumerated, error) {
 		return e, nil
 	case uint:
 		e.value = uint64(arg)
+
+		// convert it to a string if you can
+		e.valueString, _ = e.EnumeratedContract.GetXlateTable()[e.value].(string)
 	case int:
 		if arg < 0 {
 			return nil, errors.New("arg must be positive")
 		}
 		e.value = uint64(arg)
+
+		// convert it to a string if you can
+		e.valueString, _ = e.EnumeratedContract.GetXlateTable()[e.value].(string)
 	case uint64:
 		e.value = arg
 
 		// convert it to a string if you can
-		e.valueString, _ = e.EnumeratedContract.GetXlateTable()[arg].(string)
+		e.valueString, _ = e.EnumeratedContract.GetXlateTable()[e.value].(string)
 	case string:
 		var ok bool
 		var value any
@@ -1252,6 +1257,11 @@ func NewEnumerated(args ...any) (*Enumerated, error) {
 		e.valueString = arg
 	case *Enumerated:
 		e.value = arg.value
+		e.valueString = arg.valueString
+		e._xlateTable = make(map[any]any)
+		for k, v := range arg._xlateTable {
+			e._xlateTable[k] = v
+		}
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
@@ -1260,10 +1270,7 @@ func NewEnumerated(args ...any) (*Enumerated, error) {
 }
 
 func (e *Enumerated) GetEnumerations() map[string]uint64 {
-	if e._enumerations == nil {
-		e._enumerations = make(map[string]uint64)
-	}
-	return e._enumerations
+	return make(map[string]uint64)
 }
 
 func (e *Enumerated) GetXlateTable() map[any]any {
@@ -1277,8 +1284,9 @@ func (e *Enumerated) SetEnumerated(_ *Enumerated) {
 	panic("must be implemented by substruct")
 }
 
-func (e *Enumerated) GetItem(item any) any {
-	return e.EnumeratedContract.GetXlateTable()[item]
+func (e *Enumerated) GetItem(item any) (result any, ok bool) {
+	v, ok := e.EnumeratedContract.GetXlateTable()[item]
+	return v, ok
 }
 
 func (e *Enumerated) GetLong() uint64 {
@@ -1362,6 +1370,10 @@ func (e *Enumerated) Encode(tag *Tag) {
 func (e *Enumerated) IsValid(arg any) bool {
 	_, ok := arg.(uint64)
 	return ok
+}
+
+func (e *Enumerated) GetValueString() string {
+	return e.valueString
 }
 
 func (e *Enumerated) String() string {
@@ -1678,4 +1690,629 @@ func (d *Date) String() string {
 	}
 
 	return fmt.Sprintf("Date(%s-%s-%s %s)", yearStr, monthStr, dayStr, dowStr)
+}
+
+// TODO: finish me
+type TimeTuple struct {
+	Year      int
+	Month     int
+	Day       int
+	DayOfWeek int
+}
+
+// TODO: finish me
+type Time struct {
+	*Atomic[int64]
+
+	year      int
+	month     int
+	day       int
+	dayOfWeek int
+}
+
+func NewTime(arg Arg, args Args) (*Time, error) {
+	d := &Time{}
+	d.Atomic = NewAtomic[int64](d)
+	year := 255
+	if len(args) > 0 {
+		year = args[0].(int)
+	}
+	if year >= 1900 {
+		year = year - 1900
+	}
+	d.year = year
+	month := 0xff
+	if len(args) > 1 {
+		month = args[1].(int)
+	}
+	d.month = month
+	day := 0xff
+	if len(args) > 2 {
+		day = args[2].(int)
+	}
+	d.day = day
+	dayOfWeek := 0xff
+	if len(args) > 3 {
+		dayOfWeek = args[3].(int)
+	}
+	d.dayOfWeek = dayOfWeek
+
+	if arg == nil {
+		return d, nil
+	}
+	switch arg := arg.(type) {
+	case *Tag:
+		err := d.Decode(arg)
+		if err != nil {
+			return nil, errors.Wrap(err, "error decoding")
+		}
+		return d, nil
+	case TimeTuple:
+		d.year, d.month, d.day, d.dayOfWeek = arg.Year, arg.Month, arg.Day, arg.DayOfWeek
+		var tempTime time.Time
+		//tempTime.AddTime(d.year, d.month, d.day)
+		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+	case string:
+		// lower case everything
+		arg = strings.ToLower(arg)
+
+		// make a list of the contents from matching patterns
+		matches := [][]string{}
+
+		if len(matches) == 0 {
+			return nil, errors.New("unmatched")
+		}
+
+		var match []string
+		if len(matches) == 1 {
+			match = matches[0]
+		} else {
+			// check to see if they really are the same
+			panic("what to do here")
+		}
+
+		// extract the year and normalize
+		matchedYear := match[0]
+		if matchedYear == "*" || matchedYear == "" {
+			year = 0xff
+		} else {
+			yearParse, err := strconv.ParseInt(matchedYear, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing year")
+			}
+			year = int(yearParse)
+			if year == 0xff {
+				return d, nil
+			}
+			if year < 35 {
+				year += 2000
+			} else if year < 100 {
+				year += 1900
+			} else if year < 1900 {
+				return nil, errors.New("invalid year")
+			}
+		}
+
+		// extract the month and normalize
+		matchedmonth := match[0]
+		if specialMonth, ok := _special_mon[matchedmonth]; ok {
+			month = specialMonth
+		} else {
+			monthParse, err := strconv.ParseInt(matchedmonth, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing month")
+			}
+			month = int(monthParse)
+			if month == 0xff {
+				return d, nil
+			}
+			if month == 0 || month > 14 {
+				return nil, errors.New("invalid month")
+			}
+		}
+
+		// extract the day and normalize
+		matchedday := match[0]
+		if specialday, ok := _special_day[matchedday]; ok {
+			day = specialday
+		} else {
+			dayParse, err := strconv.ParseInt(matchedday, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing day")
+			}
+			day = int(dayParse)
+			if day == 0xff {
+				return d, nil
+			}
+			if day == 0 || day > 34 {
+				return nil, errors.New("invalid day")
+			}
+		}
+
+		// extract the dayOfWeek and normalize
+		matcheddayOfWeek := match[0]
+		if specialdayOfWeek, ok := _special_dow[matcheddayOfWeek]; ok {
+			dayOfWeek = specialdayOfWeek
+		} else if matcheddayOfWeek == "" {
+			return d, nil
+		} else {
+			dayOfWeekParse, err := strconv.ParseInt(matcheddayOfWeek, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing dayOfWeek")
+			}
+			dayOfWeek = int(dayOfWeekParse)
+			if dayOfWeek == 0xff {
+				return d, nil
+			}
+			if dayOfWeek > 7 {
+				return nil, errors.New("invalid dayOfWeek")
+			}
+		}
+
+		// year becomes the correct octet
+		if year != 0xff {
+			year -= 1900
+		}
+
+		// save the value
+		d.year = year
+		d.month = month
+		d.day = day
+		d.dayOfWeek = dayOfWeek
+
+		var tempTime time.Time
+		//tempTime.AddTime(year, month, day)
+		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+
+		// calculate the day of the week
+		if dayOfWeek == 0 {
+			d.calcDayOfWeek()
+		}
+	case *Time:
+		d.value = arg.value
+		d.year = arg.year
+		d.month = arg.month
+		d.day = arg.day
+		d.dayOfWeek = arg.dayOfWeek
+	case float32:
+		d.now(arg)
+	default:
+		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+	}
+
+	return d, nil
+}
+
+func (d *Time) GetTupleValue() (year int, month int, day int, dayOfWeek int) {
+	return d.year, d.month, d.day, d.dayOfWeek
+}
+
+func (d *Time) calcDayOfWeek() {
+	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
+
+	// assume the worst
+	dayOfWeek = 255
+
+	// check for special values
+	if year == 255 {
+		return
+	} else if _, ok := _special_mon_inv[month]; ok {
+		return
+	} else if _, ok := _special_day_inv[month]; ok {
+		return
+	} else {
+		var today time.Time
+		//today = time.Time(year+1900, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+		panic(today) // TODO: implement me
+	}
+
+	// put it back together
+	d.year = year
+	d.month = month
+	d.day = day
+	d.dayOfWeek = dayOfWeek
+}
+
+func (d *Time) now(arg float32) {
+	panic("implement me") // TODO
+}
+
+func (d *Time) Encode(tag *Tag) {
+	var b []byte
+	binary.BigEndian.AppendUint64(b, uint64(d.value))
+	tag.setAppData(uint(model.BACnetDataType_TIME), b)
+}
+
+func (d *Time) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_TIME) {
+		return errors.New("Time application tag required")
+	}
+	if len(tag.tagData) != 4 {
+		return errors.New("invalid tag length")
+	}
+
+	arg := tag.tagData
+	year, month, day, dayOfWeek := arg[0], arg[1], arg[2], arg[3]
+	var tempTime time.Time
+	//tempTime.AddTime(int(year), int(month), int(day))
+	d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+	d.year, d.month, d.day, d.dayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
+	return nil
+}
+
+func (d *Time) IsValid(arg any) bool {
+	_, ok := arg.(bool)
+	return ok
+}
+
+func (d *Time) String() string {
+	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
+	yearStr := "*"
+	if year != 255 {
+		yearStr = strconv.Itoa(year + 1900)
+	}
+	monthStr := strconv.Itoa(month)
+	if ms, ok := _special_mon_inv[month]; ok {
+		monthStr = ms
+	}
+	dayStr := strconv.Itoa(day)
+	if ms, ok := _special_day_inv[day]; ok {
+		dayStr = ms
+	}
+	dowStr := strconv.Itoa(dayOfWeek)
+	if ms, ok := _special_dow_inv[dayOfWeek]; ok {
+		dowStr = ms
+	}
+
+	return fmt.Sprintf("Time(%s-%s-%s %s)", yearStr, monthStr, dayStr, dowStr)
+}
+
+// ObjectTypeContract provides a set of functions which can be overwritten by a sub struct
+type ObjectTypeContract interface {
+	EnumeratedContract
+	// SetObjectType is required because we do more stuff in the constructor and can't wait for the substruct to finish that
+	SetObjectType(objectType *ObjectType)
+}
+
+type ObjectType struct {
+	*Enumerated
+
+	enumerations map[string]uint64
+}
+
+func NewObjectType(args Args) (*ObjectType, error) {
+	o := &ObjectType{
+		enumerations: map[string]uint64{
+			"accessCredential":      32,
+			"accessDoor":            30,
+			"accessPoint":           33,
+			"accessRights":          34,
+			"accessUser":            35,
+			"accessZone":            36,
+			"accumulator":           23,
+			"alertEnrollment":       52,
+			"analogInput":           0,
+			"analogOutput":          1,
+			"analogValue":           2,
+			"auditLog":              61,
+			"auditReporter":         62,
+			"averaging":             18,
+			"binaryInput":           3,
+			"binaryLightingOutput":  55,
+			"binaryOutput":          4,
+			"binaryValue":           5,
+			"bitstringValue":        39,
+			"calendar":              6,
+			"channel":               53,
+			"characterstringValue":  40,
+			"command":               7,
+			"credentialDataInput":   37,
+			"datePatternValue":      41,
+			"dateValue":             42,
+			"datetimePatternValue":  43,
+			"datetimeValue":         44,
+			"device":                8,
+			"elevatorGroup":         57,
+			"escalator":             58,
+			"eventEnrollment":       9,
+			"eventLog":              25,
+			"file":                  10,
+			"globalGroup":           26,
+			"group":                 11,
+			"integerValue":          45,
+			"largeAnalogValue":      46,
+			"lifeSafetyPoint":       21,
+			"lifeSafetyZone":        22,
+			"lift":                  59,
+			"lightingOutput":        54,
+			"loadControl":           28,
+			"loop":                  12,
+			"multiStateInput":       13,
+			"multiStateOutput":      14,
+			"multiStateValue":       19,
+			"networkSecurity":       38,
+			"networkPort":           56,
+			"notificationClass":     15,
+			"notificationForwarder": 51,
+			"octetstringValue":      47,
+			"positiveIntegerValue":  48,
+			"program":               16,
+			"pulseConverter":        24,
+			"schedule":              17,
+			"staging":               60,
+			"structuredView":        29,
+			"timePatternValue":      49,
+			"timeValue":             50,
+			"timer":                 31,
+			"trendLog":              20,
+			"trendLogMultiple":      27,
+		},
+	}
+	var enumeratedContract EnumeratedContract = o
+	var err error
+	var arg0 any = 0
+	switch len(args) {
+	case 1:
+		arg0 = args[0]
+		switch arg0 := arg0.(type) {
+		case *ObjectType:
+			o.Enumerated, _ = NewEnumerated(arg0.Enumerated)
+			for k, v := range arg0.enumerations {
+				o.enumerations[k] = v
+			}
+			return o, nil
+		}
+	case 2:
+		switch arg := args[0].(type) {
+		case ObjectTypeContract:
+			arg.SetObjectType(o)
+			enumeratedContract = arg
+			argEnumerations := arg.GetEnumerations()
+			for k, v := range o.enumerations {
+				if _, ok := argEnumerations[k]; !ok {
+					argEnumerations[k] = v
+				}
+			}
+			o.enumerations = nil // supper seeded
+		default:
+			return nil, fmt.Errorf("invalid arg type: %T", arg)
+		}
+		arg0 = args[1]
+	}
+	o.Enumerated, err = NewEnumerated(enumeratedContract, arg0)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating enumerated")
+	}
+	return o, nil
+}
+
+func (o *ObjectType) GetEnumerations() map[string]uint64 {
+	return o.enumerations
+}
+
+func (o *ObjectType) SetEnumerated(enumerated *Enumerated) {
+	o.Enumerated = enumerated
+}
+
+func (o *ObjectType) SetObjectType(_ *ObjectType) {
+	panic("must be implemented by substruct")
+}
+
+func (o *ObjectType) String() string {
+	value := strconv.Itoa(int(o.value))
+	if o.valueString != "" {
+		value = o.valueString
+	}
+	return fmt.Sprintf("ObjectType(%v)", value)
+}
+
+type ObjectIdentifierTuple struct {
+	Left  any
+	Right int
+}
+
+type ObjectIdentifier struct {
+	//*Atomic[...] won't work here
+
+	objectTypeClass *ObjectType
+
+	value ObjectIdentifierTuple
+}
+
+func NewObjectIdentifier(args Args) (*ObjectIdentifier, error) {
+	i := &ObjectIdentifier{}
+	var err error
+	i.objectTypeClass, err = NewObjectType(nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating object type")
+	}
+	i.value = ObjectIdentifierTuple{"analogInput", 0}
+
+	if len(args) == 0 || args == nil {
+		return i, nil
+	}
+	if len(args) == 1 {
+		arg := args[0]
+		switch arg := arg.(type) {
+		case *Tag:
+			err := i.Decode(arg)
+			if err != nil {
+				return nil, errors.Wrap(err, "error decoding")
+			}
+			return i, nil
+		case int:
+			i.setLong(arg)
+		case string:
+			split := strings.Split(arg, ":")
+			var objType, objInstance any = split[0], split[1]
+			if objTypeInt, err := strconv.Atoi(fmt.Sprintf("%v", objType)); err == nil {
+				objType = objTypeInt
+			}
+			var err error
+			objInstance, err = strconv.Atoi(fmt.Sprintf("%v", objInstance))
+			if err != nil {
+				return nil, errors.Wrap(err, "error parsing instance")
+			}
+			if err := i.setTuple(objType, objInstance.(int)); err != nil {
+				return nil, errors.Wrap(err, "can't set tuple")
+			}
+		case ObjectIdentifierTuple:
+			if err := i.setTuple(arg.Left, arg.Right); err != nil {
+				return nil, errors.Wrap(err, "error setting tuple")
+			}
+		case *ObjectIdentifier:
+			i.value = arg.value
+		default:
+			return nil, errors.Errorf("invalid constructor datatype: %T", arg)
+		}
+	} else if len(args) == 2 {
+		err := i.setTuple(args[0].(string), args[1].(int))
+		if err != nil {
+			return nil, errors.Wrap(err, "error setting tuple")
+		}
+	} else {
+		return nil, errors.New("invalid constructor parameters")
+	}
+
+	return i, nil
+}
+
+func (o *ObjectIdentifier) setTuple(objType any, objInstance int) error {
+	switch objType.(type) {
+	case int:
+		if gotObjType, ok := o.objectTypeClass.GetXlateTable()[uint64(objType.(int))]; ok {
+			objType = gotObjType
+		}
+	case string:
+		if _, ok := o.objectTypeClass.GetXlateTable()[objType]; !ok {
+			return errors.Errorf("unrecognized object type %s", objType)
+		}
+	default:
+		return errors.Errorf("invalid datatype for object type: %T", objType)
+	}
+
+	// check valid instance number
+	if objInstance < 0 || objInstance > 0x003FFFFF {
+		return errors.Errorf("invalid object instance out of range: %d", objInstance)
+	}
+
+	o.value = ObjectIdentifierTuple{objType, objInstance}
+	return nil
+}
+
+func (o *ObjectIdentifier) getTuple() ObjectIdentifierTuple {
+	return o.value
+}
+
+func (o *ObjectIdentifier) setLong(value int) {
+	// suck out the type
+	objTypeInt := (value >> 22) & 0x3ff
+	var objType any = objTypeInt
+
+	// try and make it pretty
+	if item, ok := o.objectTypeClass.GetItem(uint64(objTypeInt)); ok {
+		objType = item
+	}
+
+	// suck out the instance
+	objInstance := value & 0x003FFFFF
+
+	// save the result
+	o.value = ObjectIdentifierTuple{objType, objInstance}
+}
+
+func (o *ObjectIdentifier) getLong() int {
+	tuple := o.getTuple()
+	objType, objInstance := tuple.Left, tuple.Right
+
+	if _, ok := objType.(string); ok {
+		if objTypeGot, ok := o.objectTypeClass.GetXlateTable()[objType]; ok {
+			objType = int(objTypeGot.(uint64))
+		}
+	}
+
+	return (objType.(int) << 22) + objInstance
+}
+
+func (o *ObjectIdentifier) Encode(tag *Tag) {
+	data := make([]byte, 4)
+	binary.BigEndian.PutUint32(data, uint32(o.getLong()))
+	tag.setAppData(uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER), data)
+}
+
+func (o *ObjectIdentifier) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER) {
+		return errors.New("ObjectIdentifier application tag required")
+	}
+	if len(tag.tagData) != 4 {
+		return errors.New("invalid tag length")
+	}
+
+	tagData := tag.tagData
+
+	o.setLong(int(binary.BigEndian.Uint32(tagData)))
+	return nil
+}
+
+func (o *ObjectIdentifier) IsValid(arg any) bool {
+	switch arg.(type) {
+	case ObjectIdentifier:
+		return true
+	default:
+		return false
+	}
+}
+
+func (o *ObjectIdentifier) Compare(other any) int {
+	switch other := other.(type) {
+	case *ObjectIdentifier:
+		return o.getLong() - other.getLong()
+	default:
+		return -1
+	}
+}
+
+func (o *ObjectIdentifier) LowerThan(other any) bool {
+	switch other := other.(type) {
+	case *ObjectIdentifier:
+		return o.getLong() < other.getLong()
+	default:
+		return false
+	}
+}
+
+func (o *ObjectIdentifier) Equals(other any) bool {
+	return o.value == other
+}
+
+func (o *ObjectIdentifier) GetValue() ObjectIdentifierTuple {
+	return o.value
+}
+
+func (o *ObjectIdentifier) Coerce(arg ObjectIdentifier) ObjectIdentifierTuple {
+	return arg.GetValue()
+}
+
+func (o *ObjectIdentifier) String() string {
+	// rip it apart
+	objType, objInstance := o.value.Left, o.value.Right
+
+	var objTypeAsUint64 uint64
+	if objTypeAsInt, ok := objType.(int); ok {
+		objTypeAsUint64 = uint64(objTypeAsInt)
+	}
+	var typeString string
+	if s, ok := objType.(string); ok {
+		typeString = s
+	} else if i, intOk := objType.(int); intOk && i < 0 {
+		typeString = fmt.Sprintf("Bad %d", i)
+	} else if gotType, xlateOk := o.objectTypeClass.GetXlateTable()[objTypeAsUint64]; xlateOk {
+		typeString = gotType.(string)
+	} else if intOk && i < 128 {
+		typeString = fmt.Sprintf("Reserved %d", i)
+	} else {
+		typeString = fmt.Sprintf("Vendor %s", objType)
+	}
+
+	return fmt.Sprintf("ObjectIdentifier(%s,%d)", typeString, objInstance)
 }
