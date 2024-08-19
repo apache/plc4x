@@ -846,77 +846,82 @@ func (d *Double) String() string {
 	return fmt.Sprintf("Double(%g)", d.value)
 }
 
-// TODO: finish
 type OctetString struct {
-	*Atomic[string]
-	*CommonMath
+	//*Atomic[...] no support for []byte
+
+	value []byte
 }
 
 func NewOctetString(arg Arg) (*OctetString, error) {
-	b := &OctetString{}
-	b.Atomic = NewAtomic[string](b)
+	o := &OctetString{}
+	o.value = make([]byte, 0)
 
 	if arg == nil {
-		return b, nil
+		return o, nil
 	}
 	switch arg := arg.(type) {
 	case *Tag:
-		err := b.Decode(arg)
+		err := o.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
 		}
-		return b, nil
-	case bool:
-		if arg {
-			b.value = "1"
-		}
+		return o, nil
+	case []byte:
+		o.value = arg
 	case *OctetString:
-		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = "1"
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
+		o.value = arg.value
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
 
-	return b, nil
+	return o, nil
 }
 
-func (b *OctetString) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, b.value, []byte{}))
+func (o *OctetString) Encode(tag *Tag) {
+	tag.setAppData(uint(model.BACnetDataType_OCTET_STRING), o.value)
 }
 
-func (b *OctetString) Decode(tag *Tag) error {
+func (o *OctetString) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_OCTET_STRING) {
 		return errors.New("OctetString application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
-	}
 
-	// get the data
-	if tag.tagLVT == 1 {
-		b.value = "1"
-	}
+	o.value = tag.tagData
 	return nil
 }
 
-func (b *OctetString) IsValid(arg any) bool {
-	_, ok := arg.(bool)
+func (o *OctetString) Compare(other any) int {
+	if _, ok := other.(byte); !ok {
+		return -1
+	}
+	return len(o.value) - len(other.(OctetString).value)
+}
+
+func (o *OctetString) LowerThan(other any) bool {
+	if _, ok := other.(byte); !ok {
+		return false
+	}
+	return len(o.value) < len(other.(OctetString).value)
+}
+
+func (o *OctetString) Equals(other any) bool {
+	if _, ok := other.(byte); !ok {
+		return false
+	}
+	return bytes.Equal(o.value, other.([]byte))
+}
+
+func (o *OctetString) GetValue() []byte {
+	return o.value
+}
+
+func (o *OctetString) IsValid(arg any) bool {
+	_, ok := arg.([]byte)
 	return ok
 }
 
-func (b *OctetString) String() string {
-	value := "False"
-	if b.value == "1" {
-		value = "True"
-	}
-	return fmt.Sprintf("OctetString(%s)", value)
+func (o *OctetString) String() string {
+	return fmt.Sprintf("OctetString(X'%s')", Btox([]byte(o.value)))
 }
 
 type CharacterString struct {
