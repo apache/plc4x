@@ -630,77 +630,111 @@ func (b *Unsigned16) String() string {
 	return fmt.Sprintf("Unsigned16(%s)", value)
 }
 
-// TODO: finish
 type Integer struct {
-	*Atomic[int]
+	*Atomic[int32]
 	*CommonMath
 }
 
 func NewInteger(arg Arg) (*Integer, error) {
-	b := &Integer{}
-	b.Atomic = NewAtomic[int](b)
+	i := &Integer{}
+	i.Atomic = NewAtomic[int32](i)
 
 	if arg == nil {
-		return b, nil
+		return i, nil
 	}
 	switch arg := arg.(type) {
 	case *Tag:
-		err := b.Decode(arg)
+		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
 		}
-		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
+		return i, nil
+	case int32:
+		i.value = arg
+	case int:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid integer: %d", arg)
 		}
+		i.value = int32(arg)
 	case *Integer:
-		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
+		i.value = arg.value
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
 
-	return b, nil
+	return i, nil
 }
 
-func (b *Integer) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+func (i *Integer) Encode(tag *Tag) {
+	data := make([]byte, 4)
+	binary.BigEndian.PutUint32(data, uint32(i.value))
+
+	// reduce the value to the smallest number of bytes, be
+	// careful about sign extension
+	if i.value < 0 {
+		for len(data) > 1 {
+			if data[0] != 255 {
+				break
+			}
+			if data[1] < 128 {
+				break
+			}
+			data = data[1:]
+		}
+	} else {
+		for len(data) > 1 {
+			if data[0] != 0 {
+				break
+			}
+			if data[1] >= 128 {
+				break
+			}
+			data = data[1:]
+		}
+	}
+
+	tag.setAppData(uint(model.BACnetDataType_SIGNED_INTEGER), data)
 }
 
-func (b *Integer) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+func (i *Integer) Decode(tag *Tag) error {
+	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_SIGNED_INTEGER) {
 		return errors.New("Integer application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
+	if len(tag.tagData) == 0 {
+		return errors.New("invalid tag length")
 	}
 
+	tagData := tag.tagData
+
 	// get the data
-	if tag.tagLVT == 1 {
-		b.value = 1
+	rslt := int32(tagData[0])
+	if rslt&0x80 != 0 {
+		rslt = (-1 << 8) | rslt
 	}
+	if len(tagData) > 1 {
+		for _, c := range tagData[1:] {
+			rslt = (rslt << 8) | int32(c)
+		}
+	}
+
+	// save the result
+	i.value = rslt
 	return nil
 }
 
-func (b *Integer) IsValid(arg any) bool {
-	_, ok := arg.(bool)
-	return ok
+func (i *Integer) IsValid(arg any) bool {
+	switch arg := arg.(type) {
+	case int:
+		return arg >= math.MinInt32 && arg <= math.MaxInt32
+	case int32:
+		return true
+	default:
+		return false
+	}
 }
 
-func (b *Integer) String() string {
-	value := "False"
-	if b.value == 1 {
-		value = "True"
-	}
-	return fmt.Sprintf("Integer(%s)", value)
+func (i *Integer) String() string {
+	return fmt.Sprintf("Integer(%d)", i.value)
 }
 
 // TODO: finish
