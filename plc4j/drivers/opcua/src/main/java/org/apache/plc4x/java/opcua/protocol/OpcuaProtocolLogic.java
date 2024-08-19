@@ -229,8 +229,8 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
             requestHeader,
             0.0d,
             TimestampsToReturn.timestampsToReturnNeither,
-            readValueArray.size(),
-            readValueArray);
+            readValueArray
+        );
 
         CompletableFuture<ReadResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();
@@ -750,7 +750,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
                     null)));
         }
 
-        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList.size(), writeValueList);
+        WriteRequest opcuaWriteRequest = new WriteRequest(requestHeader, writeValueList);
 
         CompletableFuture<WriteResponse> future = new CompletableFuture<>();
         RequestTransaction transaction = tm.startRequest();

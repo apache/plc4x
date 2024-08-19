@@ -108,6 +108,23 @@
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
                   <includes>Opc.Ua.Types.bsd</includes>
+                  <stylesheet>src/main/xslt/opc-fix.xsl</stylesheet>
+                  <outputDir>${project.build.directory}/downloads</outputDir>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+                      <targetName>Opc.Ua.Types-fixed.xml</targetName>
+                    </fileMapper>
+                  </fileMappers>
+                  <outputProperties>
+                    <outputProperty>
+                      <name>indent</name>
+                      <value>yes</value>
+                    </outputProperty>
+                  </outputProperties>
+                </transformationSet>
+                <transformationSet>
+                  <dir>${project.build.directory}/downloads</dir>
+                  <includes>Opc.Ua.Types-fixed.xml</includes>
                   <stylesheet>src/main/xslt/opc-services.xsl</stylesheet>
                   <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
                   <fileMappers>
@@ -134,7 +151,7 @@
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
-                  <includes>Opc.Ua.Types.bsd</includes>
+                  <includes>Opc.Ua.Types-fixed.xml</includes>
                   <stylesheet>src/main/xslt/opc-status.xsl</stylesheet>
                   <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
                   <fileMappers>
@@ -161,7 +178,7 @@
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
-                  <includes>Opc.Ua.Types.bsd</includes>
+                  <includes>Opc.Ua.Types-fixed.xml</includes>
                   <stylesheet>src/main/xslt/opc-manual.xsl</stylesheet>
                   <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
                   <fileMappers>
@@ -188,7 +205,7 @@
                 </transformationSet>
                 <transformationSet>
                   <dir>${project.build.directory}/downloads</dir>
-                  <includes>Opc.Ua.Types.bsd</includes>
+                  <includes>Opc.Ua.Types-fixed.xml</includes>
                   <stylesheet>src/main/xslt/opc-types.xsl</stylesheet>
                   <outputDir>${project.basedir}/src/main/generated/protocols/opcua</outputDir>
                   <fileMappers>

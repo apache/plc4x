@@ -49,7 +49,7 @@ class PayloadConverterTest {
         ExtensionObject extObject = new ExtensionObject(
             expandedNodeId,
             null,
-            new HistoryEvent(0, Collections.emptyList())
+            new HistoryEvent(Collections.emptyList())
         );
 
         ExtensiblePayload payload = new ExtensiblePayload(
