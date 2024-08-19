@@ -1012,10 +1012,8 @@ type BitStringExtension interface {
 }
 
 type BitString struct {
-	*Atomic[int] // TODO: implement properly
-
 	bitStringExtension BitStringExtension
-	Value              []bool
+	value              []bool
 }
 
 func NewBitString(arg ...any) (*BitString, error) {
@@ -1033,7 +1031,7 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 		return nil, errors.New("too many arguments")
 	}
 	if bitStringExtension != nil {
-		b.Value = make([]bool, bitStringExtension.GetBitLen())
+		b.value = make([]bool, bitStringExtension.GetBitLen())
 	}
 	switch arg := arg[0].(type) {
 	case *Tag:
@@ -1042,9 +1040,9 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 			return nil, errors.Wrap(err, "decoding tag failed")
 		}
 	case []int:
-		b.Value = make([]bool, len(arg))
+		b.value = make([]bool, len(arg))
 		for i, v := range arg {
-			b.Value[i] = v != 0
+			b.value[i] = v != 0
 		}
 	case []string:
 		bitNames := make(map[string]int)
@@ -1053,15 +1051,15 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 		}
 		for _, bit := range arg {
 			bit, ok := bitNames[bit]
-			if !ok || bit < 0 || bit > len(b.Value) {
+			if !ok || bit < 0 || bit > len(b.value) {
 				return nil, errors.New("constructorElement out of range")
 			}
-			b.Value[bit] = true
+			b.value[bit] = true
 		}
 	case *BitString:
-		b.Value = arg.Value[:]
+		b.value = arg.value[:]
 	case model.BACnetApplicationTagBitStringExactly:
-		b.Value = arg.GetPayload().GetData()
+		b.value = arg.GetPayload().GetData()
 	default:
 		return nil, errors.Errorf("no support for %T yet", arg)
 	}
@@ -1069,7 +1067,7 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 }
 
 func (b *BitString) Decode(tag *Tag) error {
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(TagBitStringAppTag) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BIT_STRING) {
 		return errors.New("bit string application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {

@@ -111,15 +111,15 @@ func bitStringEndec(t *testing.T, v []int, x string) {
 
 func TestBitString(t *testing.T) {
 	obj := BitString()
-	assert.Len(t, obj.Value, 0)
+	assert.Len(t, obj.GetValue(), 0)
 	assert.Equal(t, `BitString()`, obj.String())
 
 	obj = BitString([]int{0})
-	assert.Equal(t, []bool{false}, obj.Value)
+	assert.Equal(t, []bool{false}, obj.GetValue())
 	assert.Equal(t, `BitString(0)`, obj.String())
 
 	obj = BitString([]int{0, 1})
-	assert.Equal(t, []bool{false, true}, obj.Value)
+	assert.Equal(t, []bool{false, true}, obj.GetValue())
 	assert.Equal(t, `BitString(0,1)`, obj.String())
 
 	assert.Panics(t, func() {
@@ -133,7 +133,7 @@ func TestBitString(t *testing.T) {
 
 func TestBitStringSample(t *testing.T) {
 	obj := SampleBitString()
-	assert.Equal(t, []bool(nil), obj.Value)
+	assert.Equal(t, []bool(nil), obj.GetValue())
 
 	obj = SampleBitString([]int{1})
 	assert.Equal(t, `BitString(b0)`, obj.String())
@@ -149,11 +149,11 @@ func TestBitStringSample(t *testing.T) {
 func TestBitStringTag(t *testing.T) {
 	tag := Tag(bacnetip.TagApplicationTagClass, bacnetip.TagBitStringAppTag, 1, xtob("08"))
 	obj := BitString(tag)
-	assert.Len(t, obj.Value, 0)
+	assert.Len(t, obj.GetValue(), 0)
 
 	tag = Tag(bacnetip.TagApplicationTagClass, bacnetip.TagBitStringAppTag, 1, xtob("0102"))
 	obj = BitString(tag)
-	assert.Equal(t, []bool{false, false, false, false, false, false, true}, obj.Value)
+	assert.Equal(t, []bool{false, false, false, false, false, false, true}, obj.GetValue())
 
 	tag = Tag(bacnetip.TagApplicationTagClass, bacnetip.TagBitStringAppTag, 1, xtob(""))
 	assert.Panics(t, func() {
