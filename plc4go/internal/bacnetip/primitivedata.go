@@ -261,7 +261,6 @@ type CommonMath struct {
 	// TODO: implement me
 }
 
-// TODO: finish
 type Null struct {
 	*Atomic[int]
 }
@@ -280,20 +279,8 @@ func NewNull(arg Arg) (*Null, error) {
 			return nil, errors.Wrap(err, "error decoding")
 		}
 		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
-		}
 	case *Null:
 		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
