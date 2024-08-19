@@ -1163,15 +1163,15 @@ func (b *BitString) Decode(tag *Tag) error {
 
 	// trim off the unused bits
 	if unused != 0 && unused != 8 {
-		b.Value = data[:len(data)-int(unused)]
+		b.value = data[:len(data)-int(unused)]
 	} else {
-		b.Value = data
+		b.value = data
 	}
 	return nil
 }
 
 func (b *BitString) Encode(tag *Tag) {
-	used := len(b.Value) % 8
+	used := len(b.value) % 8
 	unused := 8 - used
 	if unused == 8 {
 		unused = 0
@@ -1181,7 +1181,7 @@ func (b *BitString) Encode(tag *Tag) {
 	data := []byte{byte(unused)}
 
 	// build and append each packed octet
-	bits := append(b.Value, make([]bool, unused)...)
+	bits := append(b.value, make([]bool, unused)...)
 	for i := range len(bits) / 8 {
 		i = i * 8
 		x := byte(0)
@@ -1199,6 +1199,32 @@ func (b *BitString) Encode(tag *Tag) {
 	tag.setAppData(uint(model.BACnetDataType_BIT_STRING), data)
 }
 
+func (b *BitString) Compare(other any) int {
+	switch other := other.(type) {
+	case *BitString:
+		return len(b.value) - len(other.value)
+	default:
+		return -1
+	}
+}
+
+func (b *BitString) LowerThan(other any) bool {
+	switch other := other.(type) {
+	case *BitString:
+		return len(b.value) < len(other.value)
+	default:
+		return false
+	}
+}
+
+func (b *BitString) Equals(other any) bool {
+	return b == other
+}
+
+func (b *BitString) GetValue() []bool {
+	return b.value
+}
+
 func (b *BitString) String() string {
 	// flip the bit names
 	bitNames := map[int]string{}
@@ -1210,7 +1236,7 @@ func (b *BitString) String() string {
 
 	// build a list of values and/or names
 	var valueList []string
-	for index, value := range b.Value {
+	for index, value := range b.value {
 		if name, ok := bitNames[index]; ok {
 			if value == true {
 				valueList = append(valueList, name)
