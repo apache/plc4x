@@ -1412,17 +1412,11 @@ type DateTuple struct {
 }
 
 type Date struct {
-	*Atomic[int64]
-
-	year      int
-	month     int
-	day       int
-	dayOfWeek int
+	value DateTuple
 }
 
 func NewDate(arg Arg, args Args) (*Date, error) {
 	d := &Date{}
-	d.Atomic = NewAtomic[int64](d)
 	year := 255
 	if len(args) > 0 {
 		year = args[0].(int)
@@ -1430,22 +1424,22 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 	if year >= 1900 {
 		year = year - 1900
 	}
-	d.year = year
+	d.value.Year = year
 	month := 0xff
 	if len(args) > 1 {
 		month = args[1].(int)
 	}
-	d.month = month
+	d.value.Month = month
 	day := 0xff
 	if len(args) > 2 {
 		day = args[2].(int)
 	}
-	d.day = day
+	d.value.Day = day
 	dayOfWeek := 0xff
 	if len(args) > 3 {
 		dayOfWeek = args[3].(int)
 	}
-	d.dayOfWeek = dayOfWeek
+	d.value.DayOfWeek = dayOfWeek
 
 	if arg == nil {
 		return d, nil
@@ -1458,10 +1452,7 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 		}
 		return d, nil
 	case DateTuple:
-		d.year, d.month, d.day, d.dayOfWeek = arg.Year, arg.Month, arg.Day, arg.DayOfWeek
-		var tempTime time.Time
-		tempTime.AddDate(d.year, d.month, d.day)
-		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+		d.value = arg
 	case string:
 		// lower case everything
 		arg = strings.ToLower(arg)
@@ -1570,14 +1561,10 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 		}
 
 		// save the value
-		d.year = year
-		d.month = month
-		d.day = day
-		d.dayOfWeek = dayOfWeek
-
-		var tempTime time.Time
-		tempTime.AddDate(year, month, day)
-		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+		d.value.Year = year
+		d.value.Month = month
+		d.value.Day = day
+		d.value.DayOfWeek = dayOfWeek
 
 		// calculate the day of the week
 		if dayOfWeek == 0 {
@@ -1585,10 +1572,6 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 		}
 	case *Date:
 		d.value = arg.value
-		d.year = arg.year
-		d.month = arg.month
-		d.day = arg.day
-		d.dayOfWeek = arg.dayOfWeek
 	case float32:
 		d.now(arg)
 	default:
@@ -1598,12 +1581,8 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 	return d, nil
 }
 
-func (d *Date) GetTupleValue() (year int, month int, day int, dayOfWeek int) {
-	return d.year, d.month, d.day, d.dayOfWeek
-}
-
 func (d *Date) calcDayOfWeek() {
-	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
+	year, month, day, dayOfWeek := d.value.Year, d.value.Month, d.value.Day, d.value.DayOfWeek
 
 	// assume the worst
 	dayOfWeek = 255
@@ -1618,14 +1597,15 @@ func (d *Date) calcDayOfWeek() {
 	} else {
 		var today time.Time
 		today = time.Date(year+1900, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-		panic(today) // TODO: implement me
+		today.Add(24 * time.Hour)
+		dayOfWeek = int(today.Weekday())
 	}
 
 	// put it back together
-	d.year = year
-	d.month = month
-	d.day = day
-	d.dayOfWeek = dayOfWeek
+	d.value.Year = year
+	d.value.Month = month
+	d.value.Day = day
+	d.value.DayOfWeek = dayOfWeek
 }
 
 func (d *Date) now(arg float32) {
@@ -1633,9 +1613,7 @@ func (d *Date) now(arg float32) {
 }
 
 func (d *Date) Encode(tag *Tag) {
-	var b []byte
-	binary.BigEndian.AppendUint64(b, uint64(d.value))
-	tag.setAppData(uint(model.BACnetDataType_DATE), b)
+	tag.setAppData(uint(model.BACnetDataType_DATE), []byte{byte(d.value.Year), byte(d.value.Month), byte(d.value.Day), byte(d.value.DayOfWeek)})
 }
 
 func (d *Date) Decode(tag *Tag) error {
@@ -1648,10 +1626,7 @@ func (d *Date) Decode(tag *Tag) error {
 
 	arg := tag.tagData
 	year, month, day, dayOfWeek := arg[0], arg[1], arg[2], arg[3]
-	var tempTime time.Time
-	tempTime.AddDate(int(year), int(month), int(day))
-	d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
-	d.year, d.month, d.day, d.dayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
+	d.value.Year, d.value.Month, d.value.Day, d.value.DayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
 	return nil
 }
 
@@ -1660,8 +1635,41 @@ func (d *Date) IsValid(arg any) bool {
 	return ok
 }
 
+func (d *Date) Compare(other any) int {
+	switch other := other.(type) {
+	case *Date:
+		_ = other //TODO: implement me
+		return -1
+	default:
+		return -1
+	}
+}
+
+func (d *Date) LowerThan(other any) bool {
+	switch other := other.(type) {
+	case *Date:
+		// return d.getLong() < other.getLong()
+		_ = other // TODO: implement me
+		return false
+	default:
+		return false
+	}
+}
+
+func (d *Date) Equals(other any) bool {
+	return d.value == other
+}
+
+func (d *Date) GetValue() DateTuple {
+	return d.value
+}
+
+func (d *Date) Coerce(arg Date) DateTuple {
+	return arg.GetValue()
+}
+
 func (d *Date) String() string {
-	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
+	year, month, day, dayOfWeek := d.value.Year, d.value.Month, d.value.Day, d.value.DayOfWeek
 	yearStr := "*"
 	if year != 255 {
 		yearStr = strconv.Itoa(year + 1900)
