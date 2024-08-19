@@ -1808,132 +1808,44 @@ func NewTime(arg Arg, args Args) (*Time, error) {
 		}
 		return d, nil
 	case TimeTuple:
-		d.year, d.month, d.day, d.dayOfWeek = arg.Year, arg.Month, arg.Day, arg.DayOfWeek
-		var tempTime time.Time
-		//tempTime.AddTime(d.year, d.month, d.day)
-		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
+		d.value = arg
 	case string:
 		// lower case everything
 		arg = strings.ToLower(arg)
+		timeRegex := regexp.MustCompile(`^([*]|[0-9]+)[:]([*]|[0-9]+)(?:[:]([*]|[0-9]+)(?:[.]([*]|[0-9]+))?)?$`)
 
+		if !timeRegex.MatchString(arg) {
+			return nil, errors.New("invalid time pattern")
+		}
 		// make a list of the contents from matching patterns
-		matches := [][]string{}
-
-		if len(matches) == 0 {
+		match := timeRegex.FindStringSubmatch(arg)[1:]
+		if len(match) == 0 {
 			return nil, errors.New("unmatched")
 		}
 
-		var match []string
-		if len(matches) == 1 {
-			match = matches[0]
-		} else {
-			// check to see if they really are the same
-			panic("what to do here")
-		}
-
-		// extract the year and normalize
-		matchedYear := match[0]
-		if matchedYear == "*" || matchedYear == "" {
-			year = 0xff
-		} else {
-			yearParse, err := strconv.ParseInt(matchedYear, 10, 64)
-			if err != nil {
-				return nil, errors.Wrap(err, "error parsing year")
-			}
-			year = int(yearParse)
-			if year == 0xff {
-				return d, nil
-			}
-			if year < 35 {
-				year += 2000
-			} else if year < 100 {
-				year += 1900
-			} else if year < 1900 {
-				return nil, errors.New("invalid year")
+		var tupList []int
+		for _, s := range match {
+			if s == "*" {
+				tupList = append(tupList, 255)
+			} else if s == "" {
+				if slices.Contains(match, "*") {
+					tupList = append(tupList, 255)
+				} else {
+					tupList = append(tupList, 0)
+				}
+			} else {
+				i, _ := strconv.Atoi(s)
+				tupList = append(tupList, i)
 			}
 		}
-
-		// extract the month and normalize
-		matchedmonth := match[0]
-		if specialMonth, ok := _special_mon[matchedmonth]; ok {
-			month = specialMonth
-		} else {
-			monthParse, err := strconv.ParseInt(matchedmonth, 10, 64)
-			if err != nil {
-				return nil, errors.Wrap(err, "error parsing month")
-			}
-			month = int(monthParse)
-			if month == 0xff {
-				return d, nil
-			}
-			if month == 0 || month > 14 {
-				return nil, errors.New("invalid month")
-			}
+		if tupList[3] != 0xff {
+			tupList[3] *= 10
 		}
-
-		// extract the day and normalize
-		matchedday := match[0]
-		if specialday, ok := _special_day[matchedday]; ok {
-			day = specialday
-		} else {
-			dayParse, err := strconv.ParseInt(matchedday, 10, 64)
-			if err != nil {
-				return nil, errors.Wrap(err, "error parsing day")
-			}
-			day = int(dayParse)
-			if day == 0xff {
-				return d, nil
-			}
-			if day == 0 || day > 34 {
-				return nil, errors.New("invalid day")
-			}
-		}
-
-		// extract the dayOfWeek and normalize
-		matcheddayOfWeek := match[0]
-		if specialdayOfWeek, ok := _special_dow[matcheddayOfWeek]; ok {
-			dayOfWeek = specialdayOfWeek
-		} else if matcheddayOfWeek == "" {
-			return d, nil
-		} else {
-			dayOfWeekParse, err := strconv.ParseInt(matcheddayOfWeek, 10, 64)
-			if err != nil {
-				return nil, errors.Wrap(err, "error parsing dayOfWeek")
-			}
-			dayOfWeek = int(dayOfWeekParse)
-			if dayOfWeek == 0xff {
-				return d, nil
-			}
-			if dayOfWeek > 7 {
-				return nil, errors.New("invalid dayOfWeek")
-			}
-		}
-
-		// year becomes the correct octet
-		if year != 0xff {
-			year -= 1900
-		}
-
-		// save the value
-		d.year = year
-		d.month = month
-		d.day = day
-		d.dayOfWeek = dayOfWeek
-
-		var tempTime time.Time
-		//tempTime.AddTime(year, month, day)
-		d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
-
-		// calculate the day of the week
-		if dayOfWeek == 0 {
-			d.calcDayOfWeek()
-		}
+		d.value = TimeTuple{tupList[0], tupList[1], tupList[2], tupList[3]}
+	case time.Duration:
+		d.value = TimeTuple{int(arg.Hours()), int(arg.Minutes()), int(arg.Seconds()), int(arg.Milliseconds() * 10)}
 	case *Time:
 		d.value = arg.value
-		d.year = arg.year
-		d.month = arg.month
-		d.day = arg.day
-		d.dayOfWeek = arg.dayOfWeek
 	case float32:
 		d.now(arg)
 	default:
@@ -1943,47 +1855,15 @@ func NewTime(arg Arg, args Args) (*Time, error) {
 	return d, nil
 }
 
-func (d *Time) GetTupleValue() (year int, month int, day int, dayOfWeek int) {
-	return d.year, d.month, d.day, d.dayOfWeek
-}
-
-func (d *Time) calcDayOfWeek() {
-	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
-
-	// assume the worst
-	dayOfWeek = 255
-
-	// check for special values
-	if year == 255 {
-		return
-	} else if _, ok := _special_mon_inv[month]; ok {
-		return
-	} else if _, ok := _special_day_inv[month]; ok {
-		return
-	} else {
-		var today time.Time
-		//today = time.Time(year+1900, time.Month(month), day, 0, 0, 0, 0, time.UTC)
-		panic(today) // TODO: implement me
-	}
-
-	// put it back together
-	d.year = year
-	d.month = month
-	d.day = day
-	d.dayOfWeek = dayOfWeek
-}
-
-func (d *Time) now(arg float32) {
+func (t *Time) now(arg float32) {
 	panic("implement me") // TODO
 }
 
-func (d *Time) Encode(tag *Tag) {
-	var b []byte
-	binary.BigEndian.AppendUint64(b, uint64(d.value))
-	tag.setAppData(uint(model.BACnetDataType_TIME), b)
+func (t *Time) Encode(tag *Tag) {
+	tag.setAppData(uint(model.BACnetDataType_TIME), []byte{byte(t.value.Hour), byte(t.value.Minute), byte(t.value.Second), byte(t.value.Hundredth)})
 }
 
-func (d *Time) Decode(tag *Tag) error {
+func (t *Time) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_TIME) {
 		return errors.New("Time application tag required")
 	}
@@ -1991,40 +1871,75 @@ func (d *Time) Decode(tag *Tag) error {
 		return errors.New("invalid tag length")
 	}
 
-	arg := tag.tagData
-	year, month, day, dayOfWeek := arg[0], arg[1], arg[2], arg[3]
-	var tempTime time.Time
-	//tempTime.AddTime(int(year), int(month), int(day))
-	d.value = tempTime.UnixNano() - (time.Time{}.UnixNano()) // TODO: check this
-	d.year, d.month, d.day, d.dayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
+	tagData := tag.tagData
+
+	t.value = TimeTuple{int(tagData[0]), int(tagData[1]), int(tagData[2]), int(tagData[3])}
 	return nil
 }
 
-func (d *Time) IsValid(arg any) bool {
+func (t *Time) IsValid(arg any) bool {
 	_, ok := arg.(bool)
 	return ok
 }
 
-func (d *Time) String() string {
-	year, month, day, dayOfWeek := d.year, d.month, d.day, d.dayOfWeek
-	yearStr := "*"
-	if year != 255 {
-		yearStr = strconv.Itoa(year + 1900)
+func (t *Time) Compare(other any) int {
+	switch other := other.(type) {
+	case *Time:
+		_ = other // TODO: implement
+		return -1
+	default:
+		return -1
 	}
-	monthStr := strconv.Itoa(month)
-	if ms, ok := _special_mon_inv[month]; ok {
-		monthStr = ms
-	}
-	dayStr := strconv.Itoa(day)
-	if ms, ok := _special_day_inv[day]; ok {
-		dayStr = ms
-	}
-	dowStr := strconv.Itoa(dayOfWeek)
-	if ms, ok := _special_dow_inv[dayOfWeek]; ok {
-		dowStr = ms
-	}
+}
 
-	return fmt.Sprintf("Time(%s-%s-%s %s)", yearStr, monthStr, dayStr, dowStr)
+func (t *Time) LowerThan(other any) bool {
+	switch other := other.(type) {
+	case *Time:
+		_ = other // TODO: implement
+		return false
+	default:
+		return false
+	}
+}
+
+func (t *Time) Equals(other any) bool {
+	return t.value == other
+}
+
+func (t *Time) GetValue() TimeTuple {
+	return t.value
+}
+
+func (t *Time) Coerce(arg Time) TimeTuple {
+	return arg.GetValue()
+}
+
+func (t *Time) String() string {
+	// rip it apart
+	hour, minute, second, hundredth := t.value.Hour, t.value.Minute, t.value.Second, t.value.Hundredth
+
+	rslt := "Time("
+	if hour == 255 {
+		rslt += "*:"
+	} else {
+		rslt += fmt.Sprintf("%02d:", hour)
+	}
+	if minute == 255 {
+		rslt += "*:"
+	} else {
+		rslt += fmt.Sprintf("%02d:", minute)
+	}
+	if second == 255 {
+		rslt += "*."
+	} else {
+		rslt += fmt.Sprintf("%02d.", second)
+	}
+	if hundredth == 255 {
+		rslt += "*)"
+	} else {
+		rslt += fmt.Sprintf("%02d)", hundredth)
+	}
+	return rslt
 }
 
 // ObjectTypeContract provides a set of functions which can be overwritten by a sub struct
