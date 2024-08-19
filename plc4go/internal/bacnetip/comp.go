@@ -19,7 +19,13 @@
 
 package bacnetip
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type Arg any
 
@@ -99,3 +105,34 @@ const (
 	kwActorError = knownKey("actorError")
 	kwError      = knownKey("error")
 )
+
+type MessageBridge struct {
+	Bytes []byte
+}
+
+var _ spi.Message = (*MessageBridge)(nil)
+var _ _PDUDataRequirements = (*MessageBridge)(nil)
+
+func (m *MessageBridge) String() string {
+	return Btox(m.Bytes)
+}
+
+func (m *MessageBridge) Serialize() ([]byte, error) {
+	return m.Bytes, nil
+}
+
+func (m *MessageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteByteArray("Bytes", m.Bytes)
+}
+
+func (m *MessageBridge) GetLengthInBytes(_ context.Context) uint16 {
+	return uint16(len(m.Bytes))
+}
+
+func (m *MessageBridge) GetLengthInBits(ctx context.Context) uint16 {
+	return m.GetLengthInBytes(ctx) * 8
+}
+
+func (m *MessageBridge) getPDUData() []byte {
+	return m.Bytes
+}

@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"math"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -87,7 +88,9 @@ func NewTag(args Args) (*Tag, error) {
 		return t, nil
 	}
 	if len(args) == 1 {
-		t.decode(args[0])
+		if err := t.Decode(args[0].(PDUData)); err != nil {
+			return nil, errors.New("error decoding")
+		}
 	} else if len(args) >= 2 {
 		t.set(args)
 	} else {
@@ -96,7 +99,142 @@ func NewTag(args Args) (*Tag, error) {
 	return t, nil
 }
 
-func (t *Tag) decode(arg any) {
+func (t *Tag) Decode(pdu PDUData) error {
+	tag, err := pdu.Get()
+	if err != nil {
+		return errors.Wrap(err, "error decoding tag")
+	}
+
+	// extract the type
+	t.tagClass = model.TagClass(tag >> 3 & 0x01)
+
+	// extract the tag number
+	t.tagNumber = uint(tag >> 4)
+	if t.tagNumber == 0x0f {
+		get, err := pdu.Get()
+		if err != nil {
+			return errors.Wrap(err, "error decoding get")
+		}
+		t.tagNumber = uint(get)
+	}
+
+	// extract the length
+	t.tagLVT = int(tag & 0x07)
+	if t.tagLVT == 5 {
+		get, err := pdu.Get()
+		if err != nil {
+			return errors.Wrap(err, "error decoding get")
+		}
+		t.tagLVT = int(get)
+		if t.tagLVT == 254 {
+			get, err := pdu.GetShort()
+			if err != nil {
+				return errors.Wrap(err, "error decoding get")
+			}
+			t.tagLVT = int(get)
+		} else if t.tagLVT == 255 {
+			get, err := pdu.GetLong()
+			if err != nil {
+				return errors.Wrap(err, "error decoding get")
+			}
+			t.tagLVT = int(get)
+		}
+	} else if t.tagLVT == 6 {
+		t.tagClass = TagOpeningTagClass
+		t.tagLVT = 0
+	} else if t.tagLVT == 7 {
+		t.tagClass = TagClosingTagClass
+		t.tagLVT = 0
+	}
+
+	if t.tagClass == model.TagClass_APPLICATION_TAGS && t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
+		// tagLVT contains value
+		t.tagData = []byte{}
+	} else {
+		// tagLVT contains length
+		t.tagData, err = pdu.GetData(t.tagLVT)
+		if err != nil {
+			return errors.Wrap(err, "error decoding tag data")
+		}
+	}
+	return nil
+}
+
+func (t *Tag) Encode(pdu PDUData) {
+	var data byte
+	// check for special encoding
+	if t.tagClass == model.TagClass_CONTEXT_SPECIFIC_TAGS {
+		data = 0x08
+	} else if t.tagClass == TagOpeningTagClass {
+		data = 0x0E
+	} else if t.tagClass == TagClosingTagClass {
+		data = 0x0F
+	} else {
+		data = 0
+	}
+
+	// encode the tag number part
+	if t.tagNumber < 15 {
+		data += byte(t.tagNumber) << 4
+	} else {
+		data += 0x05
+	}
+
+	// encode the length/value/type part
+	if t.tagLVT < 5 {
+		data += byte(t.tagLVT)
+	} else {
+		data += 0xF0
+	}
+
+	// save this and the extended tag value
+	pdu.Put(data)
+	if t.tagNumber >= 15 {
+		pdu.Put(byte(t.tagNumber))
+	}
+
+	// really short lengths are already done
+	if t.tagLVT >= 5 {
+		if t.tagLVT <= 253 {
+			pdu.Put(byte(t.tagLVT))
+		} else if t.tagLVT <= 65535 {
+			pdu.Put(254)
+			pdu.PutShort(int16(t.tagLVT))
+		} else {
+			pdu.Put(255)
+			pdu.PutLong(int64(t.tagLVT))
+		}
+	}
+
+	// now put the data
+	pdu.PutData(t.tagData...)
+}
+
+func (t *Tag) AppToContext(context uint) (*ContextTag, error) {
+	if t.tagClass != model.TagClass_APPLICATION_TAGS {
+		return nil, errors.New("application tag required")
+	}
+	if t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
+		return NewContextTag(NewArgs(context, []byte{byte(t.tagLVT)}))
+	}
+	return NewContextTag(NewArgs(context, t.tagData))
+}
+
+func (t *Tag) ContextToApp(context uint) (any, error) {
+	if t.tagClass != model.TagClass_CONTEXT_SPECIFIC_TAGS {
+		return nil, errors.New("context tag required")
+	}
+	if t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
+		return NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, t.tagData[0], []byte{}))
+	}
+	return NewApplicationTag(NewArgs(context, t.tagData))
+}
+
+// TODO: pretty sure that is not tagListItem but we use that for now because lazy
+func (t *Tag) AppToObject() (TagListItem, error) {
+	if t.tagClass != model.TagClass_APPLICATION_TAGS {
+		return nil, errors.New("context tag required")
+	}
 	panic("implement me")
 }
 
@@ -129,6 +267,9 @@ func (t *Tag) set(args Args) {
 		return
 	}
 	t.tagData = args[3].([]byte)
+	if len(args) > 4 {
+		panic("oh no")
+	}
 }
 
 func (t *Tag) setAppData(tagNumber uint, tdata []byte) {
@@ -144,6 +285,10 @@ func (t *Tag) GetTagClass() model.TagClass {
 
 func (t *Tag) GetTagNumber() uint {
 	return t.tagNumber
+}
+
+func (t *Tag) GetTagLvt() int {
+	return t.tagLVT
 }
 
 func (t *Tag) GetTagData() []byte {
@@ -168,25 +313,279 @@ func (t *Tag) Equals(other any) bool {
 }
 
 type ApplicationTag struct {
-	model.BACnetApplicationTag
-	// TODO: implement me
+	*Tag
+}
+
+func NewApplicationTag(args Args) (*ApplicationTag, error) {
+	a := &ApplicationTag{}
+	switch len(args) {
+	case 1:
+		if _, ok := args[0].(PDUData); !ok {
+			return nil, errors.New("invalid argument")
+		}
+		var err error
+		a.Tag, err = NewTag(args)
+		if err != nil {
+			return nil, errors.New("error creating tag")
+		}
+		if a.tagClass != model.TagClass_APPLICATION_TAGS {
+			return nil, errors.New("error creating tag: invalid tag class")
+		}
+		return a, nil
+	case 2:
+		var tnum any
+		tnum, ok := args[0].(uint)
+		if !ok {
+			tnum, ok = args[0].(int)
+			if !ok {
+				return nil, errors.New("error creating tag: invalid tag number")
+			}
+		}
+		tdata := args[1].([]byte)
+		var err error
+		a.Tag, err = NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, tnum, len(tdata), tdata))
+		if err != nil {
+			return nil, errors.New("error creating tag")
+		}
+		return a, nil
+	default:
+		return nil, errors.New("requires type and data or pdu data")
+	}
 }
 
 type ContextTag struct {
-	model.BACnetContextTag
-	// TODO: implement me
+	*Tag
+}
+
+func NewContextTag(args Args) (*ContextTag, error) {
+	c := &ContextTag{}
+	switch len(args) {
+	case 1:
+		if _, ok := args[0].(PDUData); !ok {
+			return nil, errors.New("invalid argument")
+		}
+		var err error
+		c.Tag, err = NewTag(args)
+		if err != nil {
+			return nil, errors.New("error creating tag")
+		}
+		if c.tagClass != model.TagClass_CONTEXT_SPECIFIC_TAGS {
+			return nil, errors.New("error creating tag: invalid tag class")
+		}
+		return c, nil
+	case 2:
+		var tnum any
+		tnum, ok := args[0].(uint)
+		if !ok {
+			tnum, ok = args[0].(int)
+			if !ok {
+				return nil, errors.New("error creating tag: invalid tag number")
+			}
+		}
+		tdata := args[1].([]byte)
+		var err error
+		c.Tag, err = NewTag(NewArgs(model.TagClass_CONTEXT_SPECIFIC_TAGS, tnum, len(tdata), tdata))
+		if err != nil {
+			return nil, errors.New("error creating tag")
+		}
+		return c, nil
+	default:
+		return nil, errors.New("requires type and data or pdu data")
+	}
 }
 
 type OpeningTag struct {
-	// TODO: implement me
+	*Tag
+}
+
+func NewOpeningTag(context Arg) (*OpeningTag, error) {
+	o := &OpeningTag{}
+	switch context.(type) {
+	case int, uint:
+		var err error
+		o.Tag, err = NewTag(NewArgs(TagOpeningTagClass, context))
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating tag")
+		}
+		return o, nil
+	default:
+		return nil, errors.New("invalid argument")
+	}
 }
 
 type ClosingTag struct {
-	// TODO: implement me
+	*Tag
+}
+
+func NewClosingTag(context Arg) (*ClosingTag, error) {
+	o := &ClosingTag{}
+	switch context.(type) {
+	case int, uint:
+		var err error
+		o.Tag, err = NewTag(NewArgs(TagClosingTagClass, context))
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating tag")
+		}
+		return o, nil
+	default:
+		return nil, errors.New("invalid argument")
+	}
+}
+
+// TODO: if Tag would be an interface we could get rid of this
+type TagListItem interface {
+	GetTagClass() model.TagClass
+	GetTagNumber() uint
+	GetTagLvt() int
+	GetTagData() []byte
+	Encode(pdu PDUData)
+	Decode(pdu PDUData) error
 }
 
 type TagList struct {
-	// TODO: implement me
+	tagList []TagListItem
+}
+
+func NewTagList(arg Arg) *TagList {
+	t := &TagList{}
+	switch arg := arg.(type) {
+	case []any:
+		args := arg
+		for _, a := range args {
+			t.tagList = append(t.tagList, a.(TagListItem))
+		}
+	case []TagListItem:
+		args := arg
+		for _, a := range args {
+			t.tagList = append(t.tagList, a.(TagListItem))
+		}
+	case Args:
+		args := arg
+		for _, a := range args {
+			t.tagList = append(t.tagList, a.(TagListItem))
+		}
+	}
+	return t
+}
+
+func (b *TagList) Append(tag *Tag) {
+	b.tagList = append(b.tagList, tag)
+}
+
+func (b *TagList) Extend(tags ...*Tag) {
+	for _, tag := range tags {
+		b.tagList = append(b.tagList, tag)
+	}
+}
+
+func (b *TagList) Peek() TagListItem {
+	if len(b.tagList) < 1 {
+		return nil
+	}
+	return b.tagList[0]
+}
+
+func (b *TagList) Push(tag TagListItem) {
+	b.tagList = append([]TagListItem{tag}, b.tagList...)
+}
+
+func (b *TagList) Pop() TagListItem {
+	if len(b.tagList) < 1 {
+		return nil
+	}
+	item := b.tagList[0]
+	b.tagList = b.tagList[1:]
+	return item
+}
+
+// GetContext Return a tag or a list of tags context encoded.
+func (b *TagList) GetContext(context uint) (any, error) {
+	// forward pass
+	i := 0
+	for i < len(b.tagList) {
+		tag := b.tagList[i]
+
+		switch tag.GetTagClass() {
+		case model.TagClass_APPLICATION_TAGS: // skip application stuff
+		case model.TagClass_CONTEXT_SPECIFIC_TAGS: // check for context encoded atomic value
+			if tag.GetTagNumber() == context {
+				return tag, nil
+			}
+		case TagOpeningTagClass:
+			keeper := tag.GetTagNumber() == context
+			var rslt []TagListItem
+			i += 1
+			lvl := 0
+		innerSearch:
+			for i < len(b.tagList) {
+				tag := b.tagList[i]
+				switch tag.GetTagClass() {
+				case TagOpeningTagClass:
+					lvl += 1
+				case TagClosingTagClass:
+					lvl -= 1
+					if lvl < 0 {
+						break innerSearch
+					}
+				}
+
+				rslt = append(rslt, tag)
+				i += 1
+			}
+
+			// make sure everything balances
+			if lvl >= 1 {
+				return nil, errors.New("mismatched open/close tag")
+			}
+
+			// get everything we need
+			if keeper {
+				return NewTagList(rslt), nil
+			}
+		}
+		i += 1
+	}
+	return nil, nil
+}
+
+func (b *TagList) Encode(data PDUData) {
+	for _, tag := range b.tagList {
+		tag.Encode(data)
+	}
+}
+
+func (b *TagList) Decode(data PDUData) error {
+	for len(data.GetPduData()) != 0 {
+		var tag TagListItem
+		tag, err := NewTag(NewArgs(data))
+		if err != nil {
+			return errors.Wrap(err, "error creating tag")
+		}
+		switch tag.GetTagClass() {
+		case model.TagClass_APPLICATION_TAGS:
+		case model.TagClass_CONTEXT_SPECIFIC_TAGS:
+			tag, err = NewContextTag(NewArgs(tag.GetTagNumber(), tag.GetTagData()))
+			if err != nil {
+				panic(err)
+			}
+		case model.TagClass(TagOpeningTagClass):
+			tag, err = NewOpeningTag(tag.GetTagNumber())
+			if err != nil {
+				panic(err)
+			}
+		case model.TagClass(TagClosingTagClass):
+			tag, err = NewClosingTag(tag.GetTagNumber())
+			if err != nil {
+				panic(err)
+			}
+		}
+		b.tagList = append(b.tagList, tag)
+	}
+	return nil
+}
+
+func (b *TagList) GetTagList() []TagListItem {
+	return b.tagList
 }
 
 type ComparableAndOrdered interface {
@@ -920,8 +1319,6 @@ func (d *Double) String() string {
 }
 
 type OctetString struct {
-	//*Atomic[...] no support for []byte
-
 	value []byte
 }
 

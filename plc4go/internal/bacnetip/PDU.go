@@ -20,17 +20,22 @@
 package bacnetip
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
+	"io"
 	"net"
 	"net/netip"
 	"regexp"
 	"strconv"
 	"strings"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 var _shortMask = 0xFFFF
@@ -873,6 +878,126 @@ func (p *_PCI) String() string {
 	return fmt.Sprintf("_PCI{%s, expectingReply: %t, networkPriority: %s}", p.__PCI, p.expectingReply, p.networkPriority)
 }
 
+type PDUData interface {
+	GetPduData() []byte
+	Get() (byte, error)
+	GetShort() (int16, error)
+	GetLong() (int64, error)
+	GetData(dlen int) ([]byte, error)
+	Put(byte)
+	PutData(...byte)
+	PutShort(int16)
+	PutLong(int64)
+}
+
+type _PDUDataRequirements interface {
+	getPDUData() []byte
+}
+
+// _PDUData is basically a bridge to spi.Message
+type _PDUData struct {
+	_PDUDataRequirements
+
+	cachedData []byte
+	done       bool
+}
+
+var _ PDUData = (*_PDUData)(nil)
+
+func newPDUData(requirements _PDUDataRequirements) *_PDUData {
+	return &_PDUData{
+		_PDUDataRequirements: requirements,
+	}
+}
+
+func NewPDUData(args Args) PDUData {
+	return newPDUData(args[0].(_PDUDataRequirements))
+}
+
+func (d *_PDUData) GetPduData() []byte {
+	d.checkCache()
+	return d.cachedData
+}
+
+func (d *_PDUData) Get() (byte, error) {
+	d.checkCache()
+	if d.cachedData == nil {
+		return 0, io.EOF
+	}
+	octet := d.cachedData[0]
+	d.cachedData = d.cachedData[1:]
+	if d.cachedData == nil {
+		d.done = true
+	}
+	return octet, nil
+}
+
+func (d *_PDUData) GetData(dlen int) ([]byte, error) {
+	d.checkCache()
+	if len(d.cachedData) < dlen {
+		return nil, io.EOF
+	}
+	data := d.cachedData[:dlen]
+	d.cachedData = d.cachedData[dlen:]
+	if d.cachedData == nil {
+		d.done = true
+	}
+	return data, nil
+}
+
+func (d *_PDUData) GetShort() (int16, error) {
+	d.checkCache()
+	data, err := d.GetData(2)
+	if err != nil {
+		return 0, err
+	}
+	return int16(binary.BigEndian.Uint16(data)), nil
+}
+
+func (d *_PDUData) GetLong() (int64, error) {
+	d.checkCache()
+	data, err := d.GetData(4)
+	if err != nil {
+		return 0, err
+	}
+	return int64(binary.BigEndian.Uint64(data)), nil
+}
+
+func (d *_PDUData) Put(n byte) {
+	d.checkCache()
+	d.cachedData = append(d.cachedData, n)
+}
+
+func (d *_PDUData) PutData(n ...byte) {
+	d.checkCache()
+	d.cachedData = append(d.cachedData, n...)
+}
+
+func (d *_PDUData) PutShort(n int16) {
+	d.checkCache()
+	ba := make([]byte, 2)
+	binary.BigEndian.PutUint16(ba, uint16(n))
+	d.cachedData = append(d.cachedData, ba...)
+}
+
+func (d *_PDUData) PutLong(n int64) {
+	d.checkCache()
+	ba := make([]byte, 4)
+	binary.BigEndian.PutUint64(ba, uint64(n))
+	d.cachedData = append(d.cachedData, ba...)
+}
+
+func (d *_PDUData) checkCache() {
+	if !d.done && d.cachedData == nil {
+		d.cachedData = d.getPDUData()
+	}
+}
+
+func (d *_PDUData) deepCopy() *_PDUData {
+	copyPDUData := *d
+	return &copyPDUData
+}
+
 type PDU interface {
 	fmt.Stringer
 	GetMessage() spi.Message
@@ -887,43 +1012,49 @@ type PDU interface {
 
 type _PDU struct {
 	*_PCI
+	*_PDUData
 }
 
 func NewPDU(msg spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		newPCI(msg, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
+		_PCI: newPCI(msg, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
 	}
 	for _, option := range pduOptions {
 		option(p)
 	}
+	p._PDUData = newPDUData(p)
 	return p
 }
 
 func NewPDUFromPDU(pdu PDU, pduOptions ...PDUOption) PDU {
 	msg := pdu.(*_PDU).pduUserData
 	p := &_PDU{
-		newPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
+		_PCI: newPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
 	for _, option := range pduOptions {
 		option(p)
 	}
+	p._PDUData = newPDUData(p)
 	return p
 }
 
 func NewPDUFromPDUWithNewMessage(pdu PDU, msg spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		newPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
+		_PCI: newPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
 	for _, option := range pduOptions {
 		option(p)
 	}
+	p._PDUData = newPDUData(p)
 	return p
 }
 
 func NewPDUWithAllOptions(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PDU {
-	return &_PDU{
-		newPCI(msg, pduSource, pduDestination, expectingReply, networkPriority),
+	p := &_PDU{
+		_PCI: newPCI(msg, pduSource, pduDestination, expectingReply, networkPriority),
 	}
+	p._PDUData = newPDUData(p)
+	return p
 }
 
 type PDUOption func(pdu *_PDU)
@@ -950,6 +1081,14 @@ func WithPDUNetworkPriority(networkPriority readWriteModel.NPDUNetworkPriority) 
 	return func(pdu *_PDU) {
 		pdu.networkPriority = networkPriority
 	}
+}
+
+func (p *_PDU) getPDUData() []byte {
+	writeBufferByteBased := utils.NewWriteBufferByteBased()
+	if err := p.GetMessage().SerializeWithWriteBuffer(context.Background(), writeBufferByteBased); err != nil {
+		panic(err) // TODO: graceful handle
+	}
+	return writeBufferByteBased.GetBytes()
 }
 
 func (p *_PDU) GetMessage() spi.Message {
@@ -981,7 +1120,7 @@ func (p *_PDU) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
 }
 
 func (p *_PDU) deepCopy() *_PDU {
-	return &_PDU{p._PCI.deepCopy()}
+	return &_PDU{_PCI: p._PCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
 }
 
 func (p *_PDU) DeepCopy() PDU {
