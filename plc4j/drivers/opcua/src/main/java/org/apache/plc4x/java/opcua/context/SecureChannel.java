@@ -232,7 +232,6 @@ public class SecureChannel {
             APPLICATION_TEXT
         );
 
-        int noOfDiscoveryUrls = -1;
         List<PascalString> discoveryUrls = new ArrayList<>(0);
 
         ApplicationDescription clientDescription = new ApplicationDescription(
@@ -242,7 +241,6 @@ public class SecureChannel {
             ApplicationType.applicationTypeClient,
             NULL_STRING,
             NULL_STRING,
-            noOfDiscoveryUrls,
             discoveryUrls
         );
 
@@ -347,9 +345,7 @@ public class SecureChannel {
         ActivateSessionRequest activateSessionRequest = new ActivateSessionRequest(
             requestHeader,
             clientSignature,
-            0,
             null,
-            0,
             null,
             userIdentityToken,
             clientSignature
@@ -416,9 +412,7 @@ public class SecureChannel {
         GetEndpointsRequest endpointsRequest = new GetEndpointsRequest(
             requestHeader,
             this.endpoint,
-            0,
             null,
-            0,
             null
         );
 

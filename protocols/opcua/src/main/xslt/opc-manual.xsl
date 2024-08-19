@@ -222,6 +222,8 @@
     [simple ExpandedNodeId typeId]
     [optional ExtensionObjectEncodingMask encodingMask 'includeEncodingMask']
     [virtual vstring '-1' identifier 'typeId.identifier']
+    // In some cases encoding includes bodyLength, but not always!
+    // [implicit int 32 bodyLength 'body.lengthInBytes']
     [simple ExtensionObjectDefinition('identifier') body]
 ]
 
@@ -443,9 +445,6 @@
 
 // StructuredTypes
 <xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[(@Name != 'ExtensionObject') and (@Name != 'Variant') and (@Name != 'NodeId') and (@Name != 'ExpandedNodeId') and not(@BaseType)]"/>
-
-// StructuredTypes extensions
-<!--<xsl:apply-templates select="/opc:TypeDictionary/opc:StructuredType[(@Name != 'ExtensionObject') and (@Name != 'Variant') and (@Name != 'NodeId') and (@Name != 'ExpandedNodeId') and (@BaseType != 'ua:ExtensionObject')]"/>-->
 
 // EnumeratedTypes
 <xsl:apply-templates select="/opc:TypeDictionary/opc:EnumeratedType"/>

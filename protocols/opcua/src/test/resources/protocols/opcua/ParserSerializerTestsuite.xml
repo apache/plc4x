@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="LITTLE_ENDIAN">
+
+  <name>OPCUA</name>
+
+  <protocolName>opcua</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>OPC UA Publish Response Payload</name>
+    <raw>8084ff018fedda01350000000000000000ffffffff00000001000000010000000100000000010000008084ff018fedda010100000001002b03012200000001000000010000000d062000000000222ffb8eedda0120d592008fedda01000000000000000000000000</raw>
+    <root-type>PublishResponse</root-type>
+    <parser-arguments>
+      <identifier>829</identifier>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <PublishResponse>
+          <responseHeader>
+            <ExtensionObjectDefinition>
+              <ResponseHeader>
+                <timestamp dataType="int" bitLength="64">133680337430480000</timestamp>
+                <requestHandle dataType="uint" bitLength="32">53</requestHandle>
+                <serviceResult>
+                  <StatusCode>
+                    <statusCode dataType="uint" bitLength="32">0</statusCode>
+                  </StatusCode>
+                </serviceResult>
+                <serviceDiagnostics>
+                  <DiagnosticInfo>
+                    <reserved dataType="bit" bitLength="1">false</reserved>
+                    <innerDiagnosticInfoSpecified dataType="bit" bitLength="1">false</innerDiagnosticInfoSpecified>
+                    <innerStatusCodeSpecified dataType="bit" bitLength="1">false</innerStatusCodeSpecified>
+                    <additionalInfoSpecified dataType="bit" bitLength="1">false</additionalInfoSpecified>
+                    <localeSpecified dataType="bit" bitLength="1">false</localeSpecified>
+                    <localizedTextSpecified dataType="bit" bitLength="1">false</localizedTextSpecified>
+                    <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                    <symbolicIdSpecified dataType="bit" bitLength="1">false</symbolicIdSpecified>
+                  </DiagnosticInfo>
+                </serviceDiagnostics>
+                <noOfStringTable dataType="int" bitLength="32">-1</noOfStringTable>
+                <additionalHeader>
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeTwoByte">0</NodeIdType>
+                            </nodeType>
+                            <NodeIdTwoByte>
+                              <id dataType="uint" bitLength="8">0</id>
+                            </NodeIdTwoByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <encodingMask>
+                      <ExtensionObjectEncodingMask>
+                        <reserved dataType="int" bitLength="5">0</reserved>
+                        <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                        <xmlbody dataType="bit" bitLength="1">false</xmlbody>
+                        <binaryBody dataType="bit" bitLength="1">false</binaryBody>
+                      </ExtensionObjectEncodingMask>
+                    </encodingMask>
+                    <body>
+                      <ExtensionObjectDefinition>
+                        <NullExtension>
+                        </NullExtension>
+                      </ExtensionObjectDefinition>
+                    </body>
+                  </ExtensionObject>
+                </additionalHeader>
+              </ResponseHeader>
+            </ExtensionObjectDefinition>
+          </responseHeader>
+          <subscriptionId dataType="uint" bitLength="32">1</subscriptionId>
+          <noOfAvailableSequenceNumbers dataType="int" bitLength="32">1</noOfAvailableSequenceNumbers>
+          <availableSequenceNumbers isList="true">
+            <value dataType="uint" bitLength="32">1</value>
+          </availableSequenceNumbers>
+          <reserved dataType="uint" bitLength="7">0</reserved>
+          <moreNotifications dataType="bit" bitLength="1">false</moreNotifications>
+          <notificationMessage>
+            <ExtensionObjectDefinition>
+              <NotificationMessage>
+                <sequenceNumber dataType="uint" bitLength="32">1</sequenceNumber>
+                <publishTime dataType="int" bitLength="64">133680337430480000</publishTime>
+                <noOfNotificationData dataType="int" bitLength="32">1</noOfNotificationData>
+                <notificationData isList="true">
+                  <ExtensionObject>
+                    <typeId>
+                      <ExpandedNodeId>
+                        <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                        <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                        <nodeId>
+                          <NodeIdTypeDefinition>
+                            <nodeType>
+                              <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                            </nodeType>
+                            <NodeIdFourByte>
+                              <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                              <id dataType="uint" bitLength="16">811</id>
+                            </NodeIdFourByte>
+                          </NodeIdTypeDefinition>
+                        </nodeId>
+                      </ExpandedNodeId>
+                    </typeId>
+                    <encodingMask>
+                      <ExtensionObjectEncodingMask>
+                        <reserved dataType="int" bitLength="5">0</reserved>
+                        <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                        <xmlbody dataType="bit" bitLength="1">false</xmlbody>
+                        <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                      </ExtensionObjectEncodingMask>
+                    </encodingMask>
+                    <body>
+                      <ExtensionObjectDefinition>
+                        <DataChangeNotification>
+                          <size dataType="int" bitLength="32">34</size>
+                          <noOfMonitoredItems dataType="int" bitLength="32">1</noOfMonitoredItems>
+                          <monitoredItems isList="true">
+                            <ExtensionObjectDefinition>
+                              <MonitoredItemNotification>
+                                <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+                                <value>
+                                  <DataValue>
+                                    <reserved dataType="uint" bitLength="2">0</reserved>
+                                    <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                                    <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                                    <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+                                    <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+                                    <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                                    <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                                    <value>
+                                      <Variant>
+                                        <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                        <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                        <VariantType dataType="uint" bitLength="6">6</VariantType>
+                                        <VariantInt32>
+                                          <value isList="true">
+                                            <value dataType="int" bitLength="32">32</value>
+                                          </value>
+                                        </VariantInt32>
+                                        <arrayDimensions isList="true">
+                                        </arrayDimensions>
+                                      </Variant>
+                                    </value>
+                                    <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+                                    <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+                                  </DataValue>
+                                </value>
+                              </MonitoredItemNotification>
+                            </ExtensionObjectDefinition>
+                          </monitoredItems>
+                          <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                          <diagnosticInfos isList="true">
+                          </diagnosticInfos>
+                        </DataChangeNotification>
+                      </ExtensionObjectDefinition>
+                    </body>
+                  </ExtensionObject>
+                </notificationData>
+              </NotificationMessage>
+            </ExtensionObjectDefinition>
+          </notificationMessage>
+          <noOfResults dataType="int" bitLength="32">0</noOfResults>
+          <results isList="true">
+          </results>
+          <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+          <diagnosticInfos isList="true">
+          </diagnosticInfos>
+        </PublishResponse>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Notification Message</name>
+    <raw>010000008084ff018fedda010100000001002b03012200000001000000010000000d062000000000222ffb8eedda0120d592008fedda0100000000</raw>
+    <root-type>PublishResponse</root-type>
+    <parser-arguments>
+      <identifier>805</identifier>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <NotificationMessage>
+          <sequenceNumber dataType="uint" bitLength="32">1</sequenceNumber>
+          <publishTime dataType="int" bitLength="64">133680337430480000</publishTime>
+          <noOfNotificationData dataType="int" bitLength="32">1</noOfNotificationData>
+          <notificationData isList="true">
+            <ExtensionObject>
+              <typeId>
+                <ExpandedNodeId>
+                  <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+                  <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+                  <nodeId>
+                    <NodeIdTypeDefinition>
+                      <nodeType>
+                        <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                      </nodeType>
+                      <NodeIdFourByte>
+                        <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                        <id dataType="uint" bitLength="16">811</id>
+                      </NodeIdFourByte>
+                    </NodeIdTypeDefinition>
+                  </nodeId>
+                </ExpandedNodeId>
+              </typeId>
+              <encodingMask>
+                <ExtensionObjectEncodingMask>
+                  <reserved dataType="int" bitLength="5">0</reserved>
+                  <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+                  <xmlbody dataType="bit" bitLength="1">false</xmlbody>
+                  <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+                </ExtensionObjectEncodingMask>
+              </encodingMask>
+              <body>
+                <ExtensionObjectDefinition>
+                  <DataChangeNotification>
+                    <size dataType="int" bitLength="32">34</size>
+                    <noOfMonitoredItems dataType="int" bitLength="32">1</noOfMonitoredItems>
+                    <monitoredItems isList="true">
+                      <ExtensionObjectDefinition>
+                        <MonitoredItemNotification>
+                          <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+                          <value>
+                            <DataValue>
+                              <reserved dataType="uint" bitLength="2">0</reserved>
+                              <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                              <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                              <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+                              <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+                              <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                              <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                              <value>
+                                <Variant>
+                                  <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                                  <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                                  <VariantType dataType="uint" bitLength="6">6</VariantType>
+                                  <VariantInt32>
+                                    <value isList="true">
+                                      <value dataType="int" bitLength="32">32</value>
+                                    </value>
+                                  </VariantInt32>
+                                  <arrayDimensions isList="true">
+                                  </arrayDimensions>
+                                </Variant>
+                              </value>
+                              <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+                              <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+                            </DataValue>
+                          </value>
+                        </MonitoredItemNotification>
+                      </ExtensionObjectDefinition>
+                    </monitoredItems>
+                    <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+                    <diagnosticInfos isList="true">
+                    </diagnosticInfos>
+                  </DataChangeNotification>
+                </ExtensionObjectDefinition>
+              </body>
+            </ExtensionObject>
+          </notificationData>
+        </NotificationMessage>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Extension Object</name>
+    <raw>01002b03012200000001000000010000000d062000000000222ffb8eedda0120d592008fedda0100000000</raw>
+    <root-type>ExtensionObject</root-type>
+    <parser-arguments>
+      <includeEncodingMask>true</includeEncodingMask>
+    </parser-arguments>
+    <xml>
+      <ExtensionObject>
+        <typeId>
+          <ExpandedNodeId>
+            <namespaceURISpecified dataType="bit" bitLength="1">false</namespaceURISpecified>
+            <serverIndexSpecified dataType="bit" bitLength="1">false</serverIndexSpecified>
+            <nodeId>
+              <NodeIdTypeDefinition>
+                <nodeType>
+                  <NodeIdType dataType="uint" bitLength="6" stringRepresentation="nodeIdTypeFourByte">1</NodeIdType>
+                </nodeType>
+                <NodeIdFourByte>
+                  <namespaceIndex dataType="uint" bitLength="8">0</namespaceIndex>
+                  <id dataType="uint" bitLength="16">811</id>
+                </NodeIdFourByte>
+              </NodeIdTypeDefinition>
+            </nodeId>
+          </ExpandedNodeId>
+        </typeId>
+        <encodingMask>
+          <ExtensionObjectEncodingMask>
+            <reserved dataType="int" bitLength="5">0</reserved>
+            <typeIdSpecified dataType="bit" bitLength="1">false</typeIdSpecified>
+            <xmlbody dataType="bit" bitLength="1">false</xmlbody>
+            <binaryBody dataType="bit" bitLength="1">true</binaryBody>
+          </ExtensionObjectEncodingMask>
+        </encodingMask>
+        <body>
+          <ExtensionObjectDefinition>
+            <DataChangeNotification>
+              <size dataType="int" bitLength="32">34</size>
+              <noOfMonitoredItems dataType="int" bitLength="32">1</noOfMonitoredItems>
+              <monitoredItems isList="true">
+                <ExtensionObjectDefinition>
+                  <MonitoredItemNotification>
+                    <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+                    <value>
+                      <DataValue>
+                        <reserved dataType="uint" bitLength="2">0</reserved>
+                        <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+                        <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+                        <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+                        <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+                        <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+                        <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+                        <value>
+                          <Variant>
+                            <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                            <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                            <VariantType dataType="uint" bitLength="6">6</VariantType>
+                            <VariantInt32>
+                              <value isList="true">
+                                <value dataType="int" bitLength="32">32</value>
+                              </value>
+                            </VariantInt32>
+                            <arrayDimensions isList="true">
+                            </arrayDimensions>
+                          </Variant>
+                        </value>
+                        <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+                        <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+                      </DataValue>
+                    </value>
+                  </MonitoredItemNotification>
+                </ExtensionObjectDefinition>
+              </monitoredItems>
+              <noOfDiagnosticInfos dataType="int" bitLength="32">0</noOfDiagnosticInfos>
+              <diagnosticInfos isList="true">
+              </diagnosticInfos>
+            </DataChangeNotification>
+          </ExtensionObjectDefinition>
+        </body>
+      </ExtensionObject>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>OPC UA Monitored Item Notification</name>
+    <raw>010000000d062000000000222ffb8eedda0120d592008fedda01</raw>
+    <root-type>MonitoredItemNotification</root-type>
+    <parser-arguments>
+      <identifier>808</identifier>
+    </parser-arguments>
+    <xml>
+      <ExtensionObjectDefinition>
+        <MonitoredItemNotification>
+          <clientHandle dataType="uint" bitLength="32">1</clientHandle>
+          <value>
+            <DataValue>
+              <reserved dataType="uint" bitLength="2">0</reserved>
+              <serverPicosecondsSpecified dataType="bit" bitLength="1">false</serverPicosecondsSpecified>
+              <sourcePicosecondsSpecified dataType="bit" bitLength="1">false</sourcePicosecondsSpecified>
+              <serverTimestampSpecified dataType="bit" bitLength="1">true</serverTimestampSpecified>
+              <sourceTimestampSpecified dataType="bit" bitLength="1">true</sourceTimestampSpecified>
+              <statusCodeSpecified dataType="bit" bitLength="1">false</statusCodeSpecified>
+              <valueSpecified dataType="bit" bitLength="1">true</valueSpecified>
+              <value>
+                <Variant>
+                  <arrayLengthSpecified dataType="bit" bitLength="1">false</arrayLengthSpecified>
+                  <arrayDimensionsSpecified dataType="bit" bitLength="1">false</arrayDimensionsSpecified>
+                  <VariantType dataType="uint" bitLength="6">6</VariantType>
+                  <VariantInt32>
+                    <value isList="true">
+                      <value dataType="int" bitLength="32">32</value>
+                    </value>
+                  </VariantInt32>
+                  <arrayDimensions isList="true">
+                  </arrayDimensions>
+                </Variant>
+              </value>
+              <sourceTimestamp dataType="int" bitLength="64">133680337316160000</sourceTimestamp>
+              <serverTimestamp dataType="int" bitLength="64">133680337406580000</serverTimestamp>
+            </DataValue>
+          </value>
+        </MonitoredItemNotification>
+      </ExtensionObjectDefinition>
+    </xml>
+  </testcase>
+
+</test:testsuite>

@@ -118,7 +118,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
                 FilterOperand filterOperand = new FilterOperand();
                 EventFilter eventFilter1 = new EventFilter(
-                    0,
                     Arrays.asList(filterOperand),
                     new NullExtension()
                 );
@@ -152,7 +151,6 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             requestHeader,
             subscriptionId,
             TimestampsToReturn.timestampsToReturnBoth,
-            requestList.size(),
             requestList
         );
 
@@ -202,7 +200,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             int ackLength = acks.size();
             outstandingAcknowledgements.removeAll(acks);
 
-            PublishRequest publishRequest = new PublishRequest(requestHeader, ackLength, acks);
+            PublishRequest publishRequest = new PublishRequest(requestHeader, acks);
             // we work in external thread - we need to coordinate access to conversation pipeline
             RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> {
@@ -252,10 +250,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     public void stopSubscriber() {
         RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);
         List<Long> subscriptions = Collections.singletonList(subscriptionId);
-        DeleteSubscriptionsRequest deleteSubscriptionRequest = new DeleteSubscriptionsRequest(requestHeader,
-            1,
-            subscriptions
-        );
+        DeleteSubscriptionsRequest deleteSubscriptionRequest = new DeleteSubscriptionsRequest(requestHeader, subscriptions);
 
         // subscription suspend can be invoked from multiple places, hence we manage transaction side of it
         RequestTransaction transaction = tm.startRequest();
