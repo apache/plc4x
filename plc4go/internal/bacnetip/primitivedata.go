@@ -724,7 +724,6 @@ func (i *Integer) String() string {
 	return fmt.Sprintf("Integer(%d)", i.value)
 }
 
-// TODO: finish
 type Real struct {
 	*Atomic[float32]
 	*CommonMath
@@ -744,20 +743,12 @@ func NewReal(arg Arg) (*Real, error) {
 			return nil, errors.Wrap(err, "error decoding")
 		}
 		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
-		}
+	case float32:
+		b.value = arg
+	case int:
+		b.value = float32(arg)
 	case *Real:
 		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
@@ -765,36 +756,32 @@ func NewReal(arg Arg) (*Real, error) {
 	return b, nil
 }
 
-func (b *Real) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, b.value, []byte{}))
+func (d *Real) Encode(tag *Tag) {
+	var _b = make([]byte, 4)
+	binary.BigEndian.PutUint32(_b, math.Float32bits(d.value))
+	tag.setAppData(uint(model.BACnetDataType_REAL), _b)
 }
 
-func (b *Real) Decode(tag *Tag) error {
+func (d *Real) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_REAL) {
 		return errors.New("Real application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
+	if len(tag.tagData) != 4 {
+		return errors.New("invalid tag length")
 	}
 
-	// get the data
-	if tag.tagLVT == 1 {
-		b.value = 1
-	}
+	// extract the data
+	d.value = math.Float32frombits(binary.BigEndian.Uint32(tag.tagData))
 	return nil
 }
 
-func (b *Real) IsValid(arg any) bool {
-	_, ok := arg.(bool)
+func (d *Real) IsValid(arg any) bool {
+	_, ok := arg.(float32)
 	return ok
 }
 
-func (b *Real) String() string {
-	value := "False"
-	if b.value == 1 {
-		value = "True"
-	}
-	return fmt.Sprintf("Real(%s)", value)
+func (d *Real) String() string {
+	return fmt.Sprintf("Real(%g)", d.value)
 }
 
 type Double struct {
