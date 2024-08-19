@@ -400,221 +400,294 @@ func (b *Boolean) String() string {
 	return fmt.Sprintf("Boolean(%s)", value)
 }
 
-// TODO: finish
 type Unsigned struct {
-	*Atomic[uint]
+	*Atomic[uint32]
 	*CommonMath
 }
 
 func NewUnsigned(arg Arg) (*Unsigned, error) {
-	b := &Unsigned{}
-	b.Atomic = NewAtomic[uint](b)
+	i := &Unsigned{}
+	i.Atomic = NewAtomic[uint32](i)
 
 	if arg == nil {
-		return b, nil
+		return i, nil
 	}
 	switch arg := arg.(type) {
 	case *Tag:
-		err := b.Decode(arg)
+		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
 		}
-		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
+		return i, nil
+	case uint32:
+		i.value = arg
+	case uint:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned: %d", arg)
 		}
+		i.value = uint32(arg)
+	case int32:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned: %d", arg)
+		}
+		i.value = uint32(arg)
+	case int:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned: %d", arg)
+		}
+		i.value = uint32(arg)
 	case *Unsigned:
-		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
+		i.value = arg.value
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
 
-	return b, nil
+	return i, nil
 }
 
-func (b *Unsigned) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+func (i *Unsigned) Encode(tag *Tag) {
+	data := make([]byte, 4)
+	binary.BigEndian.PutUint32(data, uint32(i.value))
+
+	// reduce the value to the smallest number of bytes
+	for len(data) > 1 && data[0] == 0 {
+		data = data[1:]
+	}
+
+	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
 }
 
-func (b *Unsigned) Decode(tag *Tag) error {
+func (i *Unsigned) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
+	if len(tag.tagData) == 0 {
+		return errors.New("invalid tag length")
 	}
 
+	tagData := tag.tagData
+
 	// get the data
-	if tag.tagLVT == 1 {
-		b.value = 1
+	rslt := uint32(0)
+	for _, c := range tagData {
+		rslt = (rslt << 8) + uint32(c)
 	}
+
+	// save the result
+	i.value = rslt
 	return nil
 }
 
-func (b *Unsigned) IsValid(arg any) bool {
-	_, ok := arg.(bool)
-	return ok
-}
-
-func (b *Unsigned) String() string {
-	value := "False"
-	if b.value == 1 {
-		value = "True"
+func (i *Unsigned) IsValid(arg any) bool {
+	switch arg := arg.(type) {
+	case string:
+		_, err := strconv.Atoi(arg)
+		return err == nil
+	case int:
+		return arg > 0
+	case int32:
+		return arg > 0
+	case uint:
+		return arg <= math.MaxUint32
+	case uint32:
+		return true
+	default:
+		return false
 	}
-	return fmt.Sprintf("Unsigned(%s)", value)
 }
 
-// TODO: finish
+func (i *Unsigned) String() string {
+	return fmt.Sprintf("Unsigned(%d)", i.value)
+}
+
 type Unsigned8 struct {
 	*Atomic[uint8]
+	*CommonMath
 }
 
 func NewUnsigned8(arg Arg) (*Unsigned8, error) {
-	b := &Unsigned8{}
-	b.Atomic = NewAtomic[uint8](b)
+	i := &Unsigned8{}
+	i.Atomic = NewAtomic[uint8](i)
 
 	if arg == nil {
-		return b, nil
+		return i, nil
 	}
 	switch arg := arg.(type) {
 	case *Tag:
-		err := b.Decode(arg)
+		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
 		}
-		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
+		return i, nil
+	case uint8:
+		i.value = arg
+	case uint:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned8: %d", arg)
 		}
+		i.value = uint8(arg)
+	case int:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned8: %d", arg)
+		}
+		i.value = uint8(arg)
 	case *Unsigned8:
-		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
+		i.value = arg.value
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
 
-	return b, nil
+	return i, nil
 }
 
-func (b *Unsigned8) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+func (i *Unsigned8) Encode(tag *Tag) {
+	data := make([]byte, 4)
+	binary.BigEndian.PutUint32(data, uint32(i.value))
+
+	// reduce the value to the smallest number of bytes
+	for len(data) > 1 && data[0] == 0 {
+		data = data[1:]
+	}
+
+	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
 }
 
-func (b *Unsigned8) Decode(tag *Tag) error {
+func (i *Unsigned8) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned8 application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
+	if len(tag.tagData) == 0 {
+		return errors.New("invalid tag length")
 	}
 
+	tagData := tag.tagData
+
 	// get the data
-	if tag.tagLVT == 1 {
-		b.value = 1
+	rslt := uint8(0)
+	for _, c := range tagData {
+		rslt = (rslt << 8) + uint8(c)
 	}
+
+	// save the result
+	i.value = rslt
 	return nil
 }
 
-func (b *Unsigned8) IsValid(arg any) bool {
-	_, ok := arg.(bool)
-	return ok
-}
-
-func (b *Unsigned8) String() string {
-	value := "False"
-	if b.value == 1 {
-		value = "True"
+func (i *Unsigned8) IsValid(arg any) bool {
+	switch arg := arg.(type) {
+	case string:
+		_, err := strconv.Atoi(arg)
+		return err == nil
+	case int:
+		return arg > 0 && arg < 256
+	case int8:
+		return arg > 0
+	case uint:
+		return arg <= math.MaxUint32
+	case uint8:
+		return true
+	default:
+		return false
 	}
-	return fmt.Sprintf("Unsigned8(%s)", value)
 }
 
-// TODO: finish
+func (i *Unsigned8) String() string {
+	return fmt.Sprintf("Unsigned8(%d)", i.value)
+}
+
 type Unsigned16 struct {
 	*Atomic[uint16]
+	*CommonMath
 }
 
 func NewUnsigned16(arg Arg) (*Unsigned16, error) {
-	b := &Unsigned16{}
-	b.Atomic = NewAtomic[uint16](b)
+	i := &Unsigned16{}
+	i.Atomic = NewAtomic[uint16](i)
 
 	if arg == nil {
-		return b, nil
+		return i, nil
 	}
 	switch arg := arg.(type) {
 	case *Tag:
-		err := b.Decode(arg)
+		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
 		}
-		return b, nil
-	case bool:
-		if arg {
-			b.value = 1
+		return i, nil
+	case uint16:
+		i.value = arg
+	case uint:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned16: %d", arg)
 		}
+		i.value = uint16(arg)
+	case int:
+		if !i.IsValid(arg) {
+			return nil, errors.Errorf("invalid Unsigned16: %d", arg)
+		}
+		i.value = uint16(arg)
 	case *Unsigned16:
-		b.value = arg.value
-	case string:
-		switch arg {
-		case "True", "true":
-			b.value = 1
-		case "False", "false":
-		default:
-			return nil, errors.Errorf("invalid string: %s", arg)
-		}
+		i.value = arg.value
 	default:
 		return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 	}
 
-	return b, nil
+	return i, nil
 }
 
-func (b *Unsigned16) Encode(tag *Tag) {
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, b.value, []byte{}))
+func (i *Unsigned16) Encode(tag *Tag) {
+	data := make([]byte, 4)
+	binary.BigEndian.PutUint32(data, uint32(i.value))
+
+	// reduce the value to the smallest number of bytes
+	for len(data) > 1 && data[0] == 0 {
+		data = data[1:]
+	}
+
+	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
 }
 
-func (b *Unsigned16) Decode(tag *Tag) error {
+func (i *Unsigned16) Decode(tag *Tag) error {
 	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned16 application tag required")
 	}
-	if tag.tagLVT > 1 {
-		return errors.New("invalid tag value")
+	if len(tag.tagData) == 0 {
+		return errors.New("invalid tag length")
 	}
 
+	tagData := tag.tagData
+
 	// get the data
-	if tag.tagLVT == 1 {
-		b.value = 1
+	rslt := uint16(0)
+	for _, c := range tagData {
+		rslt = (rslt << 8) + uint16(c)
 	}
+
+	// save the result
+	i.value = rslt
 	return nil
 }
 
-func (b *Unsigned16) IsValid(arg any) bool {
-	_, ok := arg.(bool)
-	return ok
+func (i *Unsigned16) IsValid(arg any) bool {
+	switch arg := arg.(type) {
+	case string:
+		_, err := strconv.Atoi(arg)
+		return err == nil
+	case int:
+		return arg > 0 && arg < 65536
+	case int16:
+		return arg > 0
+	case uint:
+		return arg <= math.MaxUint32
+	case uint16:
+		return true
+	default:
+		return false
+	}
 }
 
-func (b *Unsigned16) String() string {
-	value := "False"
-	if b.value == 1 {
-		value = "True"
-	}
-	return fmt.Sprintf("Unsigned16(%s)", value)
+func (i *Unsigned16) String() string {
+	return fmt.Sprintf("Unsigned16(%d)", i.value)
 }
 
 type Integer struct {
