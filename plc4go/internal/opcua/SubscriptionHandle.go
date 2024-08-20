@@ -77,7 +77,7 @@ func NewSubscriptionHandle(log zerolog.Logger, subscriber *Subscriber, connectio
 }
 
 func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWriteModel.CreateMonitoredItemsResponse, error) {
-	requestList := make([]readWriteModel.ExtensionObjectDefinition, len(h.tagNames))
+	requestList := make([]readWriteModel.MonitoredItemCreateRequest, len(h.tagNames))
 
 	for _, tagName := range h.tagNames {
 		tagDefaultPlcSubscription := h.subscriptionRequest.GetTag(tagName)
@@ -133,11 +133,10 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		requestHeader,
 		h.subscriptionId,
 		readWriteModel.TimestampsToReturn_timestampsToReturnBoth,
-		int32(len(requestList)),
 		requestList,
 	)
 
-	identifier, err := strconv.ParseUint(createMonitoredItemsRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(createMonitoredItemsRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing identifier")
 	}
@@ -229,7 +228,7 @@ func (h *SubscriptionHandle) startSubscriber() {
 	go func() {
 		defer h.subscriberWg.Done()
 
-		var outstandingAcknowledgements []readWriteModel.ExtensionObjectDefinition
+		var outstandingAcknowledgements []readWriteModel.SubscriptionAcknowledgement
 		var outstandingRequests []uint32
 		for !h.destroy.Load() {
 
@@ -252,14 +251,14 @@ func (h *SubscriptionHandle) startSubscriber() {
 					ackLength = -1
 				}
 				{ // golang version of remove all
-					tmpOutstandingAcknowledgements := map[readWriteModel.ExtensionObjectDefinition]bool{}
+					tmpOutstandingAcknowledgements := map[readWriteModel.SubscriptionAcknowledgement]bool{}
 					for _, acknowledgement := range outstandingAcknowledgements {
 						tmpOutstandingAcknowledgements[acknowledgement] = true
 					}
 					for _, ack := range acks {
 						delete(tmpOutstandingAcknowledgements, ack)
 					}
-					outstandingAcknowledgements = make([]readWriteModel.ExtensionObjectDefinition, len(tmpOutstandingAcknowledgements))
+					outstandingAcknowledgements = make([]readWriteModel.SubscriptionAcknowledgement, len(tmpOutstandingAcknowledgements))
 					count := 0
 					for ack := range tmpOutstandingAcknowledgements {
 						outstandingAcknowledgements[count] = ack
@@ -269,11 +268,10 @@ func (h *SubscriptionHandle) startSubscriber() {
 
 				publishRequest := readWriteModel.NewPublishRequest(
 					requestHeader,
-					int32(ackLength),
 					acks,
 				)
 
-				identifier, err := strconv.ParseUint(publishRequest.GetIdentifier(), 10, 16)
+				identifier, err := strconv.ParseUint(publishRequest.GetExtensionId(), 10, 16)
 				if err != nil {
 					h.log.Error().Err(err).Msg("error parsing identifier")
 					continue
@@ -384,11 +382,10 @@ func (h *SubscriptionHandle) stopSubscriber() {
 
 	subscriptions := []uint32{h.subscriptionId}
 	deleteSubscriptionrequest := readWriteModel.NewDeleteSubscriptionsRequest(requestHeader,
-		1,
 		subscriptions,
 	)
 
-	identifier, err := strconv.ParseUint(deleteSubscriptionrequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(deleteSubscriptionrequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		h.log.Error().Err(err).Msg("error parsing identifier")
 		return

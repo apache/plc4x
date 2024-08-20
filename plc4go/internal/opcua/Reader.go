@@ -73,7 +73,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		REQUEST_TIMEOUT_LONG,
 		NULL_EXTENSION_OBJECT,
 	)
-	readValueArray := make([]readWriteModel.ExtensionObjectDefinition, len(readRequest.GetTagNames()))
+	readValueArray := make([]readWriteModel.ReadValueId, len(readRequest.GetTagNames()))
 	for i, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName).(Tag)
 
@@ -94,10 +94,9 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 		requestHeader,
 		0.0,
 		readWriteModel.TimestampsToReturn_timestampsToReturnNeither,
-		int32(len(readValueArray)),
 		readValueArray)
 
-	identifier, err := strconv.ParseUint(opcuaReadRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(opcuaReadRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		result <- spiModel.NewDefaultPlcReadRequestResult(readRequest, nil, errors.Wrapf(err, "error parsing identifier"))
 		return

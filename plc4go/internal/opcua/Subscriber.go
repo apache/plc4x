@@ -143,7 +143,7 @@ func (s *Subscriber) onSubscribeCreateSubscription(ctx context.Context, cycleTim
 		0,
 	)
 
-	identifier, err := strconv.ParseUint(createSubscriptionRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(createSubscriptionRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error parsing identifier")
 	}

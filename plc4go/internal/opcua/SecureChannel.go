@@ -372,7 +372,7 @@ func (s *SecureChannel) onConnectOpenSecureChannel(ctx context.Context, connecti
 			s.lifetime)
 	}
 
-	identifier, err := strconv.ParseUint(openSecureChannelRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(openSecureChannelRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		connection.fireConnectionError(err, ch)
@@ -515,7 +515,6 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		readWriteModel.NewPascalString("en"),
 		APPLICATION_TEXT)
 
-	noOfDiscoveryUrls := int32(-1)
 	var discoveryUrls []readWriteModel.PascalString
 
 	clientDescription := readWriteModel.NewApplicationDescription(APPLICATION_URI,
@@ -524,7 +523,6 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		readWriteModel.ApplicationType_applicationTypeClient,
 		NULL_STRING,
 		NULL_STRING,
-		noOfDiscoveryUrls,
 		discoveryUrls)
 
 	createSessionRequest := readWriteModel.NewCreateSessionRequest(
@@ -539,7 +537,7 @@ func (s *SecureChannel) onConnectCreateSessionRequest(ctx context.Context, conne
 		0,
 	)
 
-	identifier, err := strconv.ParseUint(createSessionRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(createSessionRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		connection.fireConnectionError(err, ch)
@@ -654,15 +652,13 @@ func (s *SecureChannel) onConnectActivateSessionRequest(ctx context.Context, con
 	activateSessionRequest := readWriteModel.NewActivateSessionRequest(
 		requestHeader,
 		clientSignature,
-		0,
 		nil,
-		0,
 		nil,
 		userIdentityToken,
 		clientSignature,
 	)
 
-	identifier, err := strconv.ParseUint(activateSessionRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(activateSessionRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		connection.fireConnectionError(err, ch)
@@ -842,7 +838,7 @@ func (s *SecureChannel) onDisconnectCloseSecureChannel(ctx context.Context, conn
 
 	closeSecureChannelRequest := readWriteModel.NewCloseSecureChannelRequest(requestHeader)
 
-	identifier, err := strconv.ParseUint(closeSecureChannelRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(closeSecureChannelRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		return
@@ -993,7 +989,7 @@ func (s *SecureChannel) onDiscoverOpenSecureChannel(ctx context.Context, codec *
 		s.lifetime,
 	)
 
-	identifier, err := strconv.ParseUint(openSecureChannelRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(openSecureChannelRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		return
@@ -1123,12 +1119,10 @@ func (s *SecureChannel) onDiscoverGetEndpointsRequest(ctx context.Context, codec
 	endpointsRequest := readWriteModel.NewGetEndpointsRequest(
 		requestHeader,
 		s.endpoint,
-		0,
 		nil,
-		0,
 		nil)
 
-	identifier, err := strconv.ParseUint(endpointsRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(endpointsRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		return
@@ -1254,7 +1248,7 @@ func (s *SecureChannel) onDiscoverCloseSecureChannel(ctx context.Context, codec 
 
 	closeSecureChannelRequest := readWriteModel.NewCloseSecureChannelRequest(requestHeader)
 
-	identifier, err := strconv.ParseUint(closeSecureChannelRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(closeSecureChannelRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		s.log.Debug().Err(err).Msg("error parsing identifier")
 		return
@@ -1376,7 +1370,7 @@ func (s *SecureChannel) keepAlive() {
 					NULL_BYTE_STRING,
 					uint32(s.lifetime))
 			}
-			identifier, err := strconv.ParseUint(openSecureChannelRequest.GetIdentifier(), 10, 16)
+			identifier, err := strconv.ParseUint(openSecureChannelRequest.GetExtensionId(), 10, 16)
 			if err != nil {
 				s.log.Error().Err(err).Msg("error parsing identifier")
 				return
