@@ -227,17 +227,12 @@
     [simple ExtensionObjectDefinition('identifier') body]
 ]
 
-[discriminatedType ExtensionObjectDefinition(vstring '-1' identifier)
-    [typeSwitch identifier
+[discriminatedType ExtensionObjectDefinition(vstring '-1' extensionId)
+    [typeSwitch extensionId
         ['"0"' NullExtension
         ]
 
-        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:') and not (@BaseType = 'tns:UserIdentityToken'))) and
-            not(@Name = 'UserIdentityToken') and
-            not(@Name = 'PublishedDataSetDataType') and
-            not(@Name = 'DataSetReaderDataType') and
-            not(@Name = 'PubSubConfigurationValueDataType') and
-            not(@Name = 'PortableNodeId')]">
+        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:') and not (@BaseType = 'tns:UserIdentityToken')))]">
             <xsl:variable name="extensionName" select="@Name"/>
             <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName=$extensionName]"/>
         </xsl:for-each>

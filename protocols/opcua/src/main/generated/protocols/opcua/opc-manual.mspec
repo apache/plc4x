@@ -178,8 +178,8 @@
     [simple ExtensionObjectDefinition('identifier') body]
 ]
 
-[discriminatedType ExtensionObjectDefinition(vstring '-1' identifier)
-    [typeSwitch identifier
+[discriminatedType ExtensionObjectDefinition(vstring '-1' extensionId)
+    [typeSwitch extensionId
         ['"0"' NullExtension
         ]
 
@@ -190,24 +190,20 @@
         ['"14535"' KeyValuePair
             [simple QualifiedName key]
             [simple Variant value]
-            
         ]
         ['"16315"' AdditionalParametersType
             [implicit int 32 noOfParameters 'parameters == null ? -1 : COUNT(parameters)']
-            [array ExtensionObjectDefinition('"14535"') parameters count 'noOfParameters']
-                    
+            [array KeyValuePair('"14535"') parameters count 'noOfParameters']
         ]
         ['"17550"' EphemeralKeyType
             [simple PascalByteString publicKey]
             [simple PascalByteString signature]
-            
         ]
         ['"15530"' EndpointType
             [simple PascalString endpointUrl]
             [simple MessageSecurityMode securityMode]
             [simple PascalString securityPolicyUri]
             [simple PascalString transportProfileUri]
-            
         ]
         ['"32423"' BitFieldDefinition
             [simple PascalString name]
@@ -216,12 +212,10 @@
             [reserved bit 'false']
             [simple uint 32 startingBitPosition]
             [simple uint 32 endingBitPosition]
-            
         ]
         ['"18808"' RationalNumber
             [simple int 32 numerator]
             [simple uint 32 denominator]
-            
         ]
         ['"18809"' OpcuaVector
             
@@ -238,27 +232,23 @@
         ['"15636"' IdentityMappingRuleType
             [simple IdentityCriteriaType criteriaType]
             [simple PascalString criteria]
-            
         ]
         ['"23500"' CurrencyUnitType
             [simple int 16 numericCode]
             [simple int 8 exponent]
             [simple PascalString alphabeticCode]
             [simple LocalizedText currency]
-            
         ]
         ['"32436"' AnnotationDataType
             [simple PascalString annotation]
             [simple PascalString discipline]
             [simple PascalString uri]
-            
         ]
         ['"32437"' LinearConversionDataType
             [simple float 32 initialAddend]
             [simple float 32 multiplicand]
             [simple float 32 divisor]
             [simple float 32 finalAddend]
-            
         ]
         ['"32440"' QuantityDimension
             [simple int 8 massExponent]
@@ -269,7 +259,6 @@
             [simple int 8 luminousIntensityExponent]
             [simple int 8 absoluteTemperatureExponent]
             [simple int 8 dimensionlessExponent]
-            
         ]
         ['"12556"' TrustListDataType
             [simple uint 32 specifiedLists]
@@ -281,91 +270,84 @@
             [array PascalByteString issuerCertificates count 'noOfIssuerCertificates']
             [implicit int 32 noOfIssuerCrls 'issuerCrls == null ? -1 : COUNT(issuerCrls)']
             [array PascalByteString issuerCrls count 'noOfIssuerCrls']
-            
         ]
         ['"32287"' TransactionErrorType
             [simple NodeId targetId]
             [simple StatusCode error]
             [simple LocalizedText message]
-            
         ]
         ['"15536"' DataTypeSchemaHeader
             [implicit int 32 noOfNamespaces 'namespaces == null ? -1 : COUNT(namespaces)']
             [array PascalString namespaces count 'noOfNamespaces']
             [implicit int 32 noOfStructureDataTypes 'structureDataTypes == null ? -1 : COUNT(structureDataTypes)']
-            [array DataTypeDescription('"14525"') structureDataTypes count 'noOfStructureDataTypes']
+            [array StructureDescription('"15489"') structureDataTypes count 'noOfStructureDataTypes']
             [implicit int 32 noOfEnumDataTypes 'enumDataTypes == null ? -1 : COUNT(enumDataTypes)']
-            [array DataTypeDescription('"14525"') enumDataTypes count 'noOfEnumDataTypes']
+            [array EnumDescription('"15490"') enumDataTypes count 'noOfEnumDataTypes']
             [implicit int 32 noOfSimpleDataTypes 'simpleDataTypes == null ? -1 : COUNT(simpleDataTypes)']
-            [array DataTypeDescription('"14525"') simpleDataTypes count 'noOfSimpleDataTypes']
-            
+            [array SimpleTypeDescription('"15007"') simpleDataTypes count 'noOfSimpleDataTypes']
         ]
         ['"14527"' DataTypeDescription
             [simple NodeId dataTypeId]
             [simple QualifiedName name]
-            
         ]
         ['"15489"' StructureDescription
             [simple NodeId dataTypeId]
             [simple QualifiedName name]
-            [simple DataTypeDefinition structureDefinition]
-            
+            [simple StructureDefinition('"101"') structureDefinition]
         ]
         ['"15490"' EnumDescription
             [simple NodeId dataTypeId]
             [simple QualifiedName name]
-            [simple DataTypeDefinition enumDefinition]
+            [simple EnumDefinition('"102"') enumDefinition]
             [simple uint 8 builtInType]
-            
         ]
         ['"15007"' SimpleTypeDescription
             [simple NodeId dataTypeId]
             [simple QualifiedName name]
             [simple NodeId baseDataType]
             [simple uint 8 builtInType]
-            
         ]
         ['"15008"' UABinaryFileDataType
             [implicit int 32 noOfNamespaces 'namespaces == null ? -1 : COUNT(namespaces)']
             [array PascalString namespaces count 'noOfNamespaces']
             [implicit int 32 noOfStructureDataTypes 'structureDataTypes == null ? -1 : COUNT(structureDataTypes)']
-            [array DataTypeDescription('"14525"') structureDataTypes count 'noOfStructureDataTypes']
+            [array StructureDescription('"15489"') structureDataTypes count 'noOfStructureDataTypes']
             [implicit int 32 noOfEnumDataTypes 'enumDataTypes == null ? -1 : COUNT(enumDataTypes)']
-            [array DataTypeDescription('"14525"') enumDataTypes count 'noOfEnumDataTypes']
+            [array EnumDescription('"15490"') enumDataTypes count 'noOfEnumDataTypes']
             [implicit int 32 noOfSimpleDataTypes 'simpleDataTypes == null ? -1 : COUNT(simpleDataTypes)']
-            [array DataTypeDescription('"14525"') simpleDataTypes count 'noOfSimpleDataTypes']
+            [array SimpleTypeDescription('"15007"') simpleDataTypes count 'noOfSimpleDataTypes']
             [simple PascalString schemaLocation]
             [implicit int 32 noOfFileHeader 'fileHeader == null ? -1 : COUNT(fileHeader)']
-            [array ExtensionObjectDefinition('"14535"') fileHeader count 'noOfFileHeader']
-                    [simple Variant body]
-            
+            [array KeyValuePair('"14535"') fileHeader count 'noOfFileHeader']
+            [simple Variant body]
         ]
         ['"24107"' PortableQualifiedName
             [simple PascalString namespaceUri]
             [simple PascalString name]
-            
+        ]
+        ['"24108"' PortableNodeId
+            [simple PascalString namespaceUri]
+            [simple NodeId identifier]
         ]
         ['"24109"' UnsignedRationalNumber
             [simple uint 32 numerator]
             [simple uint 32 denominator]
-            
         ]
         ['"14525"' DataSetMetaDataType
             [implicit int 32 noOfNamespaces 'namespaces == null ? -1 : COUNT(namespaces)']
             [array PascalString namespaces count 'noOfNamespaces']
             [implicit int 32 noOfStructureDataTypes 'structureDataTypes == null ? -1 : COUNT(structureDataTypes)']
-            [array DataTypeDescription('"14525"') structureDataTypes count 'noOfStructureDataTypes']
+            [array StructureDescription('"15489"') structureDataTypes count 'noOfStructureDataTypes']
             [implicit int 32 noOfEnumDataTypes 'enumDataTypes == null ? -1 : COUNT(enumDataTypes)']
-            [array DataTypeDescription('"14525"') enumDataTypes count 'noOfEnumDataTypes']
+            [array EnumDescription('"15490"') enumDataTypes count 'noOfEnumDataTypes']
             [implicit int 32 noOfSimpleDataTypes 'simpleDataTypes == null ? -1 : COUNT(simpleDataTypes)']
-            [array DataTypeDescription('"14525"') simpleDataTypes count 'noOfSimpleDataTypes']
+            [array SimpleTypeDescription('"15007"') simpleDataTypes count 'noOfSimpleDataTypes']
             [simple PascalString name]
             [simple LocalizedText description]
             [implicit int 32 noOfFields 'fields == null ? -1 : COUNT(fields)']
-            [array ExtensionObjectDefinition('"14526"') fields count 'noOfFields']
-                    [simple GuidValue dataSetClassId]
-            [simple ExtensionObjectDefinition('"14595"') configurationVersion]
-            
+            [array FieldMetaData('"14526"') fields count 'noOfFields']
+            [simple GuidValue dataSetClassId]
+            [simple ConfigurationVersionDataType('"14595"') configurationVersion]
         ]
         ['"14526"' FieldMetaData
             [simple PascalString name]
@@ -379,13 +361,20 @@
             [simple uint 32 maxStringLength]
             [simple GuidValue dataSetFieldId]
             [implicit int 32 noOfProperties 'properties == null ? -1 : COUNT(properties)']
-            [array ExtensionObjectDefinition('"14535"') properties count 'noOfProperties']
-                    
+            [array KeyValuePair('"14535"') properties count 'noOfProperties']
         ]
         ['"14595"' ConfigurationVersionDataType
             [simple uint 32 majorVersion]
             [simple uint 32 minorVersion]
-            
+        ]
+        ['"15580"' PublishedDataSetDataType
+            [simple PascalString name]
+            [implicit int 32 noOfDataSetFolder 'dataSetFolder == null ? -1 : COUNT(dataSetFolder)']
+            [array PascalString dataSetFolder count 'noOfDataSetFolder']
+            [simple DataSetMetaDataType('"14525"') dataSetMetaData]
+            [implicit int 32 noOfExtensionFields 'extensionFields == null ? -1 : COUNT(extensionFields)']
+            [array KeyValuePair('"14535"') extensionFields count 'noOfExtensionFields']
+            [simple ExtensionObject('true') dataSetSource]
         ]
         ['"15582"' PublishedDataSetSourceDataType
             
@@ -400,19 +389,16 @@
             [simple Variant substituteValue]
             [implicit int 32 noOfMetaDataProperties 'metaDataProperties == null ? -1 : COUNT(metaDataProperties)']
             [array QualifiedName metaDataProperties count 'noOfMetaDataProperties']
-            
         ]
         ['"15583"' PublishedDataItemsDataType
             [implicit int 32 noOfPublishedData 'publishedData == null ? -1 : COUNT(publishedData)']
-            [array ExtensionObjectDefinition('"14275"') publishedData count 'noOfPublishedData']
-                    
+            [array PublishedVariableDataType('"14275"') publishedData count 'noOfPublishedData']
         ]
         ['"15584"' PublishedEventsDataType
             [simple NodeId eventNotifier]
             [implicit int 32 noOfSelectedFields 'selectedFields == null ? -1 : COUNT(selectedFields)']
-            [array FilterOperand('"589"') selectedFields count 'noOfSelectedFields']
-            [simple ExtensionObjectDefinition('"588"') filter]
-            
+            [array SimpleAttributeOperand('"603"') selectedFields count 'noOfSelectedFields']
+            [simple ContentFilter('"588"') filter]
         ]
         ['"25271"' PublishedDataSetCustomSourceDataType
             [reserved uint 7 '0x00']
@@ -428,10 +414,9 @@
             [simple uint 32 keyFrameCount]
             [simple PascalString dataSetName]
             [implicit int 32 noOfDataSetWriterProperties 'dataSetWriterProperties == null ? -1 : COUNT(dataSetWriterProperties)']
-            [array ExtensionObjectDefinition('"14535"') dataSetWriterProperties count 'noOfDataSetWriterProperties']
-                    [simple ExtensionObject('true') transportSettings]
+            [array KeyValuePair('"14535"') dataSetWriterProperties count 'noOfDataSetWriterProperties']
+            [simple ExtensionObject('true') transportSettings]
             [simple ExtensionObject('true') messageSettings]
-            
         ]
         ['"15600"' DataSetWriterTransportDataType
             
@@ -446,11 +431,10 @@
             [simple MessageSecurityMode securityMode]
             [simple PascalString securityGroupId]
             [implicit int 32 noOfSecurityKeyServices 'securityKeyServices == null ? -1 : COUNT(securityKeyServices)']
-            [array ExtensionObjectDefinition('"314"') securityKeyServices count 'noOfSecurityKeyServices']
-                    [simple uint 32 maxNetworkMessageSize]
+            [array EndpointDescription('"314"') securityKeyServices count 'noOfSecurityKeyServices']
+            [simple uint 32 maxNetworkMessageSize]
             [implicit int 32 noOfGroupProperties 'groupProperties == null ? -1 : COUNT(groupProperties)']
-            [array ExtensionObjectDefinition('"14535"') groupProperties count 'noOfGroupProperties']
-                    
+            [array KeyValuePair('"14535"') groupProperties count 'noOfGroupProperties']
         ]
         ['"15482"' WriterGroupDataType
             [simple PascalString name]
@@ -459,11 +443,11 @@
             [simple MessageSecurityMode securityMode]
             [simple PascalString securityGroupId]
             [implicit int 32 noOfSecurityKeyServices 'securityKeyServices == null ? -1 : COUNT(securityKeyServices)']
-            [array ExtensionObjectDefinition('"314"') securityKeyServices count 'noOfSecurityKeyServices']
-                    [simple uint 32 maxNetworkMessageSize]
+            [array EndpointDescription('"314"') securityKeyServices count 'noOfSecurityKeyServices']
+            [simple uint 32 maxNetworkMessageSize]
             [implicit int 32 noOfGroupProperties 'groupProperties == null ? -1 : COUNT(groupProperties)']
-            [array ExtensionObjectDefinition('"14535"') groupProperties count 'noOfGroupProperties']
-                    [simple uint 16 writerGroupId]
+            [array KeyValuePair('"14535"') groupProperties count 'noOfGroupProperties']
+            [simple uint 16 writerGroupId]
             [simple float 64 publishingInterval]
             [simple float 64 keepAliveTime]
             [simple uint 8 priority]
@@ -473,8 +457,7 @@
             [simple ExtensionObject('true') transportSettings]
             [simple ExtensionObject('true') messageSettings]
             [implicit int 32 noOfDataSetWriters 'dataSetWriters == null ? -1 : COUNT(dataSetWriters)']
-            [array ExtensionObjectDefinition('"15599"') dataSetWriters count 'noOfDataSetWriters']
-                    
+            [array DataSetWriterDataType('"15599"') dataSetWriters count 'noOfDataSetWriters']
         ]
         ['"15613"' WriterGroupTransportDataType
             
@@ -490,25 +473,22 @@
             [simple PascalString transportProfileUri]
             [simple ExtensionObject('true') address]
             [implicit int 32 noOfConnectionProperties 'connectionProperties == null ? -1 : COUNT(connectionProperties)']
-            [array ExtensionObjectDefinition('"14535"') connectionProperties count 'noOfConnectionProperties']
-                    [simple ExtensionObject('true') transportSettings]
+            [array KeyValuePair('"14535"') connectionProperties count 'noOfConnectionProperties']
+            [simple ExtensionObject('true') transportSettings]
             [implicit int 32 noOfWriterGroups 'writerGroups == null ? -1 : COUNT(writerGroups)']
-            [array PubSubGroupDataType('"15609"') writerGroups count 'noOfWriterGroups']
+            [array WriterGroupDataType('"15482"') writerGroups count 'noOfWriterGroups']
             [implicit int 32 noOfReaderGroups 'readerGroups == null ? -1 : COUNT(readerGroups)']
-            [array PubSubGroupDataType('"15609"') readerGroups count 'noOfReaderGroups']
-            
+            [array ReaderGroupDataType('"15522"') readerGroups count 'noOfReaderGroups']
         ]
         ['"15620"' ConnectionTransportDataType
             
         ]
         ['"15504"' NetworkAddressDataType
             [simple PascalString networkInterface]
-            
         ]
         ['"15512"' NetworkAddressUrlDataType
             [simple PascalString networkInterface]
             [simple PascalString url]
-            
         ]
         ['"15522"' ReaderGroupDataType
             [simple PascalString name]
@@ -517,21 +497,42 @@
             [simple MessageSecurityMode securityMode]
             [simple PascalString securityGroupId]
             [implicit int 32 noOfSecurityKeyServices 'securityKeyServices == null ? -1 : COUNT(securityKeyServices)']
-            [array ExtensionObjectDefinition('"314"') securityKeyServices count 'noOfSecurityKeyServices']
-                    [simple uint 32 maxNetworkMessageSize]
+            [array EndpointDescription('"314"') securityKeyServices count 'noOfSecurityKeyServices']
+            [simple uint 32 maxNetworkMessageSize]
             [implicit int 32 noOfGroupProperties 'groupProperties == null ? -1 : COUNT(groupProperties)']
-            [array ExtensionObjectDefinition('"14535"') groupProperties count 'noOfGroupProperties']
-                    [simple ExtensionObject('true') transportSettings]
+            [array KeyValuePair('"14535"') groupProperties count 'noOfGroupProperties']
+            [simple ExtensionObject('true') transportSettings]
             [simple ExtensionObject('true') messageSettings]
             [implicit int 32 noOfDataSetReaders 'dataSetReaders == null ? -1 : COUNT(dataSetReaders)']
-            [array ExtensionObjectDefinition('"15625"') dataSetReaders count 'noOfDataSetReaders']
-                    
+            [array DataSetReaderDataType('"15625"') dataSetReaders count 'noOfDataSetReaders']
         ]
         ['"15623"' ReaderGroupTransportDataType
             
         ]
         ['"15624"' ReaderGroupMessageDataType
             
+        ]
+        ['"15625"' DataSetReaderDataType
+            [simple PascalString name]
+            [reserved uint 7 '0x00']
+            [simple bit enabled]
+            [simple Variant publisherId]
+            [simple uint 16 writerGroupId]
+            [simple uint 16 dataSetWriterId]
+            [simple DataSetMetaDataType('"14525"') dataSetMetaData]
+            [simple DataSetFieldContentMask dataSetFieldContentMask]
+            [simple float 64 messageReceiveTimeout]
+            [simple uint 32 keyFrameCount]
+            [simple PascalString headerLayoutUri]
+            [simple MessageSecurityMode securityMode]
+            [simple PascalString securityGroupId]
+            [implicit int 32 noOfSecurityKeyServices 'securityKeyServices == null ? -1 : COUNT(securityKeyServices)']
+            [array EndpointDescription('"314"') securityKeyServices count 'noOfSecurityKeyServices']
+            [implicit int 32 noOfDataSetReaderProperties 'dataSetReaderProperties == null ? -1 : COUNT(dataSetReaderProperties)']
+            [array KeyValuePair('"14535"') dataSetReaderProperties count 'noOfDataSetReaderProperties']
+            [simple ExtensionObject('true') transportSettings]
+            [simple ExtensionObject('true') messageSettings]
+            [simple ExtensionObject('true') subscribedDataSet]
         ]
         ['"15630"' DataSetReaderTransportDataType
             
@@ -544,8 +545,7 @@
         ]
         ['"15633"' TargetVariablesDataType
             [implicit int 32 noOfTargetVariables 'targetVariables == null ? -1 : COUNT(targetVariables)']
-            [array ExtensionObjectDefinition('"14746"') targetVariables count 'noOfTargetVariables']
-                    
+            [array FieldTargetDataType('"14746"') targetVariables count 'noOfTargetVariables']
         ]
         ['"14746"' FieldTargetDataType
             [simple GuidValue dataSetFieldId]
@@ -555,34 +555,30 @@
             [simple PascalString writeIndexRange]
             [simple OverrideValueHandling overrideValueHandling]
             [simple Variant overrideValue]
-            
         ]
         ['"15637"' SubscribedDataSetMirrorDataType
             [simple PascalString parentNodeName]
             [implicit int 32 noOfRolePermissions 'rolePermissions == null ? -1 : COUNT(rolePermissions)']
-            [array ExtensionObjectDefinition('"98"') rolePermissions count 'noOfRolePermissions']
-                    
+            [array RolePermissionType('"98"') rolePermissions count 'noOfRolePermissions']
         ]
         ['"15532"' PubSubConfigurationDataType
             [implicit int 32 noOfPublishedDataSets 'publishedDataSets == null ? -1 : COUNT(publishedDataSets)']
-            [array ExtensionObjectDefinition('"15580"') publishedDataSets count 'noOfPublishedDataSets']
-                    [implicit int 32 noOfConnections 'connections == null ? -1 : COUNT(connections)']
-            [array ExtensionObjectDefinition('"15619"') connections count 'noOfConnections']
-                    [reserved uint 7 '0x00']
+            [array PublishedDataSetDataType('"15580"') publishedDataSets count 'noOfPublishedDataSets']
+            [implicit int 32 noOfConnections 'connections == null ? -1 : COUNT(connections)']
+            [array PubSubConnectionDataType('"15619"') connections count 'noOfConnections']
+            [reserved uint 7 '0x00']
             [simple bit enabled]
             
         ]
         ['"23601"' StandaloneSubscribedDataSetRefDataType
             [simple PascalString dataSetName]
-            
         ]
         ['"23602"' StandaloneSubscribedDataSetDataType
             [simple PascalString name]
             [implicit int 32 noOfDataSetFolder 'dataSetFolder == null ? -1 : COUNT(dataSetFolder)']
             [array PascalString dataSetFolder count 'noOfDataSetFolder']
-            [simple DataTypeSchemaHeader dataSetMetaData]
+            [simple DataSetMetaDataType('"14525"') dataSetMetaData]
             [simple ExtensionObject('true') subscribedDataSet]
-            
         ]
         ['"23603"' SecurityGroupDataType
             [simple PascalString name]
@@ -594,10 +590,9 @@
             [simple uint 32 maxPastKeyCount]
             [simple PascalString securityGroupId]
             [implicit int 32 noOfRolePermissions 'rolePermissions == null ? -1 : COUNT(rolePermissions)']
-            [array ExtensionObjectDefinition('"98"') rolePermissions count 'noOfRolePermissions']
-                    [implicit int 32 noOfGroupProperties 'groupProperties == null ? -1 : COUNT(groupProperties)']
-            [array ExtensionObjectDefinition('"14535"') groupProperties count 'noOfGroupProperties']
-                    
+            [array RolePermissionType('"98"') rolePermissions count 'noOfRolePermissions']
+            [implicit int 32 noOfGroupProperties 'groupProperties == null ? -1 : COUNT(groupProperties)']
+            [array KeyValuePair('"14535"') groupProperties count 'noOfGroupProperties']
         ]
         ['"25272"' PubSubKeyPushTargetDataType
             [simple PascalString applicationUri]
@@ -605,36 +600,34 @@
             [array PascalString pushTargetFolder count 'noOfPushTargetFolder']
             [simple PascalString endpointUrl]
             [simple PascalString securityPolicyUri]
-            [simple ExtensionObjectDefinition('"306"') userTokenType]
+            [simple UserTokenPolicy('"306"') userTokenType]
             [simple uint 16 requestedKeyCount]
             [simple float 64 retryInterval]
             [implicit int 32 noOfPushTargetProperties 'pushTargetProperties == null ? -1 : COUNT(pushTargetProperties)']
-            [array ExtensionObjectDefinition('"14535"') pushTargetProperties count 'noOfPushTargetProperties']
-                    [implicit int 32 noOfSecurityGroups 'securityGroups == null ? -1 : COUNT(securityGroups)']
+            [array KeyValuePair('"14535"') pushTargetProperties count 'noOfPushTargetProperties']
+            [implicit int 32 noOfSecurityGroups 'securityGroups == null ? -1 : COUNT(securityGroups)']
             [array PascalString securityGroups count 'noOfSecurityGroups']
-            
         ]
         ['"23604"' PubSubConfiguration2DataType
             [implicit int 32 noOfPublishedDataSets 'publishedDataSets == null ? -1 : COUNT(publishedDataSets)']
-            [array ExtensionObjectDefinition('"15580"') publishedDataSets count 'noOfPublishedDataSets']
-                    [implicit int 32 noOfConnections 'connections == null ? -1 : COUNT(connections)']
-            [array ExtensionObjectDefinition('"15619"') connections count 'noOfConnections']
-                    [reserved uint 7 '0x00']
+            [array PublishedDataSetDataType('"15580"') publishedDataSets count 'noOfPublishedDataSets']
+            [implicit int 32 noOfConnections 'connections == null ? -1 : COUNT(connections)']
+            [array PubSubConnectionDataType('"15619"') connections count 'noOfConnections']
+            [reserved uint 7 '0x00']
             [simple bit enabled]
             [implicit int 32 noOfSubscribedDataSets 'subscribedDataSets == null ? -1 : COUNT(subscribedDataSets)']
-            [array SubscribedDataSetDataType('"15630"') subscribedDataSets count 'noOfSubscribedDataSets']
+            [array StandaloneSubscribedDataSetDataType('"23602"') subscribedDataSets count 'noOfSubscribedDataSets']
             [implicit int 32 noOfDataSetClasses 'dataSetClasses == null ? -1 : COUNT(dataSetClasses)']
-            [array DataTypeSchemaHeader('"15534"') dataSetClasses count 'noOfDataSetClasses']
+            [array DataSetMetaDataType('"14525"') dataSetClasses count 'noOfDataSetClasses']
             [implicit int 32 noOfDefaultSecurityKeyServices 'defaultSecurityKeyServices == null ? -1 : COUNT(defaultSecurityKeyServices)']
-            [array ExtensionObjectDefinition('"314"') defaultSecurityKeyServices count 'noOfDefaultSecurityKeyServices']
-                    [implicit int 32 noOfSecurityGroups 'securityGroups == null ? -1 : COUNT(securityGroups)']
-            [array ExtensionObjectDefinition('"23603"') securityGroups count 'noOfSecurityGroups']
-                    [implicit int 32 noOfPubSubKeyPushTargets 'pubSubKeyPushTargets == null ? -1 : COUNT(pubSubKeyPushTargets)']
-            [array ExtensionObjectDefinition('"25272"') pubSubKeyPushTargets count 'noOfPubSubKeyPushTargets']
-                    [simple uint 32 configurationVersion]
+            [array EndpointDescription('"314"') defaultSecurityKeyServices count 'noOfDefaultSecurityKeyServices']
+            [implicit int 32 noOfSecurityGroups 'securityGroups == null ? -1 : COUNT(securityGroups)']
+            [array SecurityGroupDataType('"23603"') securityGroups count 'noOfSecurityGroups']
+            [implicit int 32 noOfPubSubKeyPushTargets 'pubSubKeyPushTargets == null ? -1 : COUNT(pubSubKeyPushTargets)']
+            [array PubSubKeyPushTargetDataType('"25272"') pubSubKeyPushTargets count 'noOfPubSubKeyPushTargets']
+            [simple uint 32 configurationVersion]
             [implicit int 32 noOfConfigurationProperties 'configurationProperties == null ? -1 : COUNT(configurationProperties)']
-            [array ExtensionObjectDefinition('"14535"') configurationProperties count 'noOfConfigurationProperties']
-                    
+            [array KeyValuePair('"14535"') configurationProperties count 'noOfConfigurationProperties']
         ]
         ['"15647"' UadpWriterGroupMessageDataType
             [simple uint 32 groupVersion]
@@ -643,14 +636,12 @@
             [simple float 64 samplingOffset]
             [implicit int 32 noOfPublishingOffset 'publishingOffset == null ? -1 : COUNT(publishingOffset)']
             [array float 64 publishingOffset count 'noOfPublishingOffset']
-            
         ]
         ['"15654"' UadpDataSetWriterMessageDataType
             [simple UadpDataSetMessageContentMask dataSetMessageContentMask]
             [simple uint 16 configuredSize]
             [simple uint 16 networkMessageNumber]
             [simple uint 16 dataSetOffset]
-            
         ]
         ['"15655"' UadpDataSetReaderMessageDataType
             [simple uint 32 groupVersion]
@@ -662,20 +653,16 @@
             [simple float 64 publishingInterval]
             [simple float 64 receiveOffset]
             [simple float 64 processingOffset]
-            
         ]
         ['"15659"' JsonWriterGroupMessageDataType
             [simple JsonNetworkMessageContentMask networkMessageContentMask]
-            
         ]
         ['"15666"' JsonDataSetWriterMessageDataType
             [simple JsonDataSetMessageContentMask dataSetMessageContentMask]
-            
         ]
         ['"15667"' JsonDataSetReaderMessageDataType
             [simple JsonNetworkMessageContentMask networkMessageContentMask]
             [simple JsonDataSetMessageContentMask dataSetMessageContentMask]
-            
         ]
         ['"23605"' QosDataType
             
@@ -685,18 +672,15 @@
         ]
         ['"23607"' TransmitQosPriorityDataType
             [simple PascalString priorityLabel]
-            
         ]
         ['"23610"' ReceiveQosDataType
             
         ]
         ['"23611"' ReceiveQosPriorityDataType
             [simple PascalString priorityLabel]
-            
         ]
         ['"17469"' DatagramConnectionTransportDataType
             [simple ExtensionObject('true') discoveryAddress]
-            
         ]
         ['"23614"' DatagramConnectionTransport2DataType
             [simple ExtensionObject('true') discoveryAddress]
@@ -705,12 +689,10 @@
             [simple PascalString qosCategory]
             [implicit int 32 noOfDatagramQos 'datagramQos == null ? -1 : COUNT(datagramQos)']
             [array ExtensionObject('true') datagramQos count 'noOfDatagramQos']
-            
         ]
         ['"15534"' DatagramWriterGroupTransportDataType
             [simple uint 8 messageRepeatCount]
             [simple float 64 messageRepeatDelay]
-            
         ]
         ['"23615"' DatagramWriterGroupTransport2DataType
             [simple uint 8 messageRepeatCount]
@@ -721,7 +703,6 @@
             [array ExtensionObject('true') datagramQos count 'noOfDatagramQos']
             [simple uint 32 discoveryAnnounceRate]
             [simple PascalString topic]
-            
         ]
         ['"23616"' DatagramDataSetReaderTransportDataType
             [simple ExtensionObject('true') address]
@@ -729,19 +710,16 @@
             [implicit int 32 noOfDatagramQos 'datagramQos == null ? -1 : COUNT(datagramQos)']
             [array ExtensionObject('true') datagramQos count 'noOfDatagramQos']
             [simple PascalString topic]
-            
         ]
         ['"15009"' BrokerConnectionTransportDataType
             [simple PascalString resourceUri]
             [simple PascalString authenticationProfileUri]
-            
         ]
         ['"15669"' BrokerWriterGroupTransportDataType
             [simple PascalString queueName]
             [simple PascalString resourceUri]
             [simple PascalString authenticationProfileUri]
             [simple BrokerTransportQualityOfService requestedDeliveryGuarantee]
-            
         ]
         ['"15671"' BrokerDataSetWriterTransportDataType
             [simple PascalString queueName]
@@ -750,7 +728,6 @@
             [simple BrokerTransportQualityOfService requestedDeliveryGuarantee]
             [simple PascalString metaDataQueueName]
             [simple float 64 metaDataUpdateTime]
-            
         ]
         ['"15672"' BrokerDataSetReaderTransportDataType
             [simple PascalString queueName]
@@ -758,33 +735,33 @@
             [simple PascalString authenticationProfileUri]
             [simple BrokerTransportQualityOfService requestedDeliveryGuarantee]
             [simple PascalString metaDataQueueName]
-            
         ]
         ['"25521"' PubSubConfigurationRefDataType
             [simple PubSubConfigurationRefMask configurationMask]
             [simple uint 16 elementIndex]
             [simple uint 16 connectionIndex]
             [simple uint 16 groupIndex]
-            
+        ]
+        ['"25522"' PubSubConfigurationValueDataType
+            [simple PubSubConfigurationRefDataType('"25521"') configurationElement]
+            [simple PascalString name]
+            [simple Variant identifier]
         ]
         ['"23470"' AliasNameDataType
             [simple QualifiedName aliasName]
             [implicit int 32 noOfReferencedNodes 'referencedNodes == null ? -1 : COUNT(referencedNodes)']
             [array ExpandedNodeId referencedNodes count 'noOfReferencedNodes']
-            
         ]
         ['"24283"' UserManagementDataType
             [simple PascalString userName]
             [simple UserConfigurationMask userConfiguration]
             [simple PascalString description]
-            
         ]
         ['"25222"' PriorityMappingEntryType
             [simple PascalString mappingUri]
             [simple PascalString priorityLabel]
             [simple uint 8 priorityValue_PCP]
             [simple uint 32 priorityValue_DSCP]
-            
         ]
         ['"32661"' ReferenceDescriptionDataType
             [simple NodeId sourceNode]
@@ -792,19 +769,16 @@
             [reserved uint 7 '0x00']
             [simple bit isForward]
             [simple ExpandedNodeId targetNode]
-            
         ]
         ['"32662"' ReferenceListEntryDataType
             [simple NodeId referenceType]
             [reserved uint 7 '0x00']
             [simple bit isForward]
             [simple ExpandedNodeId targetNode]
-            
         ]
         ['"98"' RolePermissionType
             [simple NodeId roleId]
             [simple PermissionType permissions]
-            
         ]
         ['"99"' DataTypeDefinition
             
@@ -826,13 +800,11 @@
             [simple NodeId baseDataType]
             [simple StructureType structureType]
             [implicit int 32 noOfFields 'fields == null ? -1 : COUNT(fields)']
-            [array ExtensionObjectDefinition('"103"') fields count 'noOfFields']
-                    
+            [array StructureField('"103"') fields count 'noOfFields']
         ]
         ['"102"' EnumDefinition
             [implicit int 32 noOfFields 'fields == null ? -1 : COUNT(fields)']
-            [array EnumValueType('"7594"') fields count 'noOfFields']
-            
+            [array EnumField('"104"') fields count 'noOfFields']
         ]
         ['"298"' Argument
             [simple PascalString name]
@@ -841,25 +813,21 @@
             [implicit int 32 noOfArrayDimensions 'arrayDimensions == null ? -1 : COUNT(arrayDimensions)']
             [array uint 32 arrayDimensions count 'noOfArrayDimensions']
             [simple LocalizedText description]
-            
         ]
         ['"7596"' EnumValueType
             [simple int 64 value]
             [simple LocalizedText displayName]
             [simple LocalizedText description]
-            
         ]
         ['"104"' EnumField
             [simple int 64 value]
             [simple LocalizedText displayName]
             [simple LocalizedText description]
             [simple PascalString name]
-            
         ]
         ['"12757"' OptionSet
             [simple PascalByteString value]
             [simple PascalByteString validBits]
-            
         ]
         ['"8914"' TimeZoneDataType
             [simple int 16 offset]
@@ -876,7 +844,6 @@
             [simple PascalString discoveryProfileUri]
             [implicit int 32 noOfDiscoveryUrls 'discoveryUrls == null ? -1 : COUNT(discoveryUrls)']
             [array PascalString discoveryUrls count 'noOfDiscoveryUrls']
-            
         ]
         ['"391"' RequestHeader
             [simple NodeId authenticationToken]
@@ -886,7 +853,6 @@
             [simple PascalString auditEntryId]
             [simple uint 32 timeoutHint]
             [simple ExtensionObject('true') additionalHeader]
-            
         ]
         ['"394"' ResponseHeader
             [simple int 64 timestamp]
@@ -896,11 +862,9 @@
             [implicit int 32 noOfStringTable 'stringTable == null ? -1 : COUNT(stringTable)']
             [array PascalString stringTable count 'noOfStringTable']
             [simple ExtensionObject('true') additionalHeader]
-            
         ]
         ['"397"' ServiceFault
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
-            
+            [simple ResponseHeader('"394"') responseHeader]
         ]
         ['"15903"' SessionlessInvokeRequestType
             [simple uint 32 urisVersion]
@@ -911,7 +875,6 @@
             [implicit int 32 noOfLocaleIds 'localeIds == null ? -1 : COUNT(localeIds)']
             [array PascalString localeIds count 'noOfLocaleIds']
             [simple uint 32 serviceId]
-            
         ]
         ['"21001"' SessionlessInvokeResponseType
             [implicit int 32 noOfNamespaceUris 'namespaceUris == null ? -1 : COUNT(namespaceUris)']
@@ -919,22 +882,19 @@
             [implicit int 32 noOfServerUris 'serverUris == null ? -1 : COUNT(serverUris)']
             [array PascalString serverUris count 'noOfServerUris']
             [simple uint 32 serviceId]
-            
         ]
         ['"422"' FindServersRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple PascalString endpointUrl]
             [implicit int 32 noOfLocaleIds 'localeIds == null ? -1 : COUNT(localeIds)']
             [array PascalString localeIds count 'noOfLocaleIds']
             [implicit int 32 noOfServerUris 'serverUris == null ? -1 : COUNT(serverUris)']
             [array PascalString serverUris count 'noOfServerUris']
-            
         ]
         ['"425"' FindServersResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfServers 'servers == null ? -1 : COUNT(servers)']
-            [array ExtensionObjectDefinition('"310"') servers count 'noOfServers']
-                    
+            [array ApplicationDescription('"310"') servers count 'noOfServers']
         ]
         ['"12191"' ServerOnNetwork
             [simple uint 32 recordId]
@@ -942,22 +902,19 @@
             [simple PascalString discoveryUrl]
             [implicit int 32 noOfServerCapabilities 'serverCapabilities == null ? -1 : COUNT(serverCapabilities)']
             [array PascalString serverCapabilities count 'noOfServerCapabilities']
-            
         ]
         ['"12192"' FindServersOnNetworkRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 startingRecordId]
             [simple uint 32 maxRecordsToReturn]
             [implicit int 32 noOfServerCapabilityFilter 'serverCapabilityFilter == null ? -1 : COUNT(serverCapabilityFilter)']
             [array PascalString serverCapabilityFilter count 'noOfServerCapabilityFilter']
-            
         ]
         ['"12193"' FindServersOnNetworkResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple int 64 lastCounterResetTime]
             [implicit int 32 noOfServers 'servers == null ? -1 : COUNT(servers)']
-            [array ExtensionObjectDefinition('"12191"') servers count 'noOfServers']
-                    
+            [array ServerOnNetwork('"12191"') servers count 'noOfServers']
         ]
         ['"306"' UserTokenPolicy
             [simple PascalString policyId]
@@ -965,34 +922,30 @@
             [simple PascalString issuedTokenType]
             [simple PascalString issuerEndpointUrl]
             [simple PascalString securityPolicyUri]
-            
         ]
         ['"314"' EndpointDescription
             [simple PascalString endpointUrl]
-            [simple ExtensionObjectDefinition('"310"') server]
+            [simple ApplicationDescription('"310"') server]
             [simple PascalByteString serverCertificate]
             [simple MessageSecurityMode securityMode]
             [simple PascalString securityPolicyUri]
             [implicit int 32 noOfUserIdentityTokens 'userIdentityTokens == null ? -1 : COUNT(userIdentityTokens)']
-            [array ExtensionObjectDefinition('"306"') userIdentityTokens count 'noOfUserIdentityTokens']
-                    [simple PascalString transportProfileUri]
+            [array UserTokenPolicy('"306"') userIdentityTokens count 'noOfUserIdentityTokens']
+            [simple PascalString transportProfileUri]
             [simple uint 8 securityLevel]
-            
         ]
         ['"428"' GetEndpointsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple PascalString endpointUrl]
             [implicit int 32 noOfLocaleIds 'localeIds == null ? -1 : COUNT(localeIds)']
             [array PascalString localeIds count 'noOfLocaleIds']
             [implicit int 32 noOfProfileUris 'profileUris == null ? -1 : COUNT(profileUris)']
             [array PascalString profileUris count 'noOfProfileUris']
-            
         ]
         ['"431"' GetEndpointsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfEndpoints 'endpoints == null ? -1 : COUNT(endpoints)']
-            [array ExtensionObjectDefinition('"314"') endpoints count 'noOfEndpoints']
-                    
+            [array EndpointDescription('"314"') endpoints count 'noOfEndpoints']
         ]
         ['"434"' RegisteredServer
             [simple PascalString serverUri]
@@ -1009,13 +962,11 @@
             
         ]
         ['"437"' RegisterServerRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            [simple ExtensionObjectDefinition('"434"') server]
-            
+            [simple RequestHeader('"391"') requestHeader]
+            [simple RegisteredServer('"434"') server]
         ]
         ['"440"' RegisterServerResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
-            
+            [simple ResponseHeader('"394"') responseHeader]
         ]
         ['"12892"' DiscoveryConfiguration
             
@@ -1024,67 +975,57 @@
             [simple PascalString mdnsServerName]
             [implicit int 32 noOfServerCapabilities 'serverCapabilities == null ? -1 : COUNT(serverCapabilities)']
             [array PascalString serverCapabilities count 'noOfServerCapabilities']
-            
         ]
         ['"12195"' RegisterServer2Request
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            [simple ExtensionObjectDefinition('"434"') server]
+            [simple RequestHeader('"391"') requestHeader]
+            [simple RegisteredServer('"434"') server]
             [implicit int 32 noOfDiscoveryConfiguration 'discoveryConfiguration == null ? -1 : COUNT(discoveryConfiguration)']
             [array ExtensionObject('true') discoveryConfiguration count 'noOfDiscoveryConfiguration']
-            
         ]
         ['"12196"' RegisterServer2Response
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfConfigurationResults 'configurationResults == null ? -1 : COUNT(configurationResults)']
             [array StatusCode configurationResults count 'noOfConfigurationResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"443"' ChannelSecurityToken
             [simple uint 32 channelId]
             [simple uint 32 tokenId]
             [simple int 64 createdAt]
             [simple uint 32 revisedLifetime]
-            
         ]
         ['"446"' OpenSecureChannelRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 clientProtocolVersion]
             [simple SecurityTokenRequestType requestType]
             [simple MessageSecurityMode securityMode]
             [simple PascalByteString clientNonce]
             [simple uint 32 requestedLifetime]
-            
         ]
         ['"449"' OpenSecureChannelResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple uint 32 serverProtocolVersion]
-            [simple ExtensionObjectDefinition('"443"') securityToken]
+            [simple ChannelSecurityToken('"443"') securityToken]
             [simple PascalByteString serverNonce]
-            
         ]
         ['"452"' CloseSecureChannelRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            
+            [simple RequestHeader('"391"') requestHeader]
         ]
         ['"455"' CloseSecureChannelResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
-            
+            [simple ResponseHeader('"394"') responseHeader]
         ]
         ['"346"' SignedSoftwareCertificate
             [simple PascalByteString certificateData]
             [simple PascalByteString signature]
-            
         ]
         ['"458"' SignatureData
             [simple PascalString algorithm]
             [simple PascalByteString signature]
-            
         ]
         ['"461"' CreateSessionRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            [simple ExtensionObjectDefinition('"310"') clientDescription]
+            [simple RequestHeader('"391"') requestHeader]
+            [simple ApplicationDescription('"310"') clientDescription]
             [simple PascalString serverUri]
             [simple PascalString endpointUrl]
             [simple PascalString sessionName]
@@ -1092,62 +1033,58 @@
             [simple PascalByteString clientCertificate]
             [simple float 64 requestedSessionTimeout]
             [simple uint 32 maxResponseMessageSize]
-            
         ]
         ['"464"' CreateSessionResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple NodeId sessionId]
             [simple NodeId authenticationToken]
             [simple float 64 revisedSessionTimeout]
             [simple PascalByteString serverNonce]
             [simple PascalByteString serverCertificate]
             [implicit int 32 noOfServerEndpoints 'serverEndpoints == null ? -1 : COUNT(serverEndpoints)']
-            [array ExtensionObjectDefinition('"314"') serverEndpoints count 'noOfServerEndpoints']
-                    [implicit int 32 noOfServerSoftwareCertificates 'serverSoftwareCertificates == null ? -1 : COUNT(serverSoftwareCertificates)']
-            [array ExtensionObjectDefinition('"346"') serverSoftwareCertificates count 'noOfServerSoftwareCertificates']
-                    [simple ExtensionObjectDefinition('"458"') serverSignature]
+            [array EndpointDescription('"314"') serverEndpoints count 'noOfServerEndpoints']
+            [implicit int 32 noOfServerSoftwareCertificates 'serverSoftwareCertificates == null ? -1 : COUNT(serverSoftwareCertificates)']
+            [array SignedSoftwareCertificate('"346"') serverSoftwareCertificates count 'noOfServerSoftwareCertificates']
+            [simple SignatureData('"458"') serverSignature]
             [simple uint 32 maxRequestMessageSize]
-            
+        ]
+        ['"318"' UserIdentityToken
+            [simple PascalString policyId]
         ]
         ['"467"' ActivateSessionRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            [simple ExtensionObjectDefinition('"458"') clientSignature]
+            [simple RequestHeader('"391"') requestHeader]
+            [simple SignatureData('"458"') clientSignature]
             [implicit int 32 noOfClientSoftwareCertificates 'clientSoftwareCertificates == null ? -1 : COUNT(clientSoftwareCertificates)']
-            [array ExtensionObjectDefinition('"346"') clientSoftwareCertificates count 'noOfClientSoftwareCertificates']
-                    [implicit int 32 noOfLocaleIds 'localeIds == null ? -1 : COUNT(localeIds)']
+            [array SignedSoftwareCertificate('"346"') clientSoftwareCertificates count 'noOfClientSoftwareCertificates']
+            [implicit int 32 noOfLocaleIds 'localeIds == null ? -1 : COUNT(localeIds)']
             [array PascalString localeIds count 'noOfLocaleIds']
             [simple ExtensionObject('true') userIdentityToken]
-            [simple ExtensionObjectDefinition('"458"') userTokenSignature]
-            
+            [simple SignatureData('"458"') userTokenSignature]
         ]
         ['"470"' ActivateSessionResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple PascalByteString serverNonce]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"473"' CloseSessionRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [reserved uint 7 '0x00']
             [simple bit deleteSubscriptions]
             
         ]
         ['"476"' CloseSessionResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
-            
+            [simple ResponseHeader('"394"') responseHeader]
         ]
         ['"479"' CancelRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 requestHandle]
-            
         ]
         ['"482"' CancelResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple uint 32 cancelCount]
-            
         ]
         ['"351"' NodeAttributes
             [simple uint 32 specifiedAttributes]
@@ -1155,7 +1092,6 @@
             [simple LocalizedText description]
             [simple uint 32 writeMask]
             [simple uint 32 userWriteMask]
-            
         ]
         ['"354"' ObjectAttributes
             [simple uint 32 specifiedAttributes]
@@ -1164,7 +1100,6 @@
             [simple uint 32 writeMask]
             [simple uint 32 userWriteMask]
             [simple uint 8 eventNotifier]
-            
         ]
         ['"357"' VariableAttributes
             [simple uint 32 specifiedAttributes]
@@ -1230,7 +1165,6 @@
             [simple bit symmetric]
             [simple bit isAbstract]
             [simple LocalizedText inverseName]
-            
         ]
         ['"372"' DataTypeAttributes
             [simple uint 32 specifiedAttributes]
@@ -1251,12 +1185,10 @@
             [reserved uint 7 '0x00']
             [simple bit containsNoLoops]
             [simple uint 8 eventNotifier]
-            
         ]
         ['"17608"' GenericAttributeValue
             [simple uint 32 attributeId]
             [simple Variant value]
-            
         ]
         ['"17609"' GenericAttributes
             [simple uint 32 specifiedAttributes]
@@ -1265,8 +1197,7 @@
             [simple uint 32 writeMask]
             [simple uint 32 userWriteMask]
             [implicit int 32 noOfAttributeValues 'attributeValues == null ? -1 : COUNT(attributeValues)']
-            [array ExtensionObjectDefinition('"17608"') attributeValues count 'noOfAttributeValues']
-                    
+            [array GenericAttributeValue('"17608"') attributeValues count 'noOfAttributeValues']
         ]
         ['"378"' AddNodesItem
             [simple ExpandedNodeId parentNodeId]
@@ -1276,26 +1207,22 @@
             [simple NodeClass nodeClass]
             [simple ExtensionObject('true') nodeAttributes]
             [simple ExpandedNodeId typeDefinition]
-            
         ]
         ['"485"' AddNodesResult
             [simple StatusCode statusCode]
             [simple NodeId addedNodeId]
-            
         ]
         ['"488"' AddNodesRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfNodesToAdd 'nodesToAdd == null ? -1 : COUNT(nodesToAdd)']
-            [array ExtensionObjectDefinition('"378"') nodesToAdd count 'noOfNodesToAdd']
-                    
+            [array AddNodesItem('"378"') nodesToAdd count 'noOfNodesToAdd']
         ]
         ['"491"' AddNodesResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"485"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array AddNodesResult('"485"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"381"' AddReferencesItem
             [simple NodeId sourceNodeId]
@@ -1305,21 +1232,18 @@
             [simple PascalString targetServerUri]
             [simple ExpandedNodeId targetNodeId]
             [simple NodeClass targetNodeClass]
-            
         ]
         ['"494"' AddReferencesRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfReferencesToAdd 'referencesToAdd == null ? -1 : COUNT(referencesToAdd)']
-            [array ExtensionObjectDefinition('"381"') referencesToAdd count 'noOfReferencesToAdd']
-                    
+            [array AddReferencesItem('"381"') referencesToAdd count 'noOfReferencesToAdd']
         ]
         ['"497"' AddReferencesResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"384"' DeleteNodesItem
             [simple NodeId nodeId]
@@ -1328,18 +1252,16 @@
             
         ]
         ['"500"' DeleteNodesRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfNodesToDelete 'nodesToDelete == null ? -1 : COUNT(nodesToDelete)']
-            [array ExtensionObjectDefinition('"384"') nodesToDelete count 'noOfNodesToDelete']
-                    
+            [array DeleteNodesItem('"384"') nodesToDelete count 'noOfNodesToDelete']
         ]
         ['"503"' DeleteNodesResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"387"' DeleteReferencesItem
             [simple NodeId sourceNodeId]
@@ -1352,24 +1274,21 @@
             
         ]
         ['"506"' DeleteReferencesRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfReferencesToDelete 'referencesToDelete == null ? -1 : COUNT(referencesToDelete)']
-            [array ExtensionObjectDefinition('"387"') referencesToDelete count 'noOfReferencesToDelete']
-                    
+            [array DeleteReferencesItem('"387"') referencesToDelete count 'noOfReferencesToDelete']
         ]
         ['"509"' DeleteReferencesResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"513"' ViewDescription
             [simple NodeId viewId]
             [simple int 64 timestamp]
             [simple uint 32 viewVersion]
-            
         ]
         ['"516"' BrowseDescription
             [simple NodeId nodeId]
@@ -1379,7 +1298,6 @@
             [simple bit includeSubtypes]
             [simple uint 32 nodeClassMask]
             [simple uint 32 resultMask]
-            
         ]
         ['"520"' ReferenceDescription
             [simple NodeId referenceTypeId]
@@ -1390,46 +1308,40 @@
             [simple LocalizedText displayName]
             [simple NodeClass nodeClass]
             [simple ExpandedNodeId typeDefinition]
-            
         ]
         ['"524"' BrowseResult
             [simple StatusCode statusCode]
             [simple PascalByteString continuationPoint]
             [implicit int 32 noOfReferences 'references == null ? -1 : COUNT(references)']
-            [array ExtensionObjectDefinition('"520"') references count 'noOfReferences']
-                    
+            [array ReferenceDescription('"520"') references count 'noOfReferences']
         ]
         ['"527"' BrowseRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            [simple ExtensionObjectDefinition('"513"') view]
+            [simple RequestHeader('"391"') requestHeader]
+            [simple ViewDescription('"513"') view]
             [simple uint 32 requestedMaxReferencesPerNode]
             [implicit int 32 noOfNodesToBrowse 'nodesToBrowse == null ? -1 : COUNT(nodesToBrowse)']
-            [array ExtensionObjectDefinition('"516"') nodesToBrowse count 'noOfNodesToBrowse']
-                    
+            [array BrowseDescription('"516"') nodesToBrowse count 'noOfNodesToBrowse']
         ]
         ['"530"' BrowseResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"524"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array BrowseResult('"524"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"533"' BrowseNextRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [reserved uint 7 '0x00']
             [simple bit releaseContinuationPoints]
             [implicit int 32 noOfContinuationPoints 'continuationPoints == null ? -1 : COUNT(continuationPoints)']
             [array PascalByteString continuationPoints count 'noOfContinuationPoints']
-            
         ]
         ['"536"' BrowseNextResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"524"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array BrowseResult('"524"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"539"' RelativePathElement
             [simple NodeId referenceTypeId]
@@ -1437,64 +1349,53 @@
             [simple bit includeSubtypes]
             [simple bit isInverse]
             [simple QualifiedName targetName]
-            
         ]
         ['"542"' RelativePath
             [implicit int 32 noOfElements 'elements == null ? -1 : COUNT(elements)']
-            [array ExtensionObjectDefinition('"539"') elements count 'noOfElements']
-                    
+            [array RelativePathElement('"539"') elements count 'noOfElements']
         ]
         ['"545"' BrowsePath
             [simple NodeId startingNode]
-            [simple ExtensionObjectDefinition('"542"') relativePath]
-            
+            [simple RelativePath('"542"') relativePath]
         ]
         ['"548"' BrowsePathTarget
             [simple ExpandedNodeId targetId]
             [simple uint 32 remainingPathIndex]
-            
         ]
         ['"551"' BrowsePathResult
             [simple StatusCode statusCode]
             [implicit int 32 noOfTargets 'targets == null ? -1 : COUNT(targets)']
-            [array ExtensionObjectDefinition('"548"') targets count 'noOfTargets']
-                    
+            [array BrowsePathTarget('"548"') targets count 'noOfTargets']
         ]
         ['"554"' TranslateBrowsePathsToNodeIdsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfBrowsePaths 'browsePaths == null ? -1 : COUNT(browsePaths)']
-            [array ExtensionObjectDefinition('"545"') browsePaths count 'noOfBrowsePaths']
-                    
+            [array BrowsePath('"545"') browsePaths count 'noOfBrowsePaths']
         ]
         ['"557"' TranslateBrowsePathsToNodeIdsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"551"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array BrowsePathResult('"551"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"560"' RegisterNodesRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfNodesToRegister 'nodesToRegister == null ? -1 : COUNT(nodesToRegister)']
             [array NodeId nodesToRegister count 'noOfNodesToRegister']
-            
         ]
         ['"563"' RegisterNodesResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfRegisteredNodeIds 'registeredNodeIds == null ? -1 : COUNT(registeredNodeIds)']
             [array NodeId registeredNodeIds count 'noOfRegisteredNodeIds']
-            
         ]
         ['"566"' UnregisterNodesRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfNodesToUnregister 'nodesToUnregister == null ? -1 : COUNT(nodesToUnregister)']
             [array NodeId nodesToUnregister count 'noOfNodesToUnregister']
-            
         ]
         ['"569"' UnregisterNodesResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
-            
+            [simple ResponseHeader('"394"') responseHeader]
         ]
         ['"333"' EndpointConfiguration
             [simple int 32 operationTimeout]
@@ -1507,28 +1408,24 @@
             [simple int 32 maxBufferSize]
             [simple int 32 channelLifetime]
             [simple int 32 securityTokenLifetime]
-            
         ]
         ['"572"' QueryDataDescription
-            [simple ExtensionObjectDefinition('"542"') relativePath]
+            [simple RelativePath('"542"') relativePath]
             [simple uint 32 attributeId]
             [simple PascalString indexRange]
-            
         ]
         ['"575"' NodeTypeDescription
             [simple ExpandedNodeId typeDefinitionNode]
             [reserved uint 7 '0x00']
             [simple bit includeSubTypes]
             [implicit int 32 noOfDataToReturn 'dataToReturn == null ? -1 : COUNT(dataToReturn)']
-            [array ExtensionObjectDefinition('"572"') dataToReturn count 'noOfDataToReturn']
-                    
+            [array QueryDataDescription('"572"') dataToReturn count 'noOfDataToReturn']
         ]
         ['"579"' QueryDataSet
             [simple ExpandedNodeId nodeId]
             [simple ExpandedNodeId typeDefinitionNode]
             [implicit int 32 noOfValues 'values == null ? -1 : COUNT(values)']
             [array Variant values count 'noOfValues']
-            
         ]
         ['"582"' NodeReference
             [simple NodeId nodeId]
@@ -1537,37 +1434,31 @@
             [simple bit isForward]
             [implicit int 32 noOfReferencedNodeIds 'referencedNodeIds == null ? -1 : COUNT(referencedNodeIds)']
             [array NodeId referencedNodeIds count 'noOfReferencedNodeIds']
-            
         ]
         ['"585"' ContentFilterElement
             [simple FilterOperator filterOperator]
             [implicit int 32 noOfFilterOperands 'filterOperands == null ? -1 : COUNT(filterOperands)']
             [array ExtensionObject('true') filterOperands count 'noOfFilterOperands']
-            
         ]
         ['"588"' ContentFilter
             [implicit int 32 noOfElements 'elements == null ? -1 : COUNT(elements)']
-            [array ExtensionObjectDefinition('"585"') elements count 'noOfElements']
-                    
+            [array ContentFilterElement('"585"') elements count 'noOfElements']
         ]
         ['"591"' FilterOperand
             
         ]
         ['"594"' ElementOperand
             [simple uint 32 index]
-            
         ]
         ['"597"' LiteralOperand
             [simple Variant value]
-            
         ]
         ['"600"' AttributeOperand
             [simple NodeId nodeId]
             [simple PascalString alias]
-            [simple ExtensionObjectDefinition('"542"') browsePath]
+            [simple RelativePath('"542"') browsePath]
             [simple uint 32 attributeId]
             [simple PascalString indexRange]
-            
         ]
         ['"603"' SimpleAttributeOperand
             [simple NodeId typeDefinitionId]
@@ -1575,7 +1466,6 @@
             [array QualifiedName browsePath count 'noOfBrowsePath']
             [simple uint 32 attributeId]
             [simple PascalString indexRange]
-            
         ]
         ['"606"' ContentFilterElementResult
             [simple StatusCode statusCode]
@@ -1583,14 +1473,12 @@
             [array StatusCode operandStatusCodes count 'noOfOperandStatusCodes']
             [implicit int 32 noOfOperandDiagnosticInfos 'operandDiagnosticInfos == null ? -1 : COUNT(operandDiagnosticInfos)']
             [array DiagnosticInfo operandDiagnosticInfos count 'noOfOperandDiagnosticInfos']
-            
         ]
         ['"609"' ContentFilterResult
             [implicit int 32 noOfElementResults 'elementResults == null ? -1 : COUNT(elementResults)']
-            [array ExtensionObjectDefinition('"606"') elementResults count 'noOfElementResults']
-                    [implicit int 32 noOfElementDiagnosticInfos 'elementDiagnosticInfos == null ? -1 : COUNT(elementDiagnosticInfos)']
+            [array ContentFilterElementResult('"606"') elementResults count 'noOfElementResults']
+            [implicit int 32 noOfElementDiagnosticInfos 'elementDiagnosticInfos == null ? -1 : COUNT(elementDiagnosticInfos)']
             [array DiagnosticInfo elementDiagnosticInfos count 'noOfElementDiagnosticInfos']
-            
         ]
         ['"612"' ParsingResult
             [simple StatusCode statusCode]
@@ -1598,79 +1486,69 @@
             [array StatusCode dataStatusCodes count 'noOfDataStatusCodes']
             [implicit int 32 noOfDataDiagnosticInfos 'dataDiagnosticInfos == null ? -1 : COUNT(dataDiagnosticInfos)']
             [array DiagnosticInfo dataDiagnosticInfos count 'noOfDataDiagnosticInfos']
-            
         ]
         ['"615"' QueryFirstRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
-            [simple ExtensionObjectDefinition('"513"') view]
+            [simple RequestHeader('"391"') requestHeader]
+            [simple ViewDescription('"513"') view]
             [implicit int 32 noOfNodeTypes 'nodeTypes == null ? -1 : COUNT(nodeTypes)']
-            [array ExtensionObjectDefinition('"575"') nodeTypes count 'noOfNodeTypes']
-                    [simple ExtensionObjectDefinition('"588"') filter]
+            [array NodeTypeDescription('"575"') nodeTypes count 'noOfNodeTypes']
+            [simple ContentFilter('"588"') filter]
             [simple uint 32 maxDataSetsToReturn]
             [simple uint 32 maxReferencesToReturn]
-            
         ]
         ['"618"' QueryFirstResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfQueryDataSets 'queryDataSets == null ? -1 : COUNT(queryDataSets)']
-            [array ExtensionObjectDefinition('"579"') queryDataSets count 'noOfQueryDataSets']
-                    [simple PascalByteString continuationPoint]
+            [array QueryDataSet('"579"') queryDataSets count 'noOfQueryDataSets']
+            [simple PascalByteString continuationPoint]
             [implicit int 32 noOfParsingResults 'parsingResults == null ? -1 : COUNT(parsingResults)']
-            [array ExtensionObjectDefinition('"612"') parsingResults count 'noOfParsingResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array ParsingResult('"612"') parsingResults count 'noOfParsingResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            [simple ExtensionObjectDefinition('"609"') filterResult]
-            
+            [simple ContentFilterResult('"609"') filterResult]
         ]
         ['"621"' QueryNextRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [reserved uint 7 '0x00']
             [simple bit releaseContinuationPoint]
             [simple PascalByteString continuationPoint]
-            
         ]
         ['"624"' QueryNextResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfQueryDataSets 'queryDataSets == null ? -1 : COUNT(queryDataSets)']
-            [array ExtensionObjectDefinition('"579"') queryDataSets count 'noOfQueryDataSets']
-                    [simple PascalByteString revisedContinuationPoint]
-            
+            [array QueryDataSet('"579"') queryDataSets count 'noOfQueryDataSets']
+            [simple PascalByteString revisedContinuationPoint]
         ]
         ['"628"' ReadValueId
             [simple NodeId nodeId]
             [simple uint 32 attributeId]
             [simple PascalString indexRange]
             [simple QualifiedName dataEncoding]
-            
         ]
         ['"631"' ReadRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple float 64 maxAge]
             [simple TimestampsToReturn timestampsToReturn]
             [implicit int 32 noOfNodesToRead 'nodesToRead == null ? -1 : COUNT(nodesToRead)']
-            [array ExtensionObjectDefinition('"628"') nodesToRead count 'noOfNodesToRead']
-                    
+            [array ReadValueId('"628"') nodesToRead count 'noOfNodesToRead']
         ]
         ['"634"' ReadResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array DataValue results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"637"' HistoryReadValueId
             [simple NodeId nodeId]
             [simple PascalString indexRange]
             [simple QualifiedName dataEncoding]
             [simple PascalByteString continuationPoint]
-            
         ]
         ['"640"' HistoryReadResult
             [simple StatusCode statusCode]
             [simple PascalByteString continuationPoint]
             [simple ExtensionObject('true') historyData]
-            
         ]
         ['"643"' HistoryReadDetails
             
@@ -1679,14 +1557,13 @@
             [simple uint 32 numValuesPerNode]
             [simple int 64 startTime]
             [simple int 64 endTime]
-            [simple MonitoringFilter filter]
-            
+            [simple EventFilter('"727"') filter]
         ]
         ['"32801"' ReadEventDetails2
             [simple uint 32 numValuesPerNode]
             [simple int 64 startTime]
             [simple int 64 endTime]
-            [simple MonitoringFilter filter]
+            [simple EventFilter('"727"') filter]
             [reserved uint 7 '0x00']
             [simple bit readModified]
             
@@ -1707,8 +1584,7 @@
             [simple float 64 processingInterval]
             [implicit int 32 noOfAggregateType 'aggregateType == null ? -1 : COUNT(aggregateType)']
             [array NodeId aggregateType count 'noOfAggregateType']
-            [simple ExtensionObjectDefinition('"950"') aggregateConfiguration]
-            
+            [simple AggregateConfiguration('"950"') aggregateConfiguration]
         ]
         ['"655"' ReadAtTimeDetails
             [implicit int 32 noOfReqTimes 'reqTimes == null ? -1 : COUNT(reqTimes)']
@@ -1720,76 +1596,65 @@
         ['"23499"' ReadAnnotationDataDetails
             [implicit int 32 noOfReqTimes 'reqTimes == null ? -1 : COUNT(reqTimes)']
             [array int 64 reqTimes count 'noOfReqTimes']
-            
         ]
         ['"658"' HistoryData
             [implicit int 32 noOfDataValues 'dataValues == null ? -1 : COUNT(dataValues)']
             [array DataValue dataValues count 'noOfDataValues']
-            
         ]
         ['"11218"' ModificationInfo
             [simple int 64 modificationTime]
             [simple HistoryUpdateType updateType]
             [simple PascalString userName]
-            
         ]
         ['"11219"' HistoryModifiedData
             [implicit int 32 noOfDataValues 'dataValues == null ? -1 : COUNT(dataValues)']
             [array DataValue dataValues count 'noOfDataValues']
             [implicit int 32 noOfModificationInfos 'modificationInfos == null ? -1 : COUNT(modificationInfos)']
-            [array ExtensionObjectDefinition('"11218"') modificationInfos count 'noOfModificationInfos']
-                    
+            [array ModificationInfo('"11218"') modificationInfos count 'noOfModificationInfos']
         ]
         ['"661"' HistoryEvent
             [implicit int 32 noOfEvents 'events == null ? -1 : COUNT(events)']
-            [array ExtensionObjectDefinition('"922"') events count 'noOfEvents']
-                    
+            [array HistoryEventFieldList('"922"') events count 'noOfEvents']
         ]
         ['"32826"' HistoryModifiedEvent
             [implicit int 32 noOfEvents 'events == null ? -1 : COUNT(events)']
-            [array ExtensionObjectDefinition('"922"') events count 'noOfEvents']
-                    [implicit int 32 noOfModificationInfos 'modificationInfos == null ? -1 : COUNT(modificationInfos)']
-            [array ExtensionObjectDefinition('"11218"') modificationInfos count 'noOfModificationInfos']
-                    
+            [array HistoryEventFieldList('"922"') events count 'noOfEvents']
+            [implicit int 32 noOfModificationInfos 'modificationInfos == null ? -1 : COUNT(modificationInfos)']
+            [array ModificationInfo('"11218"') modificationInfos count 'noOfModificationInfos']
         ]
         ['"664"' HistoryReadRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple ExtensionObject('true') historyReadDetails]
             [simple TimestampsToReturn timestampsToReturn]
             [reserved uint 7 '0x00']
             [simple bit releaseContinuationPoints]
             [implicit int 32 noOfNodesToRead 'nodesToRead == null ? -1 : COUNT(nodesToRead)']
-            [array ExtensionObjectDefinition('"637"') nodesToRead count 'noOfNodesToRead']
-                    
+            [array HistoryReadValueId('"637"') nodesToRead count 'noOfNodesToRead']
         ]
         ['"667"' HistoryReadResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"640"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array HistoryReadResult('"640"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"670"' WriteValue
             [simple NodeId nodeId]
             [simple uint 32 attributeId]
             [simple PascalString indexRange]
             [simple DataValue value]
-            
         ]
         ['"673"' WriteRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfNodesToWrite 'nodesToWrite == null ? -1 : COUNT(nodesToWrite)']
-            [array ExtensionObjectDefinition('"670"') nodesToWrite count 'noOfNodesToWrite']
-                    
+            [array WriteValue('"670"') nodesToWrite count 'noOfNodesToWrite']
         ]
         ['"676"' WriteResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"679"' HistoryUpdateDetails
             
@@ -1799,22 +1664,19 @@
             [simple PerformUpdateType performInsertReplace]
             [implicit int 32 noOfUpdateValues 'updateValues == null ? -1 : COUNT(updateValues)']
             [array DataValue updateValues count 'noOfUpdateValues']
-            
         ]
         ['"11297"' UpdateStructureDataDetails
             [simple NodeId nodeId]
             [simple PerformUpdateType performInsertReplace]
             [implicit int 32 noOfUpdateValues 'updateValues == null ? -1 : COUNT(updateValues)']
             [array DataValue updateValues count 'noOfUpdateValues']
-            
         ]
         ['"685"' UpdateEventDetails
             [simple NodeId nodeId]
             [simple PerformUpdateType performInsertReplace]
-            [simple MonitoringFilter filter]
+            [simple EventFilter('"727"') filter]
             [implicit int 32 noOfEventData 'eventData == null ? -1 : COUNT(eventData)']
-            [array ExtensionObjectDefinition('"922"') eventData count 'noOfEventData']
-                    
+            [array HistoryEventFieldList('"922"') eventData count 'noOfEventData']
         ]
         ['"688"' DeleteRawModifiedDetails
             [simple NodeId nodeId]
@@ -1822,19 +1684,16 @@
             [simple bit isDeleteModified]
             [simple int 64 startTime]
             [simple int 64 endTime]
-            
         ]
         ['"691"' DeleteAtTimeDetails
             [simple NodeId nodeId]
             [implicit int 32 noOfReqTimes 'reqTimes == null ? -1 : COUNT(reqTimes)']
             [array int 64 reqTimes count 'noOfReqTimes']
-            
         ]
         ['"694"' DeleteEventDetails
             [simple NodeId nodeId]
             [implicit int 32 noOfEventIds 'eventIds == null ? -1 : COUNT(eventIds)']
             [array PascalByteString eventIds count 'noOfEventIds']
-            
         ]
         ['"697"' HistoryUpdateResult
             [simple StatusCode statusCode]
@@ -1842,28 +1701,24 @@
             [array StatusCode operationResults count 'noOfOperationResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"700"' HistoryUpdateRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfHistoryUpdateDetails 'historyUpdateDetails == null ? -1 : COUNT(historyUpdateDetails)']
             [array ExtensionObject('true') historyUpdateDetails count 'noOfHistoryUpdateDetails']
-            
         ]
         ['"703"' HistoryUpdateResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"697"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array HistoryUpdateResult('"697"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"706"' CallMethodRequest
             [simple NodeId objectId]
             [simple NodeId methodId]
             [implicit int 32 noOfInputArguments 'inputArguments == null ? -1 : COUNT(inputArguments)']
             [array Variant inputArguments count 'noOfInputArguments']
-            
         ]
         ['"709"' CallMethodResult
             [simple StatusCode statusCode]
@@ -1873,21 +1728,18 @@
             [array DiagnosticInfo inputArgumentDiagnosticInfos count 'noOfInputArgumentDiagnosticInfos']
             [implicit int 32 noOfOutputArguments 'outputArguments == null ? -1 : COUNT(outputArguments)']
             [array Variant outputArguments count 'noOfOutputArguments']
-            
         ]
         ['"712"' CallRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfMethodsToCall 'methodsToCall == null ? -1 : COUNT(methodsToCall)']
-            [array ExtensionObjectDefinition('"706"') methodsToCall count 'noOfMethodsToCall']
-                    
+            [array CallMethodRequest('"706"') methodsToCall count 'noOfMethodsToCall']
         ]
         ['"715"' CallResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"709"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array CallMethodResult('"709"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"721"' MonitoringFilter
             
@@ -1896,13 +1748,11 @@
             [simple DataChangeTrigger trigger]
             [simple uint 32 deadbandType]
             [simple float 64 deadbandValue]
-            
         ]
         ['"727"' EventFilter
             [implicit int 32 noOfSelectClauses 'selectClauses == null ? -1 : COUNT(selectClauses)']
-            [array FilterOperand('"589"') selectClauses count 'noOfSelectClauses']
-            [simple ExtensionObjectDefinition('"588"') whereClause]
-            
+            [array SimpleAttributeOperand('"603"') selectClauses count 'noOfSelectClauses']
+            [simple ContentFilter('"588"') whereClause]
         ]
         ['"950"' AggregateConfiguration
             [reserved uint 6 '0x00']
@@ -1918,8 +1768,7 @@
             [simple int 64 startTime]
             [simple NodeId aggregateType]
             [simple float 64 processingInterval]
-            [simple ExtensionObjectDefinition('"950"') aggregateConfiguration]
-            
+            [simple AggregateConfiguration('"950"') aggregateConfiguration]
         ]
         ['"733"' MonitoringFilterResult
             
@@ -1929,14 +1778,12 @@
             [array StatusCode selectClauseResults count 'noOfSelectClauseResults']
             [implicit int 32 noOfSelectClauseDiagnosticInfos 'selectClauseDiagnosticInfos == null ? -1 : COUNT(selectClauseDiagnosticInfos)']
             [array DiagnosticInfo selectClauseDiagnosticInfos count 'noOfSelectClauseDiagnosticInfos']
-            [simple ExtensionObjectDefinition('"609"') whereClauseResult]
-            
+            [simple ContentFilterResult('"609"') whereClauseResult]
         ]
         ['"739"' AggregateFilterResult
             [simple int 64 revisedStartTime]
             [simple float 64 revisedProcessingInterval]
-            [simple ExtensionObjectDefinition('"950"') revisedAggregateConfiguration]
-            
+            [simple AggregateConfiguration('"950"') revisedAggregateConfiguration]
         ]
         ['"742"' MonitoringParameters
             [simple uint 32 clientHandle]
@@ -1948,10 +1795,9 @@
             
         ]
         ['"745"' MonitoredItemCreateRequest
-            [simple ExtensionObjectDefinition('"628"') itemToMonitor]
+            [simple ReadValueId('"628"') itemToMonitor]
             [simple MonitoringMode monitoringMode]
-            [simple ExtensionObjectDefinition('"742"') requestedParameters]
-            
+            [simple MonitoringParameters('"742"') requestedParameters]
         ]
         ['"748"' MonitoredItemCreateResult
             [simple StatusCode statusCode]
@@ -1959,80 +1805,70 @@
             [simple float 64 revisedSamplingInterval]
             [simple uint 32 revisedQueueSize]
             [simple ExtensionObject('true') filterResult]
-            
         ]
         ['"751"' CreateMonitoredItemsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [simple TimestampsToReturn timestampsToReturn]
             [implicit int 32 noOfItemsToCreate 'itemsToCreate == null ? -1 : COUNT(itemsToCreate)']
-            [array ExtensionObjectDefinition('"745"') itemsToCreate count 'noOfItemsToCreate']
-                    
+            [array MonitoredItemCreateRequest('"745"') itemsToCreate count 'noOfItemsToCreate']
         ]
         ['"754"' CreateMonitoredItemsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"748"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array MonitoredItemCreateResult('"748"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"757"' MonitoredItemModifyRequest
             [simple uint 32 monitoredItemId]
-            [simple ExtensionObjectDefinition('"742"') requestedParameters]
-            
+            [simple MonitoringParameters('"742"') requestedParameters]
         ]
         ['"760"' MonitoredItemModifyResult
             [simple StatusCode statusCode]
             [simple float 64 revisedSamplingInterval]
             [simple uint 32 revisedQueueSize]
             [simple ExtensionObject('true') filterResult]
-            
         ]
         ['"763"' ModifyMonitoredItemsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [simple TimestampsToReturn timestampsToReturn]
             [implicit int 32 noOfItemsToModify 'itemsToModify == null ? -1 : COUNT(itemsToModify)']
-            [array ExtensionObjectDefinition('"757"') itemsToModify count 'noOfItemsToModify']
-                    
+            [array MonitoredItemModifyRequest('"757"') itemsToModify count 'noOfItemsToModify']
         ]
         ['"766"' ModifyMonitoredItemsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"760"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array MonitoredItemModifyResult('"760"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"769"' SetMonitoringModeRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [simple MonitoringMode monitoringMode]
             [implicit int 32 noOfMonitoredItemIds 'monitoredItemIds == null ? -1 : COUNT(monitoredItemIds)']
             [array uint 32 monitoredItemIds count 'noOfMonitoredItemIds']
-            
         ]
         ['"772"' SetMonitoringModeResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"775"' SetTriggeringRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [simple uint 32 triggeringItemId]
             [implicit int 32 noOfLinksToAdd 'linksToAdd == null ? -1 : COUNT(linksToAdd)']
             [array uint 32 linksToAdd count 'noOfLinksToAdd']
             [implicit int 32 noOfLinksToRemove 'linksToRemove == null ? -1 : COUNT(linksToRemove)']
             [array uint 32 linksToRemove count 'noOfLinksToRemove']
-            
         ]
         ['"778"' SetTriggeringResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfAddResults 'addResults == null ? -1 : COUNT(addResults)']
             [array StatusCode addResults count 'noOfAddResults']
             [implicit int 32 noOfAddDiagnosticInfos 'addDiagnosticInfos == null ? -1 : COUNT(addDiagnosticInfos)']
@@ -2041,25 +1877,22 @@
             [array StatusCode removeResults count 'noOfRemoveResults']
             [implicit int 32 noOfRemoveDiagnosticInfos 'removeDiagnosticInfos == null ? -1 : COUNT(removeDiagnosticInfos)']
             [array DiagnosticInfo removeDiagnosticInfos count 'noOfRemoveDiagnosticInfos']
-            
         ]
         ['"781"' DeleteMonitoredItemsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [implicit int 32 noOfMonitoredItemIds 'monitoredItemIds == null ? -1 : COUNT(monitoredItemIds)']
             [array uint 32 monitoredItemIds count 'noOfMonitoredItemIds']
-            
         ]
         ['"784"' DeleteMonitoredItemsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"787"' CreateSubscriptionRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple float 64 requestedPublishingInterval]
             [simple uint 32 requestedLifetimeCount]
             [simple uint 32 requestedMaxKeepAliveCount]
@@ -2067,55 +1900,48 @@
             [reserved uint 7 '0x00']
             [simple bit publishingEnabled]
             [simple uint 8 priority]
-            
         ]
         ['"790"' CreateSubscriptionResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple uint 32 subscriptionId]
             [simple float 64 revisedPublishingInterval]
             [simple uint 32 revisedLifetimeCount]
             [simple uint 32 revisedMaxKeepAliveCount]
-            
         ]
         ['"793"' ModifySubscriptionRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [simple float 64 requestedPublishingInterval]
             [simple uint 32 requestedLifetimeCount]
             [simple uint 32 requestedMaxKeepAliveCount]
             [simple uint 32 maxNotificationsPerPublish]
             [simple uint 8 priority]
-            
         ]
         ['"796"' ModifySubscriptionResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple float 64 revisedPublishingInterval]
             [simple uint 32 revisedLifetimeCount]
             [simple uint 32 revisedMaxKeepAliveCount]
-            
         ]
         ['"799"' SetPublishingModeRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [reserved uint 7 '0x00']
             [simple bit publishingEnabled]
             [implicit int 32 noOfSubscriptionIds 'subscriptionIds == null ? -1 : COUNT(subscriptionIds)']
             [array uint 32 subscriptionIds count 'noOfSubscriptionIds']
-            
         ]
         ['"802"' SetPublishingModeResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"805"' NotificationMessage
             [simple uint 32 sequenceNumber]
             [simple int 64 publishTime]
             [implicit int 32 noOfNotificationData 'notificationData == null ? -1 : COUNT(notificationData)']
             [array ExtensionObject('true') notificationData count 'noOfNotificationData']
-            
         ]
         ['"947"' NotificationData
             
@@ -2123,83 +1949,71 @@
         ['"811"' DataChangeNotification
             [implicit int 32 size 'lengthInBytes - 4'] // minus type information
             [implicit int 32 noOfMonitoredItems 'monitoredItems == null ? -1 : COUNT(monitoredItems)']
-            [array ExtensionObjectDefinition('"808"') monitoredItems count 'noOfMonitoredItems']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array MonitoredItemNotification('"808"') monitoredItems count 'noOfMonitoredItems']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"808"' MonitoredItemNotification
             [simple uint 32 clientHandle]
             [simple DataValue value]
-            
         ]
         ['"916"' EventNotificationList
             [implicit int 32 size 'lengthInBytes - 4'] // minus type information
             [implicit int 32 noOfEvents 'events == null ? -1 : COUNT(events)']
-            [array ExtensionObjectDefinition('"919"') events count 'noOfEvents']
-                    
+            [array EventFieldList('"919"') events count 'noOfEvents']
         ]
         ['"919"' EventFieldList
             [simple uint 32 clientHandle]
             [implicit int 32 noOfEventFields 'eventFields == null ? -1 : COUNT(eventFields)']
             [array Variant eventFields count 'noOfEventFields']
-            
         ]
         ['"922"' HistoryEventFieldList
             [implicit int 32 noOfEventFields 'eventFields == null ? -1 : COUNT(eventFields)']
             [array Variant eventFields count 'noOfEventFields']
-            
         ]
         ['"820"' StatusChangeNotification
             [implicit int 32 size 'lengthInBytes - 4'] // minus type information
             [simple StatusCode status]
             [simple DiagnosticInfo diagnosticInfo]
-            
         ]
         ['"823"' SubscriptionAcknowledgement
             [simple uint 32 subscriptionId]
             [simple uint 32 sequenceNumber]
-            
         ]
         ['"826"' PublishRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfSubscriptionAcknowledgements 'subscriptionAcknowledgements == null ? -1 : COUNT(subscriptionAcknowledgements)']
-            [array ExtensionObjectDefinition('"823"') subscriptionAcknowledgements count 'noOfSubscriptionAcknowledgements']
-                    
+            [array SubscriptionAcknowledgement('"823"') subscriptionAcknowledgements count 'noOfSubscriptionAcknowledgements']
         ]
         ['"829"' PublishResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [simple uint 32 subscriptionId]
             [implicit int 32 noOfAvailableSequenceNumbers 'availableSequenceNumbers == null ? -1 : COUNT(availableSequenceNumbers)']
             [array uint 32 availableSequenceNumbers count 'noOfAvailableSequenceNumbers']
             [reserved uint 7 '0x00']
             [simple bit moreNotifications]
-            [simple ExtensionObjectDefinition('"805"') notificationMessage]
+            [simple NotificationMessage('"805"') notificationMessage]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"832"' RepublishRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [simple uint 32 subscriptionId]
             [simple uint 32 retransmitSequenceNumber]
-            
         ]
         ['"835"' RepublishResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
-            [simple ExtensionObjectDefinition('"805"') notificationMessage]
-            
+            [simple ResponseHeader('"394"') responseHeader]
+            [simple NotificationMessage('"805"') notificationMessage]
         ]
         ['"838"' TransferResult
             [simple StatusCode statusCode]
             [implicit int 32 noOfAvailableSequenceNumbers 'availableSequenceNumbers == null ? -1 : COUNT(availableSequenceNumbers)']
             [array uint 32 availableSequenceNumbers count 'noOfAvailableSequenceNumbers']
-            
         ]
         ['"841"' TransferSubscriptionsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfSubscriptionIds 'subscriptionIds == null ? -1 : COUNT(subscriptionIds)']
             [array uint 32 subscriptionIds count 'noOfSubscriptionIds']
             [reserved uint 7 '0x00']
@@ -2207,26 +2021,23 @@
             
         ]
         ['"844"' TransferSubscriptionsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
-            [array ExtensionObjectDefinition('"838"') results count 'noOfResults']
-                    [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
+            [array TransferResult('"838"') results count 'noOfResults']
+            [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"847"' DeleteSubscriptionsRequest
-            [simple ExtensionObjectDefinition('"391"') requestHeader]
+            [simple RequestHeader('"391"') requestHeader]
             [implicit int 32 noOfSubscriptionIds 'subscriptionIds == null ? -1 : COUNT(subscriptionIds)']
             [array uint 32 subscriptionIds count 'noOfSubscriptionIds']
-            
         ]
         ['"850"' DeleteSubscriptionsResponse
-            [simple ExtensionObjectDefinition('"394"') responseHeader]
+            [simple ResponseHeader('"394"') responseHeader]
             [implicit int 32 noOfResults 'results == null ? -1 : COUNT(results)']
             [array StatusCode results count 'noOfResults']
             [implicit int 32 noOfDiagnosticInfos 'diagnosticInfos == null ? -1 : COUNT(diagnosticInfos)']
             [array DiagnosticInfo diagnosticInfos count 'noOfDiagnosticInfos']
-            
         ]
         ['"340"' BuildInfo
             [simple PascalString productUri]
@@ -2235,31 +2046,26 @@
             [simple PascalString softwareVersion]
             [simple PascalString buildNumber]
             [simple int 64 buildDate]
-            
         ]
         ['"855"' RedundantServerDataType
             [simple PascalString serverId]
             [simple uint 8 serviceLevel]
             [simple ServerState serverState]
-            
         ]
         ['"11945"' EndpointUrlListDataType
             [implicit int 32 noOfEndpointUrlList 'endpointUrlList == null ? -1 : COUNT(endpointUrlList)']
             [array PascalString endpointUrlList count 'noOfEndpointUrlList']
-            
         ]
         ['"11946"' NetworkGroupDataType
             [simple PascalString serverUri]
             [implicit int 32 noOfNetworkPaths 'networkPaths == null ? -1 : COUNT(networkPaths)']
-            [array ExtensionObjectDefinition('"11945"') networkPaths count 'noOfNetworkPaths']
-                    
+            [array EndpointUrlListDataType('"11945"') networkPaths count 'noOfNetworkPaths']
         ]
         ['"858"' SamplingIntervalDiagnosticsDataType
             [simple float 64 samplingInterval]
             [simple uint 32 monitoredItemCount]
             [simple uint 32 maxMonitoredItemCount]
             [simple uint 32 disabledMonitoredItemCount]
-            
         ]
         ['"861"' ServerDiagnosticsSummaryDataType
             [simple uint 32 serverViewCount]
@@ -2274,21 +2080,19 @@
             [simple uint 32 publishingIntervalCount]
             [simple uint 32 securityRejectedRequestsCount]
             [simple uint 32 rejectedRequestsCount]
-            
         ]
         ['"864"' ServerStatusDataType
             [simple int 64 startTime]
             [simple int 64 currentTime]
             [simple ServerState state]
-            [simple ExtensionObjectDefinition('"340"') buildInfo]
+            [simple BuildInfo('"340"') buildInfo]
             [simple uint 32 secondsTillShutdown]
             [simple LocalizedText shutdownReason]
-            
         ]
         ['"867"' SessionDiagnosticsDataType
             [simple NodeId sessionId]
             [simple PascalString sessionName]
-            [simple ExtensionObjectDefinition('"310"') clientDescription]
+            [simple ApplicationDescription('"310"') clientDescription]
             [simple PascalString serverUri]
             [simple PascalString endpointUrl]
             [implicit int 32 noOfLocaleIds 'localeIds == null ? -1 : COUNT(localeIds)']
@@ -2300,37 +2104,36 @@
             [simple uint 32 currentSubscriptionsCount]
             [simple uint 32 currentMonitoredItemsCount]
             [simple uint 32 currentPublishRequestsInQueue]
-            [simple ExtensionObjectDefinition('"873"') totalRequestCount]
+            [simple ServiceCounterDataType('"873"') totalRequestCount]
             [simple uint 32 unauthorizedRequestCount]
-            [simple ExtensionObjectDefinition('"873"') readCount]
-            [simple ExtensionObjectDefinition('"873"') historyReadCount]
-            [simple ExtensionObjectDefinition('"873"') writeCount]
-            [simple ExtensionObjectDefinition('"873"') historyUpdateCount]
-            [simple ExtensionObjectDefinition('"873"') callCount]
-            [simple ExtensionObjectDefinition('"873"') createMonitoredItemsCount]
-            [simple ExtensionObjectDefinition('"873"') modifyMonitoredItemsCount]
-            [simple ExtensionObjectDefinition('"873"') setMonitoringModeCount]
-            [simple ExtensionObjectDefinition('"873"') setTriggeringCount]
-            [simple ExtensionObjectDefinition('"873"') deleteMonitoredItemsCount]
-            [simple ExtensionObjectDefinition('"873"') createSubscriptionCount]
-            [simple ExtensionObjectDefinition('"873"') modifySubscriptionCount]
-            [simple ExtensionObjectDefinition('"873"') setPublishingModeCount]
-            [simple ExtensionObjectDefinition('"873"') publishCount]
-            [simple ExtensionObjectDefinition('"873"') republishCount]
-            [simple ExtensionObjectDefinition('"873"') transferSubscriptionsCount]
-            [simple ExtensionObjectDefinition('"873"') deleteSubscriptionsCount]
-            [simple ExtensionObjectDefinition('"873"') addNodesCount]
-            [simple ExtensionObjectDefinition('"873"') addReferencesCount]
-            [simple ExtensionObjectDefinition('"873"') deleteNodesCount]
-            [simple ExtensionObjectDefinition('"873"') deleteReferencesCount]
-            [simple ExtensionObjectDefinition('"873"') browseCount]
-            [simple ExtensionObjectDefinition('"873"') browseNextCount]
-            [simple ExtensionObjectDefinition('"873"') translateBrowsePathsToNodeIdsCount]
-            [simple ExtensionObjectDefinition('"873"') queryFirstCount]
-            [simple ExtensionObjectDefinition('"873"') queryNextCount]
-            [simple ExtensionObjectDefinition('"873"') registerNodesCount]
-            [simple ExtensionObjectDefinition('"873"') unregisterNodesCount]
-            
+            [simple ServiceCounterDataType('"873"') readCount]
+            [simple ServiceCounterDataType('"873"') historyReadCount]
+            [simple ServiceCounterDataType('"873"') writeCount]
+            [simple ServiceCounterDataType('"873"') historyUpdateCount]
+            [simple ServiceCounterDataType('"873"') callCount]
+            [simple ServiceCounterDataType('"873"') createMonitoredItemsCount]
+            [simple ServiceCounterDataType('"873"') modifyMonitoredItemsCount]
+            [simple ServiceCounterDataType('"873"') setMonitoringModeCount]
+            [simple ServiceCounterDataType('"873"') setTriggeringCount]
+            [simple ServiceCounterDataType('"873"') deleteMonitoredItemsCount]
+            [simple ServiceCounterDataType('"873"') createSubscriptionCount]
+            [simple ServiceCounterDataType('"873"') modifySubscriptionCount]
+            [simple ServiceCounterDataType('"873"') setPublishingModeCount]
+            [simple ServiceCounterDataType('"873"') publishCount]
+            [simple ServiceCounterDataType('"873"') republishCount]
+            [simple ServiceCounterDataType('"873"') transferSubscriptionsCount]
+            [simple ServiceCounterDataType('"873"') deleteSubscriptionsCount]
+            [simple ServiceCounterDataType('"873"') addNodesCount]
+            [simple ServiceCounterDataType('"873"') addReferencesCount]
+            [simple ServiceCounterDataType('"873"') deleteNodesCount]
+            [simple ServiceCounterDataType('"873"') deleteReferencesCount]
+            [simple ServiceCounterDataType('"873"') browseCount]
+            [simple ServiceCounterDataType('"873"') browseNextCount]
+            [simple ServiceCounterDataType('"873"') translateBrowsePathsToNodeIdsCount]
+            [simple ServiceCounterDataType('"873"') queryFirstCount]
+            [simple ServiceCounterDataType('"873"') queryNextCount]
+            [simple ServiceCounterDataType('"873"') registerNodesCount]
+            [simple ServiceCounterDataType('"873"') unregisterNodesCount]
         ]
         ['"870"' SessionSecurityDiagnosticsDataType
             [simple NodeId sessionId]
@@ -2343,17 +2146,14 @@
             [simple MessageSecurityMode securityMode]
             [simple PascalString securityPolicyUri]
             [simple PascalByteString clientCertificate]
-            
         ]
         ['"873"' ServiceCounterDataType
             [simple uint 32 totalCount]
             [simple uint 32 errorCount]
-            
         ]
         ['"301"' StatusResult
             [simple StatusCode statusCode]
             [simple DiagnosticInfo diagnosticInfo]
-            
         ]
         ['"876"' SubscriptionDiagnosticsDataType
             [simple NodeId sessionId]
@@ -2388,54 +2188,45 @@
             [simple uint 32 monitoringQueueOverflowCount]
             [simple uint 32 nextSequenceNumber]
             [simple uint 32 eventQueueOverFlowCount]
-            
         ]
         ['"879"' ModelChangeStructureDataType
             [simple NodeId affected]
             [simple NodeId affectedType]
             [simple uint 8 verb]
-            
         ]
         ['"899"' SemanticChangeStructureDataType
             [simple NodeId affected]
             [simple NodeId affectedType]
-            
         ]
         ['"886"' Range
             [simple float 64 low]
             [simple float 64 high]
-            
         ]
         ['"889"' EUInformation
             [simple PascalString namespaceUri]
             [simple int 32 unitId]
             [simple LocalizedText displayName]
             [simple LocalizedText description]
-            
         ]
         ['"12173"' ComplexNumberType
             [simple float 32 real]
             [simple float 32 imaginary]
-            
         ]
         ['"12174"' DoubleComplexNumberType
             [simple float 64 real]
             [simple float 64 imaginary]
-            
         ]
         ['"12081"' AxisInformation
-            [simple ExtensionObjectDefinition('"889"') engineeringUnits]
-            [simple ExtensionObjectDefinition('"886"') eURange]
+            [simple EUInformation('"889"') engineeringUnits]
+            [simple Range('"886"') eURange]
             [simple LocalizedText title]
             [simple AxisScaleEnumeration axisScaleType]
             [implicit int 32 noOfAxisSteps 'axisSteps == null ? -1 : COUNT(axisSteps)']
             [array float 64 axisSteps count 'noOfAxisSteps']
-            
         ]
         ['"12082"' XVType
             [simple float 64 x]
             [simple float 32 value]
-            
         ]
         ['"896"' ProgramDiagnosticDataType
             [simple NodeId createSessionId]
@@ -2445,12 +2236,11 @@
             [simple PascalString lastMethodCall]
             [simple NodeId lastMethodSessionId]
             [implicit int 32 noOfLastMethodInputArguments 'lastMethodInputArguments == null ? -1 : COUNT(lastMethodInputArguments)']
-            [array ExtensionObjectDefinition('"298"') lastMethodInputArguments count 'noOfLastMethodInputArguments']
-                    [implicit int 32 noOfLastMethodOutputArguments 'lastMethodOutputArguments == null ? -1 : COUNT(lastMethodOutputArguments)']
-            [array ExtensionObjectDefinition('"298"') lastMethodOutputArguments count 'noOfLastMethodOutputArguments']
-                    [simple int 64 lastMethodCallTime]
-            [simple ExtensionObjectDefinition('"301"') lastMethodReturnStatus]
-            
+            [array Argument('"298"') lastMethodInputArguments count 'noOfLastMethodInputArguments']
+            [implicit int 32 noOfLastMethodOutputArguments 'lastMethodOutputArguments == null ? -1 : COUNT(lastMethodOutputArguments)']
+            [array Argument('"298"') lastMethodOutputArguments count 'noOfLastMethodOutputArguments']
+            [simple int 64 lastMethodCallTime]
+            [simple StatusResult('"301"') lastMethodReturnStatus]
         ]
         ['"24035"' ProgramDiagnostic2DataType
             [simple NodeId createSessionId]
@@ -2460,22 +2250,20 @@
             [simple PascalString lastMethodCall]
             [simple NodeId lastMethodSessionId]
             [implicit int 32 noOfLastMethodInputArguments 'lastMethodInputArguments == null ? -1 : COUNT(lastMethodInputArguments)']
-            [array ExtensionObjectDefinition('"298"') lastMethodInputArguments count 'noOfLastMethodInputArguments']
-                    [implicit int 32 noOfLastMethodOutputArguments 'lastMethodOutputArguments == null ? -1 : COUNT(lastMethodOutputArguments)']
-            [array ExtensionObjectDefinition('"298"') lastMethodOutputArguments count 'noOfLastMethodOutputArguments']
-                    [implicit int 32 noOfLastMethodInputValues 'lastMethodInputValues == null ? -1 : COUNT(lastMethodInputValues)']
+            [array Argument('"298"') lastMethodInputArguments count 'noOfLastMethodInputArguments']
+            [implicit int 32 noOfLastMethodOutputArguments 'lastMethodOutputArguments == null ? -1 : COUNT(lastMethodOutputArguments)']
+            [array Argument('"298"') lastMethodOutputArguments count 'noOfLastMethodOutputArguments']
+            [implicit int 32 noOfLastMethodInputValues 'lastMethodInputValues == null ? -1 : COUNT(lastMethodInputValues)']
             [array Variant lastMethodInputValues count 'noOfLastMethodInputValues']
             [implicit int 32 noOfLastMethodOutputValues 'lastMethodOutputValues == null ? -1 : COUNT(lastMethodOutputValues)']
             [array Variant lastMethodOutputValues count 'noOfLastMethodOutputValues']
             [simple int 64 lastMethodCallTime]
             [simple StatusCode lastMethodReturnStatus]
-            
         ]
         ['"893"' Annotation
             [simple PascalString message]
             [simple PascalString userName]
             [simple int 64 annotationTime]
-            
         ]
 
         ['"316"' UserIdentityToken
@@ -2684,42 +2472,35 @@
     // An XML element encoded as a UTF-8 string.
     [simple int 32 length]
             [array string 8 value count 'length']
-            
         ]
     [type TwoByteNodeId
     
     [simple uint 8 identifier]
-            
         ]
     [type FourByteNodeId
     
     [simple uint 8 namespaceIndex]
             [simple uint 16 identifier]
-            
         ]
     [type NumericNodeId
     
     [simple uint 16 namespaceIndex]
             [simple uint 32 identifier]
-            
         ]
     [type StringNodeId
     
     [simple uint 16 namespaceIndex]
             [simple PascalString identifier]
-            
         ]
     [type GuidNodeId
     
     [simple uint 16 namespaceIndex]
             [simple GuidValue identifier]
-            
         ]
     [type ByteStringNodeId
     
     [simple uint 16 namespaceIndex]
             [simple PascalByteString identifier]
-            
         ]
     [type DiagnosticInfo
     // A recursive structure containing diagnostic information associated with a status code.
@@ -2738,13 +2519,11 @@
             [optional PascalString additionalInfo 'additionalInfoSpecified']
             [optional StatusCode innerStatusCode 'innerStatusCodeSpecified']
             [optional DiagnosticInfo innerDiagnosticInfo 'innerDiagnosticInfoSpecified']
-            
         ]
     [type QualifiedName
     // A string qualified with a namespace index.
     [simple uint 16 namespaceIndex]
             [simple PascalString name]
-            
         ]
     [type LocalizedText
     // A string qualified with a namespace index.
@@ -2753,7 +2532,6 @@
             [simple bit localeSpecified]
             [optional PascalString locale 'localeSpecified']
             [optional PascalString text 'textSpecified']
-            
         ]
     [type DataValue
     // A value with an associated timestamp, and quality.
@@ -2770,7 +2548,6 @@
             [optional uint 16 sourcePicoseconds 'sourcePicosecondsSpecified']
             [optional int 64 serverTimestamp 'serverTimestampSpecified']
             [optional uint 16 serverPicoseconds 'serverPicosecondsSpecified']
-            
         ]
     
 

@@ -183,7 +183,7 @@ public class SecureChannel {
         }
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-            new NodeIdFourByte((short) 0, Integer.parseInt(openSecureChannelRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(openSecureChannelRequest.getExtensionId())),
             null, null
         );
         ExtensionObject extObject = new ExtensionObject(expandedNodeId, null, openSecureChannelRequest);
@@ -209,7 +209,7 @@ public class SecureChannel {
             .thenApply(this::onOpenResponse)
             .thenApply(openSecureChannelResponse -> {
                 ChannelSecurityToken securityToken = (ChannelSecurityToken) openSecureChannelResponse.getSecurityToken();
-                LOGGER.debug("Opened secure response id: {}, channel id:{}, token:{} lifetime:{}", openSecureChannelResponse.getIdentifier(),
+                LOGGER.debug("Opened secure response id: {}, channel id:{}, token:{} lifetime:{}", openSecureChannelResponse.getExtensionId(),
                     securityToken.getChannelId(), securityToken.getTokenId(), securityToken.getRevisedLifetime());
 
                 // store server and client nonce
@@ -378,7 +378,7 @@ public class SecureChannel {
         CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest(requestHeader);
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-            new NodeIdFourByte((short) 0, Integer.parseInt(closeSecureChannelRequest.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(closeSecureChannelRequest.getExtensionId())),
             null, null
         );
 
