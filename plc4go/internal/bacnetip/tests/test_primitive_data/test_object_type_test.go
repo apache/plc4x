@@ -83,21 +83,21 @@ func ObjectType(args ...any) *bacnetip.ObjectType {
 	return ObjectType
 }
 
-func ObjectTypeTag(x string) *bacnetip.Tag {
+func ObjectTypeTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, len(b), b)
 	return tag
 }
 
 // Encode a ObjectType object into a tag.
-func ObjectTypeEncode(obj *bacnetip.ObjectType) *bacnetip.Tag {
+func ObjectTypeEncode(obj *bacnetip.ObjectType) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a ObjectType application tag into a ObjectType.
-func ObjectTypeDecode(tag *bacnetip.Tag) *bacnetip.ObjectType {
+func ObjectTypeDecode(tag bacnetip.Tag) *bacnetip.ObjectType {
 	obj := ObjectType(tag)
 
 	return obj

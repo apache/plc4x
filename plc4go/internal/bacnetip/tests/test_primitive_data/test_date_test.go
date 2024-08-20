@@ -44,21 +44,21 @@ func Date(arg ...any) *bacnetip.Date {
 }
 
 // Convert a hex string to a character_string application tag.
-func DateTag(x string) *bacnetip.Tag {
+func DateTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DATE, len(b), b)
 	return tag
 }
 
 // Encode a Date object into a tag.
-func DateEncode(obj *bacnetip.Date) *bacnetip.Tag {
+func DateEncode(obj *bacnetip.Date) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Date application tag into a Date.
-func DateDecode(tag *bacnetip.Tag) *bacnetip.Date {
+func DateDecode(tag bacnetip.Tag) *bacnetip.Date {
 	obj := Date(tag)
 
 	return obj

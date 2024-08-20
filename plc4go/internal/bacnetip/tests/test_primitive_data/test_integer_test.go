@@ -44,21 +44,21 @@ func Integer(arg ...any) *bacnetip.Integer {
 	return Integer
 }
 
-func IntegerTag(x string) *bacnetip.Tag {
+func IntegerTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_SIGNED_INTEGER, len(b), b)
 	return tag
 }
 
 // Encode a Integer object into a tag.
-func IntegerEncode(obj *bacnetip.Integer) *bacnetip.Tag {
+func IntegerEncode(obj *bacnetip.Integer) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Integer application tag into a Integer.
-func IntegerDecode(tag *bacnetip.Tag) *bacnetip.Integer {
+func IntegerDecode(tag bacnetip.Tag) *bacnetip.Integer {
 	obj := Integer(tag)
 
 	return obj

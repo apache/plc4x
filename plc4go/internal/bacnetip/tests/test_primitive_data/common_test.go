@@ -21,7 +21,7 @@ package test_primitive_data
 
 import "github.com/apache/plc4x/plc4go/internal/bacnetip"
 
-func Tag(args ...any) *bacnetip.Tag {
+func Tag(args ...any) bacnetip.Tag {
 	tag, err := bacnetip.NewTag(args)
 	if err != nil {
 		panic(err)

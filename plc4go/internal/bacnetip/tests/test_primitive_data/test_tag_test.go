@@ -61,7 +61,7 @@ func ClosingTag(context any) *bacnetip.ClosingTag {
 	return closingTag
 }
 
-func TagList(tags ...bacnetip.TagListItem) *bacnetip.TagList {
+func TagList(tags ...bacnetip.Tag) *bacnetip.TagList {
 	return bacnetip.NewTagList(tags)
 }
 
@@ -73,7 +73,7 @@ func PDUData(args ...any) bacnetip.PDUData {
 	}
 }
 
-func TagTuple(tag *bacnetip.Tag) (tagClass model.TagClass, tagNumber uint, tagLVT int, tagData []byte) {
+func TagTuple(tag bacnetip.Tag) (tagClass model.TagClass, tagNumber uint, tagLVT int, tagData []byte) {
 	return tag.GetTagClass(), tag.GetTagNumber(), tag.GetTagLvt(), tag.GetTagData()
 }
 
@@ -91,7 +91,7 @@ func objDecode(blob []byte) any {
 // Encode the object into a tag, encode it in a PDU, return the data.
 func objEncode(obj any) []byte {
 	tag := Tag()
-	obj.(interface{ Encode(any) }).Encode(tag) //TODO: what should we use
+	obj.(interface{ Encode(tag bacnetip.Tag) }).Encode(tag)
 	data := PDUData()
 	tag.Encode(data)
 	return data.GetPduData()
@@ -102,6 +102,7 @@ func objEncode(obj any) []byte {
 //	convert the hex encoded string to and object, and compare the results to
 //	each other.
 func objEndec(t *testing.T, obj any, x string) {
+	t.Helper()
 	// convert the hex strings to a blobs
 	blob := xtob(x)
 
@@ -134,6 +135,7 @@ func contextEncode(tag *bacnetip.ContextTag) []byte {
 // convert the hex encoded string to and object, and compare the results to
 // each other.
 func contextEndec(t *testing.T, tnum int, x string, y string) {
+	t.Helper()
 	// convert the hex strings to a blobs
 	tdata := xtob(x)
 	blob1 := xtob(y)
@@ -206,6 +208,7 @@ func closingEncode(tag *bacnetip.ClosingTag) []byte {
 // convert the hex encoded string to and object, and compare the results to
 // each other.
 func closingEndec(t *testing.T, tnum int, x string) {
+	t.Helper()
 	// convert the hex string to a blob
 	blob1 := xtob(x)
 
@@ -264,7 +267,6 @@ func TestApplicationTag(t *testing.T) {
 }
 
 func TestGenericApplicationToContext(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: implement me
 	// create and application
 	tag := ApplicationTag(0, xtob("01"))
 
@@ -273,21 +275,20 @@ func TestGenericApplicationToContext(t *testing.T) {
 	require.NoError(t, err)
 
 	// create a context tag with the same shape
-	ttag := ContextTag(0, xtob("00"))
+	ttag := ContextTag(0, xtob("01"))
 
 	// check to see if they are the same
-	assert.Equal(t, ctag, ttag)
+	assert.Equal(t, ttag, ctag)
 
 	// convert the context tag back to an application tag
-	dtag, err := ctag.ContextToApp(uint(model.BACnetDataType_BOOLEAN))
+	dtag, err := ctag.ContextToApp(0)
 	require.NoError(t, err)
 
 	// check to see it round-tripped
-	assert.Equal(t, dtag, tag)
+	assert.Equal(t, tag, dtag)
 }
 
 func TestBooleanApplicationToContext(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: implement me
 	// create and application
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, 0)
 
@@ -299,24 +300,23 @@ func TestBooleanApplicationToContext(t *testing.T) {
 	ttag := ContextTag(0, xtob("00"))
 
 	// check to see if they are the same
-	assert.Equal(t, ctag, ttag)
+	assert.Equal(t, ttag, ctag)
 
 	// convert the context tag back to an application tag
 	dtag, err := ctag.ContextToApp(uint(model.BACnetDataType_BOOLEAN))
 	require.NoError(t, err)
 
 	// check to see it round-tripped
-	assert.Equal(t, dtag, tag)
+	assert.Equal(t, tag, dtag)
 }
 
 func TestBooleanApplicationToObject(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: implement me
 	// null
 	objEndec(t, Null(), "00")
 
 	// boolean
 	objEndec(t, Boolean(true), "11")
-	objEndec(t, Boolean(true), "10")
+	objEndec(t, Boolean(false), "10")
 
 	// unsigned
 	objEndec(t, Unsigned(0), "2100")
@@ -389,7 +389,6 @@ func TestBooleanApplicationToObject(t *testing.T) {
 }
 
 func TestContextTag(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: implement me
 	ContextTag(0, xtob(""))
 
 	contextEndec(t, 0, "", "08")
@@ -401,7 +400,6 @@ func TestContextTag(t *testing.T) {
 }
 
 func TestOpeningTag(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: implement me
 	OpeningTag(0)
 
 	openingEndec(t, 0, "0E")
@@ -414,7 +412,6 @@ func TestOpeningTag(t *testing.T) {
 }
 
 func TestClosingTag(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: implement me
 	ClosingTag(0)
 
 	closingEndec(t, 0, "0f")
@@ -439,16 +436,16 @@ func TestPeek(t *testing.T) {
 
 	// pop of the front
 	tag1 := taglist.Pop()
-	var emptyList = make([]bacnetip.TagListItem, 0)
+	var emptyList = make([]bacnetip.Tag, 0)
 	assert.Equal(t, emptyList, taglist.GetTagList())
 
 	// push if back to the front
 	taglist.Push(tag1)
-	assert.Equal(t, []bacnetip.TagListItem{tag1}, taglist.GetTagList())
+	assert.Equal(t, []bacnetip.Tag{tag1}, taglist.GetTagList())
 }
 
 func TestGetContext(t *testing.T) {
-	tagListData := []bacnetip.TagListItem{
+	tagListData := []bacnetip.Tag{
 		ContextTag(0, xtob("00")),
 		ContextTag(1, xtob("01")),
 		OpeningTag(2),
@@ -487,7 +484,7 @@ func TestEndec0(t *testing.T) { // Test bracketed application tagged integer enc
 	tagList = TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	var noItems []bacnetip.TagListItem
+	var noItems []bacnetip.Tag
 	assert.Equal(t, noItems, tagList.GetTagList())
 }
 
@@ -503,7 +500,7 @@ func TestEndec1(t *testing.T) { // Test bracketed application tagged integer enc
 	tagList = TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	assert.Equal(t, []bacnetip.TagListItem{tag0, tag1}, tagList.GetTagList())
+	assert.Equal(t, []bacnetip.Tag{tag0, tag1}, tagList.GetTagList())
 }
 
 func TestEndec2(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
@@ -518,7 +515,7 @@ func TestEndec2(t *testing.T) { // Test bracketed application tagged integer enc
 	tagList = TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	assert.Equal(t, []bacnetip.TagListItem{tag0, tag1}, tagList.GetTagList())
+	assert.Equal(t, []bacnetip.Tag{tag0, tag1}, tagList.GetTagList())
 }
 
 func TestEndec3(t *testing.T) { // Test bracketed application tagged integer encoding and decoding.
@@ -534,5 +531,5 @@ func TestEndec3(t *testing.T) { // Test bracketed application tagged integer enc
 	tagList = TagList()
 	err := tagList.Decode(data)
 	assert.NoError(t, err)
-	assert.Equal(t, []bacnetip.TagListItem{tag0, tag1, tag2}, tagList.GetTagList())
+	assert.Equal(t, []bacnetip.Tag{tag0, tag1, tag2}, tagList.GetTagList())
 }

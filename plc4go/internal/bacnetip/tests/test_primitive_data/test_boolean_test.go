@@ -43,7 +43,7 @@ func Boolean(arg ...any) *bacnetip.Boolean {
 	return boolean
 }
 
-func booleanTag(value bool) *bacnetip.Tag {
+func booleanTag(value bool) bacnetip.Tag {
 	intValue := 0
 	if value {
 		intValue = 1
@@ -53,14 +53,14 @@ func booleanTag(value bool) *bacnetip.Tag {
 }
 
 // Encode a Boolean object into a tag.
-func booleanEncode(obj *bacnetip.Boolean) *bacnetip.Tag {
+func booleanEncode(obj *bacnetip.Boolean) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a boolean application tag into a boolean.
-func booleanDecode(tag *bacnetip.Tag) *bacnetip.Boolean {
+func booleanDecode(tag bacnetip.Tag) *bacnetip.Boolean {
 	obj := Boolean(tag)
 
 	return obj

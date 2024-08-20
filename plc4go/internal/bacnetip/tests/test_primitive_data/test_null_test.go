@@ -43,21 +43,21 @@ func Null(arg ...any) *bacnetip.Null {
 	return Null
 }
 
-func NullTag(x string) *bacnetip.Tag {
+func NullTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, len(b), b)
 	return tag
 }
 
 // Encode a Null object into a tag.
-func NullEncode(obj *bacnetip.Null) *bacnetip.Tag {
+func NullEncode(obj *bacnetip.Null) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Null application tag into a Null.
-func NullDecode(tag *bacnetip.Tag) *bacnetip.Null {
+func NullDecode(tag bacnetip.Tag) *bacnetip.Null {
 	obj := Null(tag)
 
 	return obj

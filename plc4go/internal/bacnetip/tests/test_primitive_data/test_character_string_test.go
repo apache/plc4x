@@ -20,13 +20,13 @@
 package test_primitive_data
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const foxMessage = "the quick brown fox jumped over the lazy dog"
@@ -47,21 +47,21 @@ func CharacterString(arg ...any) *bacnetip.CharacterString {
 }
 
 // Convert a hex string to a character_string application tag.
-func CharacterStringTag(x string) *bacnetip.Tag {
+func CharacterStringTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_CHARACTER_STRING, len(b), b)
 	return tag
 }
 
 // Encode a CharacterString object into a tag.
-func CharacterStringEncode(obj *bacnetip.CharacterString) *bacnetip.Tag {
+func CharacterStringEncode(obj *bacnetip.CharacterString) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a CharacterString application tag into a CharacterString.
-func CharacterStringDecode(tag *bacnetip.Tag) *bacnetip.CharacterString {
+func CharacterStringDecode(tag bacnetip.Tag) *bacnetip.CharacterString {
 	obj := CharacterString(tag)
 
 	return obj

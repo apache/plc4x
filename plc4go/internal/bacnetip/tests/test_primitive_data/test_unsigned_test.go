@@ -74,21 +74,21 @@ func Unsigned16(arg ...any) *bacnetip.Unsigned16 {
 	return unsigned
 }
 
-func UnsignedTag(x string) *bacnetip.Tag {
+func UnsignedTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_UNSIGNED_INTEGER, len(b), b)
 	return tag
 }
 
 // Encode a Unsigned object into a tag.
-func UnsignedEncode(obj *bacnetip.Unsigned) *bacnetip.Tag {
+func UnsignedEncode(obj *bacnetip.Unsigned) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Unsigned application tag into a Unsigned.
-func UnsignedDecode(tag *bacnetip.Tag) *bacnetip.Unsigned {
+func UnsignedDecode(tag bacnetip.Tag) *bacnetip.Unsigned {
 	obj := Unsigned(tag)
 
 	return obj

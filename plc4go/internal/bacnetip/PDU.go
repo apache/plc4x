@@ -942,6 +942,9 @@ func (d *_PDUData) GetData(dlen int) ([]byte, error) {
 	if d.cachedData == nil {
 		d.done = true
 	}
+	if len(data) == 0 {
+		return nil, nil
+	}
 	return data, nil
 }
 

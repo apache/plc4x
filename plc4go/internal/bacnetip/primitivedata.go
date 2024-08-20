@@ -75,15 +75,44 @@ const (
 	TagReservedAppTag15       = 15
 )
 
-type Tag struct {
+type Tag interface {
+	GetTagClass() model.TagClass
+	GetTagNumber() uint
+	GetTagLvt() int
+	GetTagData() []byte
+	Encode(pdu PDUData)
+	Decode(pdu PDUData) error
+	AppToObject() (any, error)
+	AppToContext(context uint) (*ContextTag, error)
+	setAppData(tagNumber uint, tdata []byte)
+	set(args Args)
+}
+
+type tag struct {
 	tagClass  model.TagClass
 	tagNumber uint
 	tagLVT    int
 	tagData   []byte
+
+	appTagName  []string
+	appTagClass []any
 }
 
-func NewTag(args Args) (*Tag, error) {
-	t := &Tag{}
+func NewTag(args Args) (Tag, error) {
+	t := &tag{
+		appTagName: []string{
+			"null", "boolean", "unsigned", "integer",
+			"real", "double", "octetString", "characterString",
+			"bitString", "enumerated", "date", "time",
+			"objectIdentifier", "reserved13", "reserved14", "reserved15",
+		},
+		appTagClass: []any{
+			&Null{}, &Boolean{}, &Unsigned{}, &Integer{},
+			&Real{}, &Double{}, &OctetString{}, &CharacterString{},
+			&BitString{}, &Enumerated{}, &Date{}, &Time{},
+			&ObjectIdentifier{}, nil, nil, nil,
+		},
+	}
 	if len(args) == 0 {
 		return t, nil
 	}
@@ -94,12 +123,12 @@ func NewTag(args Args) (*Tag, error) {
 	} else if len(args) >= 2 {
 		t.set(args)
 	} else {
-		return nil, errors.New("invalid arguments")
+		return nil, errors.Errorf("invalid arguments %v", args)
 	}
 	return t, nil
 }
 
-func (t *Tag) Decode(pdu PDUData) error {
+func (t *tag) Decode(pdu PDUData) error {
 	tag, err := pdu.Get()
 	if err != nil {
 		return errors.Wrap(err, "error decoding tag")
@@ -149,7 +178,7 @@ func (t *Tag) Decode(pdu PDUData) error {
 
 	if t.tagClass == model.TagClass_APPLICATION_TAGS && t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
 		// tagLVT contains value
-		t.tagData = []byte{}
+		t.tagData = nil
 	} else {
 		// tagLVT contains length
 		t.tagData, err = pdu.GetData(t.tagLVT)
@@ -160,7 +189,7 @@ func (t *Tag) Decode(pdu PDUData) error {
 	return nil
 }
 
-func (t *Tag) Encode(pdu PDUData) {
+func (t *tag) Encode(pdu PDUData) {
 	var data byte
 	// check for special encoding
 	if t.tagClass == model.TagClass_CONTEXT_SPECIFIC_TAGS {
@@ -170,21 +199,21 @@ func (t *Tag) Encode(pdu PDUData) {
 	} else if t.tagClass == TagClosingTagClass {
 		data = 0x0F
 	} else {
-		data = 0
+		data = 0x00
 	}
 
 	// encode the tag number part
 	if t.tagNumber < 15 {
 		data += byte(t.tagNumber) << 4
 	} else {
-		data += 0x05
+		data += 0xF0
 	}
 
 	// encode the length/value/type part
 	if t.tagLVT < 5 {
 		data += byte(t.tagLVT)
 	} else {
-		data += 0xF0
+		data += 0x05
 	}
 
 	// save this and the extended tag value
@@ -210,7 +239,7 @@ func (t *Tag) Encode(pdu PDUData) {
 	pdu.PutData(t.tagData...)
 }
 
-func (t *Tag) AppToContext(context uint) (*ContextTag, error) {
+func (t *tag) AppToContext(context uint) (*ContextTag, error) {
 	if t.tagClass != model.TagClass_APPLICATION_TAGS {
 		return nil, errors.New("application tag required")
 	}
@@ -220,100 +249,152 @@ func (t *Tag) AppToContext(context uint) (*ContextTag, error) {
 	return NewContextTag(NewArgs(context, t.tagData))
 }
 
-func (t *Tag) ContextToApp(context uint) (any, error) {
+func (t *tag) ContextToApp(dataType uint) (any, error) {
 	if t.tagClass != model.TagClass_CONTEXT_SPECIFIC_TAGS {
 		return nil, errors.New("context tag required")
 	}
-	if t.tagNumber == uint(model.BACnetDataType_BOOLEAN) {
-		return NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, t.tagData[0], []byte{}))
+	if dataType == uint(model.BACnetDataType_BOOLEAN) {
+		return NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, t.tagData[0], nil))
 	}
-	return NewApplicationTag(NewArgs(context, t.tagData))
+	return NewApplicationTag(NewArgs(dataType, t.tagData))
 }
 
-// TODO: pretty sure that is not tagListItem but we use that for now because lazy
-func (t *Tag) AppToObject() (TagListItem, error) {
+func (t *tag) AppToObject() (any, error) {
 	if t.tagClass != model.TagClass_APPLICATION_TAGS {
 		return nil, errors.New("context tag required")
 	}
-	panic("implement me")
+
+	klass := t.appTagClass[int(t.tagNumber)]
+	if klass == nil {
+		return nil, nil
+	}
+
+	switch klass.(type) {
+	case *Null:
+		return NewNull(t)
+	case *Boolean:
+		return NewBoolean(t)
+	case *Unsigned:
+		return NewUnsigned(t)
+	case *Integer:
+		return NewInteger(t)
+	case *Real:
+		return NewReal(t)
+	case *Double:
+		return NewDouble(t)
+	case *OctetString:
+		return NewOctetString(t)
+	case *CharacterString:
+		return NewCharacterString(t)
+	case *BitString:
+		return NewBitString(NewArgs(t))
+	case *Enumerated:
+		return NewEnumerated(t)
+	case *Date:
+		return NewDate(t, NoArgs)
+	case *Time:
+		return NewTime(t, NoArgs)
+	case *ObjectIdentifier:
+		return NewObjectIdentifier(NewArgs(t))
+	default:
+		return nil, errors.Errorf("unknown tag klass %T", klass)
+	}
 }
 
-func (t *Tag) set(args Args) {
-	switch arg0 := args[0].(type) {
+func (t *tag) set(args Args) {
+	switch tagClass := args[0].(type) {
 	case model.TagClass:
-		t.tagClass = arg0
+		t.tagClass = tagClass
 	case uint:
-		t.tagClass = model.TagClass(arg0)
+		t.tagClass = model.TagClass(tagClass)
+	case uint8:
+		t.tagClass = model.TagClass(tagClass)
 	case int:
-		t.tagClass = model.TagClass(arg0)
+		t.tagClass = model.TagClass(tagClass)
 	default:
 		panic("oh no")
 	}
-	switch arg1 := args[1].(type) {
+	switch tagNumber := args[1].(type) {
 	case model.BACnetDataType:
-		t.tagNumber = uint(arg1)
+		t.tagNumber = uint(tagNumber)
 	case uint:
-		t.tagNumber = arg1
+		t.tagNumber = tagNumber
 	case int:
-		t.tagNumber = uint(arg1)
+		t.tagNumber = uint(tagNumber)
 	default:
 		panic("oh no")
 	}
 	if len(args) == 2 {
 		return
 	}
-	t.tagLVT = args[2].(int)
+	switch tagLVT := args[2].(type) {
+	case uint:
+		t.tagLVT = int(tagLVT)
+	case uint8:
+		t.tagLVT = int(tagLVT)
+	case int:
+		t.tagLVT = tagLVT
+	default:
+		panic("oh no")
+	}
 	if len(args) == 3 {
 		return
 	}
-	t.tagData = args[3].([]byte)
+	switch tagData := args[3].(type) {
+	case []byte:
+		t.tagData = tagData
+	case nil:
+		// ok
+	default:
+		panic("oh no")
+	}
 	if len(args) > 4 {
 		panic("oh no")
 	}
 }
 
-func (t *Tag) setAppData(tagNumber uint, tdata []byte) {
+func (t *tag) setAppData(tagNumber uint, tdata []byte) {
 	t.tagClass = model.TagClass_APPLICATION_TAGS
 	t.tagNumber = tagNumber
 	t.tagLVT = len(tdata)
 	t.tagData = tdata
 }
 
-func (t *Tag) GetTagClass() model.TagClass {
+func (t *tag) GetTagClass() model.TagClass {
 	return t.tagClass
 }
 
-func (t *Tag) GetTagNumber() uint {
+func (t *tag) GetTagNumber() uint {
 	return t.tagNumber
 }
 
-func (t *Tag) GetTagLvt() int {
+func (t *tag) GetTagLvt() int {
 	return t.tagLVT
 }
 
-func (t *Tag) GetTagData() []byte {
+func (t *tag) GetTagData() []byte {
 	return t.tagData
 }
 
-func (t *Tag) Equals(other any) bool {
+func (t *tag) Equals(other any) bool {
 	if t == nil && other == nil {
 		return true
 	}
 	if other == nil {
 		return false
 	}
-	otherTag, ok := other.(*Tag)
+	otherTag, ok := other.(Tag)
 	if !ok {
 		return false
 	}
-	return t.tagClass == otherTag.tagClass &&
-		t.tagNumber == otherTag.tagNumber &&
-		t.tagLVT == otherTag.tagLVT &&
-		bytes.Equal(t.tagData, otherTag.tagData)
+	return t.tagClass == otherTag.GetTagClass() &&
+		t.tagNumber == otherTag.GetTagNumber() &&
+		t.tagLVT == otherTag.GetTagLvt() &&
+		bytes.Equal(t.tagData, otherTag.GetTagData())
 }
 
 type ApplicationTag struct {
-	*Tag
+	*tag
 }
 
 func NewApplicationTag(args Args) (*ApplicationTag, error) {
@@ -321,13 +402,13 @@ func NewApplicationTag(args Args) (*ApplicationTag, error) {
 	switch len(args) {
 	case 1:
 		if _, ok := args[0].(PDUData); !ok {
-			return nil, errors.New("invalid argument")
+			return nil, errors.Errorf("invalid argument %T", args[0])
 		}
-		var err error
-		a.Tag, err = NewTag(args)
+		_tag, err := NewTag(args)
 		if err != nil {
 			return nil, errors.New("error creating tag")
 		}
+		a.tag = _tag.(*tag)
 		if a.tagClass != model.TagClass_APPLICATION_TAGS {
 			return nil, errors.New("error creating tag: invalid tag class")
 		}
@@ -342,11 +423,11 @@ func NewApplicationTag(args Args) (*ApplicationTag, error) {
 			}
 		}
 		tdata := args[1].([]byte)
-		var err error
-		a.Tag, err = NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, tnum, len(tdata), tdata))
+		_tag, err := NewTag(NewArgs(model.TagClass_APPLICATION_TAGS, tnum, len(tdata), tdata))
 		if err != nil {
 			return nil, errors.New("error creating tag")
 		}
+		a.tag = _tag.(*tag)
 		return a, nil
 	default:
 		return nil, errors.New("requires type and data or pdu data")
@@ -354,7 +435,7 @@ func NewApplicationTag(args Args) (*ApplicationTag, error) {
 }
 
 type ContextTag struct {
-	*Tag
+	*tag
 }
 
 func NewContextTag(args Args) (*ContextTag, error) {
@@ -362,13 +443,13 @@ func NewContextTag(args Args) (*ContextTag, error) {
 	switch len(args) {
 	case 1:
 		if _, ok := args[0].(PDUData); !ok {
-			return nil, errors.New("invalid argument")
+			return nil, errors.Errorf("invalid argument %T", args[0])
 		}
-		var err error
-		c.Tag, err = NewTag(args)
+		_tag, err := NewTag(args)
 		if err != nil {
 			return nil, errors.New("error creating tag")
 		}
+		c.tag = _tag.(*tag)
 		if c.tagClass != model.TagClass_CONTEXT_SPECIFIC_TAGS {
 			return nil, errors.New("error creating tag: invalid tag class")
 		}
@@ -383,11 +464,14 @@ func NewContextTag(args Args) (*ContextTag, error) {
 			}
 		}
 		tdata := args[1].([]byte)
-		var err error
-		c.Tag, err = NewTag(NewArgs(model.TagClass_CONTEXT_SPECIFIC_TAGS, tnum, len(tdata), tdata))
+		if len(tdata) == 0 {
+			tdata = nil
+		}
+		_tag, err := NewTag(NewArgs(model.TagClass_CONTEXT_SPECIFIC_TAGS, tnum, len(tdata), tdata))
 		if err != nil {
 			return nil, errors.New("error creating tag")
 		}
+		c.tag = _tag.(*tag)
 		return c, nil
 	default:
 		return nil, errors.New("requires type and data or pdu data")
@@ -395,55 +479,65 @@ func NewContextTag(args Args) (*ContextTag, error) {
 }
 
 type OpeningTag struct {
-	*Tag
+	*tag
 }
 
 func NewOpeningTag(context Arg) (*OpeningTag, error) {
 	o := &OpeningTag{}
 	switch context.(type) {
-	case int, uint:
-		var err error
-		o.Tag, err = NewTag(NewArgs(TagOpeningTagClass, context))
+	case PDUData:
+		_tag, err := NewTag(NewArgs(context))
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating tag")
 		}
+		o.tag = _tag.(*tag)
+		if o.tagClass != TagOpeningTagClass {
+			return nil, errors.New("opening tag not decoded")
+		}
+		return o, nil
+	case int, uint:
+		_tag, err := NewTag(NewArgs(TagOpeningTagClass, context))
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating tag")
+		}
+		o.tag = _tag.(*tag)
 		return o, nil
 	default:
-		return nil, errors.New("invalid argument")
+		return nil, errors.Errorf("invalid argument %T", context)
 	}
 }
 
 type ClosingTag struct {
-	*Tag
+	*tag
 }
 
 func NewClosingTag(context Arg) (*ClosingTag, error) {
 	o := &ClosingTag{}
 	switch context.(type) {
-	case int, uint:
-		var err error
-		o.Tag, err = NewTag(NewArgs(TagClosingTagClass, context))
+	case PDUData:
+		_tag, err := NewTag(NewArgs(context))
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating tag")
 		}
+		o.tag = _tag.(*tag)
+		if o.tagClass != TagClosingTagClass {
+			return nil, errors.New("opening tag not decoded")
+		}
+		return o, nil
+	case int, uint:
+		_tag, err := NewTag(NewArgs(TagClosingTagClass, context))
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating tag")
+		}
+		o.tag = _tag.(*tag)
 		return o, nil
 	default:
-		return nil, errors.New("invalid argument")
+		return nil, errors.Errorf("invalid argument %T", context)
 	}
 }
 
-// TODO: if Tag would be an interface we could get rid of this
-type TagListItem interface {
-	GetTagClass() model.TagClass
-	GetTagNumber() uint
-	GetTagLvt() int
-	GetTagData() []byte
-	Encode(pdu PDUData)
-	Decode(pdu PDUData) error
-}
-
 type TagList struct {
-	tagList []TagListItem
+	tagList []Tag
 }
 
 func NewTagList(arg Arg) *TagList {
@@ -452,44 +546,44 @@ func NewTagList(arg Arg) *TagList {
 	case []any:
 		args := arg
 		for _, a := range args {
-			t.tagList = append(t.tagList, a.(TagListItem))
+			t.tagList = append(t.tagList, a.(Tag))
 		}
-	case []TagListItem:
+	case []Tag:
 		args := arg
 		for _, a := range args {
-			t.tagList = append(t.tagList, a.(TagListItem))
+			t.tagList = append(t.tagList, a.(Tag))
 		}
 	case Args:
 		args := arg
 		for _, a := range args {
-			t.tagList = append(t.tagList, a.(TagListItem))
+			t.tagList = append(t.tagList, a.(Tag))
 		}
 	}
 	return t
 }
 
-func (b *TagList) Append(tag *Tag) {
+func (b *TagList) Append(tag Tag) {
 	b.tagList = append(b.tagList, tag)
 }
 
-func (b *TagList) Extend(tags ...*Tag) {
+func (b *TagList) Extend(tags ...Tag) {
 	for _, tag := range tags {
 		b.tagList = append(b.tagList, tag)
 	}
 }
 
-func (b *TagList) Peek() TagListItem {
+func (b *TagList) Peek() Tag {
 	if len(b.tagList) < 1 {
 		return nil
 	}
 	return b.tagList[0]
 }
 
-func (b *TagList) Push(tag TagListItem) {
-	b.tagList = append([]TagListItem{tag}, b.tagList...)
+func (b *TagList) Push(tag Tag) {
+	b.tagList = append([]Tag{tag}, b.tagList...)
 }
 
-func (b *TagList) Pop() TagListItem {
+func (b *TagList) Pop() Tag {
 	if len(b.tagList) < 1 {
 		return nil
 	}
@@ -513,7 +607,7 @@ func (b *TagList) GetContext(context uint) (any, error) {
 			}
 		case TagOpeningTagClass:
 			keeper := tag.GetTagNumber() == context
-			var rslt []TagListItem
+			var rslt []Tag
 			i += 1
 			lvl := 0
 		innerSearch:
@@ -556,7 +650,7 @@ func (b *TagList) Encode(data PDUData) {
 
 func (b *TagList) Decode(data PDUData) error {
 	for len(data.GetPduData()) != 0 {
-		var tag TagListItem
+		var tag Tag
 		tag, err := NewTag(NewArgs(data))
 		if err != nil {
 			return errors.Wrap(err, "error creating tag")
@@ -584,7 +678,7 @@ func (b *TagList) Decode(data PDUData) error {
 	return nil
 }
 
-func (b *TagList) GetTagList() []TagListItem {
+func (b *TagList) GetTagList() []Tag {
 	return b.tagList
 }
 
@@ -672,7 +766,7 @@ func NewNull(arg Arg) (*Null, error) {
 		return b, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := b.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -687,20 +781,20 @@ func NewNull(arg Arg) (*Null, error) {
 	return b, nil
 }
 
-func (b *Null) Encode(tag *Tag) {
+func (b *Null) Encode(tag Tag) {
 	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, b.value, []byte{}))
 }
 
-func (b *Null) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_NULL) {
+func (b *Null) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_NULL) {
 		return errors.New("Null application tag required")
 	}
-	if tag.tagLVT > 1 {
+	if tag.GetTagLvt() > 1 {
 		return errors.New("invalid tag value")
 	}
 
 	// get the data
-	if tag.tagLVT == 1 {
+	if tag.GetTagLvt() == 1 {
 		b.value = 1
 	}
 	return nil
@@ -731,7 +825,7 @@ func NewBoolean(arg Arg) (*Boolean, error) {
 		return b, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := b.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -758,20 +852,20 @@ func NewBoolean(arg Arg) (*Boolean, error) {
 	return b, nil
 }
 
-func (b *Boolean) Encode(tag *Tag) {
+func (b *Boolean) Encode(tag Tag) {
 	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, b.value, []byte{}))
 }
 
-func (b *Boolean) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_BOOLEAN) {
+func (b *Boolean) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BOOLEAN) {
 		return errors.New("boolean application tag required")
 	}
-	if tag.tagLVT > 1 {
+	if tag.GetTagLvt() > 1 {
 		return errors.New("invalid tag value")
 	}
 
 	// get the data
-	if tag.tagLVT == 1 {
+	if tag.GetTagLvt() == 1 {
 		b.value = 1
 	}
 	return nil
@@ -812,7 +906,7 @@ func NewUnsigned(arg Arg) (*Unsigned, error) {
 		return i, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -844,7 +938,7 @@ func NewUnsigned(arg Arg) (*Unsigned, error) {
 	return i, nil
 }
 
-func (i *Unsigned) Encode(tag *Tag) {
+func (i *Unsigned) Encode(tag Tag) {
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(i.value))
 
@@ -856,15 +950,15 @@ func (i *Unsigned) Encode(tag *Tag) {
 	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
 }
 
-func (i *Unsigned) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+func (i *Unsigned) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned application tag required")
 	}
-	if len(tag.tagData) == 0 {
+	if len(tag.GetTagData()) == 0 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	// get the data
 	rslt := uint32(0)
@@ -883,9 +977,9 @@ func (i *Unsigned) IsValid(arg any) bool {
 		_, err := strconv.Atoi(arg)
 		return err == nil
 	case int:
-		return arg > 0
+		return arg >= 0
 	case int32:
-		return arg > 0
+		return arg >= 0
 	case uint:
 		return arg <= math.MaxUint32
 	case uint32:
@@ -912,7 +1006,7 @@ func NewUnsigned8(arg Arg) (*Unsigned8, error) {
 		return i, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -939,7 +1033,7 @@ func NewUnsigned8(arg Arg) (*Unsigned8, error) {
 	return i, nil
 }
 
-func (i *Unsigned8) Encode(tag *Tag) {
+func (i *Unsigned8) Encode(tag Tag) {
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(i.value))
 
@@ -951,15 +1045,15 @@ func (i *Unsigned8) Encode(tag *Tag) {
 	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
 }
 
-func (i *Unsigned8) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+func (i *Unsigned8) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned8 application tag required")
 	}
-	if len(tag.tagData) == 0 {
+	if len(tag.GetTagData()) == 0 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	// get the data
 	rslt := uint8(0)
@@ -1007,7 +1101,7 @@ func NewUnsigned16(arg Arg) (*Unsigned16, error) {
 		return i, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -1034,7 +1128,7 @@ func NewUnsigned16(arg Arg) (*Unsigned16, error) {
 	return i, nil
 }
 
-func (i *Unsigned16) Encode(tag *Tag) {
+func (i *Unsigned16) Encode(tag Tag) {
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(i.value))
 
@@ -1046,15 +1140,15 @@ func (i *Unsigned16) Encode(tag *Tag) {
 	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
 }
 
-func (i *Unsigned16) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+func (i *Unsigned16) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned16 application tag required")
 	}
-	if len(tag.tagData) == 0 {
+	if len(tag.GetTagData()) == 0 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	// get the data
 	rslt := uint16(0)
@@ -1102,7 +1196,7 @@ func NewInteger(arg Arg) (*Integer, error) {
 		return i, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := i.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -1124,7 +1218,7 @@ func NewInteger(arg Arg) (*Integer, error) {
 	return i, nil
 }
 
-func (i *Integer) Encode(tag *Tag) {
+func (i *Integer) Encode(tag Tag) {
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(i.value))
 
@@ -1155,15 +1249,15 @@ func (i *Integer) Encode(tag *Tag) {
 	tag.setAppData(uint(model.BACnetDataType_SIGNED_INTEGER), data)
 }
 
-func (i *Integer) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_SIGNED_INTEGER) {
+func (i *Integer) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_SIGNED_INTEGER) {
 		return errors.New("Integer application tag required")
 	}
-	if len(tag.tagData) == 0 {
+	if len(tag.GetTagData()) == 0 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	// get the data
 	rslt := int32(tagData[0])
@@ -1209,7 +1303,7 @@ func NewReal(arg Arg) (*Real, error) {
 		return b, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := b.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -1217,6 +1311,9 @@ func NewReal(arg Arg) (*Real, error) {
 		return b, nil
 	case float32:
 		b.value = arg
+	case float64:
+		b.IsValid(arg)
+		b.value = float32(arg)
 	case int:
 		b.value = float32(arg)
 	case *Real:
@@ -1228,28 +1325,37 @@ func NewReal(arg Arg) (*Real, error) {
 	return b, nil
 }
 
-func (d *Real) Encode(tag *Tag) {
+func (d *Real) Encode(tag Tag) {
 	var _b = make([]byte, 4)
 	binary.BigEndian.PutUint32(_b, math.Float32bits(d.value))
 	tag.setAppData(uint(model.BACnetDataType_REAL), _b)
 }
 
-func (d *Real) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_REAL) {
+func (d *Real) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_REAL) {
 		return errors.New("Real application tag required")
 	}
-	if len(tag.tagData) != 4 {
+	if len(tag.GetTagData()) != 4 {
 		return errors.New("invalid tag length")
 	}
 
 	// extract the data
-	d.value = math.Float32frombits(binary.BigEndian.Uint32(tag.tagData))
+	d.value = math.Float32frombits(binary.BigEndian.Uint32(tag.GetTagData()))
 	return nil
 }
 
 func (d *Real) IsValid(arg any) bool {
-	_, ok := arg.(float32)
-	return ok
+	switch arg := arg.(type) {
+	case float32:
+		return true
+	case float64:
+		if arg > math.MaxFloat32 || -arg > math.MaxFloat32 {
+			return false
+		}
+		return true
+	default:
+		return false
+	}
 }
 
 func (d *Real) String() string {
@@ -1269,7 +1375,7 @@ func NewDouble(arg Arg) (*Double, error) {
 		return b, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := b.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -1290,22 +1396,22 @@ func NewDouble(arg Arg) (*Double, error) {
 	return b, nil
 }
 
-func (d *Double) Encode(tag *Tag) {
+func (d *Double) Encode(tag Tag) {
 	var _b = make([]byte, 8)
 	binary.BigEndian.PutUint64(_b, math.Float64bits(d.value))
 	tag.setAppData(uint(model.BACnetDataType_DOUBLE), _b)
 }
 
-func (d *Double) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_DOUBLE) {
+func (d *Double) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_DOUBLE) {
 		return errors.New("Double application tag required")
 	}
-	if len(tag.tagData) != 8 {
+	if len(tag.GetTagData()) != 8 {
 		return errors.New("invalid tag length")
 	}
 
 	// extract the data
-	d.value = math.Float64frombits(binary.BigEndian.Uint64(tag.tagData))
+	d.value = math.Float64frombits(binary.BigEndian.Uint64(tag.GetTagData()))
 	return nil
 }
 
@@ -1330,13 +1436,16 @@ func NewOctetString(arg Arg) (*OctetString, error) {
 		return o, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := o.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
 		}
 		return o, nil
 	case []byte:
+		if len(arg) == 0 {
+			arg = nil
+		}
 		o.value = arg
 	case *OctetString:
 		o.value = arg.value
@@ -1347,16 +1456,16 @@ func NewOctetString(arg Arg) (*OctetString, error) {
 	return o, nil
 }
 
-func (o *OctetString) Encode(tag *Tag) {
+func (o *OctetString) Encode(tag Tag) {
 	tag.setAppData(uint(model.BACnetDataType_OCTET_STRING), o.value)
 }
 
-func (o *OctetString) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_OCTET_STRING) {
+func (o *OctetString) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_OCTET_STRING) {
 		return errors.New("OctetString application tag required")
 	}
 
-	o.value = tag.tagData
+	o.value = tag.GetTagData()
 	return nil
 }
 
@@ -1410,7 +1519,7 @@ func NewCharacterString(arg Arg) (*CharacterString, error) {
 		return c, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := c.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -1430,19 +1539,19 @@ func NewCharacterString(arg Arg) (*CharacterString, error) {
 	return c, nil
 }
 
-func (c *CharacterString) Encode(tag *Tag) {
+func (c *CharacterString) Encode(tag Tag) {
 	tag.setAppData(uint(model.BACnetDataType_CHARACTER_STRING), append([]byte{c.strEncoding}, c.strValue...))
 }
 
-func (c *CharacterString) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_CHARACTER_STRING) {
+func (c *CharacterString) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_CHARACTER_STRING) {
 		return errors.New("CharacterString application tag required")
 	}
-	if len(tag.tagData) == 0 {
+	if len(tag.GetTagData()) == 0 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	// extract the data
 	c.strEncoding = tagData[0]
@@ -1486,25 +1595,25 @@ type BitString struct {
 	value              []bool
 }
 
-func NewBitString(arg ...any) (*BitString, error) {
-	return NewBitStringWithExtension(nil, arg...)
+func NewBitString(args Args) (*BitString, error) {
+	return NewBitStringWithExtension(nil, args)
 }
 
-func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any) (*BitString, error) {
+func NewBitStringWithExtension(bitStringExtension BitStringExtension, args Args) (*BitString, error) {
 	b := &BitString{
 		bitStringExtension: bitStringExtension,
 	}
-	if len(arg) == 0 {
+	if len(args) == 0 {
 		return b, nil
 	}
-	if len(arg) > 1 {
+	if len(args) > 1 {
 		return nil, errors.New("too many arguments")
 	}
 	if bitStringExtension != nil {
 		b.value = make([]bool, bitStringExtension.GetBitLen())
 	}
-	switch arg := arg[0].(type) {
-	case *Tag:
+	switch arg := args[0].(type) {
+	case *tag:
 		err := b.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "decoding tag failed")
@@ -1514,6 +1623,8 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 		for i, v := range arg {
 			b.value[i] = v != 0
 		}
+	case []bool:
+		b.value = arg
 	case []string:
 		bitNames := make(map[string]int)
 		if bitStringExtension != nil {
@@ -1536,7 +1647,7 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, arg ...any
 	return b, nil
 }
 
-func (b *BitString) Decode(tag *Tag) error {
+func (b *BitString) Decode(tag Tag) error {
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BIT_STRING) {
 		return errors.New("bit string application tag required")
 	}
@@ -1544,11 +1655,11 @@ func (b *BitString) Decode(tag *Tag) error {
 		return errors.New("invalid tag length")
 	}
 	// extract the number of unused bits
-	unused := tag.tagData[0]
+	unused := tag.GetTagData()[0]
 
 	// extract the data
 	data := make([]bool, 0)
-	for _, x := range tag.tagData[1:] {
+	for _, x := range tag.GetTagData()[1:] {
 		for i := range 8 {
 			if (x & (1 << (7 - i))) != 0 {
 				data = append(data, true)
@@ -1567,7 +1678,7 @@ func (b *BitString) Decode(tag *Tag) error {
 	return nil
 }
 
-func (b *BitString) Encode(tag *Tag) {
+func (b *BitString) Encode(tag Tag) {
 	used := len(b.value) % 8
 	unused := 8 - used
 	if unused == 8 {
@@ -1701,14 +1812,14 @@ func NewEnumerated(args ...any) (*Enumerated, error) {
 		e.EnumeratedContract.SetEnumerated(e)
 		arg = args[1]
 	default:
-		return nil, errors.New("invalid argument")
+		return nil, errors.Errorf("invalid arguments %T", args)
 	}
 	if len(e.EnumeratedContract.GetXlateTable()) == 0 {
 		expandEnumerations(e.EnumeratedContract)
 	}
 
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := e.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -1810,7 +1921,7 @@ func (e *Enumerated) Compare(other any) int {
 	}
 }
 
-func (e *Enumerated) Decode(tag *Tag) error {
+func (e *Enumerated) Decode(tag Tag) error {
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_ENUMERATED) {
 		return errors.New("bit string application tag required")
 	}
@@ -1818,7 +1929,7 @@ func (e *Enumerated) Decode(tag *Tag) error {
 		return errors.New("invalid tag length")
 	}
 
-	data := tag.tagData
+	data := tag.GetTagData()
 	if len(data) < 8 {
 		data = append(make([]byte, 8-len(data)), data...)
 	}
@@ -1834,7 +1945,7 @@ func (e *Enumerated) Decode(tag *Tag) error {
 	return nil
 }
 
-func (e *Enumerated) Encode(tag *Tag) {
+func (e *Enumerated) Encode(tag Tag) {
 	value := e.value
 	if mappedValue, ok := e.EnumeratedContract.GetXlateTable()[e.valueString]; ok {
 		value = mappedValue.(uint64)
@@ -1941,7 +2052,7 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 		return d, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := d.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -2108,19 +2219,19 @@ func (d *Date) now(arg float32) {
 	panic("implement me") // TODO
 }
 
-func (d *Date) Encode(tag *Tag) {
+func (d *Date) Encode(tag Tag) {
 	tag.setAppData(uint(model.BACnetDataType_DATE), []byte{byte(d.value.Year), byte(d.value.Month), byte(d.value.Day), byte(d.value.DayOfWeek)})
 }
 
-func (d *Date) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_DATE) {
+func (d *Date) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_DATE) {
 		return errors.New("Date application tag required")
 	}
-	if len(tag.tagData) != 4 {
+	if len(tag.GetTagData()) != 4 {
 		return errors.New("invalid tag length")
 	}
 
-	arg := tag.tagData
+	arg := tag.GetTagData()
 	year, month, day, dayOfWeek := arg[0], arg[1], arg[2], arg[3]
 	d.value.Year, d.value.Month, d.value.Day, d.value.DayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
 	return nil
@@ -2224,7 +2335,7 @@ func NewTime(arg Arg, args Args) (*Time, error) {
 		return d, nil
 	}
 	switch arg := arg.(type) {
-	case *Tag:
+	case *tag:
 		err := d.Decode(arg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error decoding")
@@ -2282,19 +2393,19 @@ func (t *Time) now(arg float32) {
 	panic("implement me") // TODO
 }
 
-func (t *Time) Encode(tag *Tag) {
+func (t *Time) Encode(tag Tag) {
 	tag.setAppData(uint(model.BACnetDataType_TIME), []byte{byte(t.value.Hour), byte(t.value.Minute), byte(t.value.Second), byte(t.value.Hundredth)})
 }
 
-func (t *Time) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_TIME) {
+func (t *Time) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_TIME) {
 		return errors.New("Time application tag required")
 	}
-	if len(tag.tagData) != 4 {
+	if len(tag.GetTagData()) != 4 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	t.value = TimeTuple{int(tagData[0]), int(tagData[1]), int(tagData[2]), int(tagData[3])}
 	return nil
@@ -2532,7 +2643,7 @@ func NewObjectIdentifier(args Args) (*ObjectIdentifier, error) {
 	if len(args) == 1 {
 		arg := args[0]
 		switch arg := arg.(type) {
-		case *Tag:
+		case *tag:
 			err := i.Decode(arg)
 			if err != nil {
 				return nil, errors.Wrap(err, "error decoding")
@@ -2564,7 +2675,7 @@ func NewObjectIdentifier(args Args) (*ObjectIdentifier, error) {
 			return nil, errors.Errorf("invalid constructor datatype: %T", arg)
 		}
 	} else if len(args) == 2 {
-		err := i.setTuple(args[0].(string), args[1].(int))
+		err := i.setTuple(args[0], args[1].(int))
 		if err != nil {
 			return nil, errors.Wrap(err, "error setting tuple")
 		}
@@ -2632,21 +2743,21 @@ func (o *ObjectIdentifier) getLong() int {
 	return (objType.(int) << 22) + objInstance
 }
 
-func (o *ObjectIdentifier) Encode(tag *Tag) {
+func (o *ObjectIdentifier) Encode(tag Tag) {
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(o.getLong()))
 	tag.setAppData(uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER), data)
 }
 
-func (o *ObjectIdentifier) Decode(tag *Tag) error {
-	if tag.tagClass != model.TagClass_APPLICATION_TAGS || tag.tagNumber != uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER) {
+func (o *ObjectIdentifier) Decode(tag Tag) error {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER) {
 		return errors.New("ObjectIdentifier application tag required")
 	}
-	if len(tag.tagData) != 4 {
+	if len(tag.GetTagData()) != 4 {
 		return errors.New("invalid tag length")
 	}
 
-	tagData := tag.tagData
+	tagData := tag.GetTagData()
 
 	o.setLong(int(binary.BigEndian.Uint32(tagData)))
 	return nil

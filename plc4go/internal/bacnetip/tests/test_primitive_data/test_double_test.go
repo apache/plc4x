@@ -43,21 +43,21 @@ func Double(arg ...any) *bacnetip.Double {
 	return Double
 }
 
-func DoubleTag(x string) *bacnetip.Tag {
+func DoubleTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_DOUBLE, len(b), b)
 	return tag
 }
 
 // Encode a Double object into a tag.
-func DoubleEncode(obj *bacnetip.Double) *bacnetip.Tag {
+func DoubleEncode(obj *bacnetip.Double) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Double application tag into a Double.
-func DoubleDecode(tag *bacnetip.Tag) *bacnetip.Double {
+func DoubleDecode(tag bacnetip.Tag) *bacnetip.Double {
 	obj := Double(tag)
 
 	return obj

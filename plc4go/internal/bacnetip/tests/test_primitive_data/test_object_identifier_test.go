@@ -43,21 +43,21 @@ func ObjectIdentifier(args ...any) *bacnetip.ObjectIdentifier {
 	return ObjectIdentifier
 }
 
-func ObjectIdentifierTag(x string) *bacnetip.Tag {
+func ObjectIdentifierTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BACNET_OBJECT_IDENTIFIER, len(b), b)
 	return tag
 }
 
 // Encode a ObjectIdentifier object into a tag.
-func ObjectIdentifierEncode(obj *bacnetip.ObjectIdentifier) *bacnetip.Tag {
+func ObjectIdentifierEncode(obj *bacnetip.ObjectIdentifier) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a ObjectIdentifier application tag into a ObjectIdentifier.
-func ObjectIdentifierDecode(tag *bacnetip.Tag) *bacnetip.ObjectIdentifier {
+func ObjectIdentifierDecode(tag bacnetip.Tag) *bacnetip.ObjectIdentifier {
 	obj := ObjectIdentifier(tag)
 
 	return obj

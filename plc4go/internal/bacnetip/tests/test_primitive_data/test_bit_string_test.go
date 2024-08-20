@@ -29,8 +29,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func BitString(arg ...any) *bacnetip.BitString {
-	bitString, err := bacnetip.NewBitString(arg...)
+func BitString(args ...any) *bacnetip.BitString {
+	bitString, err := bacnetip.NewBitString(args)
 	if err != nil {
 		panic(err)
 	}
@@ -43,7 +43,7 @@ type sampleBitString struct {
 	bitNames map[string]int
 }
 
-func SampleBitString(arg ...any) *sampleBitString { //nolint:all
+func SampleBitString(args ...any) *sampleBitString { //nolint:all
 	s := &sampleBitString{
 		bitLen: 13,
 		bitNames: map[string]int{
@@ -56,7 +56,7 @@ func SampleBitString(arg ...any) *sampleBitString { //nolint:all
 		},
 	}
 	var err error
-	s.BitString, err = bacnetip.NewBitStringWithExtension(s, arg...)
+	s.BitString, err = bacnetip.NewBitStringWithExtension(s, args)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +76,7 @@ func (s *sampleBitString) String() string {
 }
 
 // Convert a hex string to a bit_string application tag.
-func bitStringTag(t *testing.T, x string) *bacnetip.Tag {
+func bitStringTag(t *testing.T, x string) bacnetip.Tag {
 	t.Helper()
 	b, err := bacnetip.Xtob(x)
 	require.NoError(t, err)
@@ -85,13 +85,13 @@ func bitStringTag(t *testing.T, x string) *bacnetip.Tag {
 	return tag
 }
 
-func bitStringEncode(obj *bacnetip.BitString) *bacnetip.Tag {
+func bitStringEncode(obj *bacnetip.BitString) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
-func bitStringDecode(tag *bacnetip.Tag) *bacnetip.BitString {
+func bitStringDecode(tag bacnetip.Tag) *bacnetip.BitString {
 	obj := BitString(tag)
 	return obj
 }

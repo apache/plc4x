@@ -44,21 +44,21 @@ func Real(arg ...any) *bacnetip.Real {
 	return Real
 }
 
-func RealTag(x string) *bacnetip.Tag {
+func RealTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_REAL, len(b), b)
 	return tag
 }
 
 // Encode a Real object into a tag.
-func RealEncode(obj *bacnetip.Real) *bacnetip.Tag {
+func RealEncode(obj *bacnetip.Real) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Real application tag into a Real.
-func RealDecode(tag *bacnetip.Tag) *bacnetip.Real {
+func RealDecode(tag bacnetip.Tag) *bacnetip.Real {
 	obj := Real(tag)
 
 	return obj

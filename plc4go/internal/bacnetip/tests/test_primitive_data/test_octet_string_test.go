@@ -43,21 +43,21 @@ func OctetString(args ...any) *bacnetip.OctetString {
 	return OctetString
 }
 
-func OctetStringTag(x string) *bacnetip.Tag {
+func OctetStringTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_OCTET_STRING, len(b), b)
 	return tag
 }
 
 // Encode a OctetString object into a tag.
-func OctetStringEncode(obj *bacnetip.OctetString) *bacnetip.Tag {
+func OctetStringEncode(obj *bacnetip.OctetString) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a OctetString application tag into a OctetString.
-func OctetStringDecode(tag *bacnetip.Tag) *bacnetip.OctetString {
+func OctetStringDecode(tag bacnetip.Tag) *bacnetip.OctetString {
 	obj := OctetString(tag)
 
 	return obj

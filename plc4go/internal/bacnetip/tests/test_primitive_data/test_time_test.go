@@ -44,21 +44,21 @@ func Time(arg ...any) *bacnetip.Time {
 }
 
 // Convert a hex string to a character_string application tag.
-func timeTag(x string) *bacnetip.Tag {
+func timeTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_TIME, len(b), b)
 	return tag
 }
 
 // Encode a Time object into a tag.
-func timeEncode(obj *bacnetip.Time) *bacnetip.Tag {
+func timeEncode(obj *bacnetip.Time) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Time application tag into a Time.
-func timeDecode(tag *bacnetip.Tag) *bacnetip.Time {
+func timeDecode(tag bacnetip.Tag) *bacnetip.Time {
 	obj := Time(tag)
 
 	return obj

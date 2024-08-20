@@ -62,21 +62,21 @@ func Enumerated(arg ...any) *bacnetip.Enumerated {
 	return Enumerated
 }
 
-func EnumeratedTag(x string) *bacnetip.Tag {
+func EnumeratedTag(x string) bacnetip.Tag {
 	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_ENUMERATED, len(b), b)
 	return tag
 }
 
 // Encode a Enumerated object into a tag.
-func EnumeratedEncode(obj *bacnetip.Enumerated) *bacnetip.Tag {
+func EnumeratedEncode(obj *bacnetip.Enumerated) bacnetip.Tag {
 	tag := Tag()
 	obj.Encode(tag)
 	return tag
 }
 
 // Decode a Enumerated application tag into a Enumerated.
-func EnumeratedDecode(tag *bacnetip.Tag) *bacnetip.Enumerated {
+func EnumeratedDecode(tag bacnetip.Tag) *bacnetip.Enumerated {
 	obj := Enumerated(tag)
 
 	return obj
