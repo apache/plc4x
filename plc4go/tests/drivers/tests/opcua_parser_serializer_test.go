@@ -17,28 +17,20 @@
  * under the License.
  */
 
-package model
+package tests
 
 import (
-	"context"
-	"strconv"
+	"testing"
+
+	opcuaIO "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
-func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
-	if stringValue == "" {
-		return -1
-	}
-	return int32(len(stringValue))
-}
-
-func PascalLengthToUtf8Length(_ context.Context, slength int32) int32 {
-	return max(slength, 0)
-}
-
-func ExtensionId(_ context.Context, expandedNodeId ExpandedNodeId) int32 {
-	nodeId, err := strconv.ParseUint(expandedNodeId.GetNodeId().GetIdentifier(), 10, 16)
-	if err != nil {
-		return -1
-	}
-	return int32(nodeId)
+func TestOPCUASerializer(t *testing.T) {
+	testutils.RunParserSerializerTestsuite(t,
+		"assets/testing/protocols/opcua/ParserSerializerTestsuite.xml",
+		opcuaIO.OpcuaParserHelper{},
+		options.WithCustomLogger(testutils.ProduceTestingLogger(t)),
+	)
 }
