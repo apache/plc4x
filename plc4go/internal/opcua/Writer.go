@@ -75,7 +75,7 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 		REQUEST_TIMEOUT_LONG,
 		NULL_EXTENSION_OBJECT,
 	)
-	writeValueArray := make([]readWriteModel.ExtensionObjectDefinition, len(writeRequest.GetTagNames()))
+	writeValueArray := make([]readWriteModel.WriteValue, len(writeRequest.GetTagNames()))
 	for i, tagName := range writeRequest.GetTagNames() {
 		tag := writeRequest.GetTag(tagName).(Tag)
 
@@ -112,11 +112,10 @@ func (m *Writer) WriteSync(ctx context.Context, writeRequest apiModel.PlcWriteRe
 
 	opcuaWriteRequest := readWriteModel.NewWriteRequest(
 		requestHeader,
-		int32(len(writeValueArray)),
 		writeValueArray,
 	)
 
-	identifier, err := strconv.ParseUint(opcuaWriteRequest.GetIdentifier(), 10, 16)
+	identifier, err := strconv.ParseUint(opcuaWriteRequest.GetExtensionId(), 10, 16)
 	if err != nil {
 		result <- spiModel.NewDefaultPlcWriteRequestResult(writeRequest, nil, errors.Wrapf(err, "error parsing identifier"))
 		return
