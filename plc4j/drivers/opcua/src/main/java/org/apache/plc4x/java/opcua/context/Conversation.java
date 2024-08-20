@@ -274,7 +274,7 @@ public class Conversation {
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(
             false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(requestDefinition.getIdentifier())),
+            new NodeIdFourByte((short) 0, Integer.parseInt(requestDefinition.getExtensionId())),
             null,
             null
         );
