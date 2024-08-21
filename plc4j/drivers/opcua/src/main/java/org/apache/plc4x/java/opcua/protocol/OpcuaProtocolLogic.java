@@ -208,7 +208,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         RequestHeader requestHeader = conversation.createRequestHeader();
 
-        List<ExtensionObjectDefinition> readValueArray = new ArrayList<>(request.getTagNames().size());
+        List<ReadValueId> readValueArray = new ArrayList<>(request.getTagNames().size());
         Iterator<String> iterator = request.getTagNames().iterator();
         Map<String, PlcTag> tagMap = new HashMap<>();
         for (int i = 0; i < request.getTagNames().size(); i++) {
@@ -726,7 +726,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
 
         RequestHeader requestHeader = conversation.createRequestHeader();
-        List<ExtensionObjectDefinition> writeValueList = new ArrayList<>(request.getTagNames().size());
+        List<WriteValue> writeValueList = new ArrayList<>(request.getTagNames().size());
         for (String tagName : request.getTagNames()) {
             OpcuaTag tag = (OpcuaTag) request.getTag(tagName);
 
