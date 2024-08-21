@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"math"
