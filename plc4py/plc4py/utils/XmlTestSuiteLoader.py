@@ -18,6 +18,7 @@ import unittest
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Iterator
+from unittest import TestCase
 from xml.etree import ElementTree
 from xml.etree.ElementTree import XMLParser
 
@@ -27,62 +28,19 @@ class ParserSerializerTestSuite:
     pass
 
 
-class TestCase:
-    # TODO:- Do something with this
-    pass
+class ParserSerializerTestCase(TestCase):
 
+    def __init__(self, methodName='runTest'):
+        super().__init__(methodName)
+        self.name = None
+        self.test_case = None
 
-@dataclass
-class TestCaseBuilder:
-    element: ElementTree
+    def add_test_case(self, test_case):
+        self.test_case = test_case
+        self.name = test_case.name
 
-    def build(self) -> TestCase:
-        name = None
-        description = None
-        raw = None
-        root_type = None
-        parser_arguments = None
-        for element in self.element:
-            if element.tag == "name":
-                name = element.text
-            elif element.tag == "description":
-                description = element.text
-            elif element.tag == "raw":
-                raw = element.text
-            elif element.tag == "root-type":
-                root_type = element.text
-            elif element.tag == "parser-arguments":
-                parser_arguments = element.text
-            elif element.tag == "parser-raw":
-                parser_raw = element.text
-
-        return TestCase()
-
-    #                 Element descriptionElement = testcaseXml.element(new QName("description"));
-    #                 Element rawElement = testcaseXml.element(new QName("raw"));
-    #                 Element rootTypeElement = testcaseXml.element(new QName("root-type"));
-    #                 Element parserArgumentsElement = testcaseXml.element(new QName("parser-arguments"));
-    #                 Element xmlElement = testcaseXml.element(new QName("xml"));
-    #
-    #                 String name = nameElement.getTextTrim();
-    #                 String description = (descriptionElement != null) ? descriptionElement.getTextTrim() : null;
-    #                 byte[] raw = Hex.decodeHex(rawElement.getTextTrim());
-    #                 String rootType = rootTypeElement.getTextTrim();
-    #
-    #                 // Parse additional parser arguments.
-    #                 List<String> parserArguments = new LinkedList<>();
-    #                 if (parserArgumentsElement != null) {
-    #                     for (Element element : parserArgumentsElement.elements()) {
-    #                         parserArguments.add(element.getTextTrim());
-    #                     }
-    #                 }
-    #                 Testcase testcase = new Testcase(testsuiteName, protocolName, outputFlavor, name, description, raw, rootType, parserArguments, xmlElement);
-    #                 if (testcaseXml instanceof LocationAwareElement) {
-    #                     // pass source location to test
-    #                     testcase.setLocation(((LocationAwareElement) testcaseXml).getLocation());
-    #                 }
-    #                 testcases.add(testcase);
-    #             }
+    def runTest(self):
+        pass
 
 
 @dataclass

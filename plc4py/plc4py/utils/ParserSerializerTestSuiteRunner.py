@@ -18,15 +18,13 @@ import logging
 import unittest
 from dataclasses import dataclass, field
 from typing import Iterator, List
-from driver_testsuite import DriverTestsuite
+from utils.generated.driver_testsuite import DriverTestsuite
 from xsdata.formats.dataclass.parsers import XmlParser
 
 from api.exceptions.exceptions import ParseException
 from utils.XmlTestSuiteLoader import (
     ParserSerializerTestSuite,
-    TestCase,
-    TestCaseBuilder,
-    XmlTestSuiteLoader,
+    XmlTestSuiteLoader, ParserSerializerTestCase,
 )
 
 logger = logging.getLogger(__name__)
@@ -39,52 +37,22 @@ class ParserSerializerTestsuiteRunner(XmlTestSuiteLoader):
     ignored_test_cases: List[str] = field(default_factory=list)
 
     @property
-    def test_suite_tests(self) -> Iterator[unittest.case]:
+    def test_suite_tests(self) -> List[unittest.case]:
         parser = XmlParser()
-        test_suite = parser.parse(self.test_suite_document, DriverTestsuite)
+        test_suite_xml = parser.parse(self.test_suite_document, DriverTestsuite)
 
-        test_suite = self._parse_test_suite()
         dynamic_tests: List[unittest.case] = []
-        for test_case in test_suite:
-            if not test_case.__name__ in self.ignored_test_cases:
-                dynamic_tests.append(test_case)
+        for test_case in test_suite_xml.testcase:
+            if not test_case.name in self.ignored_test_cases:
+                test_suite = ParserSerializerTestCase()
+                test_suite.add_test_case(test_case)
+                test_suite.name = test_suite_xml.name + " - " + test_case.name
+                dynamic_tests.append(test_suite)
 
-        return iter(dynamic_tests)
-
-    def _parse_test_suite(self):
-        root = self.test_suite_document_xml.__next__()
-        byte_order = root[1].attrib.get("byteOrder", "LITTLE_ENDIAN")
-        test_suite_name = None
-        protocol_name = None
-        output_flavor = None
-        driver_name = None
-        found_header = False
-        test_cases: List[TestCase] = []
-
-        for name, element in self.test_suite_document_xml:
-            if element.tag == "name":
-                test_suite_name = element.text
-            elif element.tag == "protocolName":
-                protocol_name = element.text
-            elif element.tag == "outputFlavor":
-                output_flavor = element.text
-            elif element.tag == "driver-name":
-                driver_name = element.text
-            elif element.tag == "testcase":
-                test_cases.append(TestCaseBuilder(element).build())
-            found_header = (
-                test_suite_name is not None
-                and protocol_name is not None
-                and output_flavor is not None
-                and driver_name is not None
-            )
-
-        if not found_header:
-            raise ParseException()
-        pass
+        return dynamic_tests
 
     def run(
-        self, test_suite: ParserSerializerTestSuite, test_case: TestCase
+        self, test_suite: ParserSerializerTestSuite, test_case: ParserSerializerTestCase
     ) -> Iterator[unittest.TestResult]:
         return self.test_suite_document_xml is not None
 

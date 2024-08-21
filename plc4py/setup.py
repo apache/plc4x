@@ -56,6 +56,7 @@ setup(
             "mypy>=0.942",
             "flake8>=4.0.1",
             "pytest-asyncio",
+            "xsdata"
         ]
     },
     entry_points={

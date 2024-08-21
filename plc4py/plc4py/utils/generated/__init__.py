@@ -14,29 +14,3 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
-import os
-import unittest
-
-import pytest
-from annotated_types import test_cases
-from typing_extensions import Iterator
-
-from utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRunner
-from utils.XmlTestSuiteLoader import XmlTestSuiteLoader, ParserSerializerTestSuite, TestCase
-
-
-def pytest_generate_tests(metafunc):
-    xml_loader = ParserSerializerTestsuiteRunner(
-        os.path.join(os.path.dirname(__file__), 'resources', "DriverTestSuite.xml"))
-
-    test_suites = xml_loader.test_suite_tests
-
-    metafunc.parametrize("test_case", test_suites, ids=[test_case.name for test_case in test_suites])
-
-
-@pytest.mark.asyncio
-async def test_parse_serializer_parse_xml_test(test_case) -> None:
-    try:
-        test_case.runTest()
-    except Exception as e:
-        raise e
