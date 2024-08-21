@@ -103,6 +103,14 @@ func InitializeRoutingTableAck(irtaTable ...*bacnetip.RoutingTableEntry) *bacnet
 	return network
 }
 
+func EstablishConnectionToNetwork(dnet uint16, terminationTime uint8) *bacnetip.EstablishConnectionToNetwork {
+	network, err := bacnetip.NewEstablishConnectionToNetwork(bacnetip.WithEstablishConnectionToNetworkDNET(dnet), bacnetip.WithEstablishConnectionToNetworkTerminationTime(terminationTime))
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
@@ -549,6 +557,31 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck02() { // Test the
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTableAck{}), bacnetip.NewKWArgs(bacnetip.KWIrtaTable, rtEntries))
+}
+
+func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test the Result encoding and decoding.
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"08 0005 06", // message type, network, terminationTime
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(EstablishConnectionToNetwork(5, 6)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.EstablishConnectionToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWEctnDNET, uint16(5), bacnetip.KWEctnTerminationTime, uint8(6)))
 }
 
 func TestNPDUCodec(t *testing.T) {

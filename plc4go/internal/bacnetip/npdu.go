@@ -982,10 +982,87 @@ func (r *InitializeRoutingTableAck) String() string {
 
 type EstablishConnectionToNetwork struct {
 	*_NPDU
+	ectnDNET            uint16
+	ectnTerminationTime uint8
+
+	readWriteModel.NLMEstablishConnectionToNetwork
 }
 
-func NewEstablishConnectionToNetwork() (*EstablishConnectionToNetwork, error) {
-	panic("implement me")
+func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)) (*EstablishConnectionToNetwork, error) {
+	i := &EstablishConnectionToNetwork{}
+	for _, opt := range opts {
+		opt(i)
+	}
+	i.NLMEstablishConnectionToNetwork = readWriteModel.NewNLMEstablishConnectionToNetwork(i.ectnDNET, i.ectnTerminationTime, 0)
+	npdu, err := NewNPDU(i.NLMEstablishConnectionToNetwork, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating NPDU")
+	}
+	i._NPDU = npdu.(*_NPDU)
+	return i, nil
+}
+
+func WithEstablishConnectionToNetworkDNET(dnet uint16) func(*EstablishConnectionToNetwork) {
+	return func(n *EstablishConnectionToNetwork) {
+		n.ectnDNET = dnet
+	}
+}
+
+func WithEstablishConnectionToNetworkTerminationTime(terminationTime uint8) func(*EstablishConnectionToNetwork) {
+	return func(n *EstablishConnectionToNetwork) {
+		n.ectnTerminationTime = terminationTime
+	}
+}
+
+func (n *EstablishConnectionToNetwork) GetEctnDNET() uint16 {
+	return n.ectnDNET
+}
+
+func (n *EstablishConnectionToNetwork) GetEctnTerminationTime() uint8 {
+	return n.ectnTerminationTime
+}
+
+func (n *EstablishConnectionToNetwork) Encode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := npdu.Update(n); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		npdu.PutShort(int16(n.ectnDNET))
+		npdu.Put(n.ectnTerminationTime)
+		npdu.setNPDU(n.npdu)
+		npdu.setNLM(n.nlm)
+		npdu.setAPDU(n.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *EstablishConnectionToNetwork) Decode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := n.Update(npdu); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		switch pduUserData := npdu.GetPDUUserData().(type) {
+		case readWriteModel.NPDUExactly:
+			switch nlm := pduUserData.GetNlm().(type) {
+			case readWriteModel.NLMEstablishConnectionToNetworkExactly:
+				n.setNLM(nlm)
+				n.NLMEstablishConnectionToNetwork = nlm
+				n.ectnDNET = nlm.GetDestinationNetworkAddress()
+				n.ectnTerminationTime = nlm.GetTerminationTime()
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *EstablishConnectionToNetwork) String() string {
+	return fmt.Sprintf("EstablishConnectionToNetwork{%s, ectnDNET: %v, ectnTerminationTime: %v}", n._NPDU, n.ectnDNET, n.ectnTerminationTime)
 }
 
 type DisconnectConnectionToNetwork struct {

@@ -245,6 +245,18 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			return slices.EqualFunc(irts, oirts, func(entry *bacnetip.RoutingTableEntry, entry2 *bacnetip.RoutingTableEntry) bool {
 				return entry.Equals(entry2)
 			})
+		case bacnetip.KWEctnDNET:
+			ectn, ok := pdu.(*bacnetip.EstablishConnectionToNetwork)
+			if !ok {
+				return false
+			}
+			return ectn.GetEctnDNET() == attrValue
+		case bacnetip.KWEctnTerminationTime:
+			ectn, ok := pdu.(*bacnetip.EstablishConnectionToNetwork)
+			if !ok {
+				return false
+			}
+			return ectn.GetEctnTerminationTime() == attrValue
 		default:
 			panic("implement " + attrName)
 		}

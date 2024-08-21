@@ -132,6 +132,8 @@ const (
 	KWRatnNetworkList        = KnownKey("ratnNetworkList")
 	KWIrtTable               = KnownKey("irtTable")
 	KWIrtaTable              = KnownKey("irtaTable")
+	KWEctnDNET               = KnownKey("ectnDNET")
+	KWEctnTerminationTime    = KnownKey("ectnTerminationTime")
 )
 
 type MessageBridge struct {
