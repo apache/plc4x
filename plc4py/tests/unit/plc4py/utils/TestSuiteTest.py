@@ -27,7 +27,7 @@ from utils.XmlTestSuiteLoader import XmlTestSuiteLoader, ParserSerializerTestSui
 
 def pytest_generate_tests(metafunc):
     xml_loader = ParserSerializerTestsuiteRunner(
-        os.path.join(os.path.dirname(__file__), 'resources', "DriverTestSuite.xml"))
+        os.path.join(os.path.dirname(__file__), 'resources', "ParserSerializerTestsuite.xml"))
 
     test_suites = xml_loader.test_suite_tests
 

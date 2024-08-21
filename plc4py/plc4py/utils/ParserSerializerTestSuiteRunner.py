@@ -46,34 +46,19 @@ class ParserSerializerTestsuiteRunner(XmlTestSuiteLoader):
             if not test_case.name in self.ignored_test_cases:
                 test_suite = ParserSerializerTestCase()
                 test_suite.add_test_case(test_case)
-                test_suite.name = test_suite_xml.name + " - " + test_case.name
                 dynamic_tests.append(test_suite)
-
+        logger.info("Found %s testcases.", len(test_suite_xml.testcase))
         return dynamic_tests
 
     def run(
         self, test_suite: ParserSerializerTestSuite, test_case: ParserSerializerTestCase
     ) -> Iterator[unittest.TestResult]:
+        logger.info("Running testcases %s", test_case.name)
+        test_case_raw = test_case.test_case.raw
         return self.test_suite_document_xml is not None
 
-
 #
 #
-#             List<Element> testcasesXml = testsuiteXml.elements(new QName("testcase"));
-#             List<Testcase> testcases = new ArrayList<>(testcasesXml.size());
-#             for (Element testcaseXml : testcasesXml) {
-#
-#             LOGGER.info(String.format("Found %d testcases.", testcases.size()));
-#             return new ParserSerializerTestsuite(testsuiteName, testcases, byteOrder, options);
-#         } catch (DocumentException e) {
-#             throw new ParserSerializerTestsuiteException("Error parsing testsuite xml", e);
-#         } catch (DecoderException e) {
-#             throw new ParserSerializerTestsuiteException("Error parsing testcase raw data", e);
-#         }
-#     }
-#
-#     private void run(ParserSerializerTestsuite testSuite, Testcase testcase) throws ParserSerializerTestsuiteException {
-#         LOGGER.info("Running testcase {}", testcase);
 #         byte[] testcaseRaw = testcase.getRaw();
 #         if (LOGGER.isDebugEnabled())
 #             LOGGER.debug("\n{}", AsciiBoxWriter.DEFAULT.boxString("Testcase raw input", org.apache.plc4x.java.spi.utils.hex.Hex.dump(testcaseRaw), 0));
