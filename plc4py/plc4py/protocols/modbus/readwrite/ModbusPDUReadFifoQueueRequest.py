@@ -17,16 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -42,7 +44,9 @@ class ModbusPDUReadFifoQueueRequest(ModbusPDU):
 
         # Simple Field (fifoPointerAddress)
         write_buffer.write_unsigned_short(
-            self.fifo_pointer_address, bit_length=16, logical_name="fifoPointerAddress"
+            self.fifo_pointer_address,
+            bit_length=16,
+            logical_name="fifoPointerAddress",
         )
 
         write_buffer.pop_context("ModbusPDUReadFifoQueueRequest")
@@ -64,7 +68,9 @@ class ModbusPDUReadFifoQueueRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadFifoQueueRequest")
 
         fifo_pointer_address: int = read_buffer.read_unsigned_short(
-            logical_name="fifo_pointer_address", bit_length=16, response=response
+            logical_name="fifo_pointer_address",
+            bit_length=16,
+            response=response,
         )
 
         read_buffer.pop_context("ModbusPDUReadFifoQueueRequest")

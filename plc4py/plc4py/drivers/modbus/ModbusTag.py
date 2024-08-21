@@ -29,14 +29,16 @@ class ModbusTag(PlcTag):
     _ADDRESS_PATTERN: str = (
         "(?P<address>\d+)(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)\])?"
     )
-    _FIXED_DIGIT_MODBUS_PATTERN: str = (
-        "(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)\])?"
-    )
+    _FIXED_DIGIT_MODBUS_PATTERN: str = "(?P<address>\d{4,5})?(:(?P<datatype>[a-zA-Z_]+))?(\[(?P<quantity>\d+)\])?"
     _PROTOCOL_ADDRESS_OFFSET: int = 1
     _REGISTER_MAX_ADDRESS: int = 65535
 
-    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(_FIXED_DIGIT_MODBUS_PATTERN)
-    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(_FIXED_DIGIT_MODBUS_PATTERN)
+    _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
+        _FIXED_DIGIT_MODBUS_PATTERN
+    )
+    _ADDRESS_SHORT_PATTERN: Pattern[AnyStr] = re.compile(
+        _FIXED_DIGIT_MODBUS_PATTERN
+    )
     _DEFAULT_DATA_TYPE: ModbusDataType = ModbusDataType.INT
 
     _QUANTITY_MAX: int = 120
@@ -112,7 +114,9 @@ class ModbusTag(PlcTag):
 
 class ModbusTagCoil(ModbusTag):
     _ADDRESS_PREFIX: str = "0x"
-    _ADDRESS_PATTERN: Pattern[AnyStr] = re.compile("coil:" + ModbusTag._ADDRESS_PATTERN)
+    _ADDRESS_PATTERN: Pattern[AnyStr] = re.compile(
+        "coil:" + ModbusTag._ADDRESS_PATTERN
+    )
     _ADDRESS_SHORTER_PATTERN: Pattern[AnyStr] = re.compile(
         "0" + ModbusTag._FIXED_DIGIT_MODBUS_PATTERN
     )
@@ -176,4 +180,6 @@ class ModbusTagBuilder(TagBuilder):
         elif ModbusTagHoldingRegister.matches(address_string):
             return ModbusTagHoldingRegister.create(address_string)
         else:
-            raise PlcFieldParseException("Unable to parse address: " + address_string)
+            raise PlcFieldParseException(
+                "Unable to parse address: " + address_string
+            )

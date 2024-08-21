@@ -17,7 +17,7 @@
 # under the License.
 #
 
-from asyncio import Protocol, Future, BaseProtocol
+from asyncio import BaseProtocol, Future, Protocol
 from dataclasses import dataclass
 from typing import Union
 

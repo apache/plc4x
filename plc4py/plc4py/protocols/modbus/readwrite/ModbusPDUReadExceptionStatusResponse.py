@@ -17,16 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -41,7 +43,9 @@ class ModbusPDUReadExceptionStatusResponse(ModbusPDU):
         write_buffer.push_context("ModbusPDUReadExceptionStatusResponse")
 
         # Simple Field (value)
-        write_buffer.write_unsigned_byte(self.value, bit_length=8, logical_name="value")
+        write_buffer.write_unsigned_byte(
+            self.value, bit_length=8, logical_name="value"
+        )
 
         write_buffer.pop_context("ModbusPDUReadExceptionStatusResponse")
 
@@ -102,7 +106,7 @@ class ModbusPDUReadExceptionStatusResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadExceptionStatusResponse:
-        modbus_pduread_exception_status_response: (
-            ModbusPDUReadExceptionStatusResponse
-        ) = ModbusPDUReadExceptionStatusResponse(self.value)
+        modbus_pduread_exception_status_response: ModbusPDUReadExceptionStatusResponse = ModbusPDUReadExceptionStatusResponse(
+            self.value
+        )
         return modbus_pduread_exception_status_response

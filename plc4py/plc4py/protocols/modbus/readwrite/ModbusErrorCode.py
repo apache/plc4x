@@ -22,7 +22,6 @@ from aenum import AutoNumberEnum
 
 
 class ModbusErrorCode(AutoNumberEnum):
-
     ILLEGAL_FUNCTION: int = 1
     ILLEGAL_DATA_ADDRESS: int = 2
     ILLEGAL_DATA_VALUE: int = 3

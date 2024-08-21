@@ -20,6 +20,7 @@ import unittest
 import pytest
 from typing_extensions import Iterator
 
+from utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRunner
 from utils.XmlTestSuiteLoader import XmlTestSuiteLoader, ParserSerializerTestSuite, TestCase
 
 
@@ -33,6 +34,15 @@ class MockXmlTestSuiteLoader(XmlTestSuiteLoader):
 async def test_parse_xml_file() -> None:
     xml_loader = MockXmlTestSuiteLoader(os.path.join(os.path.dirname(__file__), 'resources', "DriverTestSuite.xml"))
     for _ in xml_loader.test_suite_document_xml:
+        pass
+
+    assert xml_loader.run(ParserSerializerTestSuite(), TestCase())
+
+
+@pytest.mark.asyncio
+async def test_parse_serializer_parse_xml_test() -> None:
+    xml_loader = ParserSerializerTestsuiteRunner(os.path.join(os.path.dirname(__file__), 'resources', "DriverTestSuite.xml"))
+    for _ in xml_loader.test_suite_tests:
         pass
 
     assert xml_loader.run(ParserSerializerTestSuite(), TestCase())

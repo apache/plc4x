@@ -18,8 +18,8 @@
 #
 from abc import ABC
 from dataclasses import dataclass
-from enum import auto, Enum
-from typing import TypeVar, Generic, List
+from enum import Enum, auto
+from typing import Generic, List, TypeVar
 
 T = TypeVar("T")
 

@@ -17,18 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
-from typing import ClassVar
-from typing import List
-import math
 
 
 @dataclass
@@ -46,7 +46,9 @@ class ModbusPDUWriteMultipleCoilsRequest(ModbusPDU):
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address, bit_length=16, logical_name="startingAddress"
+            self.starting_address,
+            bit_length=16,
+            logical_name="startingAddress",
         )
 
         # Simple Field (quantity)
@@ -121,7 +123,9 @@ class ModbusPDUWriteMultipleCoilsRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUWriteMultipleCoilsRequest):
             return False
 
-        that: ModbusPDUWriteMultipleCoilsRequest = ModbusPDUWriteMultipleCoilsRequest(o)
+        that: ModbusPDUWriteMultipleCoilsRequest = (
+            ModbusPDUWriteMultipleCoilsRequest(o)
+        )
         return (
             (self.starting_address == that.starting_address)
             and (self.quantity == that.quantity)
@@ -153,9 +157,7 @@ class ModbusPDUWriteMultipleCoilsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteMultipleCoilsRequest:
-        modbus_pduwrite_multiple_coils_request: ModbusPDUWriteMultipleCoilsRequest = (
-            ModbusPDUWriteMultipleCoilsRequest(
-                self.starting_address, self.quantity, self.value
-            )
+        modbus_pduwrite_multiple_coils_request: ModbusPDUWriteMultipleCoilsRequest = ModbusPDUWriteMultipleCoilsRequest(
+            self.starting_address, self.quantity, self.value
         )
         return modbus_pduwrite_multiple_coils_request

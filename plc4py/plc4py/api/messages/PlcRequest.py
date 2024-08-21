@@ -19,7 +19,7 @@
 from abc import abstractmethod
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Union, List, Dict
+from typing import Dict, List, Union
 
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -90,7 +90,9 @@ class WriteRequestBuilder(GenericGenerator):
         pass
 
     @abstractmethod
-    def add_item(self, tag_name: str, address_string: str, value: PlcValue) -> None:
+    def add_item(
+        self, tag_name: str, address_string: str, value: PlcValue
+    ) -> None:
         pass
 
 

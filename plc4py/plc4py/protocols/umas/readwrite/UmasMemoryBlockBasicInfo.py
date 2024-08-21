@@ -17,16 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasMemoryBlock import UmasMemoryBlock
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -53,7 +55,9 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         )
 
         # Simple Field (index)
-        write_buffer.write_unsigned_byte(self.index, bit_length=8, logical_name="index")
+        write_buffer.write_unsigned_byte(
+            self.index, bit_length=8, logical_name="index"
+        )
 
         # Simple Field (hardwareId)
         write_buffer.write_unsigned_int(
@@ -84,7 +88,9 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, block_number: int, offset: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, block_number: int, offset: int
+    ):
         read_buffer.push_context("UmasMemoryBlockBasicInfo")
 
         range: int = read_buffer.read_unsigned_short(
@@ -102,7 +108,10 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
         )
 
         index: int = read_buffer.read_unsigned_byte(
-            logical_name="index", bit_length=8, block_number=block_number, offset=offset
+            logical_name="index",
+            bit_length=8,
+            block_number=block_number,
+            offset=offset,
         )
 
         hardware_id: int = read_buffer.read_unsigned_int(
@@ -114,7 +123,9 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
 
         read_buffer.pop_context("UmasMemoryBlockBasicInfo")
         # Create the instance
-        return UmasMemoryBlockBasicInfoBuilder(range, not_sure, index, hardware_id)
+        return UmasMemoryBlockBasicInfoBuilder(
+            range, not_sure, index, hardware_id
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:

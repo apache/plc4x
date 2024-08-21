@@ -17,17 +17,19 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -53,7 +55,9 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
         )
 
         # Simple Field (index)
-        write_buffer.write_unsigned_byte(self.index, bit_length=8, logical_name="index")
+        write_buffer.write_unsigned_byte(
+            self.index, bit_length=8, logical_name="index"
+        )
 
         # Simple Field (hardwareId)
         write_buffer.write_unsigned_int(
@@ -104,7 +108,9 @@ class UmasPDUReadUnlocatedVariableNamesRequest(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+        read_buffer: ReadBuffer,
+        umas_request_function_key: int,
+        byte_length: int,
     ):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesRequest")
 
@@ -206,9 +212,7 @@ class UmasPDUReadUnlocatedVariableNamesRequestBuilder:
     def build(
         self, byte_length: int, pairing_key
     ) -> UmasPDUReadUnlocatedVariableNamesRequest:
-        umas_pduread_unlocated_variable_names_request: (
-            UmasPDUReadUnlocatedVariableNamesRequest
-        ) = UmasPDUReadUnlocatedVariableNamesRequest(
+        umas_pduread_unlocated_variable_names_request: UmasPDUReadUnlocatedVariableNamesRequest = UmasPDUReadUnlocatedVariableNamesRequest(
             byte_length,
             pairing_key,
             self.record_type,

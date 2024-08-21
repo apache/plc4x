@@ -17,16 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -43,7 +45,9 @@ class ModbusPDUReadHoldingRegistersRequest(ModbusPDU):
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address, bit_length=16, logical_name="startingAddress"
+            self.starting_address,
+            bit_length=16,
+            logical_name="startingAddress",
         )
 
         # Simple Field (quantity)
@@ -82,7 +86,9 @@ class ModbusPDUReadHoldingRegistersRequest(ModbusPDU):
 
         read_buffer.pop_context("ModbusPDUReadHoldingRegistersRequest")
         # Create the instance
-        return ModbusPDUReadHoldingRegistersRequestBuilder(starting_address, quantity)
+        return ModbusPDUReadHoldingRegistersRequestBuilder(
+            starting_address, quantity
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -123,7 +129,7 @@ class ModbusPDUReadHoldingRegistersRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadHoldingRegistersRequest:
-        modbus_pduread_holding_registers_request: (
-            ModbusPDUReadHoldingRegistersRequest
-        ) = ModbusPDUReadHoldingRegistersRequest(self.starting_address, self.quantity)
+        modbus_pduread_holding_registers_request: ModbusPDUReadHoldingRegistersRequest = ModbusPDUReadHoldingRegistersRequest(
+            self.starting_address, self.quantity
+        )
         return modbus_pduread_holding_registers_request

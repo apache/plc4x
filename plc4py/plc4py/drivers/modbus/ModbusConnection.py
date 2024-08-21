@@ -20,24 +20,24 @@ import asyncio
 from typing import Type
 
 import plc4py
-from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
-from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.messages.PlcRequest import (
-    ReadRequestBuilder,
-    PlcRequest,
     PlcReadRequest,
+    PlcRequest,
     PlcWriteRequest,
+    ReadRequestBuilder,
 )
 from plc4py.api.messages.PlcResponse import (
     PlcResponse,
 )
+from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
+from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.value.PlcValue import PlcResponseCode
-from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusDevice import ModbusDevice
 from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
 from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
+from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
 from plc4py.spi.messages.PlcWriter import DefaultPlcWriter
@@ -57,7 +57,9 @@ class ModbusConnection(PlcConnection, DefaultPlcReader, DefaultPlcWriter):
     :param transport: Plc4xBaseTransport object used for the TCP connection
     """
 
-    def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
+    def __init__(
+        self, config: ModbusConfiguration, transport: Plc4xBaseTransport
+    ):
         """
         Initializes a ModbusConnection object
 

@@ -17,10 +17,14 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
@@ -29,10 +33,6 @@ from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
-from typing import Any
-from typing import ClassVar
-from typing import List
-import math
 
 
 @dataclass
@@ -51,7 +51,9 @@ class UmasPDUReadUnlocatedVariableNames(UmasPDUItem):
         write_buffer.write_unsigned_int(self.range, logical_name="range")
 
         # Simple Field (noOfRecords)
-        write_buffer.write_unsigned_int(self.no_of_records, logical_name="noOfRecords")
+        write_buffer.write_unsigned_int(
+            self.no_of_records, logical_name="noOfRecords"
+        )
 
         # Array Field (records)
         write_buffer.write_complex_array(self.records, logical_name="records")
@@ -79,7 +81,9 @@ class UmasPDUReadUnlocatedVariableNames(UmasPDUItem):
         return length_in_bits
 
     @staticmethod
-    def static_parse_builder(read_buffer: ReadBuffer, umas_request_function_key: int):
+    def static_parse_builder(
+        read_buffer: ReadBuffer, umas_request_function_key: int
+    ):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNames")
 
         range: int = read_buffer.read_unsigned_int(
@@ -106,7 +110,9 @@ class UmasPDUReadUnlocatedVariableNames(UmasPDUItem):
 
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNames")
         # Create the instance
-        return UmasPDUReadUnlocatedVariableNamesBuilder(range, no_of_records, records)
+        return UmasPDUReadUnlocatedVariableNamesBuilder(
+            range, no_of_records, records
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -115,7 +121,9 @@ class UmasPDUReadUnlocatedVariableNames(UmasPDUItem):
         if not isinstance(o, UmasPDUReadUnlocatedVariableNames):
             return False
 
-        that: UmasPDUReadUnlocatedVariableNames = UmasPDUReadUnlocatedVariableNames(o)
+        that: UmasPDUReadUnlocatedVariableNames = (
+            UmasPDUReadUnlocatedVariableNames(o)
+        )
         return (
             (self.range == that.range)
             and (self.no_of_records == that.no_of_records)
@@ -145,9 +153,7 @@ class UmasPDUReadUnlocatedVariableNamesBuilder:
     records: List[UmasUnlocatedVariableReference]
 
     def build(self, pairing_key) -> UmasPDUReadUnlocatedVariableNames:
-        umas_pdu_read_unlocated_variable_names: UmasPDUReadUnlocatedVariableNames = (
-            UmasPDUReadUnlocatedVariableNames(
-                pairing_key, self.range, self.no_of_records, self.records
-            )
+        umas_pdu_read_unlocated_variable_names: UmasPDUReadUnlocatedVariableNames = UmasPDUReadUnlocatedVariableNames(
+            pairing_key, self.range, self.no_of_records, self.records
         )
         return umas_pdu_read_unlocated_variable_names

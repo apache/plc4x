@@ -20,7 +20,6 @@ from abc import abstractmethod
 
 
 class Serializable:
-
     @abstractmethod
     def serialize(self, write_buffer):
         """Serialize an object to the WriteBuffer provided.

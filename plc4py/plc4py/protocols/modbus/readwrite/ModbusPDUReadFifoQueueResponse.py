@@ -17,18 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
-from typing import ClassVar
-from typing import List
-import math
 
 
 @dataclass
@@ -44,11 +44,15 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = (int(len(self.fifo_value)) * int(2)) + int(2)
-        write_buffer.write_unsigned_short(byte_count, logical_name="byte_count")
+        write_buffer.write_unsigned_short(
+            byte_count, logical_name="byte_count"
+        )
 
         # Implicit Field (fifo_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         fifo_count: int = (int(len(self.fifo_value)) * int(2)) / int(2)
-        write_buffer.write_unsigned_short(fifo_count, logical_name="fifo_count")
+        write_buffer.write_unsigned_short(
+            fifo_count, logical_name="fifo_count"
+        )
 
         # Array Field (fifoValue)
         write_buffer.write_simple_array(
@@ -108,8 +112,14 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
         if not isinstance(o, ModbusPDUReadFifoQueueResponse):
             return False
 
-        that: ModbusPDUReadFifoQueueResponse = ModbusPDUReadFifoQueueResponse(o)
-        return (self.fifo_value == that.fifo_value) and super().equals(that) and True
+        that: ModbusPDUReadFifoQueueResponse = ModbusPDUReadFifoQueueResponse(
+            o
+        )
+        return (
+            (self.fifo_value == that.fifo_value)
+            and super().equals(that)
+            and True
+        )
 
     def hash_code(self) -> int:
         return hash(self)

@@ -18,7 +18,7 @@
 #
 import re
 from dataclasses import InitVar, dataclass, field
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 
 @dataclass

@@ -17,16 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -91,8 +93,8 @@ class ModbusPDUGetComEventCounterResponse(ModbusPDU):
         if not isinstance(o, ModbusPDUGetComEventCounterResponse):
             return False
 
-        that: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
-            o
+        that: ModbusPDUGetComEventCounterResponse = (
+            ModbusPDUGetComEventCounterResponse(o)
         )
         return (
             (self.status == that.status)
@@ -123,7 +125,7 @@ class ModbusPDUGetComEventCounterResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventCounterResponse:
-        modbus_pduget_com_event_counter_response: (
-            ModbusPDUGetComEventCounterResponse
-        ) = ModbusPDUGetComEventCounterResponse(self.status, self.event_count)
+        modbus_pduget_com_event_counter_response: ModbusPDUGetComEventCounterResponse = ModbusPDUGetComEventCounterResponse(
+            self.status, self.event_count
+        )
         return modbus_pduget_com_event_counter_response

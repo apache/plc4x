@@ -22,7 +22,6 @@ from aenum import AutoNumberEnum
 
 
 class UmasDeviceInformationLevel(AutoNumberEnum):
-
     BASIC: int = 0x01
     REGULAR: int = 0x02
     EXTENDED: int = 0x03

@@ -17,17 +17,18 @@
 # under the License.
 #
 
+import math
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from abc import ABC
-from abc import abstractmethod
-from plc4py.api.exceptions.exceptions import ParseException
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    ParseException,
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-import math
 
 
 @dataclass
@@ -38,7 +39,9 @@ class UmasVariableBlock(ABC, PlcMessage):
         pass
 
     @abstractmethod
-    def serialize_umas_variable_block_child(self, write_buffer: WriteBuffer) -> None:
+    def serialize_umas_variable_block_child(
+        self, write_buffer: WriteBuffer
+    ) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
@@ -78,7 +81,9 @@ class UmasVariableBlock(ABC, PlcMessage):
                 + kwargs.get("record_format").getClass().getName()
             )
 
-        return UmasVariableBlock.static_parse_context(read_buffer, record_format)
+        return UmasVariableBlock.static_parse_context(
+            read_buffer, record_format
+        )
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, record_format: int):
@@ -91,8 +96,10 @@ class UmasVariableBlock(ABC, PlcMessage):
         )
 
         if record_format == int(0xDD02):
-            builder = UmasPDUReadUnlocatedVariableNamesResponse.static_parse_builder(
-                read_buffer, record_format
+            builder = (
+                UmasPDUReadUnlocatedVariableNamesResponse.static_parse_builder(
+                    read_buffer, record_format
+                )
             )
         from plc4py.protocols.umas.readwrite.UmasPDUReadDatatypeNamesResponse import (
             UmasPDUReadDatatypeNamesResponse,

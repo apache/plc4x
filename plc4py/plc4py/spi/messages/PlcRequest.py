@@ -18,12 +18,12 @@
 #
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcRequest import (
-    PlcReadRequest,
-    ReadRequestBuilder,
     BrowseRequestBuilder,
     PlcBrowseRequest,
-    WriteRequestBuilder,
+    PlcReadRequest,
     PlcWriteRequest,
+    ReadRequestBuilder,
+    WriteRequestBuilder,
 )
 from plc4py.api.value.PlcValue import PlcValue
 
@@ -60,7 +60,9 @@ class DefaultWriteRequestBuilder(WriteRequestBuilder):
     def build(self) -> PlcWriteRequest:
         return self.write_request
 
-    def add_item(self, tag_name: str, address_string: str, value: PlcValue) -> None:
+    def add_item(
+        self, tag_name: str, address_string: str, value: PlcValue
+    ) -> None:
         tag = self.tag_builder.create(address_string)
         self.write_request.tags[tag_name] = tag
         self.write_request.values[tag_name] = value

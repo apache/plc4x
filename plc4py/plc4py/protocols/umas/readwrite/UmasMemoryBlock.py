@@ -17,22 +17,22 @@
 # under the License.
 #
 
+import math
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from abc import ABC
-from abc import abstractmethod
-from plc4py.api.exceptions.exceptions import ParseException
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    ParseException,
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-import math
 
 
 @dataclass
 class UmasMemoryBlock(ABC, PlcMessage):
-
     # Abstract accessors for discriminator values.
     @property
     def block_number(self) -> int:
@@ -43,7 +43,9 @@ class UmasMemoryBlock(ABC, PlcMessage):
         pass
 
     @abstractmethod
-    def serialize_umas_memory_block_child(self, write_buffer: WriteBuffer) -> None:
+    def serialize_umas_memory_block_child(
+        self, write_buffer: WriteBuffer
+    ) -> None:
         pass
 
     def serialize(self, write_buffer: WriteBuffer):
@@ -67,7 +69,6 @@ class UmasMemoryBlock(ABC, PlcMessage):
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-
         if kwargs is None:
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 2, but got None"
@@ -95,10 +96,14 @@ class UmasMemoryBlock(ABC, PlcMessage):
                 + kwargs.get("offset").getClass().getName()
             )
 
-        return UmasMemoryBlock.static_parse_context(read_buffer, block_number, offset)
+        return UmasMemoryBlock.static_parse_context(
+            read_buffer, block_number, offset
+        )
 
     @staticmethod
-    def static_parse_context(read_buffer: ReadBuffer, block_number: int, offset: int):
+    def static_parse_context(
+        read_buffer: ReadBuffer, block_number: int, offset: int
+    ):
         read_buffer.push_context("UmasMemoryBlock")
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
@@ -108,7 +113,6 @@ class UmasMemoryBlock(ABC, PlcMessage):
         )
 
         if block_number == int(0x30) and offset == int(0x00):
-
             builder = UmasMemoryBlockBasicInfo.static_parse_builder(
                 read_buffer, block_number, offset
             )

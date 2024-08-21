@@ -20,16 +20,13 @@ import re
 from typing import AnyStr, Pattern
 
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
-from plc4py.spi.messages.PlcRequest import TagBuilder
-
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
+from plc4py.spi.messages.PlcRequest import TagBuilder
 
 
 class UmasTag(PlcTag):
-    _ADDRESS_PATTERN: str = (
-        "^(?P<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)"
-    )
+    _ADDRESS_PATTERN: str = "^(?P<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)"
 
     _ADDRESS_COMPILED: Pattern[AnyStr] = re.compile(_ADDRESS_PATTERN)
     _DEFAULT_DATA_TYPE: UmasDataType = UmasDataType.INT
@@ -76,4 +73,6 @@ class UmasTagBuilder(TagBuilder):
         if UmasTag.matches(address_string):
             return UmasTag.create(address_string)
         else:
-            raise PlcFieldParseException("Unable to parse address: " + address_string)
+            raise PlcFieldParseException(
+                "Unable to parse address: " + address_string
+            )

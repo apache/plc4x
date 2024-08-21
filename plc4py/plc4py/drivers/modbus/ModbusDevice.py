@@ -24,40 +24,37 @@ from typing import Dict, List
 
 from bitarray import bitarray
 
-from plc4py.protocols.modbus.readwrite.DataItem import DataItem
-from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
-from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
-
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.messages.PlcRequest import PlcReadRequest, PlcWriteRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcWriteResponse
+from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
+from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusTag import (
-    ModbusTagHoldingRegister,
     ModbusTagCoil,
     ModbusTagDiscreteInput,
+    ModbusTagHoldingRegister,
     ModbusTagInputRegister,
 )
-
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
+from plc4py.protocols.modbus.readwrite.DataItem import DataItem
+from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsRequest import (
     ModbusPDUReadCoilsRequest,
 )
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
     ModbusPDUReadDiscreteInputsRequest,
 )
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import (
-    ModbusPDUReadInputRegistersRequest,
-)
-from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
-
-from plc4py.api.messages.PlcRequest import PlcReadRequest, PlcWriteRequest
-from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcWriteResponse
-from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest import (
     ModbusPDUReadHoldingRegistersRequest,
 )
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import (
+    ModbusPDUReadInputRegistersRequest,
+)
 from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
+from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcValues import PlcList, PlcNull
-from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
+from plc4py.utils.GenericTypes import AtomicInteger, ByteOrder
 
 
 @dataclass
@@ -94,7 +91,9 @@ class ModbusDevice:
         elif isinstance(tag, ModbusTagInputRegister):
             pdu = ModbusPDUReadInputRegistersRequest(tag.address, tag.quantity)
         elif isinstance(tag, ModbusTagHoldingRegister):
-            pdu = ModbusPDUReadHoldingRegistersRequest(tag.address, tag.quantity)
+            pdu = ModbusPDUReadHoldingRegistersRequest(
+                tag.address, tag.quantity
+            )
         else:
             raise NotImplementedError(
                 "Modbus tag type not implemented " + str(tag.__class__)
@@ -106,7 +105,9 @@ class ModbusDevice:
             self._configuration.unit_identifier,
             pdu,
         )
-        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
+        write_buffer = WriteBufferByteBased(
+            adu.length_in_bytes(), ByteOrder.BIG_ENDIAN
+        )
         adu.serialize(write_buffer)
 
         protocol = transport.protocol
@@ -130,11 +131,15 @@ class ModbusDevice:
             )
             return response
 
-        if isinstance(tag, ModbusTagCoil) or isinstance(tag, ModbusTagDiscreteInput):
+        if isinstance(tag, ModbusTagCoil) or isinstance(
+            tag, ModbusTagDiscreteInput
+        ):
             a = bitarray()
             a.frombytes(bytearray(result.value))
             a.bytereverse()
-            read_buffer = ReadBufferByteBased(bytearray(a), ByteOrder.BIG_ENDIAN)
+            read_buffer = ReadBufferByteBased(
+                bytearray(a), ByteOrder.BIG_ENDIAN
+            )
         else:
             read_buffer = ReadBufferByteBased(
                 bytearray(result.value), ByteOrder.BIG_ENDIAN

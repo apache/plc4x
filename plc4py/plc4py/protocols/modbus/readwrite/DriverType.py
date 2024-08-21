@@ -22,7 +22,6 @@ from aenum import AutoNumberEnum
 
 
 class DriverType(AutoNumberEnum):
-
     MODBUS_TCP: int = 0x01
     MODBUS_RTU: int = 0x02
     MODBUS_ASCII: int = 0x03

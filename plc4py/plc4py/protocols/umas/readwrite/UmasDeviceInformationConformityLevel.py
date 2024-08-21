@@ -22,7 +22,6 @@ from aenum import AutoNumberEnum
 
 
 class UmasDeviceInformationConformityLevel(AutoNumberEnum):
-
     BASIC_STREAM_ONLY: int = 0x01
     REGULAR_STREAM_ONLY: int = 0x02
     EXTENDED_STREAM_ONLY: int = 0x03

@@ -22,6 +22,5 @@ from aenum import AutoNumberEnum
 
 
 class ModbusDeviceInformationMoreFollows(AutoNumberEnum):
-
     NO_MORE_OBJECTS_AVAILABLE: int = 0x00
     MORE_OBJECTS_AVAILABLE: int = 0xFF

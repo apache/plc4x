@@ -17,14 +17,16 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-import math
 
 
 @dataclass
@@ -56,7 +58,9 @@ class VariableRequestReference:
         )
 
         # Const Field (unknown1)
-        write_buffer.write_unsigned_byte(self.UNKNOWN1, logical_name="unknown1")
+        write_buffer.write_unsigned_byte(
+            self.UNKNOWN1, logical_name="unknown1"
+        )
 
         # Simple Field (baseOffset)
         write_buffer.write_unsigned_short(
@@ -69,7 +73,9 @@ class VariableRequestReference:
         )
 
         # Optional Field (arrayLength) (Can be skipped, if the value is null)
-        write_buffer.write_unsigned_short(self.array_length, logical_name="arrayLength")
+        write_buffer.write_unsigned_short(
+            self.array_length, logical_name="arrayLength"
+        )
 
         write_buffer.pop_context("VariableRequestReference")
 
@@ -135,13 +141,20 @@ class VariableRequestReference:
 
         array_length: int = None
         if self.is_array:
-            array_length = read_buffer.read_unsigned_short(logical_name="arrayLength")
+            array_length = read_buffer.read_unsigned_short(
+                logical_name="arrayLength"
+            )
 
         read_buffer.pop_context("VariableRequestReference")
         # Create the instance
         _variable_request_reference: VariableRequestReference = (
             VariableRequestReference(
-                is_array, data_size_index, block, base_offset, offset, array_length
+                is_array,
+                data_size_index,
+                block,
+                base_offset,
+                offset,
+                array_length,
             )
         )
         return _variable_request_reference

@@ -17,16 +17,17 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
-from typing import List
-import math
 
 
 @dataclass
@@ -39,7 +40,9 @@ class ModbusPDUReadFileRecordResponseItem:
 
         # Implicit Field (data_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         data_length: int = int(len(self.data)) + int(1)
-        write_buffer.write_unsigned_byte(data_length, logical_name="data_length")
+        write_buffer.write_unsigned_byte(
+            data_length, logical_name="data_length"
+        )
 
         # Simple Field (referenceType)
         write_buffer.write_unsigned_byte(
@@ -72,13 +75,17 @@ class ModbusPDUReadFileRecordResponseItem:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return ModbusPDUReadFileRecordResponseItem.static_parse_context(read_buffer)
+        return ModbusPDUReadFileRecordResponseItem.static_parse_context(
+            read_buffer
+        )
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("ModbusPDUReadFileRecordResponseItem")
 
-        data_length: int = read_buffer.read_unsigned_byte(logical_name="data_length")
+        data_length: int = read_buffer.read_unsigned_byte(
+            logical_name="data_length"
+        )
 
         reference_type: int = read_buffer.read_unsigned_byte(
             logical_name="reference_type", bit_length=8
@@ -92,9 +99,9 @@ class ModbusPDUReadFileRecordResponseItem:
 
         read_buffer.pop_context("ModbusPDUReadFileRecordResponseItem")
         # Create the instance
-        _modbus_pduread_file_record_response_item: (
-            ModbusPDUReadFileRecordResponseItem
-        ) = ModbusPDUReadFileRecordResponseItem(reference_type, data)
+        _modbus_pduread_file_record_response_item: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(
+            reference_type, data
+        )
         return _modbus_pduread_file_record_response_item
 
     def equals(self, o: object) -> bool:
@@ -104,8 +111,8 @@ class ModbusPDUReadFileRecordResponseItem:
         if not isinstance(o, ModbusPDUReadFileRecordResponseItem):
             return False
 
-        that: ModbusPDUReadFileRecordResponseItem = ModbusPDUReadFileRecordResponseItem(
-            o
+        that: ModbusPDUReadFileRecordResponseItem = (
+            ModbusPDUReadFileRecordResponseItem(o)
         )
         return (
             (self.reference_type == that.reference_type)

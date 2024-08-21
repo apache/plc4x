@@ -23,30 +23,29 @@ from dataclasses import dataclass, field
 from typing import Type, Union
 
 import plc4py
-from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
-from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
 from plc4py.api.messages.PlcRequest import (
-    ReadRequestBuilder,
     PlcReadRequest,
     PlcRequest,
+    ReadRequestBuilder,
 )
 from plc4py.api.messages.PlcResponse import (
     PlcReadResponse,
     PlcResponse,
 )
+from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
+from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.value.PlcValue import PlcResponseCode
-from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.mock.MockTag import MockTagBuilder
+from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
 from plc4py.spi.messages.PlcWriter import DefaultPlcWriter
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.transport.MockTransport import MockTransport
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
-from plc4py.spi.values.PlcValues import PlcBOOL
-from plc4py.spi.values.PlcValues import PlcINT
+from plc4py.spi.values.PlcValues import PlcBOOL, PlcINT
 
 
 @dataclass
@@ -66,7 +65,9 @@ class MockDevice:
                     PlcResponseCode.OK, PlcBOOL(False)
                 )
             elif tag.data_type == "INT":
-                response_items[tag_name] = ResponseItem(PlcResponseCode.OK, PlcINT(0))
+                response_items[tag_name] = ResponseItem(
+                    PlcResponseCode.OK, PlcINT(0)
+                )
             else:
                 raise PlcFieldParseException
         return PlcReadResponse(PlcResponseCode.OK, response_items)

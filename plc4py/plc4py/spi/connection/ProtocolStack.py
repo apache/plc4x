@@ -18,12 +18,12 @@
 #
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TypeVar, Generic, Callable, Any, List
+from typing import Any, Callable, Generic, List, TypeVar
 
 from plc4py.api.listener import EventListener
-from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
 from plc4py.spi.context.DriverContext import DriverContext
 from plc4py.spi.messages.ChannelMessage import ChannelMessage
+from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
 from plc4py.utils.GenericTypes import ByteOrder
 
 

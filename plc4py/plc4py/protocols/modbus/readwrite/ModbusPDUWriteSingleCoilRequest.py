@@ -17,16 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -91,7 +93,9 @@ class ModbusPDUWriteSingleCoilRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUWriteSingleCoilRequest):
             return False
 
-        that: ModbusPDUWriteSingleCoilRequest = ModbusPDUWriteSingleCoilRequest(o)
+        that: ModbusPDUWriteSingleCoilRequest = (
+            ModbusPDUWriteSingleCoilRequest(o)
+        )
         return (
             (self.address == that.address)
             and (self.value == that.value)
@@ -121,7 +125,7 @@ class ModbusPDUWriteSingleCoilRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUWriteSingleCoilRequest:
-        modbus_pduwrite_single_coil_request: ModbusPDUWriteSingleCoilRequest = (
-            ModbusPDUWriteSingleCoilRequest(self.address, self.value)
+        modbus_pduwrite_single_coil_request: ModbusPDUWriteSingleCoilRequest = ModbusPDUWriteSingleCoilRequest(
+            self.address, self.value
         )
         return modbus_pduwrite_single_coil_request

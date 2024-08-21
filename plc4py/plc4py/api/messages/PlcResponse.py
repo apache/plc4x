@@ -17,11 +17,11 @@
 # under the License.
 #
 from dataclasses import dataclass
-from typing import cast, List, Dict
+from typing import Dict, List, cast
 
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
+from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 
 

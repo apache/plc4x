@@ -17,7 +17,7 @@
 # under the License.
 #
 from dataclasses import dataclass
-from typing import List, Any, Dict
+from typing import Any, Dict, List
 
 from plc4py.api.value.PlcValue import PlcValue
 

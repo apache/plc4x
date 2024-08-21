@@ -17,17 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
-from typing import List
-import math
 
 
 @dataclass
@@ -41,7 +42,9 @@ class UmasPDUReadUmasUDTDefinitionResponse:
         write_buffer.push_context("UmasPDUReadUmasUDTDefinitionResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
+        write_buffer.write_unsigned_byte(
+            self.range, bit_length=8, logical_name="range"
+        )
 
         # Simple Field (unknown1)
         write_buffer.write_unsigned_int(
@@ -83,13 +86,17 @@ class UmasPDUReadUmasUDTDefinitionResponse:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return UmasPDUReadUmasUDTDefinitionResponse.static_parse_context(read_buffer)
+        return UmasPDUReadUmasUDTDefinitionResponse.static_parse_context(
+            read_buffer
+        )
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasPDUReadUmasUDTDefinitionResponse")
 
-        range: int = read_buffer.read_unsigned_byte(logical_name="range", bit_length=8)
+        range: int = read_buffer.read_unsigned_byte(
+            logical_name="range", bit_length=8
+        )
 
         unknown1: int = read_buffer.read_unsigned_int(
             logical_name="unknown1", bit_length=32
@@ -107,9 +114,7 @@ class UmasPDUReadUmasUDTDefinitionResponse:
 
         read_buffer.pop_context("UmasPDUReadUmasUDTDefinitionResponse")
         # Create the instance
-        _umas_pduread_umas_udtdefinition_response: (
-            UmasPDUReadUmasUDTDefinitionResponse
-        ) = UmasPDUReadUmasUDTDefinitionResponse(
+        _umas_pduread_umas_udtdefinition_response: UmasPDUReadUmasUDTDefinitionResponse = UmasPDUReadUmasUDTDefinitionResponse(
             range, unknown1, no_of_records, records
         )
         return _umas_pduread_umas_udtdefinition_response

@@ -17,15 +17,17 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas import StaticHelper
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-import math
 
 
 @dataclass
@@ -185,7 +187,9 @@ class UmasUnlocatedVariableReference:
         if not isinstance(o, UmasUnlocatedVariableReference):
             return False
 
-        that: UmasUnlocatedVariableReference = UmasUnlocatedVariableReference(o)
+        that: UmasUnlocatedVariableReference = UmasUnlocatedVariableReference(
+            o
+        )
         return (
             (self.data_type == that.data_type)
             and (self.unknown1 == that.unknown1)

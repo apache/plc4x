@@ -17,18 +17,18 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from typing import Any
-from typing import ClassVar
-from typing import List
-import math
 
 
 @dataclass
@@ -134,7 +134,9 @@ class ModbusPDUGetComEventLogResponse(ModbusPDU):
         if not isinstance(o, ModbusPDUGetComEventLogResponse):
             return False
 
-        that: ModbusPDUGetComEventLogResponse = ModbusPDUGetComEventLogResponse(o)
+        that: ModbusPDUGetComEventLogResponse = (
+            ModbusPDUGetComEventLogResponse(o)
+        )
         return (
             (self.status == that.status)
             and (self.event_count == that.event_count)
@@ -168,9 +170,7 @@ class ModbusPDUGetComEventLogResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUGetComEventLogResponse:
-        modbus_pduget_com_event_log_response: ModbusPDUGetComEventLogResponse = (
-            ModbusPDUGetComEventLogResponse(
-                self.status, self.event_count, self.message_count, self.events
-            )
+        modbus_pduget_com_event_log_response: ModbusPDUGetComEventLogResponse = ModbusPDUGetComEventLogResponse(
+            self.status, self.event_count, self.message_count, self.events
         )
         return modbus_pduget_com_event_log_response

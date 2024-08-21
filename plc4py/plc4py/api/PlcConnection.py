@@ -20,14 +20,14 @@ import asyncio
 from abc import abstractmethod
 from typing import Awaitable, Dict, Union
 
+from plc4py.api.messages.PlcRequest import PlcRequest, ReadRequestBuilder
 from plc4py.api.messages.PlcResponse import (
+    PlcBrowseResponse,
+    PlcReadResponse,
     PlcResponse,
     PlcTagResponse,
-    PlcReadResponse,
     PlcWriteResponse,
-    PlcBrowseResponse,
 )
-from plc4py.api.messages.PlcRequest import ReadRequestBuilder, PlcRequest
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
 from plc4py.spi.configuration.PlcConfiguration import PlcConfiguration
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
@@ -95,7 +95,6 @@ class PlcConnection(GenericGenerator):
 
 
 class PlcConnectionMetaData:
-
     @abstractmethod
     def is_read_supported(self) -> bool:
         """

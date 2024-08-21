@@ -19,10 +19,10 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 
-from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcNotImplementedException
 from plc4py.api.messages.PlcDiscovery import PlcDiscoveryRequestBuilder
+from plc4py.api.PlcConnection import PlcConnection
 
 
 @dataclass
@@ -67,4 +67,6 @@ class PlcDriver:
         Discovery Request Builder aids in generating a discovery request for this protocol
         :return builder: Discovery request builder
         """
-        raise PlcNotImplementedException(f"Not implemented for {self.protocol_name}")
+        raise PlcNotImplementedException(
+            f"Not implemented for {self.protocol_name}"
+        )

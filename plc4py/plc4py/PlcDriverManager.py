@@ -20,7 +20,8 @@
 import logging
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
-from typing import Type, AsyncIterator, List, Dict
+from typing import AsyncIterator, Dict, List, Type
+
 from pluggy import PluginManager  # type: ignore
 
 from plc4py.api.PlcConnection import PlcConnection
@@ -31,7 +32,9 @@ from plc4py.utils.ConnectionStringHandling import get_protocol_code
 
 @dataclass
 class PlcDriverManager:
-    class_loader: PluginManager = field(default_factory=lambda: PluginManager("plc4py"))
+    class_loader: PluginManager = field(
+        default_factory=lambda: PluginManager("plc4py")
+    )
     _driver_map: Dict[str, Type[PlcDriver]] = field(default_factory=lambda: {})
 
     def __post_init__(self):
@@ -68,7 +71,8 @@ class PlcDriverManager:
         self._driver_map = {
             key: loader
             for key, loader in zip(
-                self.class_loader.hook.key(), self.class_loader.hook.get_driver()
+                self.class_loader.hook.key(),
+                self.class_loader.hook.get_driver(),
             )
         }
 

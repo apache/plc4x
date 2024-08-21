@@ -17,19 +17,19 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
-from typing import Any
-from typing import ClassVar
-from typing import List
-import math
 
 
 @dataclass
@@ -47,7 +47,9 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
         write_buffer.push_context("UmasPDUReadMemoryBlockResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
+        write_buffer.write_unsigned_byte(
+            self.range, bit_length=8, logical_name="range"
+        )
 
         # Simple Field (numberOfBytes)
         write_buffer.write_unsigned_short(
@@ -82,7 +84,9 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+        read_buffer: ReadBuffer,
+        umas_request_function_key: int,
+        byte_length: int,
     ):
         read_buffer.push_context("UmasPDUReadMemoryBlockResponse")
 
@@ -113,7 +117,9 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
 
         read_buffer.pop_context("UmasPDUReadMemoryBlockResponse")
         # Create the instance
-        return UmasPDUReadMemoryBlockResponseBuilder(range, number_of_bytes, block)
+        return UmasPDUReadMemoryBlockResponseBuilder(
+            range, number_of_bytes, block
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -122,7 +128,9 @@ class UmasPDUReadMemoryBlockResponse(UmasPDUItem):
         if not isinstance(o, UmasPDUReadMemoryBlockResponse):
             return False
 
-        that: UmasPDUReadMemoryBlockResponse = UmasPDUReadMemoryBlockResponse(o)
+        that: UmasPDUReadMemoryBlockResponse = UmasPDUReadMemoryBlockResponse(
+            o
+        )
         return (
             (self.range == that.range)
             and (self.number_of_bytes == that.number_of_bytes)
@@ -151,10 +159,16 @@ class UmasPDUReadMemoryBlockResponseBuilder:
     number_of_bytes: int
     block: List[int]
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUReadMemoryBlockResponse:
+    def build(
+        self, byte_length: int, pairing_key
+    ) -> UmasPDUReadMemoryBlockResponse:
         umas_pduread_memory_block_response: UmasPDUReadMemoryBlockResponse = (
             UmasPDUReadMemoryBlockResponse(
-                byte_length, pairing_key, self.range, self.number_of_bytes, self.block
+                byte_length,
+                pairing_key,
+                self.range,
+                self.number_of_bytes,
+                self.block,
             )
         )
         return umas_pduread_memory_block_response

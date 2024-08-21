@@ -17,10 +17,14 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
@@ -29,10 +33,6 @@ from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
-from typing import Any
-from typing import ClassVar
-from typing import List
-import math
 
 
 @dataclass
@@ -50,7 +50,9 @@ class UmasPDUReadVariableRequest(UmasPDUItem):
         write_buffer.push_context("UmasPDUReadVariableRequest")
 
         # Simple Field (crc)
-        write_buffer.write_unsigned_int(self.crc, bit_length=32, logical_name="crc")
+        write_buffer.write_unsigned_int(
+            self.crc, bit_length=32, logical_name="crc"
+        )
 
         # Simple Field (variableCount)
         write_buffer.write_unsigned_byte(
@@ -58,7 +60,9 @@ class UmasPDUReadVariableRequest(UmasPDUItem):
         )
 
         # Array Field (variables)
-        write_buffer.write_complex_array(self.variables, logical_name="variables")
+        write_buffer.write_complex_array(
+            self.variables, logical_name="variables"
+        )
 
         write_buffer.pop_context("UmasPDUReadVariableRequest")
 
@@ -84,7 +88,9 @@ class UmasPDUReadVariableRequest(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+        read_buffer: ReadBuffer,
+        umas_request_function_key: int,
+        byte_length: int,
     ):
         read_buffer.push_context("UmasPDUReadVariableRequest")
 
@@ -115,7 +121,9 @@ class UmasPDUReadVariableRequest(UmasPDUItem):
 
         read_buffer.pop_context("UmasPDUReadVariableRequest")
         # Create the instance
-        return UmasPDUReadVariableRequestBuilder(crc, variable_count, variables)
+        return UmasPDUReadVariableRequestBuilder(
+            crc, variable_count, variables
+        )
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -153,10 +161,16 @@ class UmasPDUReadVariableRequestBuilder:
     variable_count: int
     variables: List[VariableReadRequestReference]
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUReadVariableRequest:
+    def build(
+        self, byte_length: int, pairing_key
+    ) -> UmasPDUReadVariableRequest:
         umas_pduread_variable_request: UmasPDUReadVariableRequest = (
             UmasPDUReadVariableRequest(
-                byte_length, pairing_key, self.crc, self.variable_count, self.variables
+                byte_length,
+                pairing_key,
+                self.crc,
+                self.variable_count,
+                self.variables,
             )
         )
         return umas_pduread_variable_request

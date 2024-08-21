@@ -16,13 +16,13 @@
 #  under the License.
 import struct
 import types
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Union, Any
+from typing import Any, List, Union
 
 import aenum
 from bitarray import bitarray
-from bitarray.util import zeros, ba2int, ba2base
+from bitarray.util import ba2base, ba2int, zeros
 
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -95,15 +95,21 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def read_short(self, bit_length: int = 16, logical_name: str = "", **kwargs) -> int:
+    def read_short(
+        self, bit_length: int = 16, logical_name: str = "", **kwargs
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    def read_int(self, bit_length: int = 32, logical_name: str = "", **kwargs) -> int:
+    def read_int(
+        self, bit_length: int = 32, logical_name: str = "", **kwargs
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod
-    def read_long(self, bit_length: int = 64, logical_name: str = "", **kwargs) -> int:
+    def read_long(
+        self, bit_length: int = 64, logical_name: str = "", **kwargs
+    ) -> int:
         raise NotImplementedError
 
     @abstractmethod
@@ -119,20 +125,30 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
+    def read_str(
+        self, bit_length: int = -1, logical_name: str = "", **kwargs
+    ) -> str:
         raise NotImplementedError
 
     @abstractmethod
-    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[Any]:
+    def read_complex_array(
+        self, logical_name: str = "", **kwargs
+    ) -> List[Any]:
         raise NotImplementedError
 
     @abstractmethod
-    def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+    def read_complex(
+        self, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
         raise NotImplementedError
 
     @abstractmethod
     def read_enum(
-        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+        self,
+        bit_length: int = -1,
+        logical_name: str = "",
+        read_function=None,
+        **kwargs,
     ) -> Any:
         raise NotImplementedError
 
@@ -144,7 +160,7 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
         count: int = None,
         length: int = None,
         terminated=None,
-        **kwargs
+        **kwargs,
     ) -> List[Any]:
         raise NotImplementedError
 
@@ -157,7 +173,9 @@ class ReadBufferByteBased(ReadBuffer):
         bit_order: ByteOrder = ByteOrder.BIG_ENDIAN,
     ):
         if bit_order == ByteOrder.LITTLE_ENDIAN:
-            bb = bitarray(buffer=bb, endian=ByteOrder.get_short_name(bit_order))
+            bb = bitarray(
+                buffer=bb, endian=ByteOrder.get_short_name(bit_order)
+            )
             bb.bytereverse()
         self.bb = bitarray(
             buffer=memoryview(bb), endian=ByteOrder.get_short_name(bit_order)
@@ -201,12 +219,17 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("unsigned byte must contain at least 1 bit")
+            raise SerializationException(
+                "unsigned byte must contain at least 1 bit"
+            )
         elif bit_length > 8:
-            raise SerializationException("unsigned byte can only contain max 8 bits")
+            raise SerializationException(
+                "unsigned byte can only contain max 8 bits"
+            )
         else:
             result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+                self.bb[self.position : self.position + bit_length],
+                signed=False,
             )
             self.position += bit_length
             return result
@@ -216,9 +239,13 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("unsigned short must contain at least 1 bit")
+            raise SerializationException(
+                "unsigned short must contain at least 1 bit"
+            )
         elif bit_length > 16:
-            raise SerializationException("unsigned short can only contain max 16 bits")
+            raise SerializationException(
+                "unsigned short can only contain max 16 bits"
+            )
         else:
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endian_string = "<"
@@ -236,9 +263,13 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("unsigned int must contain at least 1 bit")
+            raise SerializationException(
+                "unsigned int must contain at least 1 bit"
+            )
         elif bit_length > 32:
-            raise SerializationException("unsigned int can only contain max 32 bits")
+            raise SerializationException(
+                "unsigned int can only contain max 32 bits"
+            )
         else:
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endian_string = "<"
@@ -256,9 +287,13 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("unsigned long must contain at least 1 bit")
+            raise SerializationException(
+                "unsigned long must contain at least 1 bit"
+            )
         elif bit_length > 64:
-            raise SerializationException("unsigned long can only contain max 64 bits")
+            raise SerializationException(
+                "unsigned long can only contain max 64 bits"
+            )
         else:
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endian_string = "<"
@@ -276,22 +311,33 @@ class ReadBufferByteBased(ReadBuffer):
     ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("signed byte must contain at least 1 bit")
+            raise SerializationException(
+                "signed byte must contain at least 1 bit"
+            )
         elif bit_length > 8:
-            raise SerializationException("signed byte can only contain max 8 bits")
+            raise SerializationException(
+                "signed byte can only contain max 8 bits"
+            )
         else:
             result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+                self.bb[self.position : self.position + bit_length],
+                signed=False,
             )
             self.position += bit_length
             return result
 
-    def read_short(self, bit_length: int = 16, logical_name: str = "", **kwargs) -> int:
+    def read_short(
+        self, bit_length: int = 16, logical_name: str = "", **kwargs
+    ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("signed short must contain at least 1 bit")
+            raise SerializationException(
+                "signed short must contain at least 1 bit"
+            )
         elif bit_length > 16:
-            raise SerializationException("signed short can only contain max 16 bits")
+            raise SerializationException(
+                "signed short can only contain max 16 bits"
+            )
         else:
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endian_string = "<"
@@ -304,12 +350,18 @@ class ReadBufferByteBased(ReadBuffer):
             self.position += bit_length
             return result
 
-    def read_int(self, bit_length: int = 32, logical_name: str = "", **kwargs) -> int:
+    def read_int(
+        self, bit_length: int = 32, logical_name: str = "", **kwargs
+    ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("signed int must contain at least 1 bit")
+            raise SerializationException(
+                "signed int must contain at least 1 bit"
+            )
         elif bit_length > 32:
-            raise SerializationException("signed int can only contain max 32 bits")
+            raise SerializationException(
+                "signed int can only contain max 32 bits"
+            )
         else:
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endian_string = "<"
@@ -322,12 +374,18 @@ class ReadBufferByteBased(ReadBuffer):
             self.position += bit_length
             return result
 
-    def read_long(self, bit_length: int = 64, logical_name: str = "", **kwargs) -> int:
+    def read_long(
+        self, bit_length: int = 64, logical_name: str = "", **kwargs
+    ) -> int:
         byte_order = kwargs.get("byte_order", self.byte_order)
         if bit_length <= 0:
-            raise SerializationException("signed long must contain at least 1 bit")
+            raise SerializationException(
+                "signed long must contain at least 1 bit"
+            )
         elif bit_length > 64:
-            raise SerializationException("signed long can only contain max 64 bits")
+            raise SerializationException(
+                "signed long can only contain max 64 bits"
+            )
         else:
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endian_string = "<"
@@ -351,7 +409,8 @@ class ReadBufferByteBased(ReadBuffer):
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
             result: float = struct.unpack(
-                endianness + "f", self.bb[self.position : self.position + bit_length]
+                endianness + "f",
+                self.bb[self.position : self.position + bit_length],
             )[0]
             self.position += bit_length
             return result
@@ -367,36 +426,54 @@ class ReadBufferByteBased(ReadBuffer):
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
             result: float = struct.unpack(
-                endianness + "d", self.bb[self.position : self.position + bit_length]
+                endianness + "d",
+                self.bb[self.position : self.position + bit_length],
             )[0]
             self.position += bit_length
             return result
 
-    def read_complex(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+    def read_complex(
+        self, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
         if isinstance(read_function, types.FunctionType):
-            return read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+            return read_function(
+                logical_name=logical_name, read_buffer=self, **kwargs
+            )
 
-    def read_manual(self, logical_name: str = "", read_function=None, **kwargs) -> Any:
+    def read_manual(
+        self, logical_name: str = "", read_function=None, **kwargs
+    ) -> Any:
         if isinstance(read_function, types.FunctionType):
             return read_function()
 
     def read_enum(
-        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+        self,
+        bit_length: int = -1,
+        logical_name: str = "",
+        read_function=None,
+        **kwargs,
     ) -> Any:
         if isinstance(read_function, aenum._enum.EnumType):
             enum_return_value = read_function(
                 ba2int(
-                    self.bb[self.position : self.position + bit_length], signed=False
+                    self.bb[self.position : self.position + bit_length],
+                    signed=False,
                 )
             )
             return enum_return_value
         else:
-            raise RuntimeError("read_enum called but read_function wasn't an enum")
+            raise RuntimeError(
+                "read_enum called but read_function wasn't an enum"
+            )
 
-    def read_complex_array(self, logical_name: str = "", **kwargs) -> List[Any]:
+    def read_complex_array(
+        self, logical_name: str = "", **kwargs
+    ) -> List[Any]:
         raise NotImplementedError
 
-    def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
+    def read_str(
+        self, bit_length: int = -1, logical_name: str = "", **kwargs
+    ) -> str:
         byte_order = kwargs.get("byte_order", self.byte_order)
         result: str = struct.unpack(
             str(int(bit_length / 8)) + "s",
@@ -412,13 +489,15 @@ class ReadBufferByteBased(ReadBuffer):
         count: int = None,
         length: int = None,
         terminated=None,
-        **kwargs
+        **kwargs,
     ) -> List[Any]:
         if count is not None:
             parsed_array = []
             for _ in range(count):
                 parsed_array.append(
-                    read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+                    read_function(
+                        logical_name=logical_name, read_buffer=self, **kwargs
+                    )
                 )
             return parsed_array
         else:

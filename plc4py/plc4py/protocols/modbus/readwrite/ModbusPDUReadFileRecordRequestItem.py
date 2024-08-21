@@ -17,14 +17,16 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-import math
 
 
 @dataclass
@@ -82,7 +84,9 @@ class ModbusPDUReadFileRecordRequestItem:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return ModbusPDUReadFileRecordRequestItem.static_parse_context(read_buffer)
+        return ModbusPDUReadFileRecordRequestItem.static_parse_context(
+            read_buffer
+        )
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
@@ -106,10 +110,8 @@ class ModbusPDUReadFileRecordRequestItem:
 
         read_buffer.pop_context("ModbusPDUReadFileRecordRequestItem")
         # Create the instance
-        _modbus_pduread_file_record_request_item: ModbusPDUReadFileRecordRequestItem = (
-            ModbusPDUReadFileRecordRequestItem(
-                reference_type, file_number, record_number, record_length
-            )
+        _modbus_pduread_file_record_request_item: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(
+            reference_type, file_number, record_number, record_length
         )
         return _modbus_pduread_file_record_request_item
 
@@ -120,7 +122,9 @@ class ModbusPDUReadFileRecordRequestItem:
         if not isinstance(o, ModbusPDUReadFileRecordRequestItem):
             return False
 
-        that: ModbusPDUReadFileRecordRequestItem = ModbusPDUReadFileRecordRequestItem(o)
+        that: ModbusPDUReadFileRecordRequestItem = (
+            ModbusPDUReadFileRecordRequestItem(o)
+        )
         return (
             (self.reference_type == that.reference_type)
             and (self.file_number == that.file_number)

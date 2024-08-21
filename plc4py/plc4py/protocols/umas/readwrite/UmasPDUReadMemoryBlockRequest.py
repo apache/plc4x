@@ -17,17 +17,19 @@
 # under the License.
 #
 
+import math
 from dataclasses import dataclass
+from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.api.exceptions.exceptions import (
+    PlcRuntimeException,
+    SerializationException,
+)
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
-from typing import ClassVar
-import math
 
 
 @dataclass
@@ -47,7 +49,9 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
         write_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
+        write_buffer.write_unsigned_byte(
+            self.range, bit_length=8, logical_name="range"
+        )
 
         # Simple Field (blockNumber)
         write_buffer.write_unsigned_short(
@@ -97,7 +101,9 @@ class UmasPDUReadMemoryBlockRequest(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
+        read_buffer: ReadBuffer,
+        umas_request_function_key: int,
+        byte_length: int,
     ):
         read_buffer.push_context("UmasPDUReadMemoryBlockRequest")
 
@@ -187,7 +193,9 @@ class UmasPDUReadMemoryBlockRequestBuilder:
     unknown_object1: int
     number_of_bytes: int
 
-    def build(self, byte_length: int, pairing_key) -> UmasPDUReadMemoryBlockRequest:
+    def build(
+        self, byte_length: int, pairing_key
+    ) -> UmasPDUReadMemoryBlockRequest:
         umas_pduread_memory_block_request: UmasPDUReadMemoryBlockRequest = (
             UmasPDUReadMemoryBlockRequest(
                 byte_length,
