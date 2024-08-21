@@ -46,6 +46,9 @@ public class OpcuaProtocol implements Protocol, ProtocolHelpers {
         LOGGER.info("Parsing: opc-services.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("opc-services"), typeContext);
 
+        LOGGER.info("Parsing: opc-attribute.mspec");
+        typeContext = new MessageFormatParser().parse(getMspecStream("opc-attribute"), typeContext);
+
         LOGGER.info("Parsing: opc-status.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("opc-status"), typeContext);
 
