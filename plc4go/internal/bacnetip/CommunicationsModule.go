@@ -71,6 +71,7 @@ func new__PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Addre
 func (p *__PCI) SetPDUUserData(pduUserData spi.Message) {
 	p.pduUserData = pduUserData
 }
+
 func (p *__PCI) GetPDUUserData() spi.Message {
 	return p.pduUserData
 }

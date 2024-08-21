@@ -126,35 +126,17 @@ func TestSimple(t *testing.T) {
 		//make a PDU from node 1 to node 2
 		pduData, err := bacnetip.Xtob("dead.beef")
 		require.NoError(t, err)
-		apdu := model.NewAPDUUnknown(0, pduData, 0)
-		control := model.NewNPDUControl(false, true, true, false, model.NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE)
-		sourceAddr := tnet.td.address
-		destAddr := tnet.iut.address
-		npdu := model.NewNPDU(0,
-			control,
-			destAddr.AddrNet,
-			destAddr.AddrLen,
-			destAddr.AddrAddress,
-			sourceAddr.AddrNet,
-			sourceAddr.AddrLen,
-			sourceAddr.AddrAddress,
-			nil,
-			nil,
-			apdu,
-			0)
-		t.Logf("pdu: \n%v", npdu)
+		pdu := bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduData}, bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(tnet.iut.address))
+		t.Logf("pdu: \n%v", pdu)
 
 		// test device sends it, iut gets it
-		pdu := bacnetip.NewPDU(npdu)
-		pdu.SetPDUSource(tnet.td.address)
-		pdu.SetPDUDestination(tnet.iut.address)
 		tnet.td.GetStartState().Send(pdu, nil).Success("")
 		tnet.iut.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
 			bacnetip.KWPPDUSource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(npdu)), bacnetip.NewKWArgs(
+		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
 			bacnetip.KWPPDUSource, tnet.td.address.AddrTuple,
 			bacnetip.KWPDUDestination, tnet.iut.address.AddrTuple,
 			bacnetip.KWPDUData, pduData,

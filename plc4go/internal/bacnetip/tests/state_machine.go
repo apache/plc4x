@@ -178,13 +178,25 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if !ok {
 				return false
 			}
-			return iamrtn.GetDestinationNetworkAddress() == attrValue
+			return iamrtn.GetIcbrtnPerformanceIndex() == attrValue
 		case bacnetip.KWIcbrtnPerformanceIndex:
 			iamrtn, ok := pdu.(*bacnetip.ICouldBeRouterToNetwork)
 			if !ok {
 				return false
 			}
 			return iamrtn.GetPerformanceIndex() == attrValue
+		case bacnetip.KWRmtnRejectionReason:
+			iamrtn, ok := pdu.(*bacnetip.RejectMessageToNetwork)
+			if !ok {
+				return false
+			}
+			return iamrtn.GetRmtnRejectionReason() == attrValue
+		case bacnetip.KWRmtnDNET:
+			iamrtn, ok := pdu.(*bacnetip.RejectMessageToNetwork)
+			if !ok {
+				return false
+			}
+			return iamrtn.GetDestinationNetworkAddress() == attrValue
 		default:
 			panic("implement " + attrName)
 		}
