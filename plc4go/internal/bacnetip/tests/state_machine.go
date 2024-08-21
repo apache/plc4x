@@ -173,6 +173,18 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return slices.Equal(net, uint16s)
+		case bacnetip.KWIcbrtnNetwork:
+			iamrtn, ok := pdu.(*bacnetip.ICouldBeRouterToNetwork)
+			if !ok {
+				return false
+			}
+			return iamrtn.GetDestinationNetworkAddress() == attrValue
+		case bacnetip.KWIcbrtnPerformanceIndex:
+			iamrtn, ok := pdu.(*bacnetip.ICouldBeRouterToNetwork)
+			if !ok {
+				return false
+			}
+			return iamrtn.GetPerformanceIndex() == attrValue
 		default:
 			panic("implement " + attrName)
 		}

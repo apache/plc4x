@@ -47,6 +47,14 @@ func IAmRouterToNetwork(netList ...uint16) *bacnetip.IAmRouterToNetwork {
 	return network
 }
 
+func ICouldBeRouterToNetwork(net uint16, perf uint8) *bacnetip.ICouldBeRouterToNetwork {
+	network, err := bacnetip.NewICouldBeRouterToNetwork(bacnetip.WithICouldBeRouterToNetworkNetwork(net), bacnetip.WithICouldBeRouterToNetworkPerformanceIndex(perf))
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
@@ -174,7 +182,7 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result 
 		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
 		suite.Assert().NoError(err)
 		if parse != nil {
-			suite.T().Log(parse.String())
+			suite.T().Log("\n" + parse.String())
 		}
 	}
 
@@ -186,6 +194,31 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result 
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.IAmRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, networkList))
+}
+
+func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Result encoding and decoding.
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"02 0001 02", // message type, network, performance
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(ICouldBeRouterToNetwork(1, 2)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.ICouldBeRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIcbrtnNetwork, uint16(1), bacnetip.KWIcbrtnPerformanceIndex, uint8(2)))
 }
 
 func TestNPDUCodec(t *testing.T) {
