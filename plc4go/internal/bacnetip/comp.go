@@ -135,6 +135,8 @@ const (
 	KWEctnDNET               = KnownKey("ectnDNET")
 	KWEctnTerminationTime    = KnownKey("ectnTerminationTime")
 	KWDctnDNET               = KnownKey("dctnDNET")
+	KWNniNet                 = KnownKey("nniNet")
+	KWNniFlag                = KnownKey("nniFlag")
 )
 
 type MessageBridge struct {

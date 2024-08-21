@@ -263,6 +263,18 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return dctn.GetDctnDNET() == attrValue
+		case bacnetip.KWNniNet:
+			nni, ok := pdu.(*bacnetip.NetworkNumberIs)
+			if !ok {
+				return false
+			}
+			return nni.GetNetworkNumber() == attrValue
+		case bacnetip.KWNniFlag:
+			nni, ok := pdu.(*bacnetip.NetworkNumberIs)
+			if !ok {
+				return false
+			}
+			return nni.GetNniFlag() == attrValue
 		default:
 			panic("implement " + attrName)
 		}

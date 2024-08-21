@@ -1139,10 +1139,60 @@ func (n *DisconnectConnectionToNetwork) String() string {
 
 type WhatIsNetworkNumber struct {
 	*_NPDU
+	readWriteModel.NLMWhatIsNetworkNumber
 }
 
-func NewWhatIsNetworkNumber() (*WhatIsNetworkNumber, error) {
-	panic("implement me")
+func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkNumber, error) {
+	i := &WhatIsNetworkNumber{}
+	for _, opt := range opts {
+		opt(i)
+	}
+	i.NLMWhatIsNetworkNumber = readWriteModel.NewNLMWhatIsNetworkNumber(0)
+	npdu, err := NewNPDU(i.NLMWhatIsNetworkNumber, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating NPDU")
+	}
+	i._NPDU = npdu.(*_NPDU)
+	return i, nil
+}
+
+func (n *WhatIsNetworkNumber) Encode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := npdu.Update(n); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		npdu.setNPDU(n.npdu)
+		npdu.setNLM(n.nlm)
+		npdu.setAPDU(n.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *WhatIsNetworkNumber) Decode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := n.Update(npdu); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		switch pduUserData := npdu.GetPDUUserData().(type) {
+		case readWriteModel.NPDUExactly:
+			switch nlm := pduUserData.GetNlm().(type) {
+			case readWriteModel.NLMWhatIsNetworkNumberExactly:
+				n.setNLM(nlm)
+				n.NLMWhatIsNetworkNumber = nlm
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *WhatIsNetworkNumber) String() string {
+	return fmt.Sprintf("WhatIsNetworkNumber{%s}", n._NPDU)
 }
 
 type NetworkNumberIs struct {
