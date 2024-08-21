@@ -71,6 +71,11 @@ func (t TPDU) GetMessage() spi.Message {
 	panic("implement me")
 }
 
+func (t TPDU) SetPDUUserData(message spi.Message) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (t TPDU) GetPDUSource() *bacnetip.Address {
 	panic("implement me")
 }

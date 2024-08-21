@@ -638,9 +638,29 @@ func (a *Address) Equals(other any) bool {
 		if a == other {
 			return true
 		}
-		return a.String() == other.String()
+		thisString := a.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
 	case Address:
-		return a.String() == other.String()
+		thisString := a.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
+	case *AddressTuple[string, uint16]:
+		thisString := a.AddrTuple.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
 	default:
 		return false
 	}

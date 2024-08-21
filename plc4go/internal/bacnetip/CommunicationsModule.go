@@ -47,6 +47,7 @@ func init() {
 
 type IPCI interface {
 	fmt.Stringer
+	SetPDUUserData(spi.Message)
 	GetPDUUserData() spi.Message
 	GetPDUSource() *Address
 	SetPDUSource(source *Address)
@@ -67,6 +68,9 @@ func new__PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Addre
 	return &__PCI{pduUserData, pduSource, pduDestination}
 }
 
+func (p *__PCI) SetPDUUserData(pduUserData spi.Message) {
+	p.pduUserData = pduUserData
+}
 func (p *__PCI) GetPDUUserData() spi.Message {
 	return p.pduUserData
 }

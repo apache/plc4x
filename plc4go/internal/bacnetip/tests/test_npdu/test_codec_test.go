@@ -31,20 +31,20 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-func WhoIsRouterToNetwork(args ...any) *bacnetip.WhoIsRouterToNetwork {
-	if len(args) == 1 {
-		var net uint16
-		net = uint16(args[0].(int))
-		network, err := bacnetip.NewWhoIsRouterToNetwork(bacnetip.WithWhoIsRouterToNetworkNet(net))
-		if err != nil {
-			panic(err)
-		}
-		return network
-	} else {
-		network, err := bacnetip.NewWhoIsRouterToNetwork()
+func WhoIsRouterToNetwork(net uint16) *bacnetip.WhoIsRouterToNetwork {
+	network, err := bacnetip.NewWhoIsRouterToNetwork(bacnetip.WithWhoIsRouterToNetworkNet(net))
+	if err != nil {
 		panic(err)
-		return network
 	}
+	return network
+}
+
+func IAmRouterToNetwork(netList ...uint16) *bacnetip.IAmRouterToNetwork {
+	network, err := bacnetip.NewIAmRouterToNetwork(bacnetip.WithIAmRouterToNetworkNetworkList(netList...))
+	if err != nil {
+		panic(err)
+	}
+	return network
 }
 
 type TestNPDUCodecSuite struct {
@@ -115,15 +115,14 @@ func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result
 	// Request successful
 	pduBytes, err := bacnetip.Xtob(
 		"01.80" + // version, network layer message
-			"00 0001" + // message type and network
-			"00 01", // whois
+			"00 0001", // message type and network
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
 		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
 		suite.Assert().NoError(err)
 		if parse != nil {
-			suite.T().Log(parse.String())
+			suite.T().Log("\n" + parse.String())
 		}
 	}
 
@@ -135,6 +134,58 @@ func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.WhoIsRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWWirtnNetwork, uint16(1)))
+}
+
+func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworkEmpty() { // Test the Result encoding and decoding.
+	// Request successful
+	networkList := []uint16{}
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"01", // message type, no network
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(IAmRouterToNetwork(networkList...)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.IAmRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, networkList))
+}
+
+func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result encoding and decoding.
+	// Request successful
+	networkList := []uint16{1, 2, 3}
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"01 0001 0002 0003", // message type and network list
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log(parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(IAmRouterToNetwork(networkList...)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.IAmRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, networkList))
 }
 
 func TestNPDUCodec(t *testing.T) {

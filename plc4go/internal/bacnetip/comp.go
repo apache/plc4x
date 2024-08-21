@@ -122,7 +122,8 @@ const (
 	////
 	// NPDU related keys
 
-	KWWirtnNetwork = KnownKey("wirtnNetwork")
+	KWWirtnNetwork     = KnownKey("wirtnNetwork")
+	KWIartnNetworkList = KnownKey("iartnNetworkList")
 )
 
 type MessageBridge struct {

@@ -208,7 +208,7 @@ func (n *_NPDU) Encode(pdu Arg) error {
 	if err != nil {
 		return errors.Wrap(err, "error building NPDU")
 	}
-	pdu.(PDUData).PutData(n.GetPduData()...) // TODO: better validate that arg is really PDUData... use switch similar to Update
+	n.SetPDUUserData(n.npdu)
 	return nil
 }
 
@@ -335,10 +335,77 @@ func (n *WhoIsRouterToNetwork) String() string {
 
 type IAmRouterToNetwork struct {
 	*_NPDU
+
+	iartnNetworkList []uint16
+
+	readWriteModel.NLMIAmRouterToNetwork
 }
 
-func NewIAmRouterToNetwork() (*IAmRouterToNetwork, error) {
-	panic("implement me")
+func NewIAmRouterToNetwork(opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwork, error) {
+	w := &IAmRouterToNetwork{}
+	for _, opt := range opts {
+		opt(w)
+	}
+	w.NLMIAmRouterToNetwork = readWriteModel.NewNLMIAmRouterToNetwork(w.iartnNetworkList, 0)
+	npdu, err := NewNPDU(w.NLMIAmRouterToNetwork, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating NPDU")
+	}
+	w._NPDU = npdu.(*_NPDU)
+	return w, nil
+}
+
+func WithIAmRouterToNetworkNetworkList(iartnNetworkList ...uint16) func(*IAmRouterToNetwork) {
+	return func(n *IAmRouterToNetwork) {
+		n.iartnNetworkList = iartnNetworkList
+	}
+}
+
+func (n *IAmRouterToNetwork) GetIartnNetworkList() []uint16 {
+	return n.iartnNetworkList
+}
+
+func (n *IAmRouterToNetwork) Encode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := npdu.Update(n); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		for _, net := range n.iartnNetworkList {
+			npdu.PutShort(int16(net))
+		}
+		npdu.setNPDU(n.npdu)
+		npdu.setNLM(n.nlm)
+		npdu.setAPDU(n.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *IAmRouterToNetwork) Decode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := n.Update(npdu); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		switch pduUserData := npdu.GetPDUUserData().(type) {
+		case readWriteModel.NPDUExactly:
+			switch nlm := pduUserData.GetNlm().(type) {
+			case readWriteModel.NLMIAmRouterToNetworkExactly:
+				n.setNLM(nlm)
+				n.NLMIAmRouterToNetwork = nlm
+				n.iartnNetworkList = nlm.GetDestinationNetworkAddresses()
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *IAmRouterToNetwork) String() string {
+	return fmt.Sprintf("IAmRouterToNetwork{%s, iartnNetworkList: %v}", n._NPDU, n.iartnNetworkList)
 }
 
 type ICouldBeRouterToNetwork struct {
