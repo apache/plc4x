@@ -246,6 +246,39 @@ func (_c *MockIPCI_SetPDUSource_Call) RunAndReturn(run func(*Address)) *MockIPCI
 	return _c
 }
 
+// SetPDUUserData provides a mock function with given fields: _a0
+func (_m *MockIPCI) SetPDUUserData(_a0 spi.Message) {
+	_m.Called(_a0)
+}
+
+// MockIPCI_SetPDUUserData_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPDUUserData'
+type MockIPCI_SetPDUUserData_Call struct {
+	*mock.Call
+}
+
+// SetPDUUserData is a helper method to define mock.On call
+//   - _a0 spi.Message
+func (_e *MockIPCI_Expecter) SetPDUUserData(_a0 interface{}) *MockIPCI_SetPDUUserData_Call {
+	return &MockIPCI_SetPDUUserData_Call{Call: _e.mock.On("SetPDUUserData", _a0)}
+}
+
+func (_c *MockIPCI_SetPDUUserData_Call) Run(run func(_a0 spi.Message)) *MockIPCI_SetPDUUserData_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(spi.Message))
+	})
+	return _c
+}
+
+func (_c *MockIPCI_SetPDUUserData_Call) Return() *MockIPCI_SetPDUUserData_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockIPCI_SetPDUUserData_Call) RunAndReturn(run func(spi.Message)) *MockIPCI_SetPDUUserData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // String provides a mock function with given fields:
 func (_m *MockIPCI) String() string {
 	ret := _m.Called()

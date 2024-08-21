@@ -1037,7 +1037,7 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 			n.IAmRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMICouldBeRouterToNetwork:
 			n.ICouldBeRouterToNetwork(adapter, nlm)
-		case readWriteModel.NLMRejectRouterToNetwork:
+		case readWriteModel.NLMRejectMessageToNetwork:
 			n.RejectRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterBusyToNetwork:
 			n.RouterBusyToNetwork(adapter, nlm)
@@ -1079,7 +1079,7 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 			n.IAmRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMICouldBeRouterToNetwork:
 			n.ICouldBeRouterToNetwork(adapter, nlm)
-		case readWriteModel.NLMRejectRouterToNetwork:
+		case readWriteModel.NLMRejectMessageToNetwork:
 			n.RejectRouterToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterBusyToNetwork:
 			n.RouterBusyToNetwork(adapter, nlm)
@@ -1232,7 +1232,7 @@ func (n *NetworkServiceElement) ICouldBeRouterToNetwork(adapter *NetworkAdapter,
 	// TODO: implement me
 }
 
-func (n *NetworkServiceElement) RejectRouterToNetwork(adapter *NetworkAdapter, nlm readWriteModel.NLMRejectRouterToNetwork) {
+func (n *NetworkServiceElement) RejectRouterToNetwork(adapter *NetworkAdapter, nlm readWriteModel.NLMRejectMessageToNetwork) {
 	// TODO: implement me
 }
 

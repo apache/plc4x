@@ -130,7 +130,7 @@ public abstract class NLM implements Message {
     } else if (EvaluationHelper.equals(messageType, (short) 0x02)) {
       builder = NLMICouldBeRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = NLMRejectRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMRejectMessageToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x04)) {
       builder = NLMRouterBusyToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x05)) {

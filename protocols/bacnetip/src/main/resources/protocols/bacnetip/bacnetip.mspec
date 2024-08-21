@@ -145,8 +145,8 @@
             [simple   uint 16     destinationNetworkAddress   ]
             [simple   uint 8      performanceIndex            ]
         ]
-        ['0x03' *RejectRouterToNetwork
-            [simple   NLMRejectRouterToNetworkRejectReason
+        ['0x03' *RejectMessageToNetwork
+            [simple   NLMRejectMessageToNetworkRejectReason
                                     rejectReason              ]
             [simple   uint 16     destinationNetworkAddress   ]
         ]
