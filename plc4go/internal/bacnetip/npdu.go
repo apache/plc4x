@@ -580,10 +580,76 @@ func (n *RejectMessageToNetwork) String() string {
 
 type RouterBusyToNetwork struct {
 	*_NPDU
+	rbtnNetworkList []uint16
+
+	readWriteModel.NLMRouterBusyToNetwork
 }
 
-func NewRouterBusyToNetwork() (*RouterBusyToNetwork, error) {
-	panic("implement me")
+func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
+	i := &RouterBusyToNetwork{}
+	for _, opt := range opts {
+		opt(i)
+	}
+	i.NLMRouterBusyToNetwork = readWriteModel.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0)
+	npdu, err := NewNPDU(i.NLMRouterBusyToNetwork, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating NPDU")
+	}
+	i._NPDU = npdu.(*_NPDU)
+	return i, nil
+}
+
+func WithRouterBusyToNetworkDnet(networkList []uint16) func(*RouterBusyToNetwork) {
+	return func(n *RouterBusyToNetwork) {
+		n.rbtnNetworkList = networkList
+	}
+}
+
+func (r *RouterBusyToNetwork) GetRbtnNetworkList() []uint16 {
+	return r.rbtnNetworkList
+}
+
+func (r *RouterBusyToNetwork) Encode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := npdu.Update(r); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		for _, net := range r.GetRbtnNetworkList() {
+			npdu.PutShort(int16(net))
+		}
+		npdu.setNPDU(r.npdu)
+		npdu.setNLM(r.nlm)
+		npdu.setAPDU(r.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := r.Update(npdu); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		switch pduUserData := npdu.GetPDUUserData().(type) {
+		case readWriteModel.NPDUExactly:
+			switch nlm := pduUserData.GetNlm().(type) {
+			case readWriteModel.NLMRouterBusyToNetwork:
+				r.setNLM(nlm)
+				r.NLMRouterBusyToNetwork = nlm
+				r.rbtnNetworkList = nlm.GetDestinationNetworkAddresses()
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (r *RouterBusyToNetwork) String() string {
+	return fmt.Sprintf("RouterBusyToNetwork{%s, rbtnNetworkList: %v}", r._NPDU, r.rbtnNetworkList)
 }
 
 type RouterAvailableToNetwork struct {

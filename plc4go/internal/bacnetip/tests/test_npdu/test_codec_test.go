@@ -63,6 +63,14 @@ func RejectMessageToNetwork(reason uint8, dnet uint16) *bacnetip.RejectMessageTo
 	return network
 }
 
+func RouterBusyToNetwork(netList ...uint16) *bacnetip.RouterBusyToNetwork {
+	network, err := bacnetip.NewRouterBusyToNetwork(bacnetip.WithRouterBusyToNetworkDnet(netList))
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
@@ -229,7 +237,7 @@ func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Re
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.ICouldBeRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIcbrtnNetwork, uint16(1), bacnetip.KWIcbrtnPerformanceIndex, uint8(2)))
 }
 
-func (suite *TestNPDUCodecSuite) TestRejectMessageToNetworks() { // Test the Result encoding and decoding.
+func (suite *TestNPDUCodecSuite) TestRejectMessageToNetwork() { // Test the Result encoding and decoding.
 	// Request successful
 	pduBytes, err := bacnetip.Xtob(
 		"01.80" + // version, network layer message
@@ -252,6 +260,58 @@ func (suite *TestNPDUCodecSuite) TestRejectMessageToNetworks() { // Test the Res
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RejectMessageToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRmtnRejectionReason, readWriteModel.NLMRejectMessageToNetworkRejectReason(1), bacnetip.KWRmtnDNET, uint16(2)))
+}
+
+func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkEmpty() { // Test the Result encoding and decoding.
+	// Request successful
+	networkList := []uint16{}
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"04", // message type, no networks
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(RouterBusyToNetwork(networkList...)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterBusyToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRbtnNetworkList, networkList))
+}
+
+func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkNetworks() { // Test the Result encoding and decoding.
+	// Request successful
+	networkList := []uint16{1, 2, 3}
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"04 0001 0002 0003", // message type and network list
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(RouterBusyToNetwork(networkList...)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterBusyToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRbtnNetworkList, networkList))
 }
 
 func TestNPDUCodec(t *testing.T) {

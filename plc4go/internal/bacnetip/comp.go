@@ -128,6 +128,7 @@ const (
 	KWIcbrtnPerformanceIndex = KnownKey("icbrtnPerformanceIndex")
 	KWRmtnRejectionReason    = KnownKey("rmtnRejectionReason")
 	KWRmtnDNET               = KnownKey("rmtnDNET")
+	KWRbtnNetworkList        = KnownKey("rbtnNetworkList")
 )
 
 type MessageBridge struct {

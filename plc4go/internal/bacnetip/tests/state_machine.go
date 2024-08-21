@@ -197,6 +197,17 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return iamrtn.GetDestinationNetworkAddress() == attrValue
+		case bacnetip.KWRbtnNetworkList:
+			rbtn, ok := pdu.(*bacnetip.RouterBusyToNetwork)
+			if !ok {
+				return false
+			}
+			net := rbtn.GetRbtnNetworkList()
+			uint16s, ok := attrValue.([]uint16)
+			if !ok {
+				return false
+			}
+			return slices.Equal(net, uint16s)
 		default:
 			panic("implement " + attrName)
 		}
