@@ -127,6 +127,14 @@ func WhatIsNetworkNumber(dnet uint16) *bacnetip.WhatIsNetworkNumber {
 	return network
 }
 
+func NetworkNumberIs(net uint16, flag bool) *bacnetip.NetworkNumberIs {
+	network, err := bacnetip.NewNetworkNumberIs(bacnetip.WithNetworkNumberIsNET(net), bacnetip.WithNetworkNumberIsTerminationConfigured(flag))
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
@@ -650,6 +658,30 @@ func (suite *TestNPDUCodecSuite) TestWhatIsNetworkNumber() { // Test the Result 
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.WhatIsNetworkNumber{}), bacnetip.NoKWArgs)
 }
 
+func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result encoding and decoding.
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"13 0008 01", // message type, network, flqg
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(NetworkNumberIs(8, true)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.NetworkNumberIs{}), bacnetip.NewKWArgs(bacnetip.KWNniNet, uint16(8), bacnetip.KWNniFlag, true))
+}
 func TestNPDUCodec(t *testing.T) {
 	suite.Run(t, new(TestNPDUCodecSuite))
 }
