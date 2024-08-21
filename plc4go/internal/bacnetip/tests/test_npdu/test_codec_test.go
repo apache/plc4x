@@ -79,6 +79,14 @@ func RouterAvailableToNetwork(netList ...uint16) *bacnetip.RouterAvailableToNetw
 	return network
 }
 
+func InitializeRoutingTable(irtTable ...*bacnetip.RoutingTableEntry) *bacnetip.InitializeRoutingTable {
+	network, err := bacnetip.NewInitializeRoutingTable(bacnetip.WithInitializeRoutingTableIrtTable(irtTable...))
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
@@ -372,6 +380,95 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkNetworks() { // Tes
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterAvailableToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRatnNetworkList, networkList))
+}
+
+func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableEmpty() { // Test the Result encoding and decoding.
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"06 00", // message type and list length
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(InitializeRoutingTable()), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTable{}), bacnetip.NewKWArgs(bacnetip.KWIrtTable, []*bacnetip.RoutingTableEntry{}))
+}
+
+func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable01() { // Test the Result encoding and decoding.
+	// Request successful
+	xtob, err := bacnetip.Xtob("")
+	suite.Require().NoError(err)
+	rte := RoutingTableEntry(1, 2, xtob)
+	rtEntries := []*bacnetip.RoutingTableEntry{rte}
+
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"06 01" + // message type and list length
+			"0001 02 00", // network, port number, port info
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(InitializeRoutingTable(rtEntries...)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTable{}), bacnetip.NewKWArgs(bacnetip.KWIrtTable, rtEntries))
+}
+
+func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable02() { // Test the Result encoding and decoding.
+	// Request successful
+	xtob, err := bacnetip.Xtob("deadbeef")
+	suite.Require().NoError(err)
+	rte := RoutingTableEntry(3, 4, xtob)
+	rtEntries := []*bacnetip.RoutingTableEntry{rte}
+
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"06 01" + // message type and list length
+			"0003 04 04 DEADBEEF", // network, port number, port info
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(InitializeRoutingTable(rtEntries...)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTable{}), bacnetip.NewKWArgs(bacnetip.KWIrtTable, rtEntries))
 }
 
 func TestNPDUCodec(t *testing.T) {

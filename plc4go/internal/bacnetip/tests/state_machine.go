@@ -219,6 +219,19 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return slices.Equal(net, uint16s)
+		case bacnetip.KWIrtTable:
+			irt, ok := pdu.(*bacnetip.InitializeRoutingTable)
+			if !ok {
+				return false
+			}
+			irts := irt.GetIrtTable()
+			oirts, ok := attrValue.([]*bacnetip.RoutingTableEntry)
+			if !ok {
+				return false
+			}
+			return slices.EqualFunc(irts, oirts, func(entry *bacnetip.RoutingTableEntry, entry2 *bacnetip.RoutingTableEntry) bool {
+				return entry.Equals(entry2)
+			})
 		default:
 			panic("implement " + attrName)
 		}
