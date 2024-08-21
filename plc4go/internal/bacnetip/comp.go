@@ -129,6 +129,7 @@ const (
 	KWRmtnRejectionReason    = KnownKey("rmtnRejectionReason")
 	KWRmtnDNET               = KnownKey("rmtnDNET")
 	KWRbtnNetworkList        = KnownKey("rbtnNetworkList")
+	KWRatnNetworkList        = KnownKey("ratnNetworkList")
 )
 
 type MessageBridge struct {

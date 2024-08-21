@@ -654,14 +654,77 @@ func (r *RouterBusyToNetwork) String() string {
 
 type RouterAvailableToNetwork struct {
 	*_NPDU
+
+	ratnNetworkList []uint16
+
+	readWriteModel.NLMRouterAvailableToNetwork
 }
 
-func NewRouterAvailableToNetwork() (*RouterAvailableToNetwork, error) {
-	panic("implement me")
+func NewRouterAvailableToNetwork(opts ...func(*RouterAvailableToNetwork)) (*RouterAvailableToNetwork, error) {
+	i := &RouterAvailableToNetwork{}
+	for _, opt := range opts {
+		opt(i)
+	}
+	i.NLMRouterAvailableToNetwork = readWriteModel.NewNLMRouterAvailableToNetwork(i.ratnNetworkList, 0)
+	npdu, err := NewNPDU(i.NLMRouterAvailableToNetwork, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating NPDU")
+	}
+	i._NPDU = npdu.(*_NPDU)
+	return i, nil
 }
 
-type RoutingTableEntry struct {
-	*_NPDU
+func WithRouterAvailableToNetworkDnet(networkList []uint16) func(*RouterAvailableToNetwork) {
+	return func(n *RouterAvailableToNetwork) {
+		n.ratnNetworkList = networkList
+	}
+}
+
+func (r *RouterAvailableToNetwork) GetRatnNetworkList() []uint16 {
+	return r.ratnNetworkList
+}
+
+func (r *RouterAvailableToNetwork) Encode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := npdu.Update(r); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		for _, net := range r.GetRatnNetworkList() {
+			npdu.PutShort(int16(net))
+		}
+		npdu.setNPDU(r.npdu)
+		npdu.setNLM(r.nlm)
+		npdu.setAPDU(r.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (r *RouterAvailableToNetwork) Decode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := r.Update(npdu); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		switch pduUserData := npdu.GetPDUUserData().(type) {
+		case readWriteModel.NPDUExactly:
+			switch nlm := pduUserData.GetNlm().(type) {
+			case readWriteModel.NLMRouterAvailableToNetwork:
+				r.setNLM(nlm)
+				r.NLMRouterAvailableToNetwork = nlm
+				r.ratnNetworkList = nlm.GetDestinationNetworkAddresses()
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (r *RouterAvailableToNetwork) String() string {
+	return fmt.Sprintf("RouterAvailableToNetwork{%s, ratnNetworkList: %v}", r._NPDU, r.ratnNetworkList)
 }
 
 func NewRoutingTableEntry() (*RoutingTableEntry, error) {

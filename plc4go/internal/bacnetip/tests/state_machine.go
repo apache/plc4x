@@ -178,7 +178,7 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if !ok {
 				return false
 			}
-			return iamrtn.GetIcbrtnPerformanceIndex() == attrValue
+			return iamrtn.GetIcbrtnNetwork() == attrValue
 		case bacnetip.KWIcbrtnPerformanceIndex:
 			iamrtn, ok := pdu.(*bacnetip.ICouldBeRouterToNetwork)
 			if !ok {
@@ -203,6 +203,17 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			net := rbtn.GetRbtnNetworkList()
+			uint16s, ok := attrValue.([]uint16)
+			if !ok {
+				return false
+			}
+			return slices.Equal(net, uint16s)
+		case bacnetip.KWRatnNetworkList:
+			ratn, ok := pdu.(*bacnetip.RouterAvailableToNetwork)
+			if !ok {
+				return false
+			}
+			net := ratn.GetRatnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
 				return false
