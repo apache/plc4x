@@ -254,13 +254,15 @@ func (t *TrappedStateMachine) DecorateState(state State) State {
 	return NewTrappedState(state, t.Trapper)
 }
 
-type TrappedClientRequirements interface {
+// TrappedClientContract provides a set of functions which can be overwritten by a sub struct
+type TrappedClientContract interface {
 	Request(bacnetip.Args, bacnetip.KWArgs) error
+	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 }
 
 // TrappedClient  An instance of this class sits at the top of a stack.
 type TrappedClient struct {
-	TrappedClientRequirements
+	TrappedClientContract
 	*bacnetip.Client
 
 	requestSent          bacnetip.PDU
@@ -269,10 +271,13 @@ type TrappedClient struct {
 	log zerolog.Logger
 }
 
-func NewTrappedClient(localLog zerolog.Logger, requirements TrappedClientRequirements) (*TrappedClient, error) {
+func NewTrappedClient(localLog zerolog.Logger, opts ...func(*TrappedClient)) (*TrappedClient, error) {
 	t := &TrappedClient{
-		TrappedClientRequirements: requirements,
-		log:                       localLog,
+		log: localLog,
+	}
+	t.TrappedClientContract = t
+	for _, opt := range opts {
+		opt(t)
 	}
 	var err error
 	t.Client, err = bacnetip.NewClient(localLog, t)
@@ -280,6 +285,12 @@ func NewTrappedClient(localLog zerolog.Logger, requirements TrappedClientRequire
 		return nil, errors.Wrap(err, "error building client")
 	}
 	return t, nil
+}
+
+func WithTrappedClientContract(trappedClientContract TrappedClientContract) func(*TrappedClient) {
+	return func(t *TrappedClient) {
+		t.TrappedClientContract = trappedClientContract
+	}
 }
 
 func (t *TrappedClient) GetRequestSent() bacnetip.PDU {
@@ -295,8 +306,8 @@ func (t *TrappedClient) Request(args bacnetip.Args, kwargs bacnetip.KWArgs) erro
 	// a reference for checking
 	t.requestSent = args.Get0PDU()
 
-	// Call sub
-	return t.TrappedClientRequirements.Request(args, kwargs)
+	// continue with regular processing
+	return t.Client.Request(args, kwargs)
 }
 
 func (t *TrappedClient) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -306,13 +317,19 @@ func (t *TrappedClient) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs)
 	return nil
 }
 
-type TrappedServerRequirements interface {
+func (t *TrappedClient) String() string {
+	return fmt.Sprintf("TrappedClient{%s, requestSent: %v, confirmationReceived: %v}", t.Client, t.requestSent, t.confirmationReceived)
+}
+
+// TrappedServerContract provides a set of functions which can be overwritten by a sub struct
+type TrappedServerContract interface {
+	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	Response(bacnetip.Args, bacnetip.KWArgs) error
 }
 
 // TrappedServer An instance of this class sits at the bottom of a stack.
 type TrappedServer struct {
-	TrappedServerRequirements
+	TrappedServerContract
 	*bacnetip.Server
 
 	indicationReceived bacnetip.PDU
@@ -321,10 +338,13 @@ type TrappedServer struct {
 	log zerolog.Logger
 }
 
-func NewTrappedServer(localLog zerolog.Logger, requirements TrappedServerRequirements) (*TrappedServer, error) {
+func NewTrappedServer(localLog zerolog.Logger, opts ...func(*TrappedServer)) (*TrappedServer, error) {
 	t := &TrappedServer{
-		TrappedServerRequirements: requirements,
-		log:                       localLog,
+		log: localLog,
+	}
+	t.TrappedServerContract = t
+	for _, opt := range opts {
+		opt(t)
 	}
 	var err error
 	t.Server, err = bacnetip.NewServer(localLog, t)
@@ -332,6 +352,12 @@ func NewTrappedServer(localLog zerolog.Logger, requirements TrappedServerRequire
 		return nil, errors.Wrap(err, "error building server")
 	}
 	return t, nil
+}
+
+func WithTrappedServerContract(trappedServerContract TrappedServerContract) func(*TrappedServer) {
+	return func(t *TrappedServer) {
+		t.TrappedServerContract = trappedServerContract
+	}
 }
 
 func (t *TrappedServer) GetIndicationReceived() bacnetip.PDU {
@@ -355,8 +381,12 @@ func (t *TrappedServer) Response(args bacnetip.Args, kwargs bacnetip.KWArgs) err
 	// a reference for checking
 	t.responseSent = args.Get0PDU()
 
-	// Call sub
-	return t.TrappedServerRequirements.Response(args, kwargs)
+	// continue with regular processing
+	return t.Server.Response(args, kwargs)
+}
+
+func (t *TrappedServer) String() string {
+	return fmt.Sprintf("TrappedServer{%s, indicationReceived: %v, responseSent: %v}", t.Server, t.indicationReceived, t.responseSent)
 }
 
 type TrappedServerStateMachine struct {
@@ -369,7 +399,7 @@ type TrappedServerStateMachine struct {
 func NewTrappedServerStateMachine(localLog zerolog.Logger) (*TrappedServerStateMachine, error) {
 	t := &TrappedServerStateMachine{log: localLog}
 	var err error
-	t.TrappedServer, err = NewTrappedServer(localLog, t)
+	t.TrappedServer, err = NewTrappedServer(localLog, WithTrappedServerContract(t))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building trapped server")
 	}

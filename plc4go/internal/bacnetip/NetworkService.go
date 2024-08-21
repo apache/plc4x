@@ -22,12 +22,14 @@ package bacnetip
 import (
 	"bytes"
 	"fmt"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"math"
 	"slices"
 	"time"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type RouterStatus uint8
@@ -520,6 +522,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 	panic("not implemented yet")
 }
 
+// TODO: should us the one in NPDU
 func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority, nlm readWriteModel.NLM, apdu readWriteModel.APDU) (readWriteModel.NPDU, error) {
 	switch {
 	case nlm != nil && apdu != nil:

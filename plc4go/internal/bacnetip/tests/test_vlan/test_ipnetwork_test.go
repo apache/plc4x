@@ -145,9 +145,9 @@ func TestIPVLAN(t *testing.T) {
 
 		// node 1 sends the pdu, mode 2 gets it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": src,
-		}).Success("")
+		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, src,
+		)).Success("")
 
 		// run the group
 		err = tnet.Run(0)
@@ -174,12 +174,12 @@ func TestIPVLAN(t *testing.T) {
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": src,
-		}).Success("")
-		tnode3.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": src,
-		}).Success("")
+		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, src,
+		)).Success("")
+		tnode3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, src,
+		)).Success("")
 
 		// run the group
 		err = tnet.Run(0)
@@ -233,9 +233,9 @@ func TestIPVLAN(t *testing.T) {
 		// node 1 sends the pdu, but gets it back as if it was from node 3
 		tnode1.GetStartState().
 			Send(pdu, nil).
-			Receive(bacnetip.NewPDU(nil), map[string]any{
-				"pduSource": src,
-			}).
+			Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+				bacnetip.KWPPDUSource, src,
+			)).
 			Success("")
 
 		// run the group
@@ -262,12 +262,12 @@ func TestIPVLAN(t *testing.T) {
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": src,
-		}).Success("")
-		tnode3.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduDestination": dest,
-		}).Success("")
+		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, src,
+		)).Success("")
+		tnode3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPDUDestination, dest,
+		)).Success("")
 
 		// run the group
 		err = tnet.Run(0)
@@ -293,9 +293,9 @@ func TestIPVLAN(t *testing.T) {
 
 		// node 1 sends the pdu to node 2, node 3 waits and gets nothing
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": src,
-		}).Success("")
+		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, src,
+		)).Success("")
 
 		// if node 3 receives anything it will trigger unexpected receive and fail
 		tnode3.GetStartState().Timeout(500*time.Millisecond, nil).Success("")
@@ -409,9 +409,9 @@ func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a mes
 
 	// node 1 sends the pdu, mode 2 gets it
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
-	csm_20_3.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-		"pduSource": src,
-	}).Success("")
+	csm_20_3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		bacnetip.KWPPDUSource, src,
+	)).Success("")
 
 	// other nodes get nothing
 	csm_10_3.GetStartState().Timeout(1*time.Second, nil).Success("")
@@ -436,9 +436,9 @@ func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a 
 
 	//  node 10-2 sends the pdu, node 10-3 gets pdu, nodes 20-2 and 20-3 dont
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
-	csm_10_3.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-		"pduSource": src,
-	}).Success("")
+	csm_10_3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		bacnetip.KWPPDUSource, src,
+	)).Success("")
 	csm_20_3.GetStartState().Timeout(1*time.Second, nil).Success("")
 	csm_20_2.GetStartState().Timeout(1*time.Second, nil).Success("")
 }
@@ -462,12 +462,12 @@ func (suite *RouterSuite) TestRemoteBroadcast() { // Test that a node can send a
 	//  node 10-2 sends the pdu, node 10-3 gets pdu, nodes 20-2 and 20-3 dont
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
 	csm_10_3.GetStartState().Timeout(1*time.Second, nil).Success("")
-	csm_20_2.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-		"pduSource": src,
-	}).Success("")
-	csm_20_3.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-		"pduSource": src,
-	}).Success("")
+	csm_20_2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		bacnetip.KWPPDUSource, src,
+	)).Success("")
+	csm_20_3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		bacnetip.KWPPDUSource, src,
+	)).Success("")
 }
 
 func TestRouter(t *testing.T) {

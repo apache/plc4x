@@ -46,8 +46,8 @@ func (d DummyMessage) Serialize() ([]byte, error) {
 	return d.Data, nil
 }
 
-func (d DummyMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteSerializable(ctx, d)
+func (d DummyMessage) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteByteArray("data", d.Data)
 }
 
 func (d DummyMessage) GetLengthInBytes(_ context.Context) uint16 {

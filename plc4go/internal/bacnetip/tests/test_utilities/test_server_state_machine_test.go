@@ -33,7 +33,7 @@ import (
 func TestServerStateMachine(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	// create a client state machine, trapped server, and bind them together
-	client, err := tests.NewTrappedClient(testingLogger, nil)
+	client, err := tests.NewTrappedClient(testingLogger)
 	require.NoError(t, err)
 	server, err := tests.NewServerStateMachine(testingLogger)
 	require.NoError(t, err)

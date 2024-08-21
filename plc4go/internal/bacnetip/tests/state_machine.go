@@ -52,7 +52,7 @@ func (t SendTransition) String() string {
 
 type criteria struct {
 	pduType  any
-	pduAttrs map[string]any
+	pduAttrs map[bacnetip.KnownKey]any
 }
 
 func (c criteria) String() string {
@@ -105,20 +105,20 @@ func (t CallTransition) String() string {
 	return fmt.Sprintf("CallTransition{Transition: %s, fnargs: %s}", t.Transition, t.fnargs)
 }
 
-func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs map[string]any) bool {
+func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs map[bacnetip.KnownKey]any) bool {
 	// check the type
 	if pduType != nil && fmt.Sprintf("%T", pdu) != fmt.Sprintf("%T", pduType) {
-		localLog.Debug().Msg("failed match, wrong type")
+		localLog.Debug().Type("got", pdu).Type("want", pduType).Msg("failed match, wrong type")
 		return false
 	}
 	for attrName, attrValue := range pduAttrs {
 		switch attrName {
-		case "pduSource":
+		case bacnetip.KWPPDUSource:
 			if !pdu.GetPDUSource().Equals(attrValue) {
 				localLog.Debug().Msg("source doesn't match")
 				return false
 			}
-		case "pduDestination":
+		case bacnetip.KWPDUDestination:
 			if !pdu.GetPDUDestination().Equals(attrValue) {
 				localLog.Debug().Msg("destination doesn't match")
 				return false
@@ -139,8 +139,29 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return b == attrValue.(int)
-		case "pduData":
-			return reflect.DeepEqual(pdu.GetMessage(), attrValue)
+		case bacnetip.KWPDUData:
+			got := pdu.GetPduData()
+			want := attrValue
+			equal := reflect.DeepEqual(got, want)
+			if !equal {
+				switch want := want.(type) {
+				case []byte:
+					localLog.Debug().Bytes("got", got).Bytes("want", want).Msg("mismatch")
+				default:
+					localLog.Debug().Bytes("got", got).Interface("want", want).Msg("mismatch")
+				}
+			}
+			return equal
+		case bacnetip.KWWirtnNetwork:
+			wirtn, ok := pdu.(*bacnetip.WhoIsRouterToNetwork)
+			if !ok {
+				return false
+			}
+			net := wirtn.GetWirtnNetwork()
+			if net == nil {
+				return false
+			}
+			return *net == attrValue
 		default:
 			panic("implement " + attrName)
 		}
@@ -199,7 +220,7 @@ type State interface {
 	fmt.Stringer
 
 	Send(pdu bacnetip.PDU, nextState State) State
-	Receive(pduType any, pduAttrs map[string]any) State
+	Receive(args bacnetip.Args, kwargs bacnetip.KWArgs) State
 	Reset()
 	Fail(docstring string) State
 	Success(docstring string) State
@@ -455,8 +476,10 @@ func (s *state) AfterSend(pdu bacnetip.PDU) {
 //
 //	criteria tPDU to match
 //	 next_state destination state after a successful match
-func (s *state) Receive(pduType any, pduAttrs map[string]any) State {
-	s.log.Debug().Interface("pduType", pduType).Interface("pduAttrs", pduAttrs).Msg("Receive")
+func (s *state) Receive(args bacnetip.Args, kwargs bacnetip.KWArgs) State {
+	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Receive")
+	pduType := args[0]
+	pduAttrs := kwargs
 	var nextState State
 	if _nextState, ok := pduAttrs["next_state"]; ok {
 		nextState = _nextState.(State)
@@ -497,7 +520,7 @@ func (s *state) AfterReceive(pdu bacnetip.PDU) {
 // Ignore Create a ReceiveTransition from this state to itself, if match is successful the effect is to Ignore the tPDU.
 //
 //	criteria tPDU to match
-func (s *state) Ignore(pduType any, pduAttrs map[string]any) State {
+func (s *state) Ignore(pduType any, pduAttrs map[bacnetip.KnownKey]any) State {
 	s.log.Debug().Interface("pduType", pduType).Interface("pduAttrs", pduAttrs).Msg("Ignore")
 	s.receiveTransitions = append(s.receiveTransitions, ReceiveTransition{
 		Transition: Transition{},

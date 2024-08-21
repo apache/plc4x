@@ -35,7 +35,7 @@ func TestClientStateMachine(t *testing.T) {
 	// create a client state machine, trapped server, and bind them together
 	client, err := tests.NewClientStateMachine(testingLogger)
 	require.NoError(t, err)
-	server, err := tests.NewTrappedServer(testingLogger, nil)
+	server, err := tests.NewTrappedServer(testingLogger)
 	require.NoError(t, err)
 	err = bacnetip.Bind(testingLogger, client, server)
 	require.NoError(t, err)

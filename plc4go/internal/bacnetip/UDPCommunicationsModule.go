@@ -22,14 +22,15 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"net"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=UDPActor
@@ -228,7 +229,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 	// tell the ASE there is a new client
 	if d.serviceElement != nil {
-		if err := d.SapRequest(NoArgs, NewKWArgs(kwAddActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(KWAddActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in add actor")
 		}
 	}
@@ -242,7 +243,7 @@ func (d *UDPDirector) DelActor(actor *UDPActor) {
 
 	// tell the ASE the client has gone away
 	if d.serviceElement != nil {
-		if err := d.SapRequest(NoArgs, NewKWArgs(kwDelActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(KWDelActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in del actor")
 		}
 	}
@@ -255,7 +256,7 @@ func (d *UDPDirector) GetActor(address Address) *UDPActor {
 func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
 	// tell the ASE the actor had an error
 	if d.serviceElement != nil {
-		if err := d.SapRequest(NoArgs, NewKWArgs(kwActorError, actor, kwError, err)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(KWActorError, actor, KWError, err)); err != nil {
 			d.log.Error().Err(err).Msg("Error in actor error")
 		}
 	}

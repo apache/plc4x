@@ -149,17 +149,16 @@ func TestSimple(t *testing.T) {
 		pdu.SetPDUSource(tnet.td.address)
 		pdu.SetPDUDestination(tnet.iut.address)
 		tnet.td.GetStartState().Send(pdu, nil).Success("")
-		tnet.iut.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": tnet.td.address,
-		}).Success("")
+		tnet.iut.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, tnet.td.address,
+		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacnetip.NewPDU(npdu), map[string]any{
-			"pduSource":      tnet.td.address.AddrTuple,
-			"pduDestination": tnet.iut.address.AddrTuple,
-			"pduData":        pduData,
-		},
-		).Timeout(1.0*time.Millisecond, nil).Success("")
+		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(npdu)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, tnet.td.address.AddrTuple,
+			bacnetip.KWPDUDestination, tnet.iut.address.AddrTuple,
+			bacnetip.KWPDUData, pduData,
+		)).Timeout(1.0*time.Millisecond, nil).Success("")
 
 		// run the group
 		tnet.Run(0)
@@ -197,17 +196,16 @@ func TestSimple(t *testing.T) {
 
 		// test device sends it, iut gets it
 		tnet.td.GetStartState().Send(bacnetip.NewPDU(npdu, bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(bacnetip.NewLocalBroadcast(nil))), nil).Success("")
-		tnet.iut.GetStartState().Receive(bacnetip.NewPDU(nil), map[string]any{
-			"pduSource": tnet.td.address,
-		}).Success("")
+		tnet.iut.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, tnet.td.address,
+		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacnetip.NewPDU(npdu), map[string]any{
-			"pduSource": tnet.td.address.AddrTuple,
-			//"pduDestination": tnet.iut.address.AddrTuple,
-			"pduData": pduData,
-		},
-		).Timeout(1.0*time.Second, nil).Success("")
+		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(npdu)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, tnet.td.address.AddrTuple,
+			//bacnetip.KWPDUDestination, tnet.iut.address.AddrTuple,
+			bacnetip.KWPDUData, pduData,
+		)).Timeout(1.0*time.Second, nil).Success("")
 
 		// run the group
 		tnet.Run(0)

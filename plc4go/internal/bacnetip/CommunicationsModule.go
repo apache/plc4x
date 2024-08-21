@@ -21,10 +21,13 @@ package bacnetip
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+
 	"github.com/apache/plc4x/plc4go/spi"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-	"strconv"
 )
 
 // maps of named clients and servers
@@ -42,14 +45,58 @@ func init() {
 	elementMap = make(map[int]*ApplicationServiceElement)
 }
 
+type IPCI interface {
+	fmt.Stringer
+	GetPDUUserData() spi.Message
+	GetPDUSource() *Address
+	SetPDUSource(source *Address)
+	GetPDUDestination() *Address
+	SetPDUDestination(*Address)
+	Update(pci Arg) error
+}
+
 type __PCI struct {
-	pduUserData    spi.Message
+	pduUserData    spi.Message // TODO: should that be PDUUserData rater than spi.Message and do we need another field... lets see...
 	pduSource      *Address
 	pduDestination *Address
 }
 
+var _ IPCI = (*__PCI)(nil)
+
 func new__PCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address) *__PCI {
 	return &__PCI{pduUserData, pduSource, pduDestination}
+}
+
+func (p *__PCI) GetPDUUserData() spi.Message {
+	return p.pduUserData
+}
+
+func (p *__PCI) GetPDUSource() *Address {
+	return p.pduSource
+}
+
+func (p *__PCI) SetPDUSource(source *Address) {
+	p.pduSource = source
+}
+
+func (p *__PCI) GetPDUDestination() *Address {
+	return p.pduDestination
+}
+
+func (p *__PCI) SetPDUDestination(destination *Address) {
+	p.pduDestination = destination
+}
+
+func (p *__PCI) Update(pci Arg) error {
+	switch pci := pci.(type) {
+	case IPCI:
+		p.pduUserData = pci.GetPDUUserData()
+		p.pduSource = pci.GetPDUSource()
+		p.pduDestination = pci.GetPDUDestination()
+		return nil
+	default:
+		return errors.Errorf("invalid IPCI type %T", pci)
+	}
 }
 
 func (p *__PCI) deepCopy() *__PCI {
@@ -68,7 +115,15 @@ func (p *__PCI) deepCopy() *__PCI {
 }
 
 func (p *__PCI) String() string {
-	return fmt.Sprintf("__PCI{pduUserData:\n%s\n, pduSource: %s, pduDestination: %s}", p.pduUserData, p.pduSource, p.pduDestination)
+	pduUserDataString := ""
+	if p.pduUserData != nil {
+		pduUserDataString = p.pduUserData.String()
+		if strings.Contains(pduUserDataString, "\n") {
+			pduUserDataString = "\n" + pduUserDataString + "\n"
+		}
+		pduUserDataString = "pduUserData: " + pduUserDataString + " ,"
+	}
+	return fmt.Sprintf("__PCI{%spduSource: %s, pduDestination: %s}", pduUserDataString, p.pduSource, p.pduDestination)
 }
 
 // _Client is an interface used for documentation

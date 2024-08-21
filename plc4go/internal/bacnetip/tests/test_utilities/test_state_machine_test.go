@@ -39,6 +39,8 @@ type TPDU struct {
 	a, b int
 }
 
+var _ bacnetip.PDU = (TPDU{})
+
 func (t TPDU) X() []byte {
 	return t.x
 }
@@ -93,6 +95,66 @@ func (t TPDU) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
 	panic("implement me")
 }
 
+func (t TPDU) GetPDUUserData() spi.Message {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) Update(pci bacnetip.Arg) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) SetPduData(bytes []byte) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetPduData() []byte {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) Get() (byte, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetShort() (int16, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetLong() (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetData(dlen int) ([]byte, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) Put(b byte) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) PutData(b ...byte) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) PutShort(i int16) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) PutLong(i int64) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (t TPDU) DeepCopy() bacnetip.PDU {
 	panic("implement me")
 }
@@ -117,16 +179,16 @@ func TestMatchPdu(t *testing.T) {
 	// Note the other testcase is irrelevant as we don't have dynamic types
 
 	// matching/not matching attributes
-	assert.True(t, tests.MatchPdu(testingLogger, tpdu, nil, map[string]any{"x": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, nil, map[string]any{"x": []byte{2}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, nil, map[string]any{"y": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, anon, nil, map[string]any{"x": []byte{1}}))
+	assert.True(t, tests.MatchPdu(testingLogger, tpdu, nil, map[bacnetip.KnownKey]any{"x": []byte{1}}))
+	assert.False(t, tests.MatchPdu(testingLogger, tpdu, nil, map[bacnetip.KnownKey]any{"x": []byte{2}}))
+	assert.False(t, tests.MatchPdu(testingLogger, tpdu, nil, map[bacnetip.KnownKey]any{"y": []byte{1}}))
+	assert.False(t, tests.MatchPdu(testingLogger, anon, nil, map[bacnetip.KnownKey]any{"x": []byte{1}}))
 
 	// matching/not matching types and attributes
-	assert.True(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[string]any{"x": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[string]any{"x": []byte{2}}))
-	assert.False(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[string]any{"y": []byte{1}}))
-	assert.False(t, tests.MatchPdu(testingLogger, anon, Anon{}, map[string]any{"x": []byte{1}}))
+	assert.True(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[bacnetip.KnownKey]any{"x": []byte{1}}))
+	assert.False(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[bacnetip.KnownKey]any{"x": []byte{2}}))
+	assert.False(t, tests.MatchPdu(testingLogger, tpdu, TPDU{}, map[bacnetip.KnownKey]any{"y": []byte{1}}))
+	assert.False(t, tests.MatchPdu(testingLogger, anon, Anon{}, map[bacnetip.KnownKey]any{"x": []byte{1}}))
 }
 
 func TestState(t *testing.T) {
@@ -259,7 +321,7 @@ func TestStateMachine(t *testing.T) {
 		pdu := TPDU{}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(pdu, nil).Success("")
+		tsm.GetStartState().Receive(bacnetip.NewArgs(pdu), bacnetip.NoKWArgs).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -294,7 +356,7 @@ func TestStateMachine(t *testing.T) {
 		badPdu := TPDU{b: 2}
 
 		// make a send transition from start to success, run the machine
-		tsm.GetStartState().Receive(TPDU{}, map[string]any{"a": 1}).Success("")
+		tsm.GetStartState().Receive(bacnetip.NewArgs(TPDU{}), bacnetip.NewKWArgs(bacnetip.KnownKey("a"), 1)).Success("")
 		err := tsm.Run()
 		assert.NoError(t, err)
 
@@ -382,7 +444,7 @@ func TestStateMachine(t *testing.T) {
 		// after sending the first pdu, wait for the second
 		s0 := tsm.GetStartState()
 		s1 := s0.Send(firstPdu, nil)
-		s2 := s1.Receive(TPDU{}, map[string]any{"a": 2})
+		s2 := s1.Receive(bacnetip.NewArgs(TPDU{}), bacnetip.NewKWArgs(bacnetip.KnownKey("a"), 2))
 		s2.Success("")
 
 		// run the machine
@@ -427,7 +489,7 @@ func TestStateMachine(t *testing.T) {
 
 		// when the first pdu is received, send the second
 		s0 := tsm.GetStartState()
-		s1 := s0.Receive(TPDU{}, map[string]any{"a": 1})
+		s1 := s0.Receive(bacnetip.NewArgs(TPDU{}), bacnetip.NewKWArgs(bacnetip.KnownKey("a"), 1))
 		s2 := s1.Send(secondPdu, nil)
 		s2.Success("")
 

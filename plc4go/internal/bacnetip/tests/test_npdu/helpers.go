@@ -18,3 +18,91 @@
  */
 
 package test_npdu
+
+import (
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+)
+
+type NPDUCodec struct {
+	*bacnetip.Client
+	*bacnetip.Server
+
+	log zerolog.Logger
+}
+
+func NewNPDUCodec(localLog zerolog.Logger) (*NPDUCodec, error) {
+	n := &NPDUCodec{
+		log: localLog,
+	}
+	var err error
+	n.Client, err = bacnetip.NewClient(localLog, n)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating client")
+	}
+	n.Server, err = bacnetip.NewServer(localLog, n)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating client")
+	}
+	return n, nil
+}
+
+func (n *NPDUCodec) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+
+	npdu := args.Get0NPDU()
+
+	// first a generic _NPDU
+	xpdu, err := bacnetip.NewNPDU(nil, nil)
+	if err != nil {
+		return errors.Wrap(err, "error creating NPDU")
+	}
+	if err := npdu.Encode(xpdu); err != nil {
+		return errors.Wrap(err, "error encoding xpdu")
+	}
+
+	// Now as a vanilla PDU
+	ypdu := bacnetip.NewPDU(&bacnetip.MessageBridge{})
+	if err := xpdu.Encode(ypdu); err != nil {
+		return errors.Wrap(err, "error decoding xpdu")
+	}
+	n.log.Debug().Stringer("ypdu", ypdu).Msg("encoded")
+
+	// send it downstream
+	return n.Request(bacnetip.NewArgs(ypdu), bacnetip.NoKWArgs)
+}
+
+func (n *NPDUCodec) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	n.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+
+	pdu := args.Get0PDU()
+
+	// decode as generic _NPDU
+	xpdu, err := bacnetip.NewNPDU(nil, nil)
+	if err != nil {
+		return errors.Wrap(err, "error creating NPDU")
+	}
+	if err := xpdu.Decode(pdu); err != nil {
+		return errors.Wrap(err, "error decoding xpdu")
+	}
+
+	// drop application layer message
+	if xpdu.GetNPDUNetMessage() == nil {
+		n.log.Trace().Msg("drop message")
+		return nil
+	}
+
+	// do a deeper decode of the _NPDU
+	ypdu := bacnetip.NPDUTypes[*xpdu.GetNPDUNetMessage()]()
+	if err := ypdu.Decode(xpdu); err != nil {
+		return errors.Wrap(err, "error decoding ypdu")
+	}
+
+	return n.Response(bacnetip.NewArgs(ypdu), bacnetip.NoKWArgs)
+}
+
+func (n *NPDUCodec) String() string {
+	return "NPDUCodec"
+}

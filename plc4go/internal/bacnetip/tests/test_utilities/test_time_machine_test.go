@@ -46,7 +46,8 @@ func (suite *TimeMachineSuite) SetupSuite() {
 }
 
 func (suite *TimeMachineSuite) SetupTest() {
-	tests.LockGlobalTimeMachine(suite.T())
+	t := suite.T()
+	tests.LockGlobalTimeMachine(t)
 	tests.NewGlobalTimeMachine(suite.log) // TODO: this is really stupid because of concurrency...
 }
 

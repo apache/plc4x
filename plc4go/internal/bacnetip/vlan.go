@@ -21,8 +21,10 @@ package bacnetip
 
 import (
 	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
 	"math/rand"
 )
 

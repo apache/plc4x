@@ -45,6 +45,10 @@ func (a Args) Get1PDU() PDU {
 	return a[1].(PDU)
 }
 
+func (a Args) Get0NPDU() NPDU {
+	return a[0].(NPDU)
+}
+
 func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
@@ -68,7 +72,7 @@ func (a Args) String() string {
 	return r
 }
 
-type KWArgs map[knownKey]any
+type KWArgs map[KnownKey]any
 
 var NoKWArgs = NewKWArgs()
 
@@ -78,9 +82,9 @@ func NewKWArgs(kw ...any) KWArgs {
 	}
 	r := make(KWArgs)
 	for i := 0; i < len(kw)-1; i += 2 {
-		key, ok := kw[i].(knownKey)
+		key, ok := kw[i].(KnownKey)
 		if !ok {
-			panic("keys must be of type knownKey")
+			panic("keys must be of type KnownKey")
 		}
 		r[key] = kw[i+1]
 	}
@@ -97,13 +101,28 @@ func (k KWArgs) String() string {
 	return r
 }
 
-type knownKey string
+type KnownKey string
 
 const (
-	kwAddActor   = knownKey("addActor")
-	kwDelActor   = knownKey("delActor")
-	kwActorError = knownKey("actorError")
-	kwError      = knownKey("error")
+	////
+	// General keys
+
+	KWAddActor   = KnownKey("addActor")
+	KWDelActor   = KnownKey("delActor")
+	KWActorError = KnownKey("actorError")
+	KWError      = KnownKey("error")
+
+	////
+	// PDU related Keys
+
+	KWPPDUSource     = KnownKey("pduSource")
+	KWPDUDestination = KnownKey("pduDestination")
+	KWPDUData        = KnownKey("pduData")
+
+	////
+	// NPDU related keys
+
+	KWWirtnNetwork = KnownKey("wirtnNetwork")
 )
 
 type MessageBridge struct {

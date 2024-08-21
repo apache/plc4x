@@ -22,12 +22,13 @@ package bacnetip
 import (
 	"container/heap"
 	"fmt"
-	"github.com/rs/zerolog"
 	"sync"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 

@@ -501,7 +501,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	// send the request, get it acked
 	anet.td.GetStartState().Doc(prefix+"-0").
 		Send(rq, nil).Doc(prefix+"-1").
-		Receive(trq, nil).Doc(prefix + "-2").
+		Receive(bacnetip.NewArgs(trq), bacnetip.NoKWArgs).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching
