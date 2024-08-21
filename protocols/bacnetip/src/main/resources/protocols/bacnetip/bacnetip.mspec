@@ -156,15 +156,15 @@
         ['0x05' *RouterAvailableToNetwork
             [array    uint 16     destinationNetworkAddresses length 'apduLength - 1']
         ]
-        ['0x06' *InitalizeRoutingTable
+        ['0x06' *InitializeRoutingTable
             [simple   uint 8      numberOfPorts               ]
-            [array    NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitializeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
-        ['0x07' *InitalizeRoutingTableAck
+        ['0x07' *InitializeRoutingTableAck
             [simple   uint 8      numberOfPorts               ]
-            [array    NLMInitalizeRoutingTablePortMapping
+            [array    NLMInitializeRoutingTablePortMapping
                                     portMappings
                         count 'numberOfPorts'                 ]
         ]
@@ -250,7 +250,7 @@
     ]
 ]
 
-[type NLMInitalizeRoutingTablePortMapping
+[type NLMInitializeRoutingTablePortMapping
     [simple   uint 16     destinationNetworkAddress       ]
     [simple   uint 8      portId                          ]
     [simple   uint 8      portInfoLength                  ]

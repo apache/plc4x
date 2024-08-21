@@ -858,8 +858,6 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		tagNumber := uint8(parsedUint0)
 		tagClass, _ := model.TagClassByName(parserArguments[1])
 		return model.BACnetRelationshipTaggedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), tagNumber, tagClass)
-	case "NLMInitalizeRoutingTablePortMapping":
-		return model.NLMInitalizeRoutingTablePortMappingParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "BACnetRecipientProcessEnclosed":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {
@@ -1310,6 +1308,8 @@ func (m BacnetipXmlParserHelper) Parse(typeName string, xmlString string, parser
 		return model.NLMParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), apduLength)
 	case "BACnetWeekNDay":
 		return model.BACnetWeekNDayParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "NLMInitializeRoutingTablePortMapping":
+		return model.NLMInitializeRoutingTablePortMappingParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NPDUNetworkPriorityTagged":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
 		if err != nil {

@@ -87,6 +87,119 @@ func (_c *MockPDU_DeepCopy_Call) RunAndReturn(run func() PDU) *MockPDU_DeepCopy_
 	return _c
 }
 
+// Get provides a mock function with given fields:
+func (_m *MockPDU) Get() (byte, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Get")
+	}
+
+	var r0 byte
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (byte, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() byte); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(byte)
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPDU_Get_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Get'
+type MockPDU_Get_Call struct {
+	*mock.Call
+}
+
+// Get is a helper method to define mock.On call
+func (_e *MockPDU_Expecter) Get() *MockPDU_Get_Call {
+	return &MockPDU_Get_Call{Call: _e.mock.On("Get")}
+}
+
+func (_c *MockPDU_Get_Call) Run(run func()) *MockPDU_Get_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPDU_Get_Call) Return(_a0 byte, _a1 error) *MockPDU_Get_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPDU_Get_Call) RunAndReturn(run func() (byte, error)) *MockPDU_Get_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetData provides a mock function with given fields: dlen
+func (_m *MockPDU) GetData(dlen int) ([]byte, error) {
+	ret := _m.Called(dlen)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetData")
+	}
+
+	var r0 []byte
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) ([]byte, error)); ok {
+		return rf(dlen)
+	}
+	if rf, ok := ret.Get(0).(func(int) []byte); ok {
+		r0 = rf(dlen)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(dlen)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPDU_GetData_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetData'
+type MockPDU_GetData_Call struct {
+	*mock.Call
+}
+
+// GetData is a helper method to define mock.On call
+//   - dlen int
+func (_e *MockPDU_Expecter) GetData(dlen interface{}) *MockPDU_GetData_Call {
+	return &MockPDU_GetData_Call{Call: _e.mock.On("GetData", dlen)}
+}
+
+func (_c *MockPDU_GetData_Call) Run(run func(dlen int)) *MockPDU_GetData_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int))
+	})
+	return _c
+}
+
+func (_c *MockPDU_GetData_Call) Return(_a0 []byte, _a1 error) *MockPDU_GetData_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPDU_GetData_Call) RunAndReturn(run func(int) ([]byte, error)) *MockPDU_GetData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetExpectingReply provides a mock function with given fields:
 func (_m *MockPDU) GetExpectingReply() bool {
 	ret := _m.Called()
@@ -128,6 +241,61 @@ func (_c *MockPDU_GetExpectingReply_Call) Return(_a0 bool) *MockPDU_GetExpecting
 }
 
 func (_c *MockPDU_GetExpectingReply_Call) RunAndReturn(run func() bool) *MockPDU_GetExpectingReply_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetLong provides a mock function with given fields:
+func (_m *MockPDU) GetLong() (int64, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLong")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (int64, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() int64); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPDU_GetLong_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLong'
+type MockPDU_GetLong_Call struct {
+	*mock.Call
+}
+
+// GetLong is a helper method to define mock.On call
+func (_e *MockPDU_Expecter) GetLong() *MockPDU_GetLong_Call {
+	return &MockPDU_GetLong_Call{Call: _e.mock.On("GetLong")}
+}
+
+func (_c *MockPDU_GetLong_Call) Run(run func()) *MockPDU_GetLong_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPDU_GetLong_Call) Return(_a0 int64, _a1 error) *MockPDU_GetLong_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPDU_GetLong_Call) RunAndReturn(run func() (int64, error)) *MockPDU_GetLong_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -318,6 +486,300 @@ func (_c *MockPDU_GetPDUSource_Call) RunAndReturn(run func() *Address) *MockPDU_
 	return _c
 }
 
+// GetPDUUserData provides a mock function with given fields:
+func (_m *MockPDU) GetPDUUserData() spi.Message {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPDUUserData")
+	}
+
+	var r0 spi.Message
+	if rf, ok := ret.Get(0).(func() spi.Message); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(spi.Message)
+		}
+	}
+
+	return r0
+}
+
+// MockPDU_GetPDUUserData_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPDUUserData'
+type MockPDU_GetPDUUserData_Call struct {
+	*mock.Call
+}
+
+// GetPDUUserData is a helper method to define mock.On call
+func (_e *MockPDU_Expecter) GetPDUUserData() *MockPDU_GetPDUUserData_Call {
+	return &MockPDU_GetPDUUserData_Call{Call: _e.mock.On("GetPDUUserData")}
+}
+
+func (_c *MockPDU_GetPDUUserData_Call) Run(run func()) *MockPDU_GetPDUUserData_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPDU_GetPDUUserData_Call) Return(_a0 spi.Message) *MockPDU_GetPDUUserData_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPDU_GetPDUUserData_Call) RunAndReturn(run func() spi.Message) *MockPDU_GetPDUUserData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetPduData provides a mock function with given fields:
+func (_m *MockPDU) GetPduData() []byte {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPduData")
+	}
+
+	var r0 []byte
+	if rf, ok := ret.Get(0).(func() []byte); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	return r0
+}
+
+// MockPDU_GetPduData_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPduData'
+type MockPDU_GetPduData_Call struct {
+	*mock.Call
+}
+
+// GetPduData is a helper method to define mock.On call
+func (_e *MockPDU_Expecter) GetPduData() *MockPDU_GetPduData_Call {
+	return &MockPDU_GetPduData_Call{Call: _e.mock.On("GetPduData")}
+}
+
+func (_c *MockPDU_GetPduData_Call) Run(run func()) *MockPDU_GetPduData_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPDU_GetPduData_Call) Return(_a0 []byte) *MockPDU_GetPduData_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPDU_GetPduData_Call) RunAndReturn(run func() []byte) *MockPDU_GetPduData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetShort provides a mock function with given fields:
+func (_m *MockPDU) GetShort() (int16, error) {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetShort")
+	}
+
+	var r0 int16
+	var r1 error
+	if rf, ok := ret.Get(0).(func() (int16, error)); ok {
+		return rf()
+	}
+	if rf, ok := ret.Get(0).(func() int16); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int16)
+	}
+
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockPDU_GetShort_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetShort'
+type MockPDU_GetShort_Call struct {
+	*mock.Call
+}
+
+// GetShort is a helper method to define mock.On call
+func (_e *MockPDU_Expecter) GetShort() *MockPDU_GetShort_Call {
+	return &MockPDU_GetShort_Call{Call: _e.mock.On("GetShort")}
+}
+
+func (_c *MockPDU_GetShort_Call) Run(run func()) *MockPDU_GetShort_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockPDU_GetShort_Call) Return(_a0 int16, _a1 error) *MockPDU_GetShort_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockPDU_GetShort_Call) RunAndReturn(run func() (int16, error)) *MockPDU_GetShort_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Put provides a mock function with given fields: _a0
+func (_m *MockPDU) Put(_a0 byte) {
+	_m.Called(_a0)
+}
+
+// MockPDU_Put_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Put'
+type MockPDU_Put_Call struct {
+	*mock.Call
+}
+
+// Put is a helper method to define mock.On call
+//   - _a0 byte
+func (_e *MockPDU_Expecter) Put(_a0 interface{}) *MockPDU_Put_Call {
+	return &MockPDU_Put_Call{Call: _e.mock.On("Put", _a0)}
+}
+
+func (_c *MockPDU_Put_Call) Run(run func(_a0 byte)) *MockPDU_Put_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(byte))
+	})
+	return _c
+}
+
+func (_c *MockPDU_Put_Call) Return() *MockPDU_Put_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPDU_Put_Call) RunAndReturn(run func(byte)) *MockPDU_Put_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PutData provides a mock function with given fields: _a0
+func (_m *MockPDU) PutData(_a0 ...byte) {
+	_va := make([]interface{}, len(_a0))
+	for _i := range _a0 {
+		_va[_i] = _a0[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _va...)
+	_m.Called(_ca...)
+}
+
+// MockPDU_PutData_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PutData'
+type MockPDU_PutData_Call struct {
+	*mock.Call
+}
+
+// PutData is a helper method to define mock.On call
+//   - _a0 ...byte
+func (_e *MockPDU_Expecter) PutData(_a0 ...interface{}) *MockPDU_PutData_Call {
+	return &MockPDU_PutData_Call{Call: _e.mock.On("PutData",
+		append([]interface{}{}, _a0...)...)}
+}
+
+func (_c *MockPDU_PutData_Call) Run(run func(_a0 ...byte)) *MockPDU_PutData_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := make([]byte, len(args)-0)
+		for i, a := range args[0:] {
+			if a != nil {
+				variadicArgs[i] = a.(byte)
+			}
+		}
+		run(variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *MockPDU_PutData_Call) Return() *MockPDU_PutData_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPDU_PutData_Call) RunAndReturn(run func(...byte)) *MockPDU_PutData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PutLong provides a mock function with given fields: _a0
+func (_m *MockPDU) PutLong(_a0 int64) {
+	_m.Called(_a0)
+}
+
+// MockPDU_PutLong_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PutLong'
+type MockPDU_PutLong_Call struct {
+	*mock.Call
+}
+
+// PutLong is a helper method to define mock.On call
+//   - _a0 int64
+func (_e *MockPDU_Expecter) PutLong(_a0 interface{}) *MockPDU_PutLong_Call {
+	return &MockPDU_PutLong_Call{Call: _e.mock.On("PutLong", _a0)}
+}
+
+func (_c *MockPDU_PutLong_Call) Run(run func(_a0 int64)) *MockPDU_PutLong_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int64))
+	})
+	return _c
+}
+
+func (_c *MockPDU_PutLong_Call) Return() *MockPDU_PutLong_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPDU_PutLong_Call) RunAndReturn(run func(int64)) *MockPDU_PutLong_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PutShort provides a mock function with given fields: _a0
+func (_m *MockPDU) PutShort(_a0 int16) {
+	_m.Called(_a0)
+}
+
+// MockPDU_PutShort_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PutShort'
+type MockPDU_PutShort_Call struct {
+	*mock.Call
+}
+
+// PutShort is a helper method to define mock.On call
+//   - _a0 int16
+func (_e *MockPDU_Expecter) PutShort(_a0 interface{}) *MockPDU_PutShort_Call {
+	return &MockPDU_PutShort_Call{Call: _e.mock.On("PutShort", _a0)}
+}
+
+func (_c *MockPDU_PutShort_Call) Run(run func(_a0 int16)) *MockPDU_PutShort_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(int16))
+	})
+	return _c
+}
+
+func (_c *MockPDU_PutShort_Call) Return() *MockPDU_PutShort_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPDU_PutShort_Call) RunAndReturn(run func(int16)) *MockPDU_PutShort_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetPDUDestination provides a mock function with given fields: _a0
 func (_m *MockPDU) SetPDUDestination(_a0 *Address) {
 	_m.Called(_a0)
@@ -384,6 +846,39 @@ func (_c *MockPDU_SetPDUSource_Call) RunAndReturn(run func(*Address)) *MockPDU_S
 	return _c
 }
 
+// SetPduData provides a mock function with given fields: _a0
+func (_m *MockPDU) SetPduData(_a0 []byte) {
+	_m.Called(_a0)
+}
+
+// MockPDU_SetPduData_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetPduData'
+type MockPDU_SetPduData_Call struct {
+	*mock.Call
+}
+
+// SetPduData is a helper method to define mock.On call
+//   - _a0 []byte
+func (_e *MockPDU_Expecter) SetPduData(_a0 interface{}) *MockPDU_SetPduData_Call {
+	return &MockPDU_SetPduData_Call{Call: _e.mock.On("SetPduData", _a0)}
+}
+
+func (_c *MockPDU_SetPduData_Call) Run(run func(_a0 []byte)) *MockPDU_SetPduData_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].([]byte))
+	})
+	return _c
+}
+
+func (_c *MockPDU_SetPduData_Call) Return() *MockPDU_SetPduData_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockPDU_SetPduData_Call) RunAndReturn(run func([]byte)) *MockPDU_SetPduData_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // String provides a mock function with given fields:
 func (_m *MockPDU) String() string {
 	ret := _m.Called()
@@ -425,6 +920,52 @@ func (_c *MockPDU_String_Call) Return(_a0 string) *MockPDU_String_Call {
 }
 
 func (_c *MockPDU_String_Call) RunAndReturn(run func() string) *MockPDU_String_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Update provides a mock function with given fields: pci
+func (_m *MockPDU) Update(pci Arg) error {
+	ret := _m.Called(pci)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Update")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(Arg) error); ok {
+		r0 = rf(pci)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockPDU_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
+type MockPDU_Update_Call struct {
+	*mock.Call
+}
+
+// Update is a helper method to define mock.On call
+//   - pci Arg
+func (_e *MockPDU_Expecter) Update(pci interface{}) *MockPDU_Update_Call {
+	return &MockPDU_Update_Call{Call: _e.mock.On("Update", pci)}
+}
+
+func (_c *MockPDU_Update_Call) Run(run func(pci Arg)) *MockPDU_Update_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(Arg))
+	})
+	return _c
+}
+
+func (_c *MockPDU_Update_Call) Return(_a0 error) *MockPDU_Update_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockPDU_Update_Call) RunAndReturn(run func(Arg) error) *MockPDU_Update_Call {
 	_c.Call.Return(run)
 	return _c
 }

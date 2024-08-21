@@ -1043,9 +1043,9 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 			n.RouterBusyToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterAvailableToNetwork:
 			n.RouterAvailableToNetwork(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTable:
+		case readWriteModel.NLMInitializeRoutingTable:
 			n.InitalizeRoutingTable(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTableAck:
+		case readWriteModel.NLMInitializeRoutingTableAck:
 			n.InitalizeRoutingTableAck(adapter, nlm)
 		case readWriteModel.NLMEstablishConnectionToNetwork:
 			n.EstablishConnectionToNetwork(adapter, nlm)
@@ -1085,9 +1085,9 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 			n.RouterBusyToNetwork(adapter, nlm)
 		case readWriteModel.NLMRouterAvailableToNetwork:
 			n.RouterAvailableToNetwork(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTable:
+		case readWriteModel.NLMInitializeRoutingTable:
 			n.InitalizeRoutingTable(adapter, nlm)
-		case readWriteModel.NLMInitalizeRoutingTableAck:
+		case readWriteModel.NLMInitializeRoutingTableAck:
 			n.InitalizeRoutingTableAck(adapter, nlm)
 		case readWriteModel.NLMEstablishConnectionToNetwork:
 			n.EstablishConnectionToNetwork(adapter, nlm)
@@ -1244,11 +1244,11 @@ func (n *NetworkServiceElement) RouterAvailableToNetwork(adapter *NetworkAdapter
 	// TODO: implement me
 }
 
-func (n *NetworkServiceElement) InitalizeRoutingTable(adapter *NetworkAdapter, nlm readWriteModel.NLMInitalizeRoutingTable) {
+func (n *NetworkServiceElement) InitalizeRoutingTable(adapter *NetworkAdapter, nlm readWriteModel.NLMInitializeRoutingTable) {
 	// TODO: implement me
 }
 
-func (n *NetworkServiceElement) InitalizeRoutingTableAck(adapter *NetworkAdapter, nlm readWriteModel.NLMInitalizeRoutingTableAck) {
+func (n *NetworkServiceElement) InitalizeRoutingTableAck(adapter *NetworkAdapter, nlm readWriteModel.NLMInitializeRoutingTableAck) {
 	// TODO: implement me
 }
 

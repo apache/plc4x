@@ -174,10 +174,10 @@ func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLe
 		_childTemp, typeSwitchError = NLMRouterBusyToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
 	case messageType == 0x05: // NLMRouterAvailableToNetwork
 		_childTemp, typeSwitchError = NLMRouterAvailableToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
-	case messageType == 0x06: // NLMInitalizeRoutingTable
-		_childTemp, typeSwitchError = NLMInitalizeRoutingTableParseWithBuffer(ctx, readBuffer, apduLength)
-	case messageType == 0x07: // NLMInitalizeRoutingTableAck
-		_childTemp, typeSwitchError = NLMInitalizeRoutingTableAckParseWithBuffer(ctx, readBuffer, apduLength)
+	case messageType == 0x06: // NLMInitializeRoutingTable
+		_childTemp, typeSwitchError = NLMInitializeRoutingTableParseWithBuffer(ctx, readBuffer, apduLength)
+	case messageType == 0x07: // NLMInitializeRoutingTableAck
+		_childTemp, typeSwitchError = NLMInitializeRoutingTableAckParseWithBuffer(ctx, readBuffer, apduLength)
 	case messageType == 0x08: // NLMEstablishConnectionToNetwork
 		_childTemp, typeSwitchError = NLMEstablishConnectionToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
 	case messageType == 0x09: // NLMDisconnectConnectionToNetwork
