@@ -87,7 +87,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
     }
 
     public CompletableFuture<OpcuaSubscriptionHandle> onSubscribeCreateMonitoredItemsRequest() {
-        List<ExtensionObjectDefinition> requestList = new ArrayList<>(this.tagNames.size());
+        List<MonitoredItemCreateRequest> requestList = new ArrayList<>(this.tagNames.size());
         for (String tagName : this.tagNames) {
             final DefaultPlcSubscriptionTag tagDefaultPlcSubscription = (DefaultPlcSubscriptionTag) subscriptionRequest.getTag(tagName);
 
@@ -118,8 +118,8 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
                 FilterOperand filterOperand = new FilterOperand();
                 EventFilter eventFilter1 = new EventFilter(
-                    Arrays.asList(filterOperand),
-                    new NullExtension()
+                    Collections.emptyList(), //Arrays.asList(filterOperand),
+                    null //new NullExtension()
                 );
                 ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
                     new NodeIdFourByte((short) 0, Integer.parseInt(eventFilter.getIdentifier())),
@@ -194,7 +194,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
             RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);
 
             //Make a copy of the outstanding requests, so it isn't modified while we are putting the ack list together.
-            List<ExtensionObjectDefinition> acks = new ArrayList<>(outstandingAcknowledgements);
+            List<SubscriptionAcknowledgement> acks = new ArrayList<>(outstandingAcknowledgements);
             // do not send -1 when requesting publish, the -1 value indicates NULL value
             // which might result in corruption of subscription for some servers
             int ackLength = acks.size();
@@ -207,21 +207,18 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 LOGGER.trace("Sent publish request with {} acks", ackLength);
                 //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
                 conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
-                    outstandingRequests.remove(((ResponseHeader) responseMessage.getResponseHeader()).getRequestHandle());
+                    outstandingRequests.remove(responseMessage.getResponseHeader().getRequestHandle());
 
                     for (long availableSequenceNumber : responseMessage.getAvailableSequenceNumbers()) {
                         outstandingAcknowledgements.add(new SubscriptionAcknowledgement(this.subscriptionId, availableSequenceNumber));
                     }
 
-                    for (ExtensionObject notificationMessage : ((NotificationMessage) responseMessage.getNotificationMessage()).getNotificationData()) {
+                    for (ExtensionObject notificationMessage : responseMessage.getNotificationMessage().getNotificationData()) {
                         ExtensionObjectDefinition notification = notificationMessage.getBody();
                         if (notification instanceof DataChangeNotification) {
                             LOGGER.trace("Found a Data Change notification");
-                            List<ExtensionObjectDefinition> items = ((DataChangeNotification) notification).getMonitoredItems();
-                            onSubscriptionValue(items.stream()
-                                .filter(extensionObjectDefinition -> extensionObjectDefinition instanceof MonitoredItemNotification)
-                                .map(extensionObjectDefinition -> (MonitoredItemNotification) extensionObjectDefinition)
-                                .toArray(MonitoredItemNotification[]::new));
+                            List<MonitoredItemNotification> items = ((DataChangeNotification) notification).getMonitoredItems();
+                            onSubscriptionValue(items.stream().toArray(MonitoredItemNotification[]::new));
                         } else if (notification instanceof NotificationData) {
                             NotificationData data = (NotificationData) notification;
 
