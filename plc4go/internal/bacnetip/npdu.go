@@ -1067,10 +1067,74 @@ func (n *EstablishConnectionToNetwork) String() string {
 
 type DisconnectConnectionToNetwork struct {
 	*_NPDU
+	dctnDNET uint16
+
+	readWriteModel.NLMDisconnectConnectionToNetwork
 }
 
-func NewDisconnectConnectionToNetwork() (*DisconnectConnectionToNetwork, error) {
-	panic("implement me")
+func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
+	i := &DisconnectConnectionToNetwork{}
+	for _, opt := range opts {
+		opt(i)
+	}
+	i.NLMDisconnectConnectionToNetwork = readWriteModel.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0)
+	npdu, err := NewNPDU(i.NLMDisconnectConnectionToNetwork, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating NPDU")
+	}
+	i._NPDU = npdu.(*_NPDU)
+	return i, nil
+}
+
+func WithDisconnectConnectionToNetworkDNET(dnet uint16) func(*DisconnectConnectionToNetwork) {
+	return func(n *DisconnectConnectionToNetwork) {
+		n.dctnDNET = dnet
+	}
+}
+
+func (n *DisconnectConnectionToNetwork) GetDctnDNET() uint16 {
+	return n.dctnDNET
+}
+
+func (n *DisconnectConnectionToNetwork) Encode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := npdu.Update(n); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		npdu.PutShort(int16(n.dctnDNET))
+		npdu.setNPDU(n.npdu)
+		npdu.setNLM(n.nlm)
+		npdu.setAPDU(n.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *DisconnectConnectionToNetwork) Decode(npdu Arg) error {
+	switch npdu := npdu.(type) {
+	case NPDU:
+		if err := n.Update(npdu); err != nil {
+			return errors.Wrap(err, "error updating _NPCI")
+		}
+		switch pduUserData := npdu.GetPDUUserData().(type) {
+		case readWriteModel.NPDUExactly:
+			switch nlm := pduUserData.GetNlm().(type) {
+			case readWriteModel.NLMDisconnectConnectionToNetworkExactly:
+				n.setNLM(nlm)
+				n.NLMDisconnectConnectionToNetwork = nlm
+				n.dctnDNET = nlm.GetDestinationNetworkAddress()
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid NPDU type %T", npdu)
+	}
+}
+
+func (n *DisconnectConnectionToNetwork) String() string {
+	return fmt.Sprintf("DisconnectConnectionToNetwork{%s, dctnDNET: %v}", n._NPDU, n.dctnDNET)
 }
 
 type WhatIsNetworkNumber struct {

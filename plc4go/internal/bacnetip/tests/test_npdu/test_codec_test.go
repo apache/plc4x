@@ -111,6 +111,14 @@ func EstablishConnectionToNetwork(dnet uint16, terminationTime uint8) *bacnetip.
 	return network
 }
 
+func DisconnectConnectionToNetwork(dnet uint16) *bacnetip.DisconnectConnectionToNetwork {
+	network, err := bacnetip.NewDisconnectConnectionToNetwork(bacnetip.WithDisconnectConnectionToNetworkDNET(dnet))
+	if err != nil {
+		panic(err)
+	}
+	return network
+}
+
 type TestNPDUCodecSuite struct {
 	suite.Suite
 
@@ -582,6 +590,31 @@ func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test t
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.EstablishConnectionToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWEctnDNET, uint16(5), bacnetip.KWEctnTerminationTime, uint8(6)))
+}
+
+func (suite *TestNPDUCodecSuite) TestDisconnectConnectionToNetwork() { // Test the Result encoding and decoding.
+	// Request successful
+	pduBytes, err := bacnetip.Xtob(
+		"01.80" + // version, network layer message
+			"09 0007", // message type, network
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.NPDUParse(testutils.TestContext(suite.T()), pduBytes, uint16(len(pduBytes)))
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(DisconnectConnectionToNetwork(7)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.DisconnectConnectionToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWDctnDNET, uint16(7)))
 }
 
 func TestNPDUCodec(t *testing.T) {

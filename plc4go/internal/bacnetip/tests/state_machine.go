@@ -257,6 +257,12 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return ectn.GetEctnTerminationTime() == attrValue
+		case bacnetip.KWDctnDNET:
+			dctn, ok := pdu.(*bacnetip.DisconnectConnectionToNetwork)
+			if !ok {
+				return false
+			}
+			return dctn.GetDctnDNET() == attrValue
 		default:
 			panic("implement " + attrName)
 		}
