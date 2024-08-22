@@ -19,7 +19,7 @@
 
 package bacnetip
 
-type Settings struct {
+type settings struct {
 	Debug       bool
 	Color       bool
 	DebugFile   string
@@ -28,7 +28,7 @@ type Settings struct {
 	RouteAware  bool
 }
 
-var settings = Settings{
+var Settings = settings{
 	Debug:       false,
 	Color:       false,
 	DebugFile:   "",

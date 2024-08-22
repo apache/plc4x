@@ -18,10 +18,12 @@
  */
 package org.apache.plc4x.java.utils.cache;
 
+import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,6 +169,19 @@ class ConnectionContainer {
         CompletableFuture<PlcConnection> leaseFuture = queue.poll();
         if(leaseFuture != null) {
             leaseFuture.complete(leasedConnection);
+        }
+    }
+
+
+    public void addEventListener(EventListener listener) {
+        if((connection != null) && (connection instanceof EventPlcConnection)) {
+            ((EventPlcConnection) connection).addEventListener(listener);
+        }
+    }
+
+    public void removeEventListener(EventListener listener) {
+        if((connection != null) && (connection instanceof EventPlcConnection)) {
+            ((EventPlcConnection) connection).removeEventListener(listener);
         }
     }
 

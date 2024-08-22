@@ -130,7 +130,7 @@ func (_c *mock_IOController_AbortIO_Call) RunAndReturn(run func(_IOCB, error) er
 }
 
 // CompleteIO provides a mock function with given fields: iocb, pdu
-func (_m *mock_IOController) CompleteIO(iocb _IOCB, pdu _PDU) error {
+func (_m *mock_IOController) CompleteIO(iocb _IOCB, pdu PDU) error {
 	ret := _m.Called(iocb, pdu)
 
 	if len(ret) == 0 {
@@ -138,7 +138,7 @@ func (_m *mock_IOController) CompleteIO(iocb _IOCB, pdu _PDU) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_IOCB, _PDU) error); ok {
+	if rf, ok := ret.Get(0).(func(_IOCB, PDU) error); ok {
 		r0 = rf(iocb, pdu)
 	} else {
 		r0 = ret.Error(0)
@@ -154,14 +154,14 @@ type mock_IOController_CompleteIO_Call struct {
 
 // CompleteIO is a helper method to define mock.On call
 //   - iocb _IOCB
-//   - pdu _PDU
+//   - pdu PDU
 func (_e *mock_IOController_Expecter) CompleteIO(iocb interface{}, pdu interface{}) *mock_IOController_CompleteIO_Call {
 	return &mock_IOController_CompleteIO_Call{Call: _e.mock.On("CompleteIO", iocb, pdu)}
 }
 
-func (_c *mock_IOController_CompleteIO_Call) Run(run func(iocb _IOCB, pdu _PDU)) *mock_IOController_CompleteIO_Call {
+func (_c *mock_IOController_CompleteIO_Call) Run(run func(iocb _IOCB, pdu PDU)) *mock_IOController_CompleteIO_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_IOCB), args[1].(_PDU))
+		run(args[0].(_IOCB), args[1].(PDU))
 	})
 	return _c
 }
@@ -171,7 +171,7 @@ func (_c *mock_IOController_CompleteIO_Call) Return(_a0 error) *mock_IOControlle
 	return _c
 }
 
-func (_c *mock_IOController_CompleteIO_Call) RunAndReturn(run func(_IOCB, _PDU) error) *mock_IOController_CompleteIO_Call {
+func (_c *mock_IOController_CompleteIO_Call) RunAndReturn(run func(_IOCB, PDU) error) *mock_IOController_CompleteIO_Call {
 	_c.Call.Return(run)
 	return _c
 }

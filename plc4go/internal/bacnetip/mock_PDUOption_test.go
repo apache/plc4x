@@ -37,7 +37,7 @@ func (_m *MockPDUOption) EXPECT() *MockPDUOption_Expecter {
 }
 
 // Execute provides a mock function with given fields: pdu
-func (_m *MockPDUOption) Execute(pdu *PDU) {
+func (_m *MockPDUOption) Execute(pdu *_PDU) {
 	_m.Called(pdu)
 }
 
@@ -47,14 +47,14 @@ type MockPDUOption_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-//   - pdu *PDU
+//   - pdu *_PDU
 func (_e *MockPDUOption_Expecter) Execute(pdu interface{}) *MockPDUOption_Execute_Call {
 	return &MockPDUOption_Execute_Call{Call: _e.mock.On("Execute", pdu)}
 }
 
-func (_c *MockPDUOption_Execute_Call) Run(run func(pdu *PDU)) *MockPDUOption_Execute_Call {
+func (_c *MockPDUOption_Execute_Call) Run(run func(pdu *_PDU)) *MockPDUOption_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*PDU))
+		run(args[0].(*_PDU))
 	})
 	return _c
 }
@@ -64,7 +64,7 @@ func (_c *MockPDUOption_Execute_Call) Return() *MockPDUOption_Execute_Call {
 	return _c
 }
 
-func (_c *MockPDUOption_Execute_Call) RunAndReturn(run func(*PDU)) *MockPDUOption_Execute_Call {
+func (_c *MockPDUOption_Execute_Call) RunAndReturn(run func(*_PDU)) *MockPDUOption_Execute_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -126,7 +126,7 @@ public class AdsPlcDiscoverer implements PlcDiscoverer {
                                                     attributes.put("twin-cat-version", new PlcSTRING(String.format("%d.%d.%d", (short) versionData[0] & 0xFF, (short) versionData[1] & 0xFF, patchVersion)));
                                                 }
                                                 if (fingerprintBlock != null) {
-                                                    attributes.put("fingerprint", new PlcSTRING(new String(fingerprintBlock.getData())));
+                                                    attributes.put("fingerprint", new PlcSTRING(new String(fingerprintBlock.getData()).trim()));
                                                 }
                                                 // TODO: Find out how to handle the OS Data
 

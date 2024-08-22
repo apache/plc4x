@@ -22,14 +22,15 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"net"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=UDPActor
@@ -56,9 +57,9 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	// Add a timer
 	a.timeout = director.timeout
 	if a.timeout > 0 {
-		a.timer = FunctionTask(a.idleTimeout)
+		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs)
 		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(&when, nil)
+		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
 	// tell the director this is a new actor
@@ -66,7 +67,7 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	return a
 }
 
-func (a *UDPActor) idleTimeout() error {
+func (a *UDPActor) idleTimeout(_ Args, _ KWArgs) error {
 	a.log.Debug().Msg("idleTimeout")
 
 	// tell the director this is gone
@@ -74,14 +75,14 @@ func (a *UDPActor) idleTimeout() error {
 	return nil
 }
 
-func (a *UDPActor) Indication(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
-	pdu := args._0PDU()
+func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	pdu := args.Get0PDU()
 
 	// reschedule the timer
 	if a.timer != nil {
 		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(&when, nil)
+		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
 	// put it in the outbound queue for the director
@@ -89,13 +90,13 @@ func (a *UDPActor) Indication(args _args, kwargs _kwargs) error {
 	return nil
 }
 
-func (a *UDPActor) Response(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Response")
+func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	// reschedule the timer
 	if a.timer != nil {
 		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(&when, nil)
+		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
 	// process this as a response from the director
@@ -120,7 +121,7 @@ type UDPDirector struct {
 	udpConn *net.UDPConn
 
 	actorClass func(zerolog.Logger, *UDPDirector, string) *UDPActor
-	request    chan _PDU
+	request    chan PDU
 	peers      map[string]*UDPActor
 	running    bool
 
@@ -131,11 +132,15 @@ type UDPDirector struct {
 func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
 	d := &UDPDirector{}
 	var err error
-	d.Server, err = NewServer(localLog, sid, d)
+	d.Server, err = NewServer(localLog, d, func(server *Server) {
+		server.serverID = sid
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, sapID, d)
+	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, d, func(point *ServiceAccessPoint) {
+		point.serviceID = sapID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
@@ -180,7 +185,7 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	}()
 
 	// create the request queue
-	d.request = make(chan _PDU)
+	d.request = make(chan PDU)
 	go func() {
 		for d.running {
 			pdu := <-d.request
@@ -212,6 +217,10 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	return d, nil
 }
 
+func (d *UDPDirector) String() string {
+	return fmt.Sprintf("UDPDirector(TBD...)") // TODO: fill some info here
+}
+
 // AddActor adds an actor when a new one is connected
 func (d *UDPDirector) AddActor(actor *UDPActor) {
 	d.log.Debug().Stringer("actor", actor).Msg("AddActor %v")
@@ -220,7 +229,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 
 	// tell the ASE there is a new client
 	if d.serviceElement != nil {
-		if err := d.SapRequest(noArgs, _n_kwn_args(kwAddActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(KWAddActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in add actor")
 		}
 	}
@@ -234,7 +243,7 @@ func (d *UDPDirector) DelActor(actor *UDPActor) {
 
 	// tell the ASE the client has gone away
 	if d.serviceElement != nil {
-		if err := d.SapRequest(noArgs, _n_kwn_args(kwDelActor, actor)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(KWDelActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in del actor")
 		}
 	}
@@ -247,7 +256,7 @@ func (d *UDPDirector) GetActor(address Address) *UDPActor {
 func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
 	// tell the ASE the actor had an error
 	if d.serviceElement != nil {
-		if err := d.SapRequest(noArgs, _n_kwn_args(kwActorError, actor, kwError, err)); err != nil {
+		if err := d.SapRequest(NoArgs, NewKWArgs(KWActorError, actor, KWError, err)); err != nil {
 			d.log.Error().Err(err).Msg("Error in actor error")
 		}
 	}
@@ -291,7 +300,7 @@ func (d *UDPDirector) handleRead() {
 		return
 	}
 	pdu := NewPDU(bvlc, WithPDUSource(saddr), WithPDUDestination(daddr))
-	// send the PDU up to the client
+	// send the _PDU up to the client
 	go func() {
 		if err := d._response(pdu); err != nil {
 			d.log.Debug().Err(err).Msg("errored")
@@ -304,9 +313,9 @@ func (d *UDPDirector) handleError(err error) {
 }
 
 // Indication Client requests are queued for delivery.
-func (d *UDPDirector) Indication(args _args, kwargs _kwargs) error {
-	d.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
-	pdu := args._0PDU()
+func (d *UDPDirector) Indication(args Args, kwargs KWArgs) error {
+	d.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	pdu := args.Get0PDU()
 
 	// get the destination
 	addr := pdu.GetPDUDestination()
@@ -322,7 +331,7 @@ func (d *UDPDirector) Indication(args _args, kwargs _kwargs) error {
 }
 
 // _response Incoming datagrams are routed through an actor.
-func (d *UDPDirector) _response(pdu _PDU) error {
+func (d *UDPDirector) _response(pdu PDU) error {
 	d.log.Debug().Stringer("pdu", pdu).Msg("_response")
 
 	// get the destination
@@ -335,5 +344,5 @@ func (d *UDPDirector) _response(pdu _PDU) error {
 	}
 
 	// send the message
-	return peer.Response(_n_args(pdu), noKwargs)
+	return peer.Response(NewArgs(pdu), NoKWArgs)
 }

@@ -31,7 +31,21 @@ func NewCapability() *Capability {
 type Collector struct {
 }
 
-func (c *Collector) CapabilityFunctions(fn string) []func() error {
+func NewCollector() *Collector {
+	return &Collector{}
+}
+
+func (c *Collector) searchCapability() {
+	// TODO: implement
+	return
+}
+
+func (c *Collector) CapabilityFunctions(fn string) []func(args Args, kwargs KWArgs) error {
 	// TODO: implement
 	return nil
+}
+
+func (c *Collector) AddCapability(cls any) {
+	// TODO: implement
+	return
 }

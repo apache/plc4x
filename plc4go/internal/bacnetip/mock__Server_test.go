@@ -37,7 +37,7 @@ func (_m *mock_Server) EXPECT() *mock_Server_Expecter {
 }
 
 // Indication provides a mock function with given fields: args, kwargs
-func (_m *mock_Server) Indication(args _args, kwargs _kwargs) error {
+func (_m *mock_Server) Indication(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -45,7 +45,7 @@ func (_m *mock_Server) Indication(args _args, kwargs _kwargs) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -60,15 +60,15 @@ type mock_Server_Indication_Call struct {
 }
 
 // Indication is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *mock_Server_Expecter) Indication(args interface{}, kwargs interface{}) *mock_Server_Indication_Call {
 	return &mock_Server_Indication_Call{Call: _e.mock.On("Indication", args, kwargs)}
 }
 
-func (_c *mock_Server_Indication_Call) Run(run func(args _args, kwargs _kwargs)) *mock_Server_Indication_Call {
+func (_c *mock_Server_Indication_Call) Run(run func(args Args, kwargs KWArgs)) *mock_Server_Indication_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -78,13 +78,13 @@ func (_c *mock_Server_Indication_Call) Return(_a0 error) *mock_Server_Indication
 	return _c
 }
 
-func (_c *mock_Server_Indication_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_Server_Indication_Call {
+func (_c *mock_Server_Indication_Call) RunAndReturn(run func(Args, KWArgs) error) *mock_Server_Indication_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Response provides a mock function with given fields: args, kwargs
-func (_m *mock_Server) Response(args _args, kwargs _kwargs) error {
+func (_m *mock_Server) Response(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -92,7 +92,7 @@ func (_m *mock_Server) Response(args _args, kwargs _kwargs) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -107,15 +107,15 @@ type mock_Server_Response_Call struct {
 }
 
 // Response is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *mock_Server_Expecter) Response(args interface{}, kwargs interface{}) *mock_Server_Response_Call {
 	return &mock_Server_Response_Call{Call: _e.mock.On("Response", args, kwargs)}
 }
 
-func (_c *mock_Server_Response_Call) Run(run func(args _args, kwargs _kwargs)) *mock_Server_Response_Call {
+func (_c *mock_Server_Response_Call) Run(run func(args Args, kwargs KWArgs)) *mock_Server_Response_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -125,7 +125,52 @@ func (_c *mock_Server_Response_Call) Return(_a0 error) *mock_Server_Response_Cal
 	return _c
 }
 
-func (_c *mock_Server_Response_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_Server_Response_Call {
+func (_c *mock_Server_Response_Call) RunAndReturn(run func(Args, KWArgs) error) *mock_Server_Response_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// String provides a mock function with given fields:
+func (_m *mock_Server) String() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for String")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// mock_Server_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type mock_Server_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *mock_Server_Expecter) String() *mock_Server_String_Call {
+	return &mock_Server_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *mock_Server_String_Call) Run(run func()) *mock_Server_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *mock_Server_String_Call) Return(_a0 string) *mock_Server_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *mock_Server_String_Call) RunAndReturn(run func() string) *mock_Server_String_Call {
 	_c.Call.Return(run)
 	return _c
 }

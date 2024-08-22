@@ -37,7 +37,7 @@ func (_m *mock_ApplicationServiceElement) EXPECT() *mock_ApplicationServiceEleme
 }
 
 // Confirmation provides a mock function with given fields: args, kwargs
-func (_m *mock_ApplicationServiceElement) Confirmation(args _args, kwargs _kwargs) error {
+func (_m *mock_ApplicationServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -45,7 +45,7 @@ func (_m *mock_ApplicationServiceElement) Confirmation(args _args, kwargs _kwarg
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -60,15 +60,15 @@ type mock_ApplicationServiceElement_Confirmation_Call struct {
 }
 
 // Confirmation is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *mock_ApplicationServiceElement_Expecter) Confirmation(args interface{}, kwargs interface{}) *mock_ApplicationServiceElement_Confirmation_Call {
 	return &mock_ApplicationServiceElement_Confirmation_Call{Call: _e.mock.On("Confirmation", args, kwargs)}
 }
 
-func (_c *mock_ApplicationServiceElement_Confirmation_Call) Run(run func(args _args, kwargs _kwargs)) *mock_ApplicationServiceElement_Confirmation_Call {
+func (_c *mock_ApplicationServiceElement_Confirmation_Call) Run(run func(args Args, kwargs KWArgs)) *mock_ApplicationServiceElement_Confirmation_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -78,13 +78,13 @@ func (_c *mock_ApplicationServiceElement_Confirmation_Call) Return(_a0 error) *m
 	return _c
 }
 
-func (_c *mock_ApplicationServiceElement_Confirmation_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_ApplicationServiceElement_Confirmation_Call {
+func (_c *mock_ApplicationServiceElement_Confirmation_Call) RunAndReturn(run func(Args, KWArgs) error) *mock_ApplicationServiceElement_Confirmation_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Indication provides a mock function with given fields: args, kwargs
-func (_m *mock_ApplicationServiceElement) Indication(args _args, kwargs _kwargs) error {
+func (_m *mock_ApplicationServiceElement) Indication(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -92,7 +92,7 @@ func (_m *mock_ApplicationServiceElement) Indication(args _args, kwargs _kwargs)
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -107,15 +107,15 @@ type mock_ApplicationServiceElement_Indication_Call struct {
 }
 
 // Indication is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *mock_ApplicationServiceElement_Expecter) Indication(args interface{}, kwargs interface{}) *mock_ApplicationServiceElement_Indication_Call {
 	return &mock_ApplicationServiceElement_Indication_Call{Call: _e.mock.On("Indication", args, kwargs)}
 }
 
-func (_c *mock_ApplicationServiceElement_Indication_Call) Run(run func(args _args, kwargs _kwargs)) *mock_ApplicationServiceElement_Indication_Call {
+func (_c *mock_ApplicationServiceElement_Indication_Call) Run(run func(args Args, kwargs KWArgs)) *mock_ApplicationServiceElement_Indication_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -125,13 +125,13 @@ func (_c *mock_ApplicationServiceElement_Indication_Call) Return(_a0 error) *moc
 	return _c
 }
 
-func (_c *mock_ApplicationServiceElement_Indication_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_ApplicationServiceElement_Indication_Call {
+func (_c *mock_ApplicationServiceElement_Indication_Call) RunAndReturn(run func(Args, KWArgs) error) *mock_ApplicationServiceElement_Indication_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Request provides a mock function with given fields: args, kwargs
-func (_m *mock_ApplicationServiceElement) Request(args _args, kwargs _kwargs) error {
+func (_m *mock_ApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -139,7 +139,7 @@ func (_m *mock_ApplicationServiceElement) Request(args _args, kwargs _kwargs) er
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -154,15 +154,15 @@ type mock_ApplicationServiceElement_Request_Call struct {
 }
 
 // Request is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *mock_ApplicationServiceElement_Expecter) Request(args interface{}, kwargs interface{}) *mock_ApplicationServiceElement_Request_Call {
 	return &mock_ApplicationServiceElement_Request_Call{Call: _e.mock.On("Request", args, kwargs)}
 }
 
-func (_c *mock_ApplicationServiceElement_Request_Call) Run(run func(args _args, kwargs _kwargs)) *mock_ApplicationServiceElement_Request_Call {
+func (_c *mock_ApplicationServiceElement_Request_Call) Run(run func(args Args, kwargs KWArgs)) *mock_ApplicationServiceElement_Request_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -172,13 +172,13 @@ func (_c *mock_ApplicationServiceElement_Request_Call) Return(_a0 error) *mock_A
 	return _c
 }
 
-func (_c *mock_ApplicationServiceElement_Request_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_ApplicationServiceElement_Request_Call {
+func (_c *mock_ApplicationServiceElement_Request_Call) RunAndReturn(run func(Args, KWArgs) error) *mock_ApplicationServiceElement_Request_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // Response provides a mock function with given fields: args, kwargs
-func (_m *mock_ApplicationServiceElement) Response(args _args, kwargs _kwargs) error {
+func (_m *mock_ApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
 	ret := _m.Called(args, kwargs)
 
 	if len(ret) == 0 {
@@ -186,7 +186,7 @@ func (_m *mock_ApplicationServiceElement) Response(args _args, kwargs _kwargs) e
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(_args, _kwargs) error); ok {
+	if rf, ok := ret.Get(0).(func(Args, KWArgs) error); ok {
 		r0 = rf(args, kwargs)
 	} else {
 		r0 = ret.Error(0)
@@ -201,15 +201,15 @@ type mock_ApplicationServiceElement_Response_Call struct {
 }
 
 // Response is a helper method to define mock.On call
-//   - args _args
-//   - kwargs _kwargs
+//   - args Args
+//   - kwargs KWArgs
 func (_e *mock_ApplicationServiceElement_Expecter) Response(args interface{}, kwargs interface{}) *mock_ApplicationServiceElement_Response_Call {
 	return &mock_ApplicationServiceElement_Response_Call{Call: _e.mock.On("Response", args, kwargs)}
 }
 
-func (_c *mock_ApplicationServiceElement_Response_Call) Run(run func(args _args, kwargs _kwargs)) *mock_ApplicationServiceElement_Response_Call {
+func (_c *mock_ApplicationServiceElement_Response_Call) Run(run func(args Args, kwargs KWArgs)) *mock_ApplicationServiceElement_Response_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_args), args[1].(_kwargs))
+		run(args[0].(Args), args[1].(KWArgs))
 	})
 	return _c
 }
@@ -219,7 +219,7 @@ func (_c *mock_ApplicationServiceElement_Response_Call) Return(_a0 error) *mock_
 	return _c
 }
 
-func (_c *mock_ApplicationServiceElement_Response_Call) RunAndReturn(run func(_args, _kwargs) error) *mock_ApplicationServiceElement_Response_Call {
+func (_c *mock_ApplicationServiceElement_Response_Call) RunAndReturn(run func(Args, KWArgs) error) *mock_ApplicationServiceElement_Response_Call {
 	_c.Call.Return(run)
 	return _c
 }

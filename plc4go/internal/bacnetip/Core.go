@@ -21,29 +21,51 @@ package bacnetip
 
 import (
 	"math"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
+
+	"github.com/rs/zerolog"
 )
 
 var running bool
 var spin = 10 * time.Millisecond
 var sleepTime = 0 * time.Nanosecond
-var deferredFunctions []func() error
+
+type deferredFunctionTuple struct {
+	fn     func(args Args, kwargs KWArgs) error
+	args   Args
+	kwargs KWArgs
+}
+
+var DeferredFunctions []deferredFunctionTuple
 
 var ErrorCallback func(err error)
 
-func init() {
+func run() {
 	running = true
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+		<-c
+		running = false
+	}()
 	go func() {
 		for running {
 			// get the next task
-			task, delta := _taskManager.getNextTask()
+			var delta time.Duration
+			task, taskDelta := _taskManager.GetNextTask()
 			if task != nil {
-				_taskManager.processTask(task)
+				_taskManager.ProcessTask(task)
 			}
 
-			// if delta is None, there are no tasks, default to spinning
-			if delta == 0 {
+			// if delta is None, there are no Tasks, default to spinning
+			if taskDelta == nil {
 				delta = spin
+			} else {
+				delta = *taskDelta
 			}
 
 			// there may be threads around, sleep for a bit
@@ -56,7 +78,7 @@ func init() {
 			delta = time.Duration(math.Min(float64(delta), float64(spin)))
 
 			// if there are deferred functions, use a small delta
-			if len(deferredFunctions) > 0 {
+			if len(DeferredFunctions) > 0 {
 				delta = time.Duration(math.Min(float64(delta), float64(1*time.Millisecond)))
 			}
 
@@ -64,13 +86,18 @@ func init() {
 			time.Sleep(delta)
 
 			// check for deferred functions
-			fnlist := deferredFunctions
-			// empty list
-			deferredFunctions = nil
-			for _, fn := range fnlist {
-				if err := fn(); err != nil {
-					if ErrorCallback != nil {
-						ErrorCallback(err)
+			for len(DeferredFunctions) > 0 {
+				fnlist := DeferredFunctions
+				// empty list
+				DeferredFunctions = nil
+				for _, fnTuple := range fnlist {
+					fn := fnTuple.fn
+					args := fnTuple.args
+					kwargs := fnTuple.kwargs
+					if err := fn(args, kwargs); err != nil {
+						if ErrorCallback != nil {
+							ErrorCallback(err)
+						}
 					}
 				}
 			}
@@ -78,9 +105,57 @@ func init() {
 	}()
 }
 
-func Deferred(fn func() error) {
+// RunOnce makes a pass through the scheduled tasks and deferred functions just
+//
+//	like the run() function but without the asyncore call (so there is no
+//	socket IO activity) and the timers.
+func RunOnce(localLog zerolog.Logger) {
+	localLog.Trace().Msg("run_once")
+	taskManager := NewTaskManager(localLog)
+
+	for {
+		// get the next task
+		var task TaskRequirements
+		task, delta := taskManager.GetNextTask()
+		var displayDelta time.Duration
+		if delta != nil {
+			displayDelta = *delta
+		}
+		localLog.Debug().Stringer("task", task).Dur("delta", displayDelta).Msg("task")
+
+		// if there is a task to process, do it
+		if task != nil {
+			taskManager.ProcessTask(task)
+		}
+
+		// check for deferred functions
+
+		for len(DeferredFunctions) > 0 {
+			// get a reference to the list
+			fnlist := DeferredFunctions
+			DeferredFunctions = nil
+
+			// call the functions
+			for _, fnTuple := range fnlist {
+				fn := fnTuple.fn
+				args := fnTuple.args
+				kwargs := fnTuple.kwargs
+				if err := fn(args, kwargs); err != nil {
+					if ErrorCallback != nil {
+						ErrorCallback(err)
+					}
+				}
+			}
+		}
+		if delta == nil || *delta != 0 {
+			break
+		}
+	}
+}
+
+func Deferred(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) {
 	// append it to the list
-	deferredFunctions = append(deferredFunctions, fn)
+	DeferredFunctions = append(DeferredFunctions, deferredFunctionTuple{fn, args, kwargs})
 
 	// trigger the task manager event
 	// TODO: there is no trigger

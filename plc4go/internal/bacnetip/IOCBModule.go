@@ -22,12 +22,13 @@ package bacnetip
 import (
 	"container/heap"
 	"fmt"
-	"github.com/rs/zerolog"
 	"sync"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
@@ -86,10 +87,10 @@ type _IOCB interface {
 	setIOController(ioController _IOController)
 	setIOState(newState IOCBState)
 	getIOState() IOCBState
-	setIOResponse(msg _PDU)
+	setIOResponse(msg PDU)
 	Trigger()
 	setIOError(err error)
-	getRequest() _PDU
+	getRequest() PDU
 	getDestination() *Address
 	getPriority() int
 	clearQueue()
@@ -102,10 +103,10 @@ var _identLock sync.Mutex
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=IOCB
 type IOCB struct {
 	ioID           int
-	request        _PDU
+	request        PDU
 	destination    *Address
 	ioState        IOCBState
-	ioResponse     _PDU
+	ioResponse     PDU
 	ioError        error
 	ioController   _IOController
 	ioComplete     sync.Cond
@@ -119,7 +120,7 @@ type IOCB struct {
 	log zerolog.Logger `ignore:"true"`
 }
 
-func NewIOCB(localLog zerolog.Logger, request _PDU, destination *Address) (*IOCB, error) {
+func NewIOCB(localLog zerolog.Logger, request PDU, destination *Address) (*IOCB, error) {
 	// lock the identity sequence number
 	_identLock.Lock()
 
@@ -215,7 +216,7 @@ func (i *IOCB) Trigger() {
 // Complete Called to complete a transaction, usually when ProcessIO has shipped the IOCB off to some other thread or
 //
 //	function.
-func (i *IOCB) Complete(apdu _PDU) error {
+func (i *IOCB) Complete(apdu PDU) error {
 	i.log.Debug().
 		Int("ioID", i.ioID).
 		Stringer("apdu", apdu).
@@ -283,7 +284,7 @@ func (i *IOCB) getIOState() IOCBState {
 	return i.ioState
 }
 
-func (i *IOCB) setIOResponse(msg _PDU) {
+func (i *IOCB) setIOResponse(msg PDU) {
 	i.ioResponse = msg
 }
 
@@ -291,7 +292,7 @@ func (i *IOCB) setIOError(err error) {
 	i.ioError = err
 }
 
-func (i *IOCB) getRequest() _PDU {
+func (i *IOCB) getRequest() PDU {
 	return i.request
 }
 
@@ -472,7 +473,7 @@ func (i *IOQueue) Abort(err error) {
 type _IOController interface {
 	Abort(err error) error
 	ProcessIO(iocb _IOCB) error
-	CompleteIO(iocb _IOCB, pdu _PDU) error
+	CompleteIO(iocb _IOCB, pdu PDU) error
 	AbortIO(iocb _IOCB, err error) error
 }
 
@@ -542,7 +543,7 @@ func (i *IOController) ActiveIO(iocb _IOCB) error {
 }
 
 // CompleteIO Called by a handler to return data to the client
-func (i *IOController) CompleteIO(iocb _IOCB, apdu _PDU) error {
+func (i *IOController) CompleteIO(iocb _IOCB, apdu PDU) error {
 	i.log.Debug().
 		Stringer("iocb", iocb).
 		Stringer("apdu", apdu).
@@ -725,7 +726,7 @@ func (i *IOQController) ActiveIO(iocb _IOCB) error {
 }
 
 // CompleteIO Called by a handler to return data to the client
-func (i *IOQController) CompleteIO(iocb _IOCB, msg _PDU) error {
+func (i *IOQController) CompleteIO(iocb _IOCB, msg PDU) error {
 	i.log.Debug().Stringer("iocb", iocb).Stringer("msg", msg).Msg("CompleteIO")
 
 	// check to see if it is completing the active one
@@ -747,15 +748,15 @@ func (i *IOQController) CompleteIO(iocb _IOCB, msg _PDU) error {
 		i.state = IOQControllerStates_CTRL_WAITING
 		stateLog.Debug().Timestamp().Str("name", i.name).Msg("waiting")
 
-		task := FunctionTask(i._waitTrigger)
-		task.InstallTask(nil, &i.waitTime)
+		task := FunctionTask(i._waitTrigger, NoArgs, NoKWArgs)
+		task.InstallTask(InstallTaskOptions{Delta: &i.waitTime})
 	} else {
 		// change our state
 		i.state = IOQControllerStates_CTRL_IDLE
 		stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 		// look for more to do
-		Deferred(i._trigger)
+		Deferred(i._trigger, NoArgs, NoKWArgs)
 	}
 
 	return nil
@@ -784,12 +785,12 @@ func (i *IOQController) AbortIO(iocb _IOCB, err error) error {
 	stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 	// look for more to do
-	Deferred(i._trigger)
+	Deferred(i._trigger, NoArgs, NoKWArgs)
 	return nil
 }
 
 // _trigger Called to launch the next request in the queue
-func (i *IOQController) _trigger() error {
+func (i *IOQController) _trigger(_ Args, _ KWArgs) error {
 	i.log.Debug().Msg("_trigger")
 
 	// if we are busy, do nothing
@@ -821,13 +822,13 @@ func (i *IOQController) _trigger() error {
 
 	// if we're idle, call again
 	if i.state == IOQControllerStates_CTRL_IDLE {
-		Deferred(i._trigger)
+		Deferred(i._trigger, NoArgs, NoKWArgs)
 	}
 	return nil
 }
 
 // _waitTrigger is called to launch the next request in the queue
-func (i *IOQController) _waitTrigger() error {
+func (i *IOQController) _waitTrigger(_ Args, _ KWArgs) error {
 	i.log.Debug().Msg("_waitTrigger")
 
 	// make sure we are waiting
@@ -841,19 +842,19 @@ func (i *IOQController) _waitTrigger() error {
 	stateLog.Debug().Timestamp().Str("name", i.name).Msg("idle")
 
 	// look for more to do
-	return i._trigger()
+	return i._trigger(NoArgs, NoKWArgs)
 }
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=SieveQueue
 type SieveQueue struct {
 	*IOQController
-	requestFn func(apdu _PDU)
+	requestFn func(apdu PDU)
 	address   *Address
 
 	log zerolog.Logger `ignore:"true"`
 }
 
-func NewSieveQueue(localLog zerolog.Logger, fn func(apdu _PDU), address *Address) (*SieveQueue, error) {
+func NewSieveQueue(localLog zerolog.Logger, fn func(apdu PDU), address *Address) (*SieveQueue, error) {
 	s := &SieveQueue{}
 	var err error
 	s.IOQController, err = NewIOQController(localLog, address.String(), s)

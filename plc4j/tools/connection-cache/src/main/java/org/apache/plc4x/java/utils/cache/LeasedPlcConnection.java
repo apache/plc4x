@@ -18,9 +18,11 @@
  */
 package org.apache.plc4x.java.utils.cache;
 
+import org.apache.plc4x.java.api.EventPlcConnection;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
+import org.apache.plc4x.java.api.listener.EventListener;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcQuery;
@@ -40,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class LeasedPlcConnection implements PlcConnection {
+public class LeasedPlcConnection implements EventPlcConnection {
 
     private static final Logger log = LoggerFactory.getLogger(LeasedPlcConnection.class);
     private final ConnectionContainer connectionContainer;
@@ -482,6 +484,16 @@ public class LeasedPlcConnection implements PlcConnection {
                 return innerBuilder.addQuery(name, query);
             }
         };
+    }
+
+    @Override
+    public void addEventListener(EventListener listener) {
+        connectionContainer.addEventListener(listener);
+    }
+
+    @Override
+    public void removeEventListener(EventListener listener) {
+        connectionContainer.removeEventListener(listener);
     }
 
 }

@@ -215,24 +215,32 @@ type Application struct {
 	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
 	controllers      map[string]any
-	helpers          map[string]func(pdu _PDU) error
+	helpers          map[string]func(pdu PDU) error
 
 	_startupDisabled bool
+
+	// pass through args
+	argAseID *int
 
 	log zerolog.Logger
 }
 
-func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, aseID *int) (*Application, error) {
-	localLog.Debug().
-		Interface("localDevice", localDevice).
-		Interface("deviceInfoCache", deviceInfoCache).
-		Interface("aseID", aseID).
-		Msg("NewApplication")
+func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*Application)) (*Application, error) {
 	a := &Application{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(a)
+	}
+	localLog.Debug().
+		Interface("localDevice", localDevice).
+		Interface("deviceInfoCache", a.deviceInfoCache).
+		Interface("aseID", a.argAseID).
+		Msg("NewApplication")
 	var err error
-	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, aseID, a)
+	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, a, func(element *ApplicationServiceElement) {
+		element.elementID = a.argAseID
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -254,10 +262,9 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, dev
 	}
 
 	// use the provided cache or make a default one
-	if deviceInfoCache == nil {
-		deviceInfoCache = NewDeviceInfoCache(localLog)
+	if a.deviceInfoCache == nil {
+		a.deviceInfoCache = NewDeviceInfoCache(localLog)
 	}
-	a.deviceInfoCache = deviceInfoCache
 
 	// controllers for managing confirmed requests as a client
 	a.controllers = map[string]any{}
@@ -269,10 +276,30 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, dev
 	if !a._startupDisabled {
 		for _, fn := range a.CapabilityFunctions("startup") {
 			localLog.Debug().Interface("fn", fn).Msg("startup fn")
-			Deferred(fn)
+			Deferred(fn, NoArgs, NoKWArgs)
 		}
 	}
 	return a, nil
+}
+
+func WithApplicationAseID(aseID int) func(*Application) {
+	return func(a *Application) {
+		a.argAseID = &aseID
+	}
+}
+
+func WithApplicationDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*Application) {
+	return func(a *Application) {
+		a.deviceInfoCache = deviceInfoCache
+	}
+}
+
+func (a *Application) GetDeviceInfoCache() *DeviceInfoCache {
+	return a.deviceInfoCache
+}
+
+func (a *Application) String() string {
+	return fmt.Sprintf("Application(TBD...)") // TODO: fill some info here
 }
 
 // AddObject adds an object to the local collection
@@ -375,9 +402,9 @@ func (a *Application) GetServicesSupported() []string {
 	return servicesSupported
 }
 
-func (a *Application) Request(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
-	apdu := args._0PDU()
+func (a *Application) Request(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+	apdu := args.Get0PDU()
 
 	// double-check the input is the right kind of APDU
 	switch apdu.GetMessage().(type) {
@@ -388,9 +415,9 @@ func (a *Application) Request(args _args, kwargs _kwargs) error {
 	return a.ApplicationServiceElement.Request(args, kwargs)
 }
 
-func (a *Application) Indication(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Indication")
-	apdu := args._0PDU()
+func (a *Application) Indication(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	apdu := args.Get0PDU()
 
 	// get a helper function
 	helperName := fmt.Sprintf("Do_%T", apdu)
@@ -411,7 +438,7 @@ func (a *Application) Indication(args _args, kwargs _kwargs) error {
 	if err := helperFn(apdu); err != nil {
 		a.log.Debug().Err(err).Msg("err result")
 		// TODO: do proper mapping
-		if err := a.Response(_n_args(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
+		if err := a.Response(NewArgs(NewPDU(readWriteModel.NewAPDUError(0, readWriteModel.BACnetConfirmedServiceChoice_CREATE_OBJECT, nil, 0))), kwargs); err != nil {
 			return err
 		}
 	}
@@ -419,31 +446,53 @@ func (a *Application) Indication(args _args, kwargs _kwargs) error {
 	return nil
 }
 
-// TODO: finish
 type ApplicationIOController struct {
 	*IOController
 	*Application
+
 	queueByAddress map[string]SieveQueue
+
+	// pass through args
+	argDeviceInfoCache *DeviceInfoCache
+	argAseID           *int
 
 	log zerolog.Logger
 }
 
-func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, aseID *int) (*ApplicationIOController, error) {
+func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(controller *ApplicationIOController)) (*ApplicationIOController, error) {
 	a := &ApplicationIOController{
 		// queues for each address
 		queueByAddress: make(map[string]SieveQueue),
 		log:            localLog,
+	}
+	for _, opt := range opts {
+		opt(a)
 	}
 	var err error
 	a.IOController, err = NewIOController(localLog, "", a)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	a.Application, err = NewApplication(localLog, localDevice, deviceInfoCache, aseID)
+	a.Application, err = NewApplication(localLog, localDevice, func(application *Application) {
+		application.deviceInfoCache = a.argDeviceInfoCache
+		application.argAseID = a.argAseID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application")
 	}
 	return a, nil
+}
+
+func WithApplicationIOControllerDeviceInfoCache(deviceInfoCache *DeviceInfoCache) func(*ApplicationIOController) {
+	return func(a *ApplicationIOController) {
+		a.argDeviceInfoCache = deviceInfoCache
+	}
+}
+
+func WithApplicationIOControllerAseID(aseID *int) func(*ApplicationIOController) {
+	return func(a *ApplicationIOController) {
+		a.argAseID = aseID
+	}
 }
 
 func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
@@ -466,7 +515,7 @@ func (a *ApplicationIOController) ProcessIO(iocb _IOCB) error {
 	return queue.RequestIO(iocb)
 }
 
-func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) error {
+func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error {
 	a.log.Debug().
 		Stringer("address", address).
 		Stringer("apdu", apdu).
@@ -508,11 +557,11 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu _PDU) erro
 	return nil
 }
 
-func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
+func (a *ApplicationIOController) _AppRequest(apdu PDU) {
 	a.log.Debug().Stringer("apdu", apdu).Msg("_AppRequest")
 
 	// send it downstream, bypass the guard
-	if err := a.Application.Request(_n_args(apdu), noKwargs); err != nil {
+	if err := a.Application.Request(NewArgs(apdu), NoKWArgs); err != nil {
 		a.log.Error().Stack().Err(err).Msg("Uh oh")
 		return
 	}
@@ -526,9 +575,9 @@ func (a *ApplicationIOController) _AppRequest(apdu _PDU) {
 	}
 }
 
-func (a *ApplicationIOController) Request(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Request")
-	apdu := args._0PDU()
+func (a *ApplicationIOController) Request(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
+	apdu := args.Get0PDU()
 
 	// if this is not unconfirmed request, tell the application to use the IOCB interface
 	if _, ok := apdu.(readWriteModel.APDUUnconfirmedRequestExactly); !ok {
@@ -539,9 +588,9 @@ func (a *ApplicationIOController) Request(args _args, kwargs _kwargs) error {
 	return a.Application.Request(args, kwargs)
 }
 
-func (a *ApplicationIOController) Confirmation(args _args, kwargs _kwargs) error {
-	a.log.Debug().Stringer("_args", args).Stringer("_kwargs", kwargs).Msg("Confirmation")
-	apdu := args._0PDU()
+func (a *ApplicationIOController) Confirmation(args Args, kwargs KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+	apdu := args.Get0PDU()
 
 	// this is an ack, error, reject or abort
 	return a._AppComplete(apdu.GetPDUSource(), apdu)
@@ -569,7 +618,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 		log: localLog,
 	}
 	var err error
-	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, deviceInfoCache, aseID)
+	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, WithApplicationIOControllerDeviceInfoCache(deviceInfoCache), WithApplicationIOControllerAseID(aseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
@@ -585,13 +634,13 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	b.localAddress = localAddress
 
 	// include a application decoder
-	b.asap, err = NewApplicationServiceAccessPoint(localLog, nil, nil)
+	b.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
 
 	// pass the device object to the state machine access point, so it can know if it should support segmentation
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, deviceInfoCache, nil, nil)
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
@@ -600,31 +649,31 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	// Note: deviceInfoCache already passed above, so we don't need to do it again here
 
 	// a network service access point will be needed
-	b.nsap, err = NewNetworkServiceAccessPoint(localLog, nil, nil, nil)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil)
+	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
-	if err := bind(localLog, b.nse, b.nsap); err != nil {
+	if err := Bind(localLog, b.nse, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding network stack")
 	}
 
 	// bind the top layers
-	if err := bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
+	if err := Bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPSimple(localLog, nil, nil, nil)
+	b.bip, err = NewBIPSimple(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
-	b.annexj, err = NewAnnexJCodec(localLog, nil, nil)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
@@ -634,12 +683,12 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// bind the bottom layers
-	if err := bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
+	if err := Bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
 		return nil, errors.Wrap(err, "error binding bottom layers")
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := b.nsap.bind(b.bip, nil, &b.localAddress); err != nil {
+	if err := b.nsap.Bind(b.bip, nil, &b.localAddress); err != nil {
 		return nil, err
 	}
 
@@ -674,7 +723,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 		log: localLog,
 	}
 	var err error
-	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, deviceInfoCache, aseID)
+	b.ApplicationIOController, err = NewApplicationIOController(localLog, localDevice, WithApplicationIOControllerDeviceInfoCache(deviceInfoCache), WithApplicationIOControllerAseID(aseID))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
@@ -690,13 +739,13 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	b.localAddress = localAddress
 
 	// include a application decoder
-	b.asap, err = NewApplicationServiceAccessPoint(localLog, nil, nil)
+	b.asap, err = NewApplicationServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
 
 	// pass the device object to the state machine access point, so it can know if it should support segmentation
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, deviceInfoCache, nil, nil)
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
@@ -705,31 +754,31 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	// Note: deviceInfoCache already passed above, so we don't need to do it again here
 
 	// a network service access point will be needed
-	b.nsap, err = NewNetworkServiceAccessPoint(localLog, nil, nil, nil)
+	b.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil)
+	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
-	if err := bind(localLog, b.nse, b.nsap); err != nil {
+	if err := Bind(localLog, b.nse, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding network stack")
 	}
 
 	// bind the top layers
-	if err := bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
+	if err := Bind(localLog, b, b.asap, b.smap, b.nsap); err != nil {
 		return nil, errors.Wrap(err, "error binding top layers")
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL, nil, nil, nil)
+	b.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
-	b.annexj, err = NewAnnexJCodec(localLog, nil, nil)
+	b.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
@@ -739,12 +788,12 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// bind the bottom layers
-	if err := bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
+	if err := Bind(localLog, b.bip, b.annexj, b.mux.annexJ); err != nil {
 		return nil, errors.Wrap(err, "error binding bottom layers")
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := b.nsap.bind(b.bip, nil, &b.localAddress); err != nil {
+	if err := b.nsap.Bind(b.bip, nil, &b.localAddress); err != nil {
 		return nil, err
 	}
 
@@ -774,7 +823,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 		log: localLog,
 	}
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, eID)
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, eID, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -782,30 +831,30 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	n.localAddress = localAddress
 
 	// a network service access point will be needed
-	n.nsap, err = NewNetworkServiceAccessPoint(localLog, nil, nil, nil)
+	n.nsap, err = NewNetworkServiceAccessPoint(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
 
 	// give the NSAP a generic network layer service element
-	if err := bind(localLog, n, n.nsap); err != nil {
+	if err := Bind(localLog, n, n.nsap); err != nil {
 		return nil, errors.New("error binding network layer")
 	}
 
 	// create a generic BIP stack, bound to the Annex J server
 	// on the UDP multiplexer
 	if bbmdAddress == nil && bbmdTTL == nil {
-		n.bip, err = NewBIPSimple(localLog, nil, nil, nil)
+		n.bip, err = NewBIPSimple(localLog)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPSimple")
 		}
 	} else {
-		n.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL, nil, nil, nil)
+		n.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPForeign")
 		}
 	}
-	n.annexj, err = NewAnnexJCodec(localLog, nil, nil)
+	n.annexj, err = NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new annex j codec")
 	}
@@ -815,12 +864,12 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 	}
 
 	// bind the bottom layers
-	if err := bind(localLog, n.bip, n.annexj, n.mux.annexJ); err != nil {
+	if err := Bind(localLog, n.bip, n.annexj, n.mux.annexJ); err != nil {
 		return nil, errors.Wrap(err, "error binding bottom layers")
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := n.nsap.bind(n.bip.(_Server), nil, &n.localAddress); err != nil {
+	if err := n.nsap.Bind(n.bip.(_Server), nil, &n.localAddress); err != nil {
 		return nil, err
 	}
 

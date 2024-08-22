@@ -19,37 +19,49 @@
 
 package bacnetip
 
-import "fmt"
+import (
+	"context"
+	"fmt"
 
-type _args []any
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
-var noArgs = _n_args()
+type Arg any
 
-func _n_args(args ...any) _args {
+type Args []any
+
+var NoArgs = NewArgs()
+
+func NewArgs(args ...any) Args {
 	return args
 }
 
-func (a _args) _0PDU() _PDU {
-	return a[0].(_PDU)
+func (a Args) Get0PDU() PDU {
+	return a[0].(PDU)
 }
 
-func (a _args) _1PDU() _PDU {
-	return a[1].(_PDU)
+func (a Args) Get1PDU() PDU {
+	return a[1].(PDU)
 }
 
-func (a _args) _0NetworkAdapter() *NetworkAdapter {
+func (a Args) Get0NPDU() NPDU {
+	return a[0].(NPDU)
+}
+
+func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
 
-func (a _args) _0MultiplexClient() *_MultiplexClient {
+func (a Args) Get0MultiplexClient() *_MultiplexClient {
 	return a[0].(*_MultiplexClient)
 }
 
-func (a _args) _0MultiplexServer() *_MultiplexServer {
+func (a Args) Get0MultiplexServer() *_MultiplexServer {
 	return a[0].(*_MultiplexServer)
 }
 
-func (a _args) String() string {
+func (a Args) String() string {
 	r := ""
 	for i, ea := range a {
 		r += fmt.Sprintf("%d: %v, ", i, ea)
@@ -60,25 +72,25 @@ func (a _args) String() string {
 	return r
 }
 
-type _kwargs map[knownKey]any
+type KWArgs map[KnownKey]any
 
-var noKwargs = _n_kwn_args()
+var NoKWArgs = NewKWArgs()
 
-func _n_kwn_args(kw ...any) _kwargs {
+func NewKWArgs(kw ...any) KWArgs {
 	if len(kw)%2 != 0 {
-		panic("_kwargs must have an even number of arguments")
+		panic("KWArgs must have an even number of arguments")
 	}
-	r := make(_kwargs)
+	r := make(KWArgs)
 	for i := 0; i < len(kw)-1; i += 2 {
-		key, ok := kw[i].(knownKey)
+		key, ok := kw[i].(KnownKey)
 		if !ok {
-			panic("keys must be of type knownKey")
+			panic("keys must be of type KnownKey")
 		}
 		r[key] = kw[i+1]
 	}
 	return r
 }
-func (k _kwargs) String() string {
+func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
 		r += fmt.Sprintf("%s=%v, ", kk, ea)
@@ -89,11 +101,71 @@ func (k _kwargs) String() string {
 	return r
 }
 
-type knownKey string
+type KnownKey string
 
 const (
-	kwAddActor   = knownKey("addActor")
-	kwDelActor   = knownKey("delActor")
-	kwActorError = knownKey("actorError")
-	kwError      = knownKey("error")
+	////
+	// General keys
+
+	KWAddActor   = KnownKey("addActor")
+	KWDelActor   = KnownKey("delActor")
+	KWActorError = KnownKey("actorError")
+	KWError      = KnownKey("error")
+
+	////
+	// PDU related Keys
+
+	KWPPDUSource     = KnownKey("pduSource")
+	KWPDUDestination = KnownKey("pduDestination")
+	KWPDUData        = KnownKey("pduData")
+
+	////
+	// NPDU related keys
+
+	KWWirtnNetwork           = KnownKey("wirtnNetwork")
+	KWIartnNetworkList       = KnownKey("iartnNetworkList")
+	KWIcbrtnNetwork          = KnownKey("icbrtnNetwork")
+	KWIcbrtnPerformanceIndex = KnownKey("icbrtnPerformanceIndex")
+	KWRmtnRejectionReason    = KnownKey("rmtnRejectionReason")
+	KWRmtnDNET               = KnownKey("rmtnDNET")
+	KWRbtnNetworkList        = KnownKey("rbtnNetworkList")
+	KWRatnNetworkList        = KnownKey("ratnNetworkList")
+	KWIrtTable               = KnownKey("irtTable")
+	KWIrtaTable              = KnownKey("irtaTable")
+	KWEctnDNET               = KnownKey("ectnDNET")
+	KWEctnTerminationTime    = KnownKey("ectnTerminationTime")
+	KWDctnDNET               = KnownKey("dctnDNET")
+	KWNniNet                 = KnownKey("nniNet")
+	KWNniFlag                = KnownKey("nniFlag")
 )
+
+type MessageBridge struct {
+	Bytes []byte
+}
+
+var _ spi.Message = (*MessageBridge)(nil)
+var _ _PDUDataRequirements = (*MessageBridge)(nil)
+
+func (m *MessageBridge) String() string {
+	return Btox(m.Bytes)
+}
+
+func (m *MessageBridge) Serialize() ([]byte, error) {
+	return m.Bytes, nil
+}
+
+func (m *MessageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
+	return writeBuffer.WriteByteArray("Bytes", m.Bytes)
+}
+
+func (m *MessageBridge) GetLengthInBytes(_ context.Context) uint16 {
+	return uint16(len(m.Bytes))
+}
+
+func (m *MessageBridge) GetLengthInBits(ctx context.Context) uint16 {
+	return m.GetLengthInBytes(ctx) * 8
+}
+
+func (m *MessageBridge) getPDUData() []byte {
+	return m.Bytes
+}

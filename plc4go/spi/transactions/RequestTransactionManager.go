@@ -25,9 +25,12 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
+	"os"
+	"os/signal"
 	"runtime"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
@@ -47,9 +50,13 @@ func init() {
 		config.WithCustomLogger(zerolog.Nop()),
 	)
 	sharedExecutorInstance.Start()
-	runtime.SetFinalizer(sharedExecutorInstance, func(sharedExecutorInstance pool.Executor) {
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
+		<-c
 		sharedExecutorInstance.Stop()
-	})
+	}()
 }
 
 type RequestTransactionRunnable func(RequestTransaction)

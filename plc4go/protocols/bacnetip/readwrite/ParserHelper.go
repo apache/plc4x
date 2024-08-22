@@ -752,8 +752,6 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		}
 		tagClass, _ := model.TagClassByName(arguments[1])
 		return model.BACnetRelationshipTaggedParseWithBuffer(context.Background(), io, tagNumber, tagClass)
-	case "NLMInitalizeRoutingTablePortMapping":
-		return model.NLMInitalizeRoutingTablePortMappingParseWithBuffer(context.Background(), io)
 	case "BACnetRecipientProcessEnclosed":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {
@@ -1156,6 +1154,8 @@ func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io util
 		return model.NLMParseWithBuffer(context.Background(), io, apduLength)
 	case "BACnetWeekNDay":
 		return model.BACnetWeekNDayParseWithBuffer(context.Background(), io)
+	case "NLMInitializeRoutingTablePortMapping":
+		return model.NLMInitializeRoutingTablePortMappingParseWithBuffer(context.Background(), io)
 	case "NPDUNetworkPriorityTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])
 		if err != nil {

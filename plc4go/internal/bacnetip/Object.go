@@ -26,3 +26,7 @@ func NewReadWritePropertyServices() (*ReadWritePropertyServices, error) {
 	// TODO: implement me
 	return nil, nil
 }
+
+type Property struct {
+	//TODO: implement me
+}

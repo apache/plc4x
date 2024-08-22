@@ -130,15 +130,15 @@ public abstract class NLM implements Message {
     } else if (EvaluationHelper.equals(messageType, (short) 0x02)) {
       builder = NLMICouldBeRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = NLMRejectRouterToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMRejectMessageToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x04)) {
       builder = NLMRouterBusyToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x05)) {
       builder = NLMRouterAvailableToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x06)) {
-      builder = NLMInitalizeRoutingTable.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMInitializeRoutingTable.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = NLMInitalizeRoutingTableAck.staticParseNLMBuilder(readBuffer, apduLength);
+      builder = NLMInitializeRoutingTableAck.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x08)) {
       builder = NLMEstablishConnectionToNetwork.staticParseNLMBuilder(readBuffer, apduLength);
     } else if (EvaluationHelper.equals(messageType, (short) 0x09)) {
