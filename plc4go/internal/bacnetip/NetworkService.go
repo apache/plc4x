@@ -756,7 +756,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 	}
 
 	// build a new NPDU to send to other adapters
-	newpdu := NewPDUFromPDU(pdu).(*_PDU)
+	newpdu := NewPDU(pdu).(*_PDU)
 
 	// decrease the hop count
 	newNpduHopCount := *npdu.GetHopCount() - 1
@@ -804,7 +804,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 
 		for _, xadapter := range n.adapters {
 			if xadapter != adapter {
-				if err := xadapter.ProcessNPDU(NewPDUFromPDU(newpdu)); err != nil {
+				if err := xadapter.ProcessNPDU(NewPDU(newpdu)); err != nil {
 					n.log.Warn().Err(err).Msg("Error processing npdu")
 				}
 			}
@@ -861,7 +861,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 				0,
 			)
 
-			return xadapter.ProcessNPDU(NewPDUFromPDU(newpdu))
+			return xadapter.ProcessNPDU(NewPDU(newpdu))
 		}
 
 		// look for routing information from the network of one of our adapters to the destination network
@@ -883,7 +883,10 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 			pduDestination := routerInfo.address
 
 			//  send the packet downstream
-			return snetAdapter.ProcessNPDU(NewPDUFromPDU(newpdu, WithPDUDestination(&pduDestination)))
+			if snetAdapter == nil {
+				return errors.New("snetAdapter nil")
+			}
+			return snetAdapter.ProcessNPDU(NewPDU(newpdu, WithPDUDestination(&pduDestination)))
 		}
 
 		n.log.Debug().Msg("No router info found")

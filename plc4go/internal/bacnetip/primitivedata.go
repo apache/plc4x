@@ -1500,7 +1500,7 @@ func (o *OctetString) IsValid(arg any) bool {
 }
 
 func (o *OctetString) String() string {
-	return fmt.Sprintf("OctetString(X'%s')", Btox([]byte(o.value)))
+	return fmt.Sprintf("OctetString(X'%s')", Btox(o.value, ""))
 }
 
 type CharacterString struct {
@@ -1580,7 +1580,7 @@ func (c *CharacterString) IsValid(arg any) bool {
 }
 
 func (c *CharacterString) String() string {
-	return fmt.Sprintf("CharacterString(%d,X'%s')", c.strEncoding, Btox(c.strValue))
+	return fmt.Sprintf("CharacterString(%d,X'%s')", c.strEncoding, Btox(c.strValue, ""))
 }
 
 // BitStringExtension can be used to inherit from BitString

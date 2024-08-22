@@ -217,7 +217,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwargs KWArgs) error {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NewArgs(NewPDUFromPDU(pdu, WithPDUDestination(dest))), NoKWArgs)
+	return m.directPort.Indication(NewArgs(NewPDU(pdu, WithPDUDestination(dest))), NoKWArgs)
 }
 
 func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
@@ -445,7 +445,7 @@ func (b *BIPSimple) String() string {
 
 func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := args.Get0PDU()
+	pdu := args.Get0NPDU()
 	if pdu == nil {
 		return errors.New("no pdu")
 	}
@@ -457,19 +457,26 @@ func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	switch pdu.GetPDUDestination().AddrType {
 	case LOCAL_STATION_ADDRESS:
 		// make an original unicast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		xpdu, err := NewOriginalUnicastNPDU(pdu, WithOriginalUnicastNPDUDestination(pdu.GetPDUDestination()), WithOriginalUnicastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating original unicastNPDU")
+		}
+		// TODO: route aware stuff missing here
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(NewPDUFromPDUWithNewMessage(pdu, xpdu)), NoKWArgs)
+		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case LOCAL_BROADCAST_ADDRESS:
 		// make an original broadcast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
-
+		xpdu, err := NewOriginalBroadcastNPDU(pdu, WithOriginalBroadcastNPDUDestination(pdu.GetPDUDestination()), WithOriginalBroadcastNPDUUserData(pdu.GetPDUUserData()))
+		if err != nil {
+			return errors.Wrap(err, "error creating original BroadcastNPDU")
+		}
+		// TODO: route aware stuff missing here
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
-		return b.Request(NewArgs(NewPDUFromPDUWithNewMessage(pdu, xpdu)), NoKWArgs)
+		return b.Request(NewArgs(xpdu), NoKWArgs)
 	default:
 		return errors.Errorf("invalid destination address: %s", pdu.GetPDUDestination())
 	}

@@ -20,11 +20,13 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -46,7 +48,7 @@ func init() {
 }
 
 type IPCI interface {
-	fmt.Stringer
+	spi.Message
 	SetPDUUserData(spi.Message)
 	GetPDUUserData() spi.Message
 	GetPDUSource() *Address
@@ -57,7 +59,7 @@ type IPCI interface {
 }
 
 type __PCI struct {
-	pduUserData    spi.Message // TODO: should that be PDUUserData rater than spi.Message and do we need another field... lets see...
+	pduUserData    spi.Message
 	pduSource      *Address
 	pduDestination *Address
 }
@@ -117,6 +119,34 @@ func (p *__PCI) deepCopy() *__PCI {
 		pduDestination = &copyPduDestination
 	}
 	return &__PCI{pduUserData, pduSource, pduDestination}
+}
+
+func (p *__PCI) Serialize() ([]byte, error) {
+	if p.pduUserData == nil {
+		return nil, errors.New("no pdu userdata")
+	}
+	return p.pduUserData.Serialize()
+}
+
+func (p *__PCI) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if p.pduUserData == nil {
+		return errors.New("no pdu userdata")
+	}
+	return p.pduUserData.SerializeWithWriteBuffer(ctx, writeBuffer)
+}
+
+func (p *__PCI) GetLengthInBytes(ctx context.Context) uint16 {
+	if p.pduUserData == nil {
+		return 0
+	}
+	return p.pduUserData.GetLengthInBytes(ctx)
+}
+
+func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
+	if p.pduUserData == nil {
+		return 0
+	}
+	return p.pduUserData.GetLengthInBits(ctx)
 }
 
 func (p *__PCI) String() string {

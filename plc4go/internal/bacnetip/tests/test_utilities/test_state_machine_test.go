@@ -20,6 +20,7 @@
 package test_utilities
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -29,6 +30,7 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -39,7 +41,7 @@ type TPDU struct {
 	a, b int
 }
 
-var _ bacnetip.PDU = (TPDU{})
+var _ bacnetip.PDU = TPDU{}
 
 func (t TPDU) X() []byte {
 	return t.x
@@ -100,6 +102,25 @@ func (t TPDU) GetNetworkPriority() readWriteModel.NPDUNetworkPriority {
 	panic("implement me")
 }
 
+func (t TPDU) Serialize() ([]byte, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetLengthInBytes(ctx context.Context) uint16 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (t TPDU) GetLengthInBits(ctx context.Context) uint16 {
+	//TODO implement me
+	panic("implement me")
+}
 func (t TPDU) GetPDUUserData() spi.Message {
 	//TODO implement me
 	panic("implement me")

@@ -147,7 +147,7 @@ var _ spi.Message = (*MessageBridge)(nil)
 var _ _PDUDataRequirements = (*MessageBridge)(nil)
 
 func (m *MessageBridge) String() string {
-	return Btox(m.Bytes)
+	return Btox(m.Bytes, "")
 }
 
 func (m *MessageBridge) Serialize() ([]byte, error) {

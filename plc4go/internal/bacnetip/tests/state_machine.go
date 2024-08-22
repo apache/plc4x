@@ -184,7 +184,7 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if !ok {
 				return false
 			}
-			return iamrtn.GetPerformanceIndex() == attrValue
+			return iamrtn.GetIcbrtnPerformanceIndex() == attrValue
 		case bacnetip.KWRmtnRejectionReason:
 			iamrtn, ok := pdu.(*bacnetip.RejectMessageToNetwork)
 			if !ok {
@@ -196,7 +196,7 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if !ok {
 				return false
 			}
-			return iamrtn.GetDestinationNetworkAddress() == attrValue
+			return iamrtn.GetRmtnDNET() == attrValue
 		case bacnetip.KWRbtnNetworkList:
 			rbtn, ok := pdu.(*bacnetip.RouterBusyToNetwork)
 			if !ok {
@@ -268,7 +268,7 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if !ok {
 				return false
 			}
-			return nni.GetNetworkNumber() == attrValue
+			return nni.GetNniNet() == attrValue
 		case bacnetip.KWNniFlag:
 			nni, ok := pdu.(*bacnetip.NetworkNumberIs)
 			if !ok {

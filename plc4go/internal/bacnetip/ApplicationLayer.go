@@ -22,12 +22,13 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"time"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type SSMState uint8
@@ -444,7 +445,7 @@ func (c *ClientSSM) Request(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 
 	// make sure it has a good source and destination
-	apdu = NewPDUFromPDU(apdu, WithPDUSource(nil), WithPDUDestination(c.pduAddress))
+	apdu = NewPDU(apdu, WithPDUSource(nil), WithPDUDestination(c.pduAddress))
 
 	// send it via the device
 	return c.ssmSAP.Request(NewArgs(apdu), kwargs)
@@ -563,7 +564,7 @@ func (c *ClientSSM) Response(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 
 	// make sure it has a good source and destination
-	apdu = NewPDUFromPDU(apdu, WithPDUSource(c.pduAddress), WithPDUDestination(nil))
+	apdu = NewPDU(apdu, WithPDUSource(c.pduAddress), WithPDUDestination(nil))
 
 	// send it to the application
 	return c.ssmSAP.SapResponse(NewArgs(apdu), kwargs)

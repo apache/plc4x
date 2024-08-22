@@ -55,11 +55,11 @@ type _NPCI struct {
 
 var _ NPCI = (*_NPCI)(nil)
 
-func NewNPCI(msg spi.Message, nlm readWriteModel.NLM) NPCI {
+func NewNPCI(pduUserData spi.Message, nlm readWriteModel.NLM) NPCI {
 	n := &_NPCI{
 		nlm: nlm,
 	}
-	n._PCI = newPCI(msg, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	n._PCI = newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 	return n
 }
 
@@ -73,10 +73,6 @@ func (n *_NPCI) GetNPDUNetMessage() *uint8 {
 
 func (n *_NPCI) setNLM(nlm readWriteModel.NLM) {
 	n.nlm = nlm
-}
-
-func (n *_NPCI) deepCopy() *_NPCI {
-	return &_NPCI{_PCI: n._PCI.deepCopy()}
 }
 
 func (n *_NPCI) Update(npci Arg) error {
@@ -108,7 +104,12 @@ func (n *_NPCI) Decode(pdu Arg) error {
 	return nil
 }
 
+func (n *_NPCI) deepCopy() *_NPCI {
+	return &_NPCI{_PCI: n._PCI.deepCopy()}
+}
+
 type NPDU interface {
+	readWriteModel.NPDU
 	NPCI
 	PDUData
 
@@ -247,6 +248,104 @@ func (n *_NPDU) getPDUData() []byte {
 	return writeBufferByteBased.GetBytes()
 }
 
+func (n *_NPDU) GetProtocolVersionNumber() uint8 {
+	if n.npdu == nil {
+		return 0
+	}
+	return n.npdu.GetProtocolVersionNumber()
+}
+
+func (n *_NPDU) GetControl() readWriteModel.NPDUControl {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetControl()
+}
+
+func (n *_NPDU) GetDestinationNetworkAddress() *uint16 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetDestinationNetworkAddress()
+}
+
+func (n *_NPDU) GetDestinationLength() *uint8 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetDestinationLength()
+}
+
+func (n *_NPDU) GetDestinationAddress() []uint8 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetDestinationAddress()
+}
+
+func (n *_NPDU) GetSourceNetworkAddress() *uint16 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetSourceNetworkAddress()
+}
+
+func (n *_NPDU) GetSourceLength() *uint8 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetSourceLength()
+}
+
+func (n *_NPDU) GetSourceAddress() []uint8 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetSourceAddress()
+}
+
+func (n *_NPDU) GetHopCount() *uint8 {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetHopCount()
+}
+
+func (n *_NPDU) GetNlm() readWriteModel.NLM {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetNlm()
+}
+
+func (n *_NPDU) GetApdu() readWriteModel.APDU {
+	if n.npdu == nil {
+		return nil
+	}
+	return n.npdu.GetApdu()
+}
+
+func (n *_NPDU) GetDestinationLengthAddon() uint16 {
+	if n.npdu == nil {
+		return 0
+	}
+	return n.npdu.GetDestinationLengthAddon()
+}
+
+func (n *_NPDU) GetSourceLengthAddon() uint16 {
+	if n.npdu == nil {
+		return 0
+	}
+	return n.npdu.GetSourceLengthAddon()
+}
+
+func (n *_NPDU) GetPayloadSubtraction() uint16 {
+	if n.npdu == nil {
+		return 0
+	}
+	return n.npdu.GetPayloadSubtraction()
+}
+
 func (n *_NPDU) deepCopy() *_NPDU {
 	return &_NPDU{_NPCI: n._NPCI.deepCopy(), _PDUData: n._PDUData.deepCopy()}
 }
@@ -263,8 +362,6 @@ type WhoIsRouterToNetwork struct {
 	*_NPDU
 
 	wirtnNetwork *uint16
-
-	readWriteModel.NLMWhoIsRouterToNetwork
 }
 
 func NewWhoIsRouterToNetwork(opts ...func(network *WhoIsRouterToNetwork)) (*WhoIsRouterToNetwork, error) {
@@ -272,8 +369,7 @@ func NewWhoIsRouterToNetwork(opts ...func(network *WhoIsRouterToNetwork)) (*WhoI
 	for _, opt := range opts {
 		opt(w)
 	}
-	w.NLMWhoIsRouterToNetwork = readWriteModel.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0)
-	npdu, err := NewNPDU(w.NLMWhoIsRouterToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -320,7 +416,6 @@ func (n *WhoIsRouterToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMWhoIsRouterToNetworkExactly:
 				n.setNLM(nlm)
-				n.NLMWhoIsRouterToNetwork = nlm
 				n.wirtnNetwork = nlm.GetDestinationNetworkAddress()
 			}
 		}
@@ -338,8 +433,6 @@ type IAmRouterToNetwork struct {
 	*_NPDU
 
 	iartnNetworkList []uint16
-
-	readWriteModel.NLMIAmRouterToNetwork
 }
 
 func NewIAmRouterToNetwork(opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwork, error) {
@@ -347,8 +440,7 @@ func NewIAmRouterToNetwork(opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwo
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMIAmRouterToNetwork = readWriteModel.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0)
-	npdu, err := NewNPDU(i.NLMIAmRouterToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -395,7 +487,6 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMIAmRouterToNetworkExactly:
 				i.setNLM(nlm)
-				i.NLMIAmRouterToNetwork = nlm
 				i.iartnNetworkList = nlm.GetDestinationNetworkAddresses()
 			}
 		}
@@ -414,8 +505,6 @@ type ICouldBeRouterToNetwork struct {
 
 	icbrtnNetwork          uint16
 	icbrtnPerformanceIndex uint8
-
-	readWriteModel.NLMICouldBeRouterToNetwork
 }
 
 func NewICouldBeRouterToNetwork(opts ...func(*ICouldBeRouterToNetwork)) (*ICouldBeRouterToNetwork, error) {
@@ -423,8 +512,7 @@ func NewICouldBeRouterToNetwork(opts ...func(*ICouldBeRouterToNetwork)) (*ICould
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMICouldBeRouterToNetwork = readWriteModel.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0)
-	npdu, err := NewNPDU(i.NLMICouldBeRouterToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -443,45 +531,44 @@ func WithICouldBeRouterToNetworkPerformanceIndex(icbrtnPerformanceIndex uint8) f
 	}
 }
 
-func (n *ICouldBeRouterToNetwork) GetIcbrtnNetwork() uint16 {
-	return n.icbrtnNetwork
+func (i *ICouldBeRouterToNetwork) GetIcbrtnNetwork() uint16 {
+	return i.icbrtnNetwork
 }
 
-func (n *ICouldBeRouterToNetwork) GetIcbrtnPerformanceIndex() uint8 {
-	return n.icbrtnPerformanceIndex
+func (i *ICouldBeRouterToNetwork) GetIcbrtnPerformanceIndex() uint8 {
+	return i.icbrtnPerformanceIndex
 }
 
-func (n *ICouldBeRouterToNetwork) Encode(npdu Arg) error {
+func (i *ICouldBeRouterToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := npdu.Update(n); err != nil {
+		if err := npdu.Update(i); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		npdu.PutShort(int16(n.icbrtnNetwork))
-		npdu.Put(n.icbrtnPerformanceIndex)
-		npdu.setNPDU(n.npdu)
-		npdu.setNLM(n.nlm)
-		npdu.setAPDU(n.apdu)
+		npdu.PutShort(int16(i.icbrtnNetwork))
+		npdu.Put(i.icbrtnPerformanceIndex)
+		npdu.setNPDU(i.npdu)
+		npdu.setNLM(i.nlm)
+		npdu.setAPDU(i.apdu)
 		return nil
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
 }
 
-func (n *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
+func (i *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
-		if err := n.Update(npdu); err != nil {
+		if err := i.Update(npdu); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		switch pduUserData := npdu.GetPDUUserData().(type) {
 		case readWriteModel.NPDUExactly:
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMICouldBeRouterToNetworkExactly:
-				n.setNLM(nlm)
-				n.NLMICouldBeRouterToNetwork = nlm
-				n.icbrtnNetwork = nlm.GetDestinationNetworkAddress()
-				n.icbrtnPerformanceIndex = nlm.GetPerformanceIndex()
+				i.setNLM(nlm)
+				i.icbrtnNetwork = nlm.GetDestinationNetworkAddress()
+				i.icbrtnPerformanceIndex = nlm.GetPerformanceIndex()
 			}
 		}
 		return nil
@@ -490,8 +577,8 @@ func (n *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
 	}
 }
 
-func (n *ICouldBeRouterToNetwork) String() string {
-	return fmt.Sprintf("ICouldBeRouterToNetwork{%s, icbrtnNetwork: %v, icbrtnPerformanceIndex: %v}", n._NPDU, n.icbrtnNetwork, n.icbrtnPerformanceIndex)
+func (i *ICouldBeRouterToNetwork) String() string {
+	return fmt.Sprintf("ICouldBeRouterToNetwork{%s, icbrtnNetwork: %v, icbrtnPerformanceIndex: %v}", i._NPDU, i.icbrtnNetwork, i.icbrtnPerformanceIndex)
 }
 
 type RejectMessageToNetwork struct {
@@ -499,8 +586,6 @@ type RejectMessageToNetwork struct {
 
 	rmtnRejectionReason readWriteModel.NLMRejectMessageToNetworkRejectReason
 	rmtnDNET            uint16
-
-	readWriteModel.NLMRejectMessageToNetwork
 }
 
 func NewRejectMessageToNetwork(opts ...func(*RejectMessageToNetwork)) (*RejectMessageToNetwork, error) {
@@ -508,8 +593,7 @@ func NewRejectMessageToNetwork(opts ...func(*RejectMessageToNetwork)) (*RejectMe
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMRejectMessageToNetwork = readWriteModel.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0)
-	npdu, err := NewNPDU(i.NLMRejectMessageToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -522,6 +606,7 @@ func WithRejectMessageToNetworkRejectionReason(reason readWriteModel.NLMRejectMe
 		n.rmtnRejectionReason = reason
 	}
 }
+
 func WithRejectMessageToNetworkDnet(dnet uint16) func(*RejectMessageToNetwork) {
 	return func(n *RejectMessageToNetwork) {
 		n.rmtnDNET = dnet
@@ -564,7 +649,6 @@ func (n *RejectMessageToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMRejectMessageToNetworkExactly:
 				n.setNLM(nlm)
-				n.NLMRejectMessageToNetwork = nlm
 				n.rmtnRejectionReason = nlm.GetRejectReason()
 				n.rmtnDNET = nlm.GetDestinationNetworkAddress()
 			}
@@ -581,9 +665,8 @@ func (n *RejectMessageToNetwork) String() string {
 
 type RouterBusyToNetwork struct {
 	*_NPDU
-	rbtnNetworkList []uint16
 
-	readWriteModel.NLMRouterBusyToNetwork
+	rbtnNetworkList []uint16
 }
 
 func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
@@ -591,8 +674,7 @@ func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNe
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMRouterBusyToNetwork = readWriteModel.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0)
-	npdu, err := NewNPDU(i.NLMRouterBusyToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -639,7 +721,6 @@ func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMRouterBusyToNetwork:
 				r.setNLM(nlm)
-				r.NLMRouterBusyToNetwork = nlm
 				r.rbtnNetworkList = nlm.GetDestinationNetworkAddresses()
 			}
 		}
@@ -657,8 +738,6 @@ type RouterAvailableToNetwork struct {
 	*_NPDU
 
 	ratnNetworkList []uint16
-
-	readWriteModel.NLMRouterAvailableToNetwork
 }
 
 func NewRouterAvailableToNetwork(opts ...func(*RouterAvailableToNetwork)) (*RouterAvailableToNetwork, error) {
@@ -666,8 +745,7 @@ func NewRouterAvailableToNetwork(opts ...func(*RouterAvailableToNetwork)) (*Rout
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMRouterAvailableToNetwork = readWriteModel.NewNLMRouterAvailableToNetwork(i.ratnNetworkList, 0)
-	npdu, err := NewNPDU(i.NLMRouterAvailableToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMRouterAvailableToNetwork(i.ratnNetworkList, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -714,7 +792,6 @@ func (r *RouterAvailableToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMRouterAvailableToNetwork:
 				r.setNLM(nlm)
-				r.NLMRouterAvailableToNetwork = nlm
 				r.ratnNetworkList = nlm.GetDestinationNetworkAddresses()
 			}
 		}
@@ -787,9 +864,8 @@ func (r *RoutingTableEntry) String() string {
 
 type InitializeRoutingTable struct {
 	*_NPDU
-	irtTable []*RoutingTableEntry
 
-	readWriteModel.NLMInitializeRoutingTable
+	irtTable []*RoutingTableEntry
 }
 
 func NewInitializeRoutingTable(opts ...func(*InitializeRoutingTable)) (*InitializeRoutingTable, error) {
@@ -797,8 +873,7 @@ func NewInitializeRoutingTable(opts ...func(*InitializeRoutingTable)) (*Initiali
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMInitializeRoutingTable = readWriteModel.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping())
-	npdu, err := NewNPDU(i.NLMInitializeRoutingTable, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping()), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -869,7 +944,6 @@ func (r *InitializeRoutingTable) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMInitializeRoutingTable:
 				r.setNLM(nlm)
-				r.NLMInitializeRoutingTable = nlm
 				r.irtTable = r.produceIRTTable(nlm.GetPortMappings())
 			}
 		}
@@ -885,9 +959,8 @@ func (r *InitializeRoutingTable) String() string {
 
 type InitializeRoutingTableAck struct {
 	*_NPDU
-	irtaTable []*RoutingTableEntry
 
-	readWriteModel.NLMInitializeRoutingTableAck
+	irtaTable []*RoutingTableEntry
 }
 
 func NewInitializeRoutingTableAck(opts ...func(*InitializeRoutingTableAck)) (*InitializeRoutingTableAck, error) {
@@ -895,8 +968,7 @@ func NewInitializeRoutingTableAck(opts ...func(*InitializeRoutingTableAck)) (*In
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMInitializeRoutingTableAck = readWriteModel.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping())
-	npdu, err := NewNPDU(i.NLMInitializeRoutingTableAck, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping()), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -967,7 +1039,6 @@ func (r *InitializeRoutingTableAck) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMInitializeRoutingTableAck:
 				r.setNLM(nlm)
-				r.NLMInitializeRoutingTableAck = nlm
 				r.irtaTable = r.produceIRTTable(nlm.GetPortMappings())
 			}
 		}
@@ -983,10 +1054,9 @@ func (r *InitializeRoutingTableAck) String() string {
 
 type EstablishConnectionToNetwork struct {
 	*_NPDU
+
 	ectnDNET            uint16
 	ectnTerminationTime uint8
-
-	readWriteModel.NLMEstablishConnectionToNetwork
 }
 
 func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)) (*EstablishConnectionToNetwork, error) {
@@ -994,8 +1064,7 @@ func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMEstablishConnectionToNetwork = readWriteModel.NewNLMEstablishConnectionToNetwork(i.ectnDNET, i.ectnTerminationTime, 0)
-	npdu, err := NewNPDU(i.NLMEstablishConnectionToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMEstablishConnectionToNetwork(i.ectnDNET, i.ectnTerminationTime, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -1051,7 +1120,6 @@ func (n *EstablishConnectionToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMEstablishConnectionToNetworkExactly:
 				n.setNLM(nlm)
-				n.NLMEstablishConnectionToNetwork = nlm
 				n.ectnDNET = nlm.GetDestinationNetworkAddress()
 				n.ectnTerminationTime = nlm.GetTerminationTime()
 			}
@@ -1068,9 +1136,8 @@ func (n *EstablishConnectionToNetwork) String() string {
 
 type DisconnectConnectionToNetwork struct {
 	*_NPDU
-	dctnDNET uint16
 
-	readWriteModel.NLMDisconnectConnectionToNetwork
+	dctnDNET uint16
 }
 
 func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
@@ -1078,8 +1145,7 @@ func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwor
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMDisconnectConnectionToNetwork = readWriteModel.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0)
-	npdu, err := NewNPDU(i.NLMDisconnectConnectionToNetwork, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -1124,7 +1190,6 @@ func (n *DisconnectConnectionToNetwork) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMDisconnectConnectionToNetworkExactly:
 				n.setNLM(nlm)
-				n.NLMDisconnectConnectionToNetwork = nlm
 				n.dctnDNET = nlm.GetDestinationNetworkAddress()
 			}
 		}
@@ -1140,7 +1205,6 @@ func (n *DisconnectConnectionToNetwork) String() string {
 
 type WhatIsNetworkNumber struct {
 	*_NPDU
-	readWriteModel.NLMWhatIsNetworkNumber
 }
 
 func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkNumber, error) {
@@ -1148,8 +1212,7 @@ func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkN
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMWhatIsNetworkNumber = readWriteModel.NewNLMWhatIsNetworkNumber(0)
-	npdu, err := NewNPDU(i.NLMWhatIsNetworkNumber, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMWhatIsNetworkNumber(0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -1183,7 +1246,6 @@ func (n *WhatIsNetworkNumber) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMWhatIsNetworkNumberExactly:
 				n.setNLM(nlm)
-				n.NLMWhatIsNetworkNumber = nlm
 			}
 		}
 		return nil
@@ -1198,10 +1260,9 @@ func (n *WhatIsNetworkNumber) String() string {
 
 type NetworkNumberIs struct {
 	*_NPDU
+
 	nniNet  uint16
 	nniFlag bool
-
-	readWriteModel.NLMNetworkNumberIs
 }
 
 func NewNetworkNumberIs(opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error) {
@@ -1209,8 +1270,7 @@ func NewNetworkNumberIs(opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error
 	for _, opt := range opts {
 		opt(i)
 	}
-	i.NLMNetworkNumberIs = readWriteModel.NewNLMNetworkNumberIs(i.nniNet, i.nniFlag, 0)
-	npdu, err := NewNPDU(i.NLMNetworkNumberIs, nil)
+	npdu, err := NewNPDU(readWriteModel.NewNLMNetworkNumberIs(i.nniNet, i.nniFlag, 0), nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -1270,7 +1330,6 @@ func (n *NetworkNumberIs) Decode(npdu Arg) error {
 			switch nlm := pduUserData.GetNlm().(type) {
 			case readWriteModel.NLMNetworkNumberIsExactly:
 				n.setNLM(nlm)
-				n.NLMNetworkNumberIs = nlm
 				n.nniNet = nlm.GetNetworkNumber()
 				n.nniFlag = nlm.GetNetworkNumberConfigured()
 			}

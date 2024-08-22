@@ -30,6 +30,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -887,9 +888,9 @@ type _PCI struct {
 
 var _ PCI = (*_PCI)(nil)
 
-func newPCI(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PCI {
+func newPCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PCI {
 	return &_PCI{
-		new__PCI(msg, pduSource, pduDestination),
+		new__PCI(pduUserData, pduSource, pduDestination),
 		expectingReply,
 		networkPriority,
 	}
@@ -1064,9 +1065,9 @@ type _APCI struct {
 	*_PCI
 }
 
-func newAPCI(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_APCI {
+func newAPCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_APCI {
 	return &_APCI{
-		_PCI: newPCI(msg, pduSource, pduDestination, expectingReply, networkPriority),
+		_PCI: newPCI(pduUserData, pduSource, pduDestination, expectingReply, networkPriority),
 	}
 }
 
@@ -1099,15 +1100,22 @@ type PDU interface {
 	DeepCopy() PDU
 }
 
+// PDUContract provides a set of functions which can be overwritten by a sub struct
+type PDUContract interface {
+	GetName() string
+}
+
 type _PDU struct {
 	*_APCI
 	*_PDUData
+	PDUContract
 }
 
-func NewPDU(msg spi.Message, pduOptions ...PDUOption) PDU {
+func NewPDU(pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		_APCI: newAPCI(msg, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
+		_APCI: newAPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
 	}
+	p.PDUContract = p
 	for _, option := range pduOptions {
 		option(p)
 	}
@@ -1115,32 +1123,13 @@ func NewPDU(msg spi.Message, pduOptions ...PDUOption) PDU {
 	return p
 }
 
-func NewPDUFromPDU(pdu PDU, pduOptions ...PDUOption) PDU {
-	msg := pdu.(*_PDU).pduUserData
+func NewPDUFromPDUWithNewMessage(pdu PDU, pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		_APCI: newAPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
+		_APCI: newAPCI(pduUserData, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
+	p.PDUContract = p
 	for _, option := range pduOptions {
 		option(p)
-	}
-	p._PDUData = newPDUData(p)
-	return p
-}
-
-func NewPDUFromPDUWithNewMessage(pdu PDU, msg spi.Message, pduOptions ...PDUOption) PDU {
-	p := &_PDU{
-		_APCI: newAPCI(msg, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
-	}
-	for _, option := range pduOptions {
-		option(p)
-	}
-	p._PDUData = newPDUData(p)
-	return p
-}
-
-func NewPDUWithAllOptions(msg spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_PDU {
-	p := &_PDU{
-		_APCI: newAPCI(msg, pduSource, pduDestination, expectingReply, networkPriority),
 	}
 	p._PDUData = newPDUData(p)
 	return p
@@ -1195,6 +1184,13 @@ func (p *_PDU) DeepCopy() PDU {
 	return p.deepCopy()
 }
 
+func (p *_PDU) GetName() string {
+	return "PDU"
+}
+
 func (p *_PDU) String() string {
-	return fmt.Sprintf("_PDU{%s}", p._PCI)
+	if globals.ExtendedPDUOutput {
+		return fmt.Sprintf("_PDU{%s}", p._PCI)
+	}
+	return fmt.Sprintf("<%s %s -> %s : %s>", p.PDUContract.GetName(), p.GetPDUSource(), p.GetPDUDestination(), Btox(p.GetPduData(), "."))
 }

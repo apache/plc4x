@@ -123,7 +123,7 @@ func (s *FauxMultiplexer) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs)
 	if err != nil {
 		return errors.Wrap(err, "error creating address")
 	}
-	return s.Request(bacnetip.NewArgs(bacnetip.NewPDUFromPDU(pdu, bacnetip.WithPDUSource(unicast), bacnetip.WithPDUDestination(dest))), bacnetip.NoKWArgs)
+	return s.Request(bacnetip.NewArgs(bacnetip.NewPDU(pdu, bacnetip.WithPDUSource(unicast), bacnetip.WithPDUDestination(dest))), bacnetip.NoKWArgs)
 }
 
 func (s *FauxMultiplexer) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -148,7 +148,7 @@ func (s *FauxMultiplexer) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArg
 		}
 	}
 
-	return s.Response(bacnetip.NewArgs(bacnetip.NewPDUFromPDU(pdu, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))), bacnetip.NoKWArgs)
+	return s.Response(bacnetip.NewArgs(bacnetip.NewPDU(pdu, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))), bacnetip.NoKWArgs)
 }
 
 type SnifferStateMachine struct {
