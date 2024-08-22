@@ -68,7 +68,7 @@ import java.util.function.Consumer;
 public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements HasConfiguration<OpcuaConfiguration>, PlcSubscriber {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OpcuaProtocolLogic.class);
-    protected static final PascalString NULL_STRING = new PascalString("");
+    protected static final PascalString NULL_STRING = new PascalString(null);
     private static final ExpandedNodeId NULL_EXPANDED_NODEID = new ExpandedNodeId(false,
         false,
         new NodeIdTwoByte((short) 0),

@@ -121,27 +121,27 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     new SimpleAttributeOperand(nodeId,
                         Arrays.asList(new QualifiedName(0, new PascalString("EventId"))),
                         AttributeId.Value.getValue(),
-                        null
+                        OpcuaProtocolLogic.NULL_STRING
                     ),
                     new SimpleAttributeOperand(nodeId,
                         Arrays.asList(new QualifiedName(0, new PascalString("EventType"))),
                         AttributeId.Value.getValue(),
-                        null
+                        OpcuaProtocolLogic.NULL_STRING
                     ),
                     new SimpleAttributeOperand(nodeId,
                         Arrays.asList(new QualifiedName(0, new PascalString("Severity"))),
                         AttributeId.Value.getValue(),
-                        null
+                        OpcuaProtocolLogic.NULL_STRING
                     ),
                     new SimpleAttributeOperand(nodeId,
                         Arrays.asList(new QualifiedName(0, new PascalString("Time"))),
                         AttributeId.Value.getValue(),
-                        null
+                        OpcuaProtocolLogic.NULL_STRING
                     ),
                     new SimpleAttributeOperand(nodeId,
                         Arrays.asList(new QualifiedName(0, new PascalString("Message"))),
                         AttributeId.Value.getValue(),
-                        null
+                        OpcuaProtocolLogic.NULL_STRING
                     )
                 );
 
@@ -246,11 +246,12 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             LOGGER.trace("Found a Data Change notification");
                             List<MonitoredItemNotification> items = ((DataChangeNotification) notification).getMonitoredItems();
                             onSubscriptionValue(items.stream().toArray(MonitoredItemNotification[]::new));
-                        } else if (notification instanceof NotificationData) {
-                            NotificationData data = (NotificationData) notification;
-                            System.out.println("Received notification data");
+//                        } else if (notification instanceof StatusChangeNotification) {
+//                            StatusChangeNotification data = (StatusChangeNotification) notification;
+//                        } else if (notification instanceof EventNotificationList) {
+//                            EventNotificationList data = (EventNotificationList) notification;
                         } else {
-                            LOGGER.warn("Unsupported Notification type");
+                            LOGGER.warn("Unsupported Notification type {}", notification.getClass().getName());
                         }
                     }
                 }).whenComplete((result, error) -> {

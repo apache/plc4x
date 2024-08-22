@@ -581,19 +581,17 @@ public class SecureChannel {
         switch (tokenType) {
             case userTokenTypeAnonymous:
                 //If we aren't using authentication tell the server we would like to log in anonymously
-                AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken();
+                AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken(new PascalString(securityPolicy));
 
                 extExpandedNodeId = new ExpandedNodeId(
                     false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObject.AnonymousIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, anonymousIdentityToken.getExtensionId()),
                     null,
                     null
                 );
 
-                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken)
-                ));
+                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(anonymousIdentityToken));
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] remoteNonce = conversation.getRemoteNonce();
@@ -609,6 +607,7 @@ public class SecureChannel {
 
                 byte[] encryptedPassword = conversation.encryptPassword(encodeablePassword);
                 UserNameIdentityToken userNameIdentityToken = new UserNameIdentityToken(
+                    new PascalString(securityPolicy),
                     new PascalString(this.username),
                     new PascalByteString(encryptedPassword.length, encryptedPassword),
                     new PascalString(PASSWORD_ENCRYPTION_ALGORITHM)
@@ -616,13 +615,11 @@ public class SecureChannel {
 
                 extExpandedNodeId = new ExpandedNodeId(false,           //Namespace Uri Specified
                     false,            //Server Index Specified
-                    new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObject.UserNameIdentityToken_Encoding_DefaultBinary.getValue()),
+                    new NodeIdFourByte((short) 0, userNameIdentityToken.getExtensionId()),
                     null,
                     null);
 
-                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken)
-                ));
+                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(userNameIdentityToken));
         }
         return null;
     }
