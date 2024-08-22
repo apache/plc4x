@@ -28,59 +28,43 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
-// BCLPDUTypes is a dictionary of message type values and structs
-var BCLPDUTypes map[uint8]func() interface{ Decode(Arg) error }
+// BVLPDUTypes is a dictionary of message type values and structs
+var BVLPDUTypes map[uint8]func() interface{ Decode(Arg) error }
 
 type BVLCI interface {
 	PCI
-	Update(bvlci Arg) error
+
 	Encode(pdu Arg) error
 	Decode(pdu Arg) error
-
-	setBVLC(apdu readWriteModel.BVLC)
-}
-
-// BVLCIContract provides a set of functions which can be overwritten by a sub struct
-type BVLCIContract interface {
-}
-
-// BVLCIRequirements provides a set of functions which need to be overwritten by a sub struct
-type BVLCIRequirements interface {
-	BVLCIContract
 }
 
 type _BVLCI struct {
 	*_PCI
 	*DebugContents
-	BVLCIContract
-	requirements BVLCIRequirements
-
-	bvlc readWriteModel.BVLC
 }
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(pduUserData spi.Message, requirements BVLCIRequirements) BVLCI {
-	b := &_BVLCI{
-		requirements:  requirements,
-		BVLCIContract: requirements,
-	}
+func NewBVLCI(pduUserData spi.Message) BVLCI {
+	b := &_BVLCI{}
 	b._PCI = newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 	return b
-}
-
-func (b *_BVLCI) setBVLC(bvlc readWriteModel.BVLC) {
-	b.bvlc = bvlc
 }
 
 func (b *_BVLCI) Update(bvlci Arg) error {
 	if err := b._PCI.Update(bvlci); err != nil {
 		return errors.Wrap(err, "Update BVLCI")
 	}
-	// TODO
-	return nil
+	switch bvlci := bvlci.(type) {
+	case BVLCI:
+		// TODO: update coordinates....
+		return nil
+	default:
+		return errors.Errorf("invalid BVLCI type %T", bvlci)
+	}
 }
 
 func (b *_BVLCI) Encode(pdu Arg) error {
@@ -99,41 +83,59 @@ func (b *_BVLCI) Decode(pdu Arg) error {
 	return nil
 }
 
-func (b *_BVLCI) GetMessage() spi.Message {
-	return b.bvlc
-}
-
-func (b *_BVLCI) getPDUData() []byte {
-	if b.GetMessage() == nil {
-		return nil
-	}
-	writeBufferByteBased := utils.NewWriteBufferByteBased()
-	if err := b.GetMessage().SerializeWithWriteBuffer(context.Background(), writeBufferByteBased); err != nil {
-		panic(err) // TODO: graceful handle
-	}
-	return writeBufferByteBased.GetBytes()
-}
-
 func (b *_BVLCI) deepCopy() *_BVLCI {
 	return &_BVLCI{_PCI: b._PCI.deepCopy()}
 }
 
 type BVLPDU interface {
+	readWriteModel.BVLC
 	BVLCI
 	PDUData
+
+	setBVLC(readWriteModel.BVLC)
+	getBVLC() readWriteModel.BVLC
 }
 
 type _BVLPDU struct {
 	*_BVLCI
 	*_PDUData
+
+	bvlc readWriteModel.BVLC
 }
 
 var _ BVLPDU = (*_BVLPDU)(nil)
 
 func NewBVLPDU(bvlc readWriteModel.BVLC) BVLPDU {
-	b := &_BVLPDU{}
-	b._BVLCI = NewBVLCI(bvlc, b).(*_BVLCI)
+	b := &_BVLPDU{
+		bvlc: bvlc,
+	}
+	//b.bvlc = readWriteModel.NewBVLC() // TODO: using this function leads to a npe
+	b._BVLCI = NewBVLCI(bvlc).(*_BVLCI)
+	b._PDUData = newPDUData(b)
 	return b
+}
+
+// Deprecated: check if needed as we do it in update
+func (b *_BVLPDU) setBVLC(bvlc readWriteModel.BVLC) {
+	b.bvlc = bvlc
+}
+
+func (b *_BVLPDU) getBVLC() readWriteModel.BVLC {
+	return b.bvlc
+}
+
+func (b *_BVLPDU) Update(bvlci Arg) error {
+	if err := b._BVLCI.Update(bvlci); err != nil {
+		return errors.Wrap(err, "Update BVLCI")
+	}
+	switch bvlci := bvlci.(type) {
+	case BVLCI:
+		b.bvlc = b.getBVLC()
+		// TODO: update coordinates....
+		return nil
+	default:
+		return errors.Errorf("invalid BVLCI type %T", bvlci)
+	}
 }
 
 func (b *_BVLPDU) Encode(pdu Arg) error {
@@ -161,12 +163,45 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 	return nil
 }
 
+func (b *_BVLPDU) GetMessage() spi.Message {
+	return b.bvlc
+}
+
+func (b *_BVLPDU) getPDUData() []byte {
+	if b.GetMessage() == nil {
+		return nil
+	}
+	writeBufferByteBased := utils.NewWriteBufferByteBased()
+	if err := b.GetMessage().SerializeWithWriteBuffer(context.Background(), writeBufferByteBased); err != nil {
+		panic(err) // TODO: graceful handle
+	}
+	return writeBufferByteBased.GetBytes()
+}
+
+func (b *_BVLPDU) GetBvlcFunction() uint8 {
+	if b.bvlc == nil {
+		return 0
+	}
+	return b.bvlc.GetBvlcFunction()
+}
+
+func (b *_BVLPDU) GetBvlcPayloadLength() uint16 {
+	if b.bvlc == nil {
+		return 0
+	}
+	return b.bvlc.GetBvlcPayloadLength()
+}
+
 func (b *_BVLPDU) deepCopy() *_BVLPDU {
-	return &_BVLPDU{_BVLCI: b._BVLCI.deepCopy(), _PDUData: b._PDUData.deepCopy()}
+	return &_BVLPDU{_BVLCI: b._BVLCI.deepCopy(), _PDUData: b._PDUData.deepCopy(), bvlc: b.bvlc}
 }
 
 func (b *_BVLPDU) DeepCopy() PDU {
 	return b.deepCopy()
+}
+
+func (b *_BVLPDU) String() string {
+	return fmt.Sprintf("_BVLPDU{%s}", b._BVLCI)
 }
 
 type Result struct {
@@ -177,9 +212,12 @@ type Result struct {
 
 var _ BVLPDU = (*Result)(nil)
 
-func NewResult() (BVLPDU, error) {
+func NewResult(opts ...func(result *Result)) (*Result, error) {
 	b := &Result{}
-	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCResult(0)).(*_BVLPDU)
+	for _, opt := range opts {
+		opt(b)
+	}
+	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCResult(b.bvlciResultCode)).(*_BVLPDU)
 	return b, nil
 }
 
@@ -187,6 +225,10 @@ func WithResultBvlciResultCode(code readWriteModel.BVLCResultCode) func(*Result)
 	return func(b *Result) {
 		b.bvlciResultCode = code
 	}
+}
+
+func (n *Result) GetBvlciResultCode() readWriteModel.BVLCResultCode {
+	return n.bvlciResultCode
 }
 
 func (n *Result) Encode(bvlpdu Arg) error {
@@ -210,7 +252,7 @@ func (n *Result) Decode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
-		case readWriteModel.BVLCExactly:
+		case readWriteModel.BVLCResultExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCResult:
 				n.setBVLC(bvlc)
@@ -224,30 +266,79 @@ func (n *Result) Decode(bvlpdu Arg) error {
 }
 
 func (n *Result) String() string {
-	return fmt.Sprintf("Result{%s, bvlciResultCode: %v}", n._BVLPDU, n.bvlciResultCode)
+	return fmt.Sprintf("Result{%v, bvlciResultCode: %v}", n._BVLPDU, n.bvlciResultCode)
 }
 
-// TODO: finish
 type WriteBroadcastDistributionTable struct {
 	*_BVLPDU
+
+	bvlciBDT []*Address
 }
 
 var _ BVLPDU = (*WriteBroadcastDistributionTable)(nil)
 
-func NewWriteBroadcastDistributionTable() (BVLPDU, error) {
+func NewWriteBroadcastDistributionTable(opts ...func(*WriteBroadcastDistributionTable)) (*WriteBroadcastDistributionTable, error) {
 	b := &WriteBroadcastDistributionTable{}
+	for _, opt := range opts {
+		opt(b)
+	}
 	b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
 	return b, nil
 }
 
-func (b *WriteBroadcastDistributionTable) Encode(pdu Arg) error {
-	// TODO: finish
-	return nil
+func WithWriteBroadcastDistributionTable(bdt ...*Address) func(*WriteBroadcastDistributionTable) {
+	return func(b *WriteBroadcastDistributionTable) {
+		b.bvlciBDT = bdt
+	}
 }
 
-func (b *WriteBroadcastDistributionTable) Decode(pdu Arg) error {
-	// TODO: finish
-	return nil
+func (w *WriteBroadcastDistributionTable) GetBvlciBDT() []*Address {
+	return w.bvlciBDT
+}
+
+func (w *WriteBroadcastDistributionTable) Encode(bvlpdu Arg) error {
+	switch bvlpdu := bvlpdu.(type) {
+	case BVLPDU:
+		if err := bvlpdu.Update(w); err != nil {
+			return errors.Wrap(err, "error updating BVLPDU")
+		}
+		for _, bdte := range w.bvlciBDT {
+			bvlpdu.PutData(bdte.AddrAddress...)
+			bvlpdu.PutLong(int64(*bdte.AddrMask))
+		}
+		bvlpdu.setBVLC(w.bvlc)
+		return nil
+	default:
+		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
+	}
+}
+
+func (w *WriteBroadcastDistributionTable) Decode(bvlpdu Arg) error {
+	switch bvlpdu := bvlpdu.(type) {
+	case BVLPDU:
+		if err := w.Update(bvlpdu); err != nil {
+			return errors.Wrap(err, "error updating BVLPDU")
+		}
+		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
+			switch bvlc := pduUserData.(type) {
+			case readWriteModel.BVLCWriteBroadcastDistributionTable:
+				w.setBVLC(bvlc)
+				for _, entry := range bvlc.GetTable() {
+					// TODO: what is with port and the map??
+					address, _ := NewAddress(zerolog.Nop(), entry.GetIp())
+					w.bvlciBDT = append(w.bvlciBDT, address)
+				}
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
+	}
+}
+
+func (w *WriteBroadcastDistributionTable) String() string {
+	return fmt.Sprintf("WriteBroadcastDistributionTable{%v, bvlciBDT: %v}", w._BVLPDU, w.bvlciBDT)
 }
 
 // TODO: finish
@@ -436,28 +527,50 @@ func (b *DistributeBroadcastToNetwork) Decode(pdu Arg) error {
 
 type OriginalUnicastNPDU struct {
 	*_BVLPDU
+
+	// post construct function
+	_postConstruct []func()
 }
 
 var _ BVLPDU = (*OriginalUnicastNPDU)(nil)
 
-func NewOriginalUnicastNPDU(npdu NPDU, opts ...func(*OriginalUnicastNPDU)) (BVLPDU, error) {
+func NewOriginalUnicastNPDU(pdu PDU, opts ...func(*OriginalUnicastNPDU)) (BVLPDU, error) {
 	b := &OriginalUnicastNPDU{}
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalUnicastNPDU(npdu, npdu.GetLengthInBytes(context.Background()))).(*_BVLPDU)
+	switch npdu := pdu.(type) {
+	case readWriteModel.NPDUExactly:
+		b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalUnicastNPDU(npdu, npdu.GetLengthInBytes(context.Background()))).(*_BVLPDU)
+	default:
+		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
+		parse, err := readWriteModel.BVLCParse(context.Background(), pdu.GetPduData())
+		if err != nil {
+			return nil, errors.Wrap(err, "error re-encoding")
+		}
+		b._BVLPDU = NewBVLPDU(parse).(*_BVLPDU)
+	}
+	// Do a post construct for a bit more easy initialization
+	for _, f := range b._postConstruct {
+		f()
+	}
+	b._postConstruct = nil
 	return b, nil
 }
 
 func WithOriginalUnicastNPDUDestination(destination *Address) func(*OriginalUnicastNPDU) {
 	return func(o *OriginalUnicastNPDU) {
-		o.pduDestination = destination
+		o._postConstruct = append(o._postConstruct, func() {
+			o.SetPDUDestination(destination)
+		})
 	}
 }
 
 func WithOriginalUnicastNPDUUserData(userData spi.Message) func(*OriginalUnicastNPDU) {
 	return func(o *OriginalUnicastNPDU) {
-		o.pduUserData = userData
+		o._postConstruct = append(o._postConstruct, func() {
+			o.SetPDUUserData(userData)
+		})
 	}
 }
 
@@ -468,6 +581,7 @@ func (n *OriginalUnicastNPDU) Encode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		bvlpdu.setBVLC(n.bvlc)
+		bvlpdu.PutData(n.getPDUData()...)
 		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
@@ -485,6 +599,7 @@ func (n *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCOriginalUnicastNPDU:
 				n.setBVLC(bvlc)
+				n.PutData(bvlpdu.GetPduData()...)
 			}
 		}
 		return nil
@@ -499,26 +614,49 @@ func (n *OriginalUnicastNPDU) String() string {
 
 type OriginalBroadcastNPDU struct {
 	*_BVLPDU
+
+	// post construct function
+	_postConstruct []func()
 }
 
-func NewOriginalBroadcastNPDU(npdu NPDU, opts ...func(*OriginalBroadcastNPDU)) (BVLPDU, error) {
+func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (BVLPDU, error) {
 	b := &OriginalBroadcastNPDU{}
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalBroadcastNPDU(npdu, npdu.GetLengthInBytes(context.Background()))).(*_BVLPDU)
+	switch npdu := pdu.(type) {
+	case readWriteModel.NPDUExactly:
+		b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalBroadcastNPDU(npdu, npdu.GetLengthInBytes(context.Background()))).(*_BVLPDU)
+	default:
+		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
+		parse, err := readWriteModel.BVLCParse(context.Background(), pdu.GetPduData())
+		if err != nil {
+			return nil, errors.Wrap(err, "error re-encoding")
+		}
+		b._BVLPDU = NewBVLPDU(parse).(*_BVLPDU)
+	}
+
+	// Do a post construct for a bit more easy initialization
+	for _, f := range b._postConstruct {
+		f()
+	}
+	b._postConstruct = nil
 	return b, nil
 }
 
 func WithOriginalBroadcastNPDUDestination(destination *Address) func(*OriginalBroadcastNPDU) {
 	return func(o *OriginalBroadcastNPDU) {
-		o.pduDestination = destination
+		o._postConstruct = append(o._postConstruct, func() {
+			o.SetPDUDestination(destination)
+		})
 	}
 }
 
 func WithOriginalBroadcastNPDUUserData(userData spi.Message) func(*OriginalBroadcastNPDU) {
 	return func(o *OriginalBroadcastNPDU) {
-		o.pduUserData = userData
+		o._postConstruct = append(o._postConstruct, func() {
+			o.SetPDUUserData(userData)
+		})
 	}
 }
 
@@ -529,6 +667,7 @@ func (n *OriginalBroadcastNPDU) Encode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		bvlpdu.setBVLC(n.bvlc)
+		bvlpdu.PutData(n.getPDUData()...)
 		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
@@ -546,6 +685,7 @@ func (n *OriginalBroadcastNPDU) Decode(bvlpdu Arg) error {
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCOriginalBroadcastNPDU:
 				n.setBVLC(bvlc)
+				n.PutData(bvlpdu.GetPduData()...)
 			}
 		}
 		return nil
@@ -559,7 +699,7 @@ func (n *OriginalBroadcastNPDU) String() string {
 }
 
 func init() {
-	BCLPDUTypes = map[uint8]func() interface{ Decode(Arg) error }{
+	BVLPDUTypes = map[uint8]func() interface{ Decode(Arg) error }{
 		0x00: func() interface{ Decode(Arg) error } {
 			v, _ := NewResult()
 			return v

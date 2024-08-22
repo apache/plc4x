@@ -137,6 +137,18 @@ const (
 	KWDctnDNET               = KnownKey("dctnDNET")
 	KWNniNet                 = KnownKey("nniNet")
 	KWNniFlag                = KnownKey("nniFlag")
+
+	////
+	// BVLL related keys
+
+	KWBvlciResultCode = KnownKey("bvlciResultCode")
+	KWBvlciBDT        = KnownKey("bvlciBDT")
+	KWBvlciAddress    = KnownKey("bvlciAddress")
+	KWFdAddress       = KnownKey("fdAddress")
+	KWFdTTL           = KnownKey("fdTTL")
+	KWFdRemain        = KnownKey("fdRemain")
+	KWBvlciTimeToLive = KnownKey("bvlciTimeToLive")
+	KWBvlciFDT        = KnownKey("bvlciFDT")
 )
 
 type MessageBridge struct {

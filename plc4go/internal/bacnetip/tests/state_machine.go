@@ -275,6 +275,37 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			return nni.GetNniFlag() == attrValue
+		case bacnetip.KWBvlciResultCode:
+			r, ok := pdu.(*bacnetip.Result)
+			if !ok {
+				return false
+			}
+			return r.GetBvlciResultCode() == attrValue
+		case bacnetip.KWBvlciBDT:
+			wbdt, ok := pdu.(*bacnetip.WriteBroadcastDistributionTable)
+			if !ok {
+				return false
+			}
+			iwbdt := wbdt.GetBvlciBDT()
+			owbdt, ok := attrValue.([]*bacnetip.Address)
+			if !ok {
+				return false
+			}
+			return slices.EqualFunc(iwbdt, owbdt, func(a *bacnetip.Address, b *bacnetip.Address) bool {
+				return a.Equals(b)
+			})
+		case bacnetip.KWBvlciAddress:
+			panic("implement me")
+		case bacnetip.KWFdAddress:
+			panic("implement me")
+		case bacnetip.KWFdTTL:
+			panic("implement me")
+		case bacnetip.KWFdRemain:
+			panic("implement me")
+		case bacnetip.KWBvlciTimeToLive:
+			panic("implement me")
+		case bacnetip.KWBvlciFDT:
+			panic("implement me")
 		default:
 			panic("implement " + attrName)
 		}

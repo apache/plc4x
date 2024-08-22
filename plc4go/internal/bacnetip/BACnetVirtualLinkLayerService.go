@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -322,13 +323,46 @@ func (b *AnnexJCodec) String() string {
 }
 
 func (b *AnnexJCodec) Indication(args Args, kwargs KWArgs) error {
-	// Note: our BVLC are all annexJ at the moment
-	return b.Request(args, kwargs)
+	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
+
+	rpdu := args.Get0PDU()
+
+	// encode it as a generic BVLL PDU
+	bvlpdu := NewBVLPDU(nil)
+	// TODO: runtime cast might be dangerous
+	if err := rpdu.(interface{ Encode(Arg) error }).Encode(bvlpdu); err != nil {
+		return errors.Wrap(err, "error encoding PDU")
+	}
+
+	// encode it as a PDU
+	pdu := NewPDU(nil)
+	if err := bvlpdu.Encode(pdu); err != nil {
+		return errors.Wrap(err, "error encoding PDU")
+	}
+
+	// send it downstream
+	return b.Request(NewArgs(pdu), NoKWArgs)
 }
 
 func (b *AnnexJCodec) Confirmation(args Args, kwargs KWArgs) error {
-	// Note: our BVLC are all annexJ at the moment
-	return b.Response(args, kwargs)
+	b.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
+
+	pdu := args.Get0PDU()
+
+	// interpret as a BVLL PDU
+	bvlpdu := NewBVLPDU(nil)
+	if err := bvlpdu.Decode(pdu); err != nil {
+		return errors.Wrap(err, "error decoding pdu")
+	}
+
+	// get the class related to the function
+	rpdu := BVLPDUTypes[bvlpdu.GetBvlcFunction()]()
+	if err := rpdu.Decode(bvlpdu); err != nil {
+		return errors.Wrap(err, "error decoding PDU")
+	}
+
+	// send it upstream
+	return b.Response(NewArgs(rpdu), NoKWArgs)
 }
 
 type _BIPSAP interface {
@@ -445,7 +479,7 @@ func (b *BIPSimple) String() string {
 
 func (b *BIPSimple) Indication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
-	pdu := args.Get0NPDU()
+	pdu := args.Get0PDU()
 	if pdu == nil {
 		return errors.New("no pdu")
 	}
@@ -486,7 +520,19 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := args.Get0PDU()
 
-	switch msg := pdu.GetMessage().(type) {
+	// TODO: come up with a better way to check that... this is hugely inefficient
+	_data := pdu.GetPDUUserData()
+	_ = _data
+	data := pdu.GetPduData()
+	bvlcParse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO: we need to work with the inner types here....
+	panic("todo")
+
+	switch msg := bvlcParse.(type) {
 	// some kind of response to a request
 	case readWriteModel.BVLCResultExactly:
 		// send this to the service access point

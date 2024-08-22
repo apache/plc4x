@@ -43,7 +43,8 @@ type NPCI interface {
 	Encode(pdu Arg) error
 	Decode(pdu Arg) error
 
-	setNLM(nlm readWriteModel.NLM)
+	setNLM(readWriteModel.NLM)
+	getNLM() readWriteModel.NLM
 }
 
 type _NPCI struct {
@@ -60,6 +61,10 @@ func NewNPCI(pduUserData spi.Message, nlm readWriteModel.NLM) NPCI {
 		nlm: nlm,
 	}
 	n._PCI = newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	switch nlm := pduUserData.(type) {
+	case readWriteModel.NLMExactly:
+		n.nlm = nlm
+	}
 	return n
 }
 
@@ -71,20 +76,26 @@ func (n *_NPCI) GetNPDUNetMessage() *uint8 {
 	return &messageType
 }
 
+// Deprecated: check if needed as we do it in update
 func (n *_NPCI) setNLM(nlm readWriteModel.NLM) {
 	n.nlm = nlm
+}
+
+func (n *_NPCI) getNLM() readWriteModel.NLM {
+	return n.nlm
 }
 
 func (n *_NPCI) Update(npci Arg) error {
 	if err := n._PCI.Update(npci); err != nil {
 		return errors.Wrap(err, "error updating _PCI")
 	}
-	switch pci := npci.(type) {
+	switch npci := npci.(type) {
 	case NPCI:
-		// TODO: update coordinates....
+		n.nlm = npci.getNLM()
+		// TODO: update coordinates...
 		return nil
 	default:
-		return errors.Errorf("invalid APCI type %T", pci)
+		return errors.Errorf("invalid APCI type %T", npci)
 	}
 }
 
@@ -105,7 +116,7 @@ func (n *_NPCI) Decode(pdu Arg) error {
 }
 
 func (n *_NPCI) deepCopy() *_NPCI {
-	return &_NPCI{_PCI: n._PCI.deepCopy()}
+	return &_NPCI{_PCI: n._PCI.deepCopy(), nlm: n.nlm}
 }
 
 type NPDU interface {
@@ -347,7 +358,7 @@ func (n *_NPDU) GetPayloadSubtraction() uint16 {
 }
 
 func (n *_NPDU) deepCopy() *_NPDU {
-	return &_NPDU{_NPCI: n._NPCI.deepCopy(), _PDUData: n._PDUData.deepCopy()}
+	return &_NPDU{_NPCI: n._NPCI.deepCopy(), _PDUData: n._PDUData.deepCopy(), npdu: n.npdu, apdu: n.apdu}
 }
 
 func (n *_NPDU) DeepCopy() PDU {

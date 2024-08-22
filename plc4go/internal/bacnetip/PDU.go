@@ -1057,44 +1057,8 @@ func (d *_PDUData) deepCopy() *_PDUData {
 	return &copyPDUData
 }
 
-type APCI interface {
-	PCI
-}
-
-type _APCI struct {
-	*_PCI
-}
-
-func newAPCI(pduUserData spi.Message, pduSource *Address, pduDestination *Address, expectingReply bool, networkPriority readWriteModel.NPDUNetworkPriority) *_APCI {
-	return &_APCI{
-		_PCI: newPCI(pduUserData, pduSource, pduDestination, expectingReply, networkPriority),
-	}
-}
-
-func (a *_APCI) Update(apci Arg) error {
-	if err := a._PCI.Update(apci); err != nil {
-		return errors.Wrap(err, "error updating _PCI")
-	}
-	switch pci := apci.(type) {
-	case APCI:
-		// TODO: update coordinates....
-		return nil
-	default:
-		return errors.Errorf("invalid APCI type %T", pci)
-	}
-}
-
-func (a *_APCI) deepCopy() *_APCI {
-	_pci := a._PCI.deepCopy()
-	return &_APCI{_pci}
-}
-
-func (a *_APCI) String() string {
-	return fmt.Sprintf("APCI{%s}", a._PCI)
-}
-
 type PDU interface {
-	APCI
+	PCI
 	PDUData
 	GetMessage() spi.Message // TODO: check if we still need that... ()
 	DeepCopy() PDU
@@ -1106,14 +1070,14 @@ type PDUContract interface {
 }
 
 type _PDU struct {
-	*_APCI
+	*_PCI
 	*_PDUData
 	PDUContract
 }
 
 func NewPDU(pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		_APCI: newAPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
+		_PCI: newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE),
 	}
 	p.PDUContract = p
 	for _, option := range pduOptions {
@@ -1125,7 +1089,7 @@ func NewPDU(pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 
 func NewPDUFromPDUWithNewMessage(pdu PDU, pduUserData spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
-		_APCI: newAPCI(pduUserData, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
+		_PCI: newPCI(pduUserData, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
 	p.PDUContract = p
 	for _, option := range pduOptions {
@@ -1177,7 +1141,9 @@ func (p *_PDU) GetMessage() spi.Message {
 }
 
 func (p *_PDU) deepCopy() *_PDU {
-	return &_PDU{_APCI: p._APCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
+	pduCopy := &_PDU{_PCI: p._PCI.deepCopy(), _PDUData: p._PDUData.deepCopy()}
+	pduCopy.PDUContract = pduCopy
+	return pduCopy
 }
 
 func (p *_PDU) DeepCopy() PDU {
