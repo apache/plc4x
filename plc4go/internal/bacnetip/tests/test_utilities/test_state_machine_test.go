@@ -171,12 +171,12 @@ func (t TPDU) PutData(b ...byte) {
 	panic("implement me")
 }
 
-func (t TPDU) PutShort(i int16) {
+func (t TPDU) PutShort(i uint16) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (t TPDU) PutLong(i int64) {
+func (t TPDU) PutLong(i uint32) {
 	//TODO implement me
 	panic("implement me")
 }

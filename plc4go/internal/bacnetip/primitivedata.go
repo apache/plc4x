@@ -228,10 +228,10 @@ func (t *tag) Encode(pdu PDUData) {
 			pdu.Put(byte(t.tagLVT))
 		} else if t.tagLVT <= 65535 {
 			pdu.Put(254)
-			pdu.PutShort(int16(t.tagLVT))
+			pdu.PutShort(uint16(t.tagLVT))
 		} else {
 			pdu.Put(255)
-			pdu.PutLong(int64(t.tagLVT))
+			pdu.PutLong(uint32(t.tagLVT))
 		}
 	}
 
@@ -940,7 +940,7 @@ func NewUnsigned(arg Arg) (*Unsigned, error) {
 
 func (i *Unsigned) Encode(tag Tag) {
 	data := make([]byte, 4)
-	binary.BigEndian.PutUint32(data, uint32(i.value))
+	binary.BigEndian.PutUint32(data, i.value)
 
 	// reduce the value to the smallest number of bytes
 	for len(data) > 1 && data[0] == 0 {
@@ -1058,7 +1058,7 @@ func (i *Unsigned8) Decode(tag Tag) error {
 	// get the data
 	rslt := uint8(0)
 	for _, c := range tagData {
-		rslt = (rslt << 8) + uint8(c)
+		rslt = (rslt << 8) + c
 	}
 
 	// save the result

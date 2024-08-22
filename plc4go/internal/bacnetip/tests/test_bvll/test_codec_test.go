@@ -47,6 +47,14 @@ func WriteBroadcastDistributionTable(bdt ...*bacnetip.Address) *bacnetip.WriteBr
 	return writeBroadcastDistributionTable
 }
 
+func ReadBroadcastDistributionTable() *bacnetip.ReadBroadcastDistributionTable {
+	readBroadcastDistributionTable, err := bacnetip.NewReadBroadcastDistributionTable()
+	if err != nil {
+		panic(err)
+	}
+	return readBroadcastDistributionTable
+}
+
 type TestAnnexJCodecSuite struct {
 	suite.Suite
 
@@ -172,7 +180,7 @@ func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
 
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.WriteBroadcastDistributionTable)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciBDT, nil))
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.WriteBroadcastDistributionTable)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciBDT, []*bacnetip.Address{}))
 
 	// write table with an element
 	addr, _ := bacnetip.NewAddress(zerolog.Nop(), "192.168.0.254/24")
@@ -195,7 +203,28 @@ func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.WriteBroadcastDistributionTable)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciBDT, []*bacnetip.Address{addr}))
+}
 
+func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTable() {
+	// Read an empty table
+	pduBytes, err := bacnetip.Xtob("81.02.0004")
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(ReadBroadcastDistributionTable()), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadBroadcastDistributionTable)(nil)), bacnetip.NoKWArgs)
 }
 
 func TestAnnexJCodec(t *testing.T) {

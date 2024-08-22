@@ -179,7 +179,7 @@ func (n *_NPDU) buildNPDU(hopCount uint8, source *Address, destination *Address,
 		if sourceLengthValue > math.MaxUint8 {
 			return nil, errors.New("source address length overflows")
 		}
-		sourceLengthValueUint8 := uint8(sourceLengthValue)
+		sourceLengthValueUint8 := sourceLengthValue
 		sourceLength = &sourceLengthValueUint8
 		sourceAddress = source.AddrAddress
 		if sourceLengthValueUint8 == 0 {
@@ -199,7 +199,7 @@ func (n *_NPDU) buildNPDU(hopCount uint8, source *Address, destination *Address,
 		if destinationLengthValue > math.MaxUint8 {
 			return nil, errors.New("source address length overflows")
 		}
-		destinationLengthValueUint8 := uint8(destinationLengthValue)
+		destinationLengthValueUint8 := destinationLengthValue
 		destinationLength = &destinationLengthValueUint8
 		destinationAddress = destination.AddrAddress
 		if destinationLengthValueUint8 == 0 {
@@ -405,7 +405,7 @@ func (n *WhoIsRouterToNetwork) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		if n.wirtnNetwork != nil {
-			npdu.PutShort(int16(*n.wirtnNetwork))
+			npdu.PutShort(*n.wirtnNetwork)
 		}
 		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
@@ -476,7 +476,7 @@ func (i *IAmRouterToNetwork) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		for _, net := range i.iartnNetworkList {
-			npdu.PutShort(int16(net))
+			npdu.PutShort(net)
 		}
 		npdu.setNPDU(i.npdu)
 		npdu.setNLM(i.nlm)
@@ -556,7 +556,7 @@ func (i *ICouldBeRouterToNetwork) Encode(npdu Arg) error {
 		if err := npdu.Update(i); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		npdu.PutShort(int16(i.icbrtnNetwork))
+		npdu.PutShort(i.icbrtnNetwork)
 		npdu.Put(i.icbrtnPerformanceIndex)
 		npdu.setNPDU(i.npdu)
 		npdu.setNLM(i.nlm)
@@ -639,7 +639,7 @@ func (n *RejectMessageToNetwork) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		npdu.Put(byte(n.rmtnRejectionReason))
-		npdu.PutShort(int16(n.rmtnDNET))
+		npdu.PutShort(n.rmtnDNET)
 		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
@@ -710,7 +710,7 @@ func (r *RouterBusyToNetwork) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		for _, net := range r.GetRbtnNetworkList() {
-			npdu.PutShort(int16(net))
+			npdu.PutShort(net)
 		}
 		npdu.setNPDU(r.npdu)
 		npdu.setNLM(r.nlm)
@@ -781,7 +781,7 @@ func (r *RouterAvailableToNetwork) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		for _, net := range r.GetRatnNetworkList() {
-			npdu.PutShort(int16(net))
+			npdu.PutShort(net)
 		}
 		npdu.setNPDU(r.npdu)
 		npdu.setNLM(r.nlm)
@@ -930,7 +930,7 @@ func (r *InitializeRoutingTable) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		for _, rte := range r.irtTable {
-			npdu.PutShort(int16(rte.rtDNET))
+			npdu.PutShort(rte.rtDNET)
 			npdu.Put(rte.rtPortId)
 			npdu.Put(byte(len(rte.rtPortInfo)))
 			npdu.PutData(rte.rtPortInfo...)
@@ -1025,7 +1025,7 @@ func (r *InitializeRoutingTableAck) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		for _, rte := range r.irtaTable {
-			npdu.PutShort(int16(rte.rtDNET))
+			npdu.PutShort(rte.rtDNET)
 			npdu.Put(rte.rtPortId)
 			npdu.Put(byte(len(rte.rtPortInfo)))
 			npdu.PutData(rte.rtPortInfo...)
@@ -1109,7 +1109,7 @@ func (n *EstablishConnectionToNetwork) Encode(npdu Arg) error {
 		if err := npdu.Update(n); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		npdu.PutShort(int16(n.ectnDNET))
+		npdu.PutShort(n.ectnDNET)
 		npdu.Put(n.ectnTerminationTime)
 		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
@@ -1180,7 +1180,7 @@ func (n *DisconnectConnectionToNetwork) Encode(npdu Arg) error {
 		if err := npdu.Update(n); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		npdu.PutShort(int16(n.dctnDNET))
+		npdu.PutShort(n.dctnDNET)
 		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
@@ -1315,7 +1315,7 @@ func (n *NetworkNumberIs) Encode(npdu Arg) error {
 		if err := npdu.Update(n); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		npdu.PutShort(int16(n.nniNet))
+		npdu.PutShort(n.nniNet)
 		flag := uint8(0)
 		if n.nniFlag {
 			flag = 1

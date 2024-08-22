@@ -237,7 +237,7 @@ func (n *Result) Encode(bvlpdu Arg) error {
 		if err := bvlpdu.Update(n); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		bvlpdu.PutShort(int16(n.bvlciResultCode))
+		bvlpdu.PutShort(uint16(n.bvlciResultCode))
 		bvlpdu.setBVLC(n.bvlc)
 		return nil
 	default:
@@ -333,7 +333,7 @@ func (w *WriteBroadcastDistributionTable) Encode(bvlpdu Arg) error {
 		}
 		for _, bdte := range w.bvlciBDT {
 			bvlpdu.PutData(bdte.AddrAddress...)
-			bvlpdu.PutLong(int64(*bdte.AddrMask))
+			bvlpdu.PutLong(*bdte.AddrMask)
 		}
 		bvlpdu.setBVLC(w.bvlc)
 		return nil
@@ -366,27 +366,55 @@ func (w *WriteBroadcastDistributionTable) String() string {
 	return fmt.Sprintf("WriteBroadcastDistributionTable{%v, bvlciBDT: %v}", w._BVLPDU, w.bvlciBDT)
 }
 
-// TODO: finish
 type ReadBroadcastDistributionTable struct {
 	*_BVLPDU
 }
 
 var _ BVLPDU = (*ReadBroadcastDistributionTable)(nil)
 
-func NewReadBroadcastDistributionTable() (BVLPDU, error) {
+func NewReadBroadcastDistributionTable(opts ...func(*ReadBroadcastDistributionTable)) (*ReadBroadcastDistributionTable, error) {
 	b := &ReadBroadcastDistributionTable{}
-	b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+	for _, opt := range opts {
+		opt(b)
+	}
+	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCReadBroadcastDistributionTable()).(*_BVLPDU)
 	return b, nil
 }
 
-func (b *ReadBroadcastDistributionTable) Encode(pdu Arg) error {
-	// TODO: finish
-	return nil
+func (w *ReadBroadcastDistributionTable) Encode(bvlpdu Arg) error {
+	switch bvlpdu := bvlpdu.(type) {
+	case BVLPDU:
+		if err := bvlpdu.Update(w); err != nil {
+			return errors.Wrap(err, "error updating BVLPDU")
+		}
+		bvlpdu.setBVLC(w.bvlc)
+		return nil
+	default:
+		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
+	}
 }
 
-func (b *ReadBroadcastDistributionTable) Decode(pdu Arg) error {
-	// TODO: finish
-	return nil
+func (w *ReadBroadcastDistributionTable) Decode(bvlpdu Arg) error {
+	switch bvlpdu := bvlpdu.(type) {
+	case BVLPDU:
+		if err := w.Update(bvlpdu); err != nil {
+			return errors.Wrap(err, "error updating BVLPDU")
+		}
+		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
+			switch bvlc := pduUserData.(type) {
+			case readWriteModel.BVLCReadBroadcastDistributionTable:
+				w.setBVLC(bvlc)
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
+	}
+}
+
+func (w *ReadBroadcastDistributionTable) String() string {
+	return fmt.Sprintf("ReadBroadcastDistributionTable{%v}", w._BVLPDU)
 }
 
 // TODO: finish

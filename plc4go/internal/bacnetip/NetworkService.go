@@ -541,7 +541,7 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 		if sourceLengthValue > math.MaxUint8 {
 			return nil, errors.New("source address length overflows")
 		}
-		sourceLengthValueUint8 := uint8(sourceLengthValue)
+		sourceLengthValueUint8 := sourceLengthValue
 		sourceLength = &sourceLengthValueUint8
 		sourceAddress = source.AddrAddress
 		if sourceLengthValueUint8 == 0 {
@@ -561,7 +561,7 @@ func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingR
 		if destinationLengthValue > math.MaxUint8 {
 			return nil, errors.New("source address length overflows")
 		}
-		destinationLengthValueUint8 := uint8(destinationLengthValue)
+		destinationLengthValueUint8 := destinationLengthValue
 		destinationLength = &destinationLengthValueUint8
 		destinationAddress = destination.AddrAddress
 		if destinationLengthValueUint8 == 0 {

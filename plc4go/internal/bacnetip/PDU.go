@@ -938,8 +938,8 @@ type PDUData interface {
 	GetData(dlen int) ([]byte, error)
 	Put(byte)
 	PutData(...byte)
-	PutShort(int16)
-	PutLong(int64)
+	PutShort(uint16)
+	PutLong(uint32)
 }
 
 type _PDUDataRequirements interface {
@@ -1032,17 +1032,17 @@ func (d *_PDUData) PutData(n ...byte) {
 	d.cachedData = append(d.cachedData, n...)
 }
 
-func (d *_PDUData) PutShort(n int16) {
+func (d *_PDUData) PutShort(n uint16) {
 	d.checkCache()
 	ba := make([]byte, 2)
-	binary.BigEndian.PutUint16(ba, uint16(n))
+	binary.BigEndian.PutUint16(ba, n)
 	d.cachedData = append(d.cachedData, ba...)
 }
 
-func (d *_PDUData) PutLong(n int64) {
+func (d *_PDUData) PutLong(n uint32) {
 	d.checkCache()
 	ba := make([]byte, 4)
-	binary.BigEndian.PutUint64(ba, uint64(n))
+	binary.BigEndian.PutUint32(ba, n)
 	d.cachedData = append(d.cachedData, ba...)
 }
 
