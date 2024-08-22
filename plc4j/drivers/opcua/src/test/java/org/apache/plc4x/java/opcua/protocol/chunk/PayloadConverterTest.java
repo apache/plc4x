@@ -28,6 +28,7 @@ import org.apache.plc4x.java.opcua.readwrite.ExtensiblePayload;
 import org.apache.plc4x.java.opcua.readwrite.ExtensionObject;
 import org.apache.plc4x.java.opcua.readwrite.HistoryEvent;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdFourByte;
+import org.apache.plc4x.java.opcua.readwrite.RootExtensionObject;
 import org.apache.plc4x.java.opcua.readwrite.SequenceHeader;
 import org.apache.plc4x.java.spi.utils.hex.Hex;
 import org.junit.jupiter.api.Test;
@@ -46,9 +47,8 @@ class PayloadConverterTest {
             null
         );
 
-        ExtensionObject extObject = new ExtensionObject(
+        RootExtensionObject extObject = new RootExtensionObject(
             expandedNodeId,
-            null,
             new HistoryEvent(Collections.emptyList())
         );
 

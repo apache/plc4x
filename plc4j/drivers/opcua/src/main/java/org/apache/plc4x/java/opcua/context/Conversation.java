@@ -50,7 +50,7 @@ import org.apache.plc4x.java.opcua.readwrite.NodeId;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdFourByte;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdTwoByte;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdTypeDefinition;
-import org.apache.plc4x.java.opcua.readwrite.NullExtension;
+import org.apache.plc4x.java.opcua.readwrite.NullExtensionObject;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAcknowledgeResponse;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaCloseRequest;
@@ -66,10 +66,12 @@ import org.apache.plc4x.java.opcua.readwrite.PascalString;
 import org.apache.plc4x.java.opcua.readwrite.Payload;
 import org.apache.plc4x.java.opcua.readwrite.RequestHeader;
 import org.apache.plc4x.java.opcua.readwrite.ResponseHeader;
+import org.apache.plc4x.java.opcua.readwrite.RootExtensionObject;
 import org.apache.plc4x.java.opcua.readwrite.SecurityHeader;
 import org.apache.plc4x.java.opcua.readwrite.SequenceHeader;
 import org.apache.plc4x.java.opcua.readwrite.ServiceFault;
 import org.apache.plc4x.java.opcua.readwrite.SignatureData;
+import org.apache.plc4x.java.opcua.readwrite.WireExtensionObject;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -89,10 +91,10 @@ public class Conversation {
         null
     );
 
-    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new ExtensionObject(
+    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new WireExtensionObject(
         NULL_EXPANDED_NODE_ID,
         new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtension());               // Body
+        new NullExtensionObject());               // Body
 
 
     private final Logger logger = LoggerFactory.getLogger(Conversation.class);
@@ -274,14 +276,13 @@ public class Conversation {
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(
             false,           //Namespace Uri Specified
             false,            //Server Index Specified
-            new NodeIdFourByte((short) 0, Integer.parseInt(requestDefinition.getExtensionId())),
+            new NodeIdFourByte((short) 0, requestDefinition.getExtensionId()),
             null,
             null
         );
-        ExtensionObject requestObject = new ExtensionObject(expandedNodeId, null, requestDefinition);
         ExtensiblePayload payload = new ExtensiblePayload(
             new SequenceHeader(tm.getSequenceSupplier().get(), requestId),
-            requestObject
+            new RootExtensionObject(expandedNodeId, requestDefinition)
         );
 
         MemoryChunkStorage chunkStorage = new MemoryChunkStorage();

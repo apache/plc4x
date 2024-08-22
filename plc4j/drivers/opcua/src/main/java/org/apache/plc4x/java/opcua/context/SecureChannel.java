@@ -82,6 +82,8 @@ public class SecureChannel {
     private static final PascalString PRODUCT_URI = new PascalString("urn:apache:plc4x:client");
     private static final PascalString APPLICATION_TEXT = new PascalString("OPCUA client for the Apache PLC4X:PLC4J project");
     public static final ScheduledExecutorService KEEP_ALIVE_EXECUTOR = newSingleThreadScheduledExecutor(runnable -> new Thread(runnable, "plc4x-opcua-keep-alive"));
+    public static final ExtensionObjectEncodingMask BINARY_ENCODING_MASK = new ExtensionObjectEncodingMask(
+        false, false, true);
     private final String sessionName = "UaSession:" + APPLICATION_TEXT.getStringValue() + ":" + RandomStringUtils.random(20, true, true);
     private final PascalByteString localCertificateString;
     private final PascalByteString remoteCertificateThumbprint;
@@ -183,10 +185,9 @@ public class SecureChannel {
         }
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-            new NodeIdFourByte((short) 0, Integer.parseInt(openSecureChannelRequest.getExtensionId())),
+            new NodeIdFourByte((short) 0, openSecureChannelRequest.getExtensionId()),
             null, null
         );
-        ExtensionObject extObject = new ExtensionObject(expandedNodeId, null, openSecureChannelRequest);
 
         Function<CallContext, OpcuaOpenRequest> openRequest = context -> {
             LOGGER.debug("Submitting OpenSecureChannel with id of {}", context.getRequestId());
@@ -197,7 +198,7 @@ public class SecureChannel {
             ),
             new ExtensiblePayload(
                 new SequenceHeader(context.getNextSequenceNumber(), context.getRequestId()),
-                extObject
+                new RootExtensionObject(expandedNodeId, openSecureChannelRequest)
             ));
         };
 
@@ -378,7 +379,7 @@ public class SecureChannel {
         CloseSecureChannelRequest closeSecureChannelRequest = new CloseSecureChannelRequest(requestHeader);
 
         ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-            new NodeIdFourByte((short) 0, Integer.parseInt(closeSecureChannelRequest.getExtensionId())),
+            new NodeIdFourByte((short) 0, closeSecureChannelRequest.getExtensionId()),
             null, null
         );
 
@@ -386,7 +387,7 @@ public class SecureChannel {
             new OpcuaCloseRequest(FINAL, ctx.getSecurityHeader(),
             new ExtensiblePayload(
                 new SequenceHeader(ctx.getNextSequenceNumber(), ctx.getRequestId()),
-                new ExtensionObject(expandedNodeId, null, closeSecureChannelRequest)
+                new RootExtensionObject(expandedNodeId, closeSecureChannelRequest)
             )
         );
 
@@ -590,10 +591,9 @@ public class SecureChannel {
                     null
                 );
 
-                return new ExtensionObject(
-                    extExpandedNodeId,
-                    new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken));
+                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(
+                    new UserIdentityToken(new PascalString(securityPolicy), anonymousIdentityToken)
+                ));
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] remoteNonce = conversation.getRemoteNonce();
@@ -620,10 +620,9 @@ public class SecureChannel {
                     null,
                     null);
 
-                return new ExtensionObject(
-                    extExpandedNodeId,
-                    new ExtensionObjectEncodingMask(false, false, true),
-                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken));
+                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(
+                    new UserIdentityToken(new PascalString(securityPolicy), userNameIdentityToken)
+                ));
         }
         return null;
     }
