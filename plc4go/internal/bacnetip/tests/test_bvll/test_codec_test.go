@@ -154,7 +154,6 @@ func (suite *TestAnnexJCodecSuite) TestResult() {
 }
 
 func (suite *TestAnnexJCodecSuite) TestWriteBroadcastDistributionTable() {
-	suite.T().Skip("something is odd here") // TODO: check what is going on with the output...
 	// write an empty table
 	pduBytes, err := bacnetip.Xtob("81.01.0004")
 	suite.Require().NoError(err)

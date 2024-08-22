@@ -146,9 +146,9 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if !equal {
 				switch want := want.(type) {
 				case []byte:
-					localLog.Debug().Bytes("got", got).Bytes("want", want).Msg("mismatch")
+					localLog.Debug().Hex("got", got).Hex("want", want).Msg("mismatch")
 				default:
-					localLog.Debug().Bytes("got", got).Interface("want", want).Msg("mismatch")
+					localLog.Debug().Hex("got", got).Interface("want", want).Msg("mismatch")
 				}
 			}
 			return equal

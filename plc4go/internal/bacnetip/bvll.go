@@ -21,6 +21,7 @@ package bacnetip
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -109,7 +110,6 @@ func NewBVLPDU(bvlc readWriteModel.BVLC) BVLPDU {
 	b := &_BVLPDU{
 		bvlc: bvlc,
 	}
-	//b.bvlc = readWriteModel.NewBVLC() // TODO: using this function leads to a npe
 	b._BVLCI = NewBVLCI(bvlc).(*_BVLCI)
 	b._PDUData = newPDUData(b)
 	return b
@@ -282,7 +282,7 @@ func NewWriteBroadcastDistributionTable(opts ...func(*WriteBroadcastDistribution
 	for _, opt := range opts {
 		opt(b)
 	}
-	b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+	b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCWriteBroadcastDistributionTable(b.produceBroadcastDistributionTable(), 0)).(*_BVLPDU)
 	return b, nil
 }
 
@@ -296,6 +296,35 @@ func (w *WriteBroadcastDistributionTable) GetBvlciBDT() []*Address {
 	return w.bvlciBDT
 }
 
+func (w *WriteBroadcastDistributionTable) produceBroadcastDistributionTable() (entries []readWriteModel.BVLCBroadcastDistributionTableEntry) {
+	for _, address := range w.bvlciBDT {
+		addr := address.AddrAddress[:4]
+		port := uint16(47808)
+		if address.AddrPort != nil {
+			port = *address.AddrPort
+		}
+		mask := make([]byte, 4)
+		if address.AddrMask != nil {
+			binary.BigEndian.PutUint32(mask, *address.AddrMask)
+		}
+		entries = append(entries, readWriteModel.NewBVLCBroadcastDistributionTableEntry(addr, port, mask))
+	}
+	return
+}
+
+func (w *WriteBroadcastDistributionTable) produceBvlciBDT(entries []readWriteModel.BVLCBroadcastDistributionTableEntry) (bvlciBDT []*Address) {
+	for _, entry := range entries {
+		addr := entry.GetIp()
+		port := entry.GetPort()
+		var portArray = make([]byte, 2)
+		binary.BigEndian.PutUint16(portArray, port)
+		address, _ := NewAddress(zerolog.Nop(), append(addr, portArray...))
+		mask := binary.BigEndian.Uint32(entry.GetBroadcastDistributionMap())
+		address.AddrMask = &mask
+		bvlciBDT = append(bvlciBDT, address)
+	}
+	return
+}
 func (w *WriteBroadcastDistributionTable) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
@@ -324,11 +353,7 @@ func (w *WriteBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCWriteBroadcastDistributionTable:
 				w.setBVLC(bvlc)
-				for _, entry := range bvlc.GetTable() {
-					// TODO: what is with port and the map??
-					address, _ := NewAddress(zerolog.Nop(), entry.GetIp())
-					w.bvlciBDT = append(w.bvlciBDT, address)
-				}
+				w.bvlciBDT = w.produceBvlciBDT(bvlc.GetTable())
 			}
 		}
 		return nil
