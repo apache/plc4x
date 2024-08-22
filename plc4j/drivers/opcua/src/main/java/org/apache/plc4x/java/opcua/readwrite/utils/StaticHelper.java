@@ -36,11 +36,11 @@ public class StaticHelper {
         return Math.max(slength, 0);
     }
 
-    public static int extensionId(ExpandedNodeId typeId) {
+    public static int extensionId(ExpandedNodeId expandedNodeId) {
         try {
-            return Integer.parseInt(typeId.getIdentifier());
+            return Integer.parseInt(expandedNodeId.getNodeId().getIdentifier());
         } catch (NumberFormatException e) {
-            throw new PlcRuntimeException("Invalid node id, expected integer index, found " + typeId.getIdentifier().getClass());
+            throw new PlcRuntimeException("Invalid node id, expected number, found " + expandedNodeId.getNodeId().getClass().getName());
         }
     }
 }
