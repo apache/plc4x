@@ -71,7 +71,7 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="$extensionId != ''"><xsl:text>
-        </xsl:text><xsl:value-of select="concat('[''&quot;', $extensionId, '&quot;'' ', $objectTypeId)" /><xsl:text>
+        </xsl:text><xsl:value-of select="concat('[''', $extensionId, ''' ', $objectTypeId)" /><xsl:text>
             </xsl:text>
                 <xsl:call-template name="plc4x:parseFields">
                     <xsl:with-param name="baseNode" select="$originaldoc/opc:TypeDictionary/opc:StructuredType[@Name=$browseName]"/>
@@ -520,7 +520,7 @@
                 <xsl:with-param name="servicesRoot" select="$servicesRoot" />
             </xsl:call-template>
         </xsl:variable>
-        <xsl:if test="$extensionId != ''">('"<xsl:value-of select="$extensionId" />"')</xsl:if>
+        <xsl:if test="$extensionId != ''">('<xsl:value-of select="$extensionId" />')</xsl:if>
     </xsl:template>
 
     <xsl:template name="plc4x:getExtensionId">

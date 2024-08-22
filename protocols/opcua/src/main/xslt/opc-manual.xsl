@@ -166,10 +166,10 @@
 ]
 
 [discriminatedType Payload (bit extensible, uint 32 byteCount)
-    [simple SequenceHeader                    sequenceHeader ]
+    [simple SequenceHeader                    sequenceHeader            ]
     [typeSwitch extensible
         ['true'       ExtensiblePayload
-            [simple   ExtensionObject('false') payload ]
+            [simple   RootExtensionObject     payload                   ]
         ]
         ['false'      BinaryPayload
             [array    byte                     payload count 'byteCount']
@@ -204,32 +204,39 @@
     [optional uint 32 serverIndex 'serverIndexSpecified']
 ]
 
-[type ExtensionHeader
-    [reserved int 5 '0x00']
-    [simple bit xmlbody]
-    [simple bit binaryBody]
-]
-
 [type ExtensionObjectEncodingMask
     [reserved int 5 '0x00']
     [simple bit typeIdSpecified]
-    [simple bit xmlbody]
+    [simple bit xmlBody]
     [simple bit binaryBody]
 ]
 
-[type ExtensionObject(bit includeEncodingMask)
-    //A serialized object prefixed with its data type identifier.
+[discriminatedType ExtensionObject(bit includeEncodingMask)
+    [abstract ExtensionObjectDefinition body]
     [simple ExpandedNodeId typeId]
-    [optional ExtensionObjectEncodingMask encodingMask 'includeEncodingMask']
-    [virtual vstring '-1' identifier 'typeId.identifier']
-    // In some cases encoding includes bodyLength, but not always!
-    // [implicit int 32 bodyLength 'body.lengthInBytes']
-    [simple ExtensionObjectDefinition('identifier') body]
+    [virtual int 32 extensionId 'typeId == null ? 0 : STATIC_CALL("extensionId", typeId)']
+    [typeSwitch includeEncodingMask
+        ['false' RootExtensionObject (int 32 extensionId)
+            [simple ExtensionObjectDefinition('extensionId') body]
+        ]
+        ['true' ExtensionObjectWithMask (int 32 extensionId)
+            [simple ExtensionObjectEncodingMask encodingMask]
+            [typeSwitch encodingMask.xmlBody, encodingMask.binaryBody
+                ['false', 'true' BinaryExtensionObjectWithMask
+                    [implicit int 32 bodyLength 'body == null ? 0 : body.lengthInBytes']
+                    [simple ExtensionObjectDefinition('extensionId') body]
+                ]
+                ['false', 'false' NullExtensionObjectWithMask
+                    [virtual ExtensionObjectDefinition('0') body 'null']
+                ]
+            ]
+        ]
+    ]
 ]
 
-[discriminatedType ExtensionObjectDefinition(vstring '-1' extensionId)
+[discriminatedType ExtensionObjectDefinition(int 32 extensionId)
     [typeSwitch extensionId
-        ['"0"' NullExtension
+        ['0' NullExtension
         ]
 
         <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:') and not (@BaseType = 'tns:UserIdentityToken')))]">
@@ -237,7 +244,7 @@
             <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName=$extensionName]"/>
         </xsl:for-each>
 
-        ['"316"' UserIdentityToken
+        ['316' UserIdentityToken
             [implicit int 32 policyLength 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
             [simple PascalString policyId]
             [simple UserIdentityTokenDefinition('policyId.stringValue') userIdentityTokenDefinition]
@@ -422,7 +429,7 @@
 [type PascalString
     [implicit int 32    sLength      'STATIC_CALL("utf8LengthToPascalLength", stringValue)' ]
     [virtual  int 32    stringLength 'STATIC_CALL("pascalLengthToUtf8Length", sLength)'     ]
-    [simple   vstring   'stringLength*8' stringValue                                        ]
+    [optional vstring   'stringLength*8' stringValue 'sLength != -1']
 ]
 
 [type PascalByteString
