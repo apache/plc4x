@@ -95,7 +95,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
             ReadValueId readValueId = new ReadValueId(
                 idNode,
-                0xD,
+                AttributeId.Value.getValue(),
                 OpcuaProtocolLogic.NULL_STRING,
                 new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
 
@@ -116,19 +116,50 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
 
             ExtensionObject eventFilter = OpcuaProtocolLogic.NULL_EXTENSION_OBJECT;
             if (tagDefaultPlcSubscription.getPlcSubscriptionType() == PlcSubscriptionType.EVENT) {
-                FilterOperand filterOperand = new FilterOperand();
-                EventFilter eventFilter1 = new EventFilter(
-                    Collections.emptyList(), //Arrays.asList(filterOperand),
-                    null //new NullExtension()
+                NodeId nodeId = new NodeId(new NodeIdFourByte((short) 0, OpcuaNodeIdServicesObjectType.BaseEventType.getValue()));
+                List<SimpleAttributeOperand> filterOperand = Arrays.asList(
+                    new SimpleAttributeOperand(nodeId,
+                        Arrays.asList(new QualifiedName(0, new PascalString("EventId"))),
+                        AttributeId.Value.getValue(),
+                        null
+                    ),
+                    new SimpleAttributeOperand(nodeId,
+                        Arrays.asList(new QualifiedName(0, new PascalString("EventType"))),
+                        AttributeId.Value.getValue(),
+                        null
+                    ),
+                    new SimpleAttributeOperand(nodeId,
+                        Arrays.asList(new QualifiedName(0, new PascalString("Severity"))),
+                        AttributeId.Value.getValue(),
+                        null
+                    ),
+                    new SimpleAttributeOperand(nodeId,
+                        Arrays.asList(new QualifiedName(0, new PascalString("Time"))),
+                        AttributeId.Value.getValue(),
+                        null
+                    ),
+                    new SimpleAttributeOperand(nodeId,
+                        Arrays.asList(new QualifiedName(0, new PascalString("Message"))),
+                        AttributeId.Value.getValue(),
+                        null
+                    )
                 );
+
+                EventFilter filterPayload = new EventFilter(filterOperand, new ContentFilter(null));
                 ExpandedNodeId expandedNodeId = new ExpandedNodeId(false, false,
-                    new NodeIdFourByte((short) 0, Integer.parseInt(eventFilter.getIdentifier())),
+                    new NodeIdFourByte((short) 0, filterPayload.getExtensionId()),
                     null, null
                 );
-                eventFilter = new ExtensionObject(expandedNodeId,
+                eventFilter = new WireExtensionObject(
+                    expandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    eventFilter1
+                    new BinaryWireExtensionObject(filterPayload)
                 );
+                readValueId = new ReadValueId(
+                    idNode,
+                    AttributeId.EventNotifier.getValue(),
+                    OpcuaProtocolLogic.NULL_STRING,
+                    new QualifiedName(0, OpcuaProtocolLogic.NULL_STRING));
             }
 
             long clientHandle = clientHandles.getAndIncrement();
@@ -140,8 +171,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 true        // discard oldest
             );
 
-            MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(
-                readValueId, monitoringMode, parameters);
+            MonitoredItemCreateRequest request = new MonitoredItemCreateRequest(readValueId, monitoringMode, parameters);
 
             requestList.add(request);
         }
@@ -162,10 +192,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     LOGGER.info("Error while sending the Create Monitored Item Subscription Message", error);
                 }
             }).thenApply(responseMessage -> {
-                MonitoredItemCreateResult[] array = responseMessage.getResults().stream()
-                    .filter(extensionObjectDefinition -> extensionObjectDefinition instanceof MonitoredItemCreateResult)
-                    .map(extensionObjectDefinition -> (MonitoredItemCreateResult) extensionObjectDefinition)
-                    .toArray(MonitoredItemCreateResult[]::new);
+                MonitoredItemCreateResult[] array = responseMessage.getResults().stream().toArray(MonitoredItemCreateResult[]::new);
                 for (int index = 0, arrayLength = array.length; index < arrayLength; index++) {
                     MonitoredItemCreateResult result = array[index];
                     if (OpcuaStatusCode.enumForValue(result.getStatusCode().getStatusCode()) != OpcuaStatusCode.Good) {
@@ -221,7 +248,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                             onSubscriptionValue(items.stream().toArray(MonitoredItemNotification[]::new));
                         } else if (notification instanceof NotificationData) {
                             NotificationData data = (NotificationData) notification;
-
+                            System.out.println("Received notification data");
                         } else {
                             LOGGER.warn("Unsupported Notification type");
                         }
