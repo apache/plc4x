@@ -64,6 +64,10 @@ func (a Args) Get0MultiplexServer() *_MultiplexServer {
 func (a Args) String() string {
 	r := ""
 	for i, ea := range a {
+		switch tea := ea.(type) {
+		case []byte:
+			ea = Btox(tea, ".")
+		}
 		r += fmt.Sprintf("%d: %v, ", i, ea)
 	}
 	if r != "" {
@@ -93,12 +97,16 @@ func NewKWArgs(kw ...any) KWArgs {
 func (k KWArgs) String() string {
 	r := ""
 	for kk, ea := range k {
+		switch tea := ea.(type) {
+		case []byte:
+			ea = Btox(tea, ".")
+		}
 		r += fmt.Sprintf("%s=%v, ", kk, ea)
 	}
 	if r != "" {
 		r = r[:len(r)-2]
 	}
-	return r
+	return "{" + r + "}"
 }
 
 type KnownKey string

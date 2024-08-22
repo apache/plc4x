@@ -63,6 +63,14 @@ func ReadBroadcastDistributionTableAck(bdt ...*bacnetip.Address) *bacnetip.ReadB
 	return readBroadcastDistributionTable
 }
 
+func ForwardNPDU(addr *bacnetip.Address, pduBytes []byte) *bacnetip.ForwardedNPDU {
+	npdu, err := bacnetip.NewForwardedNPDU(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes}), bacnetip.WithForwardedNPDUAddress(addr))
+	if err != nil {
+		panic(err)
+	}
+	return npdu
+}
+
 type TestAnnexJCodecSuite struct {
 	suite.Suite
 
@@ -277,6 +285,42 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadBroadcastDistributionTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciBDT, []*bacnetip.Address{addr}))
+}
+
+func (suite *TestAnnexJCodecSuite) TestForwardNPDU() {
+	// Read an empty TableAck
+	addr, err := bacnetip.NewAddress(zerolog.Nop(), "192.168.0.1")
+	xpdu, err := bacnetip.Xtob(
+		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
+		// TODO: this below is from us as upstream message is not parsable
+		"01.80" + // version, network layer message
+			"01 0001 0002 0003", // message type and network list
+	)
+	suite.Require().NoError(err)
+	pduBytes, err := bacnetip.Xtob("81.04.0013" + //   bvlci // TODO: length was 0e before
+		"c0.a8.00.01.ba.c0" + // original source address
+		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
+		// TODO: this below is from us as upstream message is not parsable
+		"01.80" + // version, network layer message
+		"01 0001 0002 0003", // message type and network list
+	)
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(ForwardNPDU(addr, xpdu)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ForwardedNPDU)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciAddress, addr, bacnetip.KWPDUData, xpdu))
 }
 
 func TestAnnexJCodec(t *testing.T) {

@@ -325,6 +325,7 @@ func (w *WriteBroadcastDistributionTable) produceBvlciBDT(entries []readWriteMod
 	}
 	return
 }
+
 func (w *WriteBroadcastDistributionTable) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
@@ -419,6 +420,7 @@ func (w *ReadBroadcastDistributionTable) String() string {
 
 type ReadBroadcastDistributionTableAck struct {
 	*_BVLPDU
+
 	bvlciBDT []*Address
 }
 
@@ -514,27 +516,108 @@ func (w *ReadBroadcastDistributionTableAck) String() string {
 	return fmt.Sprintf("ReadBroadcastDistributionTableAck{%v, bvlciBDT: %v}", w._BVLPDU, w.bvlciBDT)
 }
 
-// TODO: finish
 type ForwardedNPDU struct {
 	*_BVLPDU
+
+	bvlciAddress *Address
 }
 
 var _ BVLPDU = (*ForwardedNPDU)(nil)
 
-func NewForwardedNPDU() (BVLPDU, error) {
+func NewForwardedNPDU(pdu PDU, opts ...func(*ForwardedNPDU)) (*ForwardedNPDU, error) {
 	b := &ForwardedNPDU{}
-	b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+	for _, opt := range opts {
+		opt(b)
+	}
+	switch npdu := pdu.(type) {
+	case readWriteModel.NPDUExactly:
+		b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCForwardedNPDU(b.produceInnerNPDU(npdu))).(*_BVLPDU)
+	case nil:
+		b._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
+	default:
+		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
+		data := pdu.GetPduData()
+		parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
+		if err != nil {
+			return nil, errors.Wrap(err, "error re-encoding")
+		}
+		b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCForwardedNPDU(b.produceInnerNPDU(parse))).(*_BVLPDU)
+	}
 	return b, nil
 }
 
-func (b *ForwardedNPDU) Encode(pdu Arg) error {
-	// TODO: finish
-	return nil
+func WithForwardedNPDUAddress(addr *Address) func(*ForwardedNPDU) {
+	return func(b *ForwardedNPDU) {
+		b.bvlciAddress = addr
+	}
 }
 
-func (b *ForwardedNPDU) Decode(pdu Arg) error {
-	// TODO: finish
-	return nil
+func (w *ForwardedNPDU) GetBvlciAddress() *Address {
+	return w.bvlciAddress
+}
+
+func (w *ForwardedNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (ip []uint8, port uint16, npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
+	ip = w.bvlciAddress.AddrAddress[:4]
+	port = uint16(47808)
+	if w.bvlciAddress.AddrPort != nil {
+		port = *w.bvlciAddress.AddrPort
+	}
+	npdu = inNpdu
+	return
+}
+
+func (w *ForwardedNPDU) Encode(bvlpdu Arg) error {
+	switch bvlpdu := bvlpdu.(type) {
+	case BVLPDU:
+		if err := bvlpdu.Update(w); err != nil {
+			return errors.Wrap(err, "error updating BVLPDU")
+		}
+
+		// encode the addrress
+		bvlpdu.PutData(w.bvlciAddress.AddrAddress...)
+
+		// encode the rest of the data
+		bvlpdu.PutData(w.GetPduData()...)
+
+		bvlpdu.setBVLC(w.bvlc)
+		return nil
+	default:
+		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
+	}
+}
+
+func (w *ForwardedNPDU) Decode(bvlpdu Arg) error {
+	switch bvlpdu := bvlpdu.(type) {
+	case BVLPDU:
+		if err := w.Update(bvlpdu); err != nil {
+			return errors.Wrap(err, "error updating BVLPDU")
+		}
+		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		case readWriteModel.BVLCForwardedNPDUExactly:
+			switch bvlc := pduUserData.(type) {
+			case readWriteModel.BVLCForwardedNPDU:
+				addr := bvlc.GetIp()
+				port := bvlc.GetPort()
+				var portArray = make([]byte, 2)
+				binary.BigEndian.PutUint16(portArray, port)
+				var err error
+				address, err := NewAddress(zerolog.Nop(), append(addr, portArray...))
+				if err != nil {
+					return errors.Wrap(err, "error creating address")
+				}
+				w.bvlciAddress = address
+
+				w.setBVLC(bvlc)
+			}
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
+	}
+}
+
+func (w *ForwardedNPDU) String() string {
+	return fmt.Sprintf("ForwardedNPDU{%v, bvlciAddress: %v}", w._BVLPDU, w.bvlciAddress)
 }
 
 // TODO: finish
@@ -844,7 +927,7 @@ func init() {
 			return v
 		},
 		0x04: func() interface{ Decode(Arg) error } {
-			v, _ := NewForwardedNPDU()
+			v, _ := NewForwardedNPDU(nil)
 			return v
 		},
 		0x05: func() interface{ Decode(Arg) error } {

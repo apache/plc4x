@@ -299,7 +299,11 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return a.Equals(b)
 			})
 		case bacnetip.KWBvlciAddress:
-			panic("implement me")
+			nni, ok := pdu.(*bacnetip.ForwardedNPDU)
+			if !ok {
+				return false
+			}
+			return nni.GetBvlciAddress().Equals(attrValue)
 		case bacnetip.KWFdAddress:
 			panic("implement me")
 		case bacnetip.KWFdTTL:

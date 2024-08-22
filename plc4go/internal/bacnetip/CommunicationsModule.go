@@ -25,6 +25,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 
@@ -151,12 +152,18 @@ func (p *__PCI) GetLengthInBits(ctx context.Context) uint16 {
 
 func (p *__PCI) String() string {
 	pduUserDataString := ""
-	if p.pduUserData != nil {
+	if p.pduUserData != nil && globals.ExtendedPDUOutput {
 		pduUserDataString = p.pduUserData.String()
 		if strings.Contains(pduUserDataString, "\n") {
 			pduUserDataString = "\n" + pduUserDataString + "\n"
 		}
 		pduUserDataString = "pduUserData: " + pduUserDataString + " ,"
+	} else if p.pduUserData != nil {
+		if bytes, err := p.pduUserData.Serialize(); err != nil {
+			pduUserDataString = "pduUserData: " + err.Error() + " ,"
+		} else {
+			pduUserDataString = "pduUserData: " + Btox(bytes, ".") + " ,"
+		}
 	}
 	return fmt.Sprintf("__PCI{%spduSource: %s, pduDestination: %s}", pduUserDataString, p.pduSource, p.pduDestination)
 }

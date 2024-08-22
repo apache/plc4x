@@ -799,6 +799,22 @@ func uint32ToIpv4(number uint32) net.IP {
 	return ipv4
 }
 
+// PackIpAddr Given an IP address tuple like ('1.2.3.4', 47808) return the six-octet string
+// useful for a BACnet address.
+func PackIpAddr(addrTuple *AddressTuple[string, uint16]) (octetString []byte) {
+	addr, port := addrTuple.Left, addrTuple.Right
+	octetString = append(net.ParseIP(addr).To4(), uint16ToPort(port)...)
+	return
+}
+
+// UnpackIpAddr Given a six-octet BACnet address, return an IP address tuple.
+func UnpackIpAddr(addr []byte) (addrTuple *AddressTuple[string, uint16]) {
+	ip := ipv4ToUint32(addr[:4])
+	port := portToUint16(addr[4:])
+
+	return &AddressTuple[string, uint16]{uint32ToIpv4(ip).String(), port}
+}
+
 func NewLocalStation(localLog zerolog.Logger, addr any, route *Address) (*Address, error) {
 	l := &Address{
 		log: localLog,
