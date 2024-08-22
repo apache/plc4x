@@ -17,14 +17,10 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus import StaticHelper
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
@@ -33,6 +29,8 @@ from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -85,6 +83,11 @@ class ModbusAsciiADU(ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
         read_buffer.push_context("ModbusAsciiADU")
+
+        if isinstance(driver_type, str):
+            driver_type = DriverType[driver_type]
+        if isinstance(response, str):
+            response = bool(response)
 
         address: int = read_buffer.read_unsigned_byte(
             logical_name="address",

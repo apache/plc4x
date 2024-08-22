@@ -17,17 +17,15 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas import StaticHelper
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+import math
 
 
 @dataclass
@@ -140,15 +138,8 @@ class UmasDatatypeReference:
 
         read_buffer.pop_context("UmasDatatypeReference")
         # Create the instance
-        _umas_datatype_reference: UmasDatatypeReference = (
-            UmasDatatypeReference(
-                data_size,
-                unknown1,
-                class_identifier,
-                data_type,
-                string_length,
-                value,
-            )
+        _umas_datatype_reference: UmasDatatypeReference = UmasDatatypeReference(
+            data_size, unknown1, class_identifier, data_type, string_length, value
         )
         return _umas_datatype_reference
 

@@ -58,9 +58,7 @@ class VariableRequestReference:
         )
 
         # Const Field (unknown1)
-        write_buffer.write_unsigned_byte(
-            self.UNKNOWN1, logical_name="unknown1"
-        )
+        write_buffer.write_unsigned_byte(self.UNKNOWN1, logical_name="unknown1")
 
         # Simple Field (baseOffset)
         write_buffer.write_unsigned_short(
@@ -73,9 +71,7 @@ class VariableRequestReference:
         )
 
         # Optional Field (arrayLength) (Can be skipped, if the value is null)
-        write_buffer.write_unsigned_short(
-            self.array_length, logical_name="arrayLength"
-        )
+        write_buffer.write_unsigned_short(self.array_length, logical_name="arrayLength")
 
         write_buffer.pop_context("VariableRequestReference")
 
@@ -141,9 +137,7 @@ class VariableRequestReference:
 
         array_length: int = None
         if self.is_array:
-            array_length = read_buffer.read_unsigned_short(
-                logical_name="arrayLength"
-            )
+            array_length = read_buffer.read_unsigned_short(logical_name="arrayLength")
 
         read_buffer.pop_context("VariableRequestReference")
         # Create the instance

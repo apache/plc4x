@@ -90,9 +90,7 @@ class WriteRequestBuilder(GenericGenerator):
         pass
 
     @abstractmethod
-    def add_item(
-        self, tag_name: str, address_string: str, value: PlcValue
-    ) -> None:
+    def add_item(self, tag_name: str, address_string: str, value: PlcValue) -> None:
         pass
 
 

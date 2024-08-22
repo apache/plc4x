@@ -17,18 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -45,9 +43,7 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
 
         # Simple Field (startingAddress)
         write_buffer.write_unsigned_short(
-            self.starting_address,
-            bit_length=16,
-            logical_name="startingAddress",
+            self.starting_address, bit_length=16, logical_name="startingAddress"
         )
 
         # Simple Field (quantity)
@@ -76,6 +72,9 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadDiscreteInputsRequest")
 
+        if isinstance(response, str):
+            response = bool(response)
+
         starting_address: int = read_buffer.read_unsigned_short(
             logical_name="starting_address", bit_length=16, response=response
         )
@@ -86,9 +85,7 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
 
         read_buffer.pop_context("ModbusPDUReadDiscreteInputsRequest")
         # Create the instance
-        return ModbusPDUReadDiscreteInputsRequestBuilder(
-            starting_address, quantity
-        )
+        return ModbusPDUReadDiscreteInputsRequestBuilder(starting_address, quantity)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -97,9 +94,7 @@ class ModbusPDUReadDiscreteInputsRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUReadDiscreteInputsRequest):
             return False
 
-        that: ModbusPDUReadDiscreteInputsRequest = (
-            ModbusPDUReadDiscreteInputsRequest(o)
-        )
+        that: ModbusPDUReadDiscreteInputsRequest = ModbusPDUReadDiscreteInputsRequest(o)
         return (
             (self.starting_address == that.starting_address)
             and (self.quantity == that.quantity)
@@ -129,7 +124,7 @@ class ModbusPDUReadDiscreteInputsRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDiscreteInputsRequest:
-        modbus_pduread_discrete_inputs_request: ModbusPDUReadDiscreteInputsRequest = ModbusPDUReadDiscreteInputsRequest(
-            self.starting_address, self.quantity
+        modbus_pduread_discrete_inputs_request: ModbusPDUReadDiscreteInputsRequest = (
+            ModbusPDUReadDiscreteInputsRequest(self.starting_address, self.quantity)
         )
         return modbus_pduread_discrete_inputs_request

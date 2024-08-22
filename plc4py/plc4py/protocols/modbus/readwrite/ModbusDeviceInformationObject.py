@@ -17,17 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import List
+import math
 
 
 @dataclass
@@ -45,9 +44,7 @@ class ModbusDeviceInformationObject:
 
         # Implicit Field (object_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         object_length: int = int(len(self.data))
-        write_buffer.write_unsigned_byte(
-            object_length, logical_name="object_length"
-        )
+        write_buffer.write_unsigned_byte(object_length, logical_name="object_length")
 
         # Array Field (data)
         write_buffer.write_byte_array(self.data, logical_name="data")
@@ -110,11 +107,7 @@ class ModbusDeviceInformationObject:
             return False
 
         that: ModbusDeviceInformationObject = ModbusDeviceInformationObject(o)
-        return (
-            (self.object_id == that.object_id)
-            and (self.data == that.data)
-            and True
-        )
+        return (self.object_id == that.object_id) and (self.data == that.data) and True
 
     def hash_code(self) -> int:
         return hash(self)

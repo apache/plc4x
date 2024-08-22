@@ -67,6 +67,4 @@ class PlcDriver:
         Discovery Request Builder aids in generating a discovery request for this protocol
         :return builder: Discovery request builder
         """
-        raise PlcNotImplementedException(
-            f"Not implemented for {self.protocol_name}"
-        )
+        raise PlcNotImplementedException(f"Not implemented for {self.protocol_name}")

@@ -17,15 +17,10 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from sys import getsizeof
-from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordRequestItem import (
@@ -33,6 +28,11 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordRequestItem import
 )
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from sys import getsizeof
+from typing import Any
+from typing import ClassVar
+from typing import List
+import math
 
 
 @dataclass
@@ -76,6 +76,9 @@ class ModbusPDUReadFileRecordRequest(ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFileRecordRequest")
 
+        if isinstance(response, str):
+            response = bool(response)
+
         byte_count: int = read_buffer.read_unsigned_byte(
             logical_name="byte_count", response=response
         )
@@ -98,9 +101,7 @@ class ModbusPDUReadFileRecordRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUReadFileRecordRequest):
             return False
 
-        that: ModbusPDUReadFileRecordRequest = ModbusPDUReadFileRecordRequest(
-            o
-        )
+        that: ModbusPDUReadFileRecordRequest = ModbusPDUReadFileRecordRequest(o)
         return (self.items == that.items) and super().equals(that) and True
 
     def hash_code(self) -> int:

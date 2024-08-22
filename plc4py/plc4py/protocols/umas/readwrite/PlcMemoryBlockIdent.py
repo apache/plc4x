@@ -17,16 +17,14 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+import math
 
 
 @dataclass
@@ -45,9 +43,7 @@ class PlcMemoryBlockIdent:
         )
 
         # Simple Field (folio)
-        write_buffer.write_unsigned_byte(
-            self.folio, bit_length=8, logical_name="folio"
-        )
+        write_buffer.write_unsigned_byte(self.folio, bit_length=8, logical_name="folio")
 
         # Simple Field (status)
         write_buffer.write_unsigned_short(
@@ -94,9 +90,7 @@ class PlcMemoryBlockIdent:
             logical_name="block_type", bit_length=8
         )
 
-        folio: int = read_buffer.read_unsigned_byte(
-            logical_name="folio", bit_length=8
-        )
+        folio: int = read_buffer.read_unsigned_byte(logical_name="folio", bit_length=8)
 
         status: int = read_buffer.read_unsigned_short(
             logical_name="status", bit_length=16

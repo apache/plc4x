@@ -91,9 +91,7 @@ class ModbusDevice:
         elif isinstance(tag, ModbusTagInputRegister):
             pdu = ModbusPDUReadInputRegistersRequest(tag.address, tag.quantity)
         elif isinstance(tag, ModbusTagHoldingRegister):
-            pdu = ModbusPDUReadHoldingRegistersRequest(
-                tag.address, tag.quantity
-            )
+            pdu = ModbusPDUReadHoldingRegistersRequest(tag.address, tag.quantity)
         else:
             raise NotImplementedError(
                 "Modbus tag type not implemented " + str(tag.__class__)
@@ -105,9 +103,7 @@ class ModbusDevice:
             self._configuration.unit_identifier,
             pdu,
         )
-        write_buffer = WriteBufferByteBased(
-            adu.length_in_bytes(), ByteOrder.BIG_ENDIAN
-        )
+        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
         adu.serialize(write_buffer)
 
         protocol = transport.protocol
@@ -131,15 +127,11 @@ class ModbusDevice:
             )
             return response
 
-        if isinstance(tag, ModbusTagCoil) or isinstance(
-            tag, ModbusTagDiscreteInput
-        ):
+        if isinstance(tag, ModbusTagCoil) or isinstance(tag, ModbusTagDiscreteInput):
             a = bitarray()
             a.frombytes(bytearray(result.value))
             a.bytereverse()
-            read_buffer = ReadBufferByteBased(
-                bytearray(a), ByteOrder.BIG_ENDIAN
-            )
+            read_buffer = ReadBufferByteBased(bytearray(a), ByteOrder.BIG_ENDIAN)
         else:
             read_buffer = ReadBufferByteBased(
                 bytearray(result.value), ByteOrder.BIG_ENDIAN

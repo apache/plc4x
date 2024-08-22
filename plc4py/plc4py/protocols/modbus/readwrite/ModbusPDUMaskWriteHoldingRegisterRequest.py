@@ -17,18 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -46,9 +44,7 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(ModbusPDU):
 
         # Simple Field (referenceAddress)
         write_buffer.write_unsigned_short(
-            self.reference_address,
-            bit_length=16,
-            logical_name="referenceAddress",
+            self.reference_address, bit_length=16, logical_name="referenceAddress"
         )
 
         # Simple Field (andMask)
@@ -84,6 +80,9 @@ class ModbusPDUMaskWriteHoldingRegisterRequest(ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUMaskWriteHoldingRegisterRequest")
+
+        if isinstance(response, str):
+            response = bool(response)
 
         reference_address: int = read_buffer.read_unsigned_short(
             logical_name="reference_address", bit_length=16, response=response
@@ -144,7 +143,9 @@ class ModbusPDUMaskWriteHoldingRegisterRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUMaskWriteHoldingRegisterRequest:
-        modbus_pdumask_write_holding_register_request: ModbusPDUMaskWriteHoldingRegisterRequest = ModbusPDUMaskWriteHoldingRegisterRequest(
+        modbus_pdumask_write_holding_register_request: (
+            ModbusPDUMaskWriteHoldingRegisterRequest
+        ) = ModbusPDUMaskWriteHoldingRegisterRequest(
             self.reference_address, self.and_mask, self.or_mask
         )
         return modbus_pdumask_write_holding_register_request

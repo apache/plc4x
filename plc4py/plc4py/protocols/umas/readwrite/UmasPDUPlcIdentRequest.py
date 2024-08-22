@@ -17,18 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -55,11 +53,14 @@ class UmasPDUPlcIdentRequest(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer,
-        umas_request_function_key: int,
-        byte_length: int,
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
         read_buffer.push_context("UmasPDUPlcIdentRequest")
+
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
 
         read_buffer.pop_context("UmasPDUPlcIdentRequest")
         # Create the instance
@@ -91,11 +92,10 @@ class UmasPDUPlcIdentRequest(UmasPDUItem):
 
 @dataclass
 class UmasPDUPlcIdentRequestBuilder:
+
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcIdentRequest:
-        umas_pduplc_ident_request: UmasPDUPlcIdentRequest = (
-            UmasPDUPlcIdentRequest(
-                byte_length,
-                pairing_key,
-            )
+        umas_pduplc_ident_request: UmasPDUPlcIdentRequest = UmasPDUPlcIdentRequest(
+            byte_length,
+            pairing_key,
         )
         return umas_pduplc_ident_request

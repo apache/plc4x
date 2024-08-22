@@ -41,9 +41,7 @@ class UmasVariable:
     block_no: int
     offset: int
 
-    def get_variable_reference(
-        self, address: str
-    ) -> VariableReadRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         raise NotImplementedError(
             f"UmasVariable subclass not implemented for variable {self.variable_name}"
         )
@@ -56,9 +54,7 @@ class UmasVariable:
 
 @dataclass
 class UmasElementryVariable(UmasVariable):
-    def get_variable_reference(
-        self, address: str
-    ) -> VariableReadRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         if self.data_type == UmasDataType.STRING.value:
             return VariableReadRequestReference(
                 is_array=1,
@@ -86,9 +82,7 @@ class UmasElementryVariable(UmasVariable):
 class UmasCustomVariable(UmasVariable):
     children: Dict[str, UmasVariable]
 
-    def get_variable_reference(
-        self, address: str
-    ) -> VariableReadRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         split_tag_address: List[str] = address.split(".")
         child_index = None
         if len(split_tag_address) > 1:
@@ -111,9 +105,7 @@ class UmasArrayVariable(UmasVariable):
     start_index: int
     end_index: int
 
-    def get_variable_reference(
-        self, address: str
-    ) -> VariableReadRequestReference:
+    def get_variable_reference(self, address: str) -> VariableReadRequestReference:
         split_tag_address: List[str] = address.split(".")
         address_index = None
         if len(split_tag_address) > 1:
@@ -126,8 +118,7 @@ class UmasArrayVariable(UmasVariable):
                 block=self.block_no,
                 base_offset=0x0000,
                 offset=self.offset
-                + (address_index - self.start_index)
-                * data_type_enum.data_type_size,
+                + (address_index - self.start_index) * data_type_enum.data_type_size,
                 array_length=None,
             )
         else:
@@ -155,7 +146,9 @@ class UmasVariableBuilder:
 
     def build(self) -> UmasVariable:
         variable: UmasVariable = None
-        _ARRAY_REGEX: str = "^ARRAY\[(?P<start_number>[0-9]*)..(?P<end_number>[0-9]*)\] OF (?P<data_type>[a-zA-z0-9]*)"
+        _ARRAY_REGEX: str = (
+            "^ARRAY\[(?P<start_number>[0-9]*)..(?P<end_number>[0-9]*)\] OF (?P<data_type>[a-zA-z0-9]*)"
+        )
         _ARRAY_COMPILED: Pattern[AnyStr] = re.compile(_ARRAY_REGEX)
 
         if self.block == -1:
@@ -198,9 +191,7 @@ class UmasVariableBuilder:
                             children,
                         )
                     elif data_type_reference.class_identifier == 4:
-                        match = _ARRAY_COMPILED.match(
-                            data_type_reference.value
-                        )
+                        match = _ARRAY_COMPILED.match(data_type_reference.value)
                         data_type = UmasDataType[match.group("data_type")]
                         variable = UmasArrayVariable(
                             self.tag_reference.value,

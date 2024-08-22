@@ -65,9 +65,7 @@ class MockDevice:
                     PlcResponseCode.OK, PlcBOOL(False)
                 )
             elif tag.data_type == "INT":
-                response_items[tag_name] = ResponseItem(
-                    PlcResponseCode.OK, PlcINT(0)
-                )
+                response_items[tag_name] = ResponseItem(PlcResponseCode.OK, PlcINT(0))
             else:
                 raise PlcFieldParseException
         return PlcReadResponse(PlcResponseCode.OK, response_items)

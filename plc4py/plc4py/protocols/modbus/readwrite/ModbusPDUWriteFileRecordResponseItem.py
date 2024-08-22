@@ -17,17 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import List
+import math
 
 
 @dataclass
@@ -57,14 +56,10 @@ class ModbusPDUWriteFileRecordResponseItem:
 
         # Implicit Field (record_length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         record_length: int = int(len(self.record_data)) / int(2)
-        write_buffer.write_unsigned_short(
-            record_length, logical_name="record_length"
-        )
+        write_buffer.write_unsigned_short(record_length, logical_name="record_length")
 
         # Array Field (recordData)
-        write_buffer.write_byte_array(
-            self.record_data, logical_name="record_data"
-        )
+        write_buffer.write_byte_array(self.record_data, logical_name="record_data")
 
         write_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
 
@@ -95,9 +90,7 @@ class ModbusPDUWriteFileRecordResponseItem:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return ModbusPDUWriteFileRecordResponseItem.static_parse_context(
-            read_buffer
-        )
+        return ModbusPDUWriteFileRecordResponseItem.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
@@ -127,7 +120,9 @@ class ModbusPDUWriteFileRecordResponseItem:
 
         read_buffer.pop_context("ModbusPDUWriteFileRecordResponseItem")
         # Create the instance
-        _modbus_pduwrite_file_record_response_item: ModbusPDUWriteFileRecordResponseItem = ModbusPDUWriteFileRecordResponseItem(
+        _modbus_pduwrite_file_record_response_item: (
+            ModbusPDUWriteFileRecordResponseItem
+        ) = ModbusPDUWriteFileRecordResponseItem(
             reference_type, file_number, record_number, record_data
         )
         return _modbus_pduwrite_file_record_response_item

@@ -17,18 +17,18 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import ClassVar
+from typing import List
+import math
 
 
 @dataclass
@@ -40,9 +40,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
     response: ClassVar[bool] = True
 
     def serialize_modbus_pdu_child(self, write_buffer: WriteBuffer):
-        write_buffer.push_context(
-            "ModbusPDUReadWriteMultipleHoldingRegistersResponse"
-        )
+        write_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
         byte_count: int = int(len(self.value))
@@ -51,9 +49,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
         # Array Field (value)
         write_buffer.write_byte_array(self.value, logical_name="value")
 
-        write_buffer.pop_context(
-            "ModbusPDUReadWriteMultipleHoldingRegistersResponse"
-        )
+        write_buffer.pop_context("ModbusPDUReadWriteMultipleHoldingRegistersResponse")
 
     def length_in_bytes(self) -> int:
         return int(math.ceil(float(self.length_in_bits() / 8.0)))
@@ -73,9 +69,10 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
 
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
-        read_buffer.push_context(
-            "ModbusPDUReadWriteMultipleHoldingRegistersResponse"
-        )
+        read_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersResponse")
+
+        if isinstance(response, str):
+            response = bool(response)
 
         byte_count: int = read_buffer.read_unsigned_byte(
             logical_name="byte_count", response=response
@@ -88,9 +85,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
             response=response,
         )
 
-        read_buffer.pop_context(
-            "ModbusPDUReadWriteMultipleHoldingRegistersResponse"
-        )
+        read_buffer.pop_context("ModbusPDUReadWriteMultipleHoldingRegistersResponse")
         # Create the instance
         return ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder(value)
 
@@ -98,9 +93,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponse(ModbusPDU):
         if self == o:
             return True
 
-        if not isinstance(
-            o, ModbusPDUReadWriteMultipleHoldingRegistersResponse
-        ):
+        if not isinstance(o, ModbusPDUReadWriteMultipleHoldingRegistersResponse):
             return False
 
         that: ModbusPDUReadWriteMultipleHoldingRegistersResponse = (
@@ -129,7 +122,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadWriteMultipleHoldingRegistersResponse:
-        modbus_pduread_write_multiple_holding_registers_response: ModbusPDUReadWriteMultipleHoldingRegistersResponse = ModbusPDUReadWriteMultipleHoldingRegistersResponse(
-            self.value
-        )
+        modbus_pduread_write_multiple_holding_registers_response: (
+            ModbusPDUReadWriteMultipleHoldingRegistersResponse
+        ) = ModbusPDUReadWriteMultipleHoldingRegistersResponse(self.value)
         return modbus_pduread_write_multiple_holding_registers_response

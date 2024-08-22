@@ -17,19 +17,17 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -56,9 +54,7 @@ class UmasInitCommsResponse(UmasPDUItem):
 
         # Simple Field (firmwareVersion)
         write_buffer.write_unsigned_short(
-            self.firmware_version,
-            bit_length=16,
-            logical_name="firmwareVersion",
+            self.firmware_version, bit_length=16, logical_name="firmwareVersion"
         )
 
         # Simple Field (notSure)
@@ -77,9 +73,7 @@ class UmasInitCommsResponse(UmasPDUItem):
         )
 
         # Simple Field (hostname)
-        write_buffer.write_str(
-            self.hostname, bit_length=-1, logical_name="hostname"
-        )
+        write_buffer.write_str(self.hostname, bit_length=-1, logical_name="hostname")
 
         write_buffer.pop_context("UmasInitCommsResponse")
 
@@ -112,11 +106,14 @@ class UmasInitCommsResponse(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer,
-        umas_request_function_key: int,
-        byte_length: int,
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
         read_buffer.push_context("UmasInitCommsResponse")
+
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
 
         max_frame_size: int = read_buffer.read_unsigned_short(
             logical_name="max_frame_size",
@@ -220,16 +217,14 @@ class UmasInitCommsResponseBuilder:
     hostname: str
 
     def build(self, byte_length: int, pairing_key) -> UmasInitCommsResponse:
-        umas_init_comms_response: UmasInitCommsResponse = (
-            UmasInitCommsResponse(
-                byte_length,
-                pairing_key,
-                self.max_frame_size,
-                self.firmware_version,
-                self.not_sure,
-                self.internal_code,
-                self.hostname_length,
-                self.hostname,
-            )
+        umas_init_comms_response: UmasInitCommsResponse = UmasInitCommsResponse(
+            byte_length,
+            pairing_key,
+            self.max_frame_size,
+            self.firmware_version,
+            self.not_sure,
+            self.internal_code,
+            self.hostname_length,
+            self.hostname,
         )
         return umas_init_comms_response

@@ -48,9 +48,7 @@ class ModbusProtocol(Plc4xBaseProtocol):
         )
         read_buffer.position = 8 * 4
         packet_length: int = read_buffer.read_unsigned_short()
-        logging.debug(
-            f"Packet length in packet_length_estimator: {packet_length}"
-        )
+        logging.debug(f"Packet length in packet_length_estimator: {packet_length}")
         read_buffer.position = current_position
         logging.debug(
             f"Buffer length in packet_length_estimator: {len(read_buffer.bb)}"
@@ -88,23 +86,17 @@ class ModbusProtocol(Plc4xBaseProtocol):
             # If the ADU transaction identifier is in the messages dictionary,
             # set the PDU (data) as a result of the associated Future object.
             if adu.transaction_identifier in self.messages:
-                logging.debug(
-                    f"Found transaction ID {adu.transaction_identifier}"
-                )
+                logging.debug(f"Found transaction ID {adu.transaction_identifier}")
                 self.messages[adu.transaction_identifier].set_result(adu.pdu)
                 self.messages.pop(adu.transaction_identifier)
             # If the ADU transaction identifier is not found, log an error
             # message and close the connection.
             else:
                 logging.error("Unsolicited message returned")
-                logging.debug(
-                    f"Transaction ID {adu.transaction_identifier} not found"
-                )
+                logging.debug(f"Transaction ID {adu.transaction_identifier} not found")
                 self.close()
 
-    def write_wait_for_response(
-        self, data, transport, transaction_id, message_future
-    ):
+    def write_wait_for_response(self, data, transport, transaction_id, message_future):
         """
         Writes a message to the wire and records the transaction identifier to identify and route the response.
 
@@ -130,9 +122,7 @@ class ModbusProtocol(Plc4xBaseProtocol):
         # Iterate over the messages dictionary
         for key, message in self.messages.items():
             # Log the removal of un-replied message
-            logging.debug(
-                "Removing un-replied message with identifier " + str(key)
-            )
+            logging.debug("Removing un-replied message with identifier " + str(key))
             # Set the result of the message to None
             message.set_result(None)
             # Remove the message from the dictionary

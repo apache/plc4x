@@ -17,42 +17,39 @@
 # under the License.
 #
 
-import math
-from typing import List, cast
-
 from plc4py.api.value.PlcValue import PlcValue
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from plc4py.spi.values.PlcValues import (
-    PlcBOOL,
-    PlcBYTE,
-    PlcCHAR,
-    PlcDINT,
-    PlcDWORD,
-    PlcINT,
-    PlcLINT,
-    PlcList,
-    PlcLREAL,
-    PlcLWORD,
-    PlcREAL,
-    PlcSINT,
-    PlcSTRING,
-    PlcUDINT,
-    PlcUINT,
-    PlcULINT,
-    PlcUSINT,
-    PlcWCHAR,
-    PlcWORD,
-)
+from plc4py.spi.values.PlcValues import PlcBOOL
+from plc4py.spi.values.PlcValues import PlcBYTE
+from plc4py.spi.values.PlcValues import PlcCHAR
+from plc4py.spi.values.PlcValues import PlcDINT
+from plc4py.spi.values.PlcValues import PlcDWORD
+from plc4py.spi.values.PlcValues import PlcINT
+from plc4py.spi.values.PlcValues import PlcLINT
+from plc4py.spi.values.PlcValues import PlcLREAL
+from plc4py.spi.values.PlcValues import PlcLWORD
+from plc4py.spi.values.PlcValues import PlcList
+from plc4py.spi.values.PlcValues import PlcREAL
+from plc4py.spi.values.PlcValues import PlcSINT
+from plc4py.spi.values.PlcValues import PlcSTRING
+from plc4py.spi.values.PlcValues import PlcUDINT
+from plc4py.spi.values.PlcValues import PlcUINT
+from plc4py.spi.values.PlcValues import PlcULINT
+from plc4py.spi.values.PlcValues import PlcUSINT
+from plc4py.spi.values.PlcValues import PlcWCHAR
+from plc4py.spi.values.PlcValues import PlcWORD
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import List
+from typing import cast
+import math
 
 
 class DataItem:
     @staticmethod
-    def static_parse(
-        read_buffer: ReadBuffer, data_type: str, number_of_values: int
-    ):
+    def static_parse(read_buffer: ReadBuffer, data_type: str, number_of_values: int):
         if data_type == "_bool" and number_of_values == int(1):  # BOOL
+
             # Simple Field (value)
             value: bool = read_buffer.read_bit("")
 
@@ -67,6 +64,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == "_byte" and number_of_values == int(1):  # BYTE
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
 
@@ -78,15 +76,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcUINT(
-                        int(
-                            read_buffer.read_unsigned_short(8, logical_name="")
-                        )
-                    )
+                    PlcUINT(int(read_buffer.read_unsigned_short(8, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_word" and number_of_values == int(1):  # WORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
@@ -98,13 +93,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcUDINT(
-                        int(read_buffer.read_unsigned_int(16, logical_name=""))
-                    )
+                    PlcUDINT(int(read_buffer.read_unsigned_int(16, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_dword" and number_of_values == int(1):  # DWORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
@@ -116,15 +110,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcULINT(
-                        int(
-                            read_buffer.read_unsigned_long(32, logical_name="")
-                        )
-                    )
+                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_lword" and number_of_values == int(1):  # LWORD
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
@@ -136,15 +127,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcLINT(
-                        int(
-                            read_buffer.read_unsigned_long(64, logical_name="")
-                        )
-                    )
+                    PlcLINT(int(read_buffer.read_unsigned_long(64, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_sint" and number_of_values == int(1):  # SINT
+
             # Simple Field (value)
             value: int = read_buffer.read_signed_byte(8, logical_name="")
 
@@ -156,13 +144,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcSINT(
-                        int(read_buffer.read_signed_byte(8, logical_name=""))
-                    )
+                    PlcSINT(int(read_buffer.read_signed_byte(8, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_int" and number_of_values == int(1):  # INT
+
             # Simple Field (value)
             value: int = read_buffer.read_short(16, logical_name="")
 
@@ -173,12 +160,11 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcINT(int(read_buffer.read_short(16, logical_name="")))
-                )
+                value.append(PlcINT(int(read_buffer.read_short(16, logical_name=""))))
 
             return PlcList(value)
         if data_type == "_dint" and number_of_values == int(1):  # DINT
+
             # Simple Field (value)
             value: int = read_buffer.read_int(32, logical_name="")
 
@@ -189,12 +175,11 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcDINT(int(read_buffer.read_int(32, logical_name="")))
-                )
+                value.append(PlcDINT(int(read_buffer.read_int(32, logical_name=""))))
 
             return PlcList(value)
         if data_type == "_lint" and number_of_values == int(1):  # LINT
+
             # Simple Field (value)
             value: int = read_buffer.read_long(64, logical_name="")
 
@@ -205,12 +190,11 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcLINT(int(read_buffer.read_long(64, logical_name="")))
-                )
+                value.append(PlcLINT(int(read_buffer.read_long(64, logical_name=""))))
 
             return PlcList(value)
         if data_type == "_usint" and number_of_values == int(1):  # USINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_short(8, logical_name="")
 
@@ -222,15 +206,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcUINT(
-                        int(
-                            read_buffer.read_unsigned_short(8, logical_name="")
-                        )
-                    )
+                    PlcUINT(int(read_buffer.read_unsigned_short(8, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_uint" and number_of_values == int(1):  # UINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_int(16, logical_name="")
 
@@ -242,13 +223,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcUDINT(
-                        int(read_buffer.read_unsigned_int(16, logical_name=""))
-                    )
+                    PlcUDINT(int(read_buffer.read_unsigned_int(16, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_udint" and number_of_values == int(1):  # UDINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(32, logical_name="")
 
@@ -260,15 +240,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcULINT(
-                        int(
-                            read_buffer.read_unsigned_long(32, logical_name="")
-                        )
-                    )
+                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_ulint" and number_of_values == int(1):  # ULINT
+
             # Simple Field (value)
             value: int = read_buffer.read_unsigned_long(64, logical_name="")
 
@@ -280,15 +257,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcLINT(
-                        int(
-                            read_buffer.read_unsigned_long(64, logical_name="")
-                        )
-                    )
+                    PlcLINT(int(read_buffer.read_unsigned_long(64, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_real" and number_of_values == int(1):  # REAL
+
             # Simple Field (value)
             value: float = read_buffer.read_float(32, logical_name="")
 
@@ -305,6 +279,7 @@ class DataItem:
 
             return PlcList(value)
         if data_type == "_lreal" and number_of_values == int(1):  # LREAL
+
             # Simple Field (value)
             value: float = read_buffer.read_double(64, logical_name="")
 
@@ -316,13 +291,12 @@ class DataItem:
             value: List[PlcValue] = []
             for _ in range(item_count):
                 value.append(
-                    PlcLREAL(
-                        float(read_buffer.read_double(64, logical_name=""))
-                    )
+                    PlcLREAL(float(read_buffer.read_double(64, logical_name="")))
                 )
 
             return PlcList(value)
         if data_type == "_char" and number_of_values == int(1):  # CHAR
+
             # Simple Field (value)
             value: str = read_buffer.read_str(8, logical_name="", encoding="")
 
@@ -335,16 +309,13 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(
-                            read_buffer.read_str(
-                                8, logical_name="", encoding=""
-                            )
-                        )
+                        str(read_buffer.read_str(8, logical_name="", encoding=""))
                     )
                 )
 
             return PlcList(value)
         if data_type == "_wchar" and number_of_values == int(1):  # WCHAR
+
             # Simple Field (value)
             value: str = read_buffer.read_str(16, logical_name="", encoding="")
 
@@ -357,27 +328,21 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(
-                            read_buffer.read_str(
-                                16, logical_name="", encoding=""
-                            )
-                        )
+                        str(read_buffer.read_str(16, logical_name="", encoding=""))
                     )
                 )
 
             return PlcList(value)
         if data_type == "_string":  # STRING
+
             # Simple Field (value)
-            value: str = read_buffer.read_str(
-                255, logical_name="", encoding=""
-            )
+            value: str = read_buffer.read_str(255, logical_name="", encoding="")
 
             return PlcSTRING(value)
         if data_type == "_wstring":  # STRING
+
             # Simple Field (value)
-            value: str = read_buffer.read_str(
-                255, logical_name="", encoding=""
-            )
+            value: str = read_buffer.read_str(255, logical_name="", encoding="")
 
             return PlcSTRING(value)
         return None
@@ -593,11 +558,7 @@ class DataItem:
     ) -> int:
         return int(
             math.ceil(
-                float(
-                    DataItem.get_length_in_bits(
-                        _value, data_type, number_of_values
-                    )
-                )
+                float(DataItem.get_length_in_bits(_value, data_type, number_of_values))
                 / 8.0
             )
         )

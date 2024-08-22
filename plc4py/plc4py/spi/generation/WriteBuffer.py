@@ -171,9 +171,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
     ) -> None:
         raise NotImplementedError
 
-    def write_manual(
-        self, logical_name: str = "", write_function=None, **kwargs
-    ):
+    def write_manual(self, logical_name: str = "", write_function=None, **kwargs):
         if isinstance(write_function, types.FunctionType):
             return write_function()
 
@@ -205,9 +203,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
 
     def __init__(self, size: int, byte_order: ByteOrder):
         # This refers to the bit alignment, which we always use big bit endianess
-        self.bb = zeros(
-            size * 8, endian=ByteOrder.get_short_name(ByteOrder.BIG_ENDIAN)
-        )
+        self.bb = zeros(size * 8, endian=ByteOrder.get_short_name(ByteOrder.BIG_ENDIAN))
         self.byte_order = byte_order
         self.position: int = 0
 
@@ -242,13 +238,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "unsigned byte must contain at least 1 bit"
-            )
+            raise SerializationException("unsigned byte must contain at least 1 bit")
         elif bit_length > 8:
-            raise SerializationException(
-                "unsigned byte can only contain max 8 bits"
-            )
+            raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
             self._handle_numeric_encoding(
                 value, bit_length, numeric_format="B", **kwargs
@@ -262,13 +254,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "unsigned short must contain at least 1 bit"
-            )
+            raise SerializationException("unsigned short must contain at least 1 bit")
         elif bit_length > 16:
-            raise SerializationException(
-                "unsigned short can only contain max 16 bits"
-            )
+            raise SerializationException("unsigned short can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
                 value, bit_length, numeric_format="H", **kwargs
@@ -282,13 +270,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "unsigned int must contain at least 1 bit"
-            )
+            raise SerializationException("unsigned int must contain at least 1 bit")
         elif bit_length > 32:
-            raise SerializationException(
-                "unsigned int can only contain max 32 bits"
-            )
+            raise SerializationException("unsigned int can only contain max 32 bits")
         else:
             self._handle_numeric_encoding(
                 value, bit_length, numeric_format="I", **kwargs
@@ -302,13 +286,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "unsigned long must contain at least 1 bit"
-            )
+            raise SerializationException("unsigned long must contain at least 1 bit")
         elif bit_length > 64:
-            raise SerializationException(
-                "unsigned long can only contain max 16 bits"
-            )
+            raise SerializationException("unsigned long can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
                 value, bit_length, numeric_format="Q", **kwargs
@@ -318,16 +298,10 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "Signed byte must contain at least 1 bit"
-            )
+            raise SerializationException("Signed byte must contain at least 1 bit")
         elif bit_length > 8:
-            raise SerializationException(
-                "Signed byte can only contain max 8 bits"
-            )
-        self._handle_numeric_encoding(
-            value, bit_length, numeric_format="b", **kwargs
-        )
+            raise SerializationException("Signed byte can only contain max 8 bits")
+        self._handle_numeric_encoding(value, bit_length, numeric_format="b", **kwargs)
 
     def write_short(
         self,
@@ -337,16 +311,10 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "Signed short must contain at least 1 bit"
-            )
+            raise SerializationException("Signed short must contain at least 1 bit")
         elif bit_length > 16:
-            raise SerializationException(
-                "Signed short can only contain max 16 bits"
-            )
-        self._handle_numeric_encoding(
-            value, bit_length, numeric_format="h", **kwargs
-        )
+            raise SerializationException("Signed short can only contain max 16 bits")
+        self._handle_numeric_encoding(value, bit_length, numeric_format="h", **kwargs)
 
     def write_int(
         self,
@@ -356,16 +324,10 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "Signed int must contain at least 1 bit"
-            )
+            raise SerializationException("Signed int must contain at least 1 bit")
         elif bit_length > 32:
-            raise SerializationException(
-                "Signed int can only contain max 32 bits"
-            )
-        self._handle_numeric_encoding(
-            value, bit_length, numeric_format="i", **kwargs
-        )
+            raise SerializationException("Signed int can only contain max 32 bits")
+        self._handle_numeric_encoding(value, bit_length, numeric_format="i", **kwargs)
 
     def write_long(
         self,
@@ -375,16 +337,10 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         **kwargs,
     ) -> None:
         if bit_length <= 0:
-            raise SerializationException(
-                "Signed long must contain at least 1 bit"
-            )
+            raise SerializationException("Signed long must contain at least 1 bit")
         elif bit_length > 64:
-            raise SerializationException(
-                "Signed long can only contain max 64 bits"
-            )
-        self._handle_numeric_encoding(
-            value, bit_length, numeric_format="q", **kwargs
-        )
+            raise SerializationException("Signed long can only contain max 64 bits")
+        self._handle_numeric_encoding(value, bit_length, numeric_format="q", **kwargs)
 
     def write_float(
         self,
@@ -397,9 +353,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Float must contain at least 1 bit")
         elif bit_length > 32:
             raise SerializationException("Float can only contain max 32 bits")
-        self._handle_numeric_encoding(
-            value, bit_length, numeric_format="f", **kwargs
-        )
+        self._handle_numeric_encoding(value, bit_length, numeric_format="f", **kwargs)
 
     def write_double(
         self,
@@ -412,9 +366,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Double must contain at least 1 bit")
         elif bit_length > 64:
             raise SerializationException("Double can only contain max 64 bits")
-        self._handle_numeric_encoding(
-            value, bit_length, numeric_format="d", **kwargs
-        )
+        self._handle_numeric_encoding(value, bit_length, numeric_format="d", **kwargs)
 
     def write_complex_array(
         self, value: List[PlcMessage], logical_name: str = "", **kwargs
@@ -437,9 +389,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             string_value: str = "{}".format(value.value)
             src = bitarray(endian=ByteOrder.get_short_name(bit_order))
             src.frombytes(bytearray(string_value, value_encoding))
-            self.bb[self.position : self.position + bit_length] = src[
-                :bit_length
-            ]
+            self.bb[self.position : self.position + bit_length] = src[:bit_length]
             self.position += bit_length
         elif value_encoding == "default":
             src = bitarray(endian=ByteOrder.get_short_name(bit_order))
@@ -452,13 +402,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             )
             src.frombytes(result)
             if bit_length < 8:
-                self.bb[self.position : self.position + bit_length] = src[
-                    -bit_length:
-                ]
+                self.bb[self.position : self.position + bit_length] = src[-bit_length:]
             else:
-                self.bb[self.position : self.position + bit_length] = src[
-                    :bit_length
-                ]
+                self.bb[self.position : self.position + bit_length] = src[:bit_length]
             self.position += bit_length
 
 

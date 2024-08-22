@@ -32,9 +32,7 @@ from plc4py.utils.ConnectionStringHandling import get_protocol_code
 
 @dataclass
 class PlcDriverManager:
-    class_loader: PluginManager = field(
-        default_factory=lambda: PluginManager("plc4py")
-    )
+    class_loader: PluginManager = field(default_factory=lambda: PluginManager("plc4py"))
     _driver_map: Dict[str, Type[PlcDriver]] = field(default_factory=lambda: {})
 
     def __post_init__(self):

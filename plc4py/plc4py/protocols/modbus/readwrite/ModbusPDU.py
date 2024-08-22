@@ -17,22 +17,22 @@
 # under the License.
 #
 
-import math
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import (
-    ParseException,
-    PlcRuntimeException,
-    SerializationException,
-)
+from abc import ABC
+from abc import abstractmethod
+from plc4py.api.exceptions.exceptions import ParseException
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+import math
 
 
 @dataclass
 class ModbusPDU(ABC, PlcMessage):
+
     # Abstract accessors for discriminator values.
     @property
     def error_flag(self) -> bool:
@@ -54,9 +54,7 @@ class ModbusPDU(ABC, PlcMessage):
         write_buffer.push_context("ModbusPDU")
 
         # Discriminator Field (errorFlag) (Used as input to a switch field)
-        write_buffer.write_bit(
-            self.error_flag, logical_name="error_flag", bit_length=1
-        )
+        write_buffer.write_bit(self.error_flag, logical_name="error_flag", bit_length=1)
 
         # Discriminator Field (functionFlag) (Used as input to a switch field)
         write_buffer.write_unsigned_byte(
@@ -87,6 +85,7 @@ class ModbusPDU(ABC, PlcMessage):
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
+
         if kwargs is None:
             raise PlcRuntimeException(
                 "Wrong number of arguments, expected 1, but got None"
@@ -108,6 +107,9 @@ class ModbusPDU(ABC, PlcMessage):
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDU")
+
+        if isinstance(response, str):
+            response = bool(response)
         error_flag: bool = read_buffer.read_bit(
             logical_name="error_flag", bit_length=1, response=response
         )
@@ -118,14 +120,11 @@ class ModbusPDU(ABC, PlcMessage):
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusPDUBuilder = None
-        from plc4py.protocols.modbus.readwrite.ModbusPDUError import (
-            ModbusPDUError,
-        )
+        from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
 
         if error_flag == bool(True):
-            builder = ModbusPDUError.static_parse_builder(
-                read_buffer, response
-            )
+
+            builder = ModbusPDUError.static_parse_builder(read_buffer, response)
         from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
             ModbusPDUReadDiscreteInputsRequest,
         )
@@ -135,6 +134,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x02)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReadDiscreteInputsRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -147,6 +147,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x02)
             and response == bool(True)
         ):
+
             builder = ModbusPDUReadDiscreteInputsResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -159,6 +160,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x01)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReadCoilsRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -171,6 +173,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x01)
             and response == bool(True)
         ):
+
             builder = ModbusPDUReadCoilsResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -183,6 +186,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x05)
             and response == bool(False)
         ):
+
             builder = ModbusPDUWriteSingleCoilRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -195,6 +199,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x05)
             and response == bool(True)
         ):
+
             builder = ModbusPDUWriteSingleCoilResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -207,6 +212,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x0F)
             and response == bool(False)
         ):
+
             builder = ModbusPDUWriteMultipleCoilsRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -219,6 +225,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x0F)
             and response == bool(True)
         ):
+
             builder = ModbusPDUWriteMultipleCoilsResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -231,6 +238,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x04)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReadInputRegistersRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -243,6 +251,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x04)
             and response == bool(True)
         ):
+
             builder = ModbusPDUReadInputRegistersResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -255,10 +264,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x03)
             and response == bool(False)
         ):
-            builder = (
-                ModbusPDUReadHoldingRegistersRequest.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUReadHoldingRegistersRequest.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersResponse import (
             ModbusPDUReadHoldingRegistersResponse,
@@ -269,10 +277,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x03)
             and response == bool(True)
         ):
-            builder = (
-                ModbusPDUReadHoldingRegistersResponse.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUReadHoldingRegistersResponse.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUWriteSingleRegisterRequest import (
             ModbusPDUWriteSingleRegisterRequest,
@@ -283,6 +290,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x06)
             and response == bool(False)
         ):
+
             builder = ModbusPDUWriteSingleRegisterRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -295,10 +303,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x06)
             and response == bool(True)
         ):
-            builder = (
-                ModbusPDUWriteSingleRegisterResponse.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUWriteSingleRegisterResponse.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import (
             ModbusPDUWriteMultipleHoldingRegistersRequest,
@@ -309,8 +316,11 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x10)
             and response == bool(False)
         ):
-            builder = ModbusPDUWriteMultipleHoldingRegistersRequest.static_parse_builder(
-                read_buffer, response
+
+            builder = (
+                ModbusPDUWriteMultipleHoldingRegistersRequest.static_parse_builder(
+                    read_buffer, response
+                )
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersResponse import (
             ModbusPDUWriteMultipleHoldingRegistersResponse,
@@ -321,8 +331,11 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x10)
             and response == bool(True)
         ):
-            builder = ModbusPDUWriteMultipleHoldingRegistersResponse.static_parse_builder(
-                read_buffer, response
+
+            builder = (
+                ModbusPDUWriteMultipleHoldingRegistersResponse.static_parse_builder(
+                    read_buffer, response
+                )
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersRequest import (
             ModbusPDUReadWriteMultipleHoldingRegistersRequest,
@@ -333,8 +346,11 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x17)
             and response == bool(False)
         ):
-            builder = ModbusPDUReadWriteMultipleHoldingRegistersRequest.static_parse_builder(
-                read_buffer, response
+
+            builder = (
+                ModbusPDUReadWriteMultipleHoldingRegistersRequest.static_parse_builder(
+                    read_buffer, response
+                )
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUReadWriteMultipleHoldingRegistersResponse import (
             ModbusPDUReadWriteMultipleHoldingRegistersResponse,
@@ -345,8 +361,11 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x17)
             and response == bool(True)
         ):
-            builder = ModbusPDUReadWriteMultipleHoldingRegistersResponse.static_parse_builder(
-                read_buffer, response
+
+            builder = (
+                ModbusPDUReadWriteMultipleHoldingRegistersResponse.static_parse_builder(
+                    read_buffer, response
+                )
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterRequest import (
             ModbusPDUMaskWriteHoldingRegisterRequest,
@@ -357,10 +376,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x16)
             and response == bool(False)
         ):
-            builder = (
-                ModbusPDUMaskWriteHoldingRegisterRequest.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUMaskWriteHoldingRegisterRequest.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUMaskWriteHoldingRegisterResponse import (
             ModbusPDUMaskWriteHoldingRegisterResponse,
@@ -371,10 +389,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x16)
             and response == bool(True)
         ):
-            builder = (
-                ModbusPDUMaskWriteHoldingRegisterResponse.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUMaskWriteHoldingRegisterResponse.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUReadFifoQueueRequest import (
             ModbusPDUReadFifoQueueRequest,
@@ -385,6 +402,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x18)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReadFifoQueueRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -397,6 +415,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x18)
             and response == bool(True)
         ):
+
             builder = ModbusPDUReadFifoQueueResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -409,6 +428,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x14)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReadFileRecordRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -421,6 +441,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x14)
             and response == bool(True)
         ):
+
             builder = ModbusPDUReadFileRecordResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -433,6 +454,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x15)
             and response == bool(False)
         ):
+
             builder = ModbusPDUWriteFileRecordRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -445,6 +467,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x15)
             and response == bool(True)
         ):
+
             builder = ModbusPDUWriteFileRecordResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -457,6 +480,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x07)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReadExceptionStatusRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -469,10 +493,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x07)
             and response == bool(True)
         ):
-            builder = (
-                ModbusPDUReadExceptionStatusResponse.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUReadExceptionStatusResponse.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUDiagnosticRequest import (
             ModbusPDUDiagnosticRequest,
@@ -483,6 +506,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x08)
             and response == bool(False)
         ):
+
             builder = ModbusPDUDiagnosticRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -495,6 +519,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x08)
             and response == bool(True)
         ):
+
             builder = ModbusPDUDiagnosticResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -507,6 +532,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x0B)
             and response == bool(False)
         ):
+
             builder = ModbusPDUGetComEventCounterRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -519,6 +545,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x0B)
             and response == bool(True)
         ):
+
             builder = ModbusPDUGetComEventCounterResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -531,6 +558,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x0C)
             and response == bool(False)
         ):
+
             builder = ModbusPDUGetComEventLogRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -543,6 +571,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x0C)
             and response == bool(True)
         ):
+
             builder = ModbusPDUGetComEventLogResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -555,6 +584,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x11)
             and response == bool(False)
         ):
+
             builder = ModbusPDUReportServerIdRequest.static_parse_builder(
                 read_buffer, response
             )
@@ -567,6 +597,7 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x11)
             and response == bool(True)
         ):
+
             builder = ModbusPDUReportServerIdResponse.static_parse_builder(
                 read_buffer, response
             )
@@ -579,10 +610,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x2B)
             and response == bool(False)
         ):
-            builder = (
-                ModbusPDUReadDeviceIdentificationRequest.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUReadDeviceIdentificationRequest.static_parse_builder(
+                read_buffer, response
             )
         from plc4py.protocols.modbus.readwrite.ModbusPDUReadDeviceIdentificationResponse import (
             ModbusPDUReadDeviceIdentificationResponse,
@@ -593,10 +623,9 @@ class ModbusPDU(ABC, PlcMessage):
             and function_flag == int(0x2B)
             and response == bool(True)
         ):
-            builder = (
-                ModbusPDUReadDeviceIdentificationResponse.static_parse_builder(
-                    read_buffer, response
-                )
+
+            builder = ModbusPDUReadDeviceIdentificationResponse.static_parse_builder(
+                read_buffer, response
             )
         if builder is None:
             raise ParseException(

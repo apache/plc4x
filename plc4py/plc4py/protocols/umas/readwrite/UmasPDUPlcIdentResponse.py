@@ -17,22 +17,20 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.umas.readwrite.PlcMemoryBlockIdent import (
-    PlcMemoryBlockIdent,
-)
+from plc4py.protocols.umas.readwrite.PlcMemoryBlockIdent import PlcMemoryBlockIdent
 from plc4py.protocols.umas.readwrite.UmasPDUItem import UmasPDUItem
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
 from plc4py.utils.GenericTypes import ByteOrder
+from typing import Any
+from typing import ClassVar
+from typing import List
+import math
 
 
 @dataclass
@@ -65,9 +63,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         # Simple Field (ident)
-        write_buffer.write_unsigned_int(
-            self.ident, bit_length=32, logical_name="ident"
-        )
+        write_buffer.write_unsigned_int(self.ident, bit_length=32, logical_name="ident")
 
         # Simple Field (model)
         write_buffer.write_unsigned_short(
@@ -91,9 +87,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
 
         # Simple Field (hardwareVersion)
         write_buffer.write_unsigned_short(
-            self.hardware_version,
-            bit_length=16,
-            logical_name="hardwareVersion",
+            self.hardware_version, bit_length=16, logical_name="hardwareVersion"
         )
 
         # Simple Field (crashCode)
@@ -112,9 +106,7 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
         )
 
         # Simple Field (hostname)
-        write_buffer.write_str(
-            self.hostname, bit_length=-1, logical_name="hostname"
-        )
+        write_buffer.write_str(self.hostname, bit_length=-1, logical_name="hostname")
 
         # Simple Field (numberOfMemoryBanks)
         write_buffer.write_unsigned_byte(
@@ -182,11 +174,14 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
 
     @staticmethod
     def static_parse_builder(
-        read_buffer: ReadBuffer,
-        umas_request_function_key: int,
-        byte_length: int,
+        read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
         read_buffer.push_context("UmasPDUPlcIdentResponse")
+
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
 
         range: int = read_buffer.read_unsigned_short(
             logical_name="range",
@@ -368,23 +363,21 @@ class UmasPDUPlcIdentResponseBuilder:
     memory_idents: List[PlcMemoryBlockIdent]
 
     def build(self, byte_length: int, pairing_key) -> UmasPDUPlcIdentResponse:
-        umas_pduplc_ident_response: UmasPDUPlcIdentResponse = (
-            UmasPDUPlcIdentResponse(
-                byte_length,
-                pairing_key,
-                self.range,
-                self.ident,
-                self.model,
-                self.com_version,
-                self.com_patch,
-                self.int_version,
-                self.hardware_version,
-                self.crash_code,
-                self.unknown1,
-                self.hostname_length,
-                self.hostname,
-                self.number_of_memory_banks,
-                self.memory_idents,
-            )
+        umas_pduplc_ident_response: UmasPDUPlcIdentResponse = UmasPDUPlcIdentResponse(
+            byte_length,
+            pairing_key,
+            self.range,
+            self.ident,
+            self.model,
+            self.com_version,
+            self.com_patch,
+            self.int_version,
+            self.hardware_version,
+            self.crash_code,
+            self.unknown1,
+            self.hostname_length,
+            self.hostname,
+            self.number_of_memory_banks,
+            self.memory_idents,
         )
         return umas_pduplc_ident_response

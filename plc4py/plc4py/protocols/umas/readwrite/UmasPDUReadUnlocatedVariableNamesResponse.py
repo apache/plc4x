@@ -17,20 +17,19 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
     UmasUnlocatedVariableReference,
 )
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import List
+import math
 
 
 @dataclass
@@ -45,9 +44,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse:
         write_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(
-            self.range, bit_length=8, logical_name="range"
-        )
+        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
 
         # Simple Field (nextAddress)
         write_buffer.write_unsigned_short(
@@ -105,9 +102,7 @@ class UmasPDUReadUnlocatedVariableNamesResponse:
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasPDUReadUnlocatedVariableNamesResponse")
 
-        range: int = read_buffer.read_unsigned_byte(
-            logical_name="range", bit_length=8
-        )
+        range: int = read_buffer.read_unsigned_byte(logical_name="range", bit_length=8)
 
         next_address: int = read_buffer.read_unsigned_short(
             logical_name="next_address", bit_length=16
@@ -129,7 +124,9 @@ class UmasPDUReadUnlocatedVariableNamesResponse:
 
         read_buffer.pop_context("UmasPDUReadUnlocatedVariableNamesResponse")
         # Create the instance
-        _umas_pduread_unlocated_variable_names_response: UmasPDUReadUnlocatedVariableNamesResponse = UmasPDUReadUnlocatedVariableNamesResponse(
+        _umas_pduread_unlocated_variable_names_response: (
+            UmasPDUReadUnlocatedVariableNamesResponse
+        ) = UmasPDUReadUnlocatedVariableNamesResponse(
             range, next_address, unknown1, no_of_records, records
         )
         return _umas_pduread_unlocated_variable_names_response

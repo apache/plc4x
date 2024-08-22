@@ -17,17 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import List
+import math
 
 
 @dataclass
@@ -60,9 +59,7 @@ class VariableWriteRequestReference:
         )
 
         # Const Field (unknown1)
-        write_buffer.write_unsigned_byte(
-            self.UNKNOWN1, logical_name="unknown1"
-        )
+        write_buffer.write_unsigned_byte(self.UNKNOWN1, logical_name="unknown1")
 
         # Simple Field (baseOffset)
         write_buffer.write_unsigned_short(
@@ -81,9 +78,7 @@ class VariableWriteRequestReference:
             )
 
         # Array Field (recordData)
-        write_buffer.write_byte_array(
-            self.record_data, logical_name="record_data"
-        )
+        write_buffer.write_byte_array(self.record_data, logical_name="record_data")
 
         write_buffer.pop_context("VariableWriteRequestReference")
 
@@ -154,16 +149,14 @@ class VariableWriteRequestReference:
 
         array_length: int = None
         if is_array:
-            array_length = read_buffer.read_unsigned_short(
-                logical_name="array_length"
-            )
+            array_length = read_buffer.read_unsigned_short(logical_name="array_length")
 
         record_data: List[Any] = read_buffer.read_array_field(
             logical_name="recordData",
             read_function=read_buffer.read_byte,
             count=(
                 data_size_index * array_length
-                if bool((is_array) == (1))
+                if bool((is_array) == ((1)))
                 else data_size_index
             ),
         )

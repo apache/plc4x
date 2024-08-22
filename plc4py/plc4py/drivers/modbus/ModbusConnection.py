@@ -57,9 +57,7 @@ class ModbusConnection(PlcConnection, DefaultPlcReader, DefaultPlcWriter):
     :param transport: Plc4xBaseTransport object used for the TCP connection
     """
 
-    def __init__(
-        self, config: ModbusConfiguration, transport: Plc4xBaseTransport
-    ):
+    def __init__(self, config: ModbusConfiguration, transport: Plc4xBaseTransport):
         """
         Initializes a ModbusConnection object
 

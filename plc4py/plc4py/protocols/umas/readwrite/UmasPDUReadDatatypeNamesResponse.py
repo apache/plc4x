@@ -17,20 +17,17 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
-from plc4py.protocols.umas.readwrite.UmasDatatypeReference import (
-    UmasDatatypeReference,
-)
+from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import List
+import math
 
 
 @dataclass
@@ -45,9 +42,7 @@ class UmasPDUReadDatatypeNamesResponse:
         write_buffer.push_context("UmasPDUReadDatatypeNamesResponse")
 
         # Simple Field (range)
-        write_buffer.write_unsigned_byte(
-            self.range, bit_length=8, logical_name="range"
-        )
+        write_buffer.write_unsigned_byte(self.range, bit_length=8, logical_name="range")
 
         # Simple Field (nextAddress)
         write_buffer.write_unsigned_short(
@@ -97,17 +92,13 @@ class UmasPDUReadDatatypeNamesResponse:
 
     @staticmethod
     def static_parse(read_buffer: ReadBuffer, **kwargs):
-        return UmasPDUReadDatatypeNamesResponse.static_parse_context(
-            read_buffer
-        )
+        return UmasPDUReadDatatypeNamesResponse.static_parse_context(read_buffer)
 
     @staticmethod
     def static_parse_context(read_buffer: ReadBuffer):
         read_buffer.push_context("UmasPDUReadDatatypeNamesResponse")
 
-        range: int = read_buffer.read_unsigned_byte(
-            logical_name="range", bit_length=8
-        )
+        range: int = read_buffer.read_unsigned_byte(logical_name="range", bit_length=8)
 
         next_address: int = read_buffer.read_unsigned_short(
             logical_name="next_address", bit_length=16
@@ -129,8 +120,10 @@ class UmasPDUReadDatatypeNamesResponse:
 
         read_buffer.pop_context("UmasPDUReadDatatypeNamesResponse")
         # Create the instance
-        _umas_pduread_datatype_names_response: UmasPDUReadDatatypeNamesResponse = UmasPDUReadDatatypeNamesResponse(
-            range, next_address, unknown1, no_of_records, records
+        _umas_pduread_datatype_names_response: UmasPDUReadDatatypeNamesResponse = (
+            UmasPDUReadDatatypeNamesResponse(
+                range, next_address, unknown1, no_of_records, records
+            )
         )
         return _umas_pduread_datatype_names_response
 
@@ -141,9 +134,7 @@ class UmasPDUReadDatatypeNamesResponse:
         if not isinstance(o, UmasPDUReadDatatypeNamesResponse):
             return False
 
-        that: UmasPDUReadDatatypeNamesResponse = (
-            UmasPDUReadDatatypeNamesResponse(o)
-        )
+        that: UmasPDUReadDatatypeNamesResponse = UmasPDUReadDatatypeNamesResponse(o)
         return (
             (self.range == that.range)
             and (self.next_address == that.next_address)

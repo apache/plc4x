@@ -107,9 +107,7 @@ class UmasDevice:
     _configuration: UmasConfiguration
     project_crc: int = -1
     max_frame_size: int = -1
-    memory_blocks: List[PlcMemoryBlockIdent] = field(
-        default_factory=lambda: []
-    )
+    memory_blocks: List[PlcMemoryBlockIdent] = field(default_factory=lambda: [])
     hardware_id: int = -1
     index: int = -1
 
@@ -119,9 +117,7 @@ class UmasDevice:
         await self._send_plc_ident(transport, loop)
         await self._send_init_comms(transport, loop)
 
-    async def _is_crc_valid(
-        self, transport: Transport, loop: AbstractEventLoop
-    ):
+    async def _is_crc_valid(self, transport: Transport, loop: AbstractEventLoop):
         old_crc = self.project_crc
         await self._send_project_info(transport, loop)
         if old_crc == -1 or (old_crc != self.project_crc):
@@ -147,10 +143,10 @@ class UmasDevice:
         data_type_children: Dict[str, List[UmasUDTDefinition]] = {}
         for data_type in data_types:
             if data_type.class_identifier == 2:
-                data_type_children[
-                    data_type.value
-                ] = await self._send_unlocated_variable_datatype_format_request(
-                    transport, loop, data_type.data_type, data_type.value
+                data_type_children[data_type.value] = (
+                    await self._send_unlocated_variable_datatype_format_request(
+                        transport, loop, data_type.data_type, data_type.value
+                    )
                 )
         offset = 0x0000
         first_message = True
@@ -178,9 +174,7 @@ class UmasDevice:
             ).build()
         return return_dict
 
-    async def _send_plc_ident(
-        self, transport: Transport, loop: AbstractEventLoop
-    ):
+    async def _send_plc_ident(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
 
         request_pdu = UmasPDUPlcIdentRequestBuilder().build(0, -1)
@@ -196,9 +190,7 @@ class UmasDevice:
         ident_result: UmasPDUPlcIdentResponse = message_future.result()
         self.memory_blocks = ident_result.memory_idents
 
-    async def _send_init_comms(
-        self, transport: Transport, loop: AbstractEventLoop
-    ):
+    async def _send_init_comms(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
 
         request_pdu = UmasInitCommsRequestBuilder(0).build(0, -1)
@@ -214,9 +206,7 @@ class UmasDevice:
         init_result: UmasInitCommsResponse = message_future.result()
         self.max_frame_size = init_result.max_frame_size
 
-    async def _send_project_info(
-        self, transport: Transport, loop: AbstractEventLoop
-    ):
+    async def _send_project_info(self, transport: Transport, loop: AbstractEventLoop):
         message_future = loop.create_future()
 
         request_pdu = UmasPDUPlcStatusRequestBuilder().build(0, -1)
@@ -256,9 +246,7 @@ class UmasDevice:
         )
 
         await message_future
-        memory_block_result: UmasPDUReadMemoryBlockResponse = (
-            message_future.result()
-        )
+        memory_block_result: UmasPDUReadMemoryBlockResponse = message_future.result()
         read_buffer = ReadBufferByteBased(
             bytearray(memory_block_result.block),
             ByteOrder.LITTLE_ENDIAN,
@@ -333,9 +321,7 @@ class UmasDevice:
         read_buffer = ReadBufferByteBased(
             bytearray(data_type_response.block), ByteOrder.LITTLE_ENDIAN
         )
-        basic_info = UmasPDUReadUmasUDTDefinitionResponse.static_parse(
-            read_buffer
-        )
+        basic_info = UmasPDUReadUmasUDTDefinitionResponse.static_parse(read_buffer)
         return basic_info.records
 
     async def _send_unlocated_variable_request(
@@ -402,9 +388,7 @@ class UmasDevice:
         )
 
         await message_future
-        variable_name_response: UmasPDUReadVariableResponse = (
-            message_future.result()
-        )
+        variable_name_response: UmasPDUReadVariableResponse = message_future.result()
         read_buffer = ReadBufferByteBased(
             bytearray(variable_name_response.block), ByteOrder.LITTLE_ENDIAN
         )
@@ -418,9 +402,7 @@ class UmasDevice:
 
             response_item = ResponseItem(
                 PlcResponseCode.OK,
-                DataItem.static_parse(
-                    read_buffer, request_tag.data_type, quantity
-                ),
+                DataItem.static_parse(read_buffer, request_tag.data_type, quantity),
             )
 
             values[key] = response_item
@@ -451,15 +433,11 @@ class UmasDevice:
                 )
             )
 
-        sorted_tag_lists: List[
-            List[Tuple[str, VariableReadRequestReference]]
-        ] = []
+        sorted_tag_lists: List[List[Tuple[str, VariableReadRequestReference]]] = []
         for request in tag_list:
             sorted_tags = sorted(
                 request,
-                key=lambda x: (x[1].block * 100000)
-                + x[1].base_offset
-                + x[1].offset,
+                key=lambda x: (x[1].block * 100000) + x[1].base_offset + x[1].offset,
             )
             sorted_tag_lists.append(sorted_tags)
 

@@ -118,9 +118,7 @@ def parse_terminated_string(read_buffer: ReadBuffer, string_length) -> str:
     return result
 
 
-def parse_terminated_string_bytes(
-    read_buffer: ReadBuffer, string_length
-) -> str:
+def parse_terminated_string_bytes(read_buffer: ReadBuffer, string_length) -> str:
     terminate: bool = False
     byte_list: bytearray = bytearray()
     while not terminate:

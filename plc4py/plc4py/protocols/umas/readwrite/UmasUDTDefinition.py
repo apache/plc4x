@@ -17,17 +17,15 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.umas import StaticHelper
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+import math
 
 
 @dataclass
@@ -119,9 +117,7 @@ class UmasUDTDefinition:
         )
 
         value = read_buffer.read_manual(
-            read_function=lambda: StaticHelper.parse_terminated_string(
-                read_buffer, 1
-            ),
+            read_function=lambda: StaticHelper.parse_terminated_string(read_buffer, 1),
             logical_name="value",
         )
 

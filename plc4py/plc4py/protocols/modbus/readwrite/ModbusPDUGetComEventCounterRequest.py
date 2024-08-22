@@ -17,18 +17,16 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -56,6 +54,9 @@ class ModbusPDUGetComEventCounterRequest(ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUGetComEventCounterRequest")
 
+        if isinstance(response, str):
+            response = bool(response)
+
         read_buffer.pop_context("ModbusPDUGetComEventCounterRequest")
         # Create the instance
         return ModbusPDUGetComEventCounterRequestBuilder()
@@ -67,9 +68,7 @@ class ModbusPDUGetComEventCounterRequest(ModbusPDU):
         if not isinstance(o, ModbusPDUGetComEventCounterRequest):
             return False
 
-        that: ModbusPDUGetComEventCounterRequest = (
-            ModbusPDUGetComEventCounterRequest(o)
-        )
+        that: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest(o)
         return super().equals(that) and True
 
     def hash_code(self) -> int:
@@ -88,8 +87,11 @@ class ModbusPDUGetComEventCounterRequest(ModbusPDU):
 
 @dataclass
 class ModbusPDUGetComEventCounterRequestBuilder:
+
     def build(
         self,
     ) -> ModbusPDUGetComEventCounterRequest:
-        modbus_pduget_com_event_counter_request: ModbusPDUGetComEventCounterRequest = ModbusPDUGetComEventCounterRequest()
+        modbus_pduget_com_event_counter_request: ModbusPDUGetComEventCounterRequest = (
+            ModbusPDUGetComEventCounterRequest()
+        )
         return modbus_pduget_com_event_counter_request

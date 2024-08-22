@@ -60,9 +60,7 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
     DEFAULT_UMAS_CONNECTION_TIMEOUT = 60  # Long timeout to account for te 15s delay when first initiating a connection. Possibly just the simulator though.
     log = logging.getLogger(__name__)
 
-    def __init__(
-        self, config: UmasConfiguration, transport: Plc4xBaseTransport
-    ):
+    def __init__(self, config: UmasConfiguration, transport: Plc4xBaseTransport):
         super().__init__(config)
         self._configuration: UmasConfiguration
         self._device: UmasDevice = UmasDevice(self._configuration)
@@ -81,9 +79,7 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
         loop = asyncio.get_running_loop()
         connection_future = loop.create_future()
         try:
-            logging.debug(
-                f"Opening TCP connection for UMAS device {config.host}"
-            )
+            logging.debug(f"Opening TCP connection for UMAS device {config.host}")
             transport = await asyncio.wait_for(
                 TCPTransport.create(
                     protocol_factory=lambda: UmasProtocol(

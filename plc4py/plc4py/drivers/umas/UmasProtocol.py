@@ -51,15 +51,11 @@ class UmasProtocol(Plc4xBaseProtocol):
             )
             pdu: ModbusPDU = ModbusPDU.static_parse(
                 read_buffer,
-                umas_request_function_key=self.messages[
-                    adu.transaction_identifier
-                ][0],
+                umas_request_function_key=self.messages[adu.transaction_identifier][0],
                 byte_length=len(adu.pdu_array) - 1,
             )
             if isinstance(pdu, UmasPDU):
-                self.messages[adu.transaction_identifier][1].set_result(
-                    pdu.item
-                )
+                self.messages[adu.transaction_identifier][1].set_result(pdu.item)
             else:
                 logging.error("Modbus Error Message Received")
                 self.close()
@@ -70,9 +66,7 @@ class UmasProtocol(Plc4xBaseProtocol):
     def write_wait_for_response(
         self, umas_pdu_item: UmasPDUItem, transport, message_future
     ):
-        pdu = UmasPDUBuilder(umas_pdu_item).build(
-            umas_pdu_item.umas_function_key, 0
-        )
+        pdu = UmasPDUBuilder(umas_pdu_item).build(umas_pdu_item.umas_function_key, 0)
 
         write_buffer = WriteBufferByteBased(
             pdu.length_in_bytes(), byte_order=ByteOrder.LITTLE_ENDIAN
@@ -100,8 +94,6 @@ class UmasProtocol(Plc4xBaseProtocol):
     def close(self):
         """Clean up the message which didn't receive a response"""
         for key, message in self.messages.items:
-            logging.debug(
-                "Removing un-replied message with identifier " + str(key)
-            )
+            logging.debug("Removing un-replied message with identifier " + str(key))
             message.set_result(None)
         self.messages = None

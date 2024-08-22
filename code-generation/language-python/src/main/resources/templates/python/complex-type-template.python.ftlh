@@ -558,6 +558,18 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         start_pos: int = read_buffer.get_pos()
         cur_pos: int = 0
         </#if>
+
+        <#if hasParserArguments>
+            <#list parserArguments as parserArgument>
+        if isinstance(${helper.camelCaseToSnakeCase(parserArgument.name)}, str):
+            <#if parserArgument.type.isEnumTypeReference()>
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}[${helper.camelCaseToSnakeCase(parserArgument.name)}]
+            <#else>
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}(${helper.camelCaseToSnakeCase(parserArgument.name)})
+            </#if>
+            </#list>
+        </#if>
+
     <#assign reservedFieldIndex=0>
     <#list type.fields as field>
         <#switch field.typeName>

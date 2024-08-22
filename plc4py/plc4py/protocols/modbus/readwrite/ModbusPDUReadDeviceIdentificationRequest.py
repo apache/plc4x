@@ -17,14 +17,10 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import ClassVar
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import (
     ModbusDeviceInformationLevel,
@@ -32,6 +28,8 @@ from plc4py.protocols.modbus.readwrite.ModbusDeviceInformationLevel import (
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import ClassVar
+import math
 
 
 @dataclass
@@ -82,6 +80,9 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadDeviceIdentificationRequest")
 
+        if isinstance(response, str):
+            response = bool(response)
+
         MEI_TYPE: int = read_buffer.read_unsigned_byte(
             logical_name="mei_type", response=response
         )
@@ -99,9 +100,7 @@ class ModbusPDUReadDeviceIdentificationRequest(ModbusPDU):
 
         read_buffer.pop_context("ModbusPDUReadDeviceIdentificationRequest")
         # Create the instance
-        return ModbusPDUReadDeviceIdentificationRequestBuilder(
-            level, object_id
-        )
+        return ModbusPDUReadDeviceIdentificationRequestBuilder(level, object_id)
 
     def equals(self, o: object) -> bool:
         if self == o:
@@ -142,7 +141,7 @@ class ModbusPDUReadDeviceIdentificationRequestBuilder:
     def build(
         self,
     ) -> ModbusPDUReadDeviceIdentificationRequest:
-        modbus_pduread_device_identification_request: ModbusPDUReadDeviceIdentificationRequest = ModbusPDUReadDeviceIdentificationRequest(
-            self.level, self.object_id
-        )
+        modbus_pduread_device_identification_request: (
+            ModbusPDUReadDeviceIdentificationRequest
+        ) = ModbusPDUReadDeviceIdentificationRequest(self.level, self.object_id)
         return modbus_pduread_device_identification_request

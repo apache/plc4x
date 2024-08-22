@@ -17,18 +17,18 @@
 # under the License.
 #
 
-import math
 from dataclasses import dataclass
-from typing import Any, ClassVar, List
 
-from plc4py.api.exceptions.exceptions import (
-    PlcRuntimeException,
-    SerializationException,
-)
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.ModbusPDU import ModbusPDU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from typing import Any
+from typing import ClassVar
+from typing import List
+import math
 
 
 @dataclass
@@ -71,6 +71,9 @@ class ModbusPDUReadInputRegistersResponse(ModbusPDU):
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadInputRegistersResponse")
 
+        if isinstance(response, str):
+            response = bool(response)
+
         byte_count: int = read_buffer.read_unsigned_byte(
             logical_name="byte_count", response=response
         )
@@ -93,8 +96,8 @@ class ModbusPDUReadInputRegistersResponse(ModbusPDU):
         if not isinstance(o, ModbusPDUReadInputRegistersResponse):
             return False
 
-        that: ModbusPDUReadInputRegistersResponse = (
-            ModbusPDUReadInputRegistersResponse(o)
+        that: ModbusPDUReadInputRegistersResponse = ModbusPDUReadInputRegistersResponse(
+            o
         )
         return (self.value == that.value) and super().equals(that) and True
 
@@ -119,7 +122,7 @@ class ModbusPDUReadInputRegistersResponseBuilder:
     def build(
         self,
     ) -> ModbusPDUReadInputRegistersResponse:
-        modbus_pduread_input_registers_response: ModbusPDUReadInputRegistersResponse = ModbusPDUReadInputRegistersResponse(
-            self.value
+        modbus_pduread_input_registers_response: ModbusPDUReadInputRegistersResponse = (
+            ModbusPDUReadInputRegistersResponse(self.value)
         )
         return modbus_pduread_input_registers_response
