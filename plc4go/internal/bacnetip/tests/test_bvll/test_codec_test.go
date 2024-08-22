@@ -40,7 +40,7 @@ func Result(i uint16) *bacnetip.Result {
 }
 
 func WriteBroadcastDistributionTable(bdt ...*bacnetip.Address) *bacnetip.WriteBroadcastDistributionTable {
-	writeBroadcastDistributionTable, err := bacnetip.NewWriteBroadcastDistributionTable(bacnetip.WithWriteBroadcastDistributionTable(bdt...))
+	writeBroadcastDistributionTable, err := bacnetip.NewWriteBroadcastDistributionTable(bacnetip.WithWriteBroadcastDistributionTableBDT(bdt...))
 	if err != nil {
 		panic(err)
 	}
@@ -49,6 +49,14 @@ func WriteBroadcastDistributionTable(bdt ...*bacnetip.Address) *bacnetip.WriteBr
 
 func ReadBroadcastDistributionTable() *bacnetip.ReadBroadcastDistributionTable {
 	readBroadcastDistributionTable, err := bacnetip.NewReadBroadcastDistributionTable()
+	if err != nil {
+		panic(err)
+	}
+	return readBroadcastDistributionTable
+}
+
+func ReadBroadcastDistributionTableAck(bdt ...*bacnetip.Address) *bacnetip.ReadBroadcastDistributionTableAck {
+	readBroadcastDistributionTable, err := bacnetip.NewReadBroadcastDistributionTableAck(bacnetip.WithReadBroadcastDistributionTableAckBDT(bdt...))
 	if err != nil {
 		panic(err)
 	}
@@ -225,6 +233,50 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTable() {
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadBroadcastDistributionTable)(nil)), bacnetip.NoKWArgs)
+}
+
+func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
+	// Read an empty TableAck
+	pduBytes, err := bacnetip.Xtob("81.03.0004")
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(ReadBroadcastDistributionTableAck()), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadBroadcastDistributionTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciBDT, []*bacnetip.Address{}))
+
+	// Read TableAck with an element
+	addr, _ := bacnetip.NewAddress(zerolog.Nop(), "192.168.0.254/24")
+	pduBytes, err = bacnetip.Xtob("81.03.000e" + //bvlci
+		"c0.a8.00.fe.ba.c0 ff.ff.ff.00") // address and mask
+	suite.Require().NoError(err)
+	{ // Parse with plc4x parser to validate
+		parse, err := readWriteModel.BVLCParse(testutils.TestContext(suite.T()), pduBytes)
+		suite.Assert().NoError(err)
+		if parse != nil {
+			suite.T().Log("\n" + parse.String())
+		}
+	}
+
+	err = suite.Request(bacnetip.NewArgs(ReadBroadcastDistributionTableAck(addr)), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
+	suite.Assert().NoError(err)
+
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	suite.Assert().NoError(err)
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadBroadcastDistributionTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciBDT, []*bacnetip.Address{addr}))
 }
 
 func TestAnnexJCodec(t *testing.T) {

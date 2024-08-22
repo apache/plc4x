@@ -282,11 +282,15 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			}
 			return r.GetBvlciResultCode() == attrValue
 		case bacnetip.KWBvlciBDT:
-			wbdt, ok := pdu.(*bacnetip.WriteBroadcastDistributionTable)
-			if !ok {
+			var iwbdt []*bacnetip.Address
+			switch pdu := pdu.(type) {
+			case *bacnetip.WriteBroadcastDistributionTable:
+				iwbdt = pdu.GetBvlciBDT()
+			case *bacnetip.ReadBroadcastDistributionTableAck:
+				iwbdt = pdu.GetBvlciBDT()
+			default:
 				return false
 			}
-			iwbdt := wbdt.GetBvlciBDT()
 			owbdt, ok := attrValue.([]*bacnetip.Address)
 			if !ok {
 				return false
