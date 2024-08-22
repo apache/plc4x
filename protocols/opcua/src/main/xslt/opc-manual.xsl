@@ -199,10 +199,11 @@
     [simple bit namespaceURISpecified]
     [simple bit serverIndexSpecified]
     [simple NodeIdTypeDefinition nodeId]
-    [virtual vstring '-1' identifier 'nodeId.identifier']
     [optional PascalString namespaceURI 'namespaceURISpecified']
     [optional uint 32 serverIndex 'serverIndexSpecified']
 ]
+
+
 
 [type ExtensionObjectEncodingMask
     [reserved int 5 '0x00']
@@ -239,38 +240,12 @@
         ['0' NullExtension
         ]
 
-        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:') and not (@BaseType = 'tns:UserIdentityToken')))]">
+        <xsl:for-each select="/opc:TypeDictionary/opc:StructuredType[((@BaseType = 'ua:ExtensionObject') or (starts-with(@BaseType, 'tns:')))]">
             <xsl:variable name="extensionName" select="@Name"/>
             <xsl:apply-templates select="$file/node:UANodeSet/node:UADataType[@BrowseName=$extensionName]"/>
         </xsl:for-each>
-
-        ['316' UserIdentityToken
-            [implicit int 32 policyLength 'policyId.lengthInBytes  + userIdentityTokenDefinition.lengthInBytes']
-            [simple PascalString policyId]
-            [simple UserIdentityTokenDefinition('policyId.stringValue') userIdentityTokenDefinition]
-        ]
     ]
 ]
-
-[discriminatedType UserIdentityTokenDefinition(vstring '-1' identifier)
-    [typeSwitch identifier
-        ['"anonymous"' AnonymousIdentityToken
-        ]
-        ['"username"' UserNameIdentityToken
-            [simple PascalString userName]
-            [simple PascalByteString password]
-            [simple PascalString encryptionAlgorithm]
-        ]
-        ['"certificate"' X509IdentityToken
-            [simple PascalByteString certificateData]
-        ]
-        ['"identity"' IssuedIdentityToken
-            [simple PascalByteString tokenData]
-            [simple PascalString encryptionAlgorithm]
-        ]
-    ]
-]
-
 
 [discriminatedType Variant
     [simple bit arrayLengthSpecified]
@@ -384,38 +359,55 @@
     [array bit arrayDimensions count 'noOfArrayDimensions == null ? 0 : noOfArrayDimensions']
 ]
 
+// node type, with two leading reserved bytes
+[enum uint 6 NodeIdType
+    ['0' TwoByte         ]
+    ['1' FourByte        ]
+    ['2' Numeric         ]
+    ['3' String          ]
+    ['4' Guid            ]
+    ['5' ByteString      ]
+]
+
 [discriminatedType NodeIdTypeDefinition
     [abstract vstring '-1' identifier]
+    [abstract uint 16 namespace]
     [discriminator NodeIdType nodeType]
     [typeSwitch nodeType
         ['nodeIdTypeTwoByte' NodeIdTwoByte
             [simple uint 8 id]
             [virtual vstring '-1' identifier 'id']
+            [virtual uint 16 namespace '-1'] // cause an error
         ]
         ['nodeIdTypeFourByte' NodeIdFourByte
             [simple uint 8 namespaceIndex]
             [simple uint 16 id]
             [virtual vstring '-1' identifier 'id']
+            [virtual uint 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeNumeric' NodeIdNumeric
             [simple uint 16 namespaceIndex]
             [simple uint 32 id]
             [virtual vstring '-1' identifier 'id']
+            [virtual uint 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeString' NodeIdString
             [simple uint 16 namespaceIndex]
             [simple PascalString id]
             [virtual vstring '-1' identifier 'id.stringValue']
+            [virtual uint 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeGuid' NodeIdGuid
             [simple uint 16 namespaceIndex]
             [array byte id count '16']
             [virtual vstring '-1' identifier 'id']
+            [virtual uint 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeByteString' NodeIdByteString
             [simple uint 16 namespaceIndex]
             [simple PascalByteString id]
             [virtual vstring '-1' identifier 'id.stringValue']
+            [virtual uint 16 namespace 'namespaceIndex']
         ]
     ]
 ]
@@ -423,7 +415,6 @@
 [type NodeId
     [reserved int 2 '0x00']
     [simple NodeIdTypeDefinition nodeId]
-    [virtual vstring '-1' id 'nodeId.identifier']
 ]
 
 [type PascalString
