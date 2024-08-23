@@ -21,6 +21,7 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import ParseException
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
@@ -105,7 +106,7 @@ class ModbusADU(ABC, PlcMessage):
         if isinstance(driver_type, str):
             driver_type = DriverType[driver_type]
         if isinstance(response, str):
-            response = bool(response)
+            response = bool(strtobool(response))
 
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: ModbusADUBuilder = None

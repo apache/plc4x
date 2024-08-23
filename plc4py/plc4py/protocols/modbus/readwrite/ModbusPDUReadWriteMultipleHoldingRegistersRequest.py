@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -112,7 +113,7 @@ class ModbusPDUReadWriteMultipleHoldingRegistersRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUReadWriteMultipleHoldingRegistersRequest")
 
         if isinstance(response, str):
-            response = bool(response)
+            response = bool(strtobool(response))
 
         read_starting_address: int = read_buffer.read_unsigned_short(
             logical_name="read_starting_address", bit_length=16, response=response

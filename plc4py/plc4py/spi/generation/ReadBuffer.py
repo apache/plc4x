@@ -434,5 +434,13 @@ class ReadBufferByteBased(ReadBuffer):
                     read_function(logical_name=logical_name, read_buffer=self, **kwargs)
                 )
             return parsed_array
+        elif length is not None:
+            parsed_array = []
+            start_pos = self.get_pos()
+            while self.get_pos() < start_pos + length:
+                parsed_array.append(
+                    read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+                )
+            return parsed_array
         else:
             raise NotImplementedError

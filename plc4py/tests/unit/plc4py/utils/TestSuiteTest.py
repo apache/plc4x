@@ -45,7 +45,4 @@ def pytest_generate_tests(metafunc):
 
 @pytest.mark.asyncio
 async def test_parse_serializer_parse_xml_test(test_case) -> None:
-    try:
-        test_case.runTest()
-    except Exception as e:
-        raise e
+    test_case.runTest()

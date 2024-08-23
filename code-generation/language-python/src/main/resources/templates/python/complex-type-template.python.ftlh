@@ -564,6 +564,9 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
         if isinstance(${helper.camelCaseToSnakeCase(parserArgument.name)}, str):
             <#if parserArgument.type.isEnumTypeReference()>
             ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}[${helper.camelCaseToSnakeCase(parserArgument.name)}]
+            <#elseif helper.getLanguageTypeNameForTypeReference(parserArgument.type, false) = "bool">
+            <@emitImport import="from distutils.util import strtobool" />
+            ${helper.camelCaseToSnakeCase(parserArgument.name)} = bool(strtobool(${helper.camelCaseToSnakeCase(parserArgument.name)}))
             <#else>
             ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}(${helper.camelCaseToSnakeCase(parserArgument.name)})
             </#if>

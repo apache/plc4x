@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -55,7 +56,7 @@ class ModbusPDUGetComEventCounterRequest(ModbusPDU):
         read_buffer.push_context("ModbusPDUGetComEventCounterRequest")
 
         if isinstance(response, str):
-            response = bool(response)
+            response = bool(strtobool(response))
 
         read_buffer.pop_context("ModbusPDUGetComEventCounterRequest")
         # Create the instance

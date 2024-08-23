@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -87,7 +88,7 @@ class ModbusAsciiADU(ModbusADU):
         if isinstance(driver_type, str):
             driver_type = DriverType[driver_type]
         if isinstance(response, str):
-            response = bool(response)
+            response = bool(strtobool(response))
 
         address: int = read_buffer.read_unsigned_byte(
             logical_name="address",

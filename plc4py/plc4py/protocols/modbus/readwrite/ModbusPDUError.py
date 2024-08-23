@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -65,7 +66,7 @@ class ModbusPDUError(ModbusPDU):
         read_buffer.push_context("ModbusPDUError")
 
         if isinstance(response, str):
-            response = bool(response)
+            response = bool(strtobool(response))
 
         exception_code: ModbusErrorCode = read_buffer.read_enum(
             read_function=ModbusErrorCode,

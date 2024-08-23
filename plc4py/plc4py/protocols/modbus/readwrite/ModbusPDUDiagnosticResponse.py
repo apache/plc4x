@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -71,7 +72,7 @@ class ModbusPDUDiagnosticResponse(ModbusPDU):
         read_buffer.push_context("ModbusPDUDiagnosticResponse")
 
         if isinstance(response, str):
-            response = bool(response)
+            response = bool(strtobool(response))
 
         sub_function: int = read_buffer.read_unsigned_short(
             logical_name="sub_function", bit_length=16, response=response
