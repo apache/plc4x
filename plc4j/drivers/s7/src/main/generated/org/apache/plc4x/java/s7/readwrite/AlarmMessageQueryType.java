@@ -163,12 +163,6 @@ public class AlarmMessageQueryType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageQueryType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageQueryType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AlarmMessageQueryType");
     PositionAware positionAware = readBuffer;

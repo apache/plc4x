@@ -93,12 +93,6 @@ public class BACnetRecipientProcess implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipientProcess staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetRecipientProcess staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetRecipientProcess");
     PositionAware positionAware = readBuffer;

@@ -110,12 +110,6 @@ public class BACnetActionList implements Message {
     return lengthInBits;
   }
 
-  public static BACnetActionList staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetActionList staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetActionList");
     PositionAware positionAware = readBuffer;

@@ -86,11 +86,6 @@ public class Lldp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static Lldp_Pdu staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Lldp_Pdu staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Lldp_Pdu");
     PositionAware positionAware = readBuffer;

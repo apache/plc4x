@@ -91,12 +91,6 @@ public abstract class BACnetValueSource implements Message {
     return lengthInBits;
   }
 
-  public static BACnetValueSource staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetValueSource staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetValueSource");
     PositionAware positionAware = readBuffer;

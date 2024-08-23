@@ -121,12 +121,6 @@ public class PnDcp_ServiceType implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_ServiceType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnDcp_ServiceType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_ServiceType");
     PositionAware positionAware = readBuffer;

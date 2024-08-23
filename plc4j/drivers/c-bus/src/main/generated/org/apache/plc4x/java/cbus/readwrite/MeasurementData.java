@@ -104,12 +104,6 @@ public abstract class MeasurementData implements Message {
     return lengthInBits;
   }
 
-  public static MeasurementData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static MeasurementData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MeasurementData");
     PositionAware positionAware = readBuffer;

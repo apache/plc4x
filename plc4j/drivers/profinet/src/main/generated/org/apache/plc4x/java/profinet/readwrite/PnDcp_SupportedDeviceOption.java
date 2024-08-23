@@ -101,12 +101,6 @@ public class PnDcp_SupportedDeviceOption implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_SupportedDeviceOption staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnDcp_SupportedDeviceOption staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_SupportedDeviceOption");

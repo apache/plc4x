@@ -117,12 +117,6 @@ public class NLMInitializeRoutingTablePortMapping implements Message {
     return lengthInBits;
   }
 
-  public static NLMInitializeRoutingTablePortMapping staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NLMInitializeRoutingTablePortMapping staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("NLMInitializeRoutingTablePortMapping");

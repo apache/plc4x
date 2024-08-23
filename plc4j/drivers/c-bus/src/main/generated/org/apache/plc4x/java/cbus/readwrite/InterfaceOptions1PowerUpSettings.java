@@ -78,12 +78,6 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     return lengthInBits;
   }
 
-  public static InterfaceOptions1PowerUpSettings staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static InterfaceOptions1PowerUpSettings staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("InterfaceOptions1PowerUpSettings");

@@ -104,12 +104,6 @@ public class BACnetAuthenticationPolicy implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAuthenticationPolicy staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAuthenticationPolicy staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationPolicy");

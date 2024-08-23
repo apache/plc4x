@@ -89,12 +89,6 @@ public class ByteStringNodeId implements Message {
     return lengthInBits;
   }
 
-  public static ByteStringNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ByteStringNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ByteStringNodeId");
     PositionAware positionAware = readBuffer;

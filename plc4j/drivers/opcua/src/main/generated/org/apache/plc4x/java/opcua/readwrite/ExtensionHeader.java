@@ -95,12 +95,6 @@ public class ExtensionHeader implements Message {
     return lengthInBits;
   }
 
-  public static ExtensionHeader staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ExtensionHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ExtensionHeader");
     PositionAware positionAware = readBuffer;

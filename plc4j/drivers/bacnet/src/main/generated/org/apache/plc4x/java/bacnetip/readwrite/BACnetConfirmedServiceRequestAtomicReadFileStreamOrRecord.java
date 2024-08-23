@@ -117,12 +117,6 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
   }
 
   public static BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
-  public static BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord staticParse(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord");
     PositionAware positionAware = readBuffer;

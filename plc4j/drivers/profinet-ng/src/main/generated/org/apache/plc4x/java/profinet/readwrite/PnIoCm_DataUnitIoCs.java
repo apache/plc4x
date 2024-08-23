@@ -126,12 +126,6 @@ public class PnIoCm_DataUnitIoCs implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_DataUnitIoCs staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_DataUnitIoCs staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_DataUnitIoCs");
     PositionAware positionAware = readBuffer;

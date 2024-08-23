@@ -124,12 +124,6 @@ public class BACnetAddress implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetAddress");
     PositionAware positionAware = readBuffer;

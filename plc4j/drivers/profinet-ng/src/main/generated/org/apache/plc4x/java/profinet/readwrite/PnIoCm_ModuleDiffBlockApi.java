@@ -113,12 +113,6 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_ModuleDiffBlockApi staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_ModuleDiffBlockApi staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnIoCm_ModuleDiffBlockApi");
     PositionAware positionAware = readBuffer;

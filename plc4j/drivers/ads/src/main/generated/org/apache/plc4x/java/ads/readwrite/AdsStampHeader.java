@@ -109,12 +109,6 @@ public class AdsStampHeader implements Message {
     return lengthInBits;
   }
 
-  public static AdsStampHeader staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsStampHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsStampHeader");
     PositionAware positionAware = readBuffer;

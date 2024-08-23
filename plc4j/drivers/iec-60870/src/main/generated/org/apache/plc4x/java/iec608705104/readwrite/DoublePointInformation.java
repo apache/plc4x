@@ -156,12 +156,6 @@ public class DoublePointInformation implements Message {
     return lengthInBits;
   }
 
-  public static DoublePointInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DoublePointInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DoublePointInformation");
     PositionAware positionAware = readBuffer;

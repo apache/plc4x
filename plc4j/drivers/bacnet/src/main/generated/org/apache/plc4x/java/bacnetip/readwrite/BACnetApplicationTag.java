@@ -107,12 +107,6 @@ public abstract class BACnetApplicationTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetApplicationTag staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetApplicationTag staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTag");
     PositionAware positionAware = readBuffer;

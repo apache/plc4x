@@ -87,12 +87,6 @@ public abstract class AdsDiscoveryBlock implements Message {
     return lengthInBits;
   }
 
-  public static AdsDiscoveryBlock staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsDiscoveryBlock staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsDiscoveryBlock");
     PositionAware positionAware = readBuffer;

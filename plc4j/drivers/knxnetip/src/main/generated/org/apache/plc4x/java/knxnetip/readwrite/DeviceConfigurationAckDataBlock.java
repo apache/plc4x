@@ -116,12 +116,6 @@ public class DeviceConfigurationAckDataBlock implements Message {
     return lengthInBits;
   }
 
-  public static DeviceConfigurationAckDataBlock staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DeviceConfigurationAckDataBlock staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DeviceConfigurationAckDataBlock");

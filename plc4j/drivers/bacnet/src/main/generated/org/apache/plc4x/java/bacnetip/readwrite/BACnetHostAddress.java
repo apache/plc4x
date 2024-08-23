@@ -91,12 +91,6 @@ public abstract class BACnetHostAddress implements Message {
     return lengthInBits;
   }
 
-  public static BACnetHostAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetHostAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetHostAddress");
     PositionAware positionAware = readBuffer;

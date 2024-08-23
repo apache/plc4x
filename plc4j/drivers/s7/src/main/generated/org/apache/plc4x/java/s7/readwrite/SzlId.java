@@ -113,11 +113,6 @@ public class SzlId implements Message {
     return lengthInBits;
   }
 
-  public static SzlId staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SzlId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SzlId");
     PositionAware positionAware = readBuffer;

@@ -96,12 +96,6 @@ public class Plc4xTagResponse implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xTagResponse staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xTagResponse staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xTagResponse");
     PositionAware positionAware = readBuffer;

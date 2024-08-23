@@ -87,12 +87,6 @@ public abstract class NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdTypeDefinition staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NodeIdTypeDefinition staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdTypeDefinition");
     PositionAware positionAware = readBuffer;

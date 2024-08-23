@@ -91,12 +91,6 @@ public class BACnetNameValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetNameValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetNameValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetNameValue");
     PositionAware positionAware = readBuffer;

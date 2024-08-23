@@ -241,12 +241,6 @@ public class BACnetTagHeader implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTagHeader staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetTagHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTagHeader");
     PositionAware positionAware = readBuffer;

@@ -89,12 +89,6 @@ public class QualifiedName implements Message {
     return lengthInBits;
   }
 
-  public static QualifiedName staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualifiedName staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("QualifiedName");
     PositionAware positionAware = readBuffer;

@@ -91,12 +91,6 @@ public abstract class BACnetScale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetScale staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetScale staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetScale");
     PositionAware positionAware = readBuffer;

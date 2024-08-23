@@ -95,11 +95,6 @@ public class SDOAbort implements Message {
     return lengthInBits;
   }
 
-  public static SDOAbort staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SDOAbort staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SDOAbort");
     PositionAware positionAware = readBuffer;

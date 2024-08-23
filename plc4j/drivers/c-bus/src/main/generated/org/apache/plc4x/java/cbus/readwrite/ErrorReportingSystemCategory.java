@@ -119,12 +119,6 @@ public class ErrorReportingSystemCategory implements Message {
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategory staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ErrorReportingSystemCategory staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategory");

@@ -74,27 +74,6 @@ public abstract class PnIoCm_Packet implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Packet staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    DceRpc_PacketType packetType;
-    if (args[0] instanceof DceRpc_PacketType) {
-      packetType = (DceRpc_PacketType) args[0];
-    } else if (args[0] instanceof String) {
-      packetType = DceRpc_PacketType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type DceRpc_PacketType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, packetType);
-  }
-
   public static PnIoCm_Packet staticParse(ReadBuffer readBuffer, DceRpc_PacketType packetType)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet");

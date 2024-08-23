@@ -91,12 +91,6 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoHasObject staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetUnconfirmedServiceRequestWhoHasObject staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHasObject");

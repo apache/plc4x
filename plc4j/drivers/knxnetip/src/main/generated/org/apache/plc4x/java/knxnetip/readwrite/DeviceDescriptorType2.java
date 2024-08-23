@@ -195,12 +195,6 @@ public class DeviceDescriptorType2 implements Message {
     return lengthInBits;
   }
 
-  public static DeviceDescriptorType2 staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DeviceDescriptorType2 staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DeviceDescriptorType2");
     PositionAware positionAware = readBuffer;

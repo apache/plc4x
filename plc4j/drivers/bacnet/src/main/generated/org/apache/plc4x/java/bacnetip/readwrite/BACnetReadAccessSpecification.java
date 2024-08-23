@@ -122,12 +122,6 @@ public class BACnetReadAccessSpecification implements Message {
     return lengthInBits;
   }
 
-  public static BACnetReadAccessSpecification staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetReadAccessSpecification staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetReadAccessSpecification");

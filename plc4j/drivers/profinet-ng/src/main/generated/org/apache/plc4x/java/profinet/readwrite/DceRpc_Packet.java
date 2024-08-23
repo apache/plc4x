@@ -608,12 +608,6 @@ public class DceRpc_Packet implements Message {
     return lengthInBits;
   }
 
-  public static DceRpc_Packet staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DceRpc_Packet staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_Packet");
     PositionAware positionAware = readBuffer;

@@ -89,12 +89,6 @@ public class BACnetDateRange implements Message {
     return lengthInBits;
   }
 
-  public static BACnetDateRange staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetDateRange staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetDateRange");
     PositionAware positionAware = readBuffer;

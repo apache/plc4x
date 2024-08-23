@@ -90,12 +90,6 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     return lengthInBits;
   }
 
-  public static BACnetAssignedLandingCallsLandingCallsListEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAssignedLandingCallsLandingCallsListEntry staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAssignedLandingCallsLandingCallsListEntry");

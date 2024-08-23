@@ -144,12 +144,6 @@ public class BACnetAccessRule implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAccessRule staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAccessRule staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetAccessRule");
     PositionAware positionAware = readBuffer;

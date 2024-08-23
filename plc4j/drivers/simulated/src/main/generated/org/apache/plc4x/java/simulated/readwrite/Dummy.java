@@ -81,11 +81,6 @@ public class Dummy implements Message {
     return lengthInBits;
   }
 
-  public static Dummy staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Dummy staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Dummy");
     PositionAware positionAware = readBuffer;

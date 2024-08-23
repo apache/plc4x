@@ -116,12 +116,6 @@ public abstract class BACnetServiceAckAtomicReadFileStreamOrRecord implements Me
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileStreamOrRecord staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetServiceAckAtomicReadFileStreamOrRecord staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileStreamOrRecord");

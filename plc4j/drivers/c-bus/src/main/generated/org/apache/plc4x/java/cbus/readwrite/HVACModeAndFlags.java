@@ -229,12 +229,6 @@ public class HVACModeAndFlags implements Message {
     return lengthInBits;
   }
 
-  public static HVACModeAndFlags staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HVACModeAndFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACModeAndFlags");
     PositionAware positionAware = readBuffer;

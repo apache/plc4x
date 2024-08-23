@@ -91,12 +91,6 @@ public class BACnetAddressBinding implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAddressBinding staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAddressBinding staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetAddressBinding");
     PositionAware positionAware = readBuffer;

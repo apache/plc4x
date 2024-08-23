@@ -175,12 +175,6 @@ public abstract class CIPEncapsulationPacket implements Message {
     return lengthInBits;
   }
 
-  public static CIPEncapsulationPacket staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CIPEncapsulationPacket staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationPacket");
     PositionAware positionAware = readBuffer;

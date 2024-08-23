@@ -137,12 +137,6 @@ public abstract class DF1RequestMessage implements Message {
     return lengthInBits;
   }
 
-  public static DF1RequestMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DF1RequestMessage staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DF1RequestMessage");
     PositionAware positionAware = readBuffer;

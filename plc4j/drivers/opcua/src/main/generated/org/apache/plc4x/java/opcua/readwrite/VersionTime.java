@@ -63,12 +63,6 @@ public class VersionTime implements Message {
     return lengthInBits;
   }
 
-  public static VersionTime staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static VersionTime staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("VersionTime");
     PositionAware positionAware = readBuffer;

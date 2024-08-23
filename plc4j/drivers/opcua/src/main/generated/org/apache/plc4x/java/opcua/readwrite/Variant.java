@@ -139,11 +139,6 @@ public abstract class Variant implements Message {
     return lengthInBits;
   }
 
-  public static Variant staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Variant staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Variant");
     PositionAware positionAware = readBuffer;

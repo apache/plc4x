@@ -81,12 +81,6 @@ public abstract class LogicalSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static LogicalSegmentType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LogicalSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LogicalSegmentType");
     PositionAware positionAware = readBuffer;

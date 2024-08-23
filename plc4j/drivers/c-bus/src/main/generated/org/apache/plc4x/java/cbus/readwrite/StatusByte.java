@@ -133,12 +133,6 @@ public class StatusByte implements Message {
     return lengthInBits;
   }
 
-  public static StatusByte staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StatusByte staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusByte");
     PositionAware positionAware = readBuffer;

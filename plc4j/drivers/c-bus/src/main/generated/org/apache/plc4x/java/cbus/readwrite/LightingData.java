@@ -104,12 +104,6 @@ public abstract class LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LightingData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LightingData");
     PositionAware positionAware = readBuffer;

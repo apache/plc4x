@@ -138,12 +138,6 @@ public class BACnetCOVSubscription implements Message {
     return lengthInBits;
   }
 
-  public static BACnetCOVSubscription staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetCOVSubscription staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCOVSubscription");
     PositionAware positionAware = readBuffer;

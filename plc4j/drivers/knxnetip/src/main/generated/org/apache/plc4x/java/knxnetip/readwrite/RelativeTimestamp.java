@@ -77,12 +77,6 @@ public class RelativeTimestamp implements Message {
     return lengthInBits;
   }
 
-  public static RelativeTimestamp staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static RelativeTimestamp staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("RelativeTimestamp");
     PositionAware positionAware = readBuffer;

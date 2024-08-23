@@ -133,12 +133,6 @@ public class AssociatedQueryValueType implements Message {
     return lengthInBits;
   }
 
-  public static AssociatedQueryValueType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AssociatedQueryValueType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AssociatedQueryValueType");
     PositionAware positionAware = readBuffer;

@@ -83,26 +83,6 @@ public abstract class S7Parameter implements Message {
     return lengthInBits;
   }
 
-  public static S7Parameter staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short messageType;
-    if (args[0] instanceof Short) {
-      messageType = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      messageType = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, messageType);
-  }
-
   public static S7Parameter staticParse(ReadBuffer readBuffer, Short messageType)
       throws ParseException {
     readBuffer.pullContext("S7Parameter");

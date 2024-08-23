@@ -89,12 +89,6 @@ public class SequenceHeader implements Message {
     return lengthInBits;
   }
 
-  public static SequenceHeader staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SequenceHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SequenceHeader");
     PositionAware positionAware = readBuffer;

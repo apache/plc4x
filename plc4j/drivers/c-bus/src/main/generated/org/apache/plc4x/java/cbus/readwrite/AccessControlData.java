@@ -129,12 +129,6 @@ public abstract class AccessControlData implements Message {
     return lengthInBits;
   }
 
-  public static AccessControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AccessControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AccessControlData");
     PositionAware positionAware = readBuffer;

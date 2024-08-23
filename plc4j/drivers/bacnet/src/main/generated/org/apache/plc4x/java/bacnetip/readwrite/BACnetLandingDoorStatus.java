@@ -77,12 +77,6 @@ public class BACnetLandingDoorStatus implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLandingDoorStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLandingDoorStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLandingDoorStatus");
     PositionAware positionAware = readBuffer;

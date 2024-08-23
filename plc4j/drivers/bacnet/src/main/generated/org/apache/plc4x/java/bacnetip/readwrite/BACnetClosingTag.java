@@ -81,26 +81,6 @@ public class BACnetClosingTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetClosingTag staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Short tagNumberArgument;
-    if (args[0] instanceof Short) {
-      tagNumberArgument = (Short) args[0];
-    } else if (args[0] instanceof String) {
-      tagNumberArgument = Short.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Short or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, tagNumberArgument);
-  }
-
   public static BACnetClosingTag staticParse(ReadBuffer readBuffer, Short tagNumberArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetClosingTag");
