@@ -403,12 +403,17 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 		case bacnetip.KWBvlciAddress:
-			nni, ok := pdu.(*bacnetip.ForwardedNPDU)
-			if !ok {
-				attrLog.Trace().Msg("doesn't match")
+			var address *bacnetip.Address
+			switch pdu := pdu.(type) {
+			case *bacnetip.ForwardedNPDU:
+				address = pdu.GetBvlciAddress()
+			case *bacnetip.DeleteForeignDeviceTableEntry:
+				address = pdu.GetBvlciAddress()
+			default:
+				attrLog.Trace().Type("type", pdu).Msg("doesn't match")
 				return false
 			}
-			equals := nni.GetBvlciAddress().Equals(attrValue)
+			equals := address.Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
