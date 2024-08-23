@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.test.migration;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.lang3.RegExUtils;
@@ -65,30 +66,30 @@ public class MessageValidatorAndMigrator {
      */
     @SuppressWarnings({"rawtypes"})
     public static void validateOutboundMessageAndMigrate(String testCaseName, Map<String, String> options, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
-        MessageInput<?> messageInput = MessageResolver.getMessageInput(options, referenceXml.getName());
-        validateOutboundMessageAndMigrate(testCaseName, messageInput, referenceXml, parserArguments, data, byteOrder, autoMigrate, siteURI);
+        MessageInput<?> messageInput = MessageResolver.getMessageInput(options, referenceXml.getName(), parserArguments);
+        validateOutboundMessageAndMigrate(testCaseName, messageInput, referenceXml, data, byteOrder, autoMigrate, siteURI);
     }
 
     /**
-     * Validates a outbound message and migrates it to the expectation if the parameter {@code autoMigrate} is set to true
+     * Validates a outbound message and migrates it to the expectation if the parameter
+     * {@code autoMigrate} is set to true
      *
-     * @param testCaseName    name of the testcase
-     * @param messageInput    the pre-constructed MessageInput
-     * @param referenceXml    the xml we expect the outbound message to be
-     * @param parserArguments the parser arguments to create an instance of the message
-     * @param data            the bytes of the message
-     * @param byteOrder       the byte-order being used
-     * @param autoMigrate     indicates if we want to migrate to a new version
-     * @param siteURI         the file which we want to auto migrate
+     * @param testCaseName name of the testcase
+     * @param messageInput the pre-constructed MessageInput
+     * @param referenceXml the xml we expect the outbound message to be
+     * @param data the bytes of the message
+     * @param byteOrder the byte-order being used
+     * @param autoMigrate indicates if we want to migrate to a new version
+     * @param siteURI the file which we want to auto migrate
      * @return true if migration happened
      * @throws DriverTestsuiteException if something goes wrong
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static boolean validateOutboundMessageAndMigrate(String testCaseName, MessageInput<?> messageInput, Element referenceXml, List<String> parserArguments, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
+    public static boolean validateOutboundMessageAndMigrate(String testCaseName, MessageInput<?> messageInput, Element referenceXml, byte[] data, ByteOrder byteOrder, boolean autoMigrate, URI siteURI) throws DriverTestsuiteException {
         final ReadBufferByteBased readBuffer = new ReadBufferByteBased(data, byteOrder);
 
         try {
-            final Message parsedOutput = (Message) messageInput.parse(readBuffer, parserArguments.toArray());
+            final Message parsedOutput = (Message) messageInput.parse(readBuffer);
             final String referenceXmlString = referenceXml.asXML();
             try {
                 // First try to use the native xml writer
@@ -189,13 +190,12 @@ public class MessageValidatorAndMigrator {
      *                        and 'outputFlavor' (flavor of the output e.g read-write) which are used to construct
      *                        class lookup root package.
      * @param referenceXml    the xml we expect the outbound message
-     * @param parserArguments the parser arguments to create an instance of the message
      * @return the message if all went well
      */
     @SuppressWarnings("rawtypes")
-    public static Message validateInboundMessageAndGet(Map<String, String> options, Element referenceXml, List<String> parserArguments) {
-        MessageInput<?> messageIO = MessageResolver.getMessageInput(options, referenceXml.getName());
-        return validateInboundMessageAndGet(messageIO, referenceXml, parserArguments);
+    public static Message validateInboundMessageAndGet(Map<String, String> options, Element referenceXml) {
+        MessageInput<?> messageIO = MessageResolver.getMessageInput(options, referenceXml.getName(), Collections.emptyList());
+        return validateInboundMessageAndGet(messageIO, referenceXml);
     }
 
     /**
@@ -203,14 +203,13 @@ public class MessageValidatorAndMigrator {
      *
      * @param messageInput    the pre-constructed MessageInput
      * @param referenceXml    the xml we expect the outbound messag
-     * @param parserArguments the parser arguments to create an instance of the message
      * @return the message if all went well
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Message validateInboundMessageAndGet(MessageInput messageInput, Element referenceXml, List<String> parserArguments) {
+    public static Message validateInboundMessageAndGet(MessageInput messageInput, Element referenceXml) {
         final String referenceXmlString = referenceXml.asXML();
         try {
-            return (Message) messageInput.parse(new ReadBufferXmlBased(new ByteArrayInputStream(referenceXmlString.getBytes(StandardCharsets.UTF_8))), parserArguments.toArray(new String[0]));
+            return (Message) messageInput.parse(new ReadBufferXmlBased(new ByteArrayInputStream(referenceXmlString.getBytes(StandardCharsets.UTF_8))));
         } catch (RuntimeException | ParseException e) {
             throw new DriverTestsuiteException(String.format("Error parsing message from:\n%s", referenceXmlString), e);
         }

@@ -120,10 +120,9 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
     @Override
     protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
+        return SingleProtocolStackConfigurer.builder(EipPacket.class, io -> EipPacket.staticParse(io, true))
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withParserArgs(true)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .byteOrder(this.configuration.getByteOrder())
             .build();

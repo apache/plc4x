@@ -151,7 +151,6 @@ public class ProfinetDriver extends GeneratedDriverBase<Ethernet_Frame> {
             .withProtocol(ProfinetProtocolLogic.class)
             .withDriverContext(ProfinetDriverContext.class)
             // Every incoming message is to be treated as a response.
-            .withParserArgs(true)
             .build();
     }
 

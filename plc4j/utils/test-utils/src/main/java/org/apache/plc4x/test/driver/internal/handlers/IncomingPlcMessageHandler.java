@@ -54,9 +54,9 @@ public class IncomingPlcMessageHandler {
     public byte[] getBytesFromXml(Element referenceXml, ByteOrder byteOrder) throws DriverTestsuiteException {
         // TODO: Find some smart way to find out how big the buffer should be.
         final WriteBufferByteBased writeBuffer = new WriteBufferByteBased(1024 * 100, byteOrder);
-        MessageInput messageInput = MessageResolver.getMessageInput(driverTestsuiteConfiguration.getOptions(), referenceXml.getName());
+        MessageInput messageInput = MessageResolver.getMessageInput(driverTestsuiteConfiguration.getOptions(), referenceXml.getName(), parserArguments);
         // Get Message and Validate
-        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageInput, referenceXml, parserArguments);
+        Message message = MessageValidatorAndMigrator.validateInboundMessageAndGet(messageInput, referenceXml);
 
         // Get Bytes
         try {

@@ -19,6 +19,9 @@
 package org.apache.plc4x.java.cbus;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.cbus.readwrite.CBusMessage;
+import org.apache.plc4x.java.cbus.readwrite.CBusOptions;
+import org.apache.plc4x.java.cbus.readwrite.RequestContext;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -92,7 +95,8 @@ public class CBusDriver extends GeneratedDriverBase<CBusCommand> {
 
     @Override
     protected ProtocolStackConfigurer<CBusCommand> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(CBusCommand.class, CBusCommand::staticParse)
+        return SingleProtocolStackConfigurer.builder(CBusCommand.class, io ->
+                CBusCommand.staticParse(io, new CBusOptions(false, false, false, false, false, false, false, false, false)))
             .withProtocol(CBusProtocolLogic.class)
             .withDriverContext(CBusDriverContext.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)

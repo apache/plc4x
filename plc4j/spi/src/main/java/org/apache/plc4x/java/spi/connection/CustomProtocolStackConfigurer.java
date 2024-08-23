@@ -84,7 +84,7 @@ public class CustomProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
     }
 
     private ChannelHandler getMessageCodec(PlcConnectionConfiguration configuration) {
-        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO.apply(configuration), byteOrder, parserArgs,
+        return new GeneratedProtocolMessageCodec<>(basePacketClass, protocolIO.apply(configuration), byteOrder,
             packetSizeEstimator == null ? null : packetSizeEstimator.apply(configuration),
             corruptPacketRemover == null ? null : corruptPacketRemover.apply(configuration));
     }
