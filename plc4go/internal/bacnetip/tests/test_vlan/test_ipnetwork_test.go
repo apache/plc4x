@@ -318,14 +318,10 @@ type RouterSuite struct {
 	log zerolog.Logger
 }
 
-func (suite *RouterSuite) SetupSuite() {
-	t := suite.T()
-	suite.log = testutils.ProduceTestingLogger(t)
-}
-
 func (suite *RouterSuite) SetupTest() {
 	t := suite.T()
 	t.Skip("not ready yet") // TODO: figure out why it is failing
+	suite.log = testutils.ProduceTestingLogger(t)
 	// create a state machine group that has all nodes on all networks
 	suite.smg = tests.NewStateMachineGroup(suite.log)
 

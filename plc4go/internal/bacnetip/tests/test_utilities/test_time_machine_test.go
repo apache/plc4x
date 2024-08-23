@@ -41,11 +41,8 @@ type TimeMachineSuite struct {
 	log zerolog.Logger
 }
 
-func (suite *TimeMachineSuite) SetupSuite() {
-	suite.log = testutils.ProduceTestingLogger(suite.T())
-}
-
 func (suite *TimeMachineSuite) SetupTest() {
+	suite.log = testutils.ProduceTestingLogger(suite.T())
 	t := suite.T()
 	tests.LockGlobalTimeMachine(t)
 	tests.NewGlobalTimeMachine(suite.log) // TODO: this is really stupid because of concurrency...

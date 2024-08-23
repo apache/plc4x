@@ -22,11 +22,11 @@ package tests
 import (
 	"bytes"
 	"fmt"
-	"reflect"
 	"slices"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -105,26 +105,33 @@ func (t CallTransition) String() string {
 	return fmt.Sprintf("CallTransition{Transition: %s, fnargs: %s}", t.Transition, t.fnargs)
 }
 
-func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs map[bacnetip.KnownKey]any) bool {
+func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs map[bacnetip.KnownKey]any) (matches bool) {
 	// check the type
 	if pduType != nil && fmt.Sprintf("%T", pdu) != fmt.Sprintf("%T", pduType) {
 		localLog.Debug().Type("got", pdu).Type("want", pduType).Msg("failed match, wrong type")
 		return false
 	}
 	for attrName, attrValue := range pduAttrs {
+		attrLog := localLog.With().Str("attrName", string(attrName)).Interface("attrValue", attrValue).Logger()
 		switch attrName {
 		case bacnetip.KWPPDUSource:
-			if !pdu.GetPDUSource().Equals(attrValue) {
-				localLog.Debug().Msg("source doesn't match")
+			equals := pdu.GetPDUSource().Equals(attrValue)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case bacnetip.KWPDUDestination:
-			if !pdu.GetPDUDestination().Equals(attrValue) {
-				localLog.Debug().Msg("destination doesn't match")
+			equals := pdu.GetPDUDestination().Equals(attrValue)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case "x": // only used in test cases
-			return bytes.Equal(pdu.(interface{ X() []byte }).X(), attrValue.([]byte))
+			equals := bytes.Equal(pdu.(interface{ X() []byte }).X(), attrValue.([]byte))
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case "y": // only used in test cases
 			return false
 		case "a": // only used in test cases
@@ -132,155 +139,246 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			if a == 0 {
 				return false
 			}
-			return a == attrValue.(int)
+			equals := a == attrValue.(int)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case "b": // only used in test cases
 			b := pdu.(interface{ B() int }).B()
 			if b == 0 {
 				return false
 			}
-			return b == attrValue.(int)
+			equals := b == attrValue.(int)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWPDUData:
 			got := pdu.GetPduData()
-			want := attrValue
-			equal := reflect.DeepEqual(got, want)
-			if !equal {
-				switch want := want.(type) {
-				case []byte:
-					localLog.Debug().Hex("got", got).Hex("want", want).Msg("mismatch")
-				default:
-					localLog.Debug().Hex("got", got).Interface("want", want).Msg("mismatch")
-				}
+			want, ok := attrValue.([]byte)
+			if !ok {
+				attrLog.Debug().Msg("mismatch, attr not a byte array")
+				return false
 			}
-			return equal
+			equals := bytes.Equal(got, want)
+			if !equals {
+				attrLog.Debug().Hex("got", got).Hex("want", want).Stringer("diff", utils.DiffHex(want, got)).Msg("mismatch")
+			}
+			if !equals {
+				attrLog.Debug().Msg("pduData doesn't match")
+				return false
+			}
 		case bacnetip.KWWirtnNetwork:
 			wirtn, ok := pdu.(*bacnetip.WhoIsRouterToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := wirtn.GetWirtnNetwork()
 			if net == nil {
 				return false
 			}
-			return *net == attrValue
+			equals := *net == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWIartnNetworkList:
 			iamrtn, ok := pdu.(*bacnetip.IAmRouterToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := iamrtn.GetIartnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return slices.Equal(net, uint16s)
+			equals := slices.Equal(net, uint16s)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWIcbrtnNetwork:
 			iamrtn, ok := pdu.(*bacnetip.ICouldBeRouterToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return iamrtn.GetIcbrtnNetwork() == attrValue
+			equals := iamrtn.GetIcbrtnNetwork() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWIcbrtnPerformanceIndex:
 			iamrtn, ok := pdu.(*bacnetip.ICouldBeRouterToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return iamrtn.GetIcbrtnPerformanceIndex() == attrValue
+			equals := iamrtn.GetIcbrtnPerformanceIndex() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWRmtnRejectionReason:
 			iamrtn, ok := pdu.(*bacnetip.RejectMessageToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return iamrtn.GetRmtnRejectionReason() == attrValue
+			equals := iamrtn.GetRmtnRejectionReason() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWRmtnDNET:
 			iamrtn, ok := pdu.(*bacnetip.RejectMessageToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return iamrtn.GetRmtnDNET() == attrValue
+			equals := iamrtn.GetRmtnDNET() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWRbtnNetworkList:
 			rbtn, ok := pdu.(*bacnetip.RouterBusyToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := rbtn.GetRbtnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return slices.Equal(net, uint16s)
+			equals := slices.Equal(net, uint16s)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWRatnNetworkList:
 			ratn, ok := pdu.(*bacnetip.RouterAvailableToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			net := ratn.GetRatnNetworkList()
 			uint16s, ok := attrValue.([]uint16)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return slices.Equal(net, uint16s)
+			equals := slices.Equal(net, uint16s)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWIrtTable:
 			irt, ok := pdu.(*bacnetip.InitializeRoutingTable)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			irts := irt.GetIrtTable()
 			oirts, ok := attrValue.([]*bacnetip.RoutingTableEntry)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return slices.EqualFunc(irts, oirts, func(entry *bacnetip.RoutingTableEntry, entry2 *bacnetip.RoutingTableEntry) bool {
+			equals := slices.EqualFunc(irts, oirts, func(entry *bacnetip.RoutingTableEntry, entry2 *bacnetip.RoutingTableEntry) bool {
 				return entry.Equals(entry2)
 			})
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWIrtaTable:
 			irta, ok := pdu.(*bacnetip.InitializeRoutingTableAck)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			irts := irta.GetIrtaTable()
 			oirts, ok := attrValue.([]*bacnetip.RoutingTableEntry)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return slices.EqualFunc(irts, oirts, func(entry *bacnetip.RoutingTableEntry, entry2 *bacnetip.RoutingTableEntry) bool {
+			equals := slices.EqualFunc(irts, oirts, func(entry *bacnetip.RoutingTableEntry, entry2 *bacnetip.RoutingTableEntry) bool {
 				return entry.Equals(entry2)
 			})
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWEctnDNET:
 			ectn, ok := pdu.(*bacnetip.EstablishConnectionToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return ectn.GetEctnDNET() == attrValue
+			equals := ectn.GetEctnDNET() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWEctnTerminationTime:
 			ectn, ok := pdu.(*bacnetip.EstablishConnectionToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return ectn.GetEctnTerminationTime() == attrValue
+			equals := ectn.GetEctnTerminationTime() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWDctnDNET:
 			dctn, ok := pdu.(*bacnetip.DisconnectConnectionToNetwork)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return dctn.GetDctnDNET() == attrValue
+			equals := dctn.GetDctnDNET() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWNniNet:
 			nni, ok := pdu.(*bacnetip.NetworkNumberIs)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return nni.GetNniNet() == attrValue
+			equals := nni.GetNniNet() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWNniFlag:
 			nni, ok := pdu.(*bacnetip.NetworkNumberIs)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 			return nni.GetNniFlag() == attrValue
 		case bacnetip.KWBvlciResultCode:
 			r, ok := pdu.(*bacnetip.Result)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return r.GetBvlciResultCode() == attrValue
+			equals := r.GetBvlciResultCode() == attrValue
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWBvlciBDT:
 			var iwbdt []*bacnetip.Address
 			switch pdu := pdu.(type) {
@@ -289,47 +387,71 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			case *bacnetip.ReadBroadcastDistributionTableAck:
 				iwbdt = pdu.GetBvlciBDT()
 			default:
+				attrLog.Trace().Type("type", pdu).Msg("doesn't match")
 				return false
 			}
 			owbdt, ok := attrValue.([]*bacnetip.Address)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return slices.EqualFunc(iwbdt, owbdt, func(a *bacnetip.Address, b *bacnetip.Address) bool {
+			equals := slices.EqualFunc(iwbdt, owbdt, func(a *bacnetip.Address, b *bacnetip.Address) bool {
 				return a.Equals(b)
 			})
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWBvlciAddress:
 			nni, ok := pdu.(*bacnetip.ForwardedNPDU)
 			if !ok {
+				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			return nni.GetBvlciAddress().Equals(attrValue)
+			equals := nni.GetBvlciAddress().Equals(attrValue)
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWFdAddress:
 			panic("implement me")
+			equals := true // TODO temporary
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWFdTTL:
 			panic("implement me")
+			equals := true // TODO temporary
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWFdRemain:
 			panic("implement me")
+			equals := true // TODO temporary
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWBvlciTimeToLive:
 			panic("implement me")
+			equals := true // TODO temporary
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		case bacnetip.KWBvlciFDT:
 			panic("implement me")
+			equals := true // TODO temporary
+			if !equals {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
 		default:
 			panic("implement " + attrName)
 		}
 	}
-	// TODO: implement
-	/*
-	  #
-	    # check for matching attribute values
-	    for attr_name, attr_value in pdu_attrs.items():
-	        if not hasattr(pdu, attr_name):
-	            if _debug: matchbacnetip.PDU._debug("    - failed match, missing attr: %r", attr_name)
-	            return False
-	        if getattr(pdu, attr_name) != attr_value:
-	            if _debug: stateMachine._debug("    - failed match, attr value: %r, %r", attr_name, attr_value)
-	            return False
-	*/
 	localLog.Trace().Msg("successful match")
 	return true
 }

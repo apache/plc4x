@@ -159,33 +159,46 @@ const (
 	KWBvlciFDT        = KnownKey("bvlciFDT")
 )
 
-type MessageBridge struct {
+type MessageBridge interface {
+	spi.Message
+	_PDUDataRequirements
+}
+
+type messageBridge struct {
 	Bytes []byte
 }
 
-var _ spi.Message = (*MessageBridge)(nil)
-var _ _PDUDataRequirements = (*MessageBridge)(nil)
+func NewMessageBridge(bytes ...byte) MessageBridge {
+	m := &messageBridge{Bytes: make([]byte, len(bytes))}
+	copy(m.Bytes, bytes)
+	if len(m.Bytes) == 0 {
+		m.Bytes = nil
+	}
+	return m
+}
 
-func (m *MessageBridge) String() string {
+var _ MessageBridge = (*messageBridge)(nil)
+
+func (m *messageBridge) String() string {
 	return Btox(m.Bytes, "")
 }
 
-func (m *MessageBridge) Serialize() ([]byte, error) {
+func (m *messageBridge) Serialize() ([]byte, error) {
 	return m.Bytes, nil
 }
 
-func (m *MessageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
+func (m *messageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteByteArray("Bytes", m.Bytes)
 }
 
-func (m *MessageBridge) GetLengthInBytes(_ context.Context) uint16 {
+func (m *messageBridge) GetLengthInBytes(_ context.Context) uint16 {
 	return uint16(len(m.Bytes))
 }
 
-func (m *MessageBridge) GetLengthInBits(ctx context.Context) uint16 {
+func (m *messageBridge) GetLengthInBits(ctx context.Context) uint16 {
 	return m.GetLengthInBytes(ctx) * 8
 }
 
-func (m *MessageBridge) getPDUData() []byte {
+func (m *messageBridge) getPDUData() []byte {
 	return m.Bytes
 }

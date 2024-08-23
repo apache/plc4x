@@ -64,7 +64,7 @@ func (n *NPDUCodec) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	}
 
 	// Now as a vanilla PDU
-	ypdu := bacnetip.NewPDU(&bacnetip.MessageBridge{})
+	ypdu := bacnetip.NewPDU(bacnetip.NewMessageBridge())
 	if err := xpdu.Encode(ypdu); err != nil {
 		return errors.Wrap(err, "error decoding xpdu")
 	}

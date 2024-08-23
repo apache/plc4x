@@ -67,9 +67,9 @@ func TagList(tags ...bacnetip.Tag) *bacnetip.TagList {
 
 func PDUData(args ...any) bacnetip.PDUData {
 	if args == nil {
-		return bacnetip.NewPDUData(bacnetip.NewArgs(&bacnetip.MessageBridge{}))
+		return bacnetip.NewPDUData(bacnetip.NewArgs(bacnetip.NewMessageBridge()))
 	} else {
-		return bacnetip.NewPDUData(bacnetip.NewArgs(&bacnetip.MessageBridge{Bytes: args[0].([]byte)}))
+		return bacnetip.NewPDUData(bacnetip.NewArgs(bacnetip.NewMessageBridge(args[0].([]byte)...)))
 	}
 }
 

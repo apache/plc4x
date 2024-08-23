@@ -594,21 +594,18 @@ func (w *ForwardedNPDU) Decode(bvlpdu Arg) error {
 		}
 		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
 		case readWriteModel.BVLCForwardedNPDUExactly:
-			switch bvlc := pduUserData.(type) {
-			case readWriteModel.BVLCForwardedNPDU:
-				addr := bvlc.GetIp()
-				port := bvlc.GetPort()
-				var portArray = make([]byte, 2)
-				binary.BigEndian.PutUint16(portArray, port)
-				var err error
-				address, err := NewAddress(zerolog.Nop(), append(addr, portArray...))
-				if err != nil {
-					return errors.Wrap(err, "error creating address")
-				}
-				w.bvlciAddress = address
-
-				w.setBVLC(bvlc)
+			addr := pduUserData.GetIp()
+			port := pduUserData.GetPort()
+			var portArray = make([]byte, 2)
+			binary.BigEndian.PutUint16(portArray, port)
+			var err error
+			address, err := NewAddress(zerolog.Nop(), append(addr, portArray...))
+			if err != nil {
+				return errors.Wrap(err, "error creating address")
 			}
+			w.bvlciAddress = address
+
+			w.setBVLC(pduUserData)
 		}
 		return nil
 	default:
@@ -744,28 +741,31 @@ type OriginalUnicastNPDU struct {
 
 var _ BVLPDU = (*OriginalUnicastNPDU)(nil)
 
-func NewOriginalUnicastNPDU(pdu PDU, opts ...func(*OriginalUnicastNPDU)) (BVLPDU, error) {
-	b := &OriginalUnicastNPDU{}
+func NewOriginalUnicastNPDU(pdu PDU, opts ...func(*OriginalUnicastNPDU)) (*OriginalUnicastNPDU, error) {
+	o := &OriginalUnicastNPDU{}
 	for _, opt := range opts {
-		opt(b)
+		opt(o)
 	}
 	switch npdu := pdu.(type) {
 	case readWriteModel.NPDUExactly:
-		b._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalUnicastNPDU(npdu, npdu.GetLengthInBytes(context.Background()))).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(npdu))).(*_BVLPDU)
+	case nil:
+		o._BVLPDU = NewBVLPDU(nil).(*_BVLPDU)
 	default:
 		// TODO: re-encode seems expensive... check if there is a better option (e.g. only do it on the message bridge)
-		parse, err := readWriteModel.BVLCParse(context.Background(), pdu.GetPduData())
+		data := pdu.GetPduData()
+		parse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
 		if err != nil {
 			return nil, errors.Wrap(err, "error re-encoding")
 		}
-		b._BVLPDU = NewBVLPDU(parse).(*_BVLPDU)
+		o._BVLPDU = NewBVLPDU(readWriteModel.NewBVLCOriginalUnicastNPDU(o.produceInnerNPDU(parse))).(*_BVLPDU)
 	}
 	// Do a post construct for a bit more easy initialization
-	for _, f := range b._postConstruct {
+	for _, f := range o._postConstruct {
 		f()
 	}
-	b._postConstruct = nil
-	return b, nil
+	o._postConstruct = nil
+	return o, nil
 }
 
 func WithOriginalUnicastNPDUDestination(destination *Address) func(*OriginalUnicastNPDU) {
@@ -784,33 +784,36 @@ func WithOriginalUnicastNPDUUserData(userData spi.Message) func(*OriginalUnicast
 	}
 }
 
-func (n *OriginalUnicastNPDU) Encode(bvlpdu Arg) error {
+func (o *OriginalUnicastNPDU) produceInnerNPDU(inNpdu readWriteModel.NPDU) (npdu readWriteModel.NPDU, bvlcPayloadLength uint16) {
+	npdu = inNpdu
+	return
+}
+
+func (o *OriginalUnicastNPDU) Encode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := bvlpdu.Update(n); err != nil {
+		if err := bvlpdu.Update(o); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		bvlpdu.setBVLC(n.bvlc)
-		bvlpdu.PutData(n.getPDUData()...)
+
+		bvlpdu.PutData(o.getPDUData()...)
+
+		bvlpdu.setBVLC(o.bvlc)
 		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
 	}
 }
 
-func (n *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
+func (o *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLPDU:
-		if err := n.Update(bvlpdu); err != nil {
+		if err := o.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
-		case readWriteModel.BVLCExactly:
-			switch bvlc := pduUserData.(type) {
-			case readWriteModel.BVLCOriginalUnicastNPDU:
-				n.setBVLC(bvlc)
-				n.PutData(bvlpdu.GetPduData()...)
-			}
+		case readWriteModel.BVLCOriginalUnicastNPDUExactly:
+			o.setBVLC(pduUserData)
 		}
 		return nil
 	default:
@@ -818,8 +821,8 @@ func (n *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 	}
 }
 
-func (n *OriginalUnicastNPDU) String() string {
-	return fmt.Sprintf("OriginalUnicastNPDU{%s}", n._BVLPDU)
+func (o *OriginalUnicastNPDU) String() string {
+	return fmt.Sprintf("OriginalUnicastNPDU{%s}", o._BVLPDU)
 }
 
 type OriginalBroadcastNPDU struct {
@@ -829,7 +832,7 @@ type OriginalBroadcastNPDU struct {
 	_postConstruct []func()
 }
 
-func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (BVLPDU, error) {
+func NewOriginalBroadcastNPDU(pdu PDU, opts ...func(*OriginalBroadcastNPDU)) (*OriginalBroadcastNPDU, error) {
 	b := &OriginalBroadcastNPDU{}
 	for _, opt := range opts {
 		opt(b)

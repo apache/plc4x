@@ -126,7 +126,7 @@ func TestSimple(t *testing.T) {
 		//make a PDU from node 1 to node 2
 		pduData, err := bacnetip.Xtob("dead.beef")
 		require.NoError(t, err)
-		pdu := bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduData}, bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(tnet.iut.address))
+		pdu := bacnetip.NewPDU(bacnetip.NewMessageBridge(pduData...), bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(tnet.iut.address))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
