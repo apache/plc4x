@@ -345,7 +345,6 @@ func (suite *TestAnnexJCodecSuite) TestReadBroadcastDistributionTableAck() {
 }
 
 func (suite *TestAnnexJCodecSuite) TestForwardNPDU() {
-	suite.T().Skip("not yet ready") // TODO: check what is going on
 	addr, err := bacnetip.NewAddress(zerolog.Nop(), "192.168.0.1")
 	xpdu, err := bacnetip.Xtob(
 		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
@@ -508,7 +507,6 @@ func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableAck() {
 }
 
 func (suite *TestAnnexJCodecSuite) TestDistributeBroadcastToNetwork() {
-	suite.T().Skip("not yet ready") // TODO: check what is going on
 	xpdu, err := bacnetip.Xtob(
 		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
 		// TODO: this below is from us as upstream message is not parsable
@@ -542,7 +540,6 @@ func (suite *TestAnnexJCodecSuite) TestDistributeBroadcastToNetwork() {
 }
 
 func (suite *TestAnnexJCodecSuite) TestOriginalUnicastNPDU() {
-	suite.T().Skip("not yet ready") // TODO: check what is going on
 	xpdu, err := bacnetip.Xtob(
 		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
 		// TODO: this below is from us as upstream message is not parsable
@@ -576,7 +573,6 @@ func (suite *TestAnnexJCodecSuite) TestOriginalUnicastNPDU() {
 }
 
 func (suite *TestAnnexJCodecSuite) TestOriginalBroadcastNPDU() {
-	suite.T().Skip("not yet ready") // TODO: check what is going on
 	xpdu, err := bacnetip.Xtob(
 		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
 		// TODO: this below is from us as upstream message is not parsable
@@ -584,7 +580,7 @@ func (suite *TestAnnexJCodecSuite) TestOriginalBroadcastNPDU() {
 			"01 0001 0002 0003", // message type and network list
 	)
 	suite.Require().NoError(err)
-	pduBytes, err := bacnetip.Xtob("81.09.000d" + //   bvlci // TODO: length was 08 before
+	pduBytes, err := bacnetip.Xtob("81.0b.000d" + //   bvlci // TODO: length was 08 before
 		// "deadbeef", // forwarded PDU // TODO: this is not a ndpu so we just exploded with that. We use the iartn for that for now
 		// TODO: this below is from us as upstream message is not parsable
 		"01.80" + // version, network layer message

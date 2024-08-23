@@ -20,7 +20,6 @@
 package bacnetip
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -519,19 +518,7 @@ func (b *BIPSimple) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := args.Get0PDU()
 
-	// TODO: come up with a better way to check that... this is hugely inefficient
-	_data := pdu.GetPDUUserData()
-	_ = _data
-	data := pdu.GetPduData()
-	bvlcParse, err := readWriteModel.NPDUParse(context.Background(), data, uint16(len(data)))
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO: we need to work with the inner types here....
-	panic("todo")
-
-	switch msg := bvlcParse.(type) {
+	switch msg := pdu.GetRootMessage().(type) {
 	// some kind of response to a request
 	case readWriteModel.BVLCResultExactly:
 		// send this to the service access point

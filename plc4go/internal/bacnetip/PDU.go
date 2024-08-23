@@ -1056,6 +1056,10 @@ func (d *_PDUData) deepCopy() *_PDUData {
 	return &copyPDUData
 }
 
+func (d *_PDUData) String() string {
+	return Btox(d.data, ".")
+}
+
 type PDU interface {
 	PCI
 	PDUData
@@ -1151,5 +1155,5 @@ func (p *_PDU) String() string {
 	if globals.ExtendedPDUOutput {
 		return fmt.Sprintf("_PDU{%s}", p._PCI)
 	}
-	return fmt.Sprintf("<%s %s -> %s : %s>", p.PDUContract.GetName(), p.GetPDUSource(), p.GetPDUDestination(), Btox(p.GetPduData(), "."))
+	return fmt.Sprintf("<%s %s -> %s : %s>", p.PDUContract.GetName(), p.GetPDUSource(), p.GetPDUDestination(), p._PDUData)
 }

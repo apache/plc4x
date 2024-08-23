@@ -25,7 +25,6 @@ import (
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 
 	"github.com/rs/zerolog"
@@ -119,24 +118,27 @@ func TestSimple(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_unicast", func(t *testing.T) { //Test a unicast message from TD to IUT.
-		t.Skip("not ready yet") // TODO: figure out why it is failing
 		tests.LockGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := bacnetip.Xtob("dead.beef")
+		pduData, err := bacnetip.Xtob(
+			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
+			"01.80" + // version, network layer message
+				"02 0001 02", // message type, network, performance
+		)
 		require.NoError(t, err)
 		pdu := bacnetip.NewPDU(bacnetip.NewMessageBridge(pduData...), bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(tnet.iut.address))
 		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
 		tnet.td.GetStartState().Send(pdu, nil).Success("")
-		tnet.iut.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		tnet.iut.GetStartState().Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)), bacnetip.NewKWArgs(
 			bacnetip.KWPPDUSource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)), bacnetip.NewKWArgs(
 			bacnetip.KWPPDUSource, tnet.td.address.AddrTuple,
 			bacnetip.KWPDUDestination, tnet.iut.address.AddrTuple,
 			bacnetip.KWPDUData, pduData,
@@ -146,44 +148,27 @@ func TestSimple(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
-		t.Skip("not ready yet") // TODO: figure out why it is failing
 		tests.LockGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
-		pduData, err := bacnetip.Xtob("dead.beef")
+		pduData, err := bacnetip.Xtob(
+			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
+			"01.80" + // version, network layer message
+				"02 0001 02", // message type, network, performance
+		)
 		require.NoError(t, err)
-		apdu := model.NewAPDUUnknown(0, pduData, 0)
-		control := model.NewNPDUControl(false, true, true, false, model.NPDUNetworkPriority_CRITICAL_EQUIPMENT_MESSAGE)
-		sourceAddr := tnet.td.address
-		destAddr := bacnetip.NewLocalBroadcast(nil)
-		{
-			// TODO: why is this uncommented upstream
-			destAddr, err = bacnetip.NewAddress(testutils.ProduceTestingLogger(t), "192.168.4.255")
-			require.NoError(t, err)
-		}
-		npdu := model.NewNPDU(0,
-			control,
-			destAddr.AddrNet,
-			destAddr.AddrLen,
-			destAddr.AddrAddress,
-			sourceAddr.AddrNet,
-			sourceAddr.AddrLen,
-			sourceAddr.AddrAddress,
-			nil,
-			nil,
-			apdu,
-			0)
-		t.Logf("pdu: \n%v", npdu)
+		pdu := bacnetip.NewPDU(bacnetip.NewMessageBridge(pduData...), bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(tnet.iut.address))
+		t.Logf("pdu: %v", pdu)
 
 		// test device sends it, iut gets it
-		tnet.td.GetStartState().Send(bacnetip.NewPDU(npdu, bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(bacnetip.NewLocalBroadcast(nil))), nil).Success("")
-		tnet.iut.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
+		tnet.td.GetStartState().Send(bacnetip.NewPDU(pdu, bacnetip.WithPDUSource(tnet.td.address), bacnetip.WithPDUDestination(bacnetip.NewLocalBroadcast(nil))), nil).Success("")
+		tnet.iut.GetStartState().Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)), bacnetip.NewKWArgs(
 			bacnetip.KWPPDUSource, tnet.td.address,
 		)).Success("")
 
 		// sniffer sees message on the wire
-		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(npdu)), bacnetip.NewKWArgs(
+		tnet.sniffer.GetStartState().Receive(bacnetip.NewArgs((*bacnetip.OriginalBroadcastNPDU)(nil)), bacnetip.NewKWArgs(
 			bacnetip.KWPPDUSource, tnet.td.address.AddrTuple,
 			//bacnetip.KWPDUDestination, tnet.iut.address.AddrTuple,
 			bacnetip.KWPDUData, pduData,

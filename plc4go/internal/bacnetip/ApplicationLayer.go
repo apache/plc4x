@@ -2136,9 +2136,33 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
 
-	// TODO: check if we need to check apdu here
+	apdu := args.Get0APDU()
 
-	return a.Request(args, kwargs)
+	isConfirmed := false
+	var xpdu APDU
+	switch apdu.GetRootMessage().(type) {
+	case readWriteModel.APDUConfirmedRequestExactly:
+
+		isConfirmed = true
+		panic("todo implement me")
+	case readWriteModel.APDUUnconfirmedRequestExactly:
+		panic("todo implement me")
+	default:
+		return errors.Errorf("unknown _PDU type %T", apdu)
+	}
+
+	// forward the encoded packet
+	err := a.Request(NewArgs(xpdu), NoKWArgs)
+	if err != nil {
+		return errors.Wrap(err, "error forwarding the request ")
+	}
+
+	// if the upper layers of the application did not assign an invoke ID,
+	// copy the one that was assigned on its way down the stack
+	if isConfirmed && apdu.GetApduInvokeID() != nil {
+		//apdu.invokeId = xpud.apduInvokeId // TODO: implement me
+	}
+	return err
 }
 
 // TODO: big WIP

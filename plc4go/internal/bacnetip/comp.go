@@ -49,6 +49,9 @@ func (a Args) Get0NPDU() NPDU {
 	return a[0].(NPDU)
 }
 
+func (a Args) Get0APDU() APDU {
+	return a[0].(APDU)
+}
 func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }
@@ -173,10 +176,6 @@ func NewMessageBridge(bytes ...byte) MessageBridge {
 }
 
 var _ MessageBridge = (*messageBridge)(nil)
-
-func (m *messageBridge) String() string {
-	return Btox(m.data, "")
-}
 
 func (m *messageBridge) Serialize() ([]byte, error) {
 	return m.data, nil
