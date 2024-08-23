@@ -210,7 +210,7 @@ func (s *SnifferNode) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) e
 	pdu := args.Get0PDU()
 
 	// it's and NPDU
-	npdu := pdu.GetMessage().(model.NPDU)
+	npdu := pdu.GetRootMessage().(model.NPDU)
 
 	// filter out network layer traffic if there is any, probably not
 	if nlm := npdu.GetNlm(); nlm != nil {
@@ -293,7 +293,7 @@ func (s *SnifferStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.K
 	pdu := args.Get0PDU()
 
 	// it's and NPDU
-	npdu := pdu.GetMessage().(model.NPDU)
+	npdu := pdu.GetRootMessage().(model.NPDU)
 
 	// filter out network layer traffic if there is any, probably not
 	if nlm := npdu.GetNlm(); nlm != nil {

@@ -103,11 +103,11 @@ func (w *WhoIsIAmServices) DoWhoIsRequest(apdu PDU) error {
 
 	// extract the parameters
 	var lowLimit, highLimit *uint
-	if deviceInstanceRangeLowLimit := apdu.GetMessage().(model.BACnetUnconfirmedServiceRequestWhoIs).GetDeviceInstanceRangeLowLimit(); deviceInstanceRangeLowLimit != nil {
+	if deviceInstanceRangeLowLimit := apdu.GetRootMessage().(model.BACnetUnconfirmedServiceRequestWhoIs).GetDeviceInstanceRangeLowLimit(); deviceInstanceRangeLowLimit != nil {
 		_lowLimit := uint(deviceInstanceRangeLowLimit.GetActualValue())
 		lowLimit = &_lowLimit
 	}
-	if deviceInstanceRangeHighLimit := apdu.GetMessage().(model.BACnetUnconfirmedServiceRequestWhoIs).GetDeviceInstanceRangeHighLimit(); deviceInstanceRangeHighLimit != nil {
+	if deviceInstanceRangeHighLimit := apdu.GetRootMessage().(model.BACnetUnconfirmedServiceRequestWhoIs).GetDeviceInstanceRangeHighLimit(); deviceInstanceRangeHighLimit != nil {
 		_highLimit := uint(deviceInstanceRangeHighLimit.GetActualValue())
 		highLimit = &_highLimit
 	}

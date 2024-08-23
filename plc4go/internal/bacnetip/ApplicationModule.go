@@ -407,7 +407,7 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 
 	// double-check the input is the right kind of APDU
-	switch apdu.GetMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequestExactly, readWriteModel.APDUConfirmedRequestExactly:
 	default:
 		return errors.New("APDU expected")
@@ -536,7 +536,7 @@ func (a *ApplicationIOController) _AppComplete(address *Address, apdu PDU) error
 	}
 
 	// this request is complete
-	switch apdu.GetMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly:
 		if err := queue.CompleteIO(queue.activeIOCB, apdu); err != nil {
 			return err

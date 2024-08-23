@@ -69,7 +69,8 @@ func (t TPDU) String() string {
 	return fmt.Sprintf("<TPDU%v>", content)
 }
 
-func (t TPDU) GetMessage() spi.Message {
+func (t TPDU) GetRootMessage() spi.Message {
+	//TODO implement me
 	panic("implement me")
 }
 

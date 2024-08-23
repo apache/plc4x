@@ -362,7 +362,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 
 	pdu := args.Get0PDU()
 	// get the apdu
-	apdu := pdu.GetMessage().(readWriteModel.APDU)
+	apdu := pdu.GetRootMessage().(readWriteModel.APDU)
 
 	// build a npdu
 	pduDestination := pdu.GetPDUDestination()
@@ -590,7 +590,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, pdu PDU
 		forwardMessage bool
 	)
 
-	npdu := pdu.GetMessage().(readWriteModel.NPDU)
+	npdu := pdu.GetRootMessage().(readWriteModel.NPDU)
 	sourceAddress := &Address{AddrType: NULL_ADDRESS}
 	if npdu.GetControl().GetSourceSpecified() {
 		snet := npdu.GetSourceNetworkAddress()
@@ -1031,7 +1031,7 @@ func (n *NetworkServiceElement) Indication(args Args, kwargs KWArgs) error {
 	adapter := args.Get0NetworkAdapter()
 	npdu := args.Get1PDU()
 
-	switch message := npdu.GetMessage().(type) {
+	switch message := npdu.GetRootMessage().(type) {
 	case readWriteModel.NPDUExactly:
 		switch nlm := message.GetNlm().(type) {
 		case readWriteModel.NLMWhoIsRouterToNetwork:
@@ -1073,7 +1073,7 @@ func (n *NetworkServiceElement) Confirmation(args Args, kwargs KWArgs) error {
 	adapter := args.Get0NetworkAdapter()
 	npdu := args.Get1PDU()
 
-	switch message := npdu.GetMessage().(type) {
+	switch message := npdu.GetRootMessage().(type) {
 	case readWriteModel.NPDUExactly:
 		switch nlm := message.GetNlm().(type) {
 		case readWriteModel.NLMWhoIsRouterToNetwork:

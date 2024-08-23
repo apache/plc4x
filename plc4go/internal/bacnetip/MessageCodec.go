@@ -184,7 +184,7 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 					nil,
 					nil,
 					nil,
-					response.GetMessage().(model.APDU),
+					response.GetRootMessage().(model.APDU),
 					0,
 				),
 				0,

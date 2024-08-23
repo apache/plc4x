@@ -255,14 +255,14 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwargs KWArgs) error {
 	m.log.Debug().Stringer("dest", dest).Msg("dest")
 
 	// must have at least one octet
-	if pdu.GetMessage() == nil {
+	if pdu.GetRootMessage() == nil {
 		m.log.Debug().Msg("no data")
 		return nil
 	}
 
 	// TODO: we only support 0x81 at the moment
 	if m.annexJ != nil {
-		return m.annexJ.Response(NewArgs(NewPDU(pdu.GetMessage(), WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
+		return m.annexJ.Response(NewArgs(NewPDU(pdu.GetRootMessage(), WithPDUSource(src), WithPDUDestination(dest))), NoKWArgs)
 	}
 
 	return nil
@@ -707,7 +707,7 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 	switch pdu.GetPDUDestination().AddrType {
 	case LOCAL_STATION_ADDRESS:
 		// make an original unicast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		xpdu := readWriteModel.NewBVLCOriginalUnicastNPDU(pdu.GetRootMessage().(readWriteModel.NPDU), 0)
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
 		// send it downstream
@@ -720,7 +720,7 @@ func (b *BIPForeign) Indication(args Args, kwargs KWArgs) error {
 		}
 
 		// make an original broadcast _PDU
-		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetMessage().(readWriteModel.NPDU), 0)
+		xpdu := readWriteModel.NewBVLCOriginalBroadcastNPDU(pdu.GetRootMessage().(readWriteModel.NPDU), 0)
 
 		b.log.Debug().Stringer("xpdu", xpdu).Msg("xpdu")
 
@@ -739,7 +739,7 @@ func (b *BIPForeign) Confirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	pdu := args.Get0PDU()
 
-	switch msg := pdu.GetMessage().(type) {
+	switch msg := pdu.GetRootMessage().(type) {
 	// check for a registration request result
 	case readWriteModel.BVLCResultExactly:
 		// if we are unbinding, do nothing

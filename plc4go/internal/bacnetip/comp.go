@@ -161,44 +161,35 @@ const (
 
 type MessageBridge interface {
 	spi.Message
-	_PDUDataRequirements
+	PDUData
 }
 
 type messageBridge struct {
-	Bytes []byte
+	*_PDUData
 }
 
 func NewMessageBridge(bytes ...byte) MessageBridge {
-	m := &messageBridge{Bytes: make([]byte, len(bytes))}
-	copy(m.Bytes, bytes)
-	if len(m.Bytes) == 0 {
-		m.Bytes = nil
-	}
-	return m
+	return &messageBridge{&_PDUData{data: bytes}}
 }
 
 var _ MessageBridge = (*messageBridge)(nil)
 
 func (m *messageBridge) String() string {
-	return Btox(m.Bytes, "")
+	return Btox(m.data, "")
 }
 
 func (m *messageBridge) Serialize() ([]byte, error) {
-	return m.Bytes, nil
+	return m.data, nil
 }
 
 func (m *messageBridge) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteByteArray("Bytes", m.Bytes)
+	return writeBuffer.WriteByteArray("Bytes", m.data)
 }
 
 func (m *messageBridge) GetLengthInBytes(_ context.Context) uint16 {
-	return uint16(len(m.Bytes))
+	return uint16(len(m.data))
 }
 
 func (m *messageBridge) GetLengthInBits(ctx context.Context) uint16 {
 	return m.GetLengthInBytes(ctx) * 8
-}
-
-func (m *messageBridge) getPDUData() []byte {
-	return m.Bytes
 }

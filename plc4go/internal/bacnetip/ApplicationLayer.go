@@ -345,7 +345,7 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU PDU, moreFollows bool, err er
 //	the context
 func (s *SSM) appendSegment(apdu PDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("appendSegment")
-	switch apdu := apdu.GetMessage().(type) {
+	switch apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
 		if apdu.GetSegmentedMessage() || apdu.GetMoreFollows() {
 			return errors.New("Can't handle already segmented message")
@@ -382,7 +382,7 @@ func (s *SSM) fillWindow(sequenceNumber uint8) error {
 		if err != nil {
 			return errors.Wrapf(err, "Error sending out segment %d", i)
 		}
-		if err := s.ssmSAP.Request(NewArgs(NewPDU(apdu.GetMessage(), WithPDUDestination(s.pduAddress))), NoKWArgs); err != nil {
+		if err := s.ssmSAP.Request(NewArgs(NewPDU(apdu.GetRootMessage(), WithPDUDestination(s.pduAddress))), NoKWArgs); err != nil {
 			s.log.Debug().Err(err).Msg("error sending request")
 		}
 		if moreFollows {
@@ -459,7 +459,7 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 	apdu := args.Get0PDU()
 	// make sure we're getting confirmed requests
 	var apduConfirmedRequest readWriteModel.APDUConfirmedRequest
-	if apduCasted, ok := apdu.GetMessage().(readWriteModel.APDUConfirmedRequestExactly); !ok {
+	if apduCasted, ok := apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequestExactly); !ok {
 		return errors.Errorf("Invalid APDU type %T", apduCasted)
 	} else {
 		apduConfirmedRequest = apduCasted
@@ -623,7 +623,7 @@ func (c *ClientSSM) abort(reason readWriteModel.BACnetAbortReason) (PDU, error) 
 func (c *ClientSSM) segmentedRequest(apdu PDU) error {
 	c.log.Debug().Stringer("apdu", apdu).Msg("segmentedRequest")
 
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	// server is ready for the next segment
 	case readWriteModel.APDUSegmentAckExactly:
 		c.log.Debug().Msg("segment ack")
@@ -760,7 +760,7 @@ func (c *ClientSSM) segmentedRequestTimeout() error {
 func (c *ClientSSM) awaitConfirmation(apdu PDU) error {
 	c.log.Debug().Stringer("apdu", apdu).Msg("awaitConfirmation")
 
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUAbortExactly:
 		c.log.Debug().Msg("Server aborted")
 
@@ -1090,7 +1090,7 @@ func (s *ServerSSM) Confirmation(args Args, kwargs KWArgs) error {
 
 	apdu := args.Get0PDU()
 
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	// abort response
 	case readWriteModel.APDUAbortExactly:
 		s.log.Debug().Msg("abort")
@@ -1472,7 +1472,7 @@ func (s *ServerSSM) segmentedRequestTimeout() error {
 func (s *ServerSSM) awaitResponse(apdu PDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("awaitResponse")
 
-	switch apdu.GetMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
 		s.log.Debug().Msg("client is trying this request again")
 	case readWriteModel.APDUAbortExactly:
@@ -1511,7 +1511,7 @@ func (s *ServerSSM) segmentedResponse(apdu PDU) error {
 	s.log.Debug().Stringer("apdu", apdu).Msg("segmentedResponse")
 
 	// client is ready for the next segment
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUSegmentAckExactly:
 		s.log.Debug().Msg("segment ack")
 
@@ -1738,18 +1738,18 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE:
 		s.log.Debug().Msg("communications enabled")
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE:
-		apduType := apdu.GetMessage().(interface {
+		apduType := apdu.GetRootMessage().(interface {
 			GetApduType() readWriteModel.ApduType
 		}).GetApduType()
 		switch {
 		case apduType == readWriteModel.ApduType_CONFIRMED_REQUEST_PDU &&
-			apdu.GetMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL:
+			apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL:
 			s.log.Debug().Msg("continue with DCC request")
 		case apduType == readWriteModel.ApduType_CONFIRMED_REQUEST_PDU &&
-			apdu.GetMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE:
+			apdu.GetRootMessage().(readWriteModel.APDUConfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE:
 			s.log.Debug().Msg("continue with reinitialize device")
 		case apduType == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU &&
-			apdu.GetMessage().(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS:
+			apdu.GetRootMessage().(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS:
 			s.log.Debug().Msg("continue with Who-Is")
 		default:
 			s.log.Debug().Msg("not a Who-Is, dropped")
@@ -1761,7 +1761,7 @@ func (s *StateMachineAccessPoint) Confirmation(args Args, kwargs KWArgs) error {
 
 	var pduSource = apdu.GetPDUSource()
 
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
 		// Find duplicates of this request
 		var tr *ServerSSM
@@ -1903,7 +1903,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 	case readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_DISABLE_INITIATION:
 		s.log.Debug().Msg("initiation disabled")
 		// TODO: this should be quarded
-		if apdu.GetMessage().(readWriteModel.APDU).GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU && apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_I_AM {
+		if apdu.GetRootMessage().(readWriteModel.APDU).GetApduType() == readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU && apdu.(readWriteModel.APDUUnconfirmedRequest).GetServiceRequest().GetServiceChoice() == readWriteModel.BACnetUnconfirmedServiceChoice_I_AM {
 			s.log.Debug().Msg("continue with I-Am")
 		} else {
 			s.log.Debug().Msg("not an I-Am")
@@ -1911,7 +1911,7 @@ func (s *StateMachineAccessPoint) SapIndication(args Args, kwargs KWArgs) error 
 		}
 	}
 
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUUnconfirmedRequestExactly:
 		// deliver to the device
 		if err := s.Request(NewArgs(apdu), NoKWArgs); err != nil {
@@ -1957,7 +1957,7 @@ func (s *StateMachineAccessPoint) SapConfirmation(args Args, kwargs KWArgs) erro
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
 	apdu := args.Get0PDU()
 	pduDestination := apdu.GetPDUDestination()
-	switch apdu.GetMessage().(type) {
+	switch apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
 		// find the client transaction this is acking
 		var tr *ServerSSM
@@ -2083,7 +2083,7 @@ func (a *ApplicationServiceAccessPoint) Indication(args Args, kwargs KWArgs) err
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
 	apdu := args.Get0PDU()
 
-	switch _apdu := apdu.GetMessage().(type) {
+	switch _apdu := apdu.GetRootMessage().(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
 		//assume no errors found
 		var errorFound error

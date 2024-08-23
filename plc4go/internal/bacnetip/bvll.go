@@ -26,7 +26,6 @@ import (
 
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -49,9 +48,9 @@ type _BVLCI struct {
 
 var _ BVLCI = (*_BVLCI)(nil)
 
-func NewBVLCI(pduUserData spi.Message) BVLCI {
+func NewBVLCI(pdu spi.Message) BVLCI {
 	b := &_BVLCI{}
-	b._PCI = newPCI(pduUserData, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	b._PCI = newPCI(pdu, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
 	return b
 }
 
@@ -111,7 +110,7 @@ func NewBVLPDU(bvlc readWriteModel.BVLC) BVLPDU {
 		bvlc: bvlc,
 	}
 	b._BVLCI = NewBVLCI(bvlc).(*_BVLCI)
-	b._PDUData = newPDUData(b)
+	b._PDUData = NewPDUData(NoArgs).(*_PDUData)
 	return b
 }
 
@@ -142,7 +141,11 @@ func (b *_BVLPDU) Encode(pdu Arg) error {
 	if err := b._BVLCI.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding _BVLCI")
 	}
-	b.SetPDUUserData(b.bvlc)
+	serialize, err := b.bvlc.Serialize()
+	if err != nil {
+		return errors.Wrap(err, "error serializing BVLC")
+	}
+	pdu.(interface{ PutData(n ...byte) }).PutData(serialize...) // TODO: ugly cast...
 	return nil
 }
 
@@ -153,29 +156,15 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 	switch pdu := pdu.(type) {
 	case PDUData:
 		data := pdu.GetPduData()
+		b.PutData(data...)
 		var err error
 		b.bvlc, err = readWriteModel.BVLCParse(context.Background(), data)
 		if err != nil {
 			return errors.Wrap(err, "error parsing NPDU")
 		}
-		b.pduUserData = b.bvlc
+		b.rootMessage = b.bvlc
 	}
 	return nil
-}
-
-func (b *_BVLPDU) GetMessage() spi.Message {
-	return b.bvlc
-}
-
-func (b *_BVLPDU) getPDUData() []byte {
-	if b.GetMessage() == nil {
-		return nil
-	}
-	writeBufferByteBased := utils.NewWriteBufferByteBased()
-	if err := b.GetMessage().SerializeWithWriteBuffer(context.Background(), writeBufferByteBased); err != nil {
-		panic(err) // TODO: graceful handle
-	}
-	return writeBufferByteBased.GetBytes()
 }
 
 func (b *_BVLPDU) GetBvlcFunction() uint8 {
@@ -251,7 +240,7 @@ func (n *Result) Decode(bvlpdu Arg) error {
 		if err := n.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCResultExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCResult:
@@ -349,7 +338,7 @@ func (w *WriteBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 		if err := w.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCWriteBroadcastDistributionTableExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCWriteBroadcastDistributionTable:
@@ -401,7 +390,7 @@ func (w *ReadBroadcastDistributionTable) Decode(bvlpdu Arg) error {
 		if err := w.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCReadBroadcastDistributionTableExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCReadBroadcastDistributionTable:
@@ -498,7 +487,7 @@ func (w *ReadBroadcastDistributionTableAck) Decode(bvlpdu Arg) error {
 		if err := w.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCReadBroadcastDistributionTableAckExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCReadBroadcastDistributionTableAck:
@@ -592,7 +581,7 @@ func (w *ForwardedNPDU) Decode(bvlpdu Arg) error {
 		if err := w.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCForwardedNPDUExactly:
 			addr := pduUserData.GetIp()
 			port := pduUserData.GetPort()
@@ -681,7 +670,7 @@ func (n *RegisterForeignDevice) Decode(bvlpdu Arg) error {
 		if err := n.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCRegisterForeignDeviceExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCRegisterForeignDevice:
@@ -733,7 +722,7 @@ func (w *ReadForeignDeviceTable) Decode(bvlpdu Arg) error {
 		if err := w.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCReadForeignDeviceTableExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCReadForeignDeviceTable:
@@ -830,7 +819,7 @@ func (w *ReadForeignDeviceTableAck) Decode(bvlpdu Arg) error {
 		if err := w.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCReadForeignDeviceTableAckExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCReadForeignDeviceTableAck:
@@ -911,7 +900,7 @@ func (d *DeleteForeignDeviceTableEntry) Decode(bvlpdu Arg) error {
 		if err := d.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCDeleteForeignDeviceTableEntryExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCDeleteForeignDeviceTableEntry:
@@ -993,7 +982,7 @@ func (o *DistributeBroadcastToNetwork) Encode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 
-		bvlpdu.PutData(o.getPDUData()...)
+		bvlpdu.PutData(o.GetPduData()...)
 
 		bvlpdu.setBVLC(o.bvlc)
 		return nil
@@ -1008,7 +997,7 @@ func (o *DistributeBroadcastToNetwork) Decode(bvlpdu Arg) error {
 		if err := o.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCDistributeBroadcastToNetworkExactly:
 			o.setBVLC(pduUserData)
 		}
@@ -1086,7 +1075,7 @@ func (o *OriginalUnicastNPDU) Encode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 
-		bvlpdu.PutData(o.getPDUData()...)
+		bvlpdu.PutData(o.GetPduData()...)
 
 		bvlpdu.setBVLC(o.bvlc)
 		return nil
@@ -1101,7 +1090,7 @@ func (o *OriginalUnicastNPDU) Decode(bvlpdu Arg) error {
 		if err := o.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCOriginalUnicastNPDUExactly:
 			o.setBVLC(pduUserData)
 		}
@@ -1170,7 +1159,7 @@ func (n *OriginalBroadcastNPDU) Encode(bvlpdu Arg) error {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
 		bvlpdu.setBVLC(n.bvlc)
-		bvlpdu.PutData(n.getPDUData()...)
+		bvlpdu.PutData(n.GetPduData()...)
 		return nil
 	default:
 		return errors.Errorf("invalid BVLPDU type %T", bvlpdu)
@@ -1183,7 +1172,7 @@ func (n *OriginalBroadcastNPDU) Decode(bvlpdu Arg) error {
 		if err := n.Update(bvlpdu); err != nil {
 			return errors.Wrap(err, "error updating BVLPDU")
 		}
-		switch pduUserData := bvlpdu.GetPDUUserData().(type) {
+		switch pduUserData := bvlpdu.GetRootMessage().(type) {
 		case readWriteModel.BVLCExactly:
 			switch bvlc := pduUserData.(type) {
 			case readWriteModel.BVLCOriginalBroadcastNPDU:

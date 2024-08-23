@@ -189,7 +189,7 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	go func() {
 		for d.running {
 			pdu := <-d.request
-			serialize, err := pdu.GetMessage().Serialize()
+			serialize, err := pdu.GetRootMessage().Serialize()
 			if err != nil {
 				localLog.Error().Err(err).Msg("Error building message")
 				continue

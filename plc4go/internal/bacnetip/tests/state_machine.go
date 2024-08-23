@@ -440,15 +440,31 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 		case bacnetip.KWBvlciTimeToLive:
-			panic("implement me")
-			equals := true // TODO temporary
+			rfd, ok := pdu.(*bacnetip.RegisterForeignDevice)
+			if !ok {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
+			equals := rfd.GetBvlciTimeToLive() == attrValue
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case bacnetip.KWBvlciFDT:
-			panic("implement me")
-			equals := true // TODO temporary
+			rfdta, ok := pdu.(*bacnetip.ReadForeignDeviceTableAck)
+			if !ok {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
+			ifdt := rfdta.GetBvlciFDT()
+			oifdt, ok := attrValue.([]bacnetip.FDTEntry)
+			if !ok {
+				attrLog.Trace().Msg("doesn't match")
+				return false
+			}
+			equals := slices.EqualFunc(ifdt, oifdt, func(a bacnetip.FDTEntry, b bacnetip.FDTEntry) bool {
+				return a.Equals(b)
+			})
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
