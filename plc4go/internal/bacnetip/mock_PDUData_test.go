@@ -386,7 +386,7 @@ func (_c *MockPDUData_PutData_Call) RunAndReturn(run func(...byte)) *MockPDUData
 }
 
 // PutLong provides a mock function with given fields: _a0
-func (_m *MockPDUData) PutLong(_a0 int64) {
+func (_m *MockPDUData) PutLong(_a0 uint32) {
 	_m.Called(_a0)
 }
 
@@ -396,14 +396,14 @@ type MockPDUData_PutLong_Call struct {
 }
 
 // PutLong is a helper method to define mock.On call
-//   - _a0 int64
+//   - _a0 uint32
 func (_e *MockPDUData_Expecter) PutLong(_a0 interface{}) *MockPDUData_PutLong_Call {
 	return &MockPDUData_PutLong_Call{Call: _e.mock.On("PutLong", _a0)}
 }
 
-func (_c *MockPDUData_PutLong_Call) Run(run func(_a0 int64)) *MockPDUData_PutLong_Call {
+func (_c *MockPDUData_PutLong_Call) Run(run func(_a0 uint32)) *MockPDUData_PutLong_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int64))
+		run(args[0].(uint32))
 	})
 	return _c
 }
@@ -413,13 +413,13 @@ func (_c *MockPDUData_PutLong_Call) Return() *MockPDUData_PutLong_Call {
 	return _c
 }
 
-func (_c *MockPDUData_PutLong_Call) RunAndReturn(run func(int64)) *MockPDUData_PutLong_Call {
+func (_c *MockPDUData_PutLong_Call) RunAndReturn(run func(uint32)) *MockPDUData_PutLong_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // PutShort provides a mock function with given fields: _a0
-func (_m *MockPDUData) PutShort(_a0 int16) {
+func (_m *MockPDUData) PutShort(_a0 uint16) {
 	_m.Called(_a0)
 }
 
@@ -429,14 +429,14 @@ type MockPDUData_PutShort_Call struct {
 }
 
 // PutShort is a helper method to define mock.On call
-//   - _a0 int16
+//   - _a0 uint16
 func (_e *MockPDUData_Expecter) PutShort(_a0 interface{}) *MockPDUData_PutShort_Call {
 	return &MockPDUData_PutShort_Call{Call: _e.mock.On("PutShort", _a0)}
 }
 
-func (_c *MockPDUData_PutShort_Call) Run(run func(_a0 int16)) *MockPDUData_PutShort_Call {
+func (_c *MockPDUData_PutShort_Call) Run(run func(_a0 uint16)) *MockPDUData_PutShort_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(int16))
+		run(args[0].(uint16))
 	})
 	return _c
 }
@@ -446,7 +446,7 @@ func (_c *MockPDUData_PutShort_Call) Return() *MockPDUData_PutShort_Call {
 	return _c
 }
 
-func (_c *MockPDUData_PutShort_Call) RunAndReturn(run func(int16)) *MockPDUData_PutShort_Call {
+func (_c *MockPDUData_PutShort_Call) RunAndReturn(run func(uint16)) *MockPDUData_PutShort_Call {
 	_c.Call.Return(run)
 	return _c
 }

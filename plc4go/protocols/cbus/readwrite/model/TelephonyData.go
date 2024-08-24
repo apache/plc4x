@@ -59,8 +59,8 @@ type _TelephonyData struct {
 type _TelephonyDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-	GetCommandType() TelephonyCommandType
 	GetArgument() byte
+	GetCommandType() TelephonyCommandType
 }
 
 type TelephonyDataParent interface {

@@ -158,15 +158,13 @@ type _${type.name} struct {
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-<#assign complexTypeDefinition = type.asComplexTypeDefinition().orElseThrow()>
 type _${type.name}ChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-    <#list complexTypeDefinition.getDiscriminatorNames() as discriminatorName>
+    <#list helper.discriminatorTypes as discriminatorName, discriminatorType>
     <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if type.isDiscriminatorField(discriminatorName)>
-            <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
-	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
+	Get${discriminatorName?cap_first}() <#if discriminatorType.isNonSimpleTypeReference() && !discriminatorType.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(discriminatorType)}
         </#if>
     </#list>
     <#list type.abstractFields as field>
@@ -188,7 +186,7 @@ type _${type.name}ChildRequirements interface {
 	<#list discriminatedChildType.getDiscriminatorMap() as discriminatorName, discriminatorTerm>
 		<#-- If the discriminator name matches that of another field, suppress the methods generation -->
 		<#if !type.isNonDiscriminatorField(discriminatorName)>
-			<#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
+			<#assign typeRef=helper.getDiscriminatorTypes(discriminatedChildType.parentType.orElseThrow())[discriminatorName]>
 func (m *_${type.name})  Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
 			<@compress single_line=true>
 				return

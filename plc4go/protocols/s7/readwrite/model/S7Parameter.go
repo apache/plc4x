@@ -55,8 +55,8 @@ type _S7Parameter struct {
 type _S7ParameterChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-	GetParameterType() uint8
 	GetMessageType() uint8
+	GetParameterType() uint8
 }
 
 type S7ParameterParent interface {

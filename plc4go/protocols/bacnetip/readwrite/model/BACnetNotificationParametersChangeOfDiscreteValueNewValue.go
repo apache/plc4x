@@ -67,8 +67,8 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValue struct {
 type _BACnetNotificationParametersChangeOfDiscreteValueNewValueChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-	GetPeekedTagNumber() uint8
 	GetPeekedIsContextTag() bool
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetNotificationParametersChangeOfDiscreteValueNewValueParent interface {

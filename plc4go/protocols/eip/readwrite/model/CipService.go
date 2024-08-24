@@ -60,9 +60,9 @@ type _CipService struct {
 type _CipServiceChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-	GetService() uint8
-	GetResponse() bool
 	GetConnected() bool
+	GetResponse() bool
+	GetService() uint8
 }
 
 type CipServiceParent interface {

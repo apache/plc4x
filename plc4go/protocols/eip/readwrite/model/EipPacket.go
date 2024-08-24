@@ -70,8 +70,8 @@ type _EipPacketChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
 	GetCommand() uint16
-	GetResponse() bool
 	GetPacketLength() uint16
+	GetResponse() bool
 }
 
 type EipPacketParent interface {
