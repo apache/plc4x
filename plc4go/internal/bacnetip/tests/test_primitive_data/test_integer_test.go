@@ -23,11 +23,11 @@ import (
 	"math"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func IntegerTag(x string) bacnetip.Tag {

@@ -23,12 +23,12 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	"github.com/apache/plc4x/plc4go/pkg/api"
@@ -39,10 +39,10 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 type Connection struct {

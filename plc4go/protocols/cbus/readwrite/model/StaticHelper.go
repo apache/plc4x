@@ -22,12 +22,12 @@ package model
 import (
 	"context"
 	"encoding/hex"
+
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 func ReadAndValidateChecksum(ctx context.Context, readBuffer utils.ReadBuffer, message spi.Message, srchk bool) (Checksum, error) {

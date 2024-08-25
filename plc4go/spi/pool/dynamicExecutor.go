@@ -20,12 +20,14 @@
 package pool
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var upScaleInterval = 100 * time.Millisecond

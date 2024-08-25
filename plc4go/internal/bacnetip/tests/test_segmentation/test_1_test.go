@@ -23,17 +23,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 // This struct turns off the deferred startup function call that broadcasts I-Am-Router-To-Network and Network-Number-Is

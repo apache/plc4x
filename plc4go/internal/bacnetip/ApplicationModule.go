@@ -24,10 +24,10 @@ import (
 	"fmt"
 	"hash/fnv"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DeviceInfo

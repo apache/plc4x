@@ -21,9 +21,10 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"reflect"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestPlcResponseCode_GetName(t *testing.T) {

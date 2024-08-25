@@ -21,16 +21,18 @@ package modbus
 
 import (
 	"context"
+	"net/url"
+	"runtime/debug"
+	"strconv"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"net/url"
-	"runtime/debug"
-	"strconv"
 )
 
 type RtuDriver struct {

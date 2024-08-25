@@ -25,9 +25,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
 var globalTimeMachine *TimeMachine

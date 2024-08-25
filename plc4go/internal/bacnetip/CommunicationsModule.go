@@ -25,12 +25,12 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 // maps of named clients and servers

@@ -21,15 +21,16 @@ package cbus
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewSubscriber(t *testing.T) {

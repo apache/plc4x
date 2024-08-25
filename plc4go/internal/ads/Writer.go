@@ -26,14 +26,14 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 func (m *Connection) WriteRequestBuilder() apiModel.PlcWriteRequestBuilder {

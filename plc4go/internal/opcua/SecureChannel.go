@@ -24,7 +24,6 @@ import (
 	"context"
 	"crypto/sha1"
 	"encoding/binary"
-	"github.com/apache/plc4x/plc4go/pkg/api"
 	"math"
 	"math/rand"
 	"net"
@@ -36,12 +35,13 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/pkg/api"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 const (

@@ -20,10 +20,10 @@
 package model
 
 import (
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 var _ apiModel.PlcSubscriptionTag = &DefaultPlcSubscriptionTag{}

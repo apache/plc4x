@@ -23,9 +23,9 @@ import (
 	"context"
 	"strconv"
 
-	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
-
 	"github.com/pkg/errors"
+
+	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 )
 
 func NumericGroupAddressToString(numericAddress uint16, groupAddress GroupAddressTag) (string, error) {

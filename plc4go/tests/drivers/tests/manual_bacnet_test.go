@@ -23,8 +23,9 @@ import (
 	"context"
 	"testing"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/stretchr/testify/require"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 func TestManualBacnet(t *testing.T) {

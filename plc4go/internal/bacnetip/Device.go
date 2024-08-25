@@ -23,10 +23,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type WhoIsIAmServicesRequirements interface {

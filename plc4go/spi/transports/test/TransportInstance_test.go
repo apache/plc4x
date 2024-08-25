@@ -21,12 +21,12 @@ package test
 
 import (
 	"context"
-	"github.com/rs/zerolog/log"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/spi/transports"
-
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
 func TestNewTransportInstance(t *testing.T) {

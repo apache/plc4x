@@ -21,6 +21,7 @@ package spi
 
 import (
 	"context"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 

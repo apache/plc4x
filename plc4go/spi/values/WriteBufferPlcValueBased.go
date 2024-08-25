@@ -23,9 +23,10 @@ import (
 	"context"
 	"math/big"
 
+	"github.com/pkg/errors"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type WriteBufferPlcValueBased interface {

@@ -21,6 +21,7 @@ package model
 
 import (
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 

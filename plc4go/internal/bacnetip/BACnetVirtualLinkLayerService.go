@@ -23,10 +23,10 @@ import (
 	"fmt"
 	"time"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type _MultiplexClient struct {

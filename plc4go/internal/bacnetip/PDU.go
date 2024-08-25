@@ -29,12 +29,12 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 var _shortMask = 0xFFFF

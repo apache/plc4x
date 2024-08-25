@@ -27,9 +27,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCombinations(t *testing.T) {

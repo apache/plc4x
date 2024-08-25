@@ -22,13 +22,13 @@ package test_npdu
 import (
 	"testing"
 
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/suite"
 )
 
 func WhoIsRouterToNetwork(net uint16) *bacnetip.WhoIsRouterToNetwork {

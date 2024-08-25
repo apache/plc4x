@@ -24,10 +24,11 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
 // BVLPDUTypes is a dictionary of message type values and structs

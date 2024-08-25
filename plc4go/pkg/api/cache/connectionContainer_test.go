@@ -21,14 +21,16 @@ package cache
 
 import (
 	"fmt"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/viney-shih/go-lock"
+
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/stretchr/testify/assert"
-	"github.com/viney-shih/go-lock"
-	"testing"
 )
 
 func Test_connectionContainer_String(t1 *testing.T) {

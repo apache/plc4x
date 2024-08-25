@@ -23,7 +23,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/rs/zerolog/pkgerrors"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -33,18 +32,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/apache/plc4x/plc4go/spi/transports/test"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func CompareResults(t *testing.T, actualString []byte, referenceString []byte) error {

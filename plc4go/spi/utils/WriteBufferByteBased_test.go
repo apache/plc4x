@@ -24,12 +24,12 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/icza/bitio"
-	"github.com/stretchr/testify/mock"
 	"math/big"
 	"testing"
 
+	"github.com/icza/bitio"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestSizingWorksProperly(t *testing.T) {

@@ -22,11 +22,11 @@ package test_bvll
 import (
 	"fmt"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 )
 
 type _NetworkServiceElement struct {

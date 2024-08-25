@@ -20,10 +20,11 @@
 package utils
 
 import (
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateId(t *testing.T) {

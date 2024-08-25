@@ -22,12 +22,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/pkg/errors"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 var (

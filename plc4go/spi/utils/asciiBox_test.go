@@ -21,10 +21,11 @@ package utils
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {

@@ -21,12 +21,14 @@ package testutils
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"testing"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestExplodingGlobalLogger(t *testing.T) {

@@ -23,10 +23,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 func TestMaxApduLengthAcceptedEncode(t *testing.T) {

@@ -25,11 +25,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var stateLog = log.Logger

@@ -31,9 +31,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/pkg/errors"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 const (

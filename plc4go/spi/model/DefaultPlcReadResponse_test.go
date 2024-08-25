@@ -22,11 +22,11 @@ package model
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultPlcReadResponse_GetRequest(t *testing.T) {

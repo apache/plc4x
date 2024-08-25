@@ -23,10 +23,11 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"math/big"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 // NewXmlReadBuffer return as ReadBuffer which doesn't validate attributes and lists

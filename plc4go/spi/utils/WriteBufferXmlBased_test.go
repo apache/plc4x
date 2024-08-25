@@ -23,10 +23,11 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewConfiguredXmlWriteBuffer(t *testing.T) {

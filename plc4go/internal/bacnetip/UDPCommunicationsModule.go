@@ -25,12 +25,12 @@ import (
 	"net"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
-
 	"github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=UDPActor

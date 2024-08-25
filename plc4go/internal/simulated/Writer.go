@@ -21,16 +21,17 @@ package simulated
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/tracer"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strconv"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/tracer"
 )
 
 type Writer struct {

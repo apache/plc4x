@@ -22,10 +22,10 @@ package tests
 import (
 	"fmt"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
 type TrapperRequirements interface {

@@ -21,11 +21,12 @@ package serial
 
 import (
 	"bufio"
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 func TestNewTransportInstance(t *testing.T) {

@@ -25,10 +25,10 @@ import (
 	"fmt"
 	"math"
 
+	"github.com/pkg/errors"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
-
-	"github.com/pkg/errors"
 )
 
 // NPDUTypes is a dictionary of message type values and structs

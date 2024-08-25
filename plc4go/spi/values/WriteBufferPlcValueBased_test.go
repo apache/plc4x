@@ -22,11 +22,13 @@ package values
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestNewWriteBufferPlcValueBased(t *testing.T) {

@@ -20,13 +20,13 @@
 package cbus
 
 import (
-	"github.com/rs/zerolog"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 	"reflect"
 	"strconv"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration

@@ -23,9 +23,10 @@ import (
 	"container/list"
 	"context"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewWriteBufferBoxBased(t *testing.T) {

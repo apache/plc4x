@@ -22,11 +22,13 @@ package cache
 import (
 	"context"
 	"fmt"
-	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	_default "github.com/apache/plc4x/plc4go/spi/default"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/viney-shih/go-lock"
+
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
 )
 
 type connectionContainer struct {

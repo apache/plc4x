@@ -20,8 +20,9 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"testing"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestDF1UtilsCrcCheck(t *testing.T) {
