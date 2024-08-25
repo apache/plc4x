@@ -14,6 +14,7 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+import dataclasses
 import importlib
 import logging
 import unittest
@@ -24,9 +25,12 @@ from unittest import TestCase
 from xml.etree import ElementTree
 from xml.etree.ElementTree import XMLParser
 
+from xsdata.formats.dataclass.serializers import XmlSerializer
+from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from xsdata.utils.text import camel_case, snake_case
 
 from spi.generation.ReadBuffer import ReadBufferByteBased
+from spi.generation.WriteBuffer import WriteBufferXmlBased
 
 logger = logging.getLogger(__name__)
 
@@ -77,82 +81,17 @@ class ParserSerializerTestCase(TestCase):
             for element in self.test_case.parser_arguments.local_element
         }
         modbus_adu = uninstantiated_class.static_parse_context(read_buffer, **kwargs)
+        xml_buffer: WriteBufferXmlBased = WriteBufferXmlBased()
+        modbus_adu.serialize(xml_buffer)
+        result = xml_buffer.to_xml_string()
+
+        factory = SerializerConfig(xml_declaration=False, pretty_print=True)
+        serializer = XmlSerializer(config=factory)
+        ss = serializer.render(self.test_case.xml)
+
+        comparision = ss == result
+
         pass
-        # Message parsedOutput = (Message) uninstantiated_class.parse(readBuffer, testcase.getParserArguments().toArray());
-        #             LOGGER.trace("Validating and migrating");
-
-
-#
-#
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#             // Parse the raw bytes into a message
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#
-#             LOGGER.trace("Parsing message");
-#             Message parsedOutput = (Message) messageInput.parse(readBuffer, testcase.getParserArguments().toArray());
-#             LOGGER.trace("Validating and migrating");
-#
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#             // Compare the parsed message with the reference XML
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#
-#             // In this case no reference xml has been provided
-#             // (This is usually during development)
-#             if (testcase.getXml().elements().size() == 0) {
-#                 WriteBufferXmlBased writeBufferXmlBased = new WriteBufferXmlBased();
-#                 parsedOutput.serialize(writeBufferXmlBased);
-#                 String xmlString = writeBufferXmlBased.getXmlString();
-#                 throw new ParserSerializerTestsuiteException("Missing reference xml element. Parsed: \n" + xmlString);
-#             }
-#             // If more than one root element is provided, the testcase is corrupt.
-#             else if (testcase.getXml().elements().size() > 1) {
-#                 throw new ParserSerializerTestsuiteException("Too many element roots in testcase");
-#             }
-#             boolean migrated = MessageValidatorAndMigrator.validateOutboundMessageAndMigrate(
-#                 testcase.getName(),
-#                 messageInput,
-#                 testcase.getXml().elements().get(0),
-#                 testcase.getParserArguments(),
-#                 testcaseRaw,
-#                 testSuite.getByteOrder(),
-#                 autoMigrate,
-#                 suiteUri
-#             );
-#             if (migrated) {
-#                 LOGGER.warn("Migrated testcase {}", testcase);
-#             }
-#             LOGGER.debug("Parsed message {}", parsedOutput);
-#             LOGGER.info("Parsing passed for testcase {}", testcase);
-#
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#             // Serialize the parsed message to a byte array
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#
-#             LOGGER.trace("Writing message back again");
-#             WriteBufferByteBased writeBuffer = new WriteBufferByteBased(parsedOutput.getLengthInBytes(), testSuite.getByteOrder());
-#             parsedOutput.serialize(writeBuffer);
-#             LOGGER.info("Serializing passed for testcase {}", testcase);
-#             byte[] data = writeBuffer.getBytes();
-#             if (testcaseRaw.length != data.length) {
-#                 LOGGER.info("Expected a byte array with a length of {} but got one with {}", testcaseRaw.length, data.length);
-#             }
-#
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#             // Compare the serialized bytes to the initial raw array
-#             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#
-#             if (!Arrays.equals(testcaseRaw, data)) {
-#                 // This goes to std out on purpose to preserve coloring
-#                 System.out.println(HexDiff.diffHex(testcaseRaw, data));
-#                 throw new ParserSerializerTestsuiteException("Differences were found after serializing.\nExpected: " +
-#                     Hex.encodeHexString(testcaseRaw) + "\nBut Got:  " + Hex.encodeHexString(data) + "");
-#             }
-#         } catch (SerializationException | ParseException e) {
-#             throw new ParserSerializerTestsuiteException("Unable to parse message", e);
-#         }
-#     }
-#
-# }
 
 
 @dataclass
