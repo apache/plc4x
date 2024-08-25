@@ -687,6 +687,10 @@ type ComparableAndOrdered interface {
 	cmp.Ordered
 }
 
+type IsAtomic interface {
+	isAtomic() bool
+}
+
 // AtomicContract provides a set of functions which can be overwritten by a sub struct
 type AtomicContract[T ComparableAndOrdered] interface {
 	Compare(other any) int
@@ -716,6 +720,10 @@ func NewAtomic[T ComparableAndOrdered](subStruct interface {
 		AtomicContract:     subStruct,
 		atomicRequirements: subStruct,
 	}
+}
+
+func (a *Atomic[T]) isAtomic(bool) bool {
+	return true
 }
 
 func (a *Atomic[T]) Compare(other any) int {

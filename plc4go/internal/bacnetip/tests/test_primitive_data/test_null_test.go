@@ -23,25 +23,11 @@ import (
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func Null(arg ...any) *bacnetip.Null {
-	if len(arg) == 0 {
-		Null, err := bacnetip.NewNull(nil)
-		if err != nil {
-			panic(err)
-		}
-		return Null
-	}
-	Null, err := bacnetip.NewNull(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return Null
-}
 
 func NullTag(x string) bacnetip.Tag {
 	b := xtob(x)

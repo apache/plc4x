@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
@@ -52,13 +53,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	return n, nil
 }
 
-type ApplicationNetworkRequirements interface {
-	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
-
 type ApplicationNetwork struct {
-	ApplicationNetworkRequirements
 	*tests.StateMachineGroup
 
 	trafficLog *tests.TrafficLog
@@ -70,10 +65,9 @@ type ApplicationNetwork struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequirements ApplicationNetworkRequirements, tdDeviceObject, iutDeviceObject *bacnetip.LocalDeviceObject) (*ApplicationNetwork, error) {
+func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject *bacnetip.LocalDeviceObject) (*ApplicationNetwork, error) {
 	a := &ApplicationNetwork{
-		ApplicationNetworkRequirements: applicationNetworkRequirements,
-		log:                            localLog,
+		log: localLog,
 	}
 	a.StateMachineGroup = tests.NewStateMachineGroup(localLog)
 
@@ -94,14 +88,14 @@ func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequiremen
 	}
 
 	// test device
-	a.td, err = NewApplicationStateMachine(a.log, tdDeviceObject, a.vlan, a)
+	a.td, err = NewApplicationStateMachine(a.log, tdDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application state machine")
 	}
 	a.Append(a.td)
 
 	// implementation under test
-	a.iut, err = NewApplicationStateMachine(a.log, iutDeviceObject, a.vlan, a)
+	a.iut, err = NewApplicationStateMachine(a.log, iutDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application state machine")
 	}
@@ -228,12 +222,7 @@ func (s *SnifferNode) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) e
 	return nil
 }
 
-type ApplicationStateMachineRequirements interface {
-	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
-
 type ApplicationStateMachine struct {
-	ApplicationStateMachineRequirements
 	*bacnetip.Application
 	tests.StateMachine
 
@@ -244,17 +233,18 @@ type ApplicationStateMachine struct {
 	nse     *_NetworkServiceElement
 	node    *bacnetip.Node
 
-	confirmedPrivateResult string
+	confirmedPrivateResult any
 
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.LocalDeviceObject, vlan *bacnetip.Network, applicationStateMachineRequirements ApplicationStateMachineRequirements) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.LocalDeviceObject, vlan *bacnetip.Network, opts ...func(*ApplicationStateMachine)) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
-		ApplicationStateMachineRequirements: applicationStateMachineRequirements,
-		log:                                 localLog,
+		log: localLog,
 	}
-
+	for _, opt := range opts {
+		opt(a)
+	}
 	// build and address and save it
 	_, instance := bacnetip.ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
 	var err error
@@ -347,7 +337,7 @@ func (a *ApplicationStateMachine) Indication(args bacnetip.Args, kwargs bacnetip
 	}
 
 	// allow the application to process it
-	return a.ApplicationStateMachineRequirements.Indication(args, kwargs)
+	return a.Application.Indication(args, kwargs)
 }
 
 func (a *ApplicationStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -362,20 +352,8 @@ func (a *ApplicationStateMachine) doConfirmedPrivateTransferRequest(_ struct{}) 
 	// TODO: who calls that?
 }
 
-type TODOWHATTODOWITHTHAT struct {
-}
-
-func (T TODOWHATTODOWITHTHAT) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (T TODOWHATTODOWITHTHAT) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
-	//TODO implement me
-	panic("implement me")
-}
-
 func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
+	t.Skip("not yet ready....") // TODO: finish it
 	tests.LockGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
 	tests.NewGlobalTimeMachine(testingLogger)
@@ -405,7 +383,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	}
 
 	// create a network
-	anet, err := NewApplicationNetwork(testingLogger, new(TODOWHATTODOWITHTHAT), tdDeviceObject, iutDeviceObject)
+	anet, err := NewApplicationNetwork(testingLogger, tdDeviceObject, iutDeviceObject)
 	require.NoError(t, err)
 
 	// tell the device info cache of the client about the server
@@ -439,68 +417,17 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	}
 
 	if sLen != 0 {
-		anet.iut.confirmedPrivateResult = utils.RandomString(sLen)
+		anet.iut.confirmedPrivateResult = Any(CharacterString(utils.RandomString(sLen)))
 	}
-
-	wrapRequestString := func() (
-		numberOfDataElements model.BACnetApplicationTagUnsignedInteger,
-		data []model.BACnetConstructedDataElement,
-		openingTag model.BACnetOpeningTag,
-		peekedTagHeader model.BACnetTagHeader,
-		closingTag model.BACnetClosingTag,
-		tagNumber uint8,
-		arrayIndexArgument model.BACnetTagPayloadUnsignedInteger,
-	) {
-		numberOfDataElements = model.CreateBACnetApplicationTagUnsignedInteger(1)
-		elementArgCreator := func() (
-			peekedTagHeader model.BACnetTagHeader,
-			applicationTag model.BACnetApplicationTag,
-			contextTag model.BACnetContextTag,
-			constructedData model.BACnetConstructedData,
-			objectTypeArgument model.BACnetObjectType,
-			propertyIdentifierArgument model.BACnetPropertyIdentifier,
-			arrayIndexArgument model.BACnetTagPayloadUnsignedInteger,
-		) {
-			peekedTagHeader = model.CreateBACnetTagHeaderBalanced(false, 0, 0)
-			applicationTag = model.CreateBACnetApplicationTagCharacterString(model.BACnetCharacterEncoding_ISO_8859_1, requestString)
-			return
-		}
-		data = []model.BACnetConstructedDataElement{
-			model.NewBACnetConstructedDataElement(elementArgCreator()),
-		}
-		openingTag = model.CreateBACnetOpeningTag(2)
-		peekedTagHeader = model.CreateBACnetTagHeaderBalanced(false, 2, 2)
-		closingTag = model.CreateBACnetClosingTag(2)
-		return
-	}
-
-	cpt := model.NewBACnetConfirmedServiceRequestConfirmedPrivateTransfer(
-		model.CreateBACnetVendorIdContextTagged(0, 999),
-		model.CreateBACnetContextTagUnsignedInteger(1, 1),
-		model.NewBACnetConstructedDataUnspecified(wrapRequestString()),
-		0,
-	)
-
-	apdu := model.NewAPDUConfirmedRequest(
-		false,
-		false,
-		true,
-		maxSegmentsAccepted,
-		model.MaxApduLengthAccepted_NUM_OCTETS_1024,
-		0,
-		nil,
-		nil,
-		cpt,
-		nil,
-		nil,
-		0)
-
-	rq := bacnetip.NewPDU(apdu)
 
 	var trq model.BACnetServiceAckConfirmedPrivateTransfer
 	// send the request, get it acked
 	anet.td.GetStartState().Doc(prefix+"-0").
-		Send(rq, nil).Doc(prefix+"-1").
+		Send(bacnetip.NewPDU(ConfirmedPrivateTransferRequest(bacnetip.NewKWArgs(
+			"vendorId", 999, "serviceNumber", 1,
+			"serviceParameters", requestString,
+			"destination", anet.iut.address,
+		)), nil), nil).Doc(prefix+"-1").
 		Receive(bacnetip.NewArgs(trq), bacnetip.NoKWArgs).Doc(prefix + "-2").
 		Success("")
 
@@ -513,46 +440,37 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 }
 
 func Test1(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-1", 0, 0)
 }
 
 func Test2(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-2", 10, 0)
 }
 
 func Test3(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-3", 100, 0)
 }
 
 func Test4(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-4", 200, 0)
 }
 
 func Test5(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-5", 0, 10)
 }
 
 func Test6(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-6", 0, 200)
 }
 
 func Test7(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-7", 300, 0)
 }
 
 func Test8(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-8", 300, 300)
 }
 
 func Test9(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	SegmentationTest(t, "7-9", 600, 600)
 }

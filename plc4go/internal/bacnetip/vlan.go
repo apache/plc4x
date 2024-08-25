@@ -21,11 +21,10 @@ package bacnetip
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
-
-	"math/rand"
 )
 
 type TrafficLogger interface {
@@ -188,7 +187,7 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, o
 	for _, opt := range opts {
 		opt(n)
 	}
-	if n.name == "" {
+	if n.name != "" {
 		n.log = n.log.With().Str("name", n.name).Logger()
 	}
 	var err error
@@ -259,10 +258,6 @@ func (n *Node) SetSpoofing(spoofing bool) {
 	n.spoofing = spoofing
 }
 
-func (n *Node) String() string {
-	return fmt.Sprintf("Node: %s(%v)", n.name, n.serverID)
-}
-
 func (n *Node) bind(lan NodeNetworkReference) {
 	n.log.Debug().Interface("lan", lan).Msg("binding lan")
 	lan.AddNode(n)
@@ -291,6 +286,10 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 		return n.lan.ProcessPDU(pdu)
 	}, args, NoKWArgs)
 	return nil
+}
+
+func (n *Node) String() string {
+	return fmt.Sprintf("Node: %s(%v)", n.name, n.serverID)
 }
 
 // IPNetwork instances are Network objects where the addresses on the

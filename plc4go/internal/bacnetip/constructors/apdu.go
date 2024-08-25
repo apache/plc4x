@@ -17,29 +17,10 @@
  * under the License.
  */
 
-package tests
+package constructors
 
-import (
-	"fmt"
-	"time"
+import "github.com/apache/plc4x/plc4go/internal/bacnetip"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-)
-
-var StartTime = time.Time{}.Add(1 * time.Hour)
-
-type DummyMessage struct {
-	bacnetip.MessageBridge
-}
-
-func NewDummyMessage(data ...byte) *DummyMessage {
-	return &DummyMessage{bacnetip.NewMessageBridge(data...)}
-}
-
-type AssertionError struct {
-	Message string
-}
-
-func (a AssertionError) Error() string {
-	return fmt.Sprintf("AssertionError: %s", a.Message)
+func ConfirmedPrivateTransferRequest(kwargs bacnetip.KWArgs) *bacnetip.ConfirmedPrivateTransferRequest {
+	panic("implement me")
 }

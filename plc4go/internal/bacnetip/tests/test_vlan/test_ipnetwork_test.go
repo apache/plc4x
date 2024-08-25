@@ -21,10 +21,12 @@ package test_vlan
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 
@@ -59,7 +61,7 @@ func NewTIPNetwork(t *testing.T, nodeCount int, addressPattern string, promiscuo
 	for i := range nodeCount {
 		nodeAddress, err := bacnetip.NewAddress(localLog, fmt.Sprintf(addressPattern, i+1))
 		require.NoError(t, err)
-		node, err := bacnetip.NewIPNode(localLog, nodeAddress, tn.vlan, bacnetip.WithNodePromiscuous(promiscuous), bacnetip.WithNodeSpoofing(spoofing))
+		node, err := bacnetip.NewIPNode(localLog, nodeAddress, tn.vlan, bacnetip.WithNodePromiscuous(promiscuous), bacnetip.WithNodeSpoofing(spoofing), bacnetip.WithNodeName("node"+strconv.Itoa(i+1)))
 		require.NoError(t, err)
 
 		// bind a client state machine to the ndoe
@@ -109,6 +111,7 @@ func (t *TIPNetwork) Run(timeLimit time.Duration) error {
 
 func TestIPVLAN(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { // Test that a very quiet network can exist. This is not a network test so much as a state machine group test
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// two element network
@@ -126,8 +129,7 @@ func TestIPVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node.
-		t.Skip("temporary disabled") // TODO: figure out why it is failing
-		testingLogger := testutils.ProduceTestingLogger(t)
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// two element network
@@ -137,26 +139,24 @@ func TestIPVLAN(t *testing.T) {
 		tnode1, tnode2 := stateMachines[0], stateMachines[1]
 
 		// make a PDU from node 1 to node 2
-		src, err := bacnetip.NewAddress(testingLogger, "192.168.2.1:47808")
-		require.NoError(t, err)
-		dest, err := bacnetip.NewAddress(testingLogger, "192.168.2.2:47808")
-		require.NoError(t, err)
-		pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
+		pdu := bacnetip.NewPDU(tests.NewDummyMessage([]byte("data")...),
+			bacnetip.WithPDUSource(Address("192.168.2.1:47808")),
+			bacnetip.WithPDUDestination(Address("192.168.2.2:47808")),
+		)
 		t.Log(pdu)
 
 		// node 1 sends the pdu, mode 2 gets it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
-		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
-			bacnetip.KWPPDUSource, src,
+		tnode2.GetStartState().Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)), bacnetip.NewKWArgs(
+			bacnetip.KWPPDUSource, AddressTuple("192.168.2.1", 47808),
 		)).Success("")
 
 		// run the group
-		err = tnet.Run(0)
+		err := tnet.Run(0)
 		assert.NoError(t, err)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { // Test that a node can send out a 'local broadcast' message which will be received by every other node.
-		t.Skip("not ready yet") // TODO: figure out why it is failing
-		testingLogger := testutils.ProduceTestingLogger(t)
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// three element network
@@ -165,30 +165,28 @@ func TestIPVLAN(t *testing.T) {
 		stateMachines := tnet.GetStateMachines()
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
-		// make a PDU from node 1 to node 2
-		src, err := bacnetip.NewAddress(testingLogger, "192.168.3.1:47808")
-		require.NoError(t, err)
-		dest, err := bacnetip.NewAddress(testingLogger, "192.168.3.2:47808")
-		require.NoError(t, err)
-		pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
+		// make a broadcast PDU
+		pdu := bacnetip.NewPDU(tests.NewDummyMessage([]byte("data")...),
+			bacnetip.WithPDUSource(Address("192.168.3.1:47808")),
+			bacnetip.WithPDUDestination(Address("192.168.3.255:47808")),
+		)
 		t.Log(pdu)
 
 		// node 1 sends the pdu, node 2 and 3 each get it
 		tnode1.GetStartState().Send(pdu, nil).Success("")
 		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
-			bacnetip.KWPPDUSource, src,
+			bacnetip.KWPPDUSource, AddressTuple("192.168.3.1", 47808),
 		)).Success("")
 		tnode3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
-			bacnetip.KWPPDUSource, src,
+			bacnetip.KWPPDUSource, AddressTuple("192.168.3.1", 47808),
 		)).Success("")
 
 		// run the group
-		err = tnet.Run(0)
+		err := tnet.Run(0)
 		assert.NoError(t, err)
 	})
 	t.Run("test_spoof_fail", func(t *testing.T) { // Test verifying that a node cannot send out packets with a source address other than its own, see also test_spoof_pass().
-		t.Skip("not ready yet") // TODO: figure out why it is failing
-		testingLogger := testutils.ProduceTestingLogger(t)
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// one element network
@@ -198,23 +196,21 @@ func TestIPVLAN(t *testing.T) {
 		tnode1 := stateMachines[0]
 
 		// make an unicast PDU with the wrong source
-		src, err := bacnetip.NewAddress(testingLogger, "192.168.4.1:47808")
-		require.NoError(t, err)
-		dest, err := bacnetip.NewAddress(testingLogger, "192.168.4.2:47808")
-		require.NoError(t, err)
-		pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
+		pdu := bacnetip.NewPDU(tests.NewDummyMessage([]byte("data")...),
+			bacnetip.WithPDUSource(Address("192.168.4.2:47808")),
+			bacnetip.WithPDUDestination(Address("192.168.4.3:47808")),
+		)
 		t.Log(pdu)
 
-		// node 1 sends the pdu, node 2 and 3 each get it
+		// when the node attempts to send it raises an error
 		tnode1.GetStartState().Send(pdu, nil).Success("")
 
 		// run the group
-		err = tnet.Run(0)
+		err := tnet.Run(0)
 		assert.Error(t, err)
 	})
 	t.Run("test_spoof_pass", func(t *testing.T) { // Test allowing a node to send out packets with a source address other than its own, see also test_spoof_fail().
-		t.Skip("not ready yet") // TODO: figure out why it is failing
-		testingLogger := testutils.ProduceTestingLogger(t)
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// one element network
@@ -223,29 +219,28 @@ func TestIPVLAN(t *testing.T) {
 		stateMachines := tnet.GetStateMachines()
 		tnode1 := stateMachines[0]
 
-		// make an unicast PDU with the wrong source
-		src, err := bacnetip.NewAddress(testingLogger, "192.168.5.1:47808")
-		require.NoError(t, err)
-		dest, err := bacnetip.NewAddress(testingLogger, "192.168.5.2:47808")
-		require.NoError(t, err)
-		pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
+		// make an unicast PDU from a fictitious node
+		pdu := bacnetip.NewPDU(tests.NewDummyMessage([]byte("data")...),
+			bacnetip.WithPDUSource(Address("192.168.5.3:47808")),
+			bacnetip.WithPDUDestination(Address("192.168.5.1:47808")),
+		)
 		t.Log(pdu)
 
 		// node 1 sends the pdu, but gets it back as if it was from node 3
 		tnode1.GetStartState().
 			Send(pdu, nil).
 			Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
-				bacnetip.KWPPDUSource, src,
+				bacnetip.KWPPDUSource, AddressTuple("192.168.5.3", 47808),
 			)).
 			Success("")
 
 		// run the group
-		err = tnet.Run(0)
+		err := tnet.Run(0)
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_pass", func(t *testing.T) { // Test 'promiscuous mode' of a node which allows it to receive every packet sent on the network.  This is like the network is a hub, or the node is connected to a 'monitor' port on a managed switch.
-		t.Skip("temporary disabled") // TODO: figure out why it is failing
 		testingLogger := testutils.ProduceTestingLogger(t)
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// three element network
@@ -276,9 +271,8 @@ func TestIPVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_fail", func(t *testing.T) {
-		// TODO: figure out why it is failing
-		t.Skip("not ready yet")
 		testingLogger := testutils.ProduceTestingLogger(t)
+		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
 		tests.LockGlobalTimeMachine(t)
 
 		// three element network
@@ -320,8 +314,8 @@ type RouterSuite struct {
 
 func (suite *RouterSuite) SetupTest() {
 	t := suite.T()
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	suite.log = testutils.ProduceTestingLogger(t)
+	tests.NewGlobalTimeMachine(suite.log)
 	// create a state machine group that has all nodes on all networks
 	suite.smg = tests.NewStateMachineGroup(suite.log)
 
@@ -331,12 +325,8 @@ func (suite *RouterSuite) SetupTest() {
 
 	// make a router and add the networks
 	trouter := bacnetip.NewIPRouter(suite.log)
-	vlan10Addr, err := bacnetip.NewAddress(suite.log, "192.168.10.1/24")
-	suite.NoError(err)
-	vlan20Addr, err := bacnetip.NewAddress(suite.log, "192.168.20.1/24")
-	suite.NoError(err)
-	trouter.AddNetwork(vlan10Addr, vlan10)
-	trouter.AddNetwork(vlan20Addr, vlan20)
+	trouter.AddNetwork(Address("192.168.10.1/24"), vlan10)
+	trouter.AddNetwork(Address("192.168.20.1/24"), vlan20)
 
 	for pattern, lan := range map[string]*bacnetip.IPNetwork{
 		"192.168.10.%d/24": vlan10,
@@ -347,6 +337,7 @@ func (suite *RouterSuite) SetupTest() {
 			suite.NoError(err)
 			node, err := bacnetip.NewIPNode(suite.log, nodeAddress, lan)
 			suite.NoError(err)
+			t.Logf("Node: %v", node)
 
 			// bind a client state machine to the node
 			csm, err := tests.NewClientStateMachine(suite.log)
@@ -361,8 +352,6 @@ func (suite *RouterSuite) SetupTest() {
 }
 
 func (suite *RouterSuite) TearDownTest() {
-	t := suite.T()
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	suite.T().Log("time machine reset")
@@ -393,24 +382,22 @@ func (suite *RouterSuite) TestIdle() {
 
 func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a message to another node.
 	t := suite.T()
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	tests.LockGlobalTimeMachine(t)
 
+	//unpack the state machines
 	stateMachines := suite.smg.GetStateMachines()
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
 
 	// make a PDU from network 10 node 1 to network 20 node 2
-	src, err := bacnetip.NewAddress(suite.log, "192.168.10.2:47808")
-	require.NoError(t, err)
-	dest, err := bacnetip.NewAddress(suite.log, "192.168.20.3:47808")
-	require.NoError(t, err)
-	pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
+	pdu := bacnetip.NewPDU(tests.NewDummyMessage([]byte("data")...),
+		bacnetip.WithPDUSource(Address("192.168.10.2:47808")),
+		bacnetip.WithPDUDestination(Address("192.168.20.3:47808")))
 	t.Log(pdu)
 
 	// node 1 sends the pdu, mode 2 gets it
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
 	csm_20_3.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
-		bacnetip.KWPPDUSource, src,
+		bacnetip.KWPPDUSource, AddressTuple("192.168.10.2", 47808),
 	)).Success("")
 
 	// other nodes get nothing
@@ -420,7 +407,6 @@ func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a mes
 
 func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a message to all of the other nodes on the same network.
 	t := suite.T()
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	tests.LockGlobalTimeMachine(t)
 
 	stateMachines := suite.smg.GetStateMachines()
@@ -445,7 +431,6 @@ func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a 
 
 func (suite *RouterSuite) TestRemoteBroadcast() { // Test that a node can send a message to all of the other nodes on a different network.
 	t := suite.T()
-	t.Skip("not ready yet") // TODO: figure out why it is failing
 	tests.LockGlobalTimeMachine(t)
 
 	stateMachines := suite.smg.GetStateMachines()

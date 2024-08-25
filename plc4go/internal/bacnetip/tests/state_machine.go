@@ -156,10 +156,14 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 			}
 		case bacnetip.KWPDUData:
 			got := pdu.GetPduData()
-			want, ok := attrValue.([]byte)
-			if !ok {
-				attrLog.Debug().Msg("mismatch, attr not a byte array")
-				return false
+			var want []byte
+			switch attrValue := attrValue.(type) {
+			case []byte:
+				want = attrValue
+			case bacnetip.PDUData:
+				want = attrValue.GetPduData()
+			default:
+				attrLog.Debug().Type("type", attrValue).Msg("mismatch, attr unhandled")
 			}
 			equals := bytes.Equal(got, want)
 			if !equals {
@@ -828,9 +832,9 @@ func (s *state) Ignore(pduType any, pduAttrs map[bacnetip.KnownKey]any) State {
 	return s
 }
 
-// UnexpectedReceive Called with tPDU that did not match.  Unless this is trapped by the state, the default behaviour is
+// UnexpectedReceive Called with PDU that did not match.
 //
-//	to fail.
+// Unless this is trapped by the state, the default behaviour is to fail.
 func (s *state) UnexpectedReceive(pdu bacnetip.PDU) {
 	s.log.Debug().Stringer("pdu", pdu).Msg("UnexpectedReceive")
 	s.stateMachine.UnexpectedReceive(pdu)

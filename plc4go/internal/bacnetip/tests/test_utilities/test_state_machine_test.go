@@ -122,6 +122,7 @@ func (t TPDU) GetLengthInBits(ctx context.Context) uint16 {
 	//TODO implement me
 	panic("implement me")
 }
+
 func (t TPDU) GetPDUUserData() spi.Message {
 	//TODO implement me
 	panic("implement me")
@@ -576,9 +577,9 @@ func TestStateMachineTimeout1(t *testing.T) {
 }
 
 func TestStateMachineTimeout2(t *testing.T) {
-	t.Skip("not ready yet") // TODO: figure out why it is failing
-	tests.LockGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
+	tests.NewGlobalTimeMachine(testingLogger) // TODO: this is really stupid because of concurrency...
+	tests.LockGlobalTimeMachine(t)
 
 	// make some pdus
 	firstPdu := TPDU{a: 1}

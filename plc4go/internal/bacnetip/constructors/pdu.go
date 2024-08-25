@@ -17,29 +17,30 @@
  * under the License.
  */
 
-package tests
+package constructors
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+
+	"github.com/rs/zerolog"
 )
 
-var StartTime = time.Time{}.Add(1 * time.Hour)
-
-type DummyMessage struct {
-	bacnetip.MessageBridge
+func Address(args ...any) *bacnetip.Address {
+	address, err := bacnetip.NewAddress(zerolog.Nop(), args...)
+	if err != nil {
+		panic(err)
+	}
+	return address
 }
 
-func NewDummyMessage(data ...byte) *DummyMessage {
-	return &DummyMessage{bacnetip.NewMessageBridge(data...)}
+func AddressTuple[L any, R any](l L, r R) *bacnetip.AddressTuple[L, R] {
+	return &bacnetip.AddressTuple[L, R]{Left: l, Right: r}
 }
 
-type AssertionError struct {
-	Message string
-}
-
-func (a AssertionError) Error() string {
-	return fmt.Sprintf("AssertionError: %s", a.Message)
+func PDUData(args ...any) bacnetip.PDUData {
+	if args == nil {
+		return bacnetip.NewPDUData(bacnetip.NewArgs(bacnetip.NewMessageBridge()))
+	} else {
+		return bacnetip.NewPDUData(bacnetip.NewArgs(bacnetip.NewMessageBridge(args[0].([]byte)...)))
+	}
 }

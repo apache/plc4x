@@ -652,6 +652,14 @@ func (a *Address) Equals(other any) bool {
 			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
 		}
 		return equals
+	case AddressTuple[string, uint16]:
+		thisString := a.AddrTuple.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
 	case *AddressTuple[string, uint16]:
 		thisString := a.AddrTuple.String()
 		otherString := other.String()
@@ -660,7 +668,24 @@ func (a *Address) Equals(other any) bool {
 			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
 		}
 		return equals
+	case AddressTuple[string, int]:
+		thisString := a.AddrTuple.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
+	case *AddressTuple[string, int]:
+		thisString := a.AddrTuple.String()
+		otherString := other.String()
+		equals := thisString == otherString
+		if !equals {
+			a.log.Debug().Str("thisString", thisString).Str("otherString", otherString).Msg("Mismatch")
+		}
+		return equals
 	default:
+		a.log.Debug().Type("otherType", other).Msg("Unmapped type comparison")
 		return false
 	}
 }

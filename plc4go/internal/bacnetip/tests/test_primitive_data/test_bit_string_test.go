@@ -23,19 +23,12 @@ import (
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
-
-func BitString(args ...any) *bacnetip.BitString {
-	bitString, err := bacnetip.NewBitString(args)
-	if err != nil {
-		panic(err)
-	}
-	return bitString
-}
 
 type sampleBitString struct {
 	*bacnetip.BitString
