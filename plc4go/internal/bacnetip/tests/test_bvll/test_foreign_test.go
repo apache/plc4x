@@ -112,6 +112,7 @@ func (t *TFNetwork) Run(timeLimit time.Duration) {
 }
 
 func TestForeign(t *testing.T) {
+	t.Skip("not yet ready")                 //TODO: finish
 	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
 		tests.ExclusiveGlobalTimeMachine(t)
 

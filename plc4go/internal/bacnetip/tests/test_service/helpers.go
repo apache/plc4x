@@ -437,7 +437,7 @@ func (a *ApplicationStateMachine) Indication(args bacnetip.Args, kwargs bacnetip
 	}
 
 	// allow the application to process it
-	return a.ApplicationStateMachineRequirements.Indication(args, kwargs)
+	return a.Application.Indication(args, kwargs)
 }
 
 func (a *ApplicationStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -450,7 +450,7 @@ func (a *ApplicationStateMachine) Confirmation(args bacnetip.Args, kwargs bacnet
 	}
 
 	// allow the application to process it
-	return a.ApplicationStateMachineRequirements.Confirmation(args, kwargs)
+	return a.Application.Confirmation(args, kwargs)
 }
 
 type COVTestClientServicesRequirements interface {
