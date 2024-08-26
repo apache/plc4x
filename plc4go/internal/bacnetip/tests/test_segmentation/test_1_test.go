@@ -46,7 +46,7 @@ type _NetworkServiceElement struct {
 func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
 	n := &_NetworkServiceElement{}
 	var err error
-	n.NetworkServiceElement, err = bacnetip.NewNetworkServiceElement(localLog, nil, true)
+	n.NetworkServiceElement, err = bacnetip.NewNetworkServiceElement(localLog, bacnetip.WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -168,7 +168,7 @@ func NewSnifferNode(localLog zerolog.Logger, vlan *bacnetip.Network) (*SnifferNo
 	}
 
 	// create a promiscuous node, added to the network
-	s.node, err = bacnetip.NewNode(localLog, s.address, vlan, bacnetip.WithNodePromiscuous(true))
+	s.node, err = bacnetip.NewNode(localLog, s.address, bacnetip.WithNodeLan(vlan), bacnetip.WithNodePromiscuous(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -303,7 +303,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.L
 	}
 
 	// create a node, added to the network
-	a.node, err = bacnetip.NewNode(a.log, a.address, vlan)
+	a.node, err = bacnetip.NewNode(a.log, a.address, bacnetip.WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}

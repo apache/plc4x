@@ -1593,7 +1593,7 @@ type StateMachineAccessPoint struct {
 	dccEnableDisable      readWriteModel.BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
 	applicationTimeout    uint
 
-	// pass through arguments
+	// pass through args
 	argSapID *int
 	argCid   *int
 
@@ -2035,7 +2035,7 @@ type ApplicationServiceAccessPoint struct {
 	*ApplicationServiceElement
 	*ServiceAccessPoint
 
-	// Pass through args
+	// pass through args
 	argAseID *int
 	argSapID *int
 

@@ -80,11 +80,11 @@ func ReadForeignDeviceTable() *bacnetip.ReadForeignDeviceTable {
 	return readForeignDeviceTable
 }
 
-func FDTEntry() (entry bacnetip.FDTEntry) {
-	return
+func FDTEntry() (entry *bacnetip.FDTEntry) {
+	return &bacnetip.FDTEntry{}
 }
 
-func ReadForeignDeviceTableAck(fdts ...bacnetip.FDTEntry) *bacnetip.ReadForeignDeviceTableAck {
+func ReadForeignDeviceTableAck(fdts ...*bacnetip.FDTEntry) *bacnetip.ReadForeignDeviceTableAck {
 	readForeignDeviceTableAck, err := bacnetip.NewReadForeignDeviceTableAck(bacnetip.WithReadForeignDeviceTableAckFDT(fdts...))
 	if err != nil {
 		panic(err)

@@ -52,6 +52,7 @@ func (a Args) Get0NPDU() NPDU {
 func (a Args) Get0APDU() APDU {
 	return a[0].(APDU)
 }
+
 func (a Args) Get0NetworkAdapter() *NetworkAdapter {
 	return a[0].(*NetworkAdapter)
 }

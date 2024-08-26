@@ -59,7 +59,7 @@ func NewTNetwork(t *testing.T, nodeCount int, promiscuous bool, spoofing bool) *
 	for i := range nodeCount {
 		nodeAddress, err := bacnetip.NewAddress(localLog, i+1)
 		require.NoError(t, err)
-		node, err := bacnetip.NewNode(localLog, nodeAddress, tn.vlan, bacnetip.WithNodePromiscuous(promiscuous), bacnetip.WithNodeSpoofing(spoofing))
+		node, err := bacnetip.NewNode(localLog, nodeAddress, bacnetip.WithNodeLan(tn.vlan), bacnetip.WithNodePromiscuous(promiscuous), bacnetip.WithNodeSpoofing(spoofing))
 		require.NoError(t, err)
 
 		// bind a client state machine to the ndoe

@@ -29,6 +29,18 @@ type Element struct {
 type Sequence struct {
 }
 
+func NewSequence() *Sequence {
+	panic("implement me")
+}
+
+func (a *Sequence) Encode(apdu Arg) error {
+	panic("implement me")
+}
+
+func (a *Sequence) Decode(apdu Arg) error {
+	panic("implement me")
+}
+
 // TODO: finish
 type List struct {
 }

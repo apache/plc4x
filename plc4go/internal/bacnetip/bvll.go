@@ -546,6 +546,7 @@ func WithForwardedNPDUUserData(userData spi.Message) func(*ForwardedNPDU) {
 		b.pduUserData = userData
 	}
 }
+
 func (w *ForwardedNPDU) GetBvlciAddress() *Address {
 	return w.bvlciAddress
 }
@@ -623,11 +624,11 @@ type FDTEntry struct {
 	FDRemain  uint16
 }
 
-func (f FDTEntry) Equals(other any) bool {
+func (f *FDTEntry) Equals(other any) bool {
 	if f == other {
 		return true
 	}
-	otherEntry, ok := other.(FDTEntry)
+	otherEntry, ok := other.(*FDTEntry)
 	if !ok {
 		return false
 	}
@@ -753,7 +754,7 @@ func (w *ReadForeignDeviceTable) String() string {
 type ReadForeignDeviceTableAck struct {
 	*_BVLPDU
 
-	bvlciFDT []FDTEntry
+	bvlciFDT []*FDTEntry
 }
 
 var _ BVLPDU = (*ReadForeignDeviceTableAck)(nil)
@@ -767,13 +768,13 @@ func NewReadForeignDeviceTableAck(opts ...func(*ReadForeignDeviceTableAck)) (*Re
 	return b, nil
 }
 
-func WithReadForeignDeviceTableAckFDT(fdts ...FDTEntry) func(*ReadForeignDeviceTableAck) {
+func WithReadForeignDeviceTableAckFDT(fdts ...*FDTEntry) func(*ReadForeignDeviceTableAck) {
 	return func(b *ReadForeignDeviceTableAck) {
 		b.bvlciFDT = fdts
 	}
 }
 
-func (w *ReadForeignDeviceTableAck) GetBvlciFDT() []FDTEntry {
+func (w *ReadForeignDeviceTableAck) GetBvlciFDT() []*FDTEntry {
 	return w.bvlciFDT
 }
 
@@ -790,14 +791,14 @@ func (w *ReadForeignDeviceTableAck) produceForeignDeviceTable() (entries []readW
 	return
 }
 
-func (w *ReadForeignDeviceTableAck) produceBvlciFDT(entries []readWriteModel.BVLCForeignDeviceTableEntry) (bvlciFDT []FDTEntry) {
+func (w *ReadForeignDeviceTableAck) produceBvlciFDT(entries []readWriteModel.BVLCForeignDeviceTableEntry) (bvlciFDT []*FDTEntry) {
 	for _, entry := range entries {
 		addr := entry.GetIp()
 		port := entry.GetPort()
 		var portArray = make([]byte, 2)
 		binary.BigEndian.PutUint16(portArray, port)
 		address, _ := NewAddress(zerolog.Nop(), append(addr, portArray...))
-		bvlciFDT = append(bvlciFDT, FDTEntry{
+		bvlciFDT = append(bvlciFDT, &FDTEntry{
 			FDAddress: address,
 			FDTTL:     entry.GetTtl(),
 			FDRemain:  entry.GetSecondRemainingBeforePurge(),

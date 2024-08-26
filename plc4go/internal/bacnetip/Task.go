@@ -184,7 +184,6 @@ func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements
 		opt(r)
 	}
 	r.Task = NewTask(taskRequirements)
-
 	return r
 }
 
@@ -199,6 +198,7 @@ func WithRecurringTaskOffset(offset time.Duration) func(task *RecurringTask) {
 		task.taskIntervalOffset = &offset
 	}
 }
+
 func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 	interval := options.Interval
 	offset := options.Offset
@@ -282,6 +282,7 @@ func WithRecurringFunctionTaskInterval(interval time.Duration) func(*RecurringFu
 		r.taskInterval = &interval
 	}
 }
+
 func (r *RecurringFunctionTask) ProcessTask() error {
 	return r.fn(r.args, r.kwargs)
 }

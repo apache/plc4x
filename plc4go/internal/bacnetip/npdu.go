@@ -94,7 +94,7 @@ func (n *_NPCI) Update(npci Arg) error {
 		// TODO: update coordinates...
 		return nil
 	default:
-		return errors.Errorf("invalid APCI type %T", npci)
+		return errors.Errorf("invalid NPCI type %T", npci)
 	}
 }
 
@@ -133,6 +133,7 @@ type _NPDU struct {
 
 	// Deprecated: this is the rootMessage so no need to store it here
 	npdu readWriteModel.NPDU
+	// Deprecated: this is the rootMessage so no need to store it here
 	apdu readWriteModel.APDU
 }
 

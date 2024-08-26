@@ -225,10 +225,116 @@ func TestNonBBMD(t *testing.T) {
 	suite.Run(t, new(NonBBMDSuite))
 }
 
-type BBMDSuite struct {
-	suite.Suite
-}
-
 func TestBBMD(t *testing.T) {
-	suite.Run(t, new(BBMDSuite))
+	t.Skip("big WIP")                           // TODO: too much needs to be done in APDU to get something to run here at all
+	t.Run("test_14_2_1_1", func(t *testing.T) { //14.2.1.1 Execute Forwarded-NPDU (One-hop Distribution).
+		tests.ExclusiveGlobalTimeMachine(t)
+		testLogger := testutils.ProduceTestingLogger(t)
+
+		// Create a network
+		tnet := NewTBNetwork(t, 2)
+
+		// implementation under test
+		iut, err := NewBIPBBMDApplication(testLogger, "192.168.1.2/24", tnet.vlan[0])
+		require.NoError(t, err)
+		testLogger.Debug().Stringer("iutbip", iut.bip).Msg("iut.bip")
+
+		// BBMD on net 2
+		bbmd1, err := NewBIPBBMDNode(testLogger, "192.168.2.2/24", tnet.vlan[1])
+		require.NoError(t, err)
+
+		// add the IUT as a one-hop peer
+		err = bbmd1.bip.AddPeer(Address("192.168.1.2/24"))
+		require.NoError(t, err)
+		testLogger.Debug().Stringer("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
+
+		// test device
+		td, err := NewBIPSimpleApplicationLayerStateMachine(testLogger, "192.168.2.3/24", tnet.vlan[1])
+		require.NoError(t, err)
+		tnet.Append(td)
+
+		// listener looks for extra traffic
+		listener, err := NewBIPStateMachine(testLogger, "192.168.1.3/24", tnet.vlan[0])
+		listener.mux.node.SetPromiscuous(true)
+		tnet.Append(listener)
+
+		// broadcast a forwarded NPDU
+		td.GetStartState().Doc("2-1-0").
+			Send(WhoIsRequest(bacnetip.NewKWArgs(bacnetip.KWPDUDestination, bacnetip.NewLocalBroadcast(nil))), nil).Doc("2-1-1").
+			Receive(bacnetip.NewArgs((*bacnetip.IAmRequest)(nil)), bacnetip.NoKWArgs).Doc("2-1-2").
+			Success("")
+
+		// listen for the directed broadcast, then the original unicast,
+		// then fail if there's anything else
+		listener.GetStartState().Doc("2-2-0").
+			Receive(bacnetip.NewArgs((*bacnetip.ForwardedNPDU)(nil)), bacnetip.NoKWArgs).Doc("2-2-1").
+			Receive(bacnetip.NewArgs((*bacnetip.OriginalUnicastNPDU)(nil)), bacnetip.NoKWArgs).Doc("2-2-2").
+			Timeout(3*time.Second, nil).Doc("2-2-3").
+			Success("")
+
+		// run the group
+		tnet.Run(0)
+
+	})
+	t.Run("test_14_2_1_1", func(t *testing.T) { // 14.2.1.1 Execute Forwarded-NPDU (Two-hop Distribution).
+		tests.ExclusiveGlobalTimeMachine(t)
+		testLogger := testutils.ProduceTestingLogger(t)
+
+		// Create a network
+		tnet := NewTBNetwork(t, 2)
+
+		// implementation under test
+		iut, err := NewBIPBBMDApplication(testLogger, "192.168.1.2/24", tnet.vlan[0])
+		require.NoError(t, err)
+		testLogger.Debug().Stringer("iutbip", iut.bip).Msg("iut.bip")
+
+		// BBMD on net 2
+		bbmd1, err := NewBIPBBMDNode(testLogger, "192.168.2.2/24", tnet.vlan[1])
+		require.NoError(t, err)
+
+		// add the IUT as a two-hop peer
+		err = bbmd1.bip.AddPeer(Address("192.168.1.2/32"))
+		require.NoError(t, err)
+		testLogger.Debug().Stringer("bbmd1bip", bbmd1.bip).Msg("bbmd1.bip")
+
+		// test device
+		td, err := NewBIPSimpleApplicationLayerStateMachine(testLogger, "192.168.2.3/24", tnet.vlan[1])
+		require.NoError(t, err)
+		tnet.Append(td)
+
+		// listener looks for extra traffic
+		listener, err := NewBIPStateMachine(testLogger, "192.168.1.3/24", tnet.vlan[0])
+		listener.mux.node.SetPromiscuous(true)
+		tnet.Append(listener)
+
+		// broadcast a forwarded NPDU
+		td.GetStartState().Doc("2-3-0").
+			Send(WhoIsRequest(bacnetip.NewKWArgs(bacnetip.KWPDUDestination, bacnetip.NewLocalBroadcast(nil))), nil).Doc("2-3-1").
+			Receive(bacnetip.NewArgs((*bacnetip.IAmRequest)(nil)), bacnetip.NoKWArgs).Doc("2-3-2").
+			Success("")
+
+		// listen for the forwarded NPDU.  The packet will be sent upstream which
+		// will generate the original unicast going back, then it will be
+		// re-broadcast on the local LAN.  Fail if there's anything after that.
+		s241 := listener.GetStartState().Doc("2-4-0").
+			Receive(bacnetip.NewArgs((*bacnetip.ForwardedNPDU)(nil)), bacnetip.NoKWArgs).Doc("2-4-1")
+
+		// look for the original unicast going back, followed by the rebroadcast
+		// of the forwarded NPDU on the local LAN
+		both := s241.
+			Receive(bacnetip.NewArgs((*bacnetip.OriginalUnicastNPDU)(nil)), bacnetip.NoKWArgs).Doc("2-4-1-a").
+			Receive(bacnetip.NewArgs((*bacnetip.ForwardedNPDU)(nil)), bacnetip.NoKWArgs).Doc("2-4-1-b")
+
+		// fail if anything is received after both packets
+		both.Timeout(3*time.Second, nil).Doc("2-4-4").
+			Success("")
+
+		// allow the two packets in either order
+		s241.Receive(bacnetip.NewArgs((*bacnetip.ForwardedNPDU)(nil)), bacnetip.NoKWArgs).Doc("2-4-2-a").
+			Receive(bacnetip.NewArgs((*bacnetip.OriginalUnicastNPDU)(nil)), bacnetip.NewKWArgs("nextState", both)).Doc("2-4-2-b")
+
+		// run the group
+		tnet.Run(0)
+
+	})
 }

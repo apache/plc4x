@@ -461,12 +461,12 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 			ifdt := rfdta.GetBvlciFDT()
-			oifdt, ok := attrValue.([]bacnetip.FDTEntry)
+			oifdt, ok := attrValue.([]*bacnetip.FDTEntry)
 			if !ok {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
-			equals := slices.EqualFunc(ifdt, oifdt, func(a bacnetip.FDTEntry, b bacnetip.FDTEntry) bool {
+			equals := slices.EqualFunc(ifdt, oifdt, func(a *bacnetip.FDTEntry, b *bacnetip.FDTEntry) bool {
 				return a.Equals(b)
 			})
 			if !equals {
@@ -1419,10 +1419,6 @@ func (s *stateMachine) gotoState(state State) error {
 
 func (s *stateMachine) BeforeSend(pdu bacnetip.PDU) {
 	s.transactionLog = append(s.transactionLog, fmt.Sprintf("<<<%v", pdu))
-}
-
-func (s *stateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
-	panic("not implemented")
 }
 
 func (s *stateMachine) AfterSend(pdu bacnetip.PDU) {

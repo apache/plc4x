@@ -173,13 +173,16 @@ type Node struct {
 	promiscuous bool
 	spoofing    bool
 
+	// args
+	argLan NodeNetworkReference
+
 	// pass through args
 	argSid *int
 
 	log zerolog.Logger
 }
 
-func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, opts ...func(*Node)) (*Node, error) {
+func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node, error) {
 	n := &Node{
 		address: addr,
 		log:     localLog,
@@ -199,8 +202,8 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, o
 	}
 
 	// bind to a lan if it was provided
-	if lan != nil {
-		n.bind(lan)
+	if n.argLan != nil {
+		n.bind(n.argLan)
 	}
 
 	return n, nil
@@ -209,6 +212,12 @@ func NewNode(localLog zerolog.Logger, addr *Address, lan NodeNetworkReference, o
 func WithNodeName(name string) func(*Node) {
 	return func(n *Node) {
 		n.name = name
+	}
+}
+
+func WithNodeLan(lan NodeNetworkReference) func(*Node) {
+	return func(n *Node) {
+		n.argLan = lan
 	}
 }
 
@@ -345,7 +354,7 @@ func NewIPNode(localLog zerolog.Logger, addr *Address, lan *IPNetwork, opts ...f
 		addrBroadcastTuple: addr.AddrBroadcastTuple,
 	}
 	var err error
-	i.Node, err = NewNode(localLog, addr, nil, opts...)
+	i.Node, err = NewNode(localLog, addr, opts...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}

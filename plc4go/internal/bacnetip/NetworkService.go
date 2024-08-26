@@ -946,16 +946,25 @@ type NetworkServiceElement struct {
 
 	networkNumberIsTask time.Time
 
+	// regular args
+	argStartupDisabled bool
+
+	// pass through args
+	argEID *int
+
 	log zerolog.Logger
 }
 
-func NewNetworkServiceElement(localLog zerolog.Logger, eid *int, startupDisabled bool) (*NetworkServiceElement, error) {
+func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServiceElement)) (*NetworkServiceElement, error) {
 	n := &NetworkServiceElement{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(n)
+	}
 	var err error
 	n.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, n, func(element *ApplicationServiceElement) {
-		element.elementID = eid
+		element.elementID = n.argEID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
@@ -965,10 +974,22 @@ func NewNetworkServiceElement(localLog zerolog.Logger, eid *int, startupDisabled
 	n.networkNumberIsTask = time.Time{}
 
 	// if starting up is enabled defer our startup function
-	if !startupDisabled {
+	if !n.argStartupDisabled {
 		Deferred(n.Startup, NoArgs, NoKWArgs)
 	}
 	return n, nil
+}
+
+func WithNetworkServiceElementEID(eid int) func(*NetworkServiceElement) {
+	return func(n *NetworkServiceElement) {
+		n.argEID = &eid
+	}
+}
+
+func WithNetworkServiceElementStartupDisabled(startupDisabled bool) func(*NetworkServiceElement) {
+	return func(n *NetworkServiceElement) {
+		n.argStartupDisabled = startupDisabled
+	}
 }
 
 func (n *NetworkServiceElement) String() string {

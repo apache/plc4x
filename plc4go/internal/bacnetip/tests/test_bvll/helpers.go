@@ -40,7 +40,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	// This class turns off the deferred startup function call that broadcasts
 	// I-Am-Router-To-Network and Network-Number-Is messages.
 	var err error
-	i.NetworkServiceElement, err = bacnetip.NewNetworkServiceElement(localLog, nil, true)
+	i.NetworkServiceElement, err = bacnetip.NewNetworkServiceElement(localLog, bacnetip.WithNetworkServiceElementStartupDisabled(true))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -167,7 +167,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	s := &SnifferStateMachine{
 		log: localLog,
 	}
-	machine, err := tests.NewClientStateMachine(localLog)
+	machine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -204,6 +204,10 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	return s, nil
 }
 
+func (s *SnifferStateMachine) String() string {
+	return fmt.Sprintf("SnifferStateMachine(%s)", s.name)
+}
+
 // BIPStateMachine is an application layer for BVLL messages that has no BVLL
 //
 //	processing like the 'simple', 'foreign', or 'bbmd' versions.  The client
@@ -221,7 +225,7 @@ type BIPStateMachine struct {
 func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPStateMachine, error) {
 	b := &BIPStateMachine{}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog)
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -245,6 +249,10 @@ func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.
 		return nil, errors.Wrap(err, "error binding")
 	}
 	return b, nil
+}
+
+func (b *BIPStateMachine) String() string {
+	return fmt.Sprintf("BIPStateMachine{%vname: %v, address: %s, mux: %s}", b.ClientStateMachine, b.name, b.address, b.mux)
 }
 
 type BIPSimpleStateMachine struct {
@@ -321,7 +329,7 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog)
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
@@ -332,10 +340,19 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 
 	// BACnet/IP interpreter
 	b.bip, err = bacnetip.NewBIPForeign(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating BIPForeign")
+	}
 	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating AnnexJCodec")
+	}
 
 	// fake multiplexer has a VLAN node in it
 	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating FauxMultiplexer")
+	}
 
 	// bind the stack together
 	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
@@ -343,6 +360,10 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 		return nil, errors.Wrap(err, "error binding")
 	}
 	return b, nil
+}
+
+func (b *BIPForeignStateMachine) String() string {
+	return fmt.Sprintf("BIPForeignStateMachine(%s)", b.name)
 }
 
 type BIPBBMDStateMachine struct {
@@ -362,7 +383,7 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog)
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
@@ -386,6 +407,9 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 
 	// fake multiplexer has a VLAN node in it
 	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating faux multiplexer")
+	}
 
 	// bind the stack together
 	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
@@ -434,19 +458,312 @@ func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *bacnetip.IP
 }
 
 type BIPBBMDNode struct {
+	name    string
+	address *bacnetip.Address
+
+	bip    *bacnetip.BIPBBMD
+	annexj *bacnetip.AnnexJCodec
+	mux    *FauxMultiplexer
+
+	log zerolog.Logger
+}
+
+func NewBIPBBMDNode(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPBBMDNode, error) {
+	b := &BIPBBMDNode{
+		log: localLog,
+	}
+
+	// build a name, save the address
+	b.name = fmt.Sprintf("app @ %s", address)
+	b.address = Address(address)
+	b.log.Debug().Str("address", address).Msg("address")
+
+	var err error
+	// BACnet/IP interpreter
+	b.bip, err = bacnetip.NewBIPBBMD(b.log, b.address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building bip bbmd")
+	}
+	b.annexj, err = bacnetip.NewAnnexJCodec(b.log)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building annexj codec")
+	}
+
+	// build an address, full mask
+	bdtAddress := fmt.Sprintf("%s/32:%d", b.address.AddrTuple.Left, b.address.AddrTuple.Right)
+	b.log.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
+
+	// add itself as the first entry in the BDT
+	err = b.bip.AddPeer(Address(bdtAddress))
+	if err != nil {
+		return nil, errors.Wrap(err, "error adding peer")
+	}
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(b.log, b.address, vlan)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating faux multiplexer")
+	}
+
+	// bind the stack together
+	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	return b, nil
 }
 
 type TestDeviceObject struct {
 	*bacnetip.LocalDeviceObject
 }
 
+// TODO: implement me
 type BIPSimpleApplicationLayerStateMachine struct {
 	*bacnetip.ApplicationServiceElement
 	*tests.ClientStateMachine
+
+	log zerolog.Logger // TODO: move down
+
+	name    string
+	address *bacnetip.Address
+	asap    *bacnetip.ApplicationServiceAccessPoint
+	smap    *bacnetip.StateMachineAccessPoint
+	nsap    *bacnetip.NetworkServiceAccessPoint
+	nse     *_NetworkServiceElement
+	bip     *bacnetip.BIPSimple
+	annexj  *bacnetip.AnnexJCodec
+	mux     *FauxMultiplexer
+}
+
+func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPSimpleApplicationLayerStateMachine, error) {
+	b := &BIPSimpleApplicationLayerStateMachine{}
+	// build a name, save the address
+	b.name = fmt.Sprintf("app @ %s", address)
+	b.address = Address(address)
+
+	// build a local device object
+	localDevice := &TestDeviceObject{
+		LocalDeviceObject: &bacnetip.LocalDeviceObject{
+			ObjectName:       b.name,
+			ObjectIdentifier: "device:998",
+			VendorIdentifier: 999,
+		},
+	}
+
+	var err error
+	// continue with initialization
+	b.ApplicationServiceElement, err = bacnetip.NewApplicationServiceElement(localLog, b)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building application")
+	}
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(b.name))
+
+	// include a application decoder
+	b.asap, err = bacnetip.NewApplicationServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building application service access point")
+	}
+
+	// pass the device object to the state machine access point so it
+	// can know if it should support segmentation
+	// the segmentation state machines need access to the same device
+	// information cache as the application
+	b.smap, err = bacnetip.NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, bacnetip.WithStateMachineAccessPointDeviceInfoCache(bacnetip.NewDeviceInfoCache(localLog))) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	if err != nil {
+		return nil, errors.Wrap(err, "error building state machine access point")
+	}
+
+	// a network service access point will be needed
+	b.nsap, err = bacnetip.NewNetworkServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service access point")
+	}
+
+	// give the NSAP a generic network layer service element
+	b.nse, err = new_NetworkServiceElement(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service element")
+	}
+	err = bacnetip.Bind(localLog, b.nse, b.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// bind the top layers
+	err = bacnetip.Bind(localLog, b, b.asap, b.smap, b.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// BACnet/IP interpreter
+	b.bip, err = bacnetip.NewBIPSimple(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building bip bbmd")
+	}
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building annexj codec")
+	}
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building multiplexer")
+	}
+
+	// bind the stack together
+	err = bacnetip.Bind(localLog, b.bip, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// bind the stack to the local network
+	err = b.nsap.Bind(b.bip, nil, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	return b, nil
+}
+
+func (b *BIPSimpleApplicationLayerStateMachine) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	return b.Receive(args, bacnetip.NoKWArgs)
+}
+
+func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+	return b.Receive(args, bacnetip.NoKWArgs)
+}
+
+func (b *BIPSimpleApplicationLayerStateMachine) String() string {
+	return fmt.Sprintf("BIPSimpleApplicationLayerStateMachine(%s)", b.name)
 }
 
 type BIPBBMDApplication struct {
 	*bacnetip.Application
 	*bacnetip.WhoIsIAmServices
 	*bacnetip.ReadWritePropertyServices
+
+	name    string
+	address *bacnetip.Address
+
+	asap   *bacnetip.ApplicationServiceAccessPoint
+	smap   *bacnetip.StateMachineAccessPoint
+	nsap   *bacnetip.NetworkServiceAccessPoint
+	nse    *_NetworkServiceElement
+	bip    *bacnetip.BIPBBMD
+	annexj *bacnetip.AnnexJCodec
+	mux    *FauxMultiplexer
+
+	log zerolog.Logger
+}
+
+func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPBBMDApplication, error) {
+	b := &BIPBBMDApplication{
+		log: localLog,
+	}
+
+	// build a name, save the address
+	b.name = fmt.Sprintf("app @ %s", address)
+	b.address = Address(address)
+
+	// build a local device object
+	localDevice := &TestDeviceObject{
+		LocalDeviceObject: &bacnetip.LocalDeviceObject{
+			ObjectName:       b.name,
+			ObjectIdentifier: "device:999",
+			VendorIdentifier: 999,
+		},
+	}
+
+	var err error
+	// continue with initialization
+	b.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	if err != nil {
+		return nil, errors.Wrap(err, "error building application")
+	}
+
+	// include a application decoder
+	b.asap, err = bacnetip.NewApplicationServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building application service access point")
+	}
+
+	// pass the device object to the state machine access point so it
+	// can know if it should support segmentation
+	// the segmentation state machines need access to the same device
+	// information cache as the application
+	b.smap, err = bacnetip.NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, bacnetip.WithStateMachineAccessPointDeviceInfoCache(b.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	if err != nil {
+		return nil, errors.Wrap(err, "error building state machine access point")
+	}
+
+	// a network service access point will be needed
+	b.nsap, err = bacnetip.NewNetworkServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service access point")
+	}
+
+	// give the NSAP a generic network layer service element
+	b.nse, err = new_NetworkServiceElement(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service element")
+	}
+	err = bacnetip.Bind(localLog, b.nse, b.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// bind the top layers
+	err = bacnetip.Bind(localLog, b, b.asap, b.smap, b.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// BACnet/IP interpreter
+	b.bip, err = bacnetip.NewBIPBBMD(localLog, b.address)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building bip bbmd")
+	}
+
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building annexj codec")
+	}
+
+	// build an address, full mask
+	bdtAddress := fmt.Sprintf("%s/32:%d", b.address.AddrTuple.Left, b.address.AddrTuple.Right)
+	localLog.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
+
+	// add itself as the first entry in the BDT
+	err = b.bip.AddPeer(Address(bdtAddress))
+	if err != nil {
+		return nil, errors.Wrap(err, "error adding peer")
+	}
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building multiplexer")
+	}
+
+	// bind the stack together
+	err = bacnetip.Bind(localLog, b.bip, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// bind the stack to the local network
+	err = b.nsap.Bind(b.bip, nil, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	return b, nil
+}
+
+func (b *BIPBBMDApplication) String() string {
+	return fmt.Sprintf("BIPBBMDApplication(%s)", b.name)
 }

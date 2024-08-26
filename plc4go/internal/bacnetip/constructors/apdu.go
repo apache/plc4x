@@ -24,3 +24,11 @@ import "github.com/apache/plc4x/plc4go/internal/bacnetip"
 func ConfirmedPrivateTransferRequest(kwargs bacnetip.KWArgs) *bacnetip.ConfirmedPrivateTransferRequest {
 	panic("implement me")
 }
+
+func WhoIsRequest(kwargs bacnetip.KWArgs) *bacnetip.WhoIsRequest {
+	whoIsRequest, err := bacnetip.NewWhoIsRequest()
+	if err != nil {
+		panic(err)
+	}
+	return whoIsRequest
+}

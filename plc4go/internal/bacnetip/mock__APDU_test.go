@@ -45,6 +45,98 @@ func (_m *mock_APDU) EXPECT() *mock_APDU_Expecter {
 	return &mock_APDU_Expecter{mock: &_m.Mock}
 }
 
+// Decode provides a mock function with given fields: pdu
+func (_m *mock_APDU) Decode(pdu Arg) error {
+	ret := _m.Called(pdu)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Decode")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(Arg) error); ok {
+		r0 = rf(pdu)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// mock_APDU_Decode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Decode'
+type mock_APDU_Decode_Call struct {
+	*mock.Call
+}
+
+// Decode is a helper method to define mock.On call
+//   - pdu Arg
+func (_e *mock_APDU_Expecter) Decode(pdu interface{}) *mock_APDU_Decode_Call {
+	return &mock_APDU_Decode_Call{Call: _e.mock.On("Decode", pdu)}
+}
+
+func (_c *mock_APDU_Decode_Call) Run(run func(pdu Arg)) *mock_APDU_Decode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(Arg))
+	})
+	return _c
+}
+
+func (_c *mock_APDU_Decode_Call) Return(_a0 error) *mock_APDU_Decode_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *mock_APDU_Decode_Call) RunAndReturn(run func(Arg) error) *mock_APDU_Decode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Encode provides a mock function with given fields: pdu
+func (_m *mock_APDU) Encode(pdu Arg) error {
+	ret := _m.Called(pdu)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Encode")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(Arg) error); ok {
+		r0 = rf(pdu)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// mock_APDU_Encode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Encode'
+type mock_APDU_Encode_Call struct {
+	*mock.Call
+}
+
+// Encode is a helper method to define mock.On call
+//   - pdu Arg
+func (_e *mock_APDU_Expecter) Encode(pdu interface{}) *mock_APDU_Encode_Call {
+	return &mock_APDU_Encode_Call{Call: _e.mock.On("Encode", pdu)}
+}
+
+func (_c *mock_APDU_Encode_Call) Run(run func(pdu Arg)) *mock_APDU_Encode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(Arg))
+	})
+	return _c
+}
+
+func (_c *mock_APDU_Encode_Call) Return(_a0 error) *mock_APDU_Encode_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *mock_APDU_Encode_Call) RunAndReturn(run func(Arg) error) *mock_APDU_Encode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function with given fields:
 func (_m *mock_APDU) Get() (byte, error) {
 	ret := _m.Called()
@@ -143,6 +235,51 @@ func (_c *mock_APDU_GetApduInvokeID_Call) Return(_a0 *uint8) *mock_APDU_GetApduI
 }
 
 func (_c *mock_APDU_GetApduInvokeID_Call) RunAndReturn(run func() *uint8) *mock_APDU_GetApduInvokeID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetApduType provides a mock function with given fields:
+func (_m *mock_APDU) GetApduType() model.ApduType {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetApduType")
+	}
+
+	var r0 model.ApduType
+	if rf, ok := ret.Get(0).(func() model.ApduType); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(model.ApduType)
+	}
+
+	return r0
+}
+
+// mock_APDU_GetApduType_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetApduType'
+type mock_APDU_GetApduType_Call struct {
+	*mock.Call
+}
+
+// GetApduType is a helper method to define mock.On call
+func (_e *mock_APDU_Expecter) GetApduType() *mock_APDU_GetApduType_Call {
+	return &mock_APDU_GetApduType_Call{Call: _e.mock.On("GetApduType")}
+}
+
+func (_c *mock_APDU_GetApduType_Call) Run(run func()) *mock_APDU_GetApduType_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *mock_APDU_GetApduType_Call) Return(_a0 model.ApduType) *mock_APDU_GetApduType_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *mock_APDU_GetApduType_Call) RunAndReturn(run func() model.ApduType) *mock_APDU_GetApduType_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -1200,6 +1337,86 @@ func (_c *mock_APDU_Update_Call) Return(_a0 error) *mock_APDU_Update_Call {
 }
 
 func (_c *mock_APDU_Update_Call) RunAndReturn(run func(Arg) error) *mock_APDU_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getAPDU provides a mock function with given fields:
+func (_m *mock_APDU) getAPDU() model.APDU {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getAPDU")
+	}
+
+	var r0 model.APDU
+	if rf, ok := ret.Get(0).(func() model.APDU); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.APDU)
+		}
+	}
+
+	return r0
+}
+
+// mock_APDU_getAPDU_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getAPDU'
+type mock_APDU_getAPDU_Call struct {
+	*mock.Call
+}
+
+// getAPDU is a helper method to define mock.On call
+func (_e *mock_APDU_Expecter) getAPDU() *mock_APDU_getAPDU_Call {
+	return &mock_APDU_getAPDU_Call{Call: _e.mock.On("getAPDU")}
+}
+
+func (_c *mock_APDU_getAPDU_Call) Run(run func()) *mock_APDU_getAPDU_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *mock_APDU_getAPDU_Call) Return(_a0 model.APDU) *mock_APDU_getAPDU_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *mock_APDU_getAPDU_Call) RunAndReturn(run func() model.APDU) *mock_APDU_getAPDU_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setAPDU provides a mock function with given fields: _a0
+func (_m *mock_APDU) setAPDU(_a0 model.APDU) {
+	_m.Called(_a0)
+}
+
+// mock_APDU_setAPDU_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setAPDU'
+type mock_APDU_setAPDU_Call struct {
+	*mock.Call
+}
+
+// setAPDU is a helper method to define mock.On call
+//   - _a0 model.APDU
+func (_e *mock_APDU_Expecter) setAPDU(_a0 interface{}) *mock_APDU_setAPDU_Call {
+	return &mock_APDU_setAPDU_Call{Call: _e.mock.On("setAPDU", _a0)}
+}
+
+func (_c *mock_APDU_setAPDU_Call) Run(run func(_a0 model.APDU)) *mock_APDU_setAPDU_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(model.APDU))
+	})
+	return _c
+}
+
+func (_c *mock_APDU_setAPDU_Call) Return() *mock_APDU_setAPDU_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *mock_APDU_setAPDU_Call) RunAndReturn(run func(model.APDU)) *mock_APDU_setAPDU_Call {
 	_c.Call.Return(run)
 	return _c
 }

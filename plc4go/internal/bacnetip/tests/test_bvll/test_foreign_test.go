@@ -78,10 +78,12 @@ func NewTFNetwork(t *testing.T) *TFNetwork {
 	// the foreign device
 	tfn.fd, err = NewBIPForeignStateMachine(localLog, "192.168.6.2/24", tfn.vlan6)
 	require.NoError(t, err)
+	tfn.Append(tfn.fd)
 
 	// bbmd
 	tfn.bbmd, err = NewBIPBBMDStateMachine(localLog, "192.168.5.3/24", tfn.vlan5)
 	require.NoError(t, err)
+	tfn.Append(tfn.bbmd)
 	return tfn
 }
 
@@ -112,8 +114,8 @@ func (t *TFNetwork) Run(timeLimit time.Duration) {
 }
 
 func TestForeign(t *testing.T) {
-	t.Skip("not yet ready")                 //TODO: finish
-	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
+	t.Skip("something is completely broken at root level... needs more investigation") // TODO: fix issues
+	t.Run("test_idle", func(t *testing.T) {                                            //Test an idle network, nothing happens is success.
 		tests.ExclusiveGlobalTimeMachine(t)
 
 		tnet := NewTFNetwork(t)
@@ -164,7 +166,7 @@ func TestForeign(t *testing.T) {
 		homeSnooper.GetStartState().Doc("1-2-0").
 			WaitEvent("fd-registered", nil).Doc("1-2-1").
 			Send(readForeignDeviceTable, nil).Doc("1-2-2").
-			Receive(bacnetip.NewArgs((*bacnetip.ReadForeignDeviceTable)(nil)), bacnetip.NoKWArgs).Doc("1-2-3").
+			Receive(bacnetip.NewArgs((*bacnetip.ReadForeignDeviceTableAck)(nil)), bacnetip.NoKWArgs).Doc("1-2-3").
 			Success("")
 
 		// home sniffer node

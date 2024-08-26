@@ -655,7 +655,7 @@ func NewBIPSimpleApplication(localLog zerolog.Logger, localDevice *LocalDeviceOb
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
+	b.nse, err = NewNetworkServiceElement(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -760,7 +760,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// give the NSAP a generic network layer service element
-	b.nse, err = NewNetworkServiceElement(localLog, nil, false)
+	b.nse, err = NewNetworkServiceElement(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -815,15 +815,25 @@ type BIPNetworkApplication struct {
 	annexj       *AnnexJCodec
 	mux          *UDPMultiplexer
 
+	// passThroughArgs
+	argBBMDAddress *Address
+	argBBMDTTL     *int
+	argEID         *int
+
 	log zerolog.Logger
 }
 
-func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbmdAddress *Address, bbmdTTL *int, eID *int) (*BIPNetworkApplication, error) {
+func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opts ...func(*BIPNetworkApplication)) (*BIPNetworkApplication, error) {
 	n := &BIPNetworkApplication{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(n)
+	}
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, eID, false)
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, func(nse *NetworkServiceElement) {
+		nse.argEID = n.argEID
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new network service element")
 	}
@@ -843,13 +853,16 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 
 	// create a generic BIP stack, bound to the Annex J server
 	// on the UDP multiplexer
-	if bbmdAddress == nil && bbmdTTL == nil {
+	if n.argBBMDAddress == nil && n.argBBMDTTL == nil {
 		n.bip, err = NewBIPSimple(localLog)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPSimple")
 		}
 	} else {
-		n.bip, err = NewBIPForeign(localLog, WithBIPForeignAddress(bbmdAddress), WithBIPForeignTTL(*bbmdTTL))
+		n.bip, err = NewBIPForeign(localLog, func(bf *BIPForeign) {
+			bf.argAddr = n.argBBMDAddress
+			bf.argTTL = n.argBBMDTTL
+		})
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPForeign")
 		}

@@ -19,24 +19,150 @@
 
 package bacnetip
 
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi"
+)
+
 type APCI interface {
 	PCI
+
+	GetApduInvokeID() *uint8
+
+	Encode(pdu Arg) error
+	Decode(pdu Arg) error
+
+	setAPDU(readWriteModel.APDU)
+	getAPDU() readWriteModel.APDU
 }
 
 type _APCI struct {
 	*_PCI
 	*DebugContents
+
+	apdu readWriteModel.APDU // TODO: check if this is part of the _APCI or _APDU
+}
+
+var _ APCI = (*_APCI)(nil)
+
+func NewAPCI(pduUserData spi.Message, apdu readWriteModel.APDU) APCI {
+	a := &_APCI{
+		apdu: apdu,
+	}
+	a._PCI = newPCI(pduUserData, nil, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE)
+	switch apdu := pduUserData.(type) {
+	case readWriteModel.APDUExactly:
+		a.apdu = apdu
+	}
+	return a
+}
+
+func (n *_APCI) GetApduInvokeID() *uint8 {
+	if n.apdu == nil {
+		return nil
+	}
+	switch apdu := n.apdu.(type) {
+	case readWriteModel.APDUConfirmedRequestExactly:
+		invokeId := apdu.GetInvokeId()
+		return &invokeId
+	default:
+		return nil
+	}
+}
+
+// Deprecated: check if needed as we do it in update
+func (n *_APCI) setAPDU(apdu readWriteModel.APDU) {
+	n.apdu = apdu
+}
+
+func (n *_APCI) getAPDU() readWriteModel.APDU {
+	return n.apdu
+}
+
+func (n *_APCI) Update(apci Arg) error {
+	if err := n._PCI.Update(apci); err != nil {
+		return errors.Wrap(err, "error updating _PCI")
+	}
+	switch apci := apci.(type) {
+	case APDU:
+		n.apdu = apci.getAPDU()
+		// TODO: update coordinates...
+		return nil
+	default:
+		return errors.Errorf("invalid APCI type %T", apci)
+	}
+}
+
+func (n *_APCI) Encode(pdu Arg) error {
+	if err := pdu.(interface{ Update(Arg) error }).Update(n); err != nil { // TODO: better validate that arg is really PDUData... use switch similar to Update
+		return errors.Wrap(err, "error updating pdu")
+	}
+	// TODO: what should we do here??
+	return nil
+}
+
+func (n *_APCI) Decode(pdu Arg) error {
+	if err := n._PCI.Update(pdu); err != nil {
+		return errors.Wrap(err, "error updating pdu")
+	}
+	// TODO: what should we do here??
+	return nil
+}
+
+func (n *_APCI) deepCopy() *_APCI {
+	return &_APCI{_PCI: n._PCI.deepCopy(), apdu: n.apdu}
 }
 
 type APDU interface {
+	readWriteModel.APDU
 	APCI
 	PDUData
-
-	GetApduInvokeID() *uint8 // TODO: check if we really need a pointer
 }
 
 type __APDU struct {
 	*_APCI
+	*_PDUData
+}
+
+var _ APDU = (*__APDU)(nil)
+
+func NewAPDU() (APDU, error) {
+	a := &__APDU{}
+
+	a._APCI = NewAPCI(nil, nil).(*_APCI)
+	a._PDUData = NewPDUData(NoArgs).(*_PDUData)
+	return a, nil
+}
+
+func (a *__APDU) Encode(pdu Arg) error {
+	panic("implement me")
+}
+
+func (a *__APDU) Decode(pdu Arg) error {
+	panic("implement me")
+}
+
+func (a *__APDU) GetApduType() readWriteModel.ApduType {
+	if a.apdu == nil {
+		return 0xf
+	}
+	return a.apdu.GetApduType()
+}
+
+func (a *__APDU) deepCopy() *__APDU {
+	return &__APDU{_APCI: a._APCI.deepCopy(), _PDUData: a._PDUData.deepCopy()}
+}
+
+func (a *__APDU) DeepCopy() PDU {
+	return a.deepCopy()
+}
+
+func (a *__APDU) String() string {
+	return fmt.Sprintf("__APDU{%s}", a._PCI)
 }
 
 type _APDU interface {
@@ -47,34 +173,57 @@ type ___APDU struct {
 	*__APDU
 }
 
+var _ _APDU = (*___APDU)(nil)
+
+func new_APDU() (_APDU, error) {
+	i := &___APDU{}
+	var err error
+	apdu, err := NewAPDU()
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating APDU")
+	}
+	i.__APDU = apdu.(*__APDU)
+	return i, nil
+}
+
 // TODO: implement it...
 type ConfirmedRequestPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
 type UnconfirmedRequestPDU struct {
-	*__APDU
+	*___APDU
+}
+
+func NewUnconfirmedRequestPDU() (*UnconfirmedRequestPDU, error) {
+	u := &UnconfirmedRequestPDU{}
+	apdu, err := new_APDU()
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APDU")
+	}
+	u.__APDU = apdu.(*__APDU)
+	return u, nil
 }
 
 // TODO: implement it...
 type SimpleAckPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
 type ComplexAckPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
 type SegmentAckPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
 type ErrorPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
@@ -84,7 +233,7 @@ type RejectReason struct {
 
 // TODO: implement it...
 type RejectPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
@@ -94,13 +243,73 @@ type AbortReason struct {
 
 // TODO: implement it...
 type AbortPDU struct {
-	*__APDU
+	*___APDU
 }
 
 // TODO: implement it...
 type APCISequence struct {
 	*_APCI
 	*Sequence
+
+	tagList *TagList
+}
+
+func NewAPCISequence() *APCISequence {
+	a := &APCISequence{}
+	a._APCI = NewAPCI(nil, nil).(*_APCI) // TODO: what to pass up?
+	a.Sequence = NewSequence()
+
+	// start with an empty tag list
+	a.tagList = NewTagList(nil)
+	return a
+}
+
+func (a *APCISequence) Encode(apdu Arg) error {
+	switch apdu := apdu.(type) {
+	case APDU:
+		if err := apdu.Update(a); err != nil {
+			return errors.Wrap(err, "error updating APDU")
+		}
+
+		// create a tag list
+		a.tagList = NewTagList(nil)
+		if err := a.Sequence.Encode(a.tagList); err != nil {
+			return errors.Wrap(err, "error encoding TagList")
+		}
+
+		// encode the tag list
+		a.tagList.Encode(apdu)
+
+		apdu.setAPDU(a.apdu)
+		return nil
+	default:
+		return errors.Errorf("invalid APDU type %T", apdu)
+	}
+}
+
+func (a *APCISequence) Decode(apdu Arg) error {
+	switch apdu := apdu.(type) {
+	case APDU:
+		if err := a.Update(apdu); err != nil {
+			return errors.Wrap(err, "error updating APDU")
+		}
+		switch pduUserData := apdu.GetRootMessage().(type) {
+		case readWriteModel.APDUExactly:
+			a.tagList = NewTagList(nil)
+			if err := a.tagList.Decode(apdu); err != nil {
+				return errors.Wrap(err, "error decoding TagList")
+			}
+			// pass the taglist to the Sequence for additional decoding
+			if err := a.Sequence.Decode(a.tagList); err != nil {
+				return errors.Wrap(err, "error encoding TagList")
+			}
+
+			_ = pduUserData
+		}
+		return nil
+	default:
+		return errors.Errorf("invalid APDU type %T", apdu)
+	}
 }
 
 // TODO: implement it...
@@ -119,6 +328,17 @@ type ComplexAckSequence struct {
 type UnconfirmedRequestSequence struct {
 	*APCISequence
 	*UnconfirmedRequestPDU
+}
+
+func NewUnconfirmedRequestSequence() (*UnconfirmedRequestSequence, error) {
+	u := &UnconfirmedRequestSequence{}
+	u.APCISequence = NewAPCISequence()
+	var err error
+	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU()
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")
+	}
+	return u, nil
 }
 
 // TODO: implement it...
@@ -249,6 +469,21 @@ type WhoHasRequest struct {
 
 // TODO: implement it...
 type WhoIsRequest struct {
+	*UnconfirmedRequestSequence
+}
+
+func NewWhoIsRequest() (*WhoIsRequest, error) {
+	w := &WhoIsRequest{}
+	var err error
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence()
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
+	}
+	return w, nil
+}
+
+func (r *WhoIsRequest) String() string {
+	return fmt.Sprintf("WhoIsRequest{%s}", r.UnconfirmedRequestSequence)
 }
 
 // TODO: implement it...
@@ -456,6 +691,10 @@ func NewConfirmedPrivateTransferRequest() *ConfirmedPrivateTransferRequest {
 	c := &ConfirmedPrivateTransferRequest{}
 	panic("implement me")
 	return c
+}
+
+func (r *ConfirmedPrivateTransferRequest) String() string {
+	return fmt.Sprintf("ConfirmedPrivateTransferRequest{%s}", r.ConfirmedRequestSequence)
 }
 
 // TODO: implement it...

@@ -31,6 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
+// TODO: find out what is going on here... requirements get deep injected that just looks wrong...
 type EchoAccessPointRequirements interface {
 	SapResponse(args bacnetip.Args, kwArgs bacnetip.KWArgs) error
 }

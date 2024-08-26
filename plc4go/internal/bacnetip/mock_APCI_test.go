@@ -45,6 +45,145 @@ func (_m *MockAPCI) EXPECT() *MockAPCI_Expecter {
 	return &MockAPCI_Expecter{mock: &_m.Mock}
 }
 
+// Decode provides a mock function with given fields: pdu
+func (_m *MockAPCI) Decode(pdu Arg) error {
+	ret := _m.Called(pdu)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Decode")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(Arg) error); ok {
+		r0 = rf(pdu)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAPCI_Decode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Decode'
+type MockAPCI_Decode_Call struct {
+	*mock.Call
+}
+
+// Decode is a helper method to define mock.On call
+//   - pdu Arg
+func (_e *MockAPCI_Expecter) Decode(pdu interface{}) *MockAPCI_Decode_Call {
+	return &MockAPCI_Decode_Call{Call: _e.mock.On("Decode", pdu)}
+}
+
+func (_c *MockAPCI_Decode_Call) Run(run func(pdu Arg)) *MockAPCI_Decode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(Arg))
+	})
+	return _c
+}
+
+func (_c *MockAPCI_Decode_Call) Return(_a0 error) *MockAPCI_Decode_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAPCI_Decode_Call) RunAndReturn(run func(Arg) error) *MockAPCI_Decode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Encode provides a mock function with given fields: pdu
+func (_m *MockAPCI) Encode(pdu Arg) error {
+	ret := _m.Called(pdu)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Encode")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(Arg) error); ok {
+		r0 = rf(pdu)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockAPCI_Encode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Encode'
+type MockAPCI_Encode_Call struct {
+	*mock.Call
+}
+
+// Encode is a helper method to define mock.On call
+//   - pdu Arg
+func (_e *MockAPCI_Expecter) Encode(pdu interface{}) *MockAPCI_Encode_Call {
+	return &MockAPCI_Encode_Call{Call: _e.mock.On("Encode", pdu)}
+}
+
+func (_c *MockAPCI_Encode_Call) Run(run func(pdu Arg)) *MockAPCI_Encode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(Arg))
+	})
+	return _c
+}
+
+func (_c *MockAPCI_Encode_Call) Return(_a0 error) *MockAPCI_Encode_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAPCI_Encode_Call) RunAndReturn(run func(Arg) error) *MockAPCI_Encode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetApduInvokeID provides a mock function with given fields:
+func (_m *MockAPCI) GetApduInvokeID() *uint8 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetApduInvokeID")
+	}
+
+	var r0 *uint8
+	if rf, ok := ret.Get(0).(func() *uint8); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*uint8)
+		}
+	}
+
+	return r0
+}
+
+// MockAPCI_GetApduInvokeID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetApduInvokeID'
+type MockAPCI_GetApduInvokeID_Call struct {
+	*mock.Call
+}
+
+// GetApduInvokeID is a helper method to define mock.On call
+func (_e *MockAPCI_Expecter) GetApduInvokeID() *MockAPCI_GetApduInvokeID_Call {
+	return &MockAPCI_GetApduInvokeID_Call{Call: _e.mock.On("GetApduInvokeID")}
+}
+
+func (_c *MockAPCI_GetApduInvokeID_Call) Run(run func()) *MockAPCI_GetApduInvokeID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockAPCI_GetApduInvokeID_Call) Return(_a0 *uint8) *MockAPCI_GetApduInvokeID_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAPCI_GetApduInvokeID_Call) RunAndReturn(run func() *uint8) *MockAPCI_GetApduInvokeID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetExpectingReply provides a mock function with given fields:
 func (_m *MockAPCI) GetExpectingReply() bool {
 	ret := _m.Called()
@@ -705,6 +844,86 @@ func (_c *MockAPCI_Update_Call) Return(_a0 error) *MockAPCI_Update_Call {
 }
 
 func (_c *MockAPCI_Update_Call) RunAndReturn(run func(Arg) error) *MockAPCI_Update_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getAPDU provides a mock function with given fields:
+func (_m *MockAPCI) getAPDU() model.APDU {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getAPDU")
+	}
+
+	var r0 model.APDU
+	if rf, ok := ret.Get(0).(func() model.APDU); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.APDU)
+		}
+	}
+
+	return r0
+}
+
+// MockAPCI_getAPDU_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getAPDU'
+type MockAPCI_getAPDU_Call struct {
+	*mock.Call
+}
+
+// getAPDU is a helper method to define mock.On call
+func (_e *MockAPCI_Expecter) getAPDU() *MockAPCI_getAPDU_Call {
+	return &MockAPCI_getAPDU_Call{Call: _e.mock.On("getAPDU")}
+}
+
+func (_c *MockAPCI_getAPDU_Call) Run(run func()) *MockAPCI_getAPDU_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockAPCI_getAPDU_Call) Return(_a0 model.APDU) *MockAPCI_getAPDU_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockAPCI_getAPDU_Call) RunAndReturn(run func() model.APDU) *MockAPCI_getAPDU_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setAPDU provides a mock function with given fields: _a0
+func (_m *MockAPCI) setAPDU(_a0 model.APDU) {
+	_m.Called(_a0)
+}
+
+// MockAPCI_setAPDU_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setAPDU'
+type MockAPCI_setAPDU_Call struct {
+	*mock.Call
+}
+
+// setAPDU is a helper method to define mock.On call
+//   - _a0 model.APDU
+func (_e *MockAPCI_Expecter) setAPDU(_a0 interface{}) *MockAPCI_setAPDU_Call {
+	return &MockAPCI_setAPDU_Call{Call: _e.mock.On("setAPDU", _a0)}
+}
+
+func (_c *MockAPCI_setAPDU_Call) Run(run func(_a0 model.APDU)) *MockAPCI_setAPDU_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(model.APDU))
+	})
+	return _c
+}
+
+func (_c *MockAPCI_setAPDU_Call) Return() *MockAPCI_setAPDU_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockAPCI_setAPDU_Call) RunAndReturn(run func(model.APDU)) *MockAPCI_setAPDU_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -347,7 +347,7 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTableAck() {
 
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadForeignDeviceTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciFDT, []bacnetip.FDTEntry{}))
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadForeignDeviceTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciFDT, []*bacnetip.FDTEntry{}))
 
 	// Read TableAck with one entry
 	fdte := FDTEntry()
@@ -376,7 +376,7 @@ func (suite *TestAnnexJCodecSuite) TestReadForeignDeviceTableAck() {
 
 	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
-	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadForeignDeviceTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciFDT, []bacnetip.FDTEntry{fdte}))
+	err = suite.Confirmation(bacnetip.NewArgs((*bacnetip.ReadForeignDeviceTableAck)(nil)), bacnetip.NewKWArgs(bacnetip.KWBvlciFDT, []*bacnetip.FDTEntry{fdte}))
 }
 
 func (suite *TestAnnexJCodecSuite) TestDeleteForeignDeviceTableEntry() {
