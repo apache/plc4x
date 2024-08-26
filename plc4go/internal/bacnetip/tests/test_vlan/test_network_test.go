@@ -82,7 +82,6 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 	}
 	t.log.Debug().Dur("time_limit", timeLimit).Msg("run")
 
-	tests.NewGlobalTimeMachine(t.log) // TODO: this is really stupid because of concurrency...
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	t.log.Trace().Msg("time machine reset")
@@ -109,7 +108,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) error {
 
 func TestVLAN(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { // Test that a very quiet network can exist. This is not a network test so much as a state machine group test
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -127,7 +126,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)
@@ -155,7 +154,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_broadcast", func(t *testing.T) { // Test that a node can send out a 'local broadcast' message which will be received by every other node.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, false, false)
@@ -186,7 +185,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_spoof_fail", func(t *testing.T) { // Test verifying that a node cannot send out packets with a source address other than its own, see also test_spoof_pass().
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTNetwork(t, 1, false, false)
@@ -211,7 +210,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_spoof_pass", func(t *testing.T) { // Test allowing a node to send out packets with a source address other than its own, see also test_spoof_fail().
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTNetwork(t, 1, false, true)
@@ -241,7 +240,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_promiscuous_pass", func(t *testing.T) { // Test 'promiscuous mode' of a node which allows it to receive every packet sent on the network.  This is like the network is a hub, or the node is connected to a 'monitor' port on a managed switch.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, true, false)
@@ -272,7 +271,7 @@ func TestVLAN(t *testing.T) {
 	})
 	t.Run("test_promiscuous_fail", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTNetwork(t, 3, true, false)
@@ -306,7 +305,7 @@ func TestVLAN(t *testing.T) {
 func TestVLANEvents(t *testing.T) {
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node and use events to continue with the messages.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTNetwork(t, 2, false, false)

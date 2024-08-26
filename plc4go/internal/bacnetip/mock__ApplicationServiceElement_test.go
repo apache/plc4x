@@ -225,7 +225,7 @@ func (_c *mock_ApplicationServiceElement_Response_Call) RunAndReturn(run func(Ar
 }
 
 // _setElementService provides a mock function with given fields: elementService
-func (_m *mock_ApplicationServiceElement) _setElementService(elementService _ServiceAccessPoint) {
+func (_m *mock_ApplicationServiceElement) _setElementService(elementService ServiceAccessPointRequirements) {
 	_m.Called(elementService)
 }
 
@@ -235,14 +235,14 @@ type mock_ApplicationServiceElement__setElementService_Call struct {
 }
 
 // _setElementService is a helper method to define mock.On call
-//   - elementService _ServiceAccessPoint
+//   - elementService ServiceAccessPointRequirements
 func (_e *mock_ApplicationServiceElement_Expecter) _setElementService(elementService interface{}) *mock_ApplicationServiceElement__setElementService_Call {
 	return &mock_ApplicationServiceElement__setElementService_Call{Call: _e.mock.On("_setElementService", elementService)}
 }
 
-func (_c *mock_ApplicationServiceElement__setElementService_Call) Run(run func(elementService _ServiceAccessPoint)) *mock_ApplicationServiceElement__setElementService_Call {
+func (_c *mock_ApplicationServiceElement__setElementService_Call) Run(run func(elementService ServiceAccessPointRequirements)) *mock_ApplicationServiceElement__setElementService_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_ServiceAccessPoint))
+		run(args[0].(ServiceAccessPointRequirements))
 	})
 	return _c
 }
@@ -252,7 +252,7 @@ func (_c *mock_ApplicationServiceElement__setElementService_Call) Return() *mock
 	return _c
 }
 
-func (_c *mock_ApplicationServiceElement__setElementService_Call) RunAndReturn(run func(_ServiceAccessPoint)) *mock_ApplicationServiceElement__setElementService_Call {
+func (_c *mock_ApplicationServiceElement__setElementService_Call) RunAndReturn(run func(ServiceAccessPointRequirements)) *mock_ApplicationServiceElement__setElementService_Call {
 	_c.Call.Return(run)
 	return _c
 }

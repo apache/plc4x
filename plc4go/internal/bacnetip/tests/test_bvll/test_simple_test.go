@@ -52,7 +52,6 @@ func NewTNetwork(t *testing.T) *TNetwork {
 	}
 	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
 
-	tests.NewGlobalTimeMachine(localLog) // TODO: this is really stupid because of concurrency...
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	localLog.Trace().Msg("time machine reset")
@@ -62,12 +61,12 @@ func NewTNetwork(t *testing.T) *TNetwork {
 
 	// Test devices
 	var err error
-	tn.td, err = NewBIPSimpleStateMachine("td", localLog, "192.168.4.1/24", tn.vlan)
+	tn.td, err = NewBIPSimpleStateMachine(localLog, "192.168.4.1/24", tn.vlan)
 	require.NoError(t, err)
 	tn.Append(tn.td)
 
 	// implementation under test
-	tn.iut, err = NewBIPSimpleStateMachine("iut", localLog, "192.168.4.2/24", tn.vlan)
+	tn.iut, err = NewBIPSimpleStateMachine(localLog, "192.168.4.2/24", tn.vlan)
 	require.NoError(t, err)
 	tn.Append(tn.iut)
 
@@ -106,7 +105,7 @@ func (t *TNetwork) Run(timeLimit time.Duration) {
 
 func TestSimple(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		// all start state are successful
@@ -118,7 +117,7 @@ func TestSimple(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_unicast", func(t *testing.T) { //Test a unicast message from TD to IUT.
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2
@@ -148,7 +147,7 @@ func TestSimple(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 		tnet := NewTNetwork(t)
 
 		//make a PDU from node 1 to node 2

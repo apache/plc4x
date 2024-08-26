@@ -774,7 +774,7 @@ func NewBIPForeignApplication(localLog zerolog.Logger, localDevice *LocalDeviceO
 	}
 
 	// create a generic BIP stack, bound to the Annex J server on the UDP multiplexer
-	b.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
+	b.bip, err = NewBIPForeign(localLog, WithBIPForeignAddress(bbmdAddress), WithBIPForeignTTL(*bbmdTTL))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating new bip")
 	}
@@ -849,7 +849,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, bbm
 			return nil, errors.Wrap(err, "error creating BIPSimple")
 		}
 	} else {
-		n.bip, err = NewBIPForeign(localLog, bbmdAddress, bbmdTTL)
+		n.bip, err = NewBIPForeign(localLog, WithBIPForeignAddress(bbmdAddress), WithBIPForeignTTL(*bbmdTTL))
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating BIPForeign")
 		}

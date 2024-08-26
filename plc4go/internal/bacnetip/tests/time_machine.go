@@ -28,6 +28,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 var globalTimeMachine *TimeMachine
@@ -37,23 +38,36 @@ func IsGlobalTimeMachineSet() bool {
 	return globalTimeMachine != nil
 }
 
-func NewGlobalTimeMachine(localLog zerolog.Logger) {
+func NewGlobalTimeMachine(t *testing.T) {
+	testingLogger := testutils.ProduceTestingLogger(t)
 	if globalTimeMachine != nil {
-		localLog.Warn().Msg("global time machine set, overwriting")
+		testingLogger.Warn().Msg("global time machine set, overwriting")
 	}
-	globalTimeMachine = NewTimeMachine(localLog)
+	globalTimeMachine = NewTimeMachine(testingLogger)
 }
 
-func ClearGlobalTimeMachine(localLog zerolog.Logger) {
+// ClearGlobalTimeMachine clears the global time machine during the test duration. Usually it is sufficient to use ExclusiveGlobalTimeMachine
+func ClearGlobalTimeMachine(t *testing.T) {
+	testingLogger := testutils.ProduceTestingLogger(t)
 	if globalTimeMachine == nil {
-		localLog.Warn().Msg("global time machine not set")
+		testingLogger.Warn().Msg("global time machine not set")
 	}
 	globalTimeMachine = nil
 }
 
+// LockGlobalTimeMachine locks the global time machine during the test duration. Usually it is sufficient to use ExclusiveGlobalTimeMachine
 func LockGlobalTimeMachine(t *testing.T) {
 	globalTimeMachineMutex.Lock()
 	t.Cleanup(globalTimeMachineMutex.Unlock)
+}
+
+// ExclusiveGlobalTimeMachine is a combination of LockGlobalTimeMachine, NewGlobalTimeMachine and ClearGlobalTimeMachine
+func ExclusiveGlobalTimeMachine(t *testing.T) {
+	LockGlobalTimeMachine(t)
+	NewGlobalTimeMachine(t)
+	t.Cleanup(func() {
+		ClearGlobalTimeMachine(t)
+	})
 }
 
 type TimeMachine struct {

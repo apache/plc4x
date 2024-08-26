@@ -351,8 +351,7 @@ func (s *Server) String() string {
 	return fmt.Sprintf("Server(cid:%d%s)", s.serverID, serverPeer)
 }
 
-// _ServiceAccessPoint is an interface used for documentation
-type _ServiceAccessPoint interface {
+type ServiceAccessPointRequirements interface {
 	SapConfirmation(Args, KWArgs) error
 	SapRequest(Args, KWArgs) error
 	SapIndication(Args, KWArgs) error
@@ -367,7 +366,7 @@ type ServiceAccessPoint struct {
 	log zerolog.Logger
 }
 
-func NewServiceAccessPoint(localLog zerolog.Logger, rootStruct _ServiceAccessPoint, opts ...func(point *ServiceAccessPoint)) (*ServiceAccessPoint, error) {
+func NewServiceAccessPoint(localLog zerolog.Logger, serviceAccessPointRequirements ServiceAccessPointRequirements, opts ...func(point *ServiceAccessPoint)) (*ServiceAccessPoint, error) {
 	s := &ServiceAccessPoint{
 		log: localLog,
 	}
@@ -388,7 +387,7 @@ func NewServiceAccessPoint(localLog zerolog.Logger, rootStruct _ServiceAccessPoi
 			}
 
 			// Note: we need to pass the rootStruct (which should contain s as delegate) here
-			if err := Bind(localLog, element, rootStruct); err != nil {
+			if err := Bind(localLog, element, serviceAccessPointRequirements); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -446,12 +445,12 @@ type _ApplicationServiceElement interface {
 	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
 	Confirmation(args Args, kwargs KWArgs) error
-	_setElementService(elementService _ServiceAccessPoint)
+	_setElementService(elementService ServiceAccessPointRequirements)
 }
 
 type ApplicationServiceElement struct {
 	elementID      *int
-	elementService _ServiceAccessPoint
+	elementService ServiceAccessPointRequirements
 
 	log zerolog.Logger
 }
@@ -520,7 +519,7 @@ func (a *ApplicationServiceElement) Confirmation(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (a *ApplicationServiceElement) _setElementService(elementService _ServiceAccessPoint) {
+func (a *ApplicationServiceElement) _setElementService(elementService ServiceAccessPointRequirements) {
 	a.elementService = elementService
 }
 
@@ -610,7 +609,7 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 		clientCast, okClient := left.(_Client)
 		serverCast, okServer := right.(_Server)
 		elementServiceCast, okElementService := left.(_ApplicationServiceElement)
-		serviceAccessPointCast, okServiceAccessPoint := right.(_ServiceAccessPoint)
+		serviceAccessPointCast, okServiceAccessPoint := right.(ServiceAccessPointRequirements)
 		if okClient && okServer {
 			localLog.Trace().Msg("linking client-server")
 			clientCast._setClientPeer(serverCast)

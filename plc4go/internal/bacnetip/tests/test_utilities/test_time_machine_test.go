@@ -42,14 +42,14 @@ type TimeMachineSuite struct {
 }
 
 func (suite *TimeMachineSuite) SetupTest() {
-	suite.log = testutils.ProduceTestingLogger(suite.T())
 	t := suite.T()
+	suite.log = testutils.ProduceTestingLogger(t)
 	tests.LockGlobalTimeMachine(t)
-	tests.NewGlobalTimeMachine(suite.log) // TODO: this is really stupid because of concurrency...
+	tests.NewGlobalTimeMachine(t)
 }
 
 func (suite *TimeMachineSuite) TearDownTest() {
-	tests.ClearGlobalTimeMachine(suite.log)
+	tests.ClearGlobalTimeMachine(suite.T())
 }
 
 type SampleOneShotTask struct {
@@ -98,8 +98,7 @@ func NewSampleRecurringTask(localLog zerolog.Logger) *SampleRecurringTask {
 	s := &SampleRecurringTask{
 		log: localLog,
 	}
-	interval := 1 * time.Nanosecond
-	s.RecurringTask = bacnetip.NewRecurringTask(localLog, s, &interval, nil)
+	s.RecurringTask = bacnetip.NewRecurringTask(localLog, s, bacnetip.WithRecurringTaskInterval(1*time.Nanosecond))
 	return s
 }
 

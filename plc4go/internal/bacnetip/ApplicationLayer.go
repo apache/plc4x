@@ -76,7 +76,7 @@ type segmentAPDU struct {
 }
 
 type SSMSAPRequirements interface {
-	_ServiceAccessPoint
+	ServiceAccessPointRequirements
 	_Client
 	GetDeviceInfoCache() *DeviceInfoCache
 	GetLocalDevice() *LocalDeviceObject

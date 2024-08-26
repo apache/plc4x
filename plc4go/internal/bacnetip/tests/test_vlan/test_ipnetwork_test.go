@@ -84,7 +84,6 @@ func (t *TIPNetwork) Run(timeLimit time.Duration) error {
 	}
 	t.log.Debug().Dur("time_limit", timeLimit).Msg("run")
 
-	tests.NewGlobalTimeMachine(t.log) // TODO: this is really stupid because of concurrency...
 	// reset the time machine
 	tests.ResetTimeMachine(tests.StartTime)
 	t.log.Trace().Msg("time machine reset")
@@ -111,8 +110,7 @@ func (t *TIPNetwork) Run(timeLimit time.Duration) error {
 
 func TestIPVLAN(t *testing.T) {
 	t.Run("test_idle", func(t *testing.T) { // Test that a very quiet network can exist. This is not a network test so much as a state machine group test
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTIPNetwork(t, 2, "192.168.1.%d/24", false, false)
@@ -129,8 +127,7 @@ func TestIPVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_send_receive", func(t *testing.T) { // Test that a node can send a message to another node.
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// two element network
 		tnet := NewTIPNetwork(t, 2, "192.168.2.%d/24", false, false)
@@ -156,8 +153,7 @@ func TestIPVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { // Test that a node can send out a 'local broadcast' message which will be received by every other node.
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTIPNetwork(t, 3, "192.168.3.%d/24", false, false)
@@ -186,8 +182,7 @@ func TestIPVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_spoof_fail", func(t *testing.T) { // Test verifying that a node cannot send out packets with a source address other than its own, see also test_spoof_pass().
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTIPNetwork(t, 1, "192.168.4.%d/24", false, false)
@@ -210,8 +205,7 @@ func TestIPVLAN(t *testing.T) {
 		assert.Error(t, err)
 	})
 	t.Run("test_spoof_pass", func(t *testing.T) { // Test allowing a node to send out packets with a source address other than its own, see also test_spoof_fail().
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// one element network
 		tnet := NewTIPNetwork(t, 1, "192.168.5.%d/24", false, true)
@@ -240,8 +234,7 @@ func TestIPVLAN(t *testing.T) {
 	})
 	t.Run("test_promiscuous_pass", func(t *testing.T) { // Test 'promiscuous mode' of a node which allows it to receive every packet sent on the network.  This is like the network is a hub, or the node is connected to a 'monitor' port on a managed switch.
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTIPNetwork(t, 3, "192.168.6.%d/24", true, false)
@@ -272,8 +265,7 @@ func TestIPVLAN(t *testing.T) {
 	})
 	t.Run("test_promiscuous_fail", func(t *testing.T) {
 		testingLogger := testutils.ProduceTestingLogger(t)
-		tests.NewGlobalTimeMachine(testutils.ProduceTestingLogger(t))
-		tests.LockGlobalTimeMachine(t)
+		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
 		tnet := NewTIPNetwork(t, 3, "192.168.7.%d/24", true, false)
@@ -315,7 +307,7 @@ type RouterSuite struct {
 func (suite *RouterSuite) SetupTest() {
 	t := suite.T()
 	suite.log = testutils.ProduceTestingLogger(t)
-	tests.NewGlobalTimeMachine(suite.log)
+	tests.ExclusiveGlobalTimeMachine(t)
 	// create a state machine group that has all nodes on all networks
 	suite.smg = tests.NewStateMachineGroup(suite.log)
 
@@ -371,9 +363,6 @@ func (suite *RouterSuite) TearDownTest() {
 }
 
 func (suite *RouterSuite) TestIdle() {
-	t := suite.T()
-	tests.LockGlobalTimeMachine(t)
-
 	// all success
 	for _, csm := range suite.smg.GetStateMachines() {
 		csm.GetStartState().Success("")
@@ -381,9 +370,6 @@ func (suite *RouterSuite) TestIdle() {
 }
 
 func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a message to another node.
-	t := suite.T()
-	tests.LockGlobalTimeMachine(t)
-
 	//unpack the state machines
 	stateMachines := suite.smg.GetStateMachines()
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
@@ -392,7 +378,7 @@ func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a mes
 	pdu := bacnetip.NewPDU(tests.NewDummyMessage([]byte("data")...),
 		bacnetip.WithPDUSource(Address("192.168.10.2:47808")),
 		bacnetip.WithPDUDestination(Address("192.168.20.3:47808")))
-	t.Log(pdu)
+	suite.T().Log(pdu)
 
 	// node 1 sends the pdu, mode 2 gets it
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
@@ -406,19 +392,16 @@ func (suite *RouterSuite) TestSendReceive() { // Test that a node can send a mes
 }
 
 func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a message to all of the other nodes on the same network.
-	t := suite.T()
-	tests.LockGlobalTimeMachine(t)
-
 	stateMachines := suite.smg.GetStateMachines()
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]
 
 	// make a PDU from network 10 node 1 to network 20 node 2
 	src, err := bacnetip.NewAddress(suite.log, "192.168.10.2:47808")
-	require.NoError(t, err)
+	suite.Require().NoError(err)
 	dest, err := bacnetip.NewAddress(suite.log, "192.168.10.255:47808")
-	require.NoError(t, err)
+	suite.Require().NoError(err)
 	pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
-	t.Log(pdu)
+	suite.T().Log(pdu)
 
 	//  node 10-2 sends the pdu, node 10-3 gets pdu, nodes 20-2 and 20-3 dont
 	csm_10_2.GetStartState().Send(pdu, nil).Success("")
@@ -431,7 +414,6 @@ func (suite *RouterSuite) TestLocalBroadcast() { // Test that a node can send a 
 
 func (suite *RouterSuite) TestRemoteBroadcast() { // Test that a node can send a message to all of the other nodes on a different network.
 	t := suite.T()
-	tests.LockGlobalTimeMachine(t)
 
 	stateMachines := suite.smg.GetStateMachines()
 	csm_10_2, csm_10_3, csm_20_2, csm_20_3 := stateMachines[0], stateMachines[1], stateMachines[2], stateMachines[3]

@@ -176,18 +176,29 @@ type RecurringTask struct {
 	log zerolog.Logger
 }
 
-func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements, interval *time.Duration, offset *time.Duration) *RecurringTask {
+func NewRecurringTask(localLog zerolog.Logger, taskRequirements TaskRequirements, opts ...func(*RecurringTask)) *RecurringTask {
 	r := &RecurringTask{
 		log: localLog,
 	}
+	for _, opt := range opts {
+		opt(r)
+	}
 	r.Task = NewTask(taskRequirements)
 
-	// save the interval, but do not automatically install
-	r.taskInterval = interval
-	r.taskIntervalOffset = offset
 	return r
 }
 
+func WithRecurringTaskInterval(interval time.Duration) func(task *RecurringTask) {
+	return func(task *RecurringTask) {
+		task.taskInterval = &interval
+	}
+}
+
+func WithRecurringTaskOffset(offset time.Duration) func(task *RecurringTask) {
+	return func(task *RecurringTask) {
+		task.taskIntervalOffset = &offset
+	}
+}
 func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 	interval := options.Interval
 	offset := options.Offset
@@ -257,12 +268,20 @@ type RecurringFunctionTask struct {
 	kwargs KWArgs
 }
 
-func NewRecurringFunctionTask(localLog zerolog.Logger, interval *time.Duration, fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *RecurringFunctionTask {
+func NewRecurringFunctionTask(localLog zerolog.Logger, fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs, opts ...func(*RecurringFunctionTask)) *RecurringFunctionTask {
 	r := &RecurringFunctionTask{fn: fn, args: args, kwargs: kwargs}
-	r.RecurringTask = NewRecurringTask(localLog, r, interval, nil)
+	for _, opt := range opts {
+		opt(r)
+	}
+	r.RecurringTask = NewRecurringTask(localLog, r)
 	return r
 }
 
+func WithRecurringFunctionTaskInterval(interval time.Duration) func(*RecurringFunctionTask) {
+	return func(r *RecurringFunctionTask) {
+		r.taskInterval = &interval
+	}
+}
 func (r *RecurringFunctionTask) ProcessTask() error {
 	return r.fn(r.args, r.kwargs)
 }

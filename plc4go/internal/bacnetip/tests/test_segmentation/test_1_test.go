@@ -353,10 +353,9 @@ func (a *ApplicationStateMachine) doConfirmedPrivateTransferRequest(_ struct{}) 
 }
 
 func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
-	t.Skip("not yet ready....") // TODO: finish it
-	tests.LockGlobalTimeMachine(t)
+	t.Skip("to many things missing here... TODO: finish me") // TODO: finish me
+	tests.ExclusiveGlobalTimeMachine(t)
 	testingLogger := testutils.ProduceTestingLogger(t)
-	tests.NewGlobalTimeMachine(testingLogger)
 
 	// client device object
 	octets206 := model.MaxApduLengthAccepted_NUM_OCTETS_206

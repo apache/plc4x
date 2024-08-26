@@ -47,13 +47,7 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 	return n, nil
 }
 
-type ApplicationNetworkRequirements interface {
-	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
-
 type ApplicationNetwork struct {
-	ApplicationNetworkRequirements
 	*tests.StateMachineGroup
 
 	trafficLog      *tests.TrafficLog
@@ -66,10 +60,9 @@ type ApplicationNetwork struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequirements ApplicationNetworkRequirements) (*ApplicationNetwork, error) {
+func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error) {
 	a := &ApplicationNetwork{
-		ApplicationNetworkRequirements: applicationNetworkRequirements,
-		log:                            localLog,
+		log: localLog,
 	}
 	a.StateMachineGroup = tests.NewStateMachineGroup(localLog)
 
@@ -95,7 +88,7 @@ func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequiremen
 
 	// test device
 	var err error
-	a.td, err = NewApplicationStateMachine(localLog, a.tdDeviceObject, a.vlan, a)
+	a.td, err = NewApplicationStateMachine(localLog, a.tdDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application state machine")
 	}
@@ -113,7 +106,7 @@ func NewApplicationNetwork(localLog zerolog.Logger, applicationNetworkRequiremen
 	}
 
 	// implementation under test
-	a.iut, err = NewApplicationStateMachine(localLog, a.iutDeviceObject, a.vlan, a)
+	a.iut, err = NewApplicationStateMachine(localLog, a.iutDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application state machine")
 	}
@@ -328,13 +321,7 @@ func (s *SnifferStateMachine) String() string {
 	return "SnifferStateMachine" //TODO
 }
 
-type ApplicationStateMachineRequirements interface {
-	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
-
 type ApplicationStateMachine struct {
-	ApplicationStateMachineRequirements
 	*bacnetip.ApplicationIOController
 	tests.StateMachine
 
@@ -348,10 +335,9 @@ type ApplicationStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.LocalDeviceObject, vlan *bacnetip.Network, applicationStateMachineRequirements ApplicationStateMachineRequirements) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.LocalDeviceObject, vlan *bacnetip.Network) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
-		ApplicationStateMachineRequirements: applicationStateMachineRequirements,
-		log:                                 localLog,
+		log: localLog,
 	}
 
 	// build and address and save it

@@ -26,6 +26,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 )
 
@@ -203,11 +204,48 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	return s, nil
 }
 
+// BIPStateMachine is an application layer for BVLL messages that has no BVLL
+//
+//	processing like the 'simple', 'foreign', or 'bbmd' versions.  The client
+//	state machine sits above and Annex-J codec so the send and receive PDUs are
+//	BVLL PDUs.
 type BIPStateMachine struct {
 	*tests.ClientStateMachine
+
+	name    string
+	address *bacnetip.Address
+	annexj  *bacnetip.AnnexJCodec
+	mux     *FauxMultiplexer
 }
 
-// TODO: implement BIPStateMachine
+func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPStateMachine, error) {
+	b := &BIPStateMachine{}
+	var err error
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building client state machine")
+	}
+
+	// save the name and address
+	b.name = address
+	b.address = Address(address)
+
+	// BACnet/IP interpreter
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating annexj")
+	}
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+
+	// bind the stack together
+	err = bacnetip.Bind(localLog, b, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+	return b, nil
+}
 
 type BIPSimpleStateMachine struct {
 	*tests.ClientStateMachine
@@ -222,7 +260,7 @@ type BIPSimpleStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewBIPSimpleStateMachine(name string, localLog zerolog.Logger, netstring string, vlan *bacnetip.IPNetwork) (*BIPSimpleStateMachine, error) {
+func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *bacnetip.IPNetwork) (*BIPSimpleStateMachine, error) {
 	address, err := bacnetip.NewAddress(localLog, netstring)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building address")
@@ -233,7 +271,7 @@ func NewBIPSimpleStateMachine(name string, localLog zerolog.Logger, netstring st
 		address: address,
 		log:     localLog,
 	}
-	clientStateMachine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(name))
+	clientStateMachine, err := tests.NewClientStateMachine(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -263,15 +301,136 @@ func NewBIPSimpleStateMachine(name string, localLog zerolog.Logger, netstring st
 	return stateMachine, nil
 }
 
+// BIPForeignStateMachine  sits on a BIPForeign instance, the send() and receive()
+//
+//	parameters are NPDUs.
 type BIPForeignStateMachine struct {
 	*tests.ClientStateMachine
+
+	name    string
+	address *bacnetip.Address
+	bip     *bacnetip.BIPForeign
+	annexj  *bacnetip.AnnexJCodec
+	mux     *FauxMultiplexer
+
+	log zerolog.Logger
+}
+
+func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPForeignStateMachine, error) {
+	b := &BIPForeignStateMachine{
+		log: localLog,
+	}
+	var err error
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog)
+	if err != nil {
+		return nil, errors.New("error building client state machine")
+	}
+
+	// save the name and address
+	b.name = address
+	b.address = Address(address)
+
+	// BACnet/IP interpreter
+	b.bip, err = bacnetip.NewBIPForeign(localLog)
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+
+	// bind the stack together
+	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+	return b, nil
 }
 
 type BIPBBMDStateMachine struct {
 	*tests.ClientStateMachine
+
+	name    string
+	address *bacnetip.Address
+	bip     *bacnetip.BIPBBMD
+	annexj  *bacnetip.AnnexJCodec
+	mux     *FauxMultiplexer
+
+	log zerolog.Logger
+}
+
+func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPBBMDStateMachine, error) {
+	b := &BIPBBMDStateMachine{
+		log: localLog,
+	}
+	var err error
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog)
+	if err != nil {
+		return nil, errors.New("error building client state machine")
+	}
+
+	// save the name and address
+	b.name = address
+	b.address = Address(address)
+
+	// BACnet/IP interpreter
+	b.bip, err = bacnetip.NewBIPBBMD(localLog, b.address)
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+
+	// build an address, full mask
+	bdtAddress := fmt.Sprintf("%s/32:%d", b.address.AddrTuple.Left, b.address.AddrTuple.Right)
+	b.log.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
+
+	// add itself as the first entry in the BDT
+	if err := b.bip.AddPeer(Address(bdtAddress)); err != nil {
+		return nil, errors.Wrap(err, "error adding peer")
+	}
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+
+	// bind the stack together
+	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+	return b, nil
 }
 
 type BIPSimpleNode struct {
+	name    string
+	address *bacnetip.Address
+	bip     *bacnetip.BIPSimple
+	annexj  *bacnetip.AnnexJCodec
+	mux     *FauxMultiplexer
+}
+
+func NewBIPSimpleNode(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPSimpleNode, error) {
+	b := &BIPSimpleNode{}
+
+	// save the name and address
+	b.name = address
+	b.address = Address(address)
+
+	var err error
+	// BACnet/IP interpreter
+	b.bip, err = bacnetip.NewBIPSimple(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building bip simple")
+	}
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building annexj codec")
+	}
+
+	// fake multiplexer has a VLAN node in it
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
+
+	// bind the stack together
+	err = bacnetip.Bind(localLog, b.bip, b.annexj, b.mux)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	return b, nil
 }
 
 type BIPBBMDNode struct {

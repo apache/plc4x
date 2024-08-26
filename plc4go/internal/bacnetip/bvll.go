@@ -541,6 +541,11 @@ func WithForwardedNPDUAddress(addr *Address) func(*ForwardedNPDU) {
 	}
 }
 
+func WithForwardedNPDUUserData(userData spi.Message) func(*ForwardedNPDU) {
+	return func(b *ForwardedNPDU) {
+		b.pduUserData = userData
+	}
+}
 func (w *ForwardedNPDU) GetBvlciAddress() *Address {
 	return w.bvlciAddress
 }
