@@ -376,7 +376,7 @@ func (_c *mock_IOCB_getRequest_Call) RunAndReturn(run func() PDU) *mock_IOCB_get
 }
 
 // setIOController provides a mock function with given fields: ioController
-func (_m *mock_IOCB) setIOController(ioController _IOController) {
+func (_m *mock_IOCB) setIOController(ioController IOControllerRequirements) {
 	_m.Called(ioController)
 }
 
@@ -386,14 +386,14 @@ type mock_IOCB_setIOController_Call struct {
 }
 
 // setIOController is a helper method to define mock.On call
-//   - ioController _IOController
+//   - ioController IOControllerRequirements
 func (_e *mock_IOCB_Expecter) setIOController(ioController interface{}) *mock_IOCB_setIOController_Call {
 	return &mock_IOCB_setIOController_Call{Call: _e.mock.On("setIOController", ioController)}
 }
 
-func (_c *mock_IOCB_setIOController_Call) Run(run func(ioController _IOController)) *mock_IOCB_setIOController_Call {
+func (_c *mock_IOCB_setIOController_Call) Run(run func(ioController IOControllerRequirements)) *mock_IOCB_setIOController_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_IOController))
+		run(args[0].(IOControllerRequirements))
 	})
 	return _c
 }
@@ -403,7 +403,7 @@ func (_c *mock_IOCB_setIOController_Call) Return() *mock_IOCB_setIOController_Ca
 	return _c
 }
 
-func (_c *mock_IOCB_setIOController_Call) RunAndReturn(run func(_IOController)) *mock_IOCB_setIOController_Call {
+func (_c *mock_IOCB_setIOController_Call) RunAndReturn(run func(IOControllerRequirements)) *mock_IOCB_setIOController_Call {
 	_c.Call.Return(run)
 	return _c
 }

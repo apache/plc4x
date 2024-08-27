@@ -225,7 +225,7 @@ func (_c *MockApplicationServiceElementContract_Response_Call) RunAndReturn(run 
 }
 
 // _setElementService provides a mock function with given fields: elementService
-func (_m *MockApplicationServiceElementContract) _setElementService(elementService ServiceAccessPointRequirements) {
+func (_m *MockApplicationServiceElementContract) _setElementService(elementService ServiceAccessPointContract) {
 	_m.Called(elementService)
 }
 
@@ -235,14 +235,14 @@ type MockApplicationServiceElementContract__setElementService_Call struct {
 }
 
 // _setElementService is a helper method to define mock.On call
-//   - elementService ServiceAccessPointRequirements
+//   - elementService ServiceAccessPointContract
 func (_e *MockApplicationServiceElementContract_Expecter) _setElementService(elementService interface{}) *MockApplicationServiceElementContract__setElementService_Call {
 	return &MockApplicationServiceElementContract__setElementService_Call{Call: _e.mock.On("_setElementService", elementService)}
 }
 
-func (_c *MockApplicationServiceElementContract__setElementService_Call) Run(run func(elementService ServiceAccessPointRequirements)) *MockApplicationServiceElementContract__setElementService_Call {
+func (_c *MockApplicationServiceElementContract__setElementService_Call) Run(run func(elementService ServiceAccessPointContract)) *MockApplicationServiceElementContract__setElementService_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(ServiceAccessPointRequirements))
+		run(args[0].(ServiceAccessPointContract))
 	})
 	return _c
 }
@@ -252,7 +252,7 @@ func (_c *MockApplicationServiceElementContract__setElementService_Call) Return(
 	return _c
 }
 
-func (_c *MockApplicationServiceElementContract__setElementService_Call) RunAndReturn(run func(ServiceAccessPointRequirements)) *MockApplicationServiceElementContract__setElementService_Call {
+func (_c *MockApplicationServiceElementContract__setElementService_Call) RunAndReturn(run func(ServiceAccessPointContract)) *MockApplicationServiceElementContract__setElementService_Call {
 	_c.Call.Return(run)
 	return _c
 }

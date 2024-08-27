@@ -70,13 +70,6 @@ func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	if err := writeBuffer.WriteString("waitTime", uint32(len(d.waitTime.String())*8), "UTF-8", d.waitTime.String()); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.rootStruct)
-
-		if err := writeBuffer.WriteString("rootStruct", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
 	if err := writeBuffer.PopContext("IOQController"); err != nil {
 		return err
 	}
