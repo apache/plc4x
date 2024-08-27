@@ -355,7 +355,7 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 	}
 
 	// bind the stack together
-	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
+	err = bacnetip.Bind(b.log, b, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
@@ -412,11 +412,15 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	}
 
 	// bind the stack together
-	err = bacnetip.Bind(b.log, b.bip, b.annexj, b.mux)
+	err = bacnetip.Bind(b.log, b, b.bip, b.annexj, b.mux)
 	if err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 	return b, nil
+}
+
+func (b *BIPBBMDStateMachine) String() string {
+	return fmt.Sprintf("BIPBBMDStateMachine(%s)", b.name)
 }
 
 type BIPSimpleNode struct {
@@ -680,7 +684,7 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacnet
 
 	var err error
 	// continue with initialization
-	b.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject, b) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}

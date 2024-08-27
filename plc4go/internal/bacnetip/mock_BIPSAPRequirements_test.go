@@ -397,7 +397,7 @@ func (_c *MockBIPSAPRequirements__setClientPeer_Call) RunAndReturn(run func(_Ser
 }
 
 // _setServiceElement provides a mock function with given fields: serviceElement
-func (_m *MockBIPSAPRequirements) _setServiceElement(serviceElement _ApplicationServiceElement) {
+func (_m *MockBIPSAPRequirements) _setServiceElement(serviceElement ApplicationServiceElementContract) {
 	_m.Called(serviceElement)
 }
 
@@ -407,14 +407,14 @@ type MockBIPSAPRequirements__setServiceElement_Call struct {
 }
 
 // _setServiceElement is a helper method to define mock.On call
-//   - serviceElement _ApplicationServiceElement
+//   - serviceElement ApplicationServiceElementContract
 func (_e *MockBIPSAPRequirements_Expecter) _setServiceElement(serviceElement interface{}) *MockBIPSAPRequirements__setServiceElement_Call {
 	return &MockBIPSAPRequirements__setServiceElement_Call{Call: _e.mock.On("_setServiceElement", serviceElement)}
 }
 
-func (_c *MockBIPSAPRequirements__setServiceElement_Call) Run(run func(serviceElement _ApplicationServiceElement)) *MockBIPSAPRequirements__setServiceElement_Call {
+func (_c *MockBIPSAPRequirements__setServiceElement_Call) Run(run func(serviceElement ApplicationServiceElementContract)) *MockBIPSAPRequirements__setServiceElement_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_ApplicationServiceElement))
+		run(args[0].(ApplicationServiceElementContract))
 	})
 	return _c
 }
@@ -424,7 +424,7 @@ func (_c *MockBIPSAPRequirements__setServiceElement_Call) Return() *MockBIPSAPRe
 	return _c
 }
 
-func (_c *MockBIPSAPRequirements__setServiceElement_Call) RunAndReturn(run func(_ApplicationServiceElement)) *MockBIPSAPRequirements__setServiceElement_Call {
+func (_c *MockBIPSAPRequirements__setServiceElement_Call) RunAndReturn(run func(ApplicationServiceElementContract)) *MockBIPSAPRequirements__setServiceElement_Call {
 	_c.Call.Return(run)
 	return _c
 }

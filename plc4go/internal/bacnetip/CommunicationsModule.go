@@ -35,10 +35,12 @@ import (
 
 // maps of named clients and servers
 var clientMap map[int]*Client
+
 var serverMap map[int]*Server
 
 // maps of named SAPs and ASEs
 var serviceMap map[int]*ServiceAccessPoint
+
 var elementMap map[int]*ApplicationServiceElement
 
 func init() {
@@ -356,12 +358,12 @@ type ServiceAccessPointRequirements interface {
 	SapRequest(Args, KWArgs) error
 	SapIndication(Args, KWArgs) error
 	SapResponse(Args, KWArgs) error
-	_setServiceElement(serviceElement _ApplicationServiceElement)
+	_setServiceElement(serviceElement ApplicationServiceElementContract)
 }
 
 type ServiceAccessPoint struct {
 	serviceID      *int
-	serviceElement _ApplicationServiceElement
+	serviceElement ApplicationServiceElementContract
 
 	log zerolog.Logger
 }
@@ -419,6 +421,7 @@ func (s *ServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 }
 
 func (s *ServiceAccessPoint) SapIndication(Args, KWArgs) error {
+	// TODO: we should remove this asap to check where we have actual caps because we can compile here
 	panic("this should be implemented by outer struct")
 }
 
@@ -432,15 +435,20 @@ func (s *ServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
 }
 
 func (s *ServiceAccessPoint) SapConfirmation(Args, KWArgs) error {
+	// TODO: we should remove this asap to check where we have actual caps because we can compile here
 	panic("this should be implemented by outer struct")
 }
 
-func (s *ServiceAccessPoint) _setServiceElement(serviceElement _ApplicationServiceElement) {
+func (s *ServiceAccessPoint) _setServiceElement(serviceElement ApplicationServiceElementContract) {
 	s.serviceElement = serviceElement
 }
 
-// _ApplicationServiceElement is an interface used for documentation
-type _ApplicationServiceElement interface {
+type ApplicationServiceElementRequirements interface {
+	Confirmation(args Args, kwargs KWArgs) error
+}
+
+// ApplicationServiceElementContract is an interface used for documentation
+type ApplicationServiceElementContract interface {
 	Request(args Args, kwargs KWArgs) error
 	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
@@ -455,7 +463,7 @@ type ApplicationServiceElement struct {
 	log zerolog.Logger
 }
 
-func NewApplicationServiceElement(localLog zerolog.Logger, rootStruct _ApplicationServiceElement, opts ...func(*ApplicationServiceElement)) (*ApplicationServiceElement, error) {
+func NewApplicationServiceElement(localLog zerolog.Logger, requirements ApplicationServiceElementRequirements, opts ...func(*ApplicationServiceElement)) (*ApplicationServiceElement, error) {
 	a := &ApplicationServiceElement{
 		log: localLog,
 	}
@@ -476,8 +484,8 @@ func NewApplicationServiceElement(localLog zerolog.Logger, rootStruct _Applicati
 				return nil, errors.Errorf("service access point %d already bound", aseID)
 			}
 
-			// Note: we need to pass the rootStruct (which should contain a as delegate) here
-			if err := Bind(localLog, rootStruct, service); err != nil {
+			// Note: we need to pass the requirements (which should contain us as a delegate) here
+			if err := Bind(localLog, requirements, service); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -502,6 +510,7 @@ func (a *ApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
 }
 
 func (a *ApplicationServiceElement) Indication(Args, KWArgs) error {
+	// TODO: we should remove this asap to check where we have actual caps because we can compile here
 	panic("this should be implemented by outer struct")
 }
 
@@ -516,6 +525,7 @@ func (a *ApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
 }
 
 func (a *ApplicationServiceElement) Confirmation(Args, KWArgs) error {
+	// TODO: we should remove this asap to check where we have actual caps because we can compile here
 	panic("this should be implemented by outer struct")
 }
 
@@ -608,7 +618,7 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 		// make sure we're binding clients and servers
 		clientCast, okClient := left.(_Client)
 		serverCast, okServer := right.(_Server)
-		elementServiceCast, okElementService := left.(_ApplicationServiceElement)
+		elementServiceCast, okElementService := left.(ApplicationServiceElementContract)
 		serviceAccessPointCast, okServiceAccessPoint := right.(ServiceAccessPointRequirements)
 		if okClient && okServer {
 			localLog.Trace().Msg("linking client-server")

@@ -142,11 +142,11 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	s := &SnifferStateMachine{
 		log: localLog,
 	}
-	machine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
+	var err error
+	s.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
-	s.ClientStateMachine = machine
 
 	// save the name and address
 	s.name = address
@@ -435,7 +435,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacnetip.
 
 	var err error
 	// continue with initialization
-	a.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject, a) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}

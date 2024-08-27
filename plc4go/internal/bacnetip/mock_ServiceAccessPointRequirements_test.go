@@ -225,7 +225,7 @@ func (_c *MockServiceAccessPointRequirements_SapResponse_Call) RunAndReturn(run 
 }
 
 // _setServiceElement provides a mock function with given fields: serviceElement
-func (_m *MockServiceAccessPointRequirements) _setServiceElement(serviceElement _ApplicationServiceElement) {
+func (_m *MockServiceAccessPointRequirements) _setServiceElement(serviceElement ApplicationServiceElementContract) {
 	_m.Called(serviceElement)
 }
 
@@ -235,14 +235,14 @@ type MockServiceAccessPointRequirements__setServiceElement_Call struct {
 }
 
 // _setServiceElement is a helper method to define mock.On call
-//   - serviceElement _ApplicationServiceElement
+//   - serviceElement ApplicationServiceElementContract
 func (_e *MockServiceAccessPointRequirements_Expecter) _setServiceElement(serviceElement interface{}) *MockServiceAccessPointRequirements__setServiceElement_Call {
 	return &MockServiceAccessPointRequirements__setServiceElement_Call{Call: _e.mock.On("_setServiceElement", serviceElement)}
 }
 
-func (_c *MockServiceAccessPointRequirements__setServiceElement_Call) Run(run func(serviceElement _ApplicationServiceElement)) *MockServiceAccessPointRequirements__setServiceElement_Call {
+func (_c *MockServiceAccessPointRequirements__setServiceElement_Call) Run(run func(serviceElement ApplicationServiceElementContract)) *MockServiceAccessPointRequirements__setServiceElement_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_ApplicationServiceElement))
+		run(args[0].(ApplicationServiceElementContract))
 	})
 	return _c
 }
@@ -252,7 +252,7 @@ func (_c *MockServiceAccessPointRequirements__setServiceElement_Call) Return() *
 	return _c
 }
 
-func (_c *MockServiceAccessPointRequirements__setServiceElement_Call) RunAndReturn(run func(_ApplicationServiceElement)) *MockServiceAccessPointRequirements__setServiceElement_Call {
+func (_c *MockServiceAccessPointRequirements__setServiceElement_Call) RunAndReturn(run func(ApplicationServiceElementContract)) *MockServiceAccessPointRequirements__setServiceElement_Call {
 	_c.Call.Return(run)
 	return _c
 }

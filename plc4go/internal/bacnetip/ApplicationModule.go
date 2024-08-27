@@ -206,6 +206,9 @@ func (d *DeviceInfoCache) Release(deviceInfo DeviceInfo) error {
 	return nil
 }
 
+type ApplicationRequirements interface {
+	ApplicationServiceElementRequirements
+}
 type Application struct {
 	*ApplicationServiceElement
 	Collector
@@ -225,7 +228,7 @@ type Application struct {
 	log zerolog.Logger
 }
 
-func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*Application)) (*Application, error) {
+func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, requirements ApplicationRequirements, opts ...func(*Application)) (*Application, error) {
 	a := &Application{
 		log: localLog,
 	}
@@ -238,7 +241,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opt
 		Interface("aseID", a.argAseID).
 		Msg("NewApplication")
 	var err error
-	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, a, func(element *ApplicationServiceElement) {
+	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, requirements, func(element *ApplicationServiceElement) {
 		element.elementID = a.argAseID
 	})
 	if err != nil {
@@ -473,7 +476,7 @@ func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDevic
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	a.Application, err = NewApplication(localLog, localDevice, func(application *Application) {
+	a.Application, err = NewApplication(localLog, localDevice, a, func(application *Application) {
 		application.deviceInfoCache = a.argDeviceInfoCache
 		application.argAseID = a.argAseID
 	})
