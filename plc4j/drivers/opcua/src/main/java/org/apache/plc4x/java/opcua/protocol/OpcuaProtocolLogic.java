@@ -76,10 +76,9 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         null
     );
 
-    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new WireExtensionObject(
+    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new NullExtensionObjectWithMask(
         NULL_EXPANDED_NODEID,
-        new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtensionObject());               // Body
+        new ExtensionObjectEncodingMask(false, false, false));
 
     private static final long EPOCH_OFFSET = 116444736000000000L;         //Offset between OPC UA epoch time and linux epoch time.
     private final Map<Long, OpcuaSubscriptionHandle> subscriptions = new ConcurrentHashMap<>();

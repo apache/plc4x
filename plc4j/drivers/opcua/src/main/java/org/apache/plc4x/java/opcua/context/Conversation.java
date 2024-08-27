@@ -50,7 +50,7 @@ import org.apache.plc4x.java.opcua.readwrite.NodeId;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdFourByte;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdTwoByte;
 import org.apache.plc4x.java.opcua.readwrite.NodeIdTypeDefinition;
-import org.apache.plc4x.java.opcua.readwrite.NullExtensionObject;
+import org.apache.plc4x.java.opcua.readwrite.NullExtensionObjectWithMask;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAPU;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaAcknowledgeResponse;
 import org.apache.plc4x.java.opcua.readwrite.OpcuaCloseRequest;
@@ -71,7 +71,6 @@ import org.apache.plc4x.java.opcua.readwrite.SecurityHeader;
 import org.apache.plc4x.java.opcua.readwrite.SequenceHeader;
 import org.apache.plc4x.java.opcua.readwrite.ServiceFault;
 import org.apache.plc4x.java.opcua.readwrite.SignatureData;
-import org.apache.plc4x.java.opcua.readwrite.WireExtensionObject;
 import org.apache.plc4x.java.opcua.security.MessageSecurity;
 import org.apache.plc4x.java.opcua.security.SecurityPolicy;
 import org.apache.plc4x.java.spi.ConversationContext;
@@ -91,10 +90,10 @@ public class Conversation {
         null
     );
 
-    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new WireExtensionObject(
+    protected static final ExtensionObject NULL_EXTENSION_OBJECT = new NullExtensionObjectWithMask(
         NULL_EXPANDED_NODE_ID,
-        new ExtensionObjectEncodingMask(false, false, false),
-        new NullExtensionObject());               // Body
+        new ExtensionObjectEncodingMask(false, false, false)
+    );
 
 
     private final Logger logger = LoggerFactory.getLogger(Conversation.class);
