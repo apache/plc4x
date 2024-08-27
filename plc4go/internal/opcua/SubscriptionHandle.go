@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"slices"
-	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -136,28 +135,23 @@ func (h *SubscriptionHandle) onSubscribeCreateMonitoredItemsRequest() (readWrite
 		requestList,
 	)
 
-	identifier, err := strconv.ParseUint(createMonitoredItemsRequest.GetExtensionId(), 10, 16)
-	if err != nil {
-		return nil, errors.Wrapf(err, "error parsing identifier")
-	}
-
+	identifier := createMonitoredItemsRequest.GetExtensionId()
 	expandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 		nil,
 		nil)
 
-	extObject := readWriteModel.NewExtensionObject(
-		expandedNodeId,
-		nil,
+	extObject := readWriteModel.NewRootExtensionObject(
 		createMonitoredItemsRequest,
-		false,
+		expandedNodeId,
+		identifier,
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), REQUEST_TIMEOUT)
 	defer cancel()
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		return nil, errors.Wrapf(err, "Unable to serialise the ReadRequest")
 	}
 
@@ -271,27 +265,23 @@ func (h *SubscriptionHandle) startSubscriber() {
 					acks,
 				)
 
-				identifier, err := strconv.ParseUint(publishRequest.GetExtensionId(), 10, 16)
-				if err != nil {
-					h.log.Error().Err(err).Msg("error parsing identifier")
-					continue
-				}
+				identifier := publishRequest.GetExtensionId()
 				extExpandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 					false, //Server Index Specified
 					readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
 					nil,
 					nil)
 
-				extObject := readWriteModel.NewExtensionObject(
-					extExpandedNodeId,
-					nil,
+				extObject := readWriteModel.NewRootExtensionObject(
 					publishRequest,
-					false)
+					extExpandedNodeId,
+					identifier,
+				)
 
 				ctx := context.Background()
 
 				buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-				if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+				if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 					h.log.Error().Err(err).Msg("Unable to serialise the ReadRequest")
 					continue
 				}
@@ -385,11 +375,7 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		subscriptions,
 	)
 
-	identifier, err := strconv.ParseUint(deleteSubscriptionrequest.GetExtensionId(), 10, 16)
-	if err != nil {
-		h.log.Error().Err(err).Msg("error parsing identifier")
-		return
-	}
+	identifier := deleteSubscriptionrequest.GetExtensionId()
 	extExpandedNodeId := readWriteModel.NewExpandedNodeId(false, //Namespace Uri Specified
 		false, //Server Index Specified
 		readWriteModel.NewNodeIdFourByte(0, uint16(identifier)),
@@ -397,17 +383,16 @@ func (h *SubscriptionHandle) stopSubscriber() {
 		nil,
 	)
 
-	extObject := readWriteModel.NewExtensionObject(
-		extExpandedNodeId,
-		nil,
+	extObject := readWriteModel.NewRootExtensionObject(
 		deleteSubscriptionrequest,
-		false,
+		extExpandedNodeId,
+		identifier,
 	)
 
 	ctx := context.Background()
 
 	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err = extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
+	if err := extObject.SerializeWithWriteBuffer(ctx, buffer); err != nil {
 		h.log.Error().Err(err).Msg("Unable to serialise the ReadRequest")
 		return
 	}
