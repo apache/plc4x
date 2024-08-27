@@ -1915,7 +1915,7 @@ func (t *TrafficLog) Call(args bacnetip.Args) {
 	t.traffic = append(t.traffic, struct {
 		time.Time
 		bacnetip.Args
-	}{Time: time.Now(), Args: args})
+	}{Time: bacnetip.GetTaskManagerTime(), Args: args})
 }
 
 // Dump the traffic, pass the correct handler like SomeClass._debug

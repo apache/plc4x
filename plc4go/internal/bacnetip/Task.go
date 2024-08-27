@@ -293,9 +293,10 @@ func (r *RecurringFunctionTask) String() string {
 
 var _taskManager TaskManager
 var _taskManagerMutex sync.Mutex
-var _unscheduledTasks []any //TODO: check method clash in install task
+var _unscheduledTasks []TaskRequirements
 
 type TaskManager interface {
+	fmt.Stringer
 	GetTime() time.Time
 	InstallTask(task TaskRequirements)
 	SuspendTask(task TaskRequirements)
@@ -335,10 +336,26 @@ func NewTaskManager(localLog zerolog.Logger) TaskManager {
 	return t
 }
 
-func OverwriteTaskManager(manager TaskManager) {
+func OverwriteTaskManager(localLog zerolog.Logger, manager TaskManager) {
+	_taskManagerMutex.Lock()
+	defer _taskManagerMutex.Unlock()
+	if _taskManager != nil {
+		localLog.Warn().Stringer("taskManager", _taskManager).Msg("Overwriting task manager")
+		_taskManager.ClearTasks()
+	}
 	_taskManager = manager
 }
 
+func ClearTaskManager(localLog zerolog.Logger) {
+	_taskManagerMutex.Lock()
+	defer _taskManagerMutex.Unlock()
+	if _taskManager == nil {
+		localLog.Warn().Msg("No task manager to clear ")
+		return
+	}
+	localLog.Warn().Stringer("taskManager", _taskManager).Msg("Clearing task manager")
+	_taskManager.ClearTasks()
+}
 func (m *taskManager) GetTime() time.Time {
 	return time.Now()
 }
@@ -413,7 +430,7 @@ func (m *taskManager) GetNextTask() (TaskRequirements, *time.Duration) {
 	m.Lock()
 	defer m.Unlock()
 
-	now := time.Now()
+	now := m.GetTime()
 
 	var task TaskRequirements
 	var delta *time.Duration
@@ -471,4 +488,8 @@ func (m *taskManager) PopTask() TaskRequirements {
 	task := m.tasks[0]
 	m.tasks = m.tasks[1:]
 	return task
+}
+
+func (m *taskManager) String() string {
+	return fmt.Sprintf("TaskManager{tasks: %v}", m.tasks)
 }

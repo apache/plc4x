@@ -58,7 +58,7 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	a.timeout = director.timeout
 	if a.timeout > 0 {
 		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs)
-		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
+		when := GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)
 		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 
@@ -95,7 +95,7 @@ func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
 
 	// reschedule the timer
 	if a.timer != nil {
-		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
+		when := GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)
 		a.timer.InstallTask(InstallTaskOptions{When: &when})
 	}
 

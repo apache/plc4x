@@ -259,7 +259,7 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 	if i.ioTimeout != nil {
 		i.ioTimeout.Reset(delay)
 	} else {
-		now := time.Now()
+		now := GetTaskManagerTime()
 		i.ioTimeout = time.NewTimer(delay)
 		i.ioTimoutCancel = make(chan any)
 		go func() {
