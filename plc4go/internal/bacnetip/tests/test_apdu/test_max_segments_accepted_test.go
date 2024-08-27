@@ -17,29 +17,6 @@
  * under the License.
  */
 
-package tests
+package test_apdu
 
-import (
-	"fmt"
-	"time"
-
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-)
-
-var StartTime = time.Time{}
-
-type DummyMessage struct {
-	bacnetip.MessageBridge
-}
-
-func NewDummyMessage(data ...byte) *DummyMessage {
-	return &DummyMessage{bacnetip.NewMessageBridge(data...)}
-}
-
-type AssertionError struct {
-	Message string
-}
-
-func (a AssertionError) Error() string {
-	return fmt.Sprintf("AssertionError: %s", a.Message)
-}
+// TODO implement

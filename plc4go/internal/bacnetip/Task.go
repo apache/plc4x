@@ -98,8 +98,12 @@ type Task struct {
 	isScheduled bool
 }
 
-func NewTask(taskRequirements TaskRequirements) *Task {
-	return &Task{TaskRequirements: taskRequirements}
+func NewTask(taskRequirements TaskRequirements, opts ...func(*Task)) *Task {
+	t := &Task{TaskRequirements: taskRequirements}
+	for _, opt := range opts {
+		opt(t)
+	}
+	return t
 }
 
 func (t *Task) InstallTask(options InstallTaskOptions) {
@@ -155,10 +159,9 @@ type OneShotTask struct {
 
 func NewOneShotTask(taskRequirements TaskRequirements, when *time.Time) *OneShotTask {
 	o := &OneShotTask{}
-	o.Task = NewTask(taskRequirements)
-	if when != nil {
-		o.taskTime = when
-	}
+	o.Task = NewTask(taskRequirements, func(task *Task) {
+		task.taskTime = when
+	})
 	return o
 }
 
@@ -172,10 +175,9 @@ type OneShotDeleteTask struct {
 
 func NewOneShotDeleteTask(taskRequirements TaskRequirements, when *time.Time) *OneShotDeleteTask {
 	o := &OneShotDeleteTask{}
-	o.Task = NewTask(taskRequirements)
-	if when != nil {
-		o.taskTime = when
-	}
+	o.Task = NewTask(taskRequirements, func(task *Task) {
+		task.taskTime = when
+	})
 	return o
 }
 
@@ -379,9 +381,13 @@ func ClearTaskManager(localLog zerolog.Logger) {
 }
 
 type taskItem struct {
-	taskTime time.Time
+	taskTime *time.Time
 	id       int
 	task     TaskRequirements
+}
+
+func (t taskItem) String() string {
+	return fmt.Sprintf("taskItem(taskTime:%v, id:%d, %v)", t.taskTime, t.id, t.task)
 }
 
 type taskManager struct {
@@ -455,7 +461,7 @@ func (m *taskManager) InstallTask(task TaskRequirements) {
 	// save this in the task list
 	m.count++
 	heap.Push(&m.tasks, &PriorityItem[int64, taskItem]{
-		value:    taskItem{taskTime: GetTaskManagerTime(), id: m.count, task: task},
+		value:    taskItem{taskTime: task.GetTaskTime(), id: m.count, task: task},
 		priority: task.GetTaskTime().UnixNano() - time.Time{}.UnixNano(),
 	})
 	m.log.Debug().Stringer("tasks", m.tasks).Msg("tasks")

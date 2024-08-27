@@ -991,7 +991,15 @@ func (b *BIPForeign) registrationExpired(_ Args, _ KWArgs) error {
 }
 
 func (b *BIPForeign) String() string {
-	return fmt.Sprintf("BIPForeign(taskTime: %v, isScheduled: %t, registrationStatus: %d, bbmdAddress: %s, bbmdTimeToLive: %d)", b.taskTime, b.isScheduled, b.registrationStatus, b.bbmdAddress, b.bbmdTimeToLive)
+	taskTime := "unscheduled"
+	if b.taskTime != nil {
+		taskTime = b.taskTime.String()
+	}
+	bbmdTimeToLive := "unknown"
+	if b.bbmdTimeToLive != nil {
+		bbmdTimeToLive = fmt.Sprintf("%ds", *b.bbmdTimeToLive)
+	}
+	return fmt.Sprintf("BIPForeign(taskTime: %s, isScheduled: %t, registrationStatus: %d, bbmdAddress: %s, bbmdTimeToLive: %s)", taskTime, b.isScheduled, b.registrationStatus, b.bbmdAddress, bbmdTimeToLive)
 }
 
 type BIPBBMD struct {

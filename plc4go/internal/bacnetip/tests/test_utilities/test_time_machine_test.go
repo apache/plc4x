@@ -251,17 +251,18 @@ func (suite *TimeMachineSuite) TestRecurringTask3() {
 	ft := NewSampleRecurringTask(suite.log)
 
 	// reset the time machine to midnight, install the task, let it run
-	tests.ResetTimeMachine(tests.StartTime)
+	startTime := time.Time{}.Add(1 * time.Hour) // We add an hour to avoid underflow
+	tests.ResetTimeMachine(startTime)
 	ft.InstallTask(bacnetip.WithInstallTaskOptionsInterval(1000 * time.Millisecond).WithOffset(100 * time.Millisecond))
 	tests.RunTimeMachine(suite.log, 5*time.Second, time.Time{})
 
 	// function called, 60 seconds passed
-	suite.Equal(tests.StartTime.Add(100*time.Millisecond), ft.processTaskCalled[0])
-	suite.Equal(tests.StartTime.Add(1100*time.Millisecond), ft.processTaskCalled[1])
-	suite.Equal(tests.StartTime.Add(2100*time.Millisecond), ft.processTaskCalled[2])
-	suite.Equal(tests.StartTime.Add(3100*time.Millisecond), ft.processTaskCalled[3])
-	suite.Equal(tests.StartTime.Add(4100*time.Millisecond), ft.processTaskCalled[4])
-	suite.InDelta(5*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(tests.StartTime), float64(100*time.Millisecond))
+	suite.Equal(startTime.Add(100*time.Millisecond), ft.processTaskCalled[0])
+	suite.Equal(startTime.Add(1100*time.Millisecond), ft.processTaskCalled[1])
+	suite.Equal(startTime.Add(2100*time.Millisecond), ft.processTaskCalled[2])
+	suite.Equal(startTime.Add(3100*time.Millisecond), ft.processTaskCalled[3])
+	suite.Equal(startTime.Add(4100*time.Millisecond), ft.processTaskCalled[4])
+	suite.InDelta(5*time.Second, tests.GlobalTimeMachineCurrentTime().Sub(startTime), float64(100*time.Millisecond))
 }
 
 func (suite *TimeMachineSuite) TestRecurringTask4() {

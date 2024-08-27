@@ -205,7 +205,7 @@ type PriorityItem[P cmp.Ordered, V any] struct {
 	index int // The index of the item in the heap.
 }
 
-func (p PriorityItem[P, V]) String() string {
+func (p *PriorityItem[P, V]) String() string {
 	return fmt.Sprintf("[%v: %v-%v], ", p.index, p.priority, p.value)
 }
 
