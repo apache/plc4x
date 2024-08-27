@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"strconv"
 )
 
 func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
@@ -32,4 +33,12 @@ func Utf8LengthToPascalLength(_ context.Context, stringValue string) int32 {
 
 func PascalLengthToUtf8Length(_ context.Context, slength int32) int32 {
 	return max(slength, 0)
+}
+
+func ExtensionId(_ context.Context, expandedNodeId ExpandedNodeId) int32 {
+	nodeId, err := strconv.ParseUint(expandedNodeId.GetNodeId().GetIdentifier(), 10, 16)
+	if err != nil {
+		return -1
+	}
+	return int32(nodeId)
 }
