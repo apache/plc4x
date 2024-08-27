@@ -25,12 +25,14 @@ from unittest import TestCase
 from xml.etree import ElementTree
 from xml.etree.ElementTree import XMLParser
 
+from bitarray.util import ba2hex
+from xsdata.formats.dataclass.models.generics import AnyElement
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from xsdata.utils.text import camel_case, snake_case
 
 from spi.generation.ReadBuffer import ReadBufferByteBased
-from spi.generation.WriteBuffer import WriteBufferXmlBased
+from spi.generation.WriteBuffer import WriteBufferXmlBased, WriteBufferByteBased
 
 logger = logging.getLogger(__name__)
 
@@ -80,16 +82,28 @@ class ParserSerializerTestCase(TestCase):
             snake_case(element.qname): element.text
             for element in self.test_case.parser_arguments.local_element
         }
+        # Dummy code to generate test case
         modbus_adu = uninstantiated_class.static_parse_context(read_buffer, **kwargs)
         xml_buffer: WriteBufferXmlBased = WriteBufferXmlBased()
         modbus_adu.serialize(xml_buffer)
+        # Could be used to generate the test case
         result = xml_buffer.to_xml_string()
 
-        factory = SerializerConfig(xml_declaration=False, pretty_print=True)
-        serializer = XmlSerializer(config=factory)
-        ss = serializer.render(self.test_case.xml)
+        byte_buffer: WriteBufferByteBased = WriteBufferByteBased(size=len(self.test_case.raw), byte_order=self.test_suite.byte_order)
+        modbus_adu.serialize(byte_buffer)
 
-        comparision = ss == result
+        comparision = self.test_case.raw == byte_buffer.get_bytes()
+        if not comparision:
+            print("---------------------Failed Assertion-----------------")
+            # Ascii Box Again, might be time :(
+            print(self.test_case.raw.hex())
+            print(ba2hex(byte_buffer.bb))
+            print(result)
+            factory = SerializerConfig(xml_declaration=False, pretty_print=True)
+            serializer = XmlSerializer(config=factory)
+            ss = serializer.render(self.test_case.xml)
+            print(ss)
+            assert False
 
         pass
 

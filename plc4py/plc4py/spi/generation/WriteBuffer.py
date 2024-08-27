@@ -433,11 +433,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         # This refers to the bit alignment, which we always use big bit endianess
         self.byte_order = byte_order
         self.position = 0
-        self.root = ET.Element('test:testsuite')
-        self.root.set('xmlns:test', "https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd")
-        self.root.set('byteOrder', str(byte_order.name))
         self.stack = []
-        self.stack.append(self.root)
 
     def get_bytes(self) -> memoryview:
         return memoryview(bytearray([]))
@@ -447,7 +443,10 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
 
     def push_context(self, logical_name: str, **kwargs) -> None:
         new_element: ET.Element = ET.Element(logical_name)
-        self.stack[-1].append(new_element)
+        if len(self.stack) > 0:
+            self.stack[-1].append(new_element)
+        else:
+            self.stack.append(new_element)
         self.stack.append(new_element)
 
     def pop_context(self, logical_name: str, **kwargs) -> None:
@@ -608,8 +607,11 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         new_element.set('dataType', data_type)
         new_element.set('bitlength', bit_length)
         new_element.text = data
-        self.stack[-1].append(new_element)
+        if len(self.stack) > 0:
+            self.stack[-1].append(new_element)
+        else:
+            self.stack.append(new_element)
 
     def to_xml_string(self) -> str:
-        ET.indent(self.root, space="\t", level=0)
-        return ET.tostring(self.root)
+        ET.indent(self.stack[0], space="\t", level=0)
+        return ET.tostring(self.stack[0]).decode("utf-8")
