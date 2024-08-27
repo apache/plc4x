@@ -169,7 +169,7 @@
     [simple SequenceHeader                    sequenceHeader            ]
     [typeSwitch extensible
         ['true'       ExtensiblePayload
-            [simple   RootExtensionObject     payload                   ]
+            [simple   RootExtensionObject('false') payload                   ]
         ]
         ['false'      BinaryPayload
             [array    byte                     payload count 'byteCount']
@@ -371,43 +371,43 @@
 
 [discriminatedType NodeIdTypeDefinition
     [abstract vstring '-1' identifier]
-    [abstract uint 16 namespace]
+    [abstract int 16 namespace]
     [discriminator NodeIdType nodeType]
     [typeSwitch nodeType
         ['nodeIdTypeTwoByte' NodeIdTwoByte
             [simple uint 8 id]
             [virtual vstring '-1' identifier 'id']
-            [virtual uint 16 namespace '-1'] // cause an error
+            [virtual int 16 namespace '-1'] // cause an error
         ]
         ['nodeIdTypeFourByte' NodeIdFourByte
             [simple uint 8 namespaceIndex]
             [simple uint 16 id]
             [virtual vstring '-1' identifier 'id']
-            [virtual uint 16 namespace 'namespaceIndex']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeNumeric' NodeIdNumeric
             [simple uint 16 namespaceIndex]
             [simple uint 32 id]
             [virtual vstring '-1' identifier 'id']
-            [virtual uint 16 namespace 'namespaceIndex']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeString' NodeIdString
             [simple uint 16 namespaceIndex]
             [simple PascalString id]
             [virtual vstring '-1' identifier 'id.stringValue']
-            [virtual uint 16 namespace 'namespaceIndex']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeGuid' NodeIdGuid
             [simple uint 16 namespaceIndex]
             [array byte id count '16']
             [virtual vstring '-1' identifier 'id']
-            [virtual uint 16 namespace 'namespaceIndex']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
         ['nodeIdTypeByteString' NodeIdByteString
             [simple uint 16 namespaceIndex]
             [simple PascalByteString id]
             [virtual vstring '-1' identifier 'id.stringValue']
-            [virtual uint 16 namespace 'namespaceIndex']
+            [virtual int 16 namespace 'namespaceIndex']
         ]
     ]
 ]
