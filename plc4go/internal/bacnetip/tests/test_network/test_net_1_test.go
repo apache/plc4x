@@ -19,4 +19,187 @@
 
 package test_network
 
-// TODO: implement me
+import (
+	"testing"
+	"time"
+
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+)
+
+type TNetwork1 struct {
+	*tests.StateMachineGroup
+
+	vlan1    *bacnetip.Network
+	iut      *RouterNode
+	td       *NetworkLayerStateMachine
+	sniffer1 *SnifferStateMachine
+	vlan2    *bacnetip.Network
+	sniffer2 *SnifferStateMachine
+	vlan3    *bacnetip.Network
+	sniffer3 *SnifferStateMachine
+
+	t *testing.T
+
+	log zerolog.Logger
+}
+
+func NewTNetwork1(t *testing.T) *TNetwork1 {
+	localLog := testutils.ProduceTestingLogger(t)
+	tn := &TNetwork1{
+		t:   t,
+		log: localLog,
+	}
+	tn.StateMachineGroup = tests.NewStateMachineGroup(localLog)
+
+	// reset the time machine
+	tests.ResetTimeMachine(tests.StartTime)
+	localLog.Trace().Msg("time machine reset")
+
+	var err error
+	// implementation under test
+	tn.iut, err = NewRouterNode(tn.log)
+	require.NoError(t, err)
+
+	// make a little LAN
+	tn.vlan1 = bacnetip.NewNetwork(localLog)
+
+	// Test devices
+	tn.td, err = NewNetworkLayerStateMachine(localLog, "1", tn.vlan1)
+	require.NoError(t, err)
+	tn.Append(tn.td)
+
+	// sniffer node
+	tn.sniffer1, err = NewSnifferStateMachine(localLog, "2", tn.vlan1)
+	require.NoError(t, err)
+	tn.Append(tn.sniffer1)
+
+	// add the network
+	err = tn.iut.AddNetwork("3", tn.vlan1, 1)
+	require.NoError(t, err)
+
+	//  make another little LAN
+	tn.vlan2 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan2"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+
+	//  sniffer node
+	tn.sniffer2, err = NewSnifferStateMachine(localLog, "4", tn.vlan2)
+	require.NoError(t, err)
+	tn.Append(tn.sniffer2)
+
+	//  add the network
+	err = tn.iut.AddNetwork("5", tn.vlan2, 2)
+	require.NoError(t, err)
+
+	//  make another little LAN
+	tn.vlan3 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan23"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+
+	//  sniffer node
+	tn.sniffer3, err = NewSnifferStateMachine(localLog, "6", tn.vlan2)
+	require.NoError(t, err)
+	tn.Append(tn.sniffer3)
+
+	//  add the network
+	err = tn.iut.AddNetwork("7", tn.vlan3, 3)
+	require.NoError(t, err)
+
+	return tn
+}
+
+func (t *TNetwork1) Run(timeLimit time.Duration) {
+	if timeLimit == 0 {
+		timeLimit = 60 * time.Second
+	}
+	t.log.Debug().Dur("time_limit", timeLimit).Msg("run")
+
+	// run the group
+	err := t.StateMachineGroup.Run()
+	require.NoError(t.t, err)
+
+	// run it some time
+	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
+	t.log.Trace().Msg("time machine finished")
+	for _, machine := range t.StateMachineGroup.GetStateMachines() {
+		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
+		for _, s := range machine.GetTransactionLog() {
+			t.log.Debug().Str("logEntry", s).Msg("logEntry")
+		}
+	}
+
+	// check for success
+	success, failed := t.CheckForSuccess()
+	assert.True(t.t, success)
+	assert.False(t.t, failed)
+}
+
+func TestSimple1(t *testing.T) {
+	tests.ExclusiveGlobalTimeMachine(t)
+
+	t.Run("testIdle", func(t *testing.T) {
+		// create a network
+		tnet := NewTNetwork1(t)
+
+		// all start states are successful
+		tnet.td.GetStartState().Success("")
+		tnet.sniffer1.GetStartState().Success("")
+		tnet.sniffer2.GetStartState().Success("")
+		tnet.sniffer3.GetStartState().Success("")
+
+		// run the group
+		tnet.Run(0)
+	})
+}
+
+func TestWhoIsRouterToNetwork(t *testing.T) {
+	t.Skip("Not yet ready") // TODO: finish me
+	tests.ExclusiveGlobalTimeMachine(t)
+
+	t.Run("test_01", func(t *testing.T) {
+		// create a network
+		tnet := NewTNetwork1(t)
+
+		// test device sends request, sees response
+		whois, err := bacnetip.NewWhoIsRouterToNetwork()
+		require.NoError(t, err)
+		whois.SetPDUDestination(bacnetip.NewLocalBroadcast(nil)) // TODO: upstream does this inline
+		tnet.td.GetStartState().Doc("1-1-0").
+			Send(whois, nil).Doc("1-1-1").
+			Receive(bacnetip.NewArgs((*bacnetip.IAmRouterToNetwork)(nil)), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, []uint16{2, 3})).Doc("1-1-2").
+			Success("")
+
+		// sniffer on network 1 sees the request and the response
+		tnet.sniffer1.GetStartState().Doc("1-2-0").
+			Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)),
+				bacnetip.NewKWArgs(bacnetip.KWPDUData, xtob(
+					"01.80"+ //version, network layer
+						"00", //message type, no network
+				),
+				),
+			).Doc("1-2-1").
+			Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)),
+				bacnetip.NewKWArgs(bacnetip.KWPDUData, xtob(
+					"01.80"+ //version, network layer
+						"01 0002 0003", //message type and network list
+				),
+				),
+			).Doc("1-2-2").
+			Success("")
+
+		// nothing received on network 2
+		tnet.sniffer2.GetStartState().Doc("1-3-0").
+			Timeout(3*time.Second, nil).Doc("1-3-1").
+			Success("")
+
+		// nothing received on network 3
+		tnet.sniffer3.GetStartState().Doc("1-4-0").
+			Timeout(3*time.Second, nil).Doc("1-4-1").
+			Success("")
+
+		// run the group
+		tnet.Run(0)
+	})
+}

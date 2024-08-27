@@ -138,7 +138,7 @@ type SnifferStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*SnifferStateMachine, error) {
+func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.Network) (*SnifferStateMachine, error) {
 	s := &SnifferStateMachine{
 		log: localLog,
 	}
@@ -156,7 +156,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	}
 
 	// create a promiscuous node, added to the network
-	s.node, err = bacnetip.NewNode(s.log, s.address, bacnetip.WithNodePromiscuous(true))
+	s.node, err = bacnetip.NewNode(s.log, s.address, bacnetip.WithNodePromiscuous(true), bacnetip.WithNodeLan(vlan))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -185,7 +185,7 @@ type NetworkLayerStateMachine struct {
 	node  *bacnetip.Node
 }
 
-func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*NetworkLayerStateMachine, error) {
+func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.Network) (*NetworkLayerStateMachine, error) {
 	n := &NetworkLayerStateMachine{
 		log: localLog,
 	}
@@ -220,4 +220,282 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	return n, nil
 }
 
-//
+type RouterNode struct {
+	nsap *bacnetip.NetworkServiceAccessPoint
+	nse  *_NetworkServiceElement
+
+	log zerolog.Logger
+}
+
+func NewRouterNode(localLog zerolog.Logger) (*RouterNode, error) {
+	r := &RouterNode{log: localLog}
+	var err error
+	// a network service access point will be needed
+	r.nsap, err = bacnetip.NewNetworkServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service access point")
+	}
+	// give the NSAP a generic network layer service element
+	r.nse, err = new_NetworkServiceElement(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service element")
+	}
+	err = bacnetip.Bind(localLog, r.nse, r.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+	return r, nil
+}
+
+func (r *RouterNode) AddNetwork(address string, vlan *bacnetip.Network, net uint16) error {
+	r.log.Debug().Str("address", address).Stringer("vlan", vlan).Uint16("net", net).Msg("AddNetwork")
+
+	// convert the address to an Address
+	addr := Address(address)
+
+	// create a node, add to the network
+	node, err := bacnetip.NewNode(r.log, addr, bacnetip.WithNodeLan(vlan))
+	if err != nil {
+		return errors.Wrap(err, "error creating node")
+	}
+
+	// bind the BIP stack to the local network
+	return r.nsap.Bind(node, &net, addr)
+}
+
+func (r *RouterNode) String() string {
+	return fmt.Sprintf("RouterNode")
+}
+
+type RouterStateMachine struct {
+	*RouterNode
+	tests.StateMachine
+}
+
+func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error) {
+	r := &RouterStateMachine{}
+	var err error
+	r.RouterNode, err = NewRouterNode(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating router node")
+	}
+	var initFunc func()
+	r.StateMachine, initFunc = tests.NewStateMachine(localLog, r)
+	initFunc()
+	return r, nil
+}
+
+type TestDeviceObject struct {
+	*bacnetip.LocalDeviceObject
+}
+
+type ApplicationLayerStateMachine struct {
+	*bacnetip.ApplicationServiceElement
+	*tests.ClientStateMachine
+
+	name    string
+	address *bacnetip.Address
+
+	asap *bacnetip.ApplicationServiceAccessPoint
+	smap *bacnetip.StateMachineAccessPoint
+	nsap *bacnetip.NetworkServiceAccessPoint
+	nse  *_NetworkServiceElement
+	node *bacnetip.Node
+
+	log zerolog.Logger
+}
+
+func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*ApplicationLayerStateMachine, error) {
+	a := &ApplicationLayerStateMachine{
+		log: localLog,
+	}
+
+	// save the name and address
+	a.name = fmt.Sprintf("app @ %s", address)
+	a.address = Address(address)
+
+	// build a local device object
+	localDevice := TestDeviceObject{
+		&bacnetip.LocalDeviceObject{
+			ObjectName:       a.name,
+			ObjectIdentifier: "device:" + address,
+			VendorIdentifier: 999,
+		},
+	}
+
+	a.log.Debug().Stringer("address", a.address).Msg("address")
+
+	var err error
+	// continue with initialization
+	a.ApplicationServiceElement, err = bacnetip.NewApplicationServiceElement(a.log, a)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating application service")
+	}
+	a.ClientStateMachine, err = tests.NewClientStateMachine(a.log, tests.WithClientStateMachineName(localDevice.ObjectName))
+	if err != nil {
+		return nil, errors.Wrap(err, "error building client state machine")
+	}
+
+	// include a application decoder
+	a.asap, err = bacnetip.NewApplicationServiceAccessPoint(a.log)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating application service access point")
+	}
+
+	// pass the device object to the state machine access point so it
+	// can know if it should support segmentation
+	// the segmentation state machines need access to some device
+	// information cache, usually shared with the application
+	a.smap, err = bacnetip.NewStateMachineAccessPoint(a.log, localDevice.LocalDeviceObject, bacnetip.WithStateMachineAccessPointDeviceInfoCache(bacnetip.NewDeviceInfoCache(a.log))) // TODO: this is not quite right as we unwrap here
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating state machine access point")
+	}
+
+	//  a network service access point will be needed
+	a.nsap, err = bacnetip.NewNetworkServiceAccessPoint(a.log)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service access point")
+	}
+
+	//  give the NSAP a generic network layer service element
+	a.nse, err = new_NetworkServiceElement(a.log)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service element")
+	}
+	err = bacnetip.Bind(a.log, a.nse, a.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	//  bind the top layers
+	err = bacnetip.Bind(a.log, a, a.asap, a.smap, a.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	//  create a node, added to the network
+	a.node, err = bacnetip.NewNode(a.log, a.address, bacnetip.WithNodeLan(vlan))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating node")
+	}
+	a.log.Debug().Stringer("node", a.node).Msg("node")
+
+	//  bind the stack to the local network
+	err = a.nsap.Bind(a.node, nil, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	return a, nil
+}
+
+func (a *ApplicationLayerStateMachine) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Indication")
+	return a.Receive(args, bacnetip.NoKWArgs)
+}
+
+func (a *ApplicationLayerStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
+	return a.Receive(args, bacnetip.NoKWArgs)
+}
+
+type ApplicationNode struct {
+	*bacnetip.Application
+	*bacnetip.WhoIsIAmServices
+	*bacnetip.ReadWritePropertyServices
+
+	name    string
+	address *bacnetip.Address
+	asap    *bacnetip.ApplicationServiceAccessPoint
+	smap    *bacnetip.StateMachineAccessPoint
+	nsap    *bacnetip.NetworkServiceAccessPoint
+	nse     *_NetworkServiceElement
+	node    *bacnetip.Node
+
+	log zerolog.Logger
+}
+
+func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*ApplicationNode, error) {
+	a := &ApplicationNode{
+		log: localLog,
+	}
+
+	// build a name, save the address
+	a.name = fmt.Sprintf("app @ %s", address)
+	a.address = Address(address)
+
+	// build a local device object
+	localDevice := &TestDeviceObject{
+		LocalDeviceObject: &bacnetip.LocalDeviceObject{
+			ObjectName:       a.name,
+			ObjectIdentifier: "device:999",
+			VendorIdentifier: 999,
+		},
+	}
+
+	var err error
+	// continue with initialization
+	a.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	if err != nil {
+		return nil, errors.Wrap(err, "error building application")
+	}
+
+	// include a application decoder
+	a.asap, err = bacnetip.NewApplicationServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error building application service access point")
+	}
+
+	// pass the device object to the state machine access point so it
+	// can know if it should support segmentation
+	// the segmentation state machines need access to the same device
+	// information cache as the application
+	a.smap, err = bacnetip.NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, bacnetip.WithStateMachineAccessPointDeviceInfoCache(a.GetDeviceInfoCache())) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	if err != nil {
+		return nil, errors.Wrap(err, "error building state machine access point")
+	}
+
+	// a network service access point will be needed
+	a.nsap, err = bacnetip.NewNetworkServiceAccessPoint(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service access point")
+	}
+
+	// give the NSAP a generic network layer service element
+	a.nse, err = new_NetworkServiceElement(localLog)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating network service element")
+	}
+	err = bacnetip.Bind(localLog, a.nse, a.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// bind the top layers
+	err = bacnetip.Bind(localLog, a, a.asap, a.smap, a.nsap)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	// create a node, added to the network
+	a.node, err = bacnetip.NewNode(a.log, a.address, bacnetip.WithNodeLan(vlan))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating node")
+	}
+
+	// bind the stack to the local network
+	err = a.nsap.Bind(a.node, nil, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "error binding")
+	}
+
+	return a, nil
+}
+
+func xtob(s string) []byte {
+	bytes, err := bacnetip.Xtob(s)
+	if err != nil {
+		panic(err)
+	}
+	return bytes
+}

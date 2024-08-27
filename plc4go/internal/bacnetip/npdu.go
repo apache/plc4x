@@ -189,7 +189,7 @@ func (n *_NPDU) buildNPDU(hopCount uint8, source *Address, destination *Address,
 			sourceAddress = nil
 		}
 	}
-	destinationSpecified := destination != nil
+	destinationSpecified := destination != nil && destination.AddrType != LOCAL_BROADCAST_ADDRESS // TODO: check if this is right... (exclude local broadcast)
 	var destinationNetworkAddress *uint16
 	var destinationLength *uint8
 	var destinationAddress []uint8
