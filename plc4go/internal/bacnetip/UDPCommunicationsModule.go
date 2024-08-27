@@ -58,8 +58,7 @@ func NewUDPActor(localLog zerolog.Logger, director *UDPDirector, peer string) *U
 	a.timeout = director.timeout
 	if a.timeout > 0 {
 		a.timer = FunctionTask(a.idleTimeout, NoArgs, NoKWArgs)
-		when := GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(InstallTaskOptions{When: &when})
+		a.timer.InstallTask(WithInstallTaskOptionsWhen(GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)))
 	}
 
 	// tell the director this is a new actor
@@ -81,8 +80,7 @@ func (a *UDPActor) Indication(args Args, kwargs KWArgs) error {
 
 	// reschedule the timer
 	if a.timer != nil {
-		when := time.Now().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(InstallTaskOptions{When: &when})
+		a.timer.InstallTask(WithInstallTaskOptionsWhen(GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)))
 	}
 
 	// put it in the outbound queue for the director
@@ -95,8 +93,7 @@ func (a *UDPActor) Response(args Args, kwargs KWArgs) error {
 
 	// reschedule the timer
 	if a.timer != nil {
-		when := GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)
-		a.timer.InstallTask(InstallTaskOptions{When: &when})
+		a.timer.InstallTask(WithInstallTaskOptionsWhen(GetTaskManagerTime().Add(time.Duration(a.timeout) * time.Millisecond)))
 	}
 
 	// process this as a response from the director

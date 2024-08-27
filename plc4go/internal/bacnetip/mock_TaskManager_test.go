@@ -72,6 +72,51 @@ func (_c *MockTaskManager_ClearTasks_Call) RunAndReturn(run func()) *MockTaskMan
 	return _c
 }
 
+// CountTasks provides a mock function with given fields:
+func (_m *MockTaskManager) CountTasks() int {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for CountTasks")
+	}
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func() int); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	return r0
+}
+
+// MockTaskManager_CountTasks_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CountTasks'
+type MockTaskManager_CountTasks_Call struct {
+	*mock.Call
+}
+
+// CountTasks is a helper method to define mock.On call
+func (_e *MockTaskManager_Expecter) CountTasks() *MockTaskManager_CountTasks_Call {
+	return &MockTaskManager_CountTasks_Call{Call: _e.mock.On("CountTasks")}
+}
+
+func (_c *MockTaskManager_CountTasks_Call) Run(run func()) *MockTaskManager_CountTasks_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockTaskManager_CountTasks_Call) Return(_a0 int) *MockTaskManager_CountTasks_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockTaskManager_CountTasks_Call) RunAndReturn(run func() int) *MockTaskManager_CountTasks_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetNextTask provides a mock function with given fields:
 func (_m *MockTaskManager) GetNextTask() (TaskRequirements, *time.Duration) {
 	ret := _m.Called()

@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"container/heap"
 	"fmt"
 	"sync"
 	"time"
@@ -32,6 +33,54 @@ type InstallTaskOptions struct {
 	Delta    *time.Duration
 	Interval *time.Duration
 	Offset   *time.Duration
+}
+
+func WithInstallTaskOptionsNone() InstallTaskOptions {
+	return InstallTaskOptions{}
+}
+
+func WithInstallTaskOptionsWhen(when time.Time) InstallTaskOptions {
+	return InstallTaskOptions{
+		When: &when,
+	}
+}
+
+func (i InstallTaskOptions) WithWhen(when time.Time) InstallTaskOptions {
+	i.When = &when
+	return i
+}
+
+func WithInstallTaskOptionsDelta(delta time.Duration) InstallTaskOptions {
+	return InstallTaskOptions{
+		Delta: &delta,
+	}
+}
+
+func (i InstallTaskOptions) WithDelta(delta time.Duration) InstallTaskOptions {
+	i.Delta = &delta
+	return i
+}
+
+func WithInstallTaskOptionsInterval(interval time.Duration) InstallTaskOptions {
+	return InstallTaskOptions{
+		Interval: &interval,
+	}
+}
+
+func (i InstallTaskOptions) WithInterval(interval time.Duration) InstallTaskOptions {
+	i.Interval = &interval
+	return i
+}
+
+func WithInstallTaskOptionsOffset(offset time.Duration) InstallTaskOptions {
+	return InstallTaskOptions{
+		Offset: &offset,
+	}
+}
+
+func (i InstallTaskOptions) WithOffset(offset time.Duration) InstallTaskOptions {
+	i.Offset = &offset
+	return i
 }
 
 type TaskRequirements interface {
@@ -148,8 +197,7 @@ type OneShotFunctionTask struct {
 func OneShotFunction(fn func(args Args, kwargs KWArgs) error, args Args, kwargs KWArgs) *OneShotFunctionTask {
 	task := &OneShotFunctionTask{fn: fn, args: args, kwargs: kwargs}
 	task.OneShotDeleteTask = NewOneShotDeleteTask(task, nil)
-	var delta time.Duration = 0
-	task.InstallTask(InstallTaskOptions{Delta: &delta})
+	task.InstallTask(WithInstallTaskOptionsDelta(0))
 	return task
 }
 
@@ -202,12 +250,6 @@ func WithRecurringTaskOffset(offset time.Duration) func(task *RecurringTask) {
 func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 	interval := options.Interval
 	offset := options.Offset
-	if r.taskInterval == nil {
-		panic("interval unset, use ctor or install_task parameter")
-	}
-	if *r.taskInterval <= 0.0 {
-		panic("interval must be greater than zero")
-	}
 
 	// set the interval if it hasn't already been set
 	if interval != nil {
@@ -227,7 +269,7 @@ func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 	// if there is no task manager, postpone the install
 	if _taskManager == nil {
 		r.log.Trace().Msg("No task manager")
-		_unscheduledTasks = append(_unscheduledTasks, r)
+		_unscheduledTasks = append(_unscheduledTasks, r.TaskRequirements)
 	} else {
 		// get ready for the next interval plus a jitter
 		now := _taskManager.GetTime().Add(10 + time.Nanosecond)
@@ -249,7 +291,7 @@ func (r *RecurringTask) InstallTask(options InstallTaskOptions) {
 		r.log.Debug().Time("taskTime", _taskTime).Msg("task time")
 
 		// install it
-		_taskManager.InstallTask(r)
+		_taskManager.InstallTask(r.TaskRequirements)
 	}
 }
 
@@ -305,13 +347,48 @@ type TaskManager interface {
 	ProcessTask(task TaskRequirements)
 	GetTasks() []TaskRequirements
 	PopTask() TaskRequirements
+	CountTasks() int
 	ClearTasks()
+}
+
+func OverwriteTaskManager(localLog zerolog.Logger, manager TaskManager) (oldManager TaskManager) {
+	_taskManagerMutex.Lock()
+	defer _taskManagerMutex.Unlock()
+	if _taskManager != nil {
+		oldManager = _taskManager
+		if oldManager.CountTasks() > 0 {
+			localLog.Warn().Stringer("oldManager", oldManager).Msg("Overwriting task manager with pending tasks")
+		}
+		_taskManager.ClearTasks()
+	}
+	_taskManager = manager
+	return
+}
+
+func ClearTaskManager(localLog zerolog.Logger) {
+	_taskManagerMutex.Lock()
+	defer _taskManagerMutex.Unlock()
+	if _taskManager == nil {
+		localLog.Warn().Msg("No task manager to clear ")
+		return
+	}
+	if _taskManager.CountTasks() > 0 {
+		localLog.Warn().Stringer("taskManager", _taskManager).Msg("Clearing task manager with pending tasks")
+	}
+	_taskManager.ClearTasks()
+}
+
+type taskItem struct {
+	taskTime time.Time
+	id       int
+	task     TaskRequirements
 }
 
 type taskManager struct {
 	sync.Mutex
 
-	tasks []TaskRequirements
+	tasks PriorityQueue[int64, taskItem]
+	count int
 
 	log zerolog.Logger
 }
@@ -328,34 +405,21 @@ func NewTaskManager(localLog zerolog.Logger) TaskManager {
 
 	// TODO: trigger
 
-	// TODO: counter
-
-	// TODO: unscheduled tasks
-
+	// task manager is this instance
 	_taskManager = t
+
+	// unique sequence counter
+	t.count = 0
+
+	// there may be tasks created that couldn't be scheduled
+	// because a task manager wasn't created yet.
+	for _, task := range _unscheduledTasks {
+		task.InstallTask(WithInstallTaskOptionsNone())
+	}
+
 	return t
 }
 
-func OverwriteTaskManager(localLog zerolog.Logger, manager TaskManager) {
-	_taskManagerMutex.Lock()
-	defer _taskManagerMutex.Unlock()
-	if _taskManager != nil {
-		localLog.Warn().Stringer("taskManager", _taskManager).Msg("Overwriting task manager")
-		_taskManager.ClearTasks()
-	}
-	_taskManager = manager
-}
-
-func ClearTaskManager(localLog zerolog.Logger) {
-	_taskManagerMutex.Lock()
-	defer _taskManagerMutex.Unlock()
-	if _taskManager == nil {
-		localLog.Warn().Msg("No task manager to clear ")
-		return
-	}
-	localLog.Warn().Stringer("taskManager", _taskManager).Msg("Clearing task manager")
-	_taskManager.ClearTasks()
-}
 func (m *taskManager) GetTime() time.Time {
 	return time.Now()
 }
@@ -368,7 +432,7 @@ func GetTaskManagerTime() time.Time {
 }
 
 func (m *taskManager) ClearTasks() {
-	m.tasks = nil
+	m.tasks.clear()
 }
 
 func (m *taskManager) InstallTask(task TaskRequirements) {
@@ -376,7 +440,7 @@ func (m *taskManager) InstallTask(task TaskRequirements) {
 	m.Lock()
 	defer m.Unlock()
 
-	// if the taskTime is None is hasn't been computed correctly
+	// if the taskTime is None it hasn't been computed correctly
 	if task.GetTaskTime() == nil {
 		panic("task time is None")
 	}
@@ -389,8 +453,12 @@ func (m *taskManager) InstallTask(task TaskRequirements) {
 	}
 
 	// save this in the task list
-	// TODO: we might need to insert it at the right place
-	m.tasks = append(m.tasks, task)
+	m.count++
+	heap.Push(&m.tasks, &PriorityItem[int64, taskItem]{
+		value:    taskItem{taskTime: GetTaskManagerTime(), id: m.count, task: task},
+		priority: task.GetTaskTime().UnixNano() - time.Time{}.UnixNano(),
+	})
+	m.log.Debug().Stringer("tasks", m.tasks).Msg("tasks")
 
 	task.SetIsScheduled(true)
 }
@@ -400,18 +468,21 @@ func (m *taskManager) SuspendTask(task TaskRequirements) {
 	m.Lock()
 	defer m.Unlock()
 
-	iToDelete := -1
-	for i, _task := range m.tasks {
-		if _task == task {
+	deleted := false
+	for i, pqi := range m.tasks {
+		//when := _task.value.taskTime
+		//n := _task.value.id
+		curtask := pqi.value.task
+		if task == curtask {
 			m.log.Debug().Msg("task found")
-			iToDelete = i
+			heap.Remove(&m.tasks, i)
+			deleted = true
+
 			task.SetIsScheduled(false)
 			break
 		}
 	}
-	if iToDelete > 0 {
-		m.tasks = append(m.tasks[:iToDelete], m.tasks[iToDelete+1:]...)
-	} else {
+	if !deleted {
 		m.log.Debug().Msg("task not found")
 	}
 }
@@ -436,19 +507,27 @@ func (m *taskManager) GetNextTask() (TaskRequirements, *time.Duration) {
 	var delta *time.Duration
 
 	if len(m.tasks) > 0 {
-		nextTask := m.tasks[0]
-		when := nextTask.GetTaskTime()
+		pqi := m.tasks[0]
+		when := pqi.value.taskTime
+		id := pqi.value.id
+		_ = id
+		nextTask := pqi.value.task
 		if when.Before(now) {
 			// pull it off the list and mark that it's no longer scheduled
-			m.tasks = m.tasks[1:] // TODO: guard against empty list
+			heap.Pop(&m.tasks)
 			task = nextTask
 			task.SetIsScheduled(false)
 
 			if len(m.tasks) > 0 {
-				nextTask = m.tasks[0]
-				when = nextTask.GetTaskTime()
+				pqi := m.tasks[0]
+				when := pqi.value.taskTime
+				id := pqi.value.id
+				_ = id
+				nextTask := pqi.value.task
+				_ = nextTask
+
 				// peek at the next task, return how long to wait
-				newDelta := when.Sub(now) // TODO: avoid negative
+				newDelta := max(when.Sub(now), 0)
 				delta = &newDelta
 			}
 		} else {
@@ -471,23 +550,32 @@ func (m *taskManager) ProcessTask(task TaskRequirements) {
 
 	switch task.(type) {
 	case interface{ IsRecurringTask() bool }:
-		task.InstallTask(InstallTaskOptions{})
+		task.InstallTask(WithInstallTaskOptionsNone())
 	case interface{ IsOneShotDeleteTask() bool }:
 		// TODO: Delete? How?
 	}
 }
 
 func (m *taskManager) GetTasks() []TaskRequirements {
-	return m.tasks
+	m.Lock()
+	defer m.Unlock()
+	tasks := make([]TaskRequirements, len(m.tasks))
+	for i, pqi := range m.tasks {
+		tasks[i] = pqi.value.task
+	}
+	return tasks
 }
 
 func (m *taskManager) PopTask() TaskRequirements {
 	m.log.Trace().Msg("pop task")
 	m.Lock()
 	defer m.Unlock()
-	task := m.tasks[0]
-	m.tasks = m.tasks[1:]
-	return task
+	pqi := heap.Pop(&m.tasks).(*PriorityItem[int64, taskItem])
+	return pqi.value.task
+}
+
+func (m *taskManager) CountTasks() int {
+	return m.tasks.Len()
 }
 
 func (m *taskManager) String() string {

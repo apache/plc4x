@@ -725,7 +725,7 @@ func (s *state) EnterState() {
 	s.log.Debug().Msg("EnterState")
 	if s.timeoutTransition != nil {
 		s.log.Debug().Time("timeout", s.timeoutTransition.timeout).Msg("waiting")
-		s.stateMachine.getStateTimeoutTask().InstallTask(bacnetip.InstallTaskOptions{When: &s.timeoutTransition.timeout})
+		s.stateMachine.getStateTimeoutTask().InstallTask(bacnetip.WithInstallTaskOptionsWhen(s.timeoutTransition.timeout))
 	} else {
 		s.log.Trace().Msg("no timeout")
 	}
@@ -1195,7 +1195,7 @@ func (s *stateMachine) Run() error {
 
 	if s.timeoutTask != nil {
 		s.log.Debug().Msg("schedule runtime limit")
-		s.timeoutTask.InstallTask(bacnetip.InstallTaskOptions{Delta: &s.timeout})
+		s.timeoutTask.InstallTask(bacnetip.WithInstallTaskOptionsDelta(s.timeout))
 	}
 
 	// we are starting up

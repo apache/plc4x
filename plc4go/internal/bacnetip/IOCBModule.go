@@ -308,59 +308,11 @@ func (i *IOCB) clearQueue() {
 	i.ioQueue = nil
 }
 
-// An PriorityItem is something we manage in a priority queue.
-type PriorityItem struct {
-	value    _IOCB // The value of the item; arbitrary.
-	priority int   // The priority of the item in the queue.
-	// The index is needed by update and is maintained by the heap.Interface methods.
-	index int // The index of the item in the heap.
-}
-
-// A PriorityQueue implements heap.Interface and holds Items.
-type PriorityQueue []*PriorityItem
-
-func (pq *PriorityQueue) Len() int { return len(*pq) }
-
-func (pq *PriorityQueue) Less(i, j int) bool {
-	// We want Pop to give us the highest, not lowest, priority so we use greater than here.
-	return (*pq)[i].priority > (*pq)[j].priority
-}
-
-func (pq *PriorityQueue) Swap(i, j int) {
-	(*pq)[i], (*pq)[j] = (*pq)[j], (*pq)[i]
-	(*pq)[i].index = i
-	(*pq)[j].index = j
-}
-
-func (pq *PriorityQueue) Push(x any) {
-	n := len(*pq)
-	item := x.(*PriorityItem)
-	item.index = n
-	*pq = append(*pq, item)
-}
-
-func (pq *PriorityQueue) Pop() any {
-	old := *pq
-	n := len(old)
-	item := old[n-1]
-	old[n-1] = nil  // avoid memory leak
-	item.index = -1 // for safety
-	*pq = old[0 : n-1]
-	return item
-}
-
-// update modifies the priority and value of an Item in the queue.
-func (pq *PriorityQueue) update(item *PriorityItem, value _IOCB, priority int) {
-	item.value = value
-	item.priority = priority
-	heap.Fix(pq, item.index)
-}
-
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=IOQueue
 type IOQueue struct {
 	name     string
 	notEmpty sync.Cond
-	queue    PriorityQueue
+	queue    PriorityQueue[int, _IOCB]
 
 	log zerolog.Logger `ignore:"true"`
 }
@@ -387,7 +339,7 @@ func (i *IOQueue) Put(iocb _IOCB) error {
 	// add the request to the end of the list of iocb's at same priority
 	priority := iocb.getPriority()
 
-	heap.Push(&i.queue, PriorityItem{iocb, priority, 0})
+	heap.Push(&i.queue, PriorityItem[int, _IOCB]{iocb, priority, 0})
 
 	i.notEmpty.Broadcast()
 	return nil
@@ -431,7 +383,7 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
 	}
 
 	// extract the first element
-	pi := heap.Pop(&i.queue).(PriorityItem)
+	pi := heap.Pop(&i.queue).(PriorityItem[int, _IOCB])
 	iocb := pi.value
 	iocb.clearQueue()
 
@@ -749,7 +701,7 @@ func (i *IOQController) CompleteIO(iocb _IOCB, msg PDU) error {
 		stateLog.Debug().Timestamp().Str("name", i.name).Msg("waiting")
 
 		task := FunctionTask(i._waitTrigger, NoArgs, NoKWArgs)
-		task.InstallTask(InstallTaskOptions{Delta: &i.waitTime})
+		task.InstallTask(WithInstallTaskOptionsDelta(i.waitTime))
 	} else {
 		// change our state
 		i.state = IOQControllerStates_CTRL_IDLE

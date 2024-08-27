@@ -40,15 +40,20 @@ func IsGlobalTimeMachineSet() bool {
 
 // NewGlobalTimeMachine creates a new TimeMachine and set it as global.
 // Usually it is sufficient to use ExclusiveGlobalTimeMachine
-// Attention: Use in combination with LockGlobalTimeMachine to avoid side effects.
 func NewGlobalTimeMachine(t *testing.T) {
 	testingLogger := testutils.ProduceTestingLogger(t)
 	if globalTimeMachine != nil {
 		testingLogger.Warn().Msg("global time machine set, overwriting")
 	}
+	testingLogger.Trace().Msg("creating new global time machine")
 	globalTimeMachine = NewTimeMachine(testingLogger)
+	testingLogger.Trace().Msg("overwriting global task manager")
+	oldManager := bacnetip.OverwriteTaskManager(testingLogger, globalTimeMachine)
 	t.Cleanup(func() {
+		testingLogger.Trace().Msg("clearing task manager")
 		bacnetip.ClearTaskManager(testingLogger)
+		testingLogger.Trace().Msg("Restoring old manager")
+		bacnetip.OverwriteTaskManager(testingLogger, oldManager)
 	})
 }
 
@@ -61,6 +66,7 @@ func ClearGlobalTimeMachine(t *testing.T) {
 		testingLogger.Warn().Msg("global time machine not set")
 	}
 	globalTimeMachine = nil
+	bacnetip.ClearTaskManager(testingLogger)
 }
 
 // LockGlobalTimeMachine locks the global time machine during the test duration.
@@ -94,12 +100,11 @@ func NewTimeMachine(localLog zerolog.Logger) *TimeMachine {
 		log: localLog,
 	}
 	t.TaskManager = bacnetip.NewTaskManager(localLog)
-	bacnetip.OverwriteTaskManager(localLog, t)
 	return t
 }
 
 func (t *TimeMachine) GetTime() time.Time {
-	t.log.Debug().Time("currentTime", t.currentTime).Msg("GetTime")
+	t.log.Trace().Time("currentTime", t.currentTime).Msg("GetTime")
 	return t.currentTime
 }
 
