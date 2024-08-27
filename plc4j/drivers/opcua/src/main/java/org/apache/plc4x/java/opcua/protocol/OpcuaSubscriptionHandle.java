@@ -150,10 +150,10 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                     new NodeIdFourByte((short) 0, filterPayload.getExtensionId()),
                     null, null
                 );
-                eventFilter = new WireExtensionObject(
+                eventFilter = new BinaryExtensionObjectWithMask(
                     expandedNodeId,
                     new ExtensionObjectEncodingMask(false, false, true),
-                    new BinaryWireExtensionObject(filterPayload)
+                    filterPayload
                 );
                 readValueId = new ReadValueId(
                     idNode,

@@ -591,7 +591,7 @@ public class SecureChannel {
                     null
                 );
 
-                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(anonymousIdentityToken));
+                return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, anonymousIdentityToken);
             case userTokenTypeUserName:
                 //Encrypt the password using the server nonce and server public key
                 byte[] remoteNonce = conversation.getRemoteNonce();
@@ -619,7 +619,7 @@ public class SecureChannel {
                     null,
                     null);
 
-                return new WireExtensionObject(extExpandedNodeId, BINARY_ENCODING_MASK, new BinaryWireExtensionObject(userNameIdentityToken));
+                return new BinaryExtensionObjectWithMask(extExpandedNodeId, BINARY_ENCODING_MASK, userNameIdentityToken);
         }
         return null;
     }
