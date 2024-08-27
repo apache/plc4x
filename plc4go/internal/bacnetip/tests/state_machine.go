@@ -23,6 +23,8 @@ import (
 	"bytes"
 	"fmt"
 	"slices"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -1148,10 +1150,6 @@ func (s *stateMachine) GetStartState() State {
 	return s.startState
 }
 
-func (s *stateMachine) String() string {
-	return fmt.Sprintf("stateMachine(name=%s)", s.name)
-}
-
 func (s *stateMachine) NewState(docString string) State {
 	s.log.Trace().Str("docString", docString).Msg("NewState")
 	_state := NewState(s.log, s, docString, WithStateStateInterceptor(s.interceptor))
@@ -1586,6 +1584,21 @@ func (s *stateMachine) IsFailState() bool {
 	return *s.isFailState
 }
 
+func (s *stateMachine) String() string {
+	var fields []string
+	if s.name != "" {
+		fields = append(fields, "name=", s.name)
+	}
+	fields = append(fields, "running="+strconv.FormatBool(s.running))
+	if s.isSuccessState != nil {
+		fields = append(fields, "successState="+strconv.FormatBool(*s.isSuccessState))
+	}
+	if s.isFailState != nil {
+		fields = append(fields, "failState="+strconv.FormatBool(*s.isFailState))
+	}
+	return fmt.Sprintf("StateMachine(%s)", strings.Join(fields, ", "))
+}
+
 // StateMachineGroup  A state machine group is a collection of state machines that are all
 //
 //	started and stopped together.  There are methods available to derived
@@ -1843,7 +1856,7 @@ func WithClientStateMachineName(name string) func(*ClientStateMachine) {
 }
 
 func (s *ClientStateMachine) String() string {
-	return fmt.Sprintf("ClientStateMachine{Client: %v, StateMachine: %v}", s.Client, s.StateMachine)
+	return fmt.Sprintf("ClientStateMachine{%v, %v}", s.Client, s.StateMachine)
 }
 
 func (s *ClientStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {

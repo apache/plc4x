@@ -29,6 +29,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
@@ -270,34 +271,29 @@ func TestVLAN(t *testing.T) {
 		assert.NoError(t, err)
 	})
 	t.Run("test_promiscuous_fail", func(t *testing.T) {
-		testingLogger := testutils.ProduceTestingLogger(t)
 		tests.ExclusiveGlobalTimeMachine(t)
 
 		// three element network
-		tnet := NewTNetwork(t, 3, true, false)
+		tnet := NewTNetwork(t, 3, false, false)
 
 		stateMachines := tnet.GetStateMachines()
 		tnode1, tnode2, tnode3 := stateMachines[0], stateMachines[1], stateMachines[2]
 
 		// make a PDU from node 1 to node 2
-		src, err := bacnetip.NewAddress(testingLogger, 1)
-		require.NoError(t, err)
-		dest, err := bacnetip.NewAddress(testingLogger, 2)
-		require.NoError(t, err)
-		pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(src), bacnetip.WithPDUDestination(dest))
+		pdu := bacnetip.NewPDU(nil, bacnetip.WithPDUSource(Address(1)), bacnetip.WithPDUDestination(Address(1)))
 		t.Log(pdu)
 
 		// node 1 sends the pdu to node 2, node 3 waits and gets nothing
 		tnode1.GetStartState().Send(pdu, nil).Success("")
 		tnode2.GetStartState().Receive(bacnetip.NewArgs(bacnetip.NewPDU(nil)), bacnetip.NewKWArgs(
-			bacnetip.KWPPDUSource, src,
+			bacnetip.KWPPDUSource, Address(1),
 		)).Success("")
 
 		// if node 3 receives anything it will trigger unexpected receive and fail
 		tnode3.GetStartState().Timeout(500*time.Millisecond, nil).Success("")
 
 		// run the group
-		err = tnet.Run(0)
+		err := tnet.Run(0)
 		assert.Error(t, err)
 	})
 }
