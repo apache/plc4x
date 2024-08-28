@@ -175,7 +175,7 @@ class ModbusDriverLoader(PlcDriverLoader):
     """
 
     @staticmethod
-    @plc4py.hookimpl
+    @plc4py.drivers.hookimpl
     def get_driver() -> Type[ModbusDriver]:
         """
         Returns the ModbusDriver class used to instantiate Modbus plc drivers.
@@ -187,7 +187,7 @@ class ModbusDriverLoader(PlcDriverLoader):
         return ModbusDriver
 
     @staticmethod
-    @plc4py.hookimpl
+    @plc4py.drivers.hookimpl
     def key() -> str:
         """
         Returns the unique key for the Modbus driver.

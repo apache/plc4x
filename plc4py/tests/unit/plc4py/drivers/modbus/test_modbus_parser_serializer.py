@@ -18,13 +18,13 @@ import os
 
 import pytest
 
-from unit.plc4py.utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRunner
+from ...utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRunner
 
 
 def pytest_generate_tests(metafunc):
     path: str = os.path.join(
             os.path.dirname(__file__),
-            "..", "..", "..", "..", ".."            
+            "..", "..", "..", "..", "..", "..",
             "protocols",
             "modbus",
             "src",
@@ -35,6 +35,7 @@ def pytest_generate_tests(metafunc):
             "tcp",
             "ParserSerializerTestsuite.xml"
         )
+    pass
     xml_loader = ParserSerializerTestsuiteRunner(path)
 
     test_suites = xml_loader.test_suite_tests

@@ -21,12 +21,13 @@ from typing import Type
 import pluggy
 
 from plc4py.api.PlcDriver import PlcDriver
+from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 
 
 class PlcDriverClassLoader:
     """Hook spec for PLC4PY Driver Loaders"""
 
-    hookspec = pluggy.HookspecMarker("plc4py")
+    hookspec = pluggy.HookspecMarker("plc4py.drivers")
 
     @staticmethod
     @hookspec
@@ -37,3 +38,19 @@ class PlcDriverClassLoader:
     @hookspec
     def key() -> str:
         """Unique key to identify the driver"""
+
+
+class PlcTransportClassLoader:
+    """Hook spec for PLC4PY Transport Loaders"""
+
+    hookspec = pluggy.HookspecMarker("plc4py.transports")
+
+    @staticmethod
+    @hookspec
+    def get_transport() -> Type[Plc4xBaseTransport]:
+        """Returns the PlcConnection class that is used to instantiate the transport"""
+
+    @staticmethod
+    @hookspec
+    def key() -> str:
+        """Unique key to identify the transport"""

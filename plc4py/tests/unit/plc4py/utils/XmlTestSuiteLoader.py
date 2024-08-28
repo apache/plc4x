@@ -37,9 +37,9 @@ from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 from xsdata.utils.text import snake_case
 
-from api.exceptions.exceptions import SerializationException
-from spi.generation.ReadBuffer import ReadBufferByteBased
-from spi.generation.WriteBuffer import WriteBufferXmlBased, WriteBufferByteBased
+from plc4py.api.exceptions.exceptions import SerializationException
+from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
+from plc4py.spi.generation.WriteBuffer import WriteBufferXmlBased, WriteBufferByteBased
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ class ParserSerializerTestCase(TestCase):
             output_flavor = self.test_suite.output_flavor.replace("-", "")
             root_type = self.test_case.root_type
             imported_module = importlib.import_module(
-                f"protocols.{protocol_name}.{output_flavor}.{root_type}",
+                f"plc4py.protocols.{protocol_name}.{output_flavor}.{root_type}",
                 package="plc4py",
             )
         except ModuleNotFoundError as e:

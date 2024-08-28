@@ -19,9 +19,11 @@
 import asyncio
 from asyncio import Protocol
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Type
 
+import plc4py
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
+from plc4py.spi.transport.PlcTransportLoader import PlcTransportLoader
 
 
 @dataclass
@@ -44,3 +46,19 @@ class TCPTransport(Plc4xBaseTransport):
         coro = loop.create_connection(protocol_factory, host, port)
         _transport, _protocol = await coro
         return TCPTransport(_transport, _protocol, host, port)
+
+
+class TCPTransportLoader(PlcTransportLoader):
+    """
+    Umas Driver Pluggy Hook Implementation, lets pluggy find the driver by name
+    """
+
+    @staticmethod
+    @plc4py.spi.transport.hookimpl
+    def get_transport() -> Type[TCPTransport]:
+        return TCPTransport
+
+    @staticmethod
+    @plc4py.spi.transport.hookimpl
+    def key() -> str:
+        return "tcp"

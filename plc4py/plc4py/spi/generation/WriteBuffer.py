@@ -82,29 +82,17 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def write_unsigned_short(
-        self,
-        value: int,
-        bit_length: int = 16,
-        logical_name: str = "",
-        **kwargs,
+        self, value: int, bit_length: int = 16, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
     def write_unsigned_int(
-        self,
-        value: int,
-        bit_length: int = 32,
-        logical_name: str = "",
-        **kwargs,
+        self, value: int, bit_length: int = 32, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
     def write_unsigned_long(
-        self,
-        value: int,
-        bit_length: int = 64,
-        logical_name: str = "",
-        **kwargs,
+        self, value: int, bit_length: int = 64, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
@@ -114,47 +102,27 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         raise NotImplementedError
 
     def write_short(
-        self,
-        value: int,
-        bit_length: int = 16,
-        logical_name: str = "",
-        **kwargs,
+        self, value: int, bit_length: int = 16, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
     def write_int(
-        self,
-        value: int,
-        bit_length: int = 32,
-        logical_name: str = "",
-        **kwargs,
+        self, value: int, bit_length: int = 32, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
     def write_long(
-        self,
-        value: int,
-        bit_length: int = 64,
-        logical_name: str = "",
-        **kwargs,
+        self, value: int, bit_length: int = 64, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
     def write_float(
-        self,
-        value: float,
-        bit_length: int = 32,
-        logical_name: str = "",
-        **kwargs,
+        self, value: float, bit_length: int = 32, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
     def write_double(
-        self,
-        value: float,
-        bit_length: int = 64,
-        logical_name: str = "",
-        **kwargs,
+        self, value: float, bit_length: int = 64, logical_name: str = "", **kwargs
     ) -> None:
         raise NotImplementedError
 
@@ -164,7 +132,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         bit_length: int = -1,
         logical_name: str = "",
         encoding: str = "UTF-8",
-        **kwargs,
+        **kwargs
     ) -> None:
         raise NotImplementedError
 
@@ -410,9 +378,6 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             self.position += bit_length
 
 
-
-
-
 class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
     NUMERIC_UNION = Union[
         c_ubyte,
@@ -460,7 +425,6 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         else:
             kwargs['bit_length'] = str(1)
         self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
-
 
     def write_byte(self, value: int, logical_name: str = "", **kwargs) -> None:
         data_type: str = "byte"
