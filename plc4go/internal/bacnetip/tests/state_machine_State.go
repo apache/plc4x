@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 )
 
 type StateInterceptor interface {
@@ -146,13 +147,16 @@ func NewState(localLog zerolog.Logger, stateMachine StateMachine, docString stri
 		stateMachine: stateMachine,
 		docString:    docString,
 
-		log: localLog.With().Str("docString", docString).Logger(),
+		log: localLog,
 	}
 	for _, opt := range opts {
 		opt(s)
 	}
 	if s.interceptor == nil {
 		s.interceptor = s
+	}
+	if docString != "" {
+		s.log = s.log.With().Str("docString", docString).Logger()
 	}
 	return s
 }
@@ -161,13 +165,6 @@ func WithStateStateInterceptor(interceptor StateInterceptor) func(state *state) 
 	return func(state *state) {
 		state.interceptor = interceptor
 	}
-}
-
-func (s *state) String() string {
-	if s == nil {
-		return "<nil>(*state)"
-	}
-	return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
 }
 
 // Reset Override this method in a derived class if the state maintains counters or other information.  Called when the
@@ -181,7 +178,8 @@ func (s *state) Reset() {
 //
 //	is returned for method chaining.
 func (s *state) Doc(docString string) State {
-	s.log.Debug().Str("docString", docString).Msg("Doc")
+	s.log = s.log.With().Str("docString", docString).Logger() // TODO: would be better to use stringer or object to dynamically retrieve docstring and only build logger once
+	s.log.Debug().Msg("Doc")
 	s.docString = docString
 	return s
 }
@@ -472,4 +470,15 @@ func (s *state) Call(fn func(args bacnetip.Args, kwargs bacnetip.KWArgs) error, 
 		},
 	}
 	return nextState
+}
+
+func (s *state) String() string {
+	if s == nil {
+		return "<nil>(*state)"
+	}
+	if globals.ExtendedGeneralOutput {
+		return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
+	} else {
+		return fmt.Sprintf("<%T(%s) at %p>", s, s.docString, s)
+	}
 }

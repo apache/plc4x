@@ -48,8 +48,8 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 }
 
 type NPDUCodec struct {
-	*bacnetip.Client
-	*bacnetip.Server
+	bacnetip.Client
+	bacnetip.Server
 
 	log zerolog.Logger
 }
@@ -143,7 +143,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 		log: localLog,
 	}
 	var err error
-	s.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
+	s.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -195,7 +195,7 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	n.address = Address(address)
 
 	var err error
-	n.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(n.name))
+	n.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(n.name), tests.WithClientStateMachineExtension(n))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -269,7 +269,7 @@ func (r *RouterNode) String() string {
 
 type RouterStateMachine struct {
 	*RouterNode
-	tests.StateMachine
+	tests.StateMachineContract
 }
 
 func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error) {
@@ -280,9 +280,17 @@ func NewRouterStateMachine(localLog zerolog.Logger) (*RouterStateMachine, error)
 		return nil, errors.Wrap(err, "error creating router node")
 	}
 	var initFunc func()
-	r.StateMachine, initFunc = tests.NewStateMachine(localLog, r)
+	r.StateMachineContract, initFunc = tests.NewStateMachine(localLog, r)
 	initFunc()
 	return r, nil
+}
+
+func (r *RouterStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+	panic("not available")
+}
+
+func (r *RouterStateMachine) String() string {
+	return "RouterStateMachine"
 }
 
 type TestDeviceObject struct {
@@ -331,7 +339,7 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service")
 	}
-	a.ClientStateMachine, err = tests.NewClientStateMachine(a.log, tests.WithClientStateMachineName(localDevice.ObjectName))
+	a.ClientStateMachine, err = tests.NewClientStateMachine(a.log, tests.WithClientStateMachineName(localDevice.ObjectName), tests.WithClientStateMachineExtension(a))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}

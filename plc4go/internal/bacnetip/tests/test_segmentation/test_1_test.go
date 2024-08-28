@@ -146,7 +146,7 @@ func (a *ApplicationNetwork) _debug(format string, args bacnetip.Args) {
 }
 
 type SnifferNode struct {
-	*bacnetip.Client
+	bacnetip.Client
 
 	name    string
 	address *bacnetip.Address
@@ -224,7 +224,7 @@ func (s *SnifferNode) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) e
 
 type ApplicationStateMachine struct {
 	*bacnetip.Application
-	tests.StateMachine
+	tests.StateMachineContract
 
 	address *bacnetip.Address
 	asap    *bacnetip.ApplicationServiceAccessPoint
@@ -260,7 +260,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.L
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachine, init = tests.NewStateMachine(a.log, a, tests.WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = tests.NewStateMachine(a.log, a, tests.WithStateMachineName(localDevice.ObjectName))
 	init()
 
 	// include a application decoder

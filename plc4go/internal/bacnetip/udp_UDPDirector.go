@@ -33,7 +33,7 @@ import (
 )
 
 type UDPDirector struct {
-	*Server
+	Server
 	*ServiceAccessPoint
 
 	timeout uint32
@@ -53,7 +53,7 @@ type UDPDirector struct {
 func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], timeout *int, reuse *bool, sid *int, sapID *int) (*UDPDirector, error) {
 	d := &UDPDirector{}
 	var err error
-	d.Server, err = NewServer(localLog, d, func(server *Server) {
+	d.Server, err = NewServer(localLog, d, func(server *server) {
 		server.serverID = sid
 	})
 	if err != nil {

@@ -55,7 +55,7 @@ type criteria struct {
 }
 
 func (c criteria) String() string {
-	return fmt.Sprintf("criteria{%s, %v}", c.pduType, c.pduAttrs)
+	return fmt.Sprintf("criteria{%T, %v}", c.pduType, c.pduAttrs)
 }
 
 type ReceiveTransition struct {

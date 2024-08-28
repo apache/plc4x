@@ -25,7 +25,7 @@ import (
 )
 
 type _MultiplexClient struct {
-	*Client
+	Client
 	multiplexer *UDPMultiplexer
 }
 

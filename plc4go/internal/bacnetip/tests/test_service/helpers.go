@@ -157,7 +157,7 @@ func (a *ApplicationNetwork) _debug(format string, args bacnetip.Args) {
 }
 
 type SnifferNode struct {
-	*bacnetip.Client
+	bacnetip.Client
 
 	name    string
 	address *bacnetip.Address
@@ -234,8 +234,8 @@ func (s *SnifferNode) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) e
 }
 
 type SnifferStateMachine struct {
-	*bacnetip.Client
-	tests.StateMachine
+	bacnetip.Client
+	tests.StateMachineContract
 
 	name    string
 	address *bacnetip.Address
@@ -258,7 +258,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *bacnetip.Network) (*S
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	var init func()
-	s.StateMachine, init = tests.NewStateMachine(localLog, s)
+	s.StateMachineContract, init = tests.NewStateMachine(localLog, s)
 	init()
 
 	// create a promiscuous node, added to the network
@@ -276,7 +276,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *bacnetip.Network) (*S
 	return s, nil
 }
 
-func (s *SnifferStateMachine) Sends(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
+func (s *SnifferStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("request")
 	return errors.New("sniffers don't send")
 }
@@ -323,7 +323,7 @@ func (s *SnifferStateMachine) String() string {
 
 type ApplicationStateMachine struct {
 	*bacnetip.ApplicationIOController
-	tests.StateMachine
+	tests.StateMachineContract
 
 	address *bacnetip.Address
 	asap    *bacnetip.ApplicationServiceAccessPoint
@@ -355,7 +355,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.L
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachine, init = tests.NewStateMachine(a.log, a, tests.WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = tests.NewStateMachine(a.log, a, tests.WithStateMachineName(localDevice.ObjectName))
 	init()
 
 	// include a application decoder

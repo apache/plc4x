@@ -32,7 +32,7 @@ import (
 
 type NetworkServiceAccessPoint struct {
 	*ServiceAccessPoint
-	*Server
+	Server
 	adapters        map[*uint16]*NetworkAdapter
 	routerInfoCache *RouterInfoCache
 	pendingNets     map[*uint16][]PDU
@@ -59,7 +59,7 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.Server, err = NewServer(localLog, n, func(server *Server) {
+	n.Server, err = NewServer(localLog, n, func(server *server) {
 		server.serverID = n.argSid
 	})
 	if err != nil {
@@ -120,7 +120,7 @@ Bind creates a network adapter object and bind.
 	    Called for applications or routers, bind to the network, send up
 	    APDUs with a metching address.
 */
-func (n *NetworkServiceAccessPoint) Bind(server _Server, net *uint16, address *Address) error {
+func (n *NetworkServiceAccessPoint) Bind(server Server, net *uint16, address *Address) error {
 	n.log.Debug().
 		Interface("server", server).
 		Interface("net", net).

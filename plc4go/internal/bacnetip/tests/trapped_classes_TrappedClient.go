@@ -37,7 +37,7 @@ type TrappedClientContract interface {
 // TrappedClient  An instance of this class sits at the top of a stack.
 type TrappedClient struct {
 	TrappedClientContract
-	*bacnetip.Client
+	bacnetip.Client
 
 	requestSent          bacnetip.PDU
 	confirmationReceived bacnetip.PDU

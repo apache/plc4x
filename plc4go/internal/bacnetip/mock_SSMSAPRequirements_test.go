@@ -936,7 +936,7 @@ func (_c *MockSSMSAPRequirements_String_Call) RunAndReturn(run func() string) *M
 }
 
 // _setClientPeer provides a mock function with given fields: server
-func (_m *MockSSMSAPRequirements) _setClientPeer(server _Server) {
+func (_m *MockSSMSAPRequirements) _setClientPeer(server Server) {
 	_m.Called(server)
 }
 
@@ -946,14 +946,14 @@ type MockSSMSAPRequirements__setClientPeer_Call struct {
 }
 
 // _setClientPeer is a helper method to define mock.On call
-//   - server _Server
+//   - server Server
 func (_e *MockSSMSAPRequirements_Expecter) _setClientPeer(server interface{}) *MockSSMSAPRequirements__setClientPeer_Call {
 	return &MockSSMSAPRequirements__setClientPeer_Call{Call: _e.mock.On("_setClientPeer", server)}
 }
 
-func (_c *MockSSMSAPRequirements__setClientPeer_Call) Run(run func(server _Server)) *MockSSMSAPRequirements__setClientPeer_Call {
+func (_c *MockSSMSAPRequirements__setClientPeer_Call) Run(run func(server Server)) *MockSSMSAPRequirements__setClientPeer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_Server))
+		run(args[0].(Server))
 	})
 	return _c
 }
@@ -963,7 +963,7 @@ func (_c *MockSSMSAPRequirements__setClientPeer_Call) Return() *MockSSMSAPRequir
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements__setClientPeer_Call) RunAndReturn(run func(_Server)) *MockSSMSAPRequirements__setClientPeer_Call {
+func (_c *MockSSMSAPRequirements__setClientPeer_Call) RunAndReturn(run func(Server)) *MockSSMSAPRequirements__setClientPeer_Call {
 	_c.Call.Return(run)
 	return _c
 }

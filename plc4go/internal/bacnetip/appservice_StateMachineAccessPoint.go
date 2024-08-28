@@ -29,7 +29,7 @@ import (
 )
 
 type StateMachineAccessPoint struct {
-	*Client
+	Client
 	*ServiceAccessPoint
 
 	localDevice           *LocalDeviceObject
@@ -96,7 +96,7 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 		Interface("cid", s.argCid).
 		Msg("NewStateMachineAccessPoint")
 	// basic initialization
-	client, err := NewClient(localLog, s, func(client *Client) {
+	client, err := NewClient(localLog, s, func(client *client) {
 		client.clientID = s.argCid
 	})
 	if err != nil {

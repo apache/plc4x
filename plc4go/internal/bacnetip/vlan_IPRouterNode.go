@@ -27,7 +27,7 @@ import (
 )
 
 type IPRouterNode struct {
-	*Client
+	Client
 
 	router     *IPRouter
 	lan        *IPNetwork
@@ -53,7 +53,7 @@ func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, l
 		opt(i)
 	}
 	var err error
-	i.Client, err = NewClient(localLog, i, func(client *Client) {
+	i.Client, err = NewClient(localLog, i, func(client *client) {
 		client.clientID = i.argCid
 	})
 	if err != nil {

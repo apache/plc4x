@@ -27,8 +27,8 @@ import (
 )
 
 type AnnexJCodec struct {
-	*Client
-	*Server
+	Client
+	Server
 
 	// pass through args
 	argCid *int
@@ -48,14 +48,14 @@ func NewAnnexJCodec(localLog zerolog.Logger, opts ...func(*AnnexJCodec)) (*Annex
 		Interface("cid", a.argCid).
 		Interface("sid", a.argSid).
 		Msg("NewAnnexJCodec")
-	client, err := NewClient(localLog, a, func(client *Client) {
+	client, err := NewClient(localLog, a, func(client *client) {
 		client.clientID = a.argSid
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	a.Client = client
-	server, err := NewServer(localLog, a, func(server *Server) {
+	server, err := NewServer(localLog, a, func(server *server) {
 		server.serverID = a.argSid
 	})
 	if err != nil {

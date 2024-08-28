@@ -27,8 +27,8 @@ import (
 )
 
 type NPDUCodec struct {
-	*bacnetip.Client
-	*bacnetip.Server
+	bacnetip.Client
+	bacnetip.Server
 
 	log zerolog.Logger
 }

@@ -26,25 +26,35 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// _Client is an interface used for documentation
-type _Client interface {
+type Client interface {
+	ClientContract
+	ClientRequirements
+}
+
+// ClientContract provides a set of functions which can be overwritten by a sub struct
+type ClientContract interface {
 	fmt.Stringer
 	Request(args Args, kwargs KWArgs) error
 	Confirmation(args Args, kwargs KWArgs) error
-	_setClientPeer(server _Server)
+	_setClientPeer(server Server)
 	getClientId() *int
 }
 
-// Client is an "abstract" struct which is used in another struct as delegate
-type Client struct {
+// ClientRequirements provides a set of functions which must be overwritten by a sub struct
+type ClientRequirements interface {
+}
+
+type client struct {
 	clientID   *int
-	clientPeer _Server
+	clientPeer Server
 
 	log zerolog.Logger
 }
 
-func NewClient(localLog zerolog.Logger, rootStruct _Client, opts ...func(*Client)) (*Client, error) {
-	c := &Client{
+var _ ClientContract = (*client)(nil)
+
+func NewClient(localLog zerolog.Logger, requirements ClientRequirements, opts ...func(*client)) (Client, error) {
+	c := &client{
 		log: localLog,
 	}
 	for _, opt := range opts {
@@ -64,7 +74,7 @@ func NewClient(localLog zerolog.Logger, rootStruct _Client, opts ...func(*Client
 			}
 
 			// Note: we need to pass the requirements (which should contain c as delegate) here
-			if err := Bind(localLog, rootStruct, server); err != nil {
+			if err := Bind(localLog, requirements, server); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -72,13 +82,13 @@ func NewClient(localLog zerolog.Logger, rootStruct _Client, opts ...func(*Client
 	return c, nil
 }
 
-func WithClientCid(cid int) func(*Client) {
-	return func(c *Client) {
+func WithClientCid(cid int) func(*client) {
+	return func(c *client) {
 		c.clientID = &cid
 	}
 }
 
-func (c *Client) Request(args Args, kwargs KWArgs) error {
+func (c *client) Request(args Args, kwargs KWArgs) error {
 	c.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	if c.clientPeer == nil {
@@ -87,19 +97,19 @@ func (c *Client) Request(args Args, kwargs KWArgs) error {
 	return c.clientPeer.Indication(args, kwargs)
 }
 
-func (c *Client) Confirmation(args Args, kwargs KWArgs) error {
+func (c *client) Confirmation(args Args, kwargs KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (c *Client) _setClientPeer(server _Server) {
+func (c *client) _setClientPeer(server Server) {
 	c.clientPeer = server
 }
 
-func (c *Client) getClientId() *int {
+func (c *client) getClientId() *int {
 	return c.clientID
 }
 
-func (c *Client) String() string {
+func (c *client) String() string {
 	clientPeer := ""
 	if c.clientPeer != nil {
 		clientPeer = fmt.Sprintf(", clientPeerId: %d", c.clientPeer.getServerId())

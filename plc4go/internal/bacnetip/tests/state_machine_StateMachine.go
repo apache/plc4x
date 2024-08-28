@@ -30,11 +30,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 )
-
-type StateMachineRequirements interface {
-	Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-}
 
 // StateMachine A state machine consisting of states.  Every state machine has a start
 //
@@ -42,12 +39,16 @@ type StateMachineRequirements interface {
 //	an *unexpected receive* fail state where the state machine goes if
 //	there is an unexpected (unmatched) tPDU received.
 type StateMachine interface {
-	fmt.Stringer
+	StateMachineContract
+	StateMachineRequirements
+}
 
+// StateMachineContract provides a set of functions which can be overwritten by a sub struct
+type StateMachineContract interface {
+	fmt.Stringer
 	NewState(string) State
 	UnexpectedReceive(pdu bacnetip.PDU)
 	BeforeSend(pdu bacnetip.PDU)
-	Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	AfterSend(pdu bacnetip.PDU)
 	BeforeReceive(pdu bacnetip.PDU)
 	Receive(args bacnetip.Args, kwargs bacnetip.KWArgs) error
@@ -71,8 +72,14 @@ type StateMachine interface {
 	halt()
 }
 
+// StateMachineRequirements provides a set of functions which must be overwritten by a sub struct
+type StateMachineRequirements interface {
+	StateMachineContract
+	Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error
+}
+
 type stateMachine struct {
-	StateMachineRequirements
+	requirements StateMachineRequirements
 
 	interceptor    StateInterceptor
 	stateDecorator func(state State) State
@@ -100,10 +107,12 @@ type stateMachine struct {
 	log zerolog.Logger
 }
 
+var _ StateMachineContract = (*stateMachine)(nil)
+
 // NewStateMachine creates a new state machine. Make sure to call the init function (Init must be called after a new (can't be done in constructor as initialization is then not yet finished))
-func NewStateMachine(localLog zerolog.Logger, stateMachineRequirements StateMachineRequirements, opts ...func(machine *stateMachine)) (sm StateMachine, init func()) {
+func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequirements, opts ...func(machine *stateMachine)) (sm StateMachineContract, init func()) {
 	s := &stateMachine{
-		StateMachineRequirements: stateMachineRequirements,
+		requirements: requirements,
 
 		log: localLog,
 	}
@@ -126,7 +135,7 @@ func NewStateMachine(localLog zerolog.Logger, stateMachineRequirements StateMach
 				panic("start state already bound to a machine")
 			}
 			s.states = append(s.states, s.startState)
-			s.startState.setStateMachine(s)
+			s.startState.setStateMachine(s.requirements)
 		} else {
 			s.startState = s.NewState("start")
 			s.startState = s.stateDecorator(s.startState)
@@ -137,7 +146,7 @@ func NewStateMachine(localLog zerolog.Logger, stateMachineRequirements StateMach
 				panic("start state already bound to a machine")
 			}
 			s.states = append(s.states, s.unexpectedReceiveState)
-			s.unexpectedReceiveState.setStateMachine(s)
+			s.unexpectedReceiveState.setStateMachine(s.requirements)
 		} else {
 			s.unexpectedReceiveState = s.NewState("unexpected receive").Fail("")
 			s.unexpectedReceiveState = s.stateDecorator(s.unexpectedReceiveState)
@@ -230,7 +239,7 @@ func (s *stateMachine) GetStartState() State {
 
 func (s *stateMachine) NewState(docString string) State {
 	s.log.Trace().Str("docString", docString).Msg("NewState")
-	_state := NewState(s.log, s, docString, WithStateStateInterceptor(s.interceptor))
+	_state := NewState(s.log, s.requirements, docString, WithStateStateInterceptor(s.interceptor))
 	_state = s.stateDecorator(_state)
 	s.states = append(s.states, _state)
 	return _state
@@ -287,11 +296,11 @@ func (s *stateMachine) Run() error {
 
 	// if it is part of a group, let the group know
 	if s.machineGroup != nil {
-		s.machineGroup.Started(s)
+		s.machineGroup.Started(s.requirements)
 
 		// if it is stopped already, let the group know
 		if !s.running {
-			s.machineGroup.Stopped(s)
+			s.machineGroup.Stopped(s.requirements)
 		}
 	}
 	return nil
@@ -375,7 +384,7 @@ func (s *stateMachine) gotoState(state State) error {
 		s.success()
 
 		if s.machineGroup != nil && s.startupFlag {
-			s.machineGroup.Stopped(s)
+			s.machineGroup.Stopped(s.requirements)
 		}
 
 		return nil
@@ -389,7 +398,7 @@ func (s *stateMachine) gotoState(state State) error {
 		s.fail()
 
 		if s.machineGroup != nil && s.startupFlag {
-			s.machineGroup.Stopped(s)
+			s.machineGroup.Stopped(s.requirements)
 		}
 
 		return nil
@@ -433,12 +442,10 @@ func (s *stateMachine) gotoState(state State) error {
 			s.fail()
 
 			if s.machineGroup != nil && !s.startupFlag {
-				s.machineGroup.Stopped(s)
+				s.machineGroup.Stopped(s.requirements)
 			}
 
 			return nil
-		} else {
-			s.log.Trace().Msg("called, exception")
 		}
 
 		nextState = callTransition.nextState
@@ -450,7 +457,7 @@ func (s *stateMachine) gotoState(state State) error {
 		for _, transition := range currentState.getSendTransitions() {
 			s.log.Debug().Stringer("transition", transition).Msg("sending transition")
 			currentState.getInterceptor().BeforeSend(transition.pdu)
-			if err := s.StateMachineRequirements.Send(bacnetip.NewArgs(transition.pdu), bacnetip.NewKWArgs()); err != nil {
+			if err := s.requirements.Send(bacnetip.NewArgs(transition.pdu), bacnetip.NewKWArgs()); err != nil {
 				return errors.Wrap(err, "failed to send")
 			}
 			currentState.getInterceptor().AfterSend(transition.pdu)
@@ -663,16 +670,35 @@ func (s *stateMachine) IsFailState() bool {
 }
 
 func (s *stateMachine) String() string {
-	var fields []string
-	if s.name != "" {
-		fields = append(fields, "name=", s.name)
+	if globals.ExtendedGeneralOutput {
+		var fields []string
+		if s.name != "" {
+			fields = append(fields, "name="+s.name)
+		}
+		fields = append(fields, "running="+strconv.FormatBool(s.running))
+		if s.isSuccessState != nil {
+			fields = append(fields, "successState="+strconv.FormatBool(*s.isSuccessState))
+		}
+		if s.isFailState != nil {
+			fields = append(fields, "failState="+strconv.FormatBool(*s.isFailState))
+		}
+		return fmt.Sprintf("StateMachine(%s)", strings.Join(fields, ", "))
+	} else {
+		var stateText = ""
+		if s.currentState == nil {
+			stateText = "not started"
+		} else if s.isSuccessState != nil && *s.isSuccessState {
+			stateText = "success"
+		} else if s.isFailState != nil && *s.isFailState {
+			stateText = "fail"
+		} else if !s.running {
+			stateText = "idle"
+		} else {
+			stateText = "in"
+		}
+		if s.currentState != nil {
+			stateText += " " + s.currentState.String()
+		}
+		return fmt.Sprintf("<%T(%s) %s at %p>", s.requirements, s.name, stateText, s)
 	}
-	fields = append(fields, "running="+strconv.FormatBool(s.running))
-	if s.isSuccessState != nil {
-		fields = append(fields, "successState="+strconv.FormatBool(*s.isSuccessState))
-	}
-	if s.isFailState != nil {
-		fields = append(fields, "failState="+strconv.FormatBool(*s.isFailState))
-	}
-	return fmt.Sprintf("StateMachine(%s)", strings.Join(fields, ", "))
 }

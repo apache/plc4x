@@ -48,8 +48,8 @@ func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement
 }
 
 type FauxMultiplexer struct {
-	*bacnetip.Client
-	*bacnetip.Server
+	bacnetip.Client
+	bacnetip.Server
 
 	address        *bacnetip.Address
 	unicastTuple   *bacnetip.AddressTuple[string, uint16]
@@ -167,7 +167,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	s := &SnifferStateMachine{
 		log: localLog,
 	}
-	machine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
+	machine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -204,10 +204,6 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	return s, nil
 }
 
-func (s *SnifferStateMachine) String() string {
-	return fmt.Sprintf("SnifferStateMachine(%s)", s.name)
-}
-
 // BIPStateMachine is an application layer for BVLL messages that has no BVLL
 //
 //	processing like the 'simple', 'foreign', or 'bbmd' versions.  The client
@@ -225,7 +221,7 @@ type BIPStateMachine struct {
 func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*BIPStateMachine, error) {
 	b := &BIPStateMachine{}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
@@ -251,10 +247,6 @@ func NewBIPStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.
 	return b, nil
 }
 
-func (b *BIPStateMachine) String() string {
-	return fmt.Sprintf("BIPStateMachine{%vname: %v, address: %s, mux: %s}", b.ClientStateMachine, b.name, b.address, b.mux)
-}
-
 type BIPSimpleStateMachine struct {
 	*tests.ClientStateMachine
 	name string
@@ -273,40 +265,40 @@ func NewBIPSimpleStateMachine(localLog zerolog.Logger, netstring string, vlan *b
 	if err != nil {
 		return nil, errors.Wrap(err, "error building address")
 	}
-	stateMachine := &BIPSimpleStateMachine{
+	b := &BIPSimpleStateMachine{
 		// save the name and address
 		name:    netstring,
 		address: address,
 		log:     localLog,
 	}
-	clientStateMachine, err := tests.NewClientStateMachine(localLog)
+	clientStateMachine, err := tests.NewClientStateMachine(localLog, tests.WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
-	stateMachine.ClientStateMachine = clientStateMachine
+	b.ClientStateMachine = clientStateMachine
 
 	// BACnet/IP interpreter
-	stateMachine.bip, err = bacnetip.NewBIPSimple(localLog)
+	b.bip, err = bacnetip.NewBIPSimple(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building bip simple")
 	}
-	stateMachine.annexj, err = bacnetip.NewAnnexJCodec(localLog)
+	b.annexj, err = bacnetip.NewAnnexJCodec(localLog)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building annexj codec")
 	}
 
 	// fake multiplexer has a VLAN node in it
-	stateMachine.mux, err = NewFauxMultiplexer(localLog, stateMachine.address, vlan)
+	b.mux, err = NewFauxMultiplexer(localLog, b.address, vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating faux")
 	}
 
 	// bind the stack together
-	if err := bacnetip.Bind(localLog, stateMachine, stateMachine.bip, stateMachine.annexj, stateMachine.mux); err != nil {
+	if err := bacnetip.Bind(localLog, b, b.bip, b.annexj, b.mux); err != nil {
 		return nil, errors.Wrap(err, "error binding")
 	}
 
-	return stateMachine, nil
+	return b, nil
 }
 
 // BIPForeignStateMachine  sits on a BIPForeign instance, the send() and receive()
@@ -329,7 +321,7 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
@@ -362,10 +354,6 @@ func NewBIPForeignStateMachine(localLog zerolog.Logger, address string, vlan *ba
 	return b, nil
 }
 
-func (b *BIPForeignStateMachine) String() string {
-	return fmt.Sprintf("BIPForeignStateMachine(%s)", b.name)
-}
-
 type BIPBBMDStateMachine struct {
 	*tests.ClientStateMachine
 
@@ -383,7 +371,7 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 		log: localLog,
 	}
 	var err error
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address))
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(b))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
@@ -417,10 +405,6 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 		return nil, errors.Wrap(err, "error binding")
 	}
 	return b, nil
-}
-
-func (b *BIPBBMDStateMachine) String() string {
-	return fmt.Sprintf("BIPBBMDStateMachine(%s)", b.name)
 }
 
 type BIPSimpleNode struct {
@@ -561,7 +545,7 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}
-	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(b.name))
+	b.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(b.name), tests.WithClientStateMachineExtension(b))
 
 	// include a application decoder
 	b.asap, err = bacnetip.NewApplicationServiceAccessPoint(localLog)
@@ -639,10 +623,6 @@ func (b *BIPSimpleApplicationLayerStateMachine) Indication(args bacnetip.Args, k
 func (b *BIPSimpleApplicationLayerStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Confirmation")
 	return b.Receive(args, bacnetip.NoKWArgs)
-}
-
-func (b *BIPSimpleApplicationLayerStateMachine) String() string {
-	return fmt.Sprintf("BIPSimpleApplicationLayerStateMachine(%s)", b.name)
 }
 
 type BIPBBMDApplication struct {
@@ -766,8 +746,4 @@ func NewBIPBBMDApplication(localLog zerolog.Logger, address string, vlan *bacnet
 	}
 
 	return b, nil
-}
-
-func (b *BIPBBMDApplication) String() string {
-	return fmt.Sprintf("BIPBBMDApplication(%s)", b.name)
 }

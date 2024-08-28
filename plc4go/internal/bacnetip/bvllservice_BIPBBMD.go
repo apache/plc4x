@@ -31,8 +31,8 @@ import (
 
 type BIPBBMD struct {
 	*BIPSAP
-	*Client
-	*Server
+	Client
+	Server
 	*RecurringTask
 	*DebugContents
 
@@ -57,13 +57,13 @@ func NewBIPBBMD(localLog zerolog.Logger, addr *Address) (*BIPBBMD, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating BIPSAP")
 	}
-	b.Client, err = NewClient(localLog, b, func(client *Client) {
+	b.Client, err = NewClient(localLog, b, func(client *client) {
 		client.clientID = b.argCID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating Client")
 	}
-	b.Server, err = NewServer(localLog, b, func(Server *Server) {
+	b.Server, err = NewServer(localLog, b, func(Server *server) {
 		Server.serverID = b.argSID
 	})
 	if err != nil {
@@ -190,7 +190,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 	case model.BVLCForwardedNPDUExactly:
 		pdu := pdu.(*ForwardedNPDU) // TODO: check if this cast is fine
 		// send it upstream if there is a network layer
-		if b.serverPeer != nil {
+		if b.hasServerPeer() {
 			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetBvlciAddress()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = pdu.pduSource
@@ -284,7 +284,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		return b.Request(NewArgs(xpdu), NoKWArgs)
 	case model.BVLCDistributeBroadcastToNetworkExactly:
 		// send it upstream if there is a network layer
-		if b.serverPeer != nil {
+		if b.hasServerPeer() {
 			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
 			//               if settings.route_aware:
 			//                   xpdu.pduSource.addrRoute = pdu.pduSource
@@ -336,7 +336,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		return nil
 	case model.BVLCOriginalUnicastNPDUExactly:
 		// send it upstream if there is a network layer
-		if b.serverPeer != nil {
+		if b.hasServerPeer() {
 			// build a PDU
 			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(pdu.GetPDUDestination()), WithPDUUserData(pdu.GetPDUUserData()))
 			//               if settings.route_aware:
@@ -347,7 +347,7 @@ func (b *BIPBBMD) Confirmation(args Args, kwargs KWArgs) error {
 		}
 	case model.BVLCOriginalBroadcastNPDUExactly:
 		// send it upstream if there is a network layer
-		if b.serverPeer != nil {
+		if b.hasServerPeer() {
 			// build a PDU with a local broadcast address
 			xpdu := NewPDU(NewMessageBridge(pdu.GetPduData()...), WithPDUSource(pdu.GetPDUSource()), WithPDUDestination(NewLocalBroadcast(nil)), WithPDUUserData(pdu.GetPDUUserData()))
 			//               if settings.route_aware:

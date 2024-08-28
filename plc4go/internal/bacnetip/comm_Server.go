@@ -26,25 +26,34 @@ import (
 	"github.com/rs/zerolog"
 )
 
-// _Server is an interface used for documentation
-type _Server interface {
+type Server interface {
+	ServerContract
+}
+
+// ServerContract provides a set of functions which can be overwritten by a sub struct
+type ServerContract interface {
 	fmt.Stringer
 	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
-	_setServerPeer(serverPeer _Client)
+	_setServerPeer(serverPeer Client)
+	hasServerPeer() bool
 	getServerId() *int
 }
 
+// ServerRequirements provides a set of functions which must be overwritten by a sub struct
+type ServerRequirements interface {
+}
+
 // Server is an "abstract" struct which is used in another struct as delegate
-type Server struct {
+type server struct {
 	serverID   *int
-	serverPeer _Client
+	serverPeer Client
 
 	log zerolog.Logger
 }
 
-func NewServer(localLog zerolog.Logger, rootStruct _Server, opts ...func(server *Server)) (*Server, error) {
-	s := &Server{
+func NewServer(localLog zerolog.Logger, requirements ServerRequirements, opts ...func(server *server)) (Server, error) {
+	s := &server{
 		log: localLog,
 	}
 	for _, opt := range opts {
@@ -64,7 +73,7 @@ func NewServer(localLog zerolog.Logger, rootStruct _Server, opts ...func(server 
 			}
 
 			// Note: we need to pass the requirements (which should contain s as delegate) here
-			if err := Bind(localLog, client, rootStruct); err != nil {
+			if err := Bind(localLog, client, requirements); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -72,17 +81,17 @@ func NewServer(localLog zerolog.Logger, rootStruct _Server, opts ...func(server 
 	return s, nil
 }
 
-func WithServerSID(sid int) func(*Server) {
-	return func(server *Server) {
+func WithServerSID(sid int) func(*server) {
+	return func(server *server) {
 		server.serverID = &sid
 	}
 }
 
-func (s *Server) Indication(Args, KWArgs) error {
+func (s *server) Indication(Args, KWArgs) error {
 	panic("this should be implemented by outer struct")
 }
 
-func (s *Server) Response(args Args, kwargs KWArgs) error {
+func (s *server) Response(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	if s.serverPeer == nil {
@@ -91,15 +100,19 @@ func (s *Server) Response(args Args, kwargs KWArgs) error {
 	return s.serverPeer.Confirmation(args, kwargs)
 }
 
-func (s *Server) _setServerPeer(serverPeer _Client) {
+func (s *server) _setServerPeer(serverPeer Client) {
 	s.serverPeer = serverPeer
 }
 
-func (s *Server) getServerId() *int {
+func (s *server) hasServerPeer() bool {
+	return s.serverPeer != nil
+}
+
+func (s *server) getServerId() *int {
 	return s.serverID
 }
 
-func (s *Server) String() string {
+func (s *server) String() string {
 	serverPeer := ""
 	if s.serverPeer != nil {
 		serverPeer = fmt.Sprintf(", serverPeerId: %d", s.serverPeer.getClientId())

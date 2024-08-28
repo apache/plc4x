@@ -143,14 +143,14 @@ func (s *StateMachineGroup) Run() error {
 // Started Called by a state machine in the group when it has completed its
 //
 //	transition into its starting state.
-func (s *StateMachineGroup) Started(machine *stateMachine) {
+func (s *StateMachineGroup) Started(machine StateMachine) {
 	s.log.Debug().Stringer("stateMachine", machine).Msg("started")
 }
 
 // Stopped Called by a state machine after it has halted and its Success()
 //
 //	or fail() method has been called.
-func (s *StateMachineGroup) Stopped(machine *stateMachine) {
+func (s *StateMachineGroup) Stopped(machine StateMachine) {
 	s.log.Debug().Stringer("stateMachine", machine).Msg("stopped")
 	if s.startupFlag {
 		s.log.Trace().Msg("still starting up")

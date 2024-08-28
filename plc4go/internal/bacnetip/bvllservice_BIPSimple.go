@@ -30,8 +30,8 @@ import (
 
 type BIPSimple struct {
 	*BIPSAP
-	*Client
-	*Server
+	Client
+	Server
 
 	// pass through args
 	argSapID *int
@@ -60,14 +60,14 @@ func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BI
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	client, err := NewClient(localLog, b, func(client *Client) {
+	client, err := NewClient(localLog, b, func(client *client) {
 		client.clientID = b.argCid
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
 	b.Client = client
-	server, err := NewServer(localLog, b, func(server *Server) {
+	server, err := NewServer(localLog, b, func(server *server) {
 		server.serverID = b.argSid
 	})
 	if err != nil {

@@ -33,7 +33,7 @@ import (
 //	throw an exception.
 type TrappedStateMachine struct {
 	*Trapper
-	StateMachine
+	StateMachineContract
 
 	sent bacnetip.PDU
 
@@ -45,8 +45,8 @@ func NewTrappedStateMachine(localLog zerolog.Logger) *TrappedStateMachine {
 		log: localLog,
 	}
 	var init func()
-	t.StateMachine, init = NewStateMachine(localLog, t, WithStateMachineStateInterceptor(t), WithStateMachineStateDecorator(t.DecorateState))
-	t.Trapper = NewTrapper(localLog, t.StateMachine)
+	t.StateMachineContract, init = NewStateMachine(localLog, t, WithStateMachineStateInterceptor(t), WithStateMachineStateDecorator(t.DecorateState))
+	t.Trapper = NewTrapper(localLog, t.StateMachineContract)
 	init() // bit later so everything is set up
 	return t
 }
@@ -56,7 +56,7 @@ func (t *TrappedStateMachine) GetSent() bacnetip.PDU {
 }
 
 func (t *TrappedStateMachine) BeforeSend(pdu bacnetip.PDU) {
-	t.StateMachine.BeforeSend(pdu)
+	t.StateMachineContract.BeforeSend(pdu)
 }
 
 func (t *TrappedStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -67,19 +67,19 @@ func (t *TrappedStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) e
 }
 
 func (t *TrappedStateMachine) AfterSend(pdu bacnetip.PDU) {
-	t.StateMachine.AfterSend(pdu)
+	t.StateMachineContract.AfterSend(pdu)
 }
 
 func (t *TrappedStateMachine) BeforeReceive(pdu bacnetip.PDU) {
-	t.StateMachine.BeforeReceive(pdu)
+	t.StateMachineContract.BeforeReceive(pdu)
 }
 
 func (t *TrappedStateMachine) AfterReceive(pdu bacnetip.PDU) {
-	t.StateMachine.AfterReceive(pdu)
+	t.StateMachineContract.AfterReceive(pdu)
 }
 
 func (t *TrappedStateMachine) UnexpectedReceive(pdu bacnetip.PDU) {
-	t.StateMachine.UnexpectedReceive(pdu)
+	t.StateMachineContract.UnexpectedReceive(pdu)
 }
 
 func (t *TrappedStateMachine) DecorateState(state State) State {

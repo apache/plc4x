@@ -25,7 +25,7 @@ import (
 )
 
 type NetworkAdapter struct {
-	*Client
+	Client
 	adapterSAP           *NetworkServiceAccessPoint
 	adapterNet           *uint16
 	adapterAddr          *Address
@@ -49,7 +49,7 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 		opt(n)
 	}
 	var err error
-	n.Client, err = NewClient(localLog, n, func(client *Client) {
+	n.Client, err = NewClient(localLog, n, func(client *client) {
 		client.clientID = n.argCid
 	})
 	if err != nil {

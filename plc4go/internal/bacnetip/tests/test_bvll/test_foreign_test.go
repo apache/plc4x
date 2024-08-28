@@ -114,8 +114,7 @@ func (t *TFNetwork) Run(timeLimit time.Duration) {
 }
 
 func TestForeign(t *testing.T) {
-	t.Skip("something is completely broken at root level... needs more investigation") // TODO: fix issues
-	t.Run("test_idle", func(t *testing.T) {                                            //Test an idle network, nothing happens is success.
+	t.Run("test_idle", func(t *testing.T) { //Test an idle network, nothing happens is success.
 		tests.ExclusiveGlobalTimeMachine(t)
 
 		tnet := NewTFNetwork(t)
@@ -219,6 +218,7 @@ func TestForeign(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_unicast", func(t *testing.T) { //Test a unicast message from TD to IUT.
+		t.Skip("something is broken with routing...") // TODO: fixme...
 		tests.ExclusiveGlobalTimeMachine(t)
 		testingLogger := testutils.ProduceTestingLogger(t)
 
@@ -228,7 +228,7 @@ func TestForeign(t *testing.T) {
 		pduData, err := bacnetip.Xtob(
 			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
 			"01.80" + // version, network layer message
-				"02 0001 02", // message type, network, performance
+				"13 0008 01", // message type, network, flag
 		)
 		require.NoError(t, err)
 		pdu := bacnetip.NewPDU(bacnetip.NewMessageBridge(pduData...), bacnetip.WithPDUSource(tnet.fd.address), bacnetip.WithPDUDestination(tnet.bbmd.address))
@@ -265,6 +265,7 @@ func TestForeign(t *testing.T) {
 		tnet.Run(0)
 	})
 	t.Run("test_broadcast", func(t *testing.T) { //Test a broadcast message from TD to IUT.
+		t.Skip("something is broken with routing...") // TODO: fixme...
 		tests.ExclusiveGlobalTimeMachine(t)
 		testingLogger := testutils.ProduceTestingLogger(t)
 
@@ -274,7 +275,7 @@ func TestForeign(t *testing.T) {
 		pduData, err := bacnetip.Xtob(
 			//"dead.beef", // TODO: upstream is using invalid data to send around, so we just use a IAm
 			"01.80" + // version, network layer message
-				"02 0001 02", // message type, network, performance
+				"13 0008 01", // message type, network, flag
 		)
 		require.NoError(t, err)
 		pdu := bacnetip.NewPDU(bacnetip.NewMessageBridge(pduData...), bacnetip.WithPDUSource(tnet.fd.address), bacnetip.WithPDUDestination(bacnetip.NewLocalBroadcast(nil)))

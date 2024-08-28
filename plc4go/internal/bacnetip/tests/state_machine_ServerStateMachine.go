@@ -29,8 +29,8 @@ import (
 )
 
 type ServerStateMachine struct {
-	*bacnetip.Server
-	StateMachine
+	bacnetip.Server
+	StateMachineContract
 
 	name string
 
@@ -50,7 +50,7 @@ func NewServerStateMachine(localLog zerolog.Logger, opts ...func(*ServerStateMac
 		return nil, errors.Wrap(err, "error creating Server")
 	}
 	var init func()
-	c.StateMachine, init = NewStateMachine(localLog, c, WithStateMachineName(c.name))
+	c.StateMachineContract, init = NewStateMachine(localLog, c, WithStateMachineName(c.name))
 	init()
 	return c, nil
 }
@@ -61,10 +61,6 @@ func WithServerStateMachineName(name string) func(*ServerStateMachine) {
 	}
 }
 
-func (s *ServerStateMachine) String() string {
-	return fmt.Sprintf("ServerStateMachine(TBD...)") // TODO: fill some info here
-}
-
 func (s *ServerStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
 	return s.Response(args, kwargs)
@@ -73,4 +69,8 @@ func (s *ServerStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) er
 func (s *ServerStateMachine) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	return s.Receive(args, kwargs)
+}
+
+func (s *ServerStateMachine) String() string {
+	return fmt.Sprintf("ServerStateMachine{%v, %v, name=%s}", s.Server, s.StateMachineContract, s.name)
 }

@@ -99,7 +99,7 @@ func NewBIPNetworkApplication(localLog zerolog.Logger, localAddress Address, opt
 	}
 
 	// bind the BIP stack to the network, no network number
-	if err := n.nsap.Bind(n.bip.(_Server), nil, &n.localAddress); err != nil {
+	if err := n.nsap.Bind(n.bip.(Server), nil, &n.localAddress); err != nil {
 		return nil, err
 	}
 

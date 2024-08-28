@@ -33,7 +33,7 @@ type NodeNetworkReference interface {
 }
 
 type Node struct {
-	*Server
+	Server
 
 	lan     NodeNetworkReference
 	address *Address
@@ -63,7 +63,7 @@ func NewNode(localLog zerolog.Logger, addr *Address, opts ...func(*Node)) (*Node
 		n.log = n.log.With().Str("name", n.name).Logger()
 	}
 	var err error
-	n.Server, err = NewServer(localLog, n, func(server *Server) {
+	n.Server, err = NewServer(localLog, n, func(server *server) {
 		server.serverID = n.argSid
 	})
 	if err != nil {
@@ -167,5 +167,5 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 }
 
 func (n *Node) String() string {
-	return fmt.Sprintf("Node: %s(%v)", n.name, n.serverID)
+	return fmt.Sprintf("Node: %s(%v)", n.name, n.getServerId())
 }

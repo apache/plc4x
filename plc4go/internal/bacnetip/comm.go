@@ -27,9 +27,9 @@ import (
 )
 
 // maps of named clients and servers
-var clientMap map[int]*Client
+var clientMap map[int]*client
 
-var serverMap map[int]*Server
+var serverMap map[int]*server
 
 // maps of named SAPs and ASEs
 var serviceMap map[int]*ServiceAccessPoint
@@ -37,8 +37,8 @@ var serviceMap map[int]*ServiceAccessPoint
 var elementMap map[int]*ApplicationServiceElement
 
 func init() {
-	clientMap = make(map[int]*Client)
-	serverMap = make(map[int]*Server)
+	clientMap = make(map[int]*client)
+	serverMap = make(map[int]*server)
 	serviceMap = make(map[int]*ServiceAccessPoint)
 	elementMap = make(map[int]*ApplicationServiceElement)
 }
@@ -126,8 +126,8 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 		localLog.Debug().Stringer("right", rightStringer).Msg("right pair element")
 
 		// make sure we're binding clients and servers
-		clientCast, okClient := left.(_Client)
-		serverCast, okServer := right.(_Server)
+		clientCast, okClient := left.(Client)
+		serverCast, okServer := right.(Server)
 		elementServiceCast, okElementService := left.(ApplicationServiceElementContract)
 		serviceAccessPointCast, okServiceAccessPoint := right.(ServiceAccessPointContract)
 		if okClient && okServer {

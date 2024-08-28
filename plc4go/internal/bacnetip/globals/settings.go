@@ -21,3 +21,6 @@ package globals
 
 // ExtendedPDUOutput switches the PDU output to an extended format for debugging
 var ExtendedPDUOutput bool
+
+// ExtendedGeneralOutput switches extended output on for other items
+var ExtendedGeneralOutput bool

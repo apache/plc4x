@@ -74,7 +74,7 @@ type segmentAPDU struct {
 
 type SSMSAPRequirements interface {
 	ServiceAccessPointContract
-	_Client
+	Client
 	GetDeviceInfoCache() *DeviceInfoCache
 	GetLocalDevice() *LocalDeviceObject
 	GetProposedWindowSize() uint8

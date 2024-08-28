@@ -28,7 +28,7 @@ import (
 
 type BIPSAPRequirements interface {
 	ServiceAccessPointContract
-	_Client
+	Client
 }
 
 type BIPSAP struct {

@@ -25,7 +25,7 @@ import (
 )
 
 type _MultiplexServer struct {
-	*Server
+	Server
 	multiplexer *UDPMultiplexer
 }
 

@@ -555,7 +555,7 @@ func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result enco
 	// Request successful
 	pduBytes, err := bacnetip.Xtob(
 		"01.80" + // version, network layer message
-			"13 0008 01", // message type, network, flqg
+			"13 0008 01", // message type, network, flag
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
