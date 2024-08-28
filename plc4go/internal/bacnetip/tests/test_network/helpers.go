@@ -131,7 +131,6 @@ func (n *NPDUCodec) String() string {
 type SnifferStateMachine struct {
 	*tests.ClientStateMachine
 
-	name    string
 	address *bacnetip.Address
 	node    *bacnetip.Node
 
@@ -149,7 +148,6 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	}
 
 	// save the name and address
-	s.name = address
 	s.address, err = bacnetip.NewAddress(localLog, address)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
@@ -170,14 +168,9 @@ func NewSnifferStateMachine(localLog zerolog.Logger, address string, vlan *bacne
 	return s, nil
 }
 
-func (s *SnifferStateMachine) String() string {
-	return fmt.Sprintf("SnifferStateMachine(%s)", s.name)
-}
-
 type NetworkLayerStateMachine struct {
 	*tests.ClientStateMachine
 
-	name    string
 	address *bacnetip.Address
 
 	log   zerolog.Logger
@@ -189,16 +182,15 @@ func NewNetworkLayerStateMachine(localLog zerolog.Logger, address string, vlan *
 	n := &NetworkLayerStateMachine{
 		log: localLog,
 	}
-
-	// save the name and address
-	n.name = fmt.Sprintf("app @ %s", address)
-	n.address = Address(address)
-
 	var err error
-	n.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(n.name), tests.WithClientStateMachineExtension(n))
+	n.ClientStateMachine, err = tests.NewClientStateMachine(localLog, tests.WithClientStateMachineName(address), tests.WithClientStateMachineExtension(n))
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client state machine")
 	}
+
+	// save the name and address
+	n.address = Address(address)
+
 	// create a network layer encoder/decoder
 	n.codec, err = NewNPDUCodec(localLog)
 	if err != nil {

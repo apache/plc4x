@@ -224,6 +224,51 @@ func (_c *MockServiceAccessPointContract_SapResponse_Call) RunAndReturn(run func
 	return _c
 }
 
+// String provides a mock function with given fields:
+func (_m *MockServiceAccessPointContract) String() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for String")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockServiceAccessPointContract_String_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'String'
+type MockServiceAccessPointContract_String_Call struct {
+	*mock.Call
+}
+
+// String is a helper method to define mock.On call
+func (_e *MockServiceAccessPointContract_Expecter) String() *MockServiceAccessPointContract_String_Call {
+	return &MockServiceAccessPointContract_String_Call{Call: _e.mock.On("String")}
+}
+
+func (_c *MockServiceAccessPointContract_String_Call) Run(run func()) *MockServiceAccessPointContract_String_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockServiceAccessPointContract_String_Call) Return(_a0 string) *MockServiceAccessPointContract_String_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockServiceAccessPointContract_String_Call) RunAndReturn(run func() string) *MockServiceAccessPointContract_String_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // _setServiceElement provides a mock function with given fields: serviceElement
 func (_m *MockServiceAccessPointContract) _setServiceElement(serviceElement ApplicationServiceElementContract) {
 	_m.Called(serviceElement)

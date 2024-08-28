@@ -64,6 +64,9 @@ func NewClientStateMachine(localLog zerolog.Logger, opts ...func(*ClientStateMac
 	if c.contract == nil {
 		c.contract = c
 	}
+	if c.name != "" {
+		c.log = c.log.With().Str("name", c.name).Logger()
+	}
 	var err error
 	c.Client, err = bacnetip.NewClient(localLog, c.contract)
 	if err != nil {

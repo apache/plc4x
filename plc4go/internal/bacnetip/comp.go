@@ -52,6 +52,10 @@ func (a Args) Get0NPDU() NPDU {
 	return a[0].(NPDU)
 }
 
+func (a Args) Get1NPDU() NPDU {
+	return a[1].(NPDU)
+}
+
 func (a Args) Get0APDU() APDU {
 	return a[0].(APDU)
 }
@@ -277,4 +281,21 @@ func (pq PriorityQueue[P, V]) String() string {
 	var p P
 	var v V
 	return fmt.Sprintf("PriorityQueue[%T,%T]{%s}", p, v, s[:len(s)-2])
+}
+
+// NillableKey is a key which can be used in maps
+type NillableKey[T any] struct {
+	value T
+	isNil bool
+}
+
+// NK creates a new NillableKey of type K
+func NK[T any, K NillableKey[T]](value *T) K {
+	var _nk NillableKey[T]
+	if value == nil {
+		_nk.isNil = true
+		return K(_nk)
+	}
+	_nk.value = *value
+	return K(_nk)
 }

@@ -63,6 +63,9 @@ func NewNPDU(nlm model.NLM, apdu model.APDU) (NPDU, error) {
 	}
 	n._NPCI = NewNPCI(n.npdu, nlm).(*_NPCI)
 	n._PDUData = NewPDUData(NoArgs).(*_PDUData)
+	if n.npdu != nil {
+		n.data, _ = n.npdu.Serialize()
+	}
 	return n, nil
 }
 

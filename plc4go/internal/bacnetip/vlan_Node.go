@@ -24,6 +24,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/globals"
 )
 
 // NodeNetworkReference allows Network and IPNetwork to be used from Node.
@@ -167,5 +169,9 @@ func (n *Node) Indication(args Args, kwargs KWArgs) error {
 }
 
 func (n *Node) String() string {
-	return fmt.Sprintf("Node: %s(%v)", n.name, n.getServerId())
+	if globals.ExtendedGeneralOutput {
+		return fmt.Sprintf("Node: %s(%v)", n.name, n.getServerId())
+	} else {
+		return fmt.Sprintf("<%T(%s) at %p>", n, n.name, n)
+	}
 }

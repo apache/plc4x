@@ -67,7 +67,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	// make a little LAN
-	tn.vlan1 = bacnetip.NewNetwork(localLog)
+	tn.vlan1 = bacnetip.NewNetwork(localLog, bacnetip.WithNetworkName("vlan1"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
 
 	// Test devices
 	tn.td, err = NewNetworkLayerStateMachine(localLog, "1", tn.vlan1)
@@ -96,7 +96,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	//  make another little LAN
-	tn.vlan3 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan23"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+	tn.vlan3 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan3"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
 
 	//  sniffer node
 	tn.sniffer3, err = NewSnifferStateMachine(localLog, "6", tn.vlan2)
@@ -124,10 +124,7 @@ func (t *TNetwork1) Run(timeLimit time.Duration) {
 	tests.RunTimeMachine(t.log, timeLimit, time.Time{})
 	t.log.Trace().Msg("time machine finished")
 	for _, machine := range t.StateMachineGroup.GetStateMachines() {
-		t.log.Debug().Stringer("machine", machine).Msg("Machine:")
-		for _, s := range machine.GetTransactionLog() {
-			t.log.Debug().Str("logEntry", s).Msg("logEntry")
-		}
+		t.log.Debug().Stringer("machine", machine).Strs("transactionLog", machine.GetTransactionLog()).Msg("Machine:")
 	}
 
 	// check for success
@@ -155,7 +152,6 @@ func TestSimple1(t *testing.T) {
 }
 
 func TestWhoIsRouterToNetwork(t *testing.T) {
-	t.Skip("Not yet ready") // TODO: finish me
 	tests.ExclusiveGlobalTimeMachine(t)
 
 	t.Run("test_01", func(t *testing.T) {

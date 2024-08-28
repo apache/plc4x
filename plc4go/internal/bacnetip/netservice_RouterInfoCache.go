@@ -59,9 +59,14 @@ func (r RouterInfo) String() string {
 	return fmt.Sprintf("%#q", r)
 }
 
+type snetDnetTuple struct {
+	snet netKey
+	dnet netKey
+}
+
 type RouterInfoCache struct {
-	routers  map[*uint16]*RouterInfo // TODO: snet -> {Address: RouterInfo}
-	pathInfo map[*uint16]*RouterInfo // TODO: (snet, dnet) -> RouterInfo
+	routers  map[netKey]*RouterInfo        // TODO: snet -> {Address: RouterInfo}
+	pathInfo map[snetDnetTuple]*RouterInfo // TODO: (snet, dnet) -> RouterInfo
 
 	log zerolog.Logger
 }
@@ -69,19 +74,19 @@ type RouterInfoCache struct {
 func NewRouterInfoCache(localLog zerolog.Logger) *RouterInfoCache {
 	localLog.Debug().Msg("NewRouterInfoCache")
 	return &RouterInfoCache{
-		routers:  map[*uint16]*RouterInfo{},
-		pathInfo: map[*uint16]*RouterInfo{},
+		routers:  map[netKey]*RouterInfo{},
+		pathInfo: map[snetDnetTuple]*RouterInfo{},
 
 		log: localLog,
 	}
 }
 
-func (n *RouterInfoCache) GetRouterInfo(*uint16, *uint16) *RouterInfo {
+func (n *RouterInfoCache) GetRouterInfo(netKey, netKey) *RouterInfo {
 	panic("not implemented yet")
 	return nil
 }
 
-func (n *RouterInfoCache) UpdateRouterInfo(*uint16, any, any) error {
+func (n *RouterInfoCache) UpdateRouterInfo(netKey, any, any) error {
 	panic("not implemented yet")
 	return nil
 }

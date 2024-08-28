@@ -302,7 +302,8 @@ func (d *Date) IsValid(arg any) bool {
 func (d *Date) Compare(other any) int {
 	switch other := other.(type) {
 	case *Date:
-		_ = other //TODO: implement me
+		_ = other                //TODO: implement me
+		panic("not implemented") // TODO: implement me
 		return -1
 	default:
 		return -1
@@ -313,7 +314,8 @@ func (d *Date) LowerThan(other any) bool {
 	switch other := other.(type) {
 	case *Date:
 		// return d.getLong() < other.getLong()
-		_ = other // TODO: implement me
+		_ = other                // TODO: implement me
+		panic("not implemented") // TODO: implement me
 		return false
 	default:
 		return false

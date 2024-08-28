@@ -40,7 +40,7 @@ func NewBaseCollector() *BaseCollector {
 }
 
 func (b BaseCollector) transform(value any) any {
-	// TODO: implement
+	panic("not implemented") // TODO: implement me
 	return value
 }
 

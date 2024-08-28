@@ -120,10 +120,10 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 	for i := 0; i < len(args)-1; i++ {
 		left := args[i]
 		leftStringer, _ := left.(fmt.Stringer)
-		localLog.Debug().Stringer("left", leftStringer).Msg("left pair element")
+		localLog.Debug().Stringer("left", leftStringer).Type("leftType", left).Msg("left pair element")
 		right := args[i+1]
 		rightStringer, _ := right.(fmt.Stringer)
-		localLog.Debug().Stringer("right", rightStringer).Msg("right pair element")
+		localLog.Debug().Stringer("right", rightStringer).Type("rightType", right).Msg("right pair element")
 
 		// make sure we're binding clients and servers
 		clientCast, okClient := left.(Client)

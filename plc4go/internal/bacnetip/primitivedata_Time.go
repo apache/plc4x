@@ -154,7 +154,8 @@ func (t *Time) IsValid(arg any) bool {
 func (t *Time) Compare(other any) int {
 	switch other := other.(type) {
 	case *Time:
-		_ = other // TODO: implement
+		_ = other                // TODO: implement
+		panic("not implemented") // TODO: implement me
 		return -1
 	default:
 		return -1
@@ -164,7 +165,8 @@ func (t *Time) Compare(other any) int {
 func (t *Time) LowerThan(other any) bool {
 	switch other := other.(type) {
 	case *Time:
-		_ = other // TODO: implement
+		_ = other                // TODO: implement
+		panic("not implemented") // TODO: implement me
 		return false
 	default:
 		return false

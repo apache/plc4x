@@ -29,6 +29,7 @@ import (
 
 // ServiceAccessPointContract provides a set of functions which can be overwritten by a sub struct
 type ServiceAccessPointContract interface {
+	fmt.Stringer
 	SapConfirmation(Args, KWArgs) error
 	SapRequest(Args, KWArgs) error
 	SapIndication(Args, KWArgs) error

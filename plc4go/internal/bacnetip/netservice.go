@@ -19,4 +19,8 @@
 
 package bacnetip
 
-// TODO: big WIP implement all other methods...
+// used for net keys like snet and dnet (tri state)
+type netKey = NillableKey[uint16]
+
+// shortcut to create a netKey
+var nk = NK[uint16, netKey]

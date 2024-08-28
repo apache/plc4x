@@ -36,13 +36,11 @@ func NewCollector() *Collector {
 }
 
 func (c *Collector) searchCapability() {
-	// TODO: implement
-	return
+	panic("not implemented") // TODO: implement me
 }
 
 func (c *Collector) CapabilityFunctions(fn string) []func(args Args, kwargs KWArgs) error {
-	// TODO: implement
-	return nil
+	panic("not implemented") // TODO: implement me
 }
 
 func (c *Collector) AddCapability(cls any) {
