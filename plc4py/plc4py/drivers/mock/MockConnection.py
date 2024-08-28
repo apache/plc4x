@@ -136,11 +136,11 @@ class MockDriverLoader(PlcDriverLoader):
     """
 
     @staticmethod
-    @plc4py.drivers.hookimpl
+    @plc4py.hookimpl
     def get_driver() -> Type[MockDriver]:
         return MockDriver
 
     @staticmethod
-    @plc4py.drivers.hookimpl
+    @plc4py.hookimpl
     def key() -> str:
         return "mock"
