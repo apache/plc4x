@@ -30,7 +30,7 @@ import (
 type PDU interface {
 	PCI
 	PDUData
-	DeepCopy() PDU
+	DeepCopy() any
 }
 
 // PDUContract provides a set of functions which can be overwritten by a sub struct
@@ -47,18 +47,6 @@ type _PDU struct {
 func NewPDU(pdu spi.Message, pduOptions ...PDUOption) PDU {
 	p := &_PDU{
 		_PCI: newPCI(pdu, nil, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE),
-	}
-	p.PDUContract = p
-	for _, option := range pduOptions {
-		option(p)
-	}
-	p._PDUData = NewPDUData(NewArgs(pdu)).(*_PDUData)
-	return p
-}
-
-func NewPDUFromPDUWithNewMessage(pdu PDU, pduUserData spi.Message, pduOptions ...PDUOption) PDU {
-	p := &_PDU{
-		_PCI: newPCI(pdu, pduUserData, pdu.GetPDUSource(), pdu.GetPDUDestination(), pdu.GetExpectingReply(), pdu.GetNetworkPriority()),
 	}
 	p.PDUContract = p
 	for _, option := range pduOptions {
@@ -110,7 +98,7 @@ func (p *_PDU) deepCopy() *_PDU {
 	return pduCopy
 }
 
-func (p *_PDU) DeepCopy() PDU {
+func (p *_PDU) DeepCopy() any {
 	return p.deepCopy()
 }
 

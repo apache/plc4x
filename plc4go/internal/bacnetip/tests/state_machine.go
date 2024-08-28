@@ -104,7 +104,7 @@ func (t CallTransition) String() string {
 	return fmt.Sprintf("CallTransition{Transition: %s, fnargs: %s}", t.Transition, t.fnargs)
 }
 
-func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs map[bacnetip.KnownKey]any) (matches bool) {
+func MatchPdu(localLog zerolog.Logger, pdu any, pduType any, pduAttrs map[bacnetip.KnownKey]any) (matches bool) {
 	// check the type
 	if pduType != nil && fmt.Sprintf("%T", pdu) != fmt.Sprintf("%T", pduType) {
 		localLog.Debug().Type("got", pdu).Type("want", pduType).Msg("failed match, wrong type")
@@ -114,13 +114,13 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 		attrLog := localLog.With().Str("attrName", string(attrName)).Interface("attrValue", attrValue).Logger()
 		switch attrName {
 		case bacnetip.KWPPDUSource:
-			equals := pdu.GetPDUSource().Equals(attrValue)
+			equals := pdu.(bacnetip.PDU).GetPDUSource().Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
 			}
 		case bacnetip.KWPDUDestination:
-			equals := pdu.GetPDUDestination().Equals(attrValue)
+			equals := pdu.(bacnetip.PDU).GetPDUDestination().Equals(attrValue)
 			if !equals {
 				attrLog.Trace().Msg("doesn't match")
 				return false
@@ -154,7 +154,7 @@ func MatchPdu(localLog zerolog.Logger, pdu bacnetip.PDU, pduType any, pduAttrs m
 				return false
 			}
 		case bacnetip.KWPDUData:
-			got := pdu.GetPduData()
+			got := pdu.(bacnetip.PDU).GetPduData()
 			var want []byte
 			switch attrValue := attrValue.(type) {
 			case []byte:

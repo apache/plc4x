@@ -75,7 +75,6 @@ func (i *ICouldBeRouterToNetwork) Encode(npdu Arg) error {
 		}
 		npdu.PutShort(i.icbrtnNetwork)
 		npdu.Put(i.icbrtnPerformanceIndex)
-		npdu.setNPDU(i.npdu)
 		npdu.setNLM(i.nlm)
 		npdu.setAPDU(i.apdu)
 		return nil

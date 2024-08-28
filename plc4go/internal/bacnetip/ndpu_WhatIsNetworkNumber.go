@@ -50,7 +50,6 @@ func (n *WhatIsNetworkNumber) Encode(npdu Arg) error {
 		if err := npdu.Update(n); err != nil {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
-		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
 		return nil

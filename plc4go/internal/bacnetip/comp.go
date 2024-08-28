@@ -299,3 +299,11 @@ func NK[T any, K NillableKey[T]](value *T) K {
 	_nk.value = *value
 	return K(_nk)
 }
+
+type Copyable interface {
+	DeepCopy() any
+}
+
+func DeepCopy[T Copyable](copyable Copyable) T {
+	return copyable.(T)
+}

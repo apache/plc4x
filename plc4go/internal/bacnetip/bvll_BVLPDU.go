@@ -126,7 +126,7 @@ func (b *_BVLPDU) deepCopy() *_BVLPDU {
 	return &_BVLPDU{_BVLCI: b._BVLCI.deepCopy(), _PDUData: b._PDUData.deepCopy(), bvlc: b.bvlc}
 }
 
-func (b *_BVLPDU) DeepCopy() PDU {
+func (b *_BVLPDU) DeepCopy() any {
 	return b.deepCopy()
 }
 

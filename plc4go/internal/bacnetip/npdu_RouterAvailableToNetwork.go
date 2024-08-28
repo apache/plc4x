@@ -65,7 +65,6 @@ func (r *RouterAvailableToNetwork) Encode(npdu Arg) error {
 		for _, net := range r.GetRatnNetworkList() {
 			npdu.PutShort(net)
 		}
-		npdu.setNPDU(r.npdu)
 		npdu.setNLM(r.nlm)
 		npdu.setAPDU(r.apdu)
 		return nil

@@ -63,7 +63,6 @@ func (n *DisconnectConnectionToNetwork) Encode(npdu Arg) error {
 			return errors.Wrap(err, "error updating _NPCI")
 		}
 		npdu.PutShort(n.dctnDNET)
-		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
 		return nil

@@ -65,7 +65,6 @@ func (n *WhoIsRouterToNetwork) Encode(npdu Arg) error {
 		if n.wirtnNetwork != nil {
 			npdu.PutShort(*n.wirtnNetwork)
 		}
-		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
 		return nil

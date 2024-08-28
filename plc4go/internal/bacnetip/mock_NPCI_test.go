@@ -848,6 +848,53 @@ func (_c *MockNPCI_Update_Call) RunAndReturn(run func(Arg) error) *MockNPCI_Upda
 	return _c
 }
 
+// getAPDU provides a mock function with given fields:
+func (_m *MockNPCI) getAPDU() model.APDU {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getAPDU")
+	}
+
+	var r0 model.APDU
+	if rf, ok := ret.Get(0).(func() model.APDU); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(model.APDU)
+		}
+	}
+
+	return r0
+}
+
+// MockNPCI_getAPDU_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getAPDU'
+type MockNPCI_getAPDU_Call struct {
+	*mock.Call
+}
+
+// getAPDU is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getAPDU() *MockNPCI_getAPDU_Call {
+	return &MockNPCI_getAPDU_Call{Call: _e.mock.On("getAPDU")}
+}
+
+func (_c *MockNPCI_getAPDU_Call) Run(run func()) *MockNPCI_getAPDU_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getAPDU_Call) Return(_a0 model.APDU) *MockNPCI_getAPDU_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getAPDU_Call) RunAndReturn(run func() model.APDU) *MockNPCI_getAPDU_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // getNLM provides a mock function with given fields:
 func (_m *MockNPCI) getNLM() model.NLM {
 	ret := _m.Called()
@@ -895,6 +942,364 @@ func (_c *MockNPCI_getNLM_Call) RunAndReturn(run func() model.NLM) *MockNPCI_get
 	return _c
 }
 
+// getNpduControl provides a mock function with given fields:
+func (_m *MockNPCI) getNpduControl() uint8 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduControl")
+	}
+
+	var r0 uint8
+	if rf, ok := ret.Get(0).(func() uint8); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(uint8)
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduControl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduControl'
+type MockNPCI_getNpduControl_Call struct {
+	*mock.Call
+}
+
+// getNpduControl is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduControl() *MockNPCI_getNpduControl_Call {
+	return &MockNPCI_getNpduControl_Call{Call: _e.mock.On("getNpduControl")}
+}
+
+func (_c *MockNPCI_getNpduControl_Call) Run(run func()) *MockNPCI_getNpduControl_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduControl_Call) Return(_a0 uint8) *MockNPCI_getNpduControl_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduControl_Call) RunAndReturn(run func() uint8) *MockNPCI_getNpduControl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getNpduDADR provides a mock function with given fields:
+func (_m *MockNPCI) getNpduDADR() *Address {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduDADR")
+	}
+
+	var r0 *Address
+	if rf, ok := ret.Get(0).(func() *Address); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Address)
+		}
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduDADR_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduDADR'
+type MockNPCI_getNpduDADR_Call struct {
+	*mock.Call
+}
+
+// getNpduDADR is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduDADR() *MockNPCI_getNpduDADR_Call {
+	return &MockNPCI_getNpduDADR_Call{Call: _e.mock.On("getNpduDADR")}
+}
+
+func (_c *MockNPCI_getNpduDADR_Call) Run(run func()) *MockNPCI_getNpduDADR_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduDADR_Call) Return(_a0 *Address) *MockNPCI_getNpduDADR_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduDADR_Call) RunAndReturn(run func() *Address) *MockNPCI_getNpduDADR_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getNpduHopCount provides a mock function with given fields:
+func (_m *MockNPCI) getNpduHopCount() *uint8 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduHopCount")
+	}
+
+	var r0 *uint8
+	if rf, ok := ret.Get(0).(func() *uint8); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*uint8)
+		}
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduHopCount_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduHopCount'
+type MockNPCI_getNpduHopCount_Call struct {
+	*mock.Call
+}
+
+// getNpduHopCount is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduHopCount() *MockNPCI_getNpduHopCount_Call {
+	return &MockNPCI_getNpduHopCount_Call{Call: _e.mock.On("getNpduHopCount")}
+}
+
+func (_c *MockNPCI_getNpduHopCount_Call) Run(run func()) *MockNPCI_getNpduHopCount_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduHopCount_Call) Return(_a0 *uint8) *MockNPCI_getNpduHopCount_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduHopCount_Call) RunAndReturn(run func() *uint8) *MockNPCI_getNpduHopCount_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getNpduNetMessage provides a mock function with given fields:
+func (_m *MockNPCI) getNpduNetMessage() *uint8 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduNetMessage")
+	}
+
+	var r0 *uint8
+	if rf, ok := ret.Get(0).(func() *uint8); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*uint8)
+		}
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduNetMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduNetMessage'
+type MockNPCI_getNpduNetMessage_Call struct {
+	*mock.Call
+}
+
+// getNpduNetMessage is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduNetMessage() *MockNPCI_getNpduNetMessage_Call {
+	return &MockNPCI_getNpduNetMessage_Call{Call: _e.mock.On("getNpduNetMessage")}
+}
+
+func (_c *MockNPCI_getNpduNetMessage_Call) Run(run func()) *MockNPCI_getNpduNetMessage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduNetMessage_Call) Return(_a0 *uint8) *MockNPCI_getNpduNetMessage_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduNetMessage_Call) RunAndReturn(run func() *uint8) *MockNPCI_getNpduNetMessage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getNpduSADR provides a mock function with given fields:
+func (_m *MockNPCI) getNpduSADR() *Address {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduSADR")
+	}
+
+	var r0 *Address
+	if rf, ok := ret.Get(0).(func() *Address); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*Address)
+		}
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduSADR_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduSADR'
+type MockNPCI_getNpduSADR_Call struct {
+	*mock.Call
+}
+
+// getNpduSADR is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduSADR() *MockNPCI_getNpduSADR_Call {
+	return &MockNPCI_getNpduSADR_Call{Call: _e.mock.On("getNpduSADR")}
+}
+
+func (_c *MockNPCI_getNpduSADR_Call) Run(run func()) *MockNPCI_getNpduSADR_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduSADR_Call) Return(_a0 *Address) *MockNPCI_getNpduSADR_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduSADR_Call) RunAndReturn(run func() *Address) *MockNPCI_getNpduSADR_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getNpduVendorID provides a mock function with given fields:
+func (_m *MockNPCI) getNpduVendorID() *uint16 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduVendorID")
+	}
+
+	var r0 *uint16
+	if rf, ok := ret.Get(0).(func() *uint16); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*uint16)
+		}
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduVendorID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduVendorID'
+type MockNPCI_getNpduVendorID_Call struct {
+	*mock.Call
+}
+
+// getNpduVendorID is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduVendorID() *MockNPCI_getNpduVendorID_Call {
+	return &MockNPCI_getNpduVendorID_Call{Call: _e.mock.On("getNpduVendorID")}
+}
+
+func (_c *MockNPCI_getNpduVendorID_Call) Run(run func()) *MockNPCI_getNpduVendorID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduVendorID_Call) Return(_a0 *uint16) *MockNPCI_getNpduVendorID_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduVendorID_Call) RunAndReturn(run func() *uint16) *MockNPCI_getNpduVendorID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// getNpduVersion provides a mock function with given fields:
+func (_m *MockNPCI) getNpduVersion() uint8 {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for getNpduVersion")
+	}
+
+	var r0 uint8
+	if rf, ok := ret.Get(0).(func() uint8); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(uint8)
+	}
+
+	return r0
+}
+
+// MockNPCI_getNpduVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'getNpduVersion'
+type MockNPCI_getNpduVersion_Call struct {
+	*mock.Call
+}
+
+// getNpduVersion is a helper method to define mock.On call
+func (_e *MockNPCI_Expecter) getNpduVersion() *MockNPCI_getNpduVersion_Call {
+	return &MockNPCI_getNpduVersion_Call{Call: _e.mock.On("getNpduVersion")}
+}
+
+func (_c *MockNPCI_getNpduVersion_Call) Run(run func()) *MockNPCI_getNpduVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockNPCI_getNpduVersion_Call) Return(_a0 uint8) *MockNPCI_getNpduVersion_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+func (_c *MockNPCI_getNpduVersion_Call) RunAndReturn(run func() uint8) *MockNPCI_getNpduVersion_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setAPDU provides a mock function with given fields: _a0
+func (_m *MockNPCI) setAPDU(_a0 model.APDU) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setAPDU_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setAPDU'
+type MockNPCI_setAPDU_Call struct {
+	*mock.Call
+}
+
+// setAPDU is a helper method to define mock.On call
+//   - _a0 model.APDU
+func (_e *MockNPCI_Expecter) setAPDU(_a0 interface{}) *MockNPCI_setAPDU_Call {
+	return &MockNPCI_setAPDU_Call{Call: _e.mock.On("setAPDU", _a0)}
+}
+
+func (_c *MockNPCI_setAPDU_Call) Run(run func(_a0 model.APDU)) *MockNPCI_setAPDU_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(model.APDU))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setAPDU_Call) Return() *MockNPCI_setAPDU_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setAPDU_Call) RunAndReturn(run func(model.APDU)) *MockNPCI_setAPDU_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // setNLM provides a mock function with given fields: _a0
 func (_m *MockNPCI) setNLM(_a0 model.NLM) {
 	_m.Called(_a0)
@@ -924,6 +1329,237 @@ func (_c *MockNPCI_setNLM_Call) Return() *MockNPCI_setNLM_Call {
 }
 
 func (_c *MockNPCI_setNLM_Call) RunAndReturn(run func(model.NLM)) *MockNPCI_setNLM_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduControl provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduControl(_a0 uint8) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduControl_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduControl'
+type MockNPCI_setNpduControl_Call struct {
+	*mock.Call
+}
+
+// setNpduControl is a helper method to define mock.On call
+//   - _a0 uint8
+func (_e *MockNPCI_Expecter) setNpduControl(_a0 interface{}) *MockNPCI_setNpduControl_Call {
+	return &MockNPCI_setNpduControl_Call{Call: _e.mock.On("setNpduControl", _a0)}
+}
+
+func (_c *MockNPCI_setNpduControl_Call) Run(run func(_a0 uint8)) *MockNPCI_setNpduControl_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uint8))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduControl_Call) Return() *MockNPCI_setNpduControl_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduControl_Call) RunAndReturn(run func(uint8)) *MockNPCI_setNpduControl_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduDADR provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduDADR(_a0 *Address) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduDADR_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduDADR'
+type MockNPCI_setNpduDADR_Call struct {
+	*mock.Call
+}
+
+// setNpduDADR is a helper method to define mock.On call
+//   - _a0 *Address
+func (_e *MockNPCI_Expecter) setNpduDADR(_a0 interface{}) *MockNPCI_setNpduDADR_Call {
+	return &MockNPCI_setNpduDADR_Call{Call: _e.mock.On("setNpduDADR", _a0)}
+}
+
+func (_c *MockNPCI_setNpduDADR_Call) Run(run func(_a0 *Address)) *MockNPCI_setNpduDADR_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*Address))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduDADR_Call) Return() *MockNPCI_setNpduDADR_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduDADR_Call) RunAndReturn(run func(*Address)) *MockNPCI_setNpduDADR_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduHopCount provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduHopCount(_a0 *uint8) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduHopCount_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduHopCount'
+type MockNPCI_setNpduHopCount_Call struct {
+	*mock.Call
+}
+
+// setNpduHopCount is a helper method to define mock.On call
+//   - _a0 *uint8
+func (_e *MockNPCI_Expecter) setNpduHopCount(_a0 interface{}) *MockNPCI_setNpduHopCount_Call {
+	return &MockNPCI_setNpduHopCount_Call{Call: _e.mock.On("setNpduHopCount", _a0)}
+}
+
+func (_c *MockNPCI_setNpduHopCount_Call) Run(run func(_a0 *uint8)) *MockNPCI_setNpduHopCount_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*uint8))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduHopCount_Call) Return() *MockNPCI_setNpduHopCount_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduHopCount_Call) RunAndReturn(run func(*uint8)) *MockNPCI_setNpduHopCount_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduNetMessage provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduNetMessage(_a0 *uint8) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduNetMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduNetMessage'
+type MockNPCI_setNpduNetMessage_Call struct {
+	*mock.Call
+}
+
+// setNpduNetMessage is a helper method to define mock.On call
+//   - _a0 *uint8
+func (_e *MockNPCI_Expecter) setNpduNetMessage(_a0 interface{}) *MockNPCI_setNpduNetMessage_Call {
+	return &MockNPCI_setNpduNetMessage_Call{Call: _e.mock.On("setNpduNetMessage", _a0)}
+}
+
+func (_c *MockNPCI_setNpduNetMessage_Call) Run(run func(_a0 *uint8)) *MockNPCI_setNpduNetMessage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*uint8))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduNetMessage_Call) Return() *MockNPCI_setNpduNetMessage_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduNetMessage_Call) RunAndReturn(run func(*uint8)) *MockNPCI_setNpduNetMessage_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduSADR provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduSADR(_a0 *Address) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduSADR_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduSADR'
+type MockNPCI_setNpduSADR_Call struct {
+	*mock.Call
+}
+
+// setNpduSADR is a helper method to define mock.On call
+//   - _a0 *Address
+func (_e *MockNPCI_Expecter) setNpduSADR(_a0 interface{}) *MockNPCI_setNpduSADR_Call {
+	return &MockNPCI_setNpduSADR_Call{Call: _e.mock.On("setNpduSADR", _a0)}
+}
+
+func (_c *MockNPCI_setNpduSADR_Call) Run(run func(_a0 *Address)) *MockNPCI_setNpduSADR_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*Address))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduSADR_Call) Return() *MockNPCI_setNpduSADR_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduSADR_Call) RunAndReturn(run func(*Address)) *MockNPCI_setNpduSADR_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduVendorID provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduVendorID(_a0 *uint16) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduVendorID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduVendorID'
+type MockNPCI_setNpduVendorID_Call struct {
+	*mock.Call
+}
+
+// setNpduVendorID is a helper method to define mock.On call
+//   - _a0 *uint16
+func (_e *MockNPCI_Expecter) setNpduVendorID(_a0 interface{}) *MockNPCI_setNpduVendorID_Call {
+	return &MockNPCI_setNpduVendorID_Call{Call: _e.mock.On("setNpduVendorID", _a0)}
+}
+
+func (_c *MockNPCI_setNpduVendorID_Call) Run(run func(_a0 *uint16)) *MockNPCI_setNpduVendorID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*uint16))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduVendorID_Call) Return() *MockNPCI_setNpduVendorID_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduVendorID_Call) RunAndReturn(run func(*uint16)) *MockNPCI_setNpduVendorID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// setNpduVersion provides a mock function with given fields: _a0
+func (_m *MockNPCI) setNpduVersion(_a0 uint8) {
+	_m.Called(_a0)
+}
+
+// MockNPCI_setNpduVersion_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'setNpduVersion'
+type MockNPCI_setNpduVersion_Call struct {
+	*mock.Call
+}
+
+// setNpduVersion is a helper method to define mock.On call
+//   - _a0 uint8
+func (_e *MockNPCI_Expecter) setNpduVersion(_a0 interface{}) *MockNPCI_setNpduVersion_Call {
+	return &MockNPCI_setNpduVersion_Call{Call: _e.mock.On("setNpduVersion", _a0)}
+}
+
+func (_c *MockNPCI_setNpduVersion_Call) Run(run func(_a0 uint8)) *MockNPCI_setNpduVersion_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uint8))
+	})
+	return _c
+}
+
+func (_c *MockNPCI_setNpduVersion_Call) Return() *MockNPCI_setNpduVersion_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockNPCI_setNpduVersion_Call) RunAndReturn(run func(uint8)) *MockNPCI_setNpduVersion_Call {
 	_c.Call.Return(run)
 	return _c
 }

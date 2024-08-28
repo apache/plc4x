@@ -89,7 +89,6 @@ func (r *InitializeRoutingTableAck) Encode(npdu Arg) error {
 			npdu.Put(byte(len(rte.rtPortInfo)))
 			npdu.PutData(rte.rtPortInfo...)
 		}
-		npdu.setNPDU(r.npdu)
 		npdu.setNLM(r.nlm)
 		npdu.setAPDU(r.apdu)
 		return nil

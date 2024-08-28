@@ -46,19 +46,19 @@ func (_m *MockPDU) EXPECT() *MockPDU_Expecter {
 }
 
 // DeepCopy provides a mock function with given fields:
-func (_m *MockPDU) DeepCopy() PDU {
+func (_m *MockPDU) DeepCopy() interface{} {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for DeepCopy")
 	}
 
-	var r0 PDU
-	if rf, ok := ret.Get(0).(func() PDU); ok {
+	var r0 interface{}
+	if rf, ok := ret.Get(0).(func() interface{}); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(PDU)
+			r0 = ret.Get(0).(interface{})
 		}
 	}
 
@@ -82,12 +82,12 @@ func (_c *MockPDU_DeepCopy_Call) Run(run func()) *MockPDU_DeepCopy_Call {
 	return _c
 }
 
-func (_c *MockPDU_DeepCopy_Call) Return(_a0 PDU) *MockPDU_DeepCopy_Call {
+func (_c *MockPDU_DeepCopy_Call) Return(_a0 interface{}) *MockPDU_DeepCopy_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockPDU_DeepCopy_Call) RunAndReturn(run func() PDU) *MockPDU_DeepCopy_Call {
+func (_c *MockPDU_DeepCopy_Call) RunAndReturn(run func() interface{}) *MockPDU_DeepCopy_Call {
 	_c.Call.Return(run)
 	return _c
 }

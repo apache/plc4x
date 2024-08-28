@@ -101,7 +101,7 @@ func (n *NetworkAdapter) Confirmation(args Args, kwargs KWArgs) error {
 }
 
 // ProcessNPDU Encode NPDUs from the service access point and send them downstream.
-func (n *NetworkAdapter) ProcessNPDU(npdu PDU) error {
+func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 	n.log.Debug().
 		Stringer("npdu", npdu).
 		Interface("adapterNet", n.adapterNet).

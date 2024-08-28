@@ -75,7 +75,6 @@ func (n *RejectMessageToNetwork) Encode(npdu Arg) error {
 		}
 		npdu.Put(byte(n.rmtnRejectionReason))
 		npdu.PutShort(n.rmtnDNET)
-		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
 		return nil

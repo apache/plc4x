@@ -75,7 +75,6 @@ func (n *EstablishConnectionToNetwork) Encode(npdu Arg) error {
 		}
 		npdu.PutShort(n.ectnDNET)
 		npdu.Put(n.ectnTerminationTime)
-		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
 		return nil

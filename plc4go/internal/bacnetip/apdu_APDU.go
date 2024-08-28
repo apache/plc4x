@@ -65,7 +65,7 @@ func (a *__APDU) deepCopy() *__APDU {
 	return &__APDU{_APCI: a._APCI.deepCopy(), _PDUData: a._PDUData.deepCopy()}
 }
 
-func (a *__APDU) DeepCopy() PDU {
+func (a *__APDU) DeepCopy() any {
 	return a.deepCopy()
 }
 

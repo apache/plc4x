@@ -51,7 +51,7 @@ func (r RouterStatus) String() string {
 
 type RouterInfo struct {
 	snet    *uint16
-	address Address
+	address *Address
 	dnets   map[*uint16]RouterStatus
 }
 

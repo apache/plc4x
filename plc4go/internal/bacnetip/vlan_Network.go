@@ -128,7 +128,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 		for _, node := range n.nodes {
 			if !pdu.GetPDUSource().Equals(node.getAddress()) {
 				n.log.Debug().Stringer("node", node).Msg("match")
-				if err := node.Response(NewArgs(pdu.DeepCopy()), NoKWArgs); err != nil {
+				if err := node.Response(NewArgs(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
 			}
@@ -138,7 +138,7 @@ func (n *Network) ProcessPDU(pdu PDU) error {
 		for _, node := range n.nodes {
 			if node.isPromiscuous() || pdu.GetPDUDestination().Equals(node.getAddress()) {
 				n.log.Debug().Stringer("node", node).Msg("match")
-				if err := node.Response(NewArgs(pdu.DeepCopy()), NoKWArgs); err != nil {
+				if err := node.Response(NewArgs(DeepCopy[PDU](pdu)), NoKWArgs); err != nil {
 					n.log.Debug().Err(err).Msg("error processing PDU")
 				}
 			}

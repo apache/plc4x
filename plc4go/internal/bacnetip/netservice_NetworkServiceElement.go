@@ -315,17 +315,15 @@ func (n *NetworkServiceElement) iamRouterToNetwork(adapter *NetworkAdapter, dest
 		}
 
 		// build a response
-		iamrtn := model.NewNLMIAmRouterToNetwork(netlist, 0)
-
-		npdu, err := buildNPDU(0, nil, destination, false, model.NPDUNetworkPriority_NORMAL_MESSAGE, iamrtn, nil)
+		iamrtn, err := NewIAmRouterToNetwork()
 		if err != nil {
-			return errors.Wrap(err, "error building NPDU")
+			return errors.Wrap(err, "error creating IAM router to network")
 		}
-
-		n.log.Debug().Stringer("npdu", npdu).Msg("adapter, iamrtn")
+		iamrtn.SetPDUDestination(destination)
+		n.log.Debug().Stringer("adapter", adapter).Stringer("iamrtn", iamrtn).Msg("adapter, iamrtn")
 
 		// send it back
-		if err := n.Request(NewArgs(adapter, npdu), NoKWArgs); err != nil {
+		if err := n.Request(NewArgs(adapter, iamrtn), NoKWArgs); err != nil {
 			return errors.Wrap(err, "error requesting NPDU")
 		}
 	}
@@ -450,11 +448,13 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 
 			// if the request had a source forward it along
 			if npdu.GetSourceNetworkAddress() != nil {
-				panic("we need to forward SADR on NPDU as this it different from pdu source")
-				// whoisrtn.npduSADR = npdu.npduSADR
+				whoisrtn.setNpduSADR(npdu.getNpduSADR())
 			} else {
-				panic("we need to forward SADR on NPDU as this it different from pdu source")
-				// whoisrtn.npduSADR = RemoteStation(adapter.adapterNet, npdu.pduSource.addrAddr)
+				station, err := NewRemoteStation(n.log, adapter.adapterNet, npdu.GetPDUSource().AddrAddress, nil)
+				if err != nil {
+					return errors.Wrap(err, "error building RemoteStation")
+				}
+				whoisrtn.setNpduSADR(station)
 			}
 
 			// send it to all (other) adapters
@@ -469,7 +469,6 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 			return nil
 		}
 	}
-	return nil
 }
 
 func (n *NetworkServiceElement) IAmRouterToNetwork(adapter *NetworkAdapter, nlm model.NLMIAmRouterToNetwork) {

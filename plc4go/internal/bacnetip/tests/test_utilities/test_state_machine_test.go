@@ -182,7 +182,7 @@ func (t TPDU) PutLong(i uint32) {
 	panic("implement me")
 }
 
-func (t TPDU) DeepCopy() bacnetip.PDU {
+func (t TPDU) DeepCopy() any {
 	panic("implement me")
 }
 

@@ -79,7 +79,6 @@ func (n *NetworkNumberIs) Encode(npdu Arg) error {
 			flag = 1
 		}
 		npdu.Put(flag)
-		npdu.setNPDU(n.npdu)
 		npdu.setNLM(n.nlm)
 		npdu.setAPDU(n.apdu)
 		return nil
