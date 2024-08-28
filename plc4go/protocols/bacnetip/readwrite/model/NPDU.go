@@ -348,8 +348,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NPDU")
+		default:
+			destinationNetworkAddress = &_val
 		}
-		destinationNetworkAddress = &_val
 	}
 
 	// Optional Field (destinationLength) (Can be skipped, if a given expression evaluates to false)
@@ -363,8 +364,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field of NPDU")
+		default:
+			destinationLength = &_val
 		}
-		destinationLength = &_val
 	}
 
 	// Array field (destinationAddress)
@@ -410,8 +412,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field of NPDU")
+		default:
+			sourceNetworkAddress = &_val
 		}
-		sourceNetworkAddress = &_val
 	}
 
 	// Optional Field (sourceLength) (Can be skipped, if a given expression evaluates to false)
@@ -425,8 +428,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field of NPDU")
+		default:
+			sourceLength = &_val
 		}
-		sourceLength = &_val
 	}
 
 	// Array field (sourceAddress)
@@ -472,8 +476,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field of NPDU")
+		default:
+			hopCount = &_val
 		}
-		hopCount = &_val
 	}
 
 	// Virtual field

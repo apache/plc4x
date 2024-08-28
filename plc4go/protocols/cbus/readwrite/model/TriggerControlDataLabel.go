@@ -212,8 +212,9 @@ func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer util
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of TriggerControlDataLabel")
+		default:
+			language = &_val
 		}
-		language = &_val
 		if closeErr := readBuffer.CloseContext("language"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for language")
 		}

@@ -394,8 +394,9 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field of APDUConfirmedRequest")
+		default:
+			sequenceNumber = &_val
 		}
-		sequenceNumber = &_val
 	}
 
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
@@ -409,8 +410,9 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field of APDUConfirmedRequest")
+		default:
+			proposedWindowSize = &_val
 		}
-		proposedWindowSize = &_val
 	}
 
 	// Virtual field
@@ -459,8 +461,9 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUConfirmedRequest")
+		default:
+			segmentServiceChoice = &_val
 		}
-		segmentServiceChoice = &_val
 		if closeErr := readBuffer.CloseContext("segmentServiceChoice"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for segmentServiceChoice")
 		}

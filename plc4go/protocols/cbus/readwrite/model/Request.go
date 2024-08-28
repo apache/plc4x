@@ -229,8 +229,9 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'startingCR' field of Request")
+		default:
+			startingCR = &_val
 		}
-		startingCR = &_val
 		if closeErr := readBuffer.CloseContext("startingCR"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for startingCR")
 		}
@@ -250,8 +251,9 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'resetMode' field of Request")
+		default:
+			resetMode = &_val
 		}
-		resetMode = &_val
 		if closeErr := readBuffer.CloseContext("resetMode"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for resetMode")
 		}

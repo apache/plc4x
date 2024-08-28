@@ -204,8 +204,9 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'secondTilde' field of RequestReset")
+		default:
+			secondTilde = &_val
 		}
-		secondTilde = &_val
 		if closeErr := readBuffer.CloseContext("secondTilde"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for secondTilde")
 		}
@@ -240,8 +241,9 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'thirdTilde' field of RequestReset")
+		default:
+			thirdTilde = &_val
 		}
-		thirdTilde = &_val
 		if closeErr := readBuffer.CloseContext("thirdTilde"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for thirdTilde")
 		}

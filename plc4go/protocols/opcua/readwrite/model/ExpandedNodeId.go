@@ -247,8 +247,9 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serverIndex' field of ExpandedNodeId")
+		default:
+			serverIndex = &_val
 		}
-		serverIndex = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("ExpandedNodeId"); closeErr != nil {

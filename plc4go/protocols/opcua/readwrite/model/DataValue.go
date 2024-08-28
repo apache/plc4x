@@ -356,8 +356,9 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sourceTimestamp' field of DataValue")
+		default:
+			sourceTimestamp = &_val
 		}
-		sourceTimestamp = &_val
 	}
 
 	// Optional Field (sourcePicoseconds) (Can be skipped, if a given expression evaluates to false)
@@ -371,8 +372,9 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sourcePicoseconds' field of DataValue")
+		default:
+			sourcePicoseconds = &_val
 		}
-		sourcePicoseconds = &_val
 	}
 
 	// Optional Field (serverTimestamp) (Can be skipped, if a given expression evaluates to false)
@@ -386,8 +388,9 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serverTimestamp' field of DataValue")
+		default:
+			serverTimestamp = &_val
 		}
-		serverTimestamp = &_val
 	}
 
 	// Optional Field (serverPicoseconds) (Can be skipped, if a given expression evaluates to false)
@@ -401,8 +404,9 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'serverPicoseconds' field of DataValue")
+		default:
+			serverPicoseconds = &_val
 		}
-		serverPicoseconds = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("DataValue"); closeErr != nil {

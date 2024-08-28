@@ -1175,8 +1175,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+		default:
+			${optionalField.name} = &_val
 		}
-		${optionalField.name} = &_val
 			<#elseif helper.isEnumField(field)>
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
@@ -1189,8 +1190,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+		default:
+			${optionalField.name} = &_val
 		}
-		${optionalField.name} = &_val
 		if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}

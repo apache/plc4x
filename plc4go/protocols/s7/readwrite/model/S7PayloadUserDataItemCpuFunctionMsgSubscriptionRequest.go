@@ -241,8 +241,9 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+		default:
+			alarmtype = &_val
 		}
-		alarmtype = &_val
 		if closeErr := readBuffer.CloseContext("alarmtype"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for alarmtype")
 		}
@@ -259,8 +260,9 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+		default:
+			reserve = &_val
 		}
-		reserve = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); closeErr != nil {

@@ -204,8 +204,9 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberAvailable' field of CIPAttributes")
+		default:
+			numberAvailable = &_val
 		}
-		numberAvailable = &_val
 	}
 
 	// Optional Field (numberActive) (Can be skipped, if a given expression evaluates to false)
@@ -219,8 +220,9 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberActive' field of CIPAttributes")
+		default:
+			numberActive = &_val
 		}
-		numberActive = &_val
 	}
 	// Byte Array field (data)
 	numberOfBytesdata := int(utils.InlineIf((bool((packetLength) > (((numberOfClasses) * (2)) + (6)))), func() any {

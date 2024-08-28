@@ -173,8 +173,9 @@ func VariantInt32ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayLength' field of VariantInt32")
+		default:
+			arrayLength = &_val
 		}
-		arrayLength = &_val
 	}
 
 	// Array field (value)

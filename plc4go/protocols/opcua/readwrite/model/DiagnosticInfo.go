@@ -341,8 +341,9 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'symbolicId' field of DiagnosticInfo")
+		default:
+			symbolicId = &_val
 		}
-		symbolicId = &_val
 	}
 
 	// Optional Field (namespaceURI) (Can be skipped, if a given expression evaluates to false)
@@ -356,8 +357,9 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'namespaceURI' field of DiagnosticInfo")
+		default:
+			namespaceURI = &_val
 		}
-		namespaceURI = &_val
 	}
 
 	// Optional Field (locale) (Can be skipped, if a given expression evaluates to false)
@@ -371,8 +373,9 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'locale' field of DiagnosticInfo")
+		default:
+			locale = &_val
 		}
-		locale = &_val
 	}
 
 	// Optional Field (localizedText) (Can be skipped, if a given expression evaluates to false)
@@ -386,8 +389,9 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'localizedText' field of DiagnosticInfo")
+		default:
+			localizedText = &_val
 		}
-		localizedText = &_val
 	}
 
 	// Optional Field (additionalInfo) (Can be skipped, if a given expression evaluates to false)

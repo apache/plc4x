@@ -155,8 +155,9 @@ func NLMWhoIsRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer util
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NLMWhoIsRouterToNetwork")
+		default:
+			destinationNetworkAddress = &_val
 		}
-		destinationNetworkAddress = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMWhoIsRouterToNetwork"); closeErr != nil {

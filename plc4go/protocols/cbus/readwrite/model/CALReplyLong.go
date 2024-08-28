@@ -332,8 +332,9 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field of CALReplyLong")
+		default:
+			reservedByte = &_val
 		}
-		reservedByte = &_val
 	}
 
 	// Validation

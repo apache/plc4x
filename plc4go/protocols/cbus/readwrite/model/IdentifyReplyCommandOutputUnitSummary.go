@@ -203,8 +203,9 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'gavStoreEnabledByte1' field of IdentifyReplyCommandOutputUnitSummary")
+		default:
+			gavStoreEnabledByte1 = &_val
 		}
-		gavStoreEnabledByte1 = &_val
 	}
 
 	// Optional Field (gavStoreEnabledByte2) (Can be skipped, if a given expression evaluates to false)
@@ -218,8 +219,9 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'gavStoreEnabledByte2' field of IdentifyReplyCommandOutputUnitSummary")
+		default:
+			gavStoreEnabledByte2 = &_val
 		}
-		gavStoreEnabledByte2 = &_val
 	}
 
 	// Simple Field (timeFromLastRecoverOfMainsInSeconds)

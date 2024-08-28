@@ -208,8 +208,9 @@ func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer 
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'secondPipe' field of RequestSmartConnectShortcut")
+		default:
+			secondPipe = &_val
 		}
-		secondPipe = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("RequestSmartConnectShortcut"); closeErr != nil {

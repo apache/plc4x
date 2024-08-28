@@ -276,8 +276,9 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'noOfArrayDimensions' field of Variant")
+		default:
+			noOfArrayDimensions = &_val
 		}
-		noOfArrayDimensions = &_val
 	}
 
 	// Array field (arrayDimensions)

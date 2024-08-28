@@ -328,8 +328,9 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field of APDUComplexAck")
+		default:
+			sequenceNumber = &_val
 		}
-		sequenceNumber = &_val
 	}
 
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
@@ -343,8 +344,9 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field of APDUComplexAck")
+		default:
+			proposedWindowSize = &_val
 		}
-		proposedWindowSize = &_val
 	}
 
 	// Virtual field
@@ -393,8 +395,9 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUComplexAck")
+		default:
+			segmentServiceChoice = &_val
 		}
-		segmentServiceChoice = &_val
 		if closeErr := readBuffer.CloseContext("segmentServiceChoice"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for segmentServiceChoice")
 		}

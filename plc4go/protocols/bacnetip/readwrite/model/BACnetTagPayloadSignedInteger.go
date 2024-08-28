@@ -475,8 +475,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt8' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt8 = &_val
 		}
-		valueInt8 = &_val
 	}
 
 	// Virtual field
@@ -495,8 +496,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt16' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt16 = &_val
 		}
-		valueInt16 = &_val
 	}
 
 	// Virtual field
@@ -515,8 +517,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt24' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt24 = &_val
 		}
-		valueInt24 = &_val
 	}
 
 	// Virtual field
@@ -535,8 +538,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt32' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt32 = &_val
 		}
-		valueInt32 = &_val
 	}
 
 	// Virtual field
@@ -555,8 +559,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt40' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt40 = &_val
 		}
-		valueInt40 = &_val
 	}
 
 	// Virtual field
@@ -575,8 +580,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt48' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt48 = &_val
 		}
-		valueInt48 = &_val
 	}
 
 	// Virtual field
@@ -595,8 +601,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt56' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt56 = &_val
 		}
-		valueInt56 = &_val
 	}
 
 	// Virtual field
@@ -615,8 +622,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueInt64' field of BACnetTagPayloadSignedInteger")
+		default:
+			valueInt64 = &_val
 		}
-		valueInt64 = &_val
 	}
 
 	// Validation

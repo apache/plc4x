@@ -306,8 +306,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1KeyRevision' field of NLMUpdateKeyUpdate")
+		default:
+			set1KeyRevision = &_val
 		}
-		set1KeyRevision = &_val
 	}
 
 	// Optional Field (set1ActivationTime) (Can be skipped, if a given expression evaluates to false)
@@ -321,8 +322,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1ActivationTime' field of NLMUpdateKeyUpdate")
+		default:
+			set1ActivationTime = &_val
 		}
-		set1ActivationTime = &_val
 	}
 
 	// Optional Field (set1ExpirationTime) (Can be skipped, if a given expression evaluates to false)
@@ -336,8 +338,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1ExpirationTime' field of NLMUpdateKeyUpdate")
+		default:
+			set1ExpirationTime = &_val
 		}
-		set1ExpirationTime = &_val
 	}
 
 	// Optional Field (set1KeyCount) (Can be skipped, if a given expression evaluates to false)
@@ -351,8 +354,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1KeyCount' field of NLMUpdateKeyUpdate")
+		default:
+			set1KeyCount = &_val
 		}
-		set1KeyCount = &_val
 	}
 
 	// Array field (set1Keys)
@@ -393,8 +397,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2KeyRevision' field of NLMUpdateKeyUpdate")
+		default:
+			set2KeyRevision = &_val
 		}
-		set2KeyRevision = &_val
 	}
 
 	// Optional Field (set2ActivationTime) (Can be skipped, if a given expression evaluates to false)
@@ -408,8 +413,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2ActivationTime' field of NLMUpdateKeyUpdate")
+		default:
+			set2ActivationTime = &_val
 		}
-		set2ActivationTime = &_val
 	}
 
 	// Optional Field (set2ExpirationTime) (Can be skipped, if a given expression evaluates to false)
@@ -423,8 +429,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2ExpirationTime' field of NLMUpdateKeyUpdate")
+		default:
+			set2ExpirationTime = &_val
 		}
-		set2ExpirationTime = &_val
 	}
 
 	// Optional Field (set2KeyCount) (Can be skipped, if a given expression evaluates to false)
@@ -438,8 +445,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2KeyCount' field of NLMUpdateKeyUpdate")
+		default:
+			set2KeyCount = &_val
 		}
-		set2KeyCount = &_val
 	}
 
 	// Array field (set2Keys)

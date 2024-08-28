@@ -183,8 +183,9 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'pad' field of AnsiExtendedSymbolSegment")
+		default:
+			pad = &_val
 		}
-		pad = &_val
 	}
 
 	if closeErr := readBuffer.CloseContext("AnsiExtendedSymbolSegment"); closeErr != nil {

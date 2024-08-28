@@ -178,8 +178,9 @@ func VariantDataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayLength' field of VariantDataValue")
+		default:
+			arrayLength = &_val
 		}
-		arrayLength = &_val
 	}
 
 	// Array field (value)

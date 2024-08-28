@@ -211,8 +211,9 @@ func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'language' field of LightingDataLabel")
+		default:
+			language = &_val
 		}
-		language = &_val
 		if closeErr := readBuffer.CloseContext("language"); closeErr != nil {
 			return nil, errors.Wrap(closeErr, "Error closing for language")
 		}

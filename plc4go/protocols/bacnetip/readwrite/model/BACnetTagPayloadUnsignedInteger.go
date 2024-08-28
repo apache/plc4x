@@ -475,8 +475,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint8' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint8 = &_val
 		}
-		valueUint8 = &_val
 	}
 
 	// Virtual field
@@ -495,8 +496,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint16' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint16 = &_val
 		}
-		valueUint16 = &_val
 	}
 
 	// Virtual field
@@ -515,8 +517,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint24' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint24 = &_val
 		}
-		valueUint24 = &_val
 	}
 
 	// Virtual field
@@ -535,8 +538,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint32' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint32 = &_val
 		}
-		valueUint32 = &_val
 	}
 
 	// Virtual field
@@ -555,8 +559,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint40' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint40 = &_val
 		}
-		valueUint40 = &_val
 	}
 
 	// Virtual field
@@ -575,8 +580,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint48' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint48 = &_val
 		}
-		valueUint48 = &_val
 	}
 
 	// Virtual field
@@ -595,8 +601,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint56' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint56 = &_val
 		}
-		valueUint56 = &_val
 	}
 
 	// Virtual field
@@ -615,8 +622,9 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint64' field of BACnetTagPayloadUnsignedInteger")
+		default:
+			valueUint64 = &_val
 		}
-		valueUint64 = &_val
 	}
 
 	// Validation

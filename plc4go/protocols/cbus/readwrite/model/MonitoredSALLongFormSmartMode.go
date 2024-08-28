@@ -346,8 +346,9 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field of MonitoredSALLongFormSmartMode")
+		default:
+			reservedByte = &_val
 		}
-		reservedByte = &_val
 	}
 
 	// Validation

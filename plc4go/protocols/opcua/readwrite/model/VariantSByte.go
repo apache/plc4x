@@ -173,8 +173,9 @@ func VariantSByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'arrayLength' field of VariantSByte")
+		default:
+			arrayLength = &_val
 		}
-		arrayLength = &_val
 	}
 	// Byte Array field (value)
 	numberOfBytesvalue := int(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16))

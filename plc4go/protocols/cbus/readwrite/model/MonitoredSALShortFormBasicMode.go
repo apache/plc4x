@@ -220,8 +220,9 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'bridgeCount' field of MonitoredSALShortFormBasicMode")
+		default:
+			bridgeCount = &_val
 		}
-		bridgeCount = &_val
 	}
 
 	// Optional Field (networkNumber) (Can be skipped, if a given expression evaluates to false)
@@ -235,8 +236,9 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'networkNumber' field of MonitoredSALShortFormBasicMode")
+		default:
+			networkNumber = &_val
 		}
-		networkNumber = &_val
 	}
 
 	// Optional Field (noCounts) (Can be skipped, if a given expression evaluates to false)
@@ -250,8 +252,9 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 			readBuffer.Reset(currentPos)
 		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'noCounts' field of MonitoredSALShortFormBasicMode")
+		default:
+			noCounts = &_val
 		}
-		noCounts = &_val
 	}
 
 	// Simple Field (application)
