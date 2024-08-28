@@ -338,8 +338,13 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 	// Optional Field (reservedByte) (Can be skipped, if a given expression evaluates to false)
 	var reservedByte *byte = nil
 	if isUnitAddress {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadByte("reservedByte")
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'reservedByte' field of MonitoredSALLongFormSmartMode")
 		}
 		reservedByte = &_val

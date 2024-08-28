@@ -386,8 +386,13 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
 	var sequenceNumber *uint8 = nil
 	if segmentedMessage {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("sequenceNumber", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field of APDUConfirmedRequest")
 		}
 		sequenceNumber = &_val
@@ -396,8 +401,13 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
 	var proposedWindowSize *uint8 = nil
 	if segmentedMessage {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("proposedWindowSize", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field of APDUConfirmedRequest")
 		}
 		proposedWindowSize = &_val
@@ -441,8 +451,13 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 		if pullErr := readBuffer.PullContext("segmentServiceChoice"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for segmentServiceChoice")
 		}
+		currentPos = positionAware.GetPos()
 		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUConfirmedRequest")
 		}
 		segmentServiceChoice = &_val

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -195,8 +196,13 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	// Optional Field (numberAvailable) (Can be skipped, if a given expression evaluates to false)
 	var numberAvailable *uint16 = nil
 	if bool((packetLength) >= (((numberOfClasses) * (2)) + (4))) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint16("numberAvailable", 16)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberAvailable' field of CIPAttributes")
 		}
 		numberAvailable = &_val
@@ -205,8 +211,13 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	// Optional Field (numberActive) (Can be skipped, if a given expression evaluates to false)
 	var numberActive *uint16 = nil
 	if bool((packetLength) >= (((numberOfClasses) * (2)) + (6))) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint16("numberActive", 16)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'numberActive' field of CIPAttributes")
 		}
 		numberActive = &_val

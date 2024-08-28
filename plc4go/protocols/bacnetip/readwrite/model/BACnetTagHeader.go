@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -315,8 +316,13 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
 	var extTagNumber *uint8 = nil
 	if bool((tagNumber) == (15)) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field of BACnetTagHeader")
 		}
 		extTagNumber = &_val
@@ -345,8 +351,13 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
 	var extLength *uint8 = nil
 	if bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("extLength", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'extLength' field of BACnetTagHeader")
 		}
 		extLength = &_val
@@ -355,8 +366,13 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	// Optional Field (extExtLength) (Can be skipped, if a given expression evaluates to false)
 	var extExtLength *uint16 = nil
 	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint16("extExtLength", 16)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'extExtLength' field of BACnetTagHeader")
 		}
 		extExtLength = &_val
@@ -365,8 +381,13 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	// Optional Field (extExtExtLength) (Can be skipped, if a given expression evaluates to false)
 	var extExtExtLength *uint32 = nil
 	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("extExtExtLength", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'extExtExtLength' field of BACnetTagHeader")
 		}
 		extExtExtLength = &_val

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -232,8 +233,13 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 		if pullErr := readBuffer.PullContext("alarmtype"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for alarmtype")
 		}
+		currentPos = positionAware.GetPos()
 		_val, _err := AlarmStateTypeParseWithBuffer(ctx, readBuffer)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
 		alarmtype = &_val
@@ -245,8 +251,13 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	// Optional Field (reserve) (Can be skipped, if a given expression evaluates to false)
 	var reserve *uint8 = nil
 	if bool((subscription) >= (128)) {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("reserve", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
 		reserve = &_val

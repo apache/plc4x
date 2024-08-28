@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -466,8 +467,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint8) (Can be skipped, if a given expression evaluates to false)
 	var valueUint8 *uint8 = nil
 	if isUint8 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("valueUint8", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint8' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint8 = &_val
@@ -481,8 +487,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint16) (Can be skipped, if a given expression evaluates to false)
 	var valueUint16 *uint16 = nil
 	if isUint16 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint16("valueUint16", 16)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint16' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint16 = &_val
@@ -496,8 +507,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint24) (Can be skipped, if a given expression evaluates to false)
 	var valueUint24 *uint32 = nil
 	if isUint24 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("valueUint24", 24)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint24' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint24 = &_val
@@ -511,8 +527,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint32) (Can be skipped, if a given expression evaluates to false)
 	var valueUint32 *uint32 = nil
 	if isUint32 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("valueUint32", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint32' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint32 = &_val
@@ -526,8 +547,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint40) (Can be skipped, if a given expression evaluates to false)
 	var valueUint40 *uint64 = nil
 	if isUint40 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint64("valueUint40", 40)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint40' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint40 = &_val
@@ -541,8 +567,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint48) (Can be skipped, if a given expression evaluates to false)
 	var valueUint48 *uint64 = nil
 	if isUint48 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint64("valueUint48", 48)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint48' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint48 = &_val
@@ -556,8 +587,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint56) (Can be skipped, if a given expression evaluates to false)
 	var valueUint56 *uint64 = nil
 	if isUint56 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint64("valueUint56", 56)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint56' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint56 = &_val
@@ -571,8 +607,13 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	// Optional Field (valueUint64) (Can be skipped, if a given expression evaluates to false)
 	var valueUint64 *uint64 = nil
 	if isUint64 {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint64("valueUint64", 64)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'valueUint64' field of BACnetTagPayloadUnsignedInteger")
 		}
 		valueUint64 = &_val

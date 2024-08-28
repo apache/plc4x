@@ -333,8 +333,13 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	// Optional Field (symbolicId) (Can be skipped, if a given expression evaluates to false)
 	var symbolicId *int32 = nil
 	if symbolicIdSpecified {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadInt32("symbolicId", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'symbolicId' field of DiagnosticInfo")
 		}
 		symbolicId = &_val
@@ -343,8 +348,13 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	// Optional Field (namespaceURI) (Can be skipped, if a given expression evaluates to false)
 	var namespaceURI *int32 = nil
 	if namespaceURISpecified {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadInt32("namespaceURI", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'namespaceURI' field of DiagnosticInfo")
 		}
 		namespaceURI = &_val
@@ -353,8 +363,13 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	// Optional Field (locale) (Can be skipped, if a given expression evaluates to false)
 	var locale *int32 = nil
 	if localeSpecified {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadInt32("locale", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'locale' field of DiagnosticInfo")
 		}
 		locale = &_val
@@ -363,8 +378,13 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	// Optional Field (localizedText) (Can be skipped, if a given expression evaluates to false)
 	var localizedText *int32 = nil
 	if localizedTextSpecified {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadInt32("localizedText", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'localizedText' field of DiagnosticInfo")
 		}
 		localizedText = &_val

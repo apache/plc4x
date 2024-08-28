@@ -340,8 +340,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var destinationNetworkAddress *uint16 = nil
 	if control.GetDestinationSpecified() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint16("destinationNetworkAddress", 16)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NPDU")
 		}
 		destinationNetworkAddress = &_val
@@ -350,8 +355,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	// Optional Field (destinationLength) (Can be skipped, if a given expression evaluates to false)
 	var destinationLength *uint8 = nil
 	if control.GetDestinationSpecified() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("destinationLength", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field of NPDU")
 		}
 		destinationLength = &_val
@@ -392,8 +402,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
 	var sourceNetworkAddress *uint16 = nil
 	if control.GetSourceSpecified() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint16("sourceNetworkAddress", 16)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field of NPDU")
 		}
 		sourceNetworkAddress = &_val
@@ -402,8 +417,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	// Optional Field (sourceLength) (Can be skipped, if a given expression evaluates to false)
 	var sourceLength *uint8 = nil
 	if control.GetSourceSpecified() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("sourceLength", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field of NPDU")
 		}
 		sourceLength = &_val
@@ -444,8 +464,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
 	var hopCount *uint8 = nil
 	if control.GetDestinationSpecified() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("hopCount", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field of NPDU")
 		}
 		hopCount = &_val

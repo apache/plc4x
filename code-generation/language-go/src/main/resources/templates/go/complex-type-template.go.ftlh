@@ -1167,8 +1167,13 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	<#if optionalField.conditionExpression.present>
 	if ${helper.toBooleanParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)} </#if>{
 			<#if optionalField.type.isSimpleTypeReference()>
+		currentPos = positionAware.GetPos()
 		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type.asSimpleTypeReference().orElseThrow(), optionalField)}
-		if _err != nil {
+		switch {
+			case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = &_val
@@ -1176,8 +1181,13 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
+		currentPos = positionAware.GetPos()
 		_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
-		if _err != nil {
+		switch {
+			case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = &_val

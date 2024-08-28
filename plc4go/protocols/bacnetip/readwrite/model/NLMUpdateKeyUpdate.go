@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -297,8 +298,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set1KeyRevision) (Can be skipped, if a given expression evaluates to false)
 	var set1KeyRevision *byte = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadByte("set1KeyRevision")
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1KeyRevision' field of NLMUpdateKeyUpdate")
 		}
 		set1KeyRevision = &_val
@@ -307,8 +313,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set1ActivationTime) (Can be skipped, if a given expression evaluates to false)
 	var set1ActivationTime *uint32 = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("set1ActivationTime", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1ActivationTime' field of NLMUpdateKeyUpdate")
 		}
 		set1ActivationTime = &_val
@@ -317,8 +328,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set1ExpirationTime) (Can be skipped, if a given expression evaluates to false)
 	var set1ExpirationTime *uint32 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("set1ExpirationTime", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1ExpirationTime' field of NLMUpdateKeyUpdate")
 		}
 		set1ExpirationTime = &_val
@@ -327,8 +343,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set1KeyCount) (Can be skipped, if a given expression evaluates to false)
 	var set1KeyCount *uint8 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("set1KeyCount", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set1KeyCount' field of NLMUpdateKeyUpdate")
 		}
 		set1KeyCount = &_val
@@ -364,8 +385,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set2KeyRevision) (Can be skipped, if a given expression evaluates to false)
 	var set2KeyRevision *byte = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadByte("set2KeyRevision")
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2KeyRevision' field of NLMUpdateKeyUpdate")
 		}
 		set2KeyRevision = &_val
@@ -374,8 +400,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set2ActivationTime) (Can be skipped, if a given expression evaluates to false)
 	var set2ActivationTime *uint32 = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("set2ActivationTime", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2ActivationTime' field of NLMUpdateKeyUpdate")
 		}
 		set2ActivationTime = &_val
@@ -384,8 +415,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set2ExpirationTime) (Can be skipped, if a given expression evaluates to false)
 	var set2ExpirationTime *uint32 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint32("set2ExpirationTime", 32)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2ExpirationTime' field of NLMUpdateKeyUpdate")
 		}
 		set2ExpirationTime = &_val
@@ -394,8 +430,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	// Optional Field (set2KeyCount) (Can be skipped, if a given expression evaluates to false)
 	var set2KeyCount *uint8 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
+		currentPos = positionAware.GetPos()
 		_val, _err := readBuffer.ReadUint8("set2KeyCount", 8)
-		if _err != nil {
+		switch {
+		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
+			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
+			readBuffer.Reset(currentPos)
+		case _err != nil:
 			return nil, errors.Wrap(_err, "Error parsing 'set2KeyCount' field of NLMUpdateKeyUpdate")
 		}
 		set2KeyCount = &_val
