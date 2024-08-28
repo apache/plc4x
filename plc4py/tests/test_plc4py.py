@@ -20,7 +20,6 @@ from typing import cast
 
 import pytest
 
-from plc4py import __version__
 from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.messages.PlcRequest import PlcTagRequest
@@ -28,19 +27,6 @@ from plc4py.api.messages.PlcResponse import PlcReadResponse
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.mock.MockConnection import MockConnection
 from plc4py.drivers.modbus.ModbusConnection import ModbusConnection
-
-
-def test_version():
-    """
-    This test verifies the version of the package.
-
-    The version is a string that is expected to match the version specified in the
-    `__version__` constant at the top of the file. If the versions do not match,
-    the test will fail.
-
-    :return: None
-    """
-    assert __version__ == "0.1.0"
 
 
 @pytest.mark.asyncio

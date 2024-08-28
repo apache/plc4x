@@ -17,17 +17,25 @@
 import os
 
 import pytest
-from typing_extensions import Iterator
 
 from unit.plc4py.utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRunner
 
 
 def pytest_generate_tests(metafunc):
-    xml_loader = ParserSerializerTestsuiteRunner(
-        os.path.join(
-            os.path.dirname(__file__), "resources", "ParserSerializerTestsuite.xml"
+    path: str = os.path.join(
+            os.path.dirname(__file__),
+            "..", "..", "..", "..", ".."            
+            "protocols",
+            "modbus",
+            "src",
+            "test",
+            "resources",
+            "protocols",
+            "modbus",
+            "tcp",
+            "ParserSerializerTestsuite.xml"
         )
-    )
+    xml_loader = ParserSerializerTestsuiteRunner(path)
 
     test_suites = xml_loader.test_suite_tests
 

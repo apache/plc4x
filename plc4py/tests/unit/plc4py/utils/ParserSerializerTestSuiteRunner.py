@@ -14,22 +14,52 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing,
+#  software distributed under the License is distributed on an
+#  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#  KIND, either express or implied.  See the License for the
+#  specific language governing permissions and limitations
+#  under the License.
 import logging
 import unittest
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Iterator, List
-from utils.generated.driver_testsuite import DriverTestsuite
+from typing import List, Iterator, Any
+from xml.etree import ElementTree
+
 from xsdata.formats.dataclass.parsers import XmlParser
 
-from api.exceptions.exceptions import ParseException
-from utils.XmlTestSuiteLoader import (
-    ParserSerializerTestSuite,
-    XmlTestSuiteLoader,
+from .XmlTestSuiteLoader import (
     ParserSerializerTestCase,
 )
-from utils.generated.parser_serializer_testsuite import Testsuite
+from .generated.parser_serializer_testsuite import Testsuite
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass
+class XmlTestSuiteLoader(unittest.TestLoader, ABC):
+    # Parent class for test suites utilizing XML as representation mechanism.
+    # <p>
+    # It adds handling of resource loading and helps in navigating test framework to suite source files.
+    #
+
+    test_suite_document: str
+    test_suite_document_xml: Iterator[tuple[str, Any]] = field(init=False)
+
+    def __post_init__(self) -> None:
+        # ElementTree.register_namespace('test', 'https://plc4x.apache.org/schemas/driver-testsuite.xsd')
+        self.test_suite_document_xml = ElementTree.iterparse(
+            self.test_suite_document, events=(["start"])
+        )
+
+    @abstractmethod
+    def test_suite_tests(self) -> List[unittest.case]:
+        # Get a list of test cases
+        pass
 
 
 @dataclass
@@ -51,6 +81,7 @@ class ParserSerializerTestsuiteRunner(XmlTestSuiteLoader):
                 test_suite = ParserSerializerTestCase()
                 test_suite.add_test_case(test_case)
                 test_suite.add_test_suite(test_suite_xml)
+                test_suite.add_migrate(self.auto_migrate)
                 dynamic_tests.append(test_suite)
         logger.info("Found %s testcases.", len(test_suite_xml.testcase))
         return dynamic_tests
