@@ -14,13 +14,23 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
-from spi.generation.WriteBuffer import WriteBufferXmlBased
+from abc import abstractmethod
+from typing import Type
+
+from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 
 
-def test_xml_write_bit(mocker) -> None:
+class PlcTransportLoader:
+    """Hook spec for PLC4PY Transport Loaders"""
 
-    wb: WriteBufferXmlBased = WriteBufferXmlBased()
-    wb.write_bit(True, "error_flag")
-    string: str = wb.to_xml_string()
-    assert string == b'<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd" byteOrder="BIG_ENDIAN">\n\t<errorFlag dataType="bit" bitlength="1">true</errorFlag>\n</test:testsuite>'
+    @staticmethod
+    @abstractmethod
+    def get_transport() -> Type[Plc4xBaseTransport]:
+        """Returns the PlcConnection class that is used to instantiate the transport"""
+        pass
 
+    @staticmethod
+    @abstractmethod
+    def key() -> str:
+        """Unique key to identify the transport"""
+        pass
