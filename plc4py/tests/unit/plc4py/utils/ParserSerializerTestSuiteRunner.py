@@ -57,7 +57,7 @@ class XmlTestSuiteLoader(unittest.TestLoader, ABC):
         )
 
     @abstractmethod
-    def test_suite_tests(self) -> List[unittest.case]:
+    def test_suite_tests(self) -> List[unittest.TestCase]:
         # Get a list of test cases
         pass
 
@@ -71,11 +71,11 @@ class ParserSerializerTestsuiteRunner(XmlTestSuiteLoader):
     ignored_test_cases: List[str] = field(default_factory=list)
 
     @property
-    def test_suite_tests(self) -> List[unittest.case]:
+    def test_suite_tests(self) -> List[unittest.TestCase]:
         parser = XmlParser()
         test_suite_xml = parser.parse(self.test_suite_document, Testsuite)
 
-        dynamic_tests: List[unittest.case] = []
+        dynamic_tests: List[unittest.TestCase] = []
         for test_case in test_suite_xml.testcase:
             if not test_case.name in self.ignored_test_cases:
                 test_suite = ParserSerializerTestCase()
