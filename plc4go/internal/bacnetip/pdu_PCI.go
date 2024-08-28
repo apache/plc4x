@@ -30,7 +30,9 @@ import (
 
 type PCI interface {
 	IPCI
+	SetExpectingReply(bool)
 	GetExpectingReply() bool
+	SetNetworkPriority(model.NPDUNetworkPriority)
 	GetNetworkPriority() model.NPDUNetworkPriority
 }
 
@@ -64,8 +66,16 @@ func (p *_PCI) Update(pci Arg) error {
 	}
 }
 
+func (p *_PCI) SetExpectingReply(expectingReply bool) {
+	p.expectingReply = expectingReply
+}
+
 func (p *_PCI) GetExpectingReply() bool {
 	return p.expectingReply
+}
+
+func (p *_PCI) SetNetworkPriority(priority model.NPDUNetworkPriority) {
+	p.networkPriority = priority
 }
 
 func (p *_PCI) GetNetworkPriority() model.NPDUNetworkPriority {

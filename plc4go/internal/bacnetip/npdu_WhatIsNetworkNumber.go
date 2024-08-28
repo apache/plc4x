@@ -29,10 +29,14 @@ import (
 
 type WhatIsNetworkNumber struct {
 	*_NPDU
+
+	messageType uint8
 }
 
 func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkNumber, error) {
-	i := &WhatIsNetworkNumber{}
+	i := &WhatIsNetworkNumber{
+		messageType: 0x12,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -41,6 +45,8 @@ func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkN
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 

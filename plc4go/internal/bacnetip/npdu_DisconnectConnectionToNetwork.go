@@ -30,11 +30,15 @@ import (
 type DisconnectConnectionToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	dctnDNET uint16
 }
 
 func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
-	i := &DisconnectConnectionToNetwork{}
+	i := &DisconnectConnectionToNetwork{
+		messageType: 0x09,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -43,6 +47,8 @@ func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwor
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -60,7 +66,7 @@ func (n *DisconnectConnectionToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		npdu.PutShort(n.dctnDNET)
 		npdu.setNLM(n.nlm)
@@ -75,7 +81,7 @@ func (n *DisconnectConnectionToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

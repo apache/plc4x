@@ -30,11 +30,15 @@ import (
 type RouterAvailableToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	ratnNetworkList []uint16
 }
 
 func NewRouterAvailableToNetwork(opts ...func(*RouterAvailableToNetwork)) (*RouterAvailableToNetwork, error) {
-	i := &RouterAvailableToNetwork{}
+	i := &RouterAvailableToNetwork{
+		messageType: 0x05,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -43,6 +47,8 @@ func NewRouterAvailableToNetwork(opts ...func(*RouterAvailableToNetwork)) (*Rout
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -60,7 +66,7 @@ func (r *RouterAvailableToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(r); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		for _, net := range r.GetRatnNetworkList() {
 			npdu.PutShort(net)
@@ -77,7 +83,7 @@ func (r *RouterAvailableToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := r.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

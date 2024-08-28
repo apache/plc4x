@@ -30,12 +30,16 @@ import (
 type ICouldBeRouterToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	icbrtnNetwork          uint16
 	icbrtnPerformanceIndex uint8
 }
 
 func NewICouldBeRouterToNetwork(opts ...func(*ICouldBeRouterToNetwork)) (*ICouldBeRouterToNetwork, error) {
-	i := &ICouldBeRouterToNetwork{}
+	i := &ICouldBeRouterToNetwork{
+		messageType: 0x02,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -44,6 +48,8 @@ func NewICouldBeRouterToNetwork(opts ...func(*ICouldBeRouterToNetwork)) (*ICould
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 

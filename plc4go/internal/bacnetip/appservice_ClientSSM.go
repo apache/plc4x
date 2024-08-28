@@ -108,11 +108,11 @@ func (c *ClientSSM) Indication(args Args, kwargs KWArgs) error {
 	}
 
 	// if the max apdu length of the server isn't known, assume that it is the same size as our own and will be the segment
-	//        size
+	// size
 	if c.deviceInfo == nil || c.deviceInfo.MaximumApduLengthAccepted != nil {
 		c.segmentSize = uint(c.maxApduLengthAccepted.NumberOfOctets())
 	} else if c.deviceInfo.MaximumNpduLength == nil {
-		//      if the max npdu length of the server isn't known, assume that it is the same as the max apdu length accepted
+		// if the max npdu length of the server isn't known, assume that it is the same as the max apdu length accepted
 		c.segmentSize = uint(c.maxApduLengthAccepted.NumberOfOctets())
 	} else {
 		c.segmentSize = min(*c.deviceInfo.MaximumNpduLength, uint(c.maxApduLengthAccepted.NumberOfOctets()))

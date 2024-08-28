@@ -658,6 +658,72 @@ func (_c *MockAPCI_SerializeWithWriteBuffer_Call) RunAndReturn(run func(context.
 	return _c
 }
 
+// SetExpectingReply provides a mock function with given fields: _a0
+func (_m *MockAPCI) SetExpectingReply(_a0 bool) {
+	_m.Called(_a0)
+}
+
+// MockAPCI_SetExpectingReply_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetExpectingReply'
+type MockAPCI_SetExpectingReply_Call struct {
+	*mock.Call
+}
+
+// SetExpectingReply is a helper method to define mock.On call
+//   - _a0 bool
+func (_e *MockAPCI_Expecter) SetExpectingReply(_a0 interface{}) *MockAPCI_SetExpectingReply_Call {
+	return &MockAPCI_SetExpectingReply_Call{Call: _e.mock.On("SetExpectingReply", _a0)}
+}
+
+func (_c *MockAPCI_SetExpectingReply_Call) Run(run func(_a0 bool)) *MockAPCI_SetExpectingReply_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(bool))
+	})
+	return _c
+}
+
+func (_c *MockAPCI_SetExpectingReply_Call) Return() *MockAPCI_SetExpectingReply_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockAPCI_SetExpectingReply_Call) RunAndReturn(run func(bool)) *MockAPCI_SetExpectingReply_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetNetworkPriority provides a mock function with given fields: _a0
+func (_m *MockAPCI) SetNetworkPriority(_a0 model.NPDUNetworkPriority) {
+	_m.Called(_a0)
+}
+
+// MockAPCI_SetNetworkPriority_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetNetworkPriority'
+type MockAPCI_SetNetworkPriority_Call struct {
+	*mock.Call
+}
+
+// SetNetworkPriority is a helper method to define mock.On call
+//   - _a0 model.NPDUNetworkPriority
+func (_e *MockAPCI_Expecter) SetNetworkPriority(_a0 interface{}) *MockAPCI_SetNetworkPriority_Call {
+	return &MockAPCI_SetNetworkPriority_Call{Call: _e.mock.On("SetNetworkPriority", _a0)}
+}
+
+func (_c *MockAPCI_SetNetworkPriority_Call) Run(run func(_a0 model.NPDUNetworkPriority)) *MockAPCI_SetNetworkPriority_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(model.NPDUNetworkPriority))
+	})
+	return _c
+}
+
+func (_c *MockAPCI_SetNetworkPriority_Call) Return() *MockAPCI_SetNetworkPriority_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockAPCI_SetNetworkPriority_Call) RunAndReturn(run func(model.NPDUNetworkPriority)) *MockAPCI_SetNetworkPriority_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetPDUDestination provides a mock function with given fields: _a0
 func (_m *MockAPCI) SetPDUDestination(_a0 *Address) {
 	_m.Called(_a0)

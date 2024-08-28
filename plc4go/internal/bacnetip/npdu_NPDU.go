@@ -20,9 +20,7 @@
 package bacnetip
 
 import (
-	"context"
 	"fmt"
-	"math"
 
 	"github.com/pkg/errors"
 
@@ -44,6 +42,7 @@ type _NPDU struct {
 
 var _ NPDU = (*_NPDU)(nil)
 
+// TODO: optimize with options and smart non-recoding...
 func NewNPDU(nlm model.NLM, apdu model.APDU) (NPDU, error) {
 	n := &_NPDU{}
 	npdu, _ := n.buildNPDU(0, nil, nil, false, model.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
@@ -55,70 +54,14 @@ func NewNPDU(nlm model.NLM, apdu model.APDU) (NPDU, error) {
 	return n, nil
 }
 
-func (n *_NPDU) buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority model.NPDUNetworkPriority, nlm model.NLM, apdu model.APDU) (model.NPDU, error) {
-	switch {
-	case nlm != nil && apdu != nil:
-		return nil, errors.New("either specify a NLM or a APDU exclusive")
-	case nlm == nil && apdu == nil:
-		return nil, errors.New("either specify a NLM or a APDU")
-	}
-	sourceSpecified := source != nil
-	var sourceNetworkAddress *uint16
-	var sourceLength *uint8
-	var sourceAddress []uint8
-	if sourceSpecified {
-		sourceSpecified = true
-		sourceNetworkAddress = source.AddrNet
-		sourceLengthValue := *source.AddrLen
-		if sourceLengthValue > math.MaxUint8 {
-			return nil, errors.New("source address length overflows")
-		}
-		sourceLengthValueUint8 := sourceLengthValue
-		sourceLength = &sourceLengthValueUint8
-		sourceAddress = source.AddrAddress
-		if sourceLengthValueUint8 == 0 {
-			// If we define the len 0 we must not send the array
-			sourceAddress = nil
-		}
-	}
-	destinationSpecified := destination != nil && destination.AddrType != LOCAL_BROADCAST_ADDRESS // TODO: check if this is right... (exclude local broadcast)
-	var destinationNetworkAddress *uint16
-	var destinationLength *uint8
-	var destinationAddress []uint8
-	var destinationHopCount *uint8
-	if destinationSpecified {
-		destinationSpecified = true
-		destinationNetworkAddress = destination.AddrNet
-		destinationLengthValue := *destination.AddrLen
-		if destinationLengthValue > math.MaxUint8 {
-			return nil, errors.New("source address length overflows")
-		}
-		destinationLengthValueUint8 := destinationLengthValue
-		destinationLength = &destinationLengthValueUint8
-		destinationAddress = destination.AddrAddress
-		if destinationLengthValueUint8 == 0 {
-			// If we define the len 0 we must not send the array
-			destinationAddress = nil
-		}
-		destinationHopCount = &hopCount
-	}
-	control := model.NewNPDUControl(nlm != nil, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
-	return model.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
-}
-
 func (n *_NPDU) Encode(pdu Arg) error {
 	if err := n._NPCI.Encode(pdu); err != nil {
 		return errors.Wrap(err, "error encoding _NPCI")
 	}
-	npdu, err := n.buildNPDU(0, n.GetPDUSource(), n.GetPDUDestination(), n.GetExpectingReply(), n.GetNetworkPriority(), n.nlm, n.apdu)
-	if err != nil {
-		return errors.Wrap(err, "error building NPDU")
+	switch pdu := pdu.(type) {
+	case PDU:
+		pdu.PutData(n.GetPduData()...)
 	}
-	serialize, err := npdu.Serialize()
-	if err != nil {
-		return errors.Wrap(err, "error serializing NPDU")
-	}
-	pdu.(interface{ PutData(n ...byte) }).PutData(serialize...) // TODO: ugly cast...
 	return nil
 }
 
@@ -128,14 +71,7 @@ func (n *_NPDU) Decode(pdu Arg) error {
 	}
 	switch pdu := pdu.(type) {
 	case PDUData:
-		data := pdu.GetPduData()
-		n.PutData(data...)
-		npdu, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
-		if err != nil {
-			return errors.Wrap(err, "error parsing NPDU")
-		}
-		n.rootMessage = npdu
-		n.nlm = npdu.GetNlm()
+		n.PutData(pdu.GetPduData()...)
 	}
 	return nil
 }

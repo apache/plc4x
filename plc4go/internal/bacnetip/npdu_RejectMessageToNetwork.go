@@ -30,12 +30,16 @@ import (
 type RejectMessageToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	rmtnRejectionReason model.NLMRejectMessageToNetworkRejectReason
 	rmtnDNET            uint16
 }
 
 func NewRejectMessageToNetwork(opts ...func(*RejectMessageToNetwork)) (*RejectMessageToNetwork, error) {
-	i := &RejectMessageToNetwork{}
+	i := &RejectMessageToNetwork{
+		messageType: 0x03,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -44,6 +48,8 @@ func NewRejectMessageToNetwork(opts ...func(*RejectMessageToNetwork)) (*RejectMe
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -71,7 +77,7 @@ func (n *RejectMessageToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		npdu.Put(byte(n.rmtnRejectionReason))
 		npdu.PutShort(n.rmtnDNET)
@@ -87,7 +93,7 @@ func (n *RejectMessageToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

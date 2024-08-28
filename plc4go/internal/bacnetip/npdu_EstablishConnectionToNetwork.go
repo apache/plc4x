@@ -30,12 +30,16 @@ import (
 type EstablishConnectionToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	ectnDNET            uint16
 	ectnTerminationTime uint8
 }
 
 func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)) (*EstablishConnectionToNetwork, error) {
-	i := &EstablishConnectionToNetwork{}
+	i := &EstablishConnectionToNetwork{
+		messageType: 0x08,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -44,6 +48,8 @@ func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -71,7 +77,7 @@ func (n *EstablishConnectionToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		npdu.PutShort(n.ectnDNET)
 		npdu.Put(n.ectnTerminationTime)
@@ -87,7 +93,7 @@ func (n *EstablishConnectionToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

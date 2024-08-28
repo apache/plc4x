@@ -30,11 +30,15 @@ import (
 type RouterBusyToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	rbtnNetworkList []uint16
 }
 
 func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
-	i := &RouterBusyToNetwork{}
+	i := &RouterBusyToNetwork{
+		messageType: 0x04,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -43,6 +47,8 @@ func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNe
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -60,7 +66,7 @@ func (r *RouterBusyToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(r); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		for _, net := range r.GetRbtnNetworkList() {
 			npdu.PutShort(net)
@@ -77,7 +83,7 @@ func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := r.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

@@ -20,7 +20,11 @@
 package bacnetip
 
 import (
+	"context"
+	"math"
+
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -46,8 +50,10 @@ type NPCI interface {
 	getNpduHopCount() *uint8
 	setNpduNetMessage(*uint8)
 	getNpduNetMessage() *uint8
-	setNpduVendorID(*uint16)
-	getNpduVendorID() *uint16
+	setNpduVendorID(*model.BACnetVendorId)
+	getNpduVendorID() *model.BACnetVendorId
+	setNPDU(model.NPDU)
+	getNPDU() model.NPDU
 	setNLM(model.NLM)
 	getNLM() model.NLM
 	setAPDU(model.APDU)
@@ -64,7 +70,7 @@ type _NPCI struct {
 	npduSADR       *Address
 	npduHopCount   *uint8
 	npduNetMessage *uint8
-	npduVendorID   *uint16
+	npduVendorID   *model.BACnetVendorId
 
 	npdu model.NPDU
 	nlm  model.NLM
@@ -146,12 +152,20 @@ func (n *_NPCI) getNpduNetMessage() *uint8 {
 	return n.npduNetMessage
 }
 
-func (n *_NPCI) setNpduVendorID(u *uint16) {
+func (n *_NPCI) setNpduVendorID(u *model.BACnetVendorId) {
 	n.npduVendorID = u
 }
 
-func (n *_NPCI) getNpduVendorID() *uint16 {
+func (n *_NPCI) getNpduVendorID() *model.BACnetVendorId {
 	return n.npduVendorID
+}
+
+func (n *_NPCI) setNPDU(npdu model.NPDU) {
+	n.npdu = npdu
+}
+
+func (n *_NPCI) getNPDU() model.NPDU {
+	return n.npdu
 }
 
 func (n *_NPCI) setNLM(nlm model.NLM) {
@@ -184,6 +198,7 @@ func (n *_NPCI) Update(npci Arg) error {
 		n.npduNetMessage = npci.getNpduNetMessage()
 		n.npduVendorID = npci.getNpduVendorID()
 
+		n.npdu = npci.getNPDU()
 		n.nlm = npci.getNLM()
 		n.apdu = npci.getAPDU()
 		return nil
@@ -192,13 +207,138 @@ func (n *_NPCI) Update(npci Arg) error {
 	}
 }
 
-func (n *_NPCI) Encode(pdu Arg) error {
-	if err := pdu.(interface{ Update(Arg) error }).Update(n); err != nil { // TODO: better validate that arg is really PDUData... use switch similar to Update
-		return errors.Wrap(err, "error updating pdu")
+func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority model.NPDUNetworkPriority, nlm model.NLM, apdu model.APDU) (model.NPDU, error) {
+	switch {
+	case nlm != nil && apdu != nil:
+		return nil, errors.New("either specify a NLM or a APDU exclusive")
+	case nlm == nil && apdu == nil:
+		return nil, errors.New("either specify a NLM or a APDU")
 	}
+	sourceSpecified := source != nil
+	var sourceNetworkAddress *uint16
+	var sourceLength *uint8
+	var sourceAddress []uint8
+	if sourceSpecified {
+		sourceSpecified = true
+		sourceNetworkAddress = source.AddrNet
+		sourceLengthValue := *source.AddrLen
+		if sourceLengthValue > math.MaxUint8 {
+			return nil, errors.New("source address length overflows")
+		}
+		sourceLengthValueUint8 := sourceLengthValue
+		sourceLength = &sourceLengthValueUint8
+		sourceAddress = source.AddrAddress
+		if sourceLengthValueUint8 == 0 {
+			// If we define the len 0 we must not send the array
+			sourceAddress = nil
+		}
+	}
+	destinationSpecified := destination != nil && destination.AddrType != LOCAL_BROADCAST_ADDRESS // TODO: check if this is right... (exclude local broadcast)
+	var destinationNetworkAddress *uint16
+	var destinationLength *uint8
+	var destinationAddress []uint8
+	var destinationHopCount *uint8
+	if destinationSpecified {
+		destinationSpecified = true
+		destinationNetworkAddress = destination.AddrNet
+		destinationLengthValue := *destination.AddrLen
+		if destinationLengthValue > math.MaxUint8 {
+			return nil, errors.New("source address length overflows")
+		}
+		destinationLengthValueUint8 := destinationLengthValue
+		destinationLength = &destinationLengthValueUint8
+		destinationAddress = destination.AddrAddress
+		if destinationLengthValueUint8 == 0 {
+			// If we define the len 0 we must not send the array
+			destinationAddress = nil
+		}
+		destinationHopCount = &hopCount
+	}
+	control := model.NewNPDUControl(nlm != nil, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
+	return model.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
+}
+
+func (n *_NPCI) Encode(pdu Arg) error {
 	switch pdu := pdu.(type) {
-	case NPCI:
-		pdu.setNLM(n.nlm)
+	case PDU:
+		if err := pdu.Update(n); err != nil {
+			return errors.Wrap(err, "error updating NPCI")
+		}
+		// only version 1 messages supported
+		pdu.Put(n.npduVersion)
+
+		// build the flags
+		var netLayerMessage uint8
+		if n.npduNetMessage != nil {
+			netLayerMessage = 0x80
+		}
+
+		// map the destination address
+		var dnetPresent uint8
+		if n.npduDADR != nil {
+			dnetPresent = 0x20
+		}
+
+		// map the source address
+		var snetPresent uint8
+		if n.npduSADR != nil {
+			snetPresent = 0x08
+		}
+
+		// encode the control octet
+		control := netLayerMessage | dnetPresent | snetPresent
+		if n.GetExpectingReply() {
+			control = control | 0x04
+		}
+		control |= uint8(n.networkPriority) & 0x03
+		n.npduControl = control
+		pdu.Put(control)
+
+		// make sure expecting reply and priority get passed down
+		pdu.SetExpectingReply(true)
+		pdu.SetNetworkPriority(n.networkPriority)
+
+		// encode the destination address
+		if dnetPresent != 0 {
+			if n.npduDADR.AddrType == REMOTE_STATION_ADDRESS {
+				pdu.PutShort(*n.npduDADR.AddrNet)
+				pdu.Put(*n.npduDADR.AddrLen)
+				pdu.PutData(n.npduDADR.AddrAddress...)
+			} else if n.npduDADR.AddrType == REMOTE_BROADCAST_ADDRESS {
+				pdu.PutShort(*n.npduDADR.AddrNet)
+				pdu.Put(0)
+			} else if n.npduDADR.AddrType == GLOBAL_BROADCAST_ADDRESS {
+				pdu.PutShort(0xFFFF)
+				pdu.Put(0)
+			}
+		}
+
+		// encode the source address
+		if snetPresent != 0 {
+			pdu.PutShort(*n.npduSADR.AddrNet)
+			pdu.Put(*n.npduSADR.AddrLen)
+			pdu.PutData(n.npduSADR.AddrAddress...)
+		}
+
+		// Put the hop count
+		if dnetPresent != 0 {
+			pdu.Put(*n.npduHopCount)
+		}
+
+		// Put the network layer message type (if present)
+		if netLayerMessage != 0 {
+			pdu.Put(*n.npduNetMessage)
+			// Put the vendor ID
+			if *n.npduNetMessage >= 0x80 {
+				pdu.PutShort(uint16(*n.npduVendorID))
+			}
+		}
+		switch pdu := pdu.(type) {
+		case NPDU:
+			pdu.setNPDU(n.npdu)
+			pdu.setNLM(n.nlm)
+			pdu.setAPDU(n.apdu)
+		}
 	}
 	return nil
 }
@@ -208,8 +348,87 @@ func (n *_NPCI) Decode(pdu Arg) error {
 		return errors.Wrap(err, "error updating pdu")
 	}
 	switch rm := n.rootMessage.(type) {
+	case *messageBridge:
+		data := rm.GetPduData()
+		parse, err := model.NPDUParse(context.Background(), data, uint16(len(data)))
+		if err != nil {
+			return errors.Wrap(err, "error parsing npdu")
+		}
+		n.rootMessage = parse
+	}
+	switch rm := n.rootMessage.(type) {
 	case model.NPDUExactly:
+		n.npdu = rm
 		n.nlm = rm.GetNlm()
+		n.apdu = rm.GetApdu()
+
+		n.npduVersion = rm.GetProtocolVersionNumber()
+		control := rm.GetControl()
+		cs, _ := control.Serialize()
+		n.npduControl = cs[0]
+		netLayerMessage := control.GetMessageTypeFieldPresent()
+		dnetPresent := control.GetDestinationSpecified()
+		snetPresent := control.GetSourceSpecified()
+		n.SetExpectingReply(control.GetExpectingReply())
+		n.SetNetworkPriority(control.GetNetworkPriority())
+
+		// extract the destination address
+		if dnetPresent {
+			dnet := *rm.GetDestinationNetworkAddress()
+			dlen := *rm.GetDestinationLength()
+			dadr := rm.GetDestinationAddress()
+
+			if dnet == 0xFFFF {
+				n.npduDADR = NewGlobalBroadcast(nil)
+			} else if dlen == 0 {
+				n.npduDADR = NewRemoteBroadcast(dnet, nil)
+			} else {
+				var err error
+				n.npduDADR, err = NewRemoteStation(zerolog.Nop(), &dnet, dadr, nil)
+				if err != nil {
+					return errors.Wrap(err, "error creating remote station")
+				}
+			}
+
+			// extract the source address
+			if snetPresent {
+				snet := *rm.GetSourceNetworkAddress()
+				slen := *rm.GetSourceLength()
+				sadr := rm.GetSourceAddress()
+
+				if snet == 0xFFFF {
+					return errors.New("SADR can't be a global broadcast")
+				} else if slen == 0 {
+					return errors.New("SADR can't be a remote broadcast")
+				}
+
+				var err error
+				n.npduSADR, err = NewRemoteStation(zerolog.Nop(), &snet, sadr, nil)
+				if err != nil {
+					return errors.Wrap(err, "error creating remote station")
+				}
+			}
+
+			// extract the hop count
+			if dnetPresent {
+				n.npduHopCount = rm.GetHopCount()
+			}
+
+			// extract the network layer message type (if present)
+			if netLayerMessage {
+				messageType := rm.GetNlm().GetMessageType()
+				n.npduNetMessage = &messageType
+				if rm.GetNlm().GetIsVendorProprietaryMessage() {
+					// extract the vendor ID
+					vendorId := rm.GetNlm().(model.NLMVendorProprietaryMessage).GetVendorId()
+					n.npduVendorID = &vendorId
+				}
+			}
+
+		} else {
+			// application layer message
+			n.npduNetMessage = nil
+		}
 	}
 	return nil
 }

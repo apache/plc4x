@@ -30,11 +30,15 @@ import (
 type InitializeRoutingTableAck struct {
 	*_NPDU
 
+	messageType uint8
+
 	irtaTable []*RoutingTableEntry
 }
 
 func NewInitializeRoutingTableAck(opts ...func(*InitializeRoutingTableAck)) (*InitializeRoutingTableAck, error) {
-	i := &InitializeRoutingTableAck{}
+	i := &InitializeRoutingTableAck{
+		messageType: 0x07,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -43,6 +47,8 @@ func NewInitializeRoutingTableAck(opts ...func(*InitializeRoutingTableAck)) (*In
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -81,8 +87,9 @@ func (r *InitializeRoutingTableAck) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(r); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
+		npdu.Put(byte(len(r.irtaTable)))
 		for _, rte := range r.irtaTable {
 			npdu.PutShort(rte.rtDNET)
 			npdu.Put(rte.rtPortId)
@@ -101,7 +108,7 @@ func (r *InitializeRoutingTableAck) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := r.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

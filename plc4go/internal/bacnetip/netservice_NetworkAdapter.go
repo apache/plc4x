@@ -106,7 +106,12 @@ func (n *NetworkAdapter) ProcessNPDU(npdu NPDU) error {
 		Stringer("npdu", npdu).
 		Interface("adapterNet", n.adapterNet).
 		Msg("ProcessNPDU")
-	return n.Request(NewArgs(npdu), NoKWArgs)
+
+	pdu := NewPDU(nil, WithPDUUserData(npdu.GetPDUUserData()))
+	if err := npdu.Encode(pdu); err != nil {
+		return errors.Wrap(err, "error encoding NPDU")
+	}
+	return n.Request(NewArgs(pdu), NoKWArgs)
 }
 
 func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {

@@ -22,7 +22,6 @@ package bacnetip
 import (
 	"bytes"
 	"fmt"
-	"math"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -365,58 +364,6 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwargs KWArgs) error {
 		return nil
 	}
 	return nil
-}
-
-// TODO: should us the one in NPDU
-func buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority model.NPDUNetworkPriority, nlm model.NLM, apdu model.APDU) (model.NPDU, error) {
-	switch {
-	case nlm != nil && apdu != nil:
-		return nil, errors.New("either specify a NLM or a APDU exclusive")
-	case nlm == nil && apdu == nil:
-		return nil, errors.New("either specify a NLM or a APDU")
-	}
-	sourceSpecified := source != nil
-	var sourceNetworkAddress *uint16
-	var sourceLength *uint8
-	var sourceAddress []uint8
-	if sourceSpecified {
-		sourceSpecified = true
-		sourceNetworkAddress = source.AddrNet
-		sourceLengthValue := *source.AddrLen
-		if sourceLengthValue > math.MaxUint8 {
-			return nil, errors.New("source address length overflows")
-		}
-		sourceLengthValueUint8 := sourceLengthValue
-		sourceLength = &sourceLengthValueUint8
-		sourceAddress = source.AddrAddress
-		if sourceLengthValueUint8 == 0 {
-			// If we define the len 0 we must not send the array
-			sourceAddress = nil
-		}
-	}
-	destinationSpecified := destination != nil
-	var destinationNetworkAddress *uint16
-	var destinationLength *uint8
-	var destinationAddress []uint8
-	var destinationHopCount *uint8
-	if destinationSpecified {
-		destinationSpecified = true
-		destinationNetworkAddress = destination.AddrNet
-		destinationLengthValue := *destination.AddrLen
-		if destinationLengthValue > math.MaxUint8 {
-			return nil, errors.New("source address length overflows")
-		}
-		destinationLengthValueUint8 := destinationLengthValue
-		destinationLength = &destinationLengthValueUint8
-		destinationAddress = destination.AddrAddress
-		if destinationLengthValueUint8 == 0 {
-			// If we define the len 0 we must not send the array
-			destinationAddress = nil
-		}
-		destinationHopCount = &hopCount
-	}
-	control := model.NewNPDUControl(nlm != nil, destinationSpecified, sourceSpecified, expectingReply, networkPriority)
-	return model.NewNPDU(1, control, destinationNetworkAddress, destinationLength, destinationAddress, sourceNetworkAddress, sourceLength, sourceAddress, destinationHopCount, nlm, apdu, 0), nil
 }
 
 func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NPDU) error {
@@ -782,10 +729,17 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) erro
 	npdu := args.Get1NPDU()
 
 	// encode it as a generic NPDU
-	// TODO: we don't need that as a npdu is a npdu
+	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
+	if err != nil {
+		return errors.Wrap(err, "error building NPDU")
+	}
+	if err := npdu.Encode(xpdu); err != nil {
+		return errors.Wrap(err, "error encoding NPDU")
+	}
+	// npdu._xpdu = xpdu
 
 	// tell the adapter to process the NPDU
-	return adapter.ProcessNPDU(npdu)
+	return adapter.ProcessNPDU(xpdu)
 }
 
 func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) error {
@@ -794,7 +748,14 @@ func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwargs KWArgs) er
 	npdu := args.Get1NPDU()
 
 	// encode it as a generic NPDU
-	// TODO: we don't need that as a npdu is a npdu
+	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
+	if err != nil {
+		return errors.Wrap(err, "error building NPDU")
+	}
+	if err := npdu.Encode(xpdu); err != nil {
+		return errors.Wrap(err, "error encoding NPDU")
+	}
+	// npdu._xpdu = xpdu
 
-	return adapter.ProcessNPDU(npdu)
+	return adapter.ProcessNPDU(xpdu)
 }

@@ -19,8 +19,15 @@
 
 package globals
 
+import "os"
+
 // ExtendedPDUOutput switches the PDU output to an extended format for debugging
 var ExtendedPDUOutput bool
 
 // ExtendedGeneralOutput switches extended output on for other items
 var ExtendedGeneralOutput bool
+
+func init() {
+	ExtendedPDUOutput = os.Getenv("ExtendedPDUOutput") == "true"
+	ExtendedGeneralOutput = os.Getenv("ExtendedGeneralOutput") == "true"
+}

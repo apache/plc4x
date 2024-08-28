@@ -95,7 +95,15 @@ func (t TPDU) SetPDUDestination(address *bacnetip.Address) {
 	panic("implement me")
 }
 
+func (t TPDU) SetExpectingReply(b bool) {
+	panic("implement me")
+}
+
 func (t TPDU) GetExpectingReply() bool {
+	panic("implement me")
+}
+
+func (t TPDU) SetNetworkPriority(priority readWriteModel.NPDUNetworkPriority) {
 	panic("implement me")
 }
 

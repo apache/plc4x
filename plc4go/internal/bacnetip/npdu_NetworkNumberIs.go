@@ -30,12 +30,16 @@ import (
 type NetworkNumberIs struct {
 	*_NPDU
 
+	messageType uint8
+
 	nniNet  uint16
 	nniFlag bool
 }
 
 func NewNetworkNumberIs(opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error) {
-	i := &NetworkNumberIs{}
+	i := &NetworkNumberIs{
+		messageType: 0x13,
+	}
 	for _, opt := range opts {
 		opt(i)
 	}
@@ -44,6 +48,8 @@ func NewNetworkNumberIs(opts ...func(*NetworkNumberIs)) (*NetworkNumberIs, error
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+
+	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
@@ -71,7 +77,7 @@ func (n *NetworkNumberIs) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		npdu.PutShort(n.nniNet)
 		flag := uint8(0)
@@ -91,7 +97,7 @@ func (n *NetworkNumberIs) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:

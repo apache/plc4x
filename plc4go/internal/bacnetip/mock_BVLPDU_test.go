@@ -1116,6 +1116,72 @@ func (_c *MockBVLPDU_SerializeWithWriteBuffer_Call) RunAndReturn(run func(contex
 	return _c
 }
 
+// SetExpectingReply provides a mock function with given fields: _a0
+func (_m *MockBVLPDU) SetExpectingReply(_a0 bool) {
+	_m.Called(_a0)
+}
+
+// MockBVLPDU_SetExpectingReply_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetExpectingReply'
+type MockBVLPDU_SetExpectingReply_Call struct {
+	*mock.Call
+}
+
+// SetExpectingReply is a helper method to define mock.On call
+//   - _a0 bool
+func (_e *MockBVLPDU_Expecter) SetExpectingReply(_a0 interface{}) *MockBVLPDU_SetExpectingReply_Call {
+	return &MockBVLPDU_SetExpectingReply_Call{Call: _e.mock.On("SetExpectingReply", _a0)}
+}
+
+func (_c *MockBVLPDU_SetExpectingReply_Call) Run(run func(_a0 bool)) *MockBVLPDU_SetExpectingReply_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(bool))
+	})
+	return _c
+}
+
+func (_c *MockBVLPDU_SetExpectingReply_Call) Return() *MockBVLPDU_SetExpectingReply_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockBVLPDU_SetExpectingReply_Call) RunAndReturn(run func(bool)) *MockBVLPDU_SetExpectingReply_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetNetworkPriority provides a mock function with given fields: _a0
+func (_m *MockBVLPDU) SetNetworkPriority(_a0 model.NPDUNetworkPriority) {
+	_m.Called(_a0)
+}
+
+// MockBVLPDU_SetNetworkPriority_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetNetworkPriority'
+type MockBVLPDU_SetNetworkPriority_Call struct {
+	*mock.Call
+}
+
+// SetNetworkPriority is a helper method to define mock.On call
+//   - _a0 model.NPDUNetworkPriority
+func (_e *MockBVLPDU_Expecter) SetNetworkPriority(_a0 interface{}) *MockBVLPDU_SetNetworkPriority_Call {
+	return &MockBVLPDU_SetNetworkPriority_Call{Call: _e.mock.On("SetNetworkPriority", _a0)}
+}
+
+func (_c *MockBVLPDU_SetNetworkPriority_Call) Run(run func(_a0 model.NPDUNetworkPriority)) *MockBVLPDU_SetNetworkPriority_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(model.NPDUNetworkPriority))
+	})
+	return _c
+}
+
+func (_c *MockBVLPDU_SetNetworkPriority_Call) Return() *MockBVLPDU_SetNetworkPriority_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *MockBVLPDU_SetNetworkPriority_Call) RunAndReturn(run func(model.NPDUNetworkPriority)) *MockBVLPDU_SetNetworkPriority_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetPDUDestination provides a mock function with given fields: _a0
 func (_m *MockBVLPDU) SetPDUDestination(_a0 *Address) {
 	_m.Called(_a0)

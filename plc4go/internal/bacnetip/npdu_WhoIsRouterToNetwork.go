@@ -30,11 +30,15 @@ import (
 type WhoIsRouterToNetwork struct {
 	*_NPDU
 
+	messageType uint8
+
 	wirtnNetwork *uint16
 }
 
 func NewWhoIsRouterToNetwork(opts ...func(network *WhoIsRouterToNetwork)) (*WhoIsRouterToNetwork, error) {
-	w := &WhoIsRouterToNetwork{}
+	w := &WhoIsRouterToNetwork{
+		messageType: 0x00,
+	}
 	for _, opt := range opts {
 		opt(w)
 	}
@@ -43,6 +47,8 @@ func NewWhoIsRouterToNetwork(opts ...func(network *WhoIsRouterToNetwork)) (*WhoI
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	w._NPDU = npdu.(*_NPDU)
+
+	w.npduNetMessage = &w.messageType
 	return w, nil
 }
 
@@ -60,7 +66,7 @@ func (n *WhoIsRouterToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := npdu.Update(n); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		if n.wirtnNetwork != nil {
 			npdu.PutShort(*n.wirtnNetwork)
@@ -77,7 +83,7 @@ func (n *WhoIsRouterToNetwork) Decode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPDU:
 		if err := n.Update(npdu); err != nil {
-			return errors.Wrap(err, "error updating _NPCI")
+			return errors.Wrap(err, "error updating NPDU")
 		}
 		switch pduUserData := npdu.GetRootMessage().(type) {
 		case model.NPDUExactly:
