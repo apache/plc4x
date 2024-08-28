@@ -27,3 +27,10 @@ class Serializable:
         :param write_buffer: The WriteBuffer to serialize to
         """
         pass
+
+
+def get_size_of_array(items) -> int:
+    result = 0
+    for i in items:
+        result += i.length_in_bytes()
+    return result

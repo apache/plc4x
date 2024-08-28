@@ -19,7 +19,9 @@ import os
 import pytest
 from typing_extensions import Iterator
 
-from unit.plc4py.utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRunner
+from unit.plc4py.utils.ParserSerializerTestSuiteRunner import (
+    ParserSerializerTestsuiteRunner,
+)
 
 
 def pytest_generate_tests(metafunc):

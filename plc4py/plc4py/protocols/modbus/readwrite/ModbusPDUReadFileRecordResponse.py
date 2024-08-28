@@ -29,7 +29,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordResponseItem impor
 )
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from sys import getsizeof
+from plc4py.spi.values.Common import get_size_of_array
 from typing import Any
 from typing import ClassVar
 from typing import List
@@ -48,7 +48,7 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
         write_buffer.push_context("ModbusPDUReadFileRecordResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = int(getsizeof(self.items))
+        byte_count: int = int(get_size_of_array(self.items))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byte_count")
 
         # Array Field (items)

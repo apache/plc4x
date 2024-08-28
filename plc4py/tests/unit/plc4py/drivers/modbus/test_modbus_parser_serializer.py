@@ -23,19 +23,23 @@ from ...utils.ParserSerializerTestSuiteRunner import ParserSerializerTestsuiteRu
 
 def pytest_generate_tests(metafunc):
     path: str = os.path.join(
-            os.path.dirname(__file__),
-            "..", "..", "..", "..", "..", "..",
-            "protocols",
-            "modbus",
-            "src",
-            "test",
-            "resources",
-            "protocols",
-            "modbus",
-            "tcp",
-            "ParserSerializerTestsuite.xml"
-        )
-    pass
+        os.path.dirname(__file__),
+        "..",
+        "..",
+        "..",
+        "..",
+        "..",
+        "..",
+        "protocols",
+        "modbus",
+        "src",
+        "test",
+        "resources",
+        "protocols",
+        "modbus",
+        "tcp",
+        "ParserSerializerTestsuite.xml",
+    )
     xml_loader = ParserSerializerTestsuiteRunner(path)
 
     test_suites = xml_loader.test_suite_tests

@@ -81,7 +81,11 @@ class ParserSerializerTestCase(TestCase):
                 package="plc4py",
             )
         except ModuleNotFoundError as e:
-            logging.exception("Failed to find plc4py class for %s %s", self.test_suite.protocol_name, e)
+            logging.exception(
+                "Failed to find plc4py class for %s %s",
+                self.test_suite.protocol_name,
+                e,
+            )
             raise e
 
         logger.debug("Parsing message")
@@ -95,39 +99,48 @@ class ParserSerializerTestCase(TestCase):
         """ 
             Serialize the Model back to the raw bytes for comparison 
         """
-        byte_buffer: WriteBufferByteBased = WriteBufferByteBased(size=len(self.test_case.raw), byte_order=self.test_suite.byte_order)
+        byte_buffer: WriteBufferByteBased = WriteBufferByteBased(
+            size=len(self.test_case.raw), byte_order=self.test_suite.byte_order
+        )
         modbus_adu.serialize(byte_buffer)
 
         comparison = self.test_case.raw == byte_buffer.get_bytes()
         if not comparison:
 
             """
-                Serialize generate class to xml
+            Serialize generate class to xml
             """
             exception: SerializationException = SerializationException()
-            exception.add_note("---------------------Failed Assertion------------------")
+            exception.add_note(
+                "---------------------Failed Assertion------------------"
+            )
             xml_buffer: WriteBufferXmlBased = WriteBufferXmlBased()
             modbus_adu.serialize(xml_buffer)
             result = xml_buffer.to_xml_string()
 
             exception.add_note("")
-            exception.add_note("---------------------Initial Raw Bytes-----------------")
+            exception.add_note(
+                "---------------------Initial Raw Bytes-----------------"
+            )
             exception.add_note(self.test_case.raw.hex())
             exception.add_note("")
-            exception.add_note("---------------------Serialized Raw Bytes from Model---")
+            exception.add_note(
+                "---------------------Serialized Raw Bytes from Model---"
+            )
             exception.add_note(ba2hex(byte_buffer.bb))
             exception.add_note("")
-            exception.add_note("---------------------Initial XML Case------------------")
-            exception.add_note(result)
-            exception.add_note("")
-
+            exception.add_note(
+                "---------------------Initial XML Case------------------"
+            )
             """
                 Serialize the model back to xml for user comparison
             """
             factory = SerializerConfig(xml_declaration=False, pretty_print=True)
             serializer = XmlSerializer(config=factory)
             ss = serializer.render(self.test_case.xml)
+            exception.add_note(ss)
+            exception.add_note("")
 
             exception.add_note("---------------------Serialized XML case--------------")
-            exception.add_note(ss)
+            exception.add_note(result)
             raise exception

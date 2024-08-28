@@ -132,7 +132,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         bit_length: int = -1,
         logical_name: str = "",
         encoding: str = "UTF-8",
-        **kwargs
+        **kwargs,
     ) -> None:
         raise NotImplementedError
 
@@ -213,7 +213,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="B", **kwargs
+                int(value), bit_length, numeric_format="B", **kwargs
             )
 
     def write_unsigned_short(
@@ -229,7 +229,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="H", **kwargs
+                int(value), bit_length, numeric_format="H", **kwargs
             )
 
     def write_unsigned_int(
@@ -245,7 +245,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned int can only contain max 32 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="I", **kwargs
+                int(value), bit_length, numeric_format="I", **kwargs
             )
 
     def write_unsigned_long(
@@ -261,7 +261,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned long can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="Q", **kwargs
+                int(value), bit_length, numeric_format="Q", **kwargs
             )
 
     def write_signed_byte(
@@ -271,7 +271,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed byte must contain at least 1 bit")
         elif bit_length > 8:
             raise SerializationException("Signed byte can only contain max 8 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="b", **kwargs)
+        self._handle_numeric_encoding(int(value), bit_length, numeric_format="b", **kwargs)
 
     def write_short(
         self,
@@ -284,7 +284,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed short must contain at least 1 bit")
         elif bit_length > 16:
             raise SerializationException("Signed short can only contain max 16 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="h", **kwargs)
+        self._handle_numeric_encoding(int(value), bit_length, numeric_format="h", **kwargs)
 
     def write_int(
         self,
@@ -297,7 +297,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed int must contain at least 1 bit")
         elif bit_length > 32:
             raise SerializationException("Signed int can only contain max 32 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="i", **kwargs)
+        self._handle_numeric_encoding(int(value), bit_length, numeric_format="i", **kwargs)
 
     def write_long(
         self,
@@ -310,7 +310,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed long must contain at least 1 bit")
         elif bit_length > 64:
             raise SerializationException("Signed long can only contain max 64 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="q", **kwargs)
+        self._handle_numeric_encoding(int(value), bit_length, numeric_format="q", **kwargs)
 
     def write_float(
         self,
@@ -366,6 +366,8 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             endianness: str = ">"
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
+            if not isinstance(value, int):
+                pass
             result: bytes = struct.pack(
                 endianness + numeric_format,
                 value,
@@ -394,7 +396,7 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         c_double,
     ]
 
-    def __init__(self,byte_order: ByteOrder = ByteOrder.BIG_ENDIAN):
+    def __init__(self, byte_order: ByteOrder = ByteOrder.BIG_ENDIAN):
         # This refers to the bit alignment, which we always use big bit endianess
         self.byte_order = byte_order
         self.position = 0
@@ -420,19 +422,19 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
     def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:
         data_type: str = "bit"
         data: str = str(value).lower()
-        if 'bit_length' in kwargs:
-            kwargs['bit_length'] = str(kwargs['bit_length'])
+        if "bit_length" in kwargs:
+            kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
-            kwargs['bit_length'] = str(1)
+            kwargs["bit_length"] = str(1)
         self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
 
     def write_byte(self, value: int, logical_name: str = "", **kwargs) -> None:
         data_type: str = "byte"
         data: str = str(value)
-        if 'bit_length' in kwargs:
-            kwargs['bit_length'] = str(kwargs['bit_length'])
+        if "bit_length" in kwargs:
+            kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
-            kwargs['bit_length'] = str(8)
+            kwargs["bit_length"] = str(8)
         self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
 
     def write_byte_array(
@@ -440,10 +442,10 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
     ) -> None:
         data_type: str = "byte"
         data: str = str(value)
-        if 'bit_length' in kwargs:
-            kwargs['bit_length'] = str(kwargs['bit_length'])
+        if "bit_length" in kwargs:
+            kwargs["bit_length"] = str(kwargs["bit_length"])
         else:
-            kwargs['bit_length'] = str(len(value) * 8)
+            kwargs["bit_length"] = str(len(value) * 8)
         self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
 
     def write_unsigned_byte(
@@ -452,7 +454,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "uint"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_unsigned_short(
         self,
@@ -464,7 +468,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "uint"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_unsigned_int(
         self,
@@ -476,7 +482,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "udint"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_unsigned_long(
         self,
@@ -488,7 +496,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "ulint"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_signed_byte(
         self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
@@ -496,7 +506,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "byte"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_short(
         self,
@@ -508,7 +520,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "int"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_int(
         self,
@@ -520,7 +534,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "dint"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_long(
         self,
@@ -532,7 +548,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "lint"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_float(
         self,
@@ -544,7 +562,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "real"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_double(
         self,
@@ -556,7 +576,9 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
         data_type: str = "lreal"
         data: str = str(value)
         bit_length: str = str(bit_length)
-        self._create_and_append(camel_case(logical_name), data_type, data, bit_length, **kwargs)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
 
     def write_complex_array(
         self, value: List[PlcMessage], logical_name: str = "", **kwargs
@@ -566,10 +588,12 @@ class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
             self.stack[-1].append(new_element)
             self.stack.append(new_element)
 
-    def _create_and_append(self, logical_name: str, data_type: str, data: str, bit_length: str, **kwargs) -> None:
+    def _create_and_append(
+        self, logical_name: str, data_type: str, data: str, bit_length: str, **kwargs
+    ) -> None:
         new_element: ET.Element = ET.Element(logical_name)
-        new_element.set('dataType', data_type)
-        new_element.set('bitlength', bit_length)
+        new_element.set("dataType", data_type)
+        new_element.set("bitlength", bit_length)
         new_element.text = data
         if len(self.stack) > 0:
             self.stack[-1].append(new_element)

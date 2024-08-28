@@ -1658,9 +1658,9 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         }
 
         // We need the getsizeof function from the sys module.
-        emitRequiredImport("from sys import getsizeof");
+        emitRequiredImport("from plc4py.spi.values.Common import get_size_of_array");
         // Cast the result to the correct type if necessary.
-        return tracer + getCastExpressionForTypeReference(typeReference) + "(getsizeof(" + sb + "))";
+        return tracer + getCastExpressionForTypeReference(typeReference) + "(get_size_of_array(" + sb + "))";
     }
 
     /**
