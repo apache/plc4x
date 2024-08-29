@@ -271,7 +271,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed byte must contain at least 1 bit")
         elif bit_length > 8:
             raise SerializationException("Signed byte can only contain max 8 bits")
-        self._handle_numeric_encoding(int(value), bit_length, numeric_format="b", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="b", **kwargs
+        )
 
     def write_short(
         self,
@@ -284,7 +286,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed short must contain at least 1 bit")
         elif bit_length > 16:
             raise SerializationException("Signed short can only contain max 16 bits")
-        self._handle_numeric_encoding(int(value), bit_length, numeric_format="h", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="h", **kwargs
+        )
 
     def write_int(
         self,
@@ -297,7 +301,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed int must contain at least 1 bit")
         elif bit_length > 32:
             raise SerializationException("Signed int can only contain max 32 bits")
-        self._handle_numeric_encoding(int(value), bit_length, numeric_format="i", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="i", **kwargs
+        )
 
     def write_long(
         self,
@@ -310,7 +316,9 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed long must contain at least 1 bit")
         elif bit_length > 64:
             raise SerializationException("Signed long can only contain max 64 bits")
-        self._handle_numeric_encoding(int(value), bit_length, numeric_format="q", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="q", **kwargs
+        )
 
     def write_float(
         self,
